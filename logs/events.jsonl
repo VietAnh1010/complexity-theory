@@ -1,0 +1,16 @@
+{"ts": "2026-08-10T11:49:02", "kind": "query", "source": "arxiv", "query": "circuit lower bound", "hits": 25, "kept": 25, "new": 25, "skipped": 0}
+{"ts": "2026-08-10T11:49:05", "kind": "query", "source": "arxiv", "query": "minimum circuit size problem", "hits": 13, "kept": 13, "new": 12, "skipped": 0}
+{"ts": "2026-08-10T11:49:52", "kind": "enrich", "crossref": 0, "published": 14, "arxiv": 0, "revised": 0, "no_abstract": 0, "no_doi": 20}
+{"ts": "2026-08-10T11:50:50", "kind": "enrich", "crossref": 0, "published": 0, "arxiv": 0, "revised": 5, "no_abstract": 0, "no_doi": 20}
+{"ts": "2026-08-10T11:51:42", "kind": "screen_apply", "applied": 4, "failed": 0}
+{"ts": "2026-08-10T11:51:53", "kind": "snowball_leg", "direction": "backward", "wanted": 92, "resolved": 82, "new": 33, "skipped": 49, "unstructured_refs": 65}
+{"ts": "2026-08-10T11:52:00", "kind": "snowball_leg", "direction": "forward", "new": 6, "skipped": 7}
+{"ts": "2026-08-10T11:52:00", "kind": "snowball", "direction": "both", "seeds": 4, "seeds_without_doi": 0, "added": 39}
+{"ts": "2026-08-10T11:54:15", "kind": "enrich", "crossref": 0, "published": 0, "arxiv": 4, "revised": 0, "no_abstract": 16, "no_doi": 21}
+{"ts": "2026-08-10T11:54:51", "kind": "dataset_export", "papers": 76, "status": "all", "edges": true}
+{"ts": "2026-08-10T11:55:59", "kind": "enrich", "crossref": 3, "published": 0, "arxiv": 0, "revised": 0, "no_abstract": 16, "no_doi": 21}
+{"ts": "2026-08-10T11:56:16", "kind": "verify", "papers": 4, "errors": 4, "warnings": 1}
+{"ts": "2026-08-10T11:56:50", "kind": "verify", "papers": 4, "errors": 0, "warnings": 1}
+{"ts": "2026-08-10T11:57:03", "kind": "verify", "papers": 4, "errors": 2, "warnings": 1}
+{"ts": "2026-08-10T11:58:47", "kind": "style_check", "files": 1, "errors": 0, "warnings": 3}
+{"ts": "2026-08-10T11:59:06", "kind": "style_check", "files": 1, "errors": 0, "warnings": 0}

@@ -1,0 +1,151 @@
+# Query grid for the harvest phase.
+#
+# One query per line, `#` starts a comment. Concepts are separated by ` AND `,
+# which search_arxiv.py rewrites as all:"..." AND all:"...".
+#
+# Roughly (subarea) x (technique or object). Recall beats precision here: the
+# topic gate in topic.py and the screening pass both narrow afterwards.
+#
+# This grid carries the whole harvest, so a concept missing here is a concept
+# missing from the dataset. Widen it during the harvest, not after screening.
+#
+# Single-concept lines are deliberate where the term is already specific
+# enough to be self-limiting ("polynomial identity testing" is never about
+# anything else). Two-concept lines are for terms that are ambiguous alone.
+
+# --- circuit complexity ----------------------------------------------------
+circuit lower bound
+circuit complexity AND boolean function
+constant-depth circuit AND lower bound
+monotone circuit AND lower bound
+formula size AND lower bound
+branching program AND lower bound
+switching lemma
+threshold circuit AND TC0
+ACC0 AND lower bound
+Karp-Lipton AND collapse
+
+# --- algebraic complexity --------------------------------------------------
+arithmetic circuit AND lower bound
+polynomial identity testing
+permanent versus determinant
+geometric complexity theory
+tensor rank AND border rank
+matrix multiplication exponent
+algebraic branching program
+depth reduction AND arithmetic circuit
+VP versus VNP
+
+# --- proof complexity ------------------------------------------------------
+proof complexity AND lower bound
+resolution refutation AND width
+cutting planes AND proof system
+bounded arithmetic AND propositional
+polynomial calculus AND degree lower bound
+sum-of-squares AND refutation
+Frege proof system
+proof complexity AND automatability
+
+# --- communication and query complexity ------------------------------------
+communication complexity AND lower bound
+lifting theorem AND communication
+information complexity AND direct sum
+log-rank conjecture
+number-on-forehead AND communication
+query complexity AND decision tree
+sensitivity conjecture AND block sensitivity
+approximate degree AND polynomial method
+certificate complexity AND boolean function
+streaming AND space lower bound
+
+# --- derandomization and pseudorandomness ----------------------------------
+derandomization AND pseudorandom generator
+hardness versus randomness
+randomness extractor AND explicit construction
+pseudorandom generator AND constant depth
+hitting set generator AND polynomial identity testing
+expander graph AND explicit construction
+k-wise independence AND pseudorandom
+BPP versus P AND derandomization
+
+# --- hardness of approximation ---------------------------------------------
+hardness of approximation AND PCP
+unique games conjecture
+probabilistically checkable proof AND gap
+parallel repetition theorem
+label cover AND inapproximability
+small-set expansion AND hardness
+constraint satisfaction AND approximation resistance
+
+# --- interactive proofs ----------------------------------------------------
+interactive proof AND complexity
+zero-knowledge AND complexity class
+multi-prover interactive proof
+succinct argument AND delegation
+interactive oracle proof AND proximity
+Arthur-Merlin AND protocol
+
+# --- fine-grained complexity -----------------------------------------------
+fine-grained complexity AND conditional lower bound
+strong exponential time hypothesis
+orthogonal vectors AND conditional lower bound
+3SUM AND hardness
+all-pairs shortest paths AND subcubic
+exponential time hypothesis AND lower bound
+edit distance AND conditional hardness
+
+# --- parameterized complexity ----------------------------------------------
+parameterized complexity AND W hierarchy
+kernelization AND lower bound
+fixed-parameter tractable AND treewidth
+exact exponential algorithm AND lower bound
+
+# --- meta-complexity -------------------------------------------------------
+minimum circuit size problem
+meta-complexity AND hardness
+time-bounded Kolmogorov complexity
+natural proofs AND barrier
+hardness magnification
+learning algorithm AND circuit lower bound
+
+# --- average-case and cryptographic hardness -------------------------------
+average-case complexity AND hardness
+one-way function AND complexity class
+worst-case to average-case reduction
+planted clique AND lower bound
+hardness amplification AND direct product
+random constraint satisfaction AND refutation
+
+# --- space complexity ------------------------------------------------------
+space complexity AND lower bound
+catalytic computing AND space
+time-space tradeoff AND lower bound
+tree evaluation AND space
+logspace AND derandomization
+read-once branching program
+
+# --- quantum complexity ----------------------------------------------------
+quantum query complexity AND lower bound
+quantum complexity class AND QMA
+local Hamiltonian AND complexity
+quantum PCP conjecture
+BQP AND oracle separation
+quantum advantage AND complexity theoretic
+quantum communication complexity
+
+# --- counting and total search ---------------------------------------------
+counting complexity AND dichotomy
+permanent AND approximate counting
+holant AND dichotomy theorem
+TFNP AND total search problem
+PPAD AND Nash equilibrium complexity
+PLS AND local search complexity
+
+# --- structural and descriptive --------------------------------------------
+oracle separation AND relativization
+polynomial hierarchy AND collapse
+hierarchy theorem AND time complexity
+descriptive complexity AND finite model theory
+constraint satisfaction dichotomy AND polymorphism
+NP-complete AND isomorphism conjecture
+algebrization AND barrier

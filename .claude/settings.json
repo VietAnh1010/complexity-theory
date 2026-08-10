@@ -1,0 +1,46 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cp:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git push:*)",
+      "Bash(git show:*)",
+      "Bash(git status:*)",
+      "Bash(grep:*)",
+      "Bash(head:*)",
+      "Bash(jq:*)",
+      "Bash(ls:*)",
+      "Bash(mkdir:*)",
+      "Bash(mv:*)",
+      "Bash(python3:*)",
+      "Bash(rg:*)",
+      "Bash(sort:*)",
+      "Bash(tail:*)",
+      "Bash(uniq:*)",
+      "Bash(wc:*)",
+      "WebFetch(domain:api.crossref.org)",
+      "WebFetch(domain:api.opencitations.net)",
+      "WebFetch(domain:arxiv.org)",
+      "WebFetch(domain:dblp.org)",
+      "WebFetch(domain:dl.acm.org)",
+      "WebFetch(domain:drops.dagstuhl.de)",
+      "WebFetch(domain:eccc.weizmann.ac.il)",
+      "WebFetch(domain:epubs.siam.org)",
+      "WebFetch(domain:export.arxiv.org)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:ieeexplore.ieee.org)",
+      "WebFetch(domain:link.springer.com)",
+      "WebFetch(domain:onlinelibrary.wiley.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:theoryofcomputing.org)",
+      "WebFetch(domain:www.sciencedirect.com)",
+      "WebSearch"
+    ],
+    "deny": [
+      "Bash(rm -rf:*)"
+    ]
+  }
+}
