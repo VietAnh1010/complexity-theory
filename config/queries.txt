@@ -21,8 +21,8 @@ monotone circuit AND lower bound
 formula size AND lower bound
 branching program AND lower bound
 switching lemma
-threshold circuit AND TC0
-ACC0 AND lower bound
+threshold circuits AND lower bounds
+ACC AND circuit lower bounds
 Karp-Lipton AND collapse
 
 # --- algebraic complexity --------------------------------------------------
@@ -34,7 +34,7 @@ tensor rank AND border rank
 matrix multiplication exponent
 algebraic branching program
 depth reduction AND arithmetic circuit
-VP versus VNP
+VNP AND completeness
 
 # --- proof complexity ------------------------------------------------------
 proof complexity AND lower bound
@@ -66,7 +66,7 @@ pseudorandom generator AND constant depth
 hitting set generator AND polynomial identity testing
 expander graph AND explicit construction
 k-wise independence AND pseudorandom
-BPP versus P AND derandomization
+BPP AND derandomization
 
 # --- hardness of approximation ---------------------------------------------
 hardness of approximation AND PCP
@@ -81,7 +81,7 @@ constraint satisfaction AND approximation resistance
 interactive proof AND complexity
 zero-knowledge AND complexity class
 multi-prover interactive proof
-succinct argument AND delegation
+succinct arguments AND verification
 interactive oracle proof AND proximity
 Arthur-Merlin AND protocol
 
@@ -138,14 +138,14 @@ counting complexity AND dichotomy
 permanent AND approximate counting
 holant AND dichotomy theorem
 TFNP AND total search problem
-PPAD AND Nash equilibrium complexity
-PLS AND local search complexity
+PPAD AND Nash equilibrium
+PLS-complete AND local search
 
 # --- structural and descriptive --------------------------------------------
 oracle separation AND relativization
 polynomial hierarchy AND collapse
 hierarchy theorem AND time complexity
 descriptive complexity AND finite model theory
-constraint satisfaction dichotomy AND polymorphism
+constraint satisfaction AND dichotomy
 NP-complete AND isomorphism conjecture
 algebrization AND barrier

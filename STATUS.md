@@ -5,9 +5,13 @@ git log is the entire handoff.
 
 ## Current
 
-- **Phase:** harvest running; scripts golfed to 4 modules and one CLI
+- **Phase:** harvest complete (107 queries, 0 failures); 2471 records
 - **Last updated:** 2026-08-10
 - **Next action:** `run.py enrich`, then screen the core tier
+
+Coverage targets in `SCOPE.md` all met: every subarea over 50, largest at 20%,
+0 uncategorized, 2455 of 2471 with an abstract. Only 469 carry a DOI, so
+snowballing reaches under a fifth of the library until `enrich` runs.
 
 ## Counts
 
@@ -45,10 +49,9 @@ Report that alongside the edge count.
 - No seed papers supplied; the harvest runs on `config/queries.txt` alone.
   - Resolve any through `run.py harvest --query "<title>"`.
   - Never enter one by hand into the library.
-- Three queries are near-dead because arXiv matches literal phrases and these
-  classes are written as LaTeX in practice.
-  - `VP versus VNP` (1 hit), `threshold circuit AND TC0` (1), `ACC0` (2).
-  - Rewrite them before the next harvest.
+- Eight queries were dead or near-dead; rewritten and re-run, worth 162 records.
+  - arXiv matches each concept as a literal phrase.
+  - Three-concept ANDs and LaTeX-written class names return nothing.
 
 ## Decisions made under uncertainty
 
@@ -77,3 +80,7 @@ Report that alongside the edge count.
 - `2026-08-10` — repo golfed: 13 scripts to 4 modules and one CLI.
   - `lib.py`, `topic.py`, `sources.py`, `run.py`; `prompts/` folded into CLAUDE.md.
   - Traps that were comments are now a README section, so they survive edits.
+- `2026-08-10` — full harvest: 107 queries at 10s spacing, 0 failures, 2471 records.
+  - Five queries returned 0 hits and mapped onto the two thin subareas.
+    - `total-search` and `descriptive-logic` were a grid artifact, not a thin
+      literature. Rewriting the queries closed both gaps.

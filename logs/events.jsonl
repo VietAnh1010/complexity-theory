@@ -162,3 +162,13 @@
 {"ts": "2026-08-10T12:23:57", "kind": "query", "source": "arxiv", "query": "constraint satisfaction dichotomy AND polymorphism", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
 {"ts": "2026-08-10T12:24:07", "kind": "query", "source": "arxiv", "query": "NP-complete AND isomorphism conjecture", "hits": 1, "kept": 1, "new": 1, "skipped": 0}
 {"ts": "2026-08-10T12:24:18", "kind": "query", "source": "arxiv", "query": "algebrization AND barrier", "hits": 7, "kept": 7, "new": 2, "skipped": 0}
+{"ts": "2026-08-10T12:25:29", "kind": "dataset_export", "papers": 2309, "edges": false}
+{"ts": "2026-08-10T12:26:44", "kind": "query", "query": "BPP AND derandomization", "hits": 7, "kept": 7, "new": 2, "skipped": 0}
+{"ts": "2026-08-10T12:26:54", "kind": "query", "query": "succinct arguments AND verification", "hits": 3, "kept": 3, "new": 3, "skipped": 0}
+{"ts": "2026-08-10T12:27:04", "kind": "query", "query": "PPAD AND Nash equilibrium", "hits": 68, "kept": 68, "new": 68, "skipped": 0}
+{"ts": "2026-08-10T12:27:14", "kind": "query", "query": "PLS-complete AND local search", "hits": 7, "kept": 7, "new": 7, "skipped": 0}
+{"ts": "2026-08-10T12:27:25", "kind": "query", "query": "constraint satisfaction AND dichotomy", "hits": 100, "kept": 58, "new": 52, "skipped": 42}
+{"ts": "2026-08-10T12:27:34", "kind": "query", "query": "VNP AND completeness", "hits": 26, "kept": 26, "new": 18, "skipped": 0}
+{"ts": "2026-08-10T12:27:44", "kind": "query", "query": "threshold circuits AND lower bounds", "hits": 17, "kept": 17, "new": 11, "skipped": 0}
+{"ts": "2026-08-10T12:27:54", "kind": "query", "query": "ACC AND circuit lower bounds", "hits": 5, "kept": 5, "new": 1, "skipped": 0}
+{"ts": "2026-08-10T12:28:43", "kind": "dataset_export", "papers": 2471, "edges": false}
