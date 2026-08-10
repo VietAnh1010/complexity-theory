@@ -14,3 +14,151 @@
 {"ts": "2026-08-10T11:57:03", "kind": "verify", "papers": 4, "errors": 2, "warnings": 1}
 {"ts": "2026-08-10T11:58:47", "kind": "style_check", "files": 1, "errors": 0, "warnings": 3}
 {"ts": "2026-08-10T11:59:06", "kind": "style_check", "files": 1, "errors": 0, "warnings": 0}
+{"ts": "2026-08-10T11:59:52", "kind": "query", "source": "arxiv", "query": "circuit lower bound", "hits": 130, "kept": 130, "new": 100, "skipped": 0}
+{"ts": "2026-08-10T11:59:55", "kind": "query", "source": "arxiv", "query": "circuit complexity AND boolean function", "hits": 43, "kept": 41, "new": 36, "skipped": 2}
+{"ts": "2026-08-10T11:59:58", "kind": "query", "source": "arxiv", "query": "constant-depth circuit AND lower bound", "hits": 29, "kept": 29, "new": 24, "skipped": 0}
+{"ts": "2026-08-10T12:00:01", "kind": "query", "source": "arxiv", "query": "monotone circuit AND lower bound", "hits": 26, "kept": 26, "new": 16, "skipped": 0}
+{"ts": "2026-08-10T12:00:06", "kind": "query", "source": "arxiv", "query": "formula size AND lower bound", "hits": 33, "kept": 33, "new": 29, "skipped": 0}
+{"ts": "2026-08-10T12:00:09", "kind": "query", "source": "arxiv", "query": "branching program AND lower bound", "hits": 83, "kept": 83, "new": 73, "skipped": 0}
+{"ts": "2026-08-10T12:00:22", "kind": "query", "source": "arxiv", "query": "switching lemma", "hits": 34, "kept": 29, "new": 23, "skipped": 5}
+{"ts": "2026-08-10T12:00:47", "kind": "query", "source": "arxiv", "query": "threshold circuit AND TC0", "hits": 1, "kept": 1, "new": 1, "skipped": 0}
+{"ts": "2026-08-10T12:01:15", "kind": "query", "source": "arxiv", "query": "ACC0 AND lower bound", "hits": 2, "kept": 2, "new": 0, "skipped": 0}
+{"ts": "2026-08-10T12:03:46", "kind": "query", "source": "arxiv", "query": "Karp-Lipton AND collapse", "hits": 6, "kept": 6, "new": 4, "skipped": 0}
+{"ts": "2026-08-10T12:05:14", "kind": "query", "source": "arxiv", "query": "arithmetic circuit AND lower bound", "hits": 72, "kept": 72, "new": 40, "skipped": 0}
+{"ts": "2026-08-10T12:05:33", "kind": "query", "source": "arxiv", "query": "polynomial identity testing", "hits": 82, "kept": 69, "new": 49, "skipped": 13}
+{"ts": "2026-08-10T12:05:41", "kind": "query", "source": "arxiv", "query": "permanent versus determinant", "hits": 7, "kept": 7, "new": 5, "skipped": 0}
+{"ts": "2026-08-10T12:05:43", "kind": "query", "source": "arxiv", "query": "geometric complexity theory", "hits": 60, "kept": 60, "new": 50, "skipped": 0}
+{"ts": "2026-08-10T12:05:50", "kind": "query", "source": "arxiv", "query": "tensor rank AND border rank", "hits": 17, "kept": 13, "new": 12, "skipped": 4}
+{"ts": "2026-08-10T12:05:53", "kind": "query", "source": "arxiv", "query": "matrix multiplication exponent", "hits": 94, "kept": 68, "new": 65, "skipped": 26}
+{"ts": "2026-08-10T12:05:54", "kind": "query", "source": "arxiv", "query": "algebraic branching program", "hits": 55, "kept": 54, "new": 17, "skipped": 1}
+{"ts": "2026-08-10T12:05:57", "kind": "query", "source": "arxiv", "query": "depth reduction AND arithmetic circuit", "hits": 7, "kept": 7, "new": 2, "skipped": 0}
+{"ts": "2026-08-10T12:05:59", "kind": "query", "source": "arxiv", "query": "VP versus VNP", "hits": 1, "kept": 1, "new": 0, "skipped": 0}
+{"ts": "2026-08-10T12:06:04", "kind": "query", "source": "arxiv", "query": "proof complexity AND lower bound", "hits": 68, "kept": 68, "new": 55, "skipped": 0}
+{"ts": "2026-08-10T12:06:06", "kind": "query", "source": "arxiv", "query": "resolution refutation AND width", "hits": 10, "kept": 10, "new": 6, "skipped": 0}
+{"ts": "2026-08-10T12:06:09", "kind": "query", "source": "arxiv", "query": "cutting planes AND proof system", "hits": 10, "kept": 8, "new": 5, "skipped": 2}
+{"ts": "2026-08-10T12:06:12", "kind": "query", "source": "arxiv", "query": "bounded arithmetic AND propositional", "hits": 17, "kept": 14, "new": 12, "skipped": 3}
+{"ts": "2026-08-10T12:06:14", "kind": "query", "source": "arxiv", "query": "polynomial calculus AND degree lower bound", "hits": 5, "kept": 4, "new": 4, "skipped": 1}
+{"ts": "2026-08-10T12:06:18", "kind": "query", "source": "arxiv", "query": "sum-of-squares AND refutation", "hits": 41, "kept": 24, "new": 22, "skipped": 17}
+{"ts": "2026-08-10T12:06:21", "kind": "query", "source": "arxiv", "query": "Frege proof system", "hits": 6, "kept": 6, "new": 3, "skipped": 0}
+{"ts": "2026-08-10T12:06:23", "kind": "query", "source": "arxiv", "query": "proof complexity AND automatability", "hits": 2, "kept": 2, "new": 0, "skipped": 0}
+{"ts": "2026-08-10T12:06:31", "kind": "query", "source": "arxiv", "query": "communication complexity AND lower bound", "hits": 200, "kept": 199, "new": 186, "skipped": 1}
+{"ts": "2026-08-10T12:06:33", "kind": "query", "source": "arxiv", "query": "lifting theorem AND communication", "hits": 17, "kept": 17, "new": 12, "skipped": 0}
+{"ts": "2026-08-10T12:06:36", "kind": "query", "source": "arxiv", "query": "information complexity AND direct sum", "hits": 8, "kept": 8, "new": 4, "skipped": 0}
+{"ts": "2026-08-10T12:06:39", "kind": "query", "source": "arxiv", "query": "log-rank conjecture", "hits": 25, "kept": 24, "new": 17, "skipped": 1}
+{"ts": "2026-08-10T12:06:42", "kind": "query", "source": "arxiv", "query": "number-on-forehead AND communication", "hits": 14, "kept": 14, "new": 10, "skipped": 0}
+{"ts": "2026-08-10T12:06:45", "kind": "query", "source": "arxiv", "query": "query complexity AND decision tree", "hits": 35, "kept": 33, "new": 29, "skipped": 2}
+{"ts": "2026-08-10T12:07:51", "kind": "fetch_failed", "url": "http://export.arxiv.org/api/query?search_query=%28all:%22sensitivity+conjecture%22+AND+all:%22block+sensitivity%22%29+AND+%28cat:cs.CC+OR+cat:cs.DS+OR+cat:cs.DM+OR+cat:cs.LO+OR+cat:cs.CR+OR+cat:cs.GT+OR+cat:math.CO+OR+cat:math.LO+OR+cat:quant-ph%29&start=0&max_results=100&sortBy=relevance&sortOrder=descending", "error": "HTTP 429"}
+{"ts": "2026-08-10T12:07:51", "kind": "query_failed", "source": "arxiv", "query": "sensitivity conjecture AND block sensitivity", "error": "giving up on http://export.arxiv.org/api/query?search_query=%28all:%22sensitivity+conjecture%22+AND+all:%22block+sensitivity%22%29+AND+%28cat:cs.CC+OR+cat:cs.DS+OR+cat:cs.DM+OR+cat:cs.LO+OR+cat:cs.CR+OR+cat:cs.GT+OR+cat:math.CO+OR+cat:math.LO+OR+cat:quant-ph%29&start=0&max_results=100&sortBy=relevance&sortOrder=descending after 5 attempts: HTTP 429"}
+{"ts": "2026-08-10T12:08:55", "kind": "fetch_failed", "url": "http://export.arxiv.org/api/query?search_query=%28all:%22approximate+degree%22+AND+all:%22polynomial+method%22%29+AND+%28cat:cs.CC+OR+cat:cs.DS+OR+cat:cs.DM+OR+cat:cs.LO+OR+cat:cs.CR+OR+cat:cs.GT+OR+cat:math.CO+OR+cat:math.LO+OR+cat:quant-ph%29&start=0&max_results=100&sortBy=relevance&sortOrder=descending", "error": "HTTP 429"}
+{"ts": "2026-08-10T12:08:55", "kind": "query_failed", "source": "arxiv", "query": "approximate degree AND polynomial method", "error": "giving up on http://export.arxiv.org/api/query?search_query=%28all:%22approximate+degree%22+AND+all:%22polynomial+method%22%29+AND+%28cat:cs.CC+OR+cat:cs.DS+OR+cat:cs.DM+OR+cat:cs.LO+OR+cat:cs.CR+OR+cat:cs.GT+OR+cat:math.CO+OR+cat:math.LO+OR+cat:quant-ph%29&start=0&max_results=100&sortBy=relevance&sortOrder=descending after 5 attempts: HTTP 429"}
+{"ts": "2026-08-10T12:10:00", "kind": "fetch_failed", "url": "http://export.arxiv.org/api/query?search_query=%28all:%22certificate+complexity%22+AND+all:%22boolean+function%22%29+AND+%28cat:cs.CC+OR+cat:cs.DS+OR+cat:cs.DM+OR+cat:cs.LO+OR+cat:cs.CR+OR+cat:cs.GT+OR+cat:math.CO+OR+cat:math.LO+OR+cat:quant-ph%29&start=0&max_results=100&sortBy=relevance&sortOrder=descending", "error": "HTTP 429"}
+{"ts": "2026-08-10T12:10:00", "kind": "query_failed", "source": "arxiv", "query": "certificate complexity AND boolean function", "error": "giving up on http://export.arxiv.org/api/query?search_query=%28all:%22certificate+complexity%22+AND+all:%22boolean+function%22%29+AND+%28cat:cs.CC+OR+cat:cs.DS+OR+cat:cs.DM+OR+cat:cs.LO+OR+cat:cs.CR+OR+cat:cs.GT+OR+cat:math.CO+OR+cat:math.LO+OR+cat:quant-ph%29&start=0&max_results=100&sortBy=relevance&sortOrder=descending after 5 attempts: HTTP 429"}
+{"ts": "2026-08-10T12:11:10", "kind": "query", "source": "arxiv", "query": "circuit lower bound", "hits": 100, "kept": 100, "new": 72, "skipped": 0}
+{"ts": "2026-08-10T12:11:10", "kind": "query", "source": "arxiv", "query": "circuit complexity AND boolean function", "hits": 43, "kept": 41, "new": 36, "skipped": 2}
+{"ts": "2026-08-10T12:11:10", "kind": "query", "source": "arxiv", "query": "constant-depth circuit AND lower bound", "hits": 29, "kept": 29, "new": 25, "skipped": 0}
+{"ts": "2026-08-10T12:11:10", "kind": "query", "source": "arxiv", "query": "monotone circuit AND lower bound", "hits": 26, "kept": 26, "new": 18, "skipped": 0}
+{"ts": "2026-08-10T12:11:10", "kind": "query", "source": "arxiv", "query": "formula size AND lower bound", "hits": 33, "kept": 33, "new": 29, "skipped": 0}
+{"ts": "2026-08-10T12:11:11", "kind": "query", "source": "arxiv", "query": "branching program AND lower bound", "hits": 83, "kept": 83, "new": 75, "skipped": 0}
+{"ts": "2026-08-10T12:11:11", "kind": "query", "source": "arxiv", "query": "switching lemma", "hits": 34, "kept": 29, "new": 23, "skipped": 5}
+{"ts": "2026-08-10T12:11:11", "kind": "query", "source": "arxiv", "query": "threshold circuit AND TC0", "hits": 1, "kept": 1, "new": 1, "skipped": 0}
+{"ts": "2026-08-10T12:11:11", "kind": "query", "source": "arxiv", "query": "ACC0 AND lower bound", "hits": 2, "kept": 2, "new": 0, "skipped": 0}
+{"ts": "2026-08-10T12:11:11", "kind": "query", "source": "arxiv", "query": "Karp-Lipton AND collapse", "hits": 6, "kept": 6, "new": 4, "skipped": 0}
+{"ts": "2026-08-10T12:11:11", "kind": "query", "source": "arxiv", "query": "arithmetic circuit AND lower bound", "hits": 72, "kept": 72, "new": 41, "skipped": 0}
+{"ts": "2026-08-10T12:11:11", "kind": "query", "source": "arxiv", "query": "polynomial identity testing", "hits": 82, "kept": 69, "new": 50, "skipped": 13}
+{"ts": "2026-08-10T12:11:11", "kind": "query", "source": "arxiv", "query": "permanent versus determinant", "hits": 7, "kept": 7, "new": 5, "skipped": 0}
+{"ts": "2026-08-10T12:11:12", "kind": "query", "source": "arxiv", "query": "geometric complexity theory", "hits": 60, "kept": 60, "new": 50, "skipped": 0}
+{"ts": "2026-08-10T12:11:12", "kind": "query", "source": "arxiv", "query": "tensor rank AND border rank", "hits": 17, "kept": 13, "new": 12, "skipped": 4}
+{"ts": "2026-08-10T12:11:12", "kind": "query", "source": "arxiv", "query": "matrix multiplication exponent", "hits": 94, "kept": 68, "new": 65, "skipped": 26}
+{"ts": "2026-08-10T12:11:12", "kind": "query", "source": "arxiv", "query": "algebraic branching program", "hits": 55, "kept": 54, "new": 17, "skipped": 1}
+{"ts": "2026-08-10T12:11:13", "kind": "query", "source": "arxiv", "query": "depth reduction AND arithmetic circuit", "hits": 7, "kept": 7, "new": 2, "skipped": 0}
+{"ts": "2026-08-10T12:11:13", "kind": "query", "source": "arxiv", "query": "VP versus VNP", "hits": 1, "kept": 1, "new": 0, "skipped": 0}
+{"ts": "2026-08-10T12:11:13", "kind": "query", "source": "arxiv", "query": "proof complexity AND lower bound", "hits": 68, "kept": 68, "new": 56, "skipped": 0}
+{"ts": "2026-08-10T12:11:13", "kind": "query", "source": "arxiv", "query": "resolution refutation AND width", "hits": 10, "kept": 10, "new": 6, "skipped": 0}
+{"ts": "2026-08-10T12:11:13", "kind": "query", "source": "arxiv", "query": "cutting planes AND proof system", "hits": 10, "kept": 8, "new": 5, "skipped": 2}
+{"ts": "2026-08-10T12:11:13", "kind": "query", "source": "arxiv", "query": "bounded arithmetic AND propositional", "hits": 17, "kept": 14, "new": 12, "skipped": 3}
+{"ts": "2026-08-10T12:11:13", "kind": "query", "source": "arxiv", "query": "polynomial calculus AND degree lower bound", "hits": 5, "kept": 4, "new": 4, "skipped": 1}
+{"ts": "2026-08-10T12:11:13", "kind": "query", "source": "arxiv", "query": "sum-of-squares AND refutation", "hits": 41, "kept": 24, "new": 22, "skipped": 17}
+{"ts": "2026-08-10T12:11:13", "kind": "query", "source": "arxiv", "query": "Frege proof system", "hits": 6, "kept": 6, "new": 3, "skipped": 0}
+{"ts": "2026-08-10T12:11:13", "kind": "query", "source": "arxiv", "query": "proof complexity AND automatability", "hits": 2, "kept": 2, "new": 0, "skipped": 0}
+{"ts": "2026-08-10T12:11:14", "kind": "query", "source": "arxiv", "query": "communication complexity AND lower bound", "hits": 100, "kept": 100, "new": 96, "skipped": 0}
+{"ts": "2026-08-10T12:11:14", "kind": "query", "source": "arxiv", "query": "lifting theorem AND communication", "hits": 17, "kept": 17, "new": 14, "skipped": 0}
+{"ts": "2026-08-10T12:11:14", "kind": "query", "source": "arxiv", "query": "information complexity AND direct sum", "hits": 8, "kept": 8, "new": 5, "skipped": 0}
+{"ts": "2026-08-10T12:11:14", "kind": "query", "source": "arxiv", "query": "log-rank conjecture", "hits": 25, "kept": 24, "new": 19, "skipped": 1}
+{"ts": "2026-08-10T12:11:14", "kind": "query", "source": "arxiv", "query": "number-on-forehead AND communication", "hits": 14, "kept": 14, "new": 11, "skipped": 0}
+{"ts": "2026-08-10T12:11:14", "kind": "query", "source": "arxiv", "query": "query complexity AND decision tree", "hits": 35, "kept": 33, "new": 30, "skipped": 2}
+{"ts": "2026-08-10T12:12:01", "kind": "query", "source": "arxiv", "query": "sensitivity conjecture AND block sensitivity", "hits": 12, "kept": 10, "new": 8, "skipped": 2}
+{"ts": "2026-08-10T12:12:11", "kind": "query", "source": "arxiv", "query": "approximate degree AND polynomial method", "hits": 4, "kept": 4, "new": 4, "skipped": 0}
+{"ts": "2026-08-10T12:12:22", "kind": "query", "source": "arxiv", "query": "certificate complexity AND boolean function", "hits": 31, "kept": 27, "new": 16, "skipped": 4}
+{"ts": "2026-08-10T12:12:32", "kind": "query", "source": "arxiv", "query": "streaming AND space lower bound", "hits": 60, "kept": 35, "new": 29, "skipped": 25}
+{"ts": "2026-08-10T12:12:41", "kind": "query", "source": "arxiv", "query": "derandomization AND pseudorandom generator", "hits": 25, "kept": 21, "new": 15, "skipped": 4}
+{"ts": "2026-08-10T12:12:51", "kind": "query", "source": "arxiv", "query": "hardness versus randomness", "hits": 3, "kept": 3, "new": 1, "skipped": 0}
+{"ts": "2026-08-10T12:13:01", "kind": "query", "source": "arxiv", "query": "randomness extractor AND explicit construction", "hits": 7, "kept": 5, "new": 4, "skipped": 2}
+{"ts": "2026-08-10T12:13:11", "kind": "query", "source": "arxiv", "query": "pseudorandom generator AND constant depth", "hits": 5, "kept": 5, "new": 2, "skipped": 0}
+{"ts": "2026-08-10T12:13:21", "kind": "query", "source": "arxiv", "query": "hitting set generator AND polynomial identity testing", "hits": 6, "kept": 6, "new": 0, "skipped": 0}
+{"ts": "2026-08-10T12:13:31", "kind": "query", "source": "arxiv", "query": "expander graph AND explicit construction", "hits": 14, "kept": 9, "new": 9, "skipped": 5}
+{"ts": "2026-08-10T12:13:41", "kind": "query", "source": "arxiv", "query": "k-wise independence AND pseudorandom", "hits": 6, "kept": 2, "new": 2, "skipped": 4}
+{"ts": "2026-08-10T12:13:51", "kind": "query", "source": "arxiv", "query": "BPP versus P AND derandomization", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-10T12:14:01", "kind": "query", "source": "arxiv", "query": "hardness of approximation AND PCP", "hits": 25, "kept": 21, "new": 20, "skipped": 4}
+{"ts": "2026-08-10T12:14:12", "kind": "query", "source": "arxiv", "query": "unique games conjecture", "hits": 100, "kept": 75, "new": 73, "skipped": 25}
+{"ts": "2026-08-10T12:14:21", "kind": "query", "source": "arxiv", "query": "probabilistically checkable proof AND gap", "hits": 6, "kept": 6, "new": 5, "skipped": 0}
+{"ts": "2026-08-10T12:14:31", "kind": "query", "source": "arxiv", "query": "parallel repetition theorem", "hits": 42, "kept": 26, "new": 25, "skipped": 16}
+{"ts": "2026-08-10T12:14:41", "kind": "query", "source": "arxiv", "query": "label cover AND inapproximability", "hits": 10, "kept": 10, "new": 4, "skipped": 0}
+{"ts": "2026-08-10T12:14:52", "kind": "query", "source": "arxiv", "query": "small-set expansion AND hardness", "hits": 43, "kept": 34, "new": 28, "skipped": 9}
+{"ts": "2026-08-10T12:15:01", "kind": "query", "source": "arxiv", "query": "constraint satisfaction AND approximation resistance", "hits": 8, "kept": 5, "new": 5, "skipped": 3}
+{"ts": "2026-08-10T12:15:13", "kind": "query", "source": "arxiv", "query": "interactive proof AND complexity", "hits": 100, "kept": 93, "new": 85, "skipped": 7}
+{"ts": "2026-08-10T12:15:22", "kind": "query", "source": "arxiv", "query": "zero-knowledge AND complexity class", "hits": 22, "kept": 22, "new": 11, "skipped": 0}
+{"ts": "2026-08-10T12:15:31", "kind": "query", "source": "arxiv", "query": "multi-prover interactive proof", "hits": 21, "kept": 19, "new": 7, "skipped": 2}
+{"ts": "2026-08-10T12:15:41", "kind": "query", "source": "arxiv", "query": "succinct argument AND delegation", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-10T12:15:51", "kind": "query", "source": "arxiv", "query": "interactive oracle proof AND proximity", "hits": 8, "kept": 4, "new": 3, "skipped": 4}
+{"ts": "2026-08-10T12:16:01", "kind": "query", "source": "arxiv", "query": "Arthur-Merlin AND protocol", "hits": 16, "kept": 15, "new": 13, "skipped": 1}
+{"ts": "2026-08-10T12:16:11", "kind": "query", "source": "arxiv", "query": "fine-grained complexity AND conditional lower bound", "hits": 38, "kept": 38, "new": 35, "skipped": 0}
+{"ts": "2026-08-10T12:16:22", "kind": "query", "source": "arxiv", "query": "strong exponential time hypothesis", "hits": 100, "kept": 90, "new": 82, "skipped": 10}
+{"ts": "2026-08-10T12:16:31", "kind": "query", "source": "arxiv", "query": "orthogonal vectors AND conditional lower bound", "hits": 19, "kept": 19, "new": 12, "skipped": 0}
+{"ts": "2026-08-10T12:16:41", "kind": "query", "source": "arxiv", "query": "3SUM AND hardness", "hits": 32, "kept": 29, "new": 26, "skipped": 3}
+{"ts": "2026-08-10T12:16:51", "kind": "query", "source": "arxiv", "query": "all-pairs shortest paths AND subcubic", "hits": 20, "kept": 18, "new": 16, "skipped": 2}
+{"ts": "2026-08-10T12:17:03", "kind": "query", "source": "arxiv", "query": "exponential time hypothesis AND lower bound", "hits": 100, "kept": 100, "new": 61, "skipped": 0}
+{"ts": "2026-08-10T12:17:11", "kind": "query", "source": "arxiv", "query": "edit distance AND conditional hardness", "hits": 2, "kept": 2, "new": 0, "skipped": 0}
+{"ts": "2026-08-10T12:17:21", "kind": "query", "source": "arxiv", "query": "parameterized complexity AND W hierarchy", "hits": 10, "kept": 10, "new": 10, "skipped": 0}
+{"ts": "2026-08-10T12:17:33", "kind": "query", "source": "arxiv", "query": "kernelization AND lower bound", "hits": 100, "kept": 78, "new": 76, "skipped": 22}
+{"ts": "2026-08-10T12:17:42", "kind": "query", "source": "arxiv", "query": "fixed-parameter tractable AND treewidth", "hits": 100, "kept": 85, "new": 84, "skipped": 15}
+{"ts": "2026-08-10T12:17:51", "kind": "query", "source": "arxiv", "query": "exact exponential algorithm AND lower bound", "hits": 4, "kept": 4, "new": 3, "skipped": 0}
+{"ts": "2026-08-10T12:18:01", "kind": "query", "source": "arxiv", "query": "minimum circuit size problem", "hits": 13, "kept": 13, "new": 0, "skipped": 0}
+{"ts": "2026-08-10T12:18:11", "kind": "query", "source": "arxiv", "query": "meta-complexity AND hardness", "hits": 6, "kept": 5, "new": 4, "skipped": 1}
+{"ts": "2026-08-10T12:18:21", "kind": "query", "source": "arxiv", "query": "time-bounded Kolmogorov complexity", "hits": 12, "kept": 6, "new": 4, "skipped": 6}
+{"ts": "2026-08-10T12:18:31", "kind": "query", "source": "arxiv", "query": "natural proofs AND barrier", "hits": 20, "kept": 20, "new": 10, "skipped": 0}
+{"ts": "2026-08-10T12:18:41", "kind": "query", "source": "arxiv", "query": "hardness magnification", "hits": 4, "kept": 4, "new": 0, "skipped": 0}
+{"ts": "2026-08-10T12:18:51", "kind": "query", "source": "arxiv", "query": "learning algorithm AND circuit lower bound", "hits": 5, "kept": 5, "new": 1, "skipped": 0}
+{"ts": "2026-08-10T12:19:17", "kind": "query", "source": "arxiv", "query": "average-case complexity AND hardness", "hits": 25, "kept": 24, "new": 22, "skipped": 1}
+{"ts": "2026-08-10T12:19:18", "kind": "query", "source": "arxiv", "query": "one-way function AND complexity class", "hits": 7, "kept": 7, "new": 4, "skipped": 0}
+{"ts": "2026-08-10T12:19:28", "kind": "query", "source": "arxiv", "query": "worst-case to average-case reduction", "hits": 28, "kept": 21, "new": 19, "skipped": 7}
+{"ts": "2026-08-10T12:19:38", "kind": "query", "source": "arxiv", "query": "planted clique AND lower bound", "hits": 33, "kept": 32, "new": 27, "skipped": 1}
+{"ts": "2026-08-10T12:19:47", "kind": "query", "source": "arxiv", "query": "hardness amplification AND direct product", "hits": 3, "kept": 3, "new": 2, "skipped": 0}
+{"ts": "2026-08-10T12:19:57", "kind": "query", "source": "arxiv", "query": "random constraint satisfaction AND refutation", "hits": 9, "kept": 5, "new": 2, "skipped": 4}
+{"ts": "2026-08-10T12:20:09", "kind": "query", "source": "arxiv", "query": "space complexity AND lower bound", "hits": 100, "kept": 99, "new": 75, "skipped": 1}
+{"ts": "2026-08-10T12:20:18", "kind": "query", "source": "arxiv", "query": "catalytic computing AND space", "hits": 12, "kept": 11, "new": 10, "skipped": 1}
+{"ts": "2026-08-10T12:20:28", "kind": "query", "source": "arxiv", "query": "time-space tradeoff AND lower bound", "hits": 27, "kept": 27, "new": 18, "skipped": 0}
+{"ts": "2026-08-10T12:20:37", "kind": "query", "source": "arxiv", "query": "tree evaluation AND space", "hits": 8, "kept": 8, "new": 3, "skipped": 0}
+{"ts": "2026-08-10T12:20:47", "kind": "query", "source": "arxiv", "query": "logspace AND derandomization", "hits": 11, "kept": 11, "new": 3, "skipped": 0}
+{"ts": "2026-08-10T12:20:58", "kind": "query", "source": "arxiv", "query": "read-once branching program", "hits": 33, "kept": 26, "new": 8, "skipped": 7}
+{"ts": "2026-08-10T12:21:09", "kind": "query", "source": "arxiv", "query": "quantum query complexity AND lower bound", "hits": 100, "kept": 100, "new": 86, "skipped": 0}
+{"ts": "2026-08-10T12:21:18", "kind": "query", "source": "arxiv", "query": "quantum complexity class AND QMA", "hits": 15, "kept": 15, "new": 12, "skipped": 0}
+{"ts": "2026-08-10T12:21:29", "kind": "query", "source": "arxiv", "query": "local Hamiltonian AND complexity", "hits": 100, "kept": 92, "new": 84, "skipped": 8}
+{"ts": "2026-08-10T12:21:38", "kind": "query", "source": "arxiv", "query": "quantum PCP conjecture", "hits": 28, "kept": 28, "new": 16, "skipped": 0}
+{"ts": "2026-08-10T12:21:48", "kind": "query", "source": "arxiv", "query": "BQP AND oracle separation", "hits": 23, "kept": 23, "new": 20, "skipped": 0}
+{"ts": "2026-08-10T12:21:58", "kind": "query", "source": "arxiv", "query": "quantum advantage AND complexity theoretic", "hits": 34, "kept": 26, "new": 26, "skipped": 8}
+{"ts": "2026-08-10T12:22:08", "kind": "query", "source": "arxiv", "query": "quantum communication complexity", "hits": 100, "kept": 100, "new": 67, "skipped": 0}
+{"ts": "2026-08-10T12:22:17", "kind": "query", "source": "arxiv", "query": "counting complexity AND dichotomy", "hits": 6, "kept": 6, "new": 6, "skipped": 0}
+{"ts": "2026-08-10T12:22:27", "kind": "query", "source": "arxiv", "query": "permanent AND approximate counting", "hits": 2, "kept": 1, "new": 1, "skipped": 1}
+{"ts": "2026-08-10T12:22:37", "kind": "query", "source": "arxiv", "query": "holant AND dichotomy theorem", "hits": 18, "kept": 18, "new": 17, "skipped": 0}
+{"ts": "2026-08-10T12:22:47", "kind": "query", "source": "arxiv", "query": "TFNP AND total search problem", "hits": 11, "kept": 11, "new": 8, "skipped": 0}
+{"ts": "2026-08-10T12:22:57", "kind": "query", "source": "arxiv", "query": "PPAD AND Nash equilibrium complexity", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-10T12:23:07", "kind": "query", "source": "arxiv", "query": "PLS AND local search complexity", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-10T12:23:18", "kind": "query", "source": "arxiv", "query": "oracle separation AND relativization", "hits": 11, "kept": 11, "new": 4, "skipped": 0}
+{"ts": "2026-08-10T12:23:29", "kind": "query", "source": "arxiv", "query": "polynomial hierarchy AND collapse", "hits": 100, "kept": 100, "new": 84, "skipped": 0}
+{"ts": "2026-08-10T12:23:37", "kind": "query", "source": "arxiv", "query": "hierarchy theorem AND time complexity", "hits": 2, "kept": 2, "new": 2, "skipped": 0}
+{"ts": "2026-08-10T12:23:39", "kind": "dataset_export", "papers": 2187, "edges": false}
+{"ts": "2026-08-10T12:23:47", "kind": "query", "source": "arxiv", "query": "descriptive complexity AND finite model theory", "hits": 8, "kept": 4, "new": 3, "skipped": 4}
+{"ts": "2026-08-10T12:23:51", "kind": "verify", "papers": 4, "errors": 0, "warnings": 0}
+{"ts": "2026-08-10T12:23:57", "kind": "query", "source": "arxiv", "query": "constraint satisfaction dichotomy AND polymorphism", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-10T12:24:07", "kind": "query", "source": "arxiv", "query": "NP-complete AND isomorphism conjecture", "hits": 1, "kept": 1, "new": 1, "skipped": 0}
+{"ts": "2026-08-10T12:24:18", "kind": "query", "source": "arxiv", "query": "algebrization AND barrier", "hits": 7, "kept": 7, "new": 2, "skipped": 0}

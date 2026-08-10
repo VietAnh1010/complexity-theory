@@ -1,0 +1,113 @@
+[12:11:10] 'circuit lower bound': 100 hits, 100 kept, 72 new, 0 filtered
+[12:11:10] 'circuit complexity AND boolean function': 43 hits, 41 kept, 36 new, 2 filtered
+[12:11:10] 'constant-depth circuit AND lower bound': 29 hits, 29 kept, 25 new, 0 filtered
+[12:11:10] 'monotone circuit AND lower bound': 26 hits, 26 kept, 18 new, 0 filtered
+[12:11:10] 'formula size AND lower bound': 33 hits, 33 kept, 29 new, 0 filtered
+[12:11:11] 'branching program AND lower bound': 83 hits, 83 kept, 75 new, 0 filtered
+[12:11:11] 'switching lemma': 34 hits, 29 kept, 23 new, 5 filtered
+[12:11:11] 'threshold circuit AND TC0': 1 hits, 1 kept, 1 new, 0 filtered
+[12:11:11] 'ACC0 AND lower bound': 2 hits, 2 kept, 0 new, 0 filtered
+[12:11:11] 'Karp-Lipton AND collapse': 6 hits, 6 kept, 4 new, 0 filtered
+[12:11:11] 'arithmetic circuit AND lower bound': 72 hits, 72 kept, 41 new, 0 filtered
+[12:11:11] 'polynomial identity testing': 82 hits, 69 kept, 50 new, 13 filtered
+[12:11:11] 'permanent versus determinant': 7 hits, 7 kept, 5 new, 0 filtered
+[12:11:12] 'geometric complexity theory': 60 hits, 60 kept, 50 new, 0 filtered
+[12:11:12] 'tensor rank AND border rank': 17 hits, 13 kept, 12 new, 4 filtered
+[12:11:12] 'matrix multiplication exponent': 94 hits, 68 kept, 65 new, 26 filtered
+[12:11:12] 'algebraic branching program': 55 hits, 54 kept, 17 new, 1 filtered
+[12:11:13] 'depth reduction AND arithmetic circuit': 7 hits, 7 kept, 2 new, 0 filtered
+[12:11:13] 'VP versus VNP': 1 hits, 1 kept, 0 new, 0 filtered
+[12:11:13] 'proof complexity AND lower bound': 68 hits, 68 kept, 56 new, 0 filtered
+[12:11:13] 'resolution refutation AND width': 10 hits, 10 kept, 6 new, 0 filtered
+[12:11:13] 'cutting planes AND proof system': 10 hits, 8 kept, 5 new, 2 filtered
+[12:11:13] 'bounded arithmetic AND propositional': 17 hits, 14 kept, 12 new, 3 filtered
+[12:11:13] 'polynomial calculus AND degree lower bound': 5 hits, 4 kept, 4 new, 1 filtered
+[12:11:13] 'sum-of-squares AND refutation': 41 hits, 24 kept, 22 new, 17 filtered
+[12:11:13] 'Frege proof system': 6 hits, 6 kept, 3 new, 0 filtered
+[12:11:13] 'proof complexity AND automatability': 2 hits, 2 kept, 0 new, 0 filtered
+[12:11:14] 'communication complexity AND lower bound': 100 hits, 100 kept, 96 new, 0 filtered
+[12:11:14] 'lifting theorem AND communication': 17 hits, 17 kept, 14 new, 0 filtered
+[12:11:14] 'information complexity AND direct sum': 8 hits, 8 kept, 5 new, 0 filtered
+[12:11:14] 'log-rank conjecture': 25 hits, 24 kept, 19 new, 1 filtered
+[12:11:14] 'number-on-forehead AND communication': 14 hits, 14 kept, 11 new, 0 filtered
+[12:11:14] 'query complexity AND decision tree': 35 hits, 33 kept, 30 new, 2 filtered
+[12:11:14] HTTP 429 from export.arxiv.org, retry 1/5 in 2s
+[12:11:24] HTTP 429 from export.arxiv.org, retry 2/5 in 4s
+[12:11:34] HTTP 429 from export.arxiv.org, retry 3/5 in 8s
+[12:11:44] HTTP 429 from export.arxiv.org, retry 4/5 in 16s
+[12:12:01] 'sensitivity conjecture AND block sensitivity': 12 hits, 10 kept, 8 new, 2 filtered
+[12:12:11] 'approximate degree AND polynomial method': 4 hits, 4 kept, 4 new, 0 filtered
+[12:12:22] 'certificate complexity AND boolean function': 31 hits, 27 kept, 16 new, 4 filtered
+[12:12:32] 'streaming AND space lower bound': 60 hits, 35 kept, 29 new, 25 filtered
+[12:12:41] 'derandomization AND pseudorandom generator': 25 hits, 21 kept, 15 new, 4 filtered
+[12:12:51] 'hardness versus randomness': 3 hits, 3 kept, 1 new, 0 filtered
+[12:13:01] 'randomness extractor AND explicit construction': 7 hits, 5 kept, 4 new, 2 filtered
+[12:13:11] 'pseudorandom generator AND constant depth': 5 hits, 5 kept, 2 new, 0 filtered
+[12:13:21] 'hitting set generator AND polynomial identity testing': 6 hits, 6 kept, 0 new, 0 filtered
+[12:13:31] 'expander graph AND explicit construction': 14 hits, 9 kept, 9 new, 5 filtered
+[12:13:41] 'k-wise independence AND pseudorandom': 6 hits, 2 kept, 2 new, 4 filtered
+[12:13:51] 'BPP versus P AND derandomization': 0 hits, 0 kept, 0 new, 0 filtered
+[12:14:01] 'hardness of approximation AND PCP': 25 hits, 21 kept, 20 new, 4 filtered
+[12:14:12] 'unique games conjecture': 100 hits, 75 kept, 73 new, 25 filtered
+[12:14:21] 'probabilistically checkable proof AND gap': 6 hits, 6 kept, 5 new, 0 filtered
+[12:14:31] 'parallel repetition theorem': 42 hits, 26 kept, 25 new, 16 filtered
+[12:14:41] 'label cover AND inapproximability': 10 hits, 10 kept, 4 new, 0 filtered
+[12:14:52] 'small-set expansion AND hardness': 43 hits, 34 kept, 28 new, 9 filtered
+[12:15:01] 'constraint satisfaction AND approximation resistance': 8 hits, 5 kept, 5 new, 3 filtered
+[12:15:13] 'interactive proof AND complexity': 100 hits, 93 kept, 85 new, 7 filtered
+[12:15:22] 'zero-knowledge AND complexity class': 22 hits, 22 kept, 11 new, 0 filtered
+[12:15:31] 'multi-prover interactive proof': 21 hits, 19 kept, 7 new, 2 filtered
+[12:15:41] 'succinct argument AND delegation': 0 hits, 0 kept, 0 new, 0 filtered
+[12:15:51] 'interactive oracle proof AND proximity': 8 hits, 4 kept, 3 new, 4 filtered
+[12:16:01] 'Arthur-Merlin AND protocol': 16 hits, 15 kept, 13 new, 1 filtered
+[12:16:11] 'fine-grained complexity AND conditional lower bound': 38 hits, 38 kept, 35 new, 0 filtered
+[12:16:22] 'strong exponential time hypothesis': 100 hits, 90 kept, 82 new, 10 filtered
+[12:16:31] 'orthogonal vectors AND conditional lower bound': 19 hits, 19 kept, 12 new, 0 filtered
+[12:16:41] '3SUM AND hardness': 32 hits, 29 kept, 26 new, 3 filtered
+[12:16:51] 'all-pairs shortest paths AND subcubic': 20 hits, 18 kept, 16 new, 2 filtered
+[12:17:03] 'exponential time hypothesis AND lower bound': 100 hits, 100 kept, 61 new, 0 filtered
+[12:17:11] 'edit distance AND conditional hardness': 2 hits, 2 kept, 0 new, 0 filtered
+[12:17:21] 'parameterized complexity AND W hierarchy': 10 hits, 10 kept, 10 new, 0 filtered
+[12:17:33] 'kernelization AND lower bound': 100 hits, 78 kept, 76 new, 22 filtered
+[12:17:42] 'fixed-parameter tractable AND treewidth': 100 hits, 85 kept, 84 new, 15 filtered
+[12:17:51] 'exact exponential algorithm AND lower bound': 4 hits, 4 kept, 3 new, 0 filtered
+[12:18:01] 'minimum circuit size problem': 13 hits, 13 kept, 0 new, 0 filtered
+[12:18:11] 'meta-complexity AND hardness': 6 hits, 5 kept, 4 new, 1 filtered
+[12:18:21] 'time-bounded Kolmogorov complexity': 12 hits, 6 kept, 4 new, 6 filtered
+[12:18:31] 'natural proofs AND barrier': 20 hits, 20 kept, 10 new, 0 filtered
+[12:18:41] 'hardness magnification': 4 hits, 4 kept, 0 new, 0 filtered
+[12:18:51] 'learning algorithm AND circuit lower bound': 5 hits, 5 kept, 1 new, 0 filtered
+[12:19:17] 'average-case complexity AND hardness': 25 hits, 24 kept, 22 new, 1 filtered
+[12:19:18] 'one-way function AND complexity class': 7 hits, 7 kept, 4 new, 0 filtered
+[12:19:28] 'worst-case to average-case reduction': 28 hits, 21 kept, 19 new, 7 filtered
+[12:19:38] 'planted clique AND lower bound': 33 hits, 32 kept, 27 new, 1 filtered
+[12:19:47] 'hardness amplification AND direct product': 3 hits, 3 kept, 2 new, 0 filtered
+[12:19:57] 'random constraint satisfaction AND refutation': 9 hits, 5 kept, 2 new, 4 filtered
+[12:20:09] 'space complexity AND lower bound': 100 hits, 99 kept, 75 new, 1 filtered
+[12:20:18] 'catalytic computing AND space': 12 hits, 11 kept, 10 new, 1 filtered
+[12:20:28] 'time-space tradeoff AND lower bound': 27 hits, 27 kept, 18 new, 0 filtered
+[12:20:37] 'tree evaluation AND space': 8 hits, 8 kept, 3 new, 0 filtered
+[12:20:47] 'logspace AND derandomization': 11 hits, 11 kept, 3 new, 0 filtered
+[12:20:58] 'read-once branching program': 33 hits, 26 kept, 8 new, 7 filtered
+[12:21:09] 'quantum query complexity AND lower bound': 100 hits, 100 kept, 86 new, 0 filtered
+[12:21:18] 'quantum complexity class AND QMA': 15 hits, 15 kept, 12 new, 0 filtered
+[12:21:29] 'local Hamiltonian AND complexity': 100 hits, 92 kept, 84 new, 8 filtered
+[12:21:38] 'quantum PCP conjecture': 28 hits, 28 kept, 16 new, 0 filtered
+[12:21:48] 'BQP AND oracle separation': 23 hits, 23 kept, 20 new, 0 filtered
+[12:21:58] 'quantum advantage AND complexity theoretic': 34 hits, 26 kept, 26 new, 8 filtered
+[12:22:08] 'quantum communication complexity': 100 hits, 100 kept, 67 new, 0 filtered
+[12:22:17] 'counting complexity AND dichotomy': 6 hits, 6 kept, 6 new, 0 filtered
+[12:22:27] 'permanent AND approximate counting': 2 hits, 1 kept, 1 new, 1 filtered
+[12:22:37] 'holant AND dichotomy theorem': 18 hits, 18 kept, 17 new, 0 filtered
+[12:22:47] 'TFNP AND total search problem': 11 hits, 11 kept, 8 new, 0 filtered
+[12:22:57] 'PPAD AND Nash equilibrium complexity': 0 hits, 0 kept, 0 new, 0 filtered
+[12:23:07] 'PLS AND local search complexity': 0 hits, 0 kept, 0 new, 0 filtered
+[12:23:18] 'oracle separation AND relativization': 11 hits, 11 kept, 4 new, 0 filtered
+[12:23:29] 'polynomial hierarchy AND collapse': 100 hits, 100 kept, 84 new, 0 filtered
+[12:23:37] 'hierarchy theorem AND time complexity': 2 hits, 2 kept, 2 new, 0 filtered
+[12:23:47] 'descriptive complexity AND finite model theory': 8 hits, 4 kept, 3 new, 4 filtered
+[12:23:57] 'constraint satisfaction dichotomy AND polymorphism': 0 hits, 0 kept, 0 new, 0 filtered
+[12:24:07] 'NP-complete AND isomorphism conjecture': 1 hits, 1 kept, 1 new, 0 filtered
+[12:24:18] 'algebrization AND barrier': 7 hits, 7 kept, 2 new, 0 filtered
+[12:24:18] done: 2233 new / 2835 kept
+[12:24:18] library now holds 2309 records: {'excluded': 0, 'candidate': 2305, 'unavailable': 0, 'included': 4}
