@@ -68,6 +68,25 @@ def chunk(xs, n):
     for i in range(0, len(xs), n): yield xs[i:i + n]
 
 
+def load_jsonl(path):
+    if not Path(path).exists(): return []
+    out = []
+    for n, line in enumerate(Path(path).read_text("utf-8").splitlines(), 1):
+        if not line.strip(): continue
+        try: out.append(json.loads(line))
+        except json.JSONDecodeError: log(f"bad line {n} in {path}")
+    return out
+
+
+def save_jsonl(path, rows):
+    """Atomic, like Store.save: a crash mid-write must not truncate the file."""
+    p = Path(path); p.parent.mkdir(parents=True, exist_ok=True)
+    tmp = p.with_suffix(p.suffix + ".tmp")
+    with tmp.open("w", encoding="utf-8") as fh:
+        for r in rows: fh.write(json.dumps(r, ensure_ascii=False, sort_keys=True) + "\n")
+    tmp.replace(p)
+
+
 # ---- normalization -------------------------------------------------------
 _WS, _NA, _TAG = re.compile(r"\s+"), re.compile(r"[^a-z0-9 ]+"), re.compile(r"<[^>]+>")
 

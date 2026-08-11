@@ -8,13 +8,15 @@
     run.py verify --all
 """
 from __future__ import annotations
-import argparse, csv, json, random, sys, time
+import argparse, csv, json, random, re, sys, time
 import xml.etree.ElementTree as ET
 from collections import Counter, defaultdict
 
+import extract as EX
+import fulltext as FT
 import sources as S
-from lib import (DATA, STATUSES, Store, citekeys, event, get, getj, log, ndoi,
-                 real_venue, strip_markup, tier, tsim, venue)
+from lib import (DATA, ROOT, STATUSES, Store, citekeys, event, get, getj, load_jsonl,
+                 log, ndoi, real_venue, save_jsonl, strip_markup, tier, tsim, venue)
 from topic import categorize, in_topic, prior
 
 SAVE_EVERY = 5  # a ~100-query pass gets 429'd partway through; don't lose the rest
@@ -304,13 +306,328 @@ def dataset(a):
     event("dataset_export", papers=len(recs), edges=bool(a.edges))
 
 
+# ---- extract -------------------------------------------------------------
+# The metadata library says which papers exist. These two say what is *in* them:
+# the statements, the problems, the bounds. Both are stores, not deliverables;
+# `run.py examples` exports them.
+EXAMPLES, EXTRACTIONS = ROOT / "papers" / "examples.jsonl", ROOT / "papers" / "extractions.jsonl"
+SAVE_EVERY_PAPERS = 5
+RELSYM = {"contained-in": "⊆", "not-contained-in": "⊄", "strictly-contained-in": "⊊",
+          "contains": "⊇", "separated-from": "≠", "equals": "="}
+
+
+def _spread(pool, key, limit):
+    """Round-robin by primary subarea: a batch drawn from one area measures one area."""
+    buckets = defaultdict(list)
+    for r in pool: buckets[key(r)].append(r)
+    out, order = [], sorted(buckets)
+    while len(out) < limit and any(buckets[k] for k in order):
+        for k in order:
+            if buckets[k]: out.append(buckets[k].pop(0))
+            if len(out) >= limit: break
+    return out
+
+
+def _rank(r):
+    """Screened-in first, then target venues, then citations — same order as screening."""
+    return ({"included": 0, "candidate": 1}.get(r.get("status"), 2),
+            {"target": 0, "other": 1, "unknown": 2}[tier(r)],
+            -(r.get("cited_by_count") or 0), -(r.get("year") or 0), r.get("id", ""))
+
+
+def select(st, a, done):
+    pool = [r for r in st.recs.values() if r.get("arxiv_id")]
+    if a.arxiv_id: return [r for r in pool if r["arxiv_id"] in set(a.arxiv_id)]
+    if a.status: pool = [r for r in pool if r.get("status") == a.status]
+    if a.category: pool = [r for r in pool if a.category in (r.get("categories") or categorize(r))]
+    if not a.refresh: pool = [r for r in pool if r["id"] not in done]
+    pool.sort(key=_rank)
+    if a.no_spread: return pool[:a.limit]
+    return _spread(pool, lambda r: ((r.get("categories") or categorize(r)) or ["uncategorized"])[0], a.limit)
+
+
+def _example_row(r, it, d):
+    return {"example_id": f"{r['arxiv_id']}#{it['ordinal']}", "paper_id": r["id"],
+            "arxiv_id": r["arxiv_id"], "doi": r.get("doi", ""), "paper_title": r.get("title", ""),
+            "year": r.get("year"), "venue_short": r.get("venue_short", ""), "venue_tier": tier(r),
+            "categories": r.get("categories") or categorize(r),
+            "source_sha256": d["source_sha256"], **it}
+
+
+def extract_cmd(a):
+    st = Store()
+    exts = {r["paper_id"]: r for r in load_jsonl(EXTRACTIONS)}
+    by_paper = defaultdict(list)
+    for e in load_jsonl(EXAMPLES): by_paper[e["paper_id"]].append(e)
+    todo = select(st, a, set(exts))
+    log(f"{len(todo)} papers selected; {len(exts)} already extracted, {sum(len(v) for v in by_paper.values())} examples on file")
+    seen, today = Counter(), time.strftime("%Y-%m-%d")
+
+    def flush():
+        save_jsonl(EXTRACTIONS, sorted(exts.values(), key=lambda r: r["paper_id"]))
+        save_jsonl(EXAMPLES, [e for p in sorted(by_paper) for e in by_paper[p]])
+
+    for i, r in enumerate(todo, 1):
+        aid = r["arxiv_id"]
+        if a.no_fetch and not FT.blob_path(aid).exists():
+            seen["not-fetched"] += 1; continue
+        try:
+            d = FT.source_for(aid)
+        except Exception as e:                      # one bad tarball must not end the run
+            log(f"{aid}: {type(e).__name__}: {e}")
+            event("extract_failed", arxiv_id=aid, error=f"{type(e).__name__}: {e}")
+            d = {"status": "error", "src": "", "files": {}, "macros": {},
+                 "blob_sha256": "", "source_sha256": ""}
+        rec = {"paper_id": r["id"], "arxiv_id": aid, "title": r.get("title", ""),
+               "year": r.get("year"), "status": d["status"], "blob_sha256": d["blob_sha256"],
+               "source_sha256": d["source_sha256"], "source_chars": len(d["src"]),
+               "extracted_at": today, "n_examples": 0,
+               "categories": r.get("categories") or categorize(r)}
+        if d["status"] == FT.OK:
+            try:
+                items = EX.extract(d["src"], d["files"], d["macros"])
+                cls, prob, hyp = EX.paper_terms(d["src"], d["macros"])
+            except Exception as e:
+                log(f"{aid}: extract failed: {type(e).__name__}: {e}")
+                event("extract_failed", arxiv_id=aid, error=f"{type(e).__name__}: {e}")
+                rec["status"] = "extract-error"; exts[r["id"]] = rec; seen["extract-error"] += 1; continue
+            rec.update(n_examples=len(items), n_files=len(d["files"]), n_macros=len(d["macros"]),
+                       classes_used=cls, problems_used=prob, hypotheses_used=hyp)
+            by_paper[r["id"]] = [_example_row(r, it, d) for it in items]
+        else:
+            by_paper.pop(r["id"], None)
+        exts[r["id"]] = rec; seen[rec["status"]] += 1
+        log(f"[{i}/{len(todo)}] {aid} {rec['status']}: {rec['n_examples']} examples "
+            f"({rec['source_chars']} chars)")
+        if i % SAVE_EVERY_PAPERS == 0: flush()
+    flush()
+    n = sum(len(v) for v in by_paper.values())
+    log(f"extract: {dict(seen)}; {n} examples over {len(exts)} papers")
+    event("extract", selected=len(todo), outcomes=dict(seen), examples=n)
+
+
+# ---- examples export -----------------------------------------------------
+EXCOLS = ["example_id", "paper_id", "arxiv_id", "doi", "paper_title", "year", "venue_short",
+          "venue_tier", "categories", "kind", "env", "label", "ordinal", "title",
+          "statement_text", "classes", "problems", "hypotheses", "named_objects",
+          "relations", "bounds", "problem_spec", "char_start", "char_end",
+          "source_sha256", "statement_tex"]
+PTCOLS = ["paper_id", "arxiv_id", "title", "year", "venue_short", "categories", "status",
+          "n_examples", "source_chars", "classes_used", "problems_used", "hypotheses_used"]
+
+
+def relstr(rl):
+    mod = f"{rl.get('modifier')}-" if rl.get("modifier") else ""
+    return (f"{rl['lhs']}{rl.get('lhs_arg') or ''} {RELSYM.get(rl['relation'], rl['relation'])} "
+            f"{mod}{rl['rhs']}{rl.get('rhs_arg') or ''}")
+
+
+def _counts(pairs, top=None):
+    c = Counter(pairs)
+    return dict(c.most_common(top) if top else c.most_common())
+
+
+def examples_cmd(a):
+    rows = load_jsonl(EXAMPLES)
+    exts = load_jsonl(EXTRACTIONS)
+    if not rows: return log("no examples extracted yet — run `run.py extract` first")
+    if a.kind: rows = [r for r in rows if r["kind"] in set(a.kind)]
+    rows.sort(key=lambda r: (r["arxiv_id"], r["ordinal"]))
+    DATA.mkdir(parents=True, exist_ok=True)
+
+    def flat(r):
+        out = dict(r)
+        out["categories"] = SEP.join(r.get("categories") or [])
+        for k in ("classes", "problems", "hypotheses", "named_objects", "bounds"):
+            out[k] = SEP.join(r.get(k) or [])
+        out["relations"] = SEP.join(relstr(x) for x in (r.get("relations") or []))
+        out["problem_spec"] = int(bool(r.get("problem_spec")))
+        return out
+
+    with (DATA / "examples.csv").open("w", encoding="utf-8", newline="") as fh:
+        w = csv.DictWriter(fh, fieldnames=EXCOLS, extrasaction="ignore", lineterminator="\n")
+        w.writeheader(); [w.writerow(flat(r)) for r in rows]
+    with (DATA / "examples.jsonl").open("w", encoding="utf-8") as fh:
+        for r in rows: fh.write(json.dumps(r, ensure_ascii=False, sort_keys=True) + "\n")
+
+    with (DATA / "paper_terms.csv").open("w", encoding="utf-8", newline="") as fh:
+        w = csv.DictWriter(fh, fieldnames=PTCOLS, extrasaction="ignore", lineterminator="\n")
+        w.writeheader()
+        for e in sorted(exts, key=lambda r: r.get("arxiv_id", "")):
+            w.writerow({**{k: e.get(k, "") for k in PTCOLS},
+                        "categories": SEP.join(e.get("categories") or []),
+                        "classes_used": SEP.join(f"{k}:{v}" for k, v in (e.get("classes_used") or {}).items()),
+                        "problems_used": SEP.join(f"{k}:{v}" for k, v in (e.get("problems_used") or {}).items()),
+                        "hypotheses_used": SEP.join(f"{k}:{v}" for k, v in (e.get("hypotheses_used") or {}).items())})
+
+    rel = [x for r in rows for x in (r.get("relations") or [])]
+    ok = [e for e in exts if e.get("status") == "ok"]
+    stat = {
+        "examples": len(rows),
+        "papers_with_examples": len({r["paper_id"] for r in rows}),
+        "papers_attempted": len(exts),
+        "by_fetch_status": _counts(e.get("status", "?") for e in exts),
+        "papers_with_source_no_examples": sum(1 for e in ok if not e.get("n_examples")),
+        "examples_per_paper_median": (sorted(e.get("n_examples", 0) for e in ok)[len(ok) // 2] if ok else 0),
+        "by_kind": _counts(r["kind"] for r in rows),
+        "by_category": _counts(c for r in rows for c in (r.get("categories") or [])),
+        "by_year": dict(sorted(Counter(r.get("year") or 0 for r in rows).items())),
+        "by_venue_tier": _counts(r.get("venue_tier", "unknown") for r in rows),
+        "with_classes": sum(1 for r in rows if r.get("classes")),
+        "with_problems": sum(1 for r in rows if r.get("problems")),
+        "with_hypotheses": sum(1 for r in rows if r.get("hypotheses")),
+        "with_bounds": sum(1 for r in rows if r.get("bounds")),
+        "with_relations": sum(1 for r in rows if r.get("relations")),
+        "problem_specs": sum(1 for r in rows if r.get("problem_spec")),
+        "relations": len(rel),
+        "distinct_classes": len({c for r in rows for c in (r.get("classes") or [])}),
+        "top_classes": _counts((c for r in rows for c in (r.get("classes") or [])), 40),
+        "top_problems": _counts((p for r in rows for p in (r.get("problems") or [])), 40),
+        "top_hypotheses": _counts((h for r in rows for h in (r.get("hypotheses") or [])), 25),
+        "top_named_objects": _counts((o for r in rows for o in (r.get("named_objects") or [])), 40),
+        "by_relation": _counts(x["relation"] for x in rel),
+        "top_relation_pairs": _counts((f"{x['lhs']} {RELSYM.get(x['relation'], '?')} {x['rhs']}" for x in rel), 30),
+    }
+    (DATA / "examples_stats.json").write_text(json.dumps(stat, ensure_ascii=False, indent=2) + "\n",
+                                              encoding="utf-8")
+    log(f"examples.csv: {len(rows)} examples from {stat['papers_with_examples']} papers; "
+        f"{stat['relations']} relations, {stat['problem_specs']} problem specs")
+    event("examples_export", examples=len(rows), papers=stat["papers_with_examples"])
+
+
+# ---- tasks ---------------------------------------------------------------
+# A test item is a statement with one span blanked out. The answer is that span,
+# verbatim, so `prompt.replace("[MASK]", answer)` must give the statement back —
+# which `verify` checks. Nothing is generated that is not already in the paper.
+#
+# Deliberately absent: true/false items made by flipping a relation. Flipping
+# `P ⊆ NP` to `P ⊄ NP` does not produce a falsehood, it produces an open
+# problem, and labelling it "false" would be fabrication.
+MASK = "[MASK]"
+PER_PAPER = 4           # one paper must not become the benchmark
+MIN_PROMPT = 60
+
+
+def _mask_once(text, needle):
+    """Blank the first occurrence of `needle`, tolerating whitespace drift."""
+    if not needle.strip(): return None, None
+    pat = re.compile(r"\s*".join(re.escape(t) for t in needle.split()))
+    m = pat.search(text)
+    if not m: return None, None
+    return text[:m.start()] + MASK + text[m.end():], m.group(0)
+
+
+def tasks_cmd(a):
+    rows = load_jsonl(EXAMPLES)
+    if not rows: return log("no examples on file — run `run.py extract` first")
+    out, per = [], Counter()
+
+    def add(kind, r, prompt, answer, **extra):
+        if len(prompt) < MIN_PROMPT or prompt.count(MASK) != 1: return
+        key = (r["paper_id"], kind)
+        if per[key] >= PER_PAPER: return
+        per[key] += 1
+        out.append({"task_id": f"{r['example_id']}:{kind}:{per[key]}", "type": kind,
+                    "example_id": r["example_id"], "paper_id": r["paper_id"],
+                    "arxiv_id": r["arxiv_id"], "kind": r["kind"],
+                    "categories": r.get("categories") or [], "prompt": prompt,
+                    "answer": answer, "source_field": "statement_text", **extra})
+
+    for r in sorted(rows, key=lambda r: (r["arxiv_id"], r["ordinal"])):
+        text = r["statement_text"]
+        for b in (r.get("bounds") or [])[:2]:
+            p, hit = _mask_once(text, EX.detex(b, limit=200))
+            if p: add("bound-cloze", r, p, hit, masked=b); break
+        for rel in (r.get("relations") or [])[:2]:
+            if not (rel.get("lhs_known") and rel.get("rhs_known")): continue
+            p, hit = _mask_once(text, rel["rhs_classes"][0])
+            if p: add("class-cloze", r, p, hit, relation=relstr(rel)); break
+        if r.get("problem_spec"):
+            for nm in (r.get("named_objects") or [])[:2]:
+                p, hit = _mask_once(text, nm)
+                if p: add("problem-name", r, p, hit); break
+        if r["kind"] in ("theorem", "corollary", "lemma") and (r.get("categories")):
+            add("subarea", r, text + f"\n\n{MASK}", SEP.join(r["categories"]))
+
+    DATA.mkdir(parents=True, exist_ok=True)
+    save_jsonl(DATA / "tasks.jsonl", out)
+    with (DATA / "tasks.csv").open("w", encoding="utf-8", newline="") as fh:
+        cols = ["task_id", "type", "example_id", "arxiv_id", "kind", "categories", "prompt", "answer"]
+        w = csv.DictWriter(fh, fieldnames=cols, extrasaction="ignore", lineterminator="\n")
+        w.writeheader()
+        for t in out: w.writerow({**t, "categories": SEP.join(t["categories"])})
+    log(f"tasks.jsonl: {len(out)} items — {dict(Counter(t['type'] for t in out))}")
+    event("tasks_export", items=len(out), by_type=dict(Counter(t["type"] for t in out)))
+
+
+def verify_tasks(examples_by_id):
+    """A cloze item must reconstruct its statement exactly. No answer is invented."""
+    probs, items = [], load_jsonl(DATA / "tasks.jsonl")
+    for t in items:
+        e = examples_by_id.get(t["example_id"])
+        if e is None:
+            probs.append(("ERROR", f"{t['task_id']}: no such example {t['example_id']}")); continue
+        if t["type"] == "subarea":
+            if t["answer"] != SEP.join(e.get("categories") or []):
+                probs.append(("ERROR", f"{t['task_id']}: answer is not the paper's subareas"))
+            continue
+        if t["prompt"].replace(MASK, t["answer"]) != e["statement_text"]:
+            probs.append(("ERROR", f"{t['task_id']}: prompt+answer does not rebuild the statement"))
+    return probs, len(items)
+
+
+def verify_examples():
+    """Every statement must still be a byte-exact slice of the cached source.
+
+    This is the same gate as the DOI check, one level down: a statement that
+    cannot be located in the paper it claims to come from is a fabrication,
+    whether a model wrote it or a parser did.
+    """
+    probs, exts = [], {r["paper_id"]: r for r in load_jsonl(EXTRACTIONS)}
+    rows = load_jsonl(EXAMPLES)
+    if not rows and not exts: return probs, 0
+    by_paper = defaultdict(list)
+    for e in rows: by_paper[e["paper_id"]].append(e)
+    checked = 0
+    for pid, items in sorted(by_paper.items()):
+        rec = exts.get(pid)
+        if rec is None:
+            probs.append(("ERROR", f"{pid}: {len(items)} examples but no extraction record")); continue
+        aid = rec["arxiv_id"]
+        if not FT.blob_path(aid).exists():
+            probs.append(("WARN", f"{aid}: source blob not cached; cannot re-check {len(items)} examples")); continue
+        blob = FT.blob_path(aid).read_bytes()
+        if FT.sha256(blob) != rec.get("blob_sha256"):
+            probs.append(("ERROR", f"{aid}: cached blob changed since extraction")); continue
+        src, _, _ = FT.normalized_source(blob)
+        if FT.sha256(src) != rec.get("source_sha256"):
+            probs.append(("ERROR", f"{aid}: normalized source does not reproduce")); continue
+        for e in items:
+            checked += 1
+            got = src[e["char_start"]:e["char_end"]]
+            if got != e["statement_tex"]:
+                probs.append(("ERROR", f"{e['example_id']}: statement is not at the recorded offsets"))
+            elif not e["statement_text"].strip():
+                probs.append(("WARN", f"{e['example_id']}: empty rendered statement"))
+            if e.get("kind") not in EX.KEEP:
+                probs.append(("ERROR", f"{e['example_id']}: kind {e.get('kind')!r} is not an extractable kind"))
+    orphan = sum(1 for p in by_paper if p not in exts)
+    if orphan: probs.append(("WARN", f"{orphan} papers have examples but no extraction record"))
+    tp, nt = verify_tasks({e["example_id"]: e for e in rows})
+    if nt: print(f"re-checked {nt} test items against their statements")
+    return probs + tp, checked
+
+
 # ---- verify --------------------------------------------------------------
 def verify(a):
     """The anti-fabrication gate. This field's canonical results have names, and
     a name is enough to reconstruct a citation that looks right and is wrong."""
     st = Store(); papers = st.by_status("included")
-    if not papers: return print("nothing to verify: no included papers")
-    probs = []
+    probs, checked = (verify_examples() if (a.examples or a.all) else ([], 0))
+    if checked: print(f"re-checked {checked} extracted statements against the cached sources")
+    if not papers:
+        if not probs and not checked: return print("nothing to verify: no included papers, no examples")
+        papers = []
     for k, n in Counter(r.get("citekey", "") for r in papers).items():
         if not k: probs.append(("ERROR", f"{n} included paper(s) have no citekey"))
         elif n > 1: probs.append(("ERROR", f"citekey {k!r} used by {n} papers"))
@@ -354,8 +671,8 @@ def verify(a):
     for lvl in ("ERROR", "WARN"):
         for m in g[lvl]: print(f"{lvl}: {m}")
     e, w = len(g["ERROR"]), len(g["WARN"])
-    print(f"\nverified {len(papers)} included papers: {e} errors, {w} warnings")
-    event("verify", papers=len(papers), errors=e, warnings=w)
+    print(f"\nverified {len(papers)} included papers and {checked} statements: {e} errors, {w} warnings")
+    event("verify", papers=len(papers), statements=checked, errors=e, warnings=w)
     sys.exit(1 if e else 0)
 
 
@@ -388,9 +705,24 @@ def main():
     d = sub.add_parser("dataset"); d.set_defaults(f=dataset)
     d.add_argument("--status"); d.add_argument("--edges", action="store_true")
 
+    x = sub.add_parser("extract", help="fetch arXiv source and lift out statements")
+    x.set_defaults(f=extract_cmd)
+    x.add_argument("--limit", type=int, default=25); x.add_argument("--status")
+    x.add_argument("--category"); x.add_argument("--arxiv-id", action="append", default=[])
+    x.add_argument("--refresh", action="store_true", help="re-extract papers already done")
+    x.add_argument("--no-spread", action="store_true", help="rank order instead of round-robin by subarea")
+    x.add_argument("--no-fetch", action="store_true", help="only papers whose source is already cached")
+
+    xe = sub.add_parser("examples", help="export the extracted statements"); xe.set_defaults(f=examples_cmd)
+    xe.add_argument("--kind", action="append", default=[])
+
+    tk = sub.add_parser("tasks", help="derive masked test items from the statements")
+    tk.set_defaults(f=tasks_cmd)
+
     v = sub.add_parser("verify"); v.set_defaults(f=verify)
     v.add_argument("--all", action="store_true"); v.add_argument("--sample", type=int, default=25)
     v.add_argument("--offline", action="store_true")
+    v.add_argument("--examples", action="store_true", help="re-check statements against cached sources")
 
     a = ap.parse_args()
     (stats if getattr(a, "action", None) == "stats" else a.f)(a)

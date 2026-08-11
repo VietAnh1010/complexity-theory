@@ -63,6 +63,33 @@ A record matching none does not enter the library — `in_topic` enforces that.
 An unusually high subarea count is either genuine cross-area work or a loose
 regex; check.
 
+## Statement layer
+
+What `extract.py` lifts out of a paper's source, and what it leaves.
+
+**In:** theorem, lemma, corollary, proposition, definition, claim, conjecture,
+hypothesis/assumption, open question, problem, fact, observation, example — the
+environments the paper's own preamble declares, plus the usual short names for
+sources that declare none.
+
+**Out:**
+
+- **proofs** — the argument, not the claim; long, and not a statement;
+- **remarks and notation blocks** — recognized, given a `kind`, and dropped from
+  `KEEP`, so a later run can take them without re-parsing;
+- **figures, tables, algorithms, bibliographies** — stripped before de-TeXing;
+- **bodies under 25 or over 9000 characters** — the second is a mis-parsed
+  environment, not a theorem.
+
+A statement carries the classes, problems, hypotheses, relations and bounds
+found *in that statement*. Paper-level usage counts live in
+`papers/extractions.jsonl` — a paper is about Range Avoidance even when the
+theorem stating the bound never names it.
+
+**A statement is a slice, never a summary.** `statement_tex` is the source
+between two offsets; `statement_text` is a mechanical de-TeXing of it. Neither
+is ever paraphrased, shortened, or written by hand.
+
 ## Venues
 
 A signal, never a filter — nothing is excluded for its venue.

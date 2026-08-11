@@ -5,8 +5,10 @@ before any screening decision.
 
 ## The one rule that matters
 
-**Never write a paper, title, author, venue, year, DOI, number, or quotation
-from memory.** Every fact here must come from a response fetched this session.
+**Never write a paper, title, author, venue, year, DOI, number, theorem
+statement, or quotation from memory.** Every fact here must come from a response
+fetched this session. A statement in `papers/examples.jsonl` is a byte-exact
+slice of a fetched LaTeX source or it does not belong there.
 
 You know this literature. That knowledge is for *choosing queries* and *judging
 results* — never for filling a field. This field makes the failure easy: its
@@ -84,13 +86,35 @@ ECCC gap before calling a literature thin. A subarea over a quarter of the
 total means its regex is too loose; read 10 of its records. `uncategorized`
 above zero is a bug: `in_topic` requires a subarea. Never delete a record.
 
-**5. Export and verify.** `run.py dataset --edges` then `run.py verify --all`.
+**5. Extract the statements.** `run.py extract --limit N` fetches each paper's
+arXiv LaTeX source and lifts out its theorem and definition environments — the
+problems, classes, relations and bounds the paper actually works with. Then
+`run.py examples` and `run.py tasks`.
+
+- **Selection is round-robin across subareas.** An interrupted run is still
+  spread across the field. `--no-spread` for rank order.
+- **Re-parsing is free.** `extract --refresh --no-fetch` re-runs the parser over
+  every cached tarball with no network. Do this after any change to
+  `extract.py` or `fulltext.py`; a parser fix must be applied to the whole
+  store, not just to papers fetched afterwards.
+- **Read the output.** Sample 15 statements after any parser change and read
+  them. Every defect found so far — `\ensuremath`, case folding, `\xspace`,
+  dropped intersections — was invisible in the counts and obvious in the text.
+- **Fetch outcomes are data.** `pdf-only`, `no-tex`, `gone` are recorded per
+  paper. Report the split; it is the reach of this layer.
+- **The vocabularies in `extract.py` are patterns, not facts.** Add names when
+  the papers show you names you are missing. Never add a claim.
+
+**6. Export and verify.** `run.py dataset --edges` then `run.py verify --all`.
 Fix every ERROR; re-run until clean. The `--edges` reach counters go in
-`STATUS.md`.
+`STATUS.md`. `verify` re-derives every extracted statement from the cached
+source and re-checks it byte for byte, plus every test item against its
+statement.
 
 **Finally**, in `STATUS.md`: counts, which stopping criterion ended the run,
 thin subareas and whether that is the literature or the ECCC gap, the graph's
-reach numbers, calls made under uncertainty, what another eight hours would do.
+reach numbers, the statement layer's fetch-outcome split, calls made under
+uncertainty, what another eight hours would do.
 
 ## Style
 

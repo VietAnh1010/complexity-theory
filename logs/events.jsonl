@@ -172,3 +172,10 @@
 {"ts": "2026-08-10T12:27:44", "kind": "query", "query": "threshold circuits AND lower bounds", "hits": 17, "kept": 17, "new": 11, "skipped": 0}
 {"ts": "2026-08-10T12:27:54", "kind": "query", "query": "ACC AND circuit lower bounds", "hits": 5, "kept": 5, "new": 1, "skipped": 0}
 {"ts": "2026-08-10T12:28:43", "kind": "dataset_export", "papers": 2471, "edges": false}
+{"ts": "2026-08-11T20:41:25", "kind": "extract", "selected": 1, "outcomes": {"ok": 1}, "examples": 30}
+{"ts": "2026-08-11T20:41:25", "kind": "examples_export", "examples": 30, "papers": 1}
+{"ts": "2026-08-11T20:41:26", "kind": "verify", "papers": 4, "statements": 30, "errors": 0, "warnings": 0}
+{"ts": "2026-08-11T20:42:28", "kind": "verify", "papers": 4, "statements": 30, "errors": 2, "warnings": 0}
+{"ts": "2026-08-11T20:48:56", "kind": "eprint_gone", "arxiv_id": "2604.02606", "code": 404}
+{"ts": "2026-08-11T20:50:04", "kind": "tasks_export", "items": 428, "by_type": {"bound-cloze": 190, "subarea": 233, "problem-name": 5}}
+{"ts": "2026-08-11T20:50:07", "kind": "verify", "papers": 4, "statements": 2283, "errors": 0, "warnings": 0}

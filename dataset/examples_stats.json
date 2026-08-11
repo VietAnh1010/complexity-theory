@@ -1,0 +1,76 @@
+{
+  "examples": 30,
+  "papers_with_examples": 1,
+  "papers_attempted": 1,
+  "by_fetch_status": {
+    "ok": 1
+  },
+  "papers_with_source_no_examples": 0,
+  "examples_per_paper_median": 30,
+  "by_kind": {
+    "definition": 10,
+    "theorem": 7,
+    "corollary": 6,
+    "lemma": 5,
+    "fact": 2
+  },
+  "by_category": {
+    "circuit-complexity": 30,
+    "derandomization": 30
+  },
+  "by_year": {
+    "2023": 30
+  },
+  "by_venue_tier": {
+    "target": 30
+  },
+  "with_classes": 19,
+  "with_problems": 2,
+  "with_hypotheses": 0,
+  "with_bounds": 16,
+  "with_relations": 5,
+  "problem_specs": 0,
+  "relations": 5,
+  "distinct_classes": 15,
+  "top_classes": {
+    "SIZE": 7,
+    "FS2P": 5,
+    "NP": 5,
+    "S2E": 3,
+    "Sigma2E": 2,
+    "AC0": 2,
+    "Sigma2P": 2,
+    "FP": 2,
+    "FP^NP": 2,
+    "ZPE": 1,
+    "ZPE^NP": 1,
+    "Pi2E": 1,
+    "FZPP": 1,
+    "FZPP^NP": 1,
+    "S2P": 1
+  },
+  "top_problems": {
+    "Error-Correcting Code": 1,
+    "Rigid Matrix": 1,
+    "Range Avoidance": 1
+  },
+  "top_hypotheses": {},
+  "top_named_objects": {
+    "Histree": 4,
+    "GGM": 3,
+    "MissingString": 2,
+    "Avoid": 1,
+    "GGMEval": 1,
+    "Korten": 1,
+    "Eval": 1
+  },
+  "by_relation": {
+    "not-contained-in": 5
+  },
+  "top_relation_pairs": {
+    "S2E ⊄ SIZE": 2,
+    "ZPE^NP ⊄ SIZE": 1,
+    "Sigma2E ∩ Pi2E ⊄ SIZE": 1,
+    "Sigma2E ⊄ SIZE": 1
+  }
+}
