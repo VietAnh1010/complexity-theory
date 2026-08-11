@@ -544,6 +544,13 @@ def tasks_cmd(a):
             if not (rel.get("lhs_known") and rel.get("rhs_known")): continue
             p, hit = _mask_once(text, rel["rhs_classes"][0])
             if p: add("class-cloze", r, p, hit, relation=relstr(rel)); break
+        # Which relation does the paper prove? Only the non-equality symbols:
+        # "=" occurs in every other formula and would not identify the claim.
+        syms = {RELSYM[x["relation"]] for x in (r.get("relations") or [])
+                if x["relation"] != "equals"}
+        if len(syms) == 1 and text.count(s := syms.pop()) == 1:
+            p, hit = _mask_once(text, s)
+            if p: add("relation-cloze", r, p, hit)
         if r.get("problem_spec"):
             for nm in (r.get("named_objects") or [])[:2]:
                 p, hit = _mask_once(text, nm)

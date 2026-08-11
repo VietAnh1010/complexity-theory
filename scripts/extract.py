@@ -696,7 +696,14 @@ def terms_in(text, tex=""):
 # A closed vocabulary cannot name what it has not met. These two catch the rest:
 # objects the paper sets in math font (`\cc{Avoid}`, `\prob{MissingString}`) and
 # noun phrases it calls a problem.
-_STOPOBJ = re.compile(r"^(?:the|a|an|for|and|or|if|then|let|we|this|that|其)$", re.I)
+_STOPOBJ = re.compile(
+    r"^(?:the|a|an|for|and|or|if|then|let|we|this|that|there|here|it|its"
+    r"|boolean|input|output|instance|given|yes|no|case|cases|proof|note|remark"
+    r"|theorem|lemma|definition|corollary|proposition|claim|fact|observation|example"
+    r"|algorithm|figure|table|section|appendix|equation|part|step|round|phase"
+    r"|moreover|since|thus|hence|first|second|third|finally|suppose|assume|fix"
+    r"|recall|indeed|namely|consider|observe|conversely|otherwise|similarly"
+    r"|furthermore|therefore|however|before|after|when|where|while|with|without)$", re.I)
 _NAMED_PROBLEM = re.compile(r"\b((?:[A-Z][A-Za-z0-9-]*(?:\s+[a-z]{1,4})?\s+){0,3}[A-Z][A-Za-z0-9-]*)"
                             r"\s+(?:problem|conjecture|hypothesis|function)\b")
 
