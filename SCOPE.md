@@ -86,6 +86,12 @@ found *in that statement*. Paper-level usage counts live in
 `papers/extractions.jsonl` — a paper is about Range Avoidance even when the
 theorem stating the bound never names it.
 
+**A relation is a mention, not an assertion.** A triple records that the paper
+wrote `A ⊆ B` at that offset. The paper may be assuming it, refuting it, or
+deriving it from a hypothesis; `conditional` marks the last case, and the
+statement itself is the only full answer. Anyone reading `relations` as a set
+of established facts is misreading them.
+
 **A statement is a slice, never a summary.** `statement_tex` is the source
 between two offsets; `statement_text` is a mechanical de-TeXing of it. Neither
 is ever paraphrased, shortened, or written by hand.

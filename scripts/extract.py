@@ -583,38 +583,64 @@ def _clean_gap(gap):
 
     `QIPL_m[c,s] \\subseteq P` must reduce to the relation symbol alone.
     """
-    arg = ""
+    arg, sub = "", ""
     for _ in range(3):                       # sub, sup and argument in any order
-        if (s := _SUP.match(gap)): gap = gap[s.end():]; continue
+        if (s := _SUP.match(gap)):
+            sub = sub or s.group(0).strip(); gap = gap[s.end():]; continue
         if (a := _ARG.match(gap)): arg, gap = arg or a.group(1).strip(), gap[a.end():]; continue
         break
     gap = _SPACING.sub(" ", gap)
     mod = ""
     if (m := _MODIFIER.search(gap)):
         mod = re.sub(r"[\s.]", "", m.group(1)).lower(); gap = gap[:m.start()] + " " + gap[m.end():]
-    return gap.strip(" -"), arg, mod
+    return gap.strip(" -"), arg, mod, sub
+
+
+# "If a dynamic exists, then P = PPAD" does not claim P = PPAD, and "suppose
+# for contradiction that P = NP" claims the opposite. Recorded, not dropped:
+# what a paper conditions on is part of what it says.
+_CONDITIONAL = re.compile(r"\b(if|iff|assum\w*|suppose|unless|provided|whenever|given that"
+                          r"|conditioned on|under the (assumption|hypothesis)|for contradiction"
+                          r"|would (imply|follow)|implies|then)\b", re.I)
+_SENT = re.compile(r"(?<=[.;:])\s")
+
+
+def _is_conditional(sym, at):
+    """Does a conditional marker govern the claim at this offset?"""
+    head = sym[:at]
+    start = max((m.end() for m in _SENT.finditer(head)), default=0)
+    return bool(_CONDITIONAL.search(head[start:]))
 
 
 def relations_in(tex):
     """Class-vs-class claims: (lhs, relation, rhs) with the verbatim fragment.
 
     Two class operands separated by nothing but a relation symbol. The claim is
-    the paper's, not ours; we only record where it sits in the source.
+    the paper's, not ours; we only record where it sits in the source — and
+    whether a conditional governs it, which is the difference between a result
+    and its hypothesis.
     """
     sym, out = unwrap_fonts(mark_single_classes(normalize_old_fonts(tex))), []
     ops = _operands(sym)
     for a, b in zip(ops, ops[1:]):
         # Both sides unknown is almost always two ordinary symbols, not a claim.
         if not (a["known"] or b["known"]): continue
-        gap, larg, lmod = _clean_gap(sym[a["end"]:b["start"]])
+        gap, larg, lmod, lsub = _clean_gap(sym[a["end"]:b["start"]])
         rel = next((n for p, n in _REL_RE if p.match(gap)), "")
         if not rel: continue
-        rarg = _ARG.match(sym[b["end"]:])
-        end = b["end"] + (rarg.end() if rarg else 0)
+        rsub = _SUP.match(sym[b["end"]:])
+        rarg = _ARG.match(sym[b["end"] + (rsub.end() if rsub else 0):])
+        end = b["end"] + (rsub.end() if rsub else 0) + (rarg.end() if rarg else 0)
+        # `P_{classical} = P_{observer}` is two different objects; with the
+        # subscripts stripped it reads as the tautology `P = P`.
+        if a["name"] == b["name"] and rel == "equals" and (lsub or (rsub and rsub.group(0))):
+            continue
         out.append({"lhs": a["name"], "lhs_classes": a["classes"], "lhs_arg": larg,
                     "lhs_known": a["known"], "relation": rel, "modifier": lmod,
                     "rhs": b["name"], "rhs_classes": b["classes"], "rhs_known": b["known"],
                     "rhs_arg": (rarg.group(1).strip() if rarg else ""),
+                    "lhs_sub": lsub, "rhs_sub": (rsub.group(0).strip() if rsub else ""),
+                    "conditional": _is_conditional(sym, a["start"]),
                     "tex": _unmark(re.sub(r"\s+", " ", sym[a["start"]:end]).strip())})
     return out
 

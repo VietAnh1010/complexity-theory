@@ -18,8 +18,8 @@ says what is in them.
 | `papers.jsonl` | the same records, unflattened |
 | `edges.csv` | `citing_id, cited_id` — citation graph induced on the library |
 | `stats.json` | counts by status, subarea, venue, tier, year, source |
-| `examples.csv` | one row per extracted statement, 26 columns |
-| `examples.jsonl` | the same statements, with structured relations |
+| `examples.csv` | one row per extracted statement, 25 columns |
+| `examples.jsonl` | the same statements, with `statement_tex` and structured relations |
 | `paper_terms.csv` | per paper: which classes, problems and hypotheses it uses |
 | `examples_stats.json` | counts by kind, subarea, class, problem, relation |
 | `tasks.csv` / `.jsonl` | masked test items derived from the statements |
@@ -37,7 +37,9 @@ formal objects, and they sit in its theorem and definition environments:
 - **problems** — `Range Avoidance`, `Edit Distance`, `MCSP`, `Set Disjointness`
   … from a closed vocabulary, plus free-form names the paper coins itself;
 - **classes** — canonicalized, oracles merged (`ZPE^NP` is one class);
-- **relations** — `(lhs, relation, rhs)` triples: `S2E ⊄ i.o.-SIZE[2^n/n]`;
+- **relations** — `(lhs, relation, rhs)` triples: `S2E ⊄ i.o.-SIZE[2^n/n]`, each
+  flagged `conditional` when a hypothesis governs it — "if such a dynamic
+  exists then P = PPAD" is not a claim that P = PPAD;
 - **bounds** — `2^{n/2}`, `\Omega(n\log n)`, `SIZE[2^n/n]`, verbatim;
 - **hypotheses** — SETH, ETH, UGC, and the rest of what a result is conditioned on.
 

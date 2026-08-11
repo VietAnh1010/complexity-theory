@@ -411,15 +411,18 @@ EXCOLS = ["example_id", "paper_id", "arxiv_id", "doi", "paper_title", "year", "v
           "venue_tier", "categories", "kind", "env", "label", "ordinal", "title",
           "statement_text", "classes", "problems", "hypotheses", "measures", "named_objects",
           "relations", "bounds", "problem_spec", "char_start", "char_end",
-          "source_sha256", "statement_tex"]
+          "source_sha256"]
+# `statement_tex` is in the JSONL only: it is the verbatim source and roughly
+# doubles the file, while the CSV is the view people open in a spreadsheet.
 PTCOLS = ["paper_id", "arxiv_id", "title", "year", "venue_short", "categories", "status",
           "n_examples", "source_chars", "classes_used", "problems_used", "hypotheses_used"]
 
 
 def relstr(rl):
     mod = f"{rl.get('modifier')}-" if rl.get("modifier") else ""
+    cond = " [conditional]" if rl.get("conditional") else ""
     return (f"{rl['lhs']}{rl.get('lhs_arg') or ''} {RELSYM.get(rl['relation'], rl['relation'])} "
-            f"{mod}{rl['rhs']}{rl.get('rhs_arg') or ''}")
+            f"{mod}{rl['rhs']}{rl.get('rhs_arg') or ''}{cond}")
 
 
 def _counts(pairs, top=None):
@@ -488,6 +491,7 @@ def examples_cmd(a):
         "top_measures": _counts((m for r in rows for m in (r.get("measures") or [])), 20),
         "with_measures": sum(1 for r in rows if r.get("measures")),
         "by_relation": _counts(x["relation"] for x in rel),
+        "conditional_relations": sum(1 for x in rel if x.get("conditional")),
         "top_relation_pairs": _counts((f"{x['lhs']} {RELSYM.get(x['relation'], '?')} {x['rhs']}" for x in rel), 30),
     }
     (DATA / "examples_stats.json").write_text(json.dumps(stat, ensure_ascii=False, indent=2) + "\n",

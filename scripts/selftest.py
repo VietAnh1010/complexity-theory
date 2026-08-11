@@ -75,6 +75,14 @@ check("a class the paper defines can be a side",
       [("QIPL", "P", False)])
 check("two unknown sides is not a claim",
       relations_in(r"$\mathsf{FOO} = \mathsf{BAR}$"), [])
+check("a conditional is flagged, not asserted",
+      [(r["lhs"], r["rhs"], r["conditional"]) for r in
+       relations_in(r"If such a dynamic exists then $\mathsf{P} = \mathsf{PPAD}$.")],
+      [("P", "PPAD", True)])
+check("an unconditional claim is not flagged",
+      [r["conditional"] for r in relations_in(r"$\mathsf{L} \subseteq \mathsf{NL}$.")], [False])
+check("subscripted names are not the same class",
+      relations_in(r"$\mathsf{P}_{\mathrm{classical}} = \mathsf{P}_{\mathrm{observer}}$"), [])
 check("chains give one triple per link",
       len(relations_in(r"$\mathsf{L} \subseteq \mathsf{NL} \subseteq \mathsf{P}$")), 2)
 
