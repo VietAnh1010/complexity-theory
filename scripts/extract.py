@@ -543,7 +543,10 @@ def mark_single_classes(tex):
         body, end = group_at(tex, m.end())
         if body is None: continue
         inner = re.sub(r"[\s{}$]", "", unwrap_fonts(body))
-        if _CLASS_FONT.match(m.group(0)) and inner in _SINGLE and "\\mathbb" not in body:
+        # Same guards as `classes_in`: `\mathsf{E}[X]` is an expectation.
+        if (_CLASS_FONT.match(m.group(0)) and inner in _SINGLE and "\\mathbb" not in body
+                and not re.match(r"\s*(?:\\(?:left|big|Big|bigg|Bigg)l?)?\s*[\[\(]", tex[end:])
+                and not tex[:m.start()].rstrip().endswith(("}", "_"))):
             out.append(tex[i:m.start()]); out.append(_SINGLE[inner]); i = end
     out.append(tex[i:])
     return "".join(out)
