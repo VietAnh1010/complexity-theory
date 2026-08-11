@@ -409,7 +409,7 @@ def extract_cmd(a):
 # ---- examples export -----------------------------------------------------
 EXCOLS = ["example_id", "paper_id", "arxiv_id", "doi", "paper_title", "year", "venue_short",
           "venue_tier", "categories", "kind", "env", "label", "ordinal", "title",
-          "statement_text", "classes", "problems", "hypotheses", "named_objects",
+          "statement_text", "classes", "problems", "hypotheses", "measures", "named_objects",
           "relations", "bounds", "problem_spec", "char_start", "char_end",
           "source_sha256", "statement_tex"]
 PTCOLS = ["paper_id", "arxiv_id", "title", "year", "venue_short", "categories", "status",
@@ -438,7 +438,7 @@ def examples_cmd(a):
     def flat(r):
         out = dict(r)
         out["categories"] = SEP.join(r.get("categories") or [])
-        for k in ("classes", "problems", "hypotheses", "named_objects", "bounds"):
+        for k in ("classes", "problems", "hypotheses", "measures", "named_objects", "bounds"):
             out[k] = SEP.join(r.get(k) or [])
         out["relations"] = SEP.join(relstr(x) for x in (r.get("relations") or []))
         out["problem_spec"] = int(bool(r.get("problem_spec")))
@@ -485,6 +485,8 @@ def examples_cmd(a):
         "top_problems": _counts((p for r in rows for p in (r.get("problems") or [])), 40),
         "top_hypotheses": _counts((h for r in rows for h in (r.get("hypotheses") or [])), 25),
         "top_named_objects": _counts((o for r in rows for o in (r.get("named_objects") or [])), 40),
+        "top_measures": _counts((m for r in rows for m in (r.get("measures") or [])), 20),
+        "with_measures": sum(1 for r in rows if r.get("measures")),
         "by_relation": _counts(x["relation"] for x in rel),
         "top_relation_pairs": _counts((f"{x['lhs']} {RELSYM.get(x['relation'], '?')} {x['rhs']}" for x in rel), 30),
     }

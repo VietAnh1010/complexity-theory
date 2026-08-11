@@ -92,7 +92,16 @@ def find_envs(src, envs):
         body_start, body_end = m.end(), close.start()
         head = src[body_start:body_end]
         title, k = (opt_at(head, 0) if head[:1] == "[" else (None, 0))
-        out.append({"env": env, "title": (title or "").strip(),
+        # `\begin{restatable}[Title]{proposition}{macroname}` — the real kind is
+        # the first argument, and neither argument is part of the statement.
+        real = ""
+        if env in ("restatable", "restatable*"):
+            for _ in range(2):
+                while k < len(head) and head[k] in " \t\n": k += 1
+                g, k2 = group_at(head, k) if k < len(head) and head[k] == "{" else (None, k)
+                if g is None: break
+                real, k = (real or g.strip()), k2
+        out.append({"env": (real.lower() or env), "title": (title or "").strip(),
                     "start": body_start + k, "end": body_end,
                     "body": src[body_start + k:body_end]})
         i = close.end()
@@ -126,6 +135,7 @@ def _looks_like_class(raw):
     """
     s = _GREEKW.sub("", raw)
     s = re.sub(r"\^\s*\{?\s*(p|poly|A|O|B|\\ast|\*)\s*\}?", "", s)  # ^p, ^poly, oracle letters
+    s = re.sub(r"_\s*\{?[0-9a-z]{1,2}\}?", "", s)                   # the level in \Sigma_k^p
     s = re.sub(r"^co-?", "", s)
     s = re.sub(r"(?i)^(promise|pr|i\.?o\.?|almost|para|samp|f|gap|mod)", "", s)
     letters = re.sub(r"[^A-Za-z]", "", s)
@@ -162,6 +172,10 @@ _CLASS_TEXT = {
     "polynomial hierarchy": "PH", "polynomial-time hierarchy": "PH",
     "counting hierarchy": "CH", "boolean hierarchy": "BH",
 }
+# The hierarchies are written with a level that is often a variable, not a digit.
+_CLASS_LIST += [f"{g}{i}{s}" for g in ("Sigma", "Pi", "Delta", "Theta")
+                for i in ("2", "3", "4", "k", "i", "j", "t") for s in ("P", "E", "EXP")]
+_CLASS_LIST += ["BH", "CH", "coUP", "AH", "EXPH", "PSPACEpoly", "EXPpoly", "NEXPpoly"]
 CLASS_CANON = {_canon_key(c): c for c in _CLASS_LIST}
 CLASS_CANON.update({_canon_key(k): v for k, v in {
     "#P": "sharpP", "\\#P": "sharpP", "\\oplus P": "parityP", "P/poly": "Ppoly",
@@ -197,6 +211,23 @@ _NOARG = re.compile(r"\\(?:xspace|normalfont|sffamily|rmfamily|scshape|bfseries|
                     r"|sf|rm|bf|it|sc|em|quad|qquad|enspace|thinspace|,|;|:|!|\s)")
 
 
+# Pre-2005 sources declare the font inside the group: `{\rm P}`, not `\mathrm{P}`.
+# Those are the papers the backward snowball exists to reach, so this is not a
+# nicety — without it their classes are invisible.
+_OLDFONT = re.compile(r"\{\s*\\(rm|sf|bf|it|tt|cal|sc|scriptsize|small)\s+([^{}]{1,24}?)\s*\}")
+_OLDMAP = {"rm": "mathrm", "sc": "mathrm", "tt": "mathrm", "sf": "mathsf",
+           "bf": "mathbf", "it": "mathit", "cal": "mathcal",
+           "scriptsize": "mathrm", "small": "mathrm"}
+
+
+def normalize_old_fonts(tex, rounds=2):
+    for _ in range(rounds):
+        new = _OLDFONT.sub(lambda m: f"\\{_OLDMAP[m.group(1)]}{{{m.group(2)}}}", tex)
+        if new == tex: break
+        tex = new
+    return tex
+
+
 def unwrap_fonts(tex):
     """Drop math-font wrappers but keep their contents. Formatting noise goes too."""
     tex = _NOARG.sub(" ", _first_arg_only(tex, "texorpdfstring"))
@@ -209,12 +240,26 @@ def unwrap_fonts(tex):
     return "".join(out)
 
 
+# Fonts an author uses for a complexity class. `\mathcal` and `\mathbb` are for
+# sets and fields — `\mathcal{P}` is a powerset, not polynomial time.
+_CLASS_FONT = re.compile(r"\\(?:mathsf|mathbf|mathrm|textsf|textbf|texttt|mathtt|operatorname"
+                         r"|class|cc|complexityclass|compclass|cls)\b")
+
+
 def _font_tokens(tex):
-    """(canonical_content, start, end) for every font-wrapped group."""
+    """(content, start, end) for every font-wrapped group."""
     for m in _FONT.finditer(tex):
         body, end = group_at(tex, m.end())
         if body is None: continue
         yield body, m.start(), end
+
+
+def _class_font_tokens(tex):
+    """As above, but only the fonts that name classes, and remembering which."""
+    for m in _FONT.finditer(tex):
+        body, end = group_at(tex, m.end())
+        if body is None: continue
+        yield body, m.start(), end, bool(_CLASS_FONT.match(m.group(0)))
 
 
 _ORACLE = re.compile(r"^\s*\^\s*\{?\s*$")
@@ -268,10 +313,13 @@ def classes_in(tex):
     `E`), plain-text ones may not — `\\bP\\b` matches ordinary prose.
     """
     hits = []
-    for body, s, e in _font_tokens(tex):
+    for body, s, e, class_font in _class_font_tokens(tex):
         inner = unwrap_fonts(body)
         # `SIZE[2^n/n]`, `DTIME(t(n))`: the head names the class.
         head = re.split(r"[\[\(]", inner, 1)[0]
+        # A one-letter name is a class only when the author set it in a class
+        # font; `\mathcal{E}` is a set of events in half the papers in the field.
+        if len(re.sub(r"[^A-Za-z0-9#]", "", head)) < _BARE_MIN and not class_font: continue
         if (c := CLASS_CANON.get(_canon_key(head))): hits.append((c, s, e))
     sym = unwrap_fonts(tex)
     for c, _, _, _ in class_spans(sym):
@@ -402,7 +450,9 @@ _BOUND_HEADS = r"\\?(?:tilde|widetilde|overline)?\s*\{?\s*(O|o|Omega|omega|Theta
 _BOUND = re.compile(r"\\(?:tilde|widetilde)\s*\{?\s*\\?(?:O|Omega|Theta)\s*\}?\s*[\(\{]"
                     r"|\\(?:Omega|Theta|omega)\s*[\(\{]"
                     r"|(?<![A-Za-z\\])(?:O|o|poly|polylog|exp)\s*[\(\{]")
-_POWER = re.compile(r"(?<![A-Za-z\\])(?:2|n|N|m|d|q|s|t)\s*\^\s*(\{[^{}]{1,60}\}|[A-Za-z0-9]+)")
+# `q` and `d` are dropped: `\mathbb{F}_q^{d \times n}` is a matrix shape, not a
+# running time, and it is everywhere in the algebraic and coding papers.
+_POWER = re.compile(r"(?<![A-Za-z\\])(?:2|n|N|m|s|t|k)\s*\^\s*(\{[^{}]{1,60}\}|[A-Za-z0-9]+)")
 
 
 def _balanced(text, i):
@@ -531,8 +581,9 @@ def bounds_in(tex):
 _LABEL = re.compile(r"\\label\s*\{([^{}]+)\}")
 # Two shapes of problem statement: the tabular one ("Input: ... Output: ...")
 # and the prose one ("given a circuit C, find a string outside its image").
-_SPEC_FIELDS = (re.compile(r"\b(input|instance)\b\s*[:.]", re.I),
-                re.compile(r"\b(output|question|goal|task|decide|find)\b\s*[:.]", re.I))
+_SPEC_FIELDS = (re.compile(r"\b(input|instance)\b\s*(?:[:.]|is\b|consists\b)", re.I),
+                re.compile(r"\b(output|question|goal|task|decide|find)\b\s*[:.]"
+                           r"|\bYES\b.{0,300}\bNO\b", re.I | re.S))
 _SPEC_PROSE = re.compile(r"\b(?:given|on input|takes as input)\b.{0,400}?"
                          r"\b(find|decide|determine|compute|output|return|count|distinguish)\b", re.I | re.S)
 
@@ -552,6 +603,20 @@ PROBLEM_TOKENS = {
     "STCONN": "Reachability/STCON", "STCON": "Reachability/STCON", "Reach": "Reachability/STCON",
     "TreeEval": "Tree Evaluation", "Forrelation": "Forrelation", "IP": "Inner Product",
 }
+
+
+# Query and communication complexity state their results in measures applied to
+# a function, not in class names: `R(f) = \Omega(Q(f)^2)`. Anchored on the
+# argument so a stray `s(n)` or `C` does not count.
+_MEASURE = re.compile(r"(?<![A-Za-z0-9_\\])(R_0|R_1|R|Q_E|Q_0|Q|D|deg|adeg|bs|fbs|s|C|UC|N|UN"
+                      r"|IC|CC|disc|corr|rank|gamma_2|lambda|adv|ADV)"
+                      r"\s*(?:[_^]\s*\{?[A-Za-z0-9,\\+\-*]{0,10}\}?)?\s*\(\s*\\?[fFgGh](?![A-Za-z0-9])")
+
+
+def measures_in(tex):
+    """Complexity measures the statement is about: R, Q, D, deg, bs, IC …"""
+    sym = unwrap_fonts(tex)
+    return sorted({m.group(1) for m in _MEASURE.finditer(sym)})
 
 
 def terms_in(text, tex=""):
@@ -608,7 +673,7 @@ def extract(src, files, macros, envs=None):
         if not (MIN_BODY <= len(body) <= MAX_BODY): continue
         kind = kind_of(envs.get(e["env"], e["env"]))
         if kind not in KEEP: continue
-        exp = expand(body, macros)
+        exp = normalize_old_fonts(expand(body, macros))
         text = detex(exp)
         if len(text) < MIN_BODY: continue
         labels = _LABEL.findall(body)
@@ -621,7 +686,7 @@ def extract(src, files, macros, envs=None):
             "statement_tex": body, "statement_text": text,
             "char_start": base + e["start"], "char_end": base + e["end"],
             "classes": classes, "problems": problems, "hypotheses": hyps,
-            "named_objects": named_objects(text, exp),
+            "measures": measures_in(exp), "named_objects": named_objects(text, exp),
             "relations": relations_in(exp), "bounds": bounds_in(exp),
             "problem_spec": is_problem_spec(text, kind),
         })
@@ -632,7 +697,7 @@ def paper_terms(src, macros):
     """Whole-document usage counts: which classes and problems this paper works with."""
     body = src[src.find("\\begin{document}"):] if "\\begin{document}" in src else src
     body = body[:400_000]
-    exp = expand(body, macros, rounds=3, limit=1_200_000)
+    exp = normalize_old_fonts(expand(body, macros, rounds=3, limit=1_200_000))
     text = detex(exp, limit=400_000)
     from collections import Counter
     cc = Counter(c for c, _, _ in classes_in(exp))
