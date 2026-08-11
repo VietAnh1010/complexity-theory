@@ -251,6 +251,8 @@ def unwrap_fonts(tex):
 # sets and fields — `\mathcal{P}` is a powerset, not polynomial time.
 _CLASS_FONT = re.compile(r"\\(?:mathsf|mathbf|mathrm|textsf|textbf|texttt|mathtt|operatorname"
                          r"|class|cc|complexityclass|compclass|cls)\b")
+# Control words a class name may legitimately still contain once fonts are gone.
+_UNEXPANDED = re.compile(r"\\(?!Sigma|Pi|Delta|Theta|#|oplus|,|;|!|:|\s)[A-Za-z@]+")
 
 
 def _font_tokens(tex):
@@ -293,7 +295,10 @@ def class_spans(sym, *, unknown=False):
     hits = []
     for m in _TOKEN.finditer(sym):
         head = re.split(r"[\[\(]", m.group(0), 1)[0]
-        if len(re.sub(r"[^A-Za-z0-9#]", "", head)) < _BARE_MIN: continue
+        # Count letters, not characters: `L^2(G)` is a function space, and its
+        # exponent must not be what makes the name long enough to be a class.
+        if len(re.sub(r"[^A-Za-z]", "", head)) < _BARE_MIN and not head.lstrip().startswith(("#", "\\#", "\\oplus")):
+            continue
         if not _looks_like_class(head): continue
         c, kn = CLASS_CANON.get(_canon_key(head)), True
         if not c:  # `ZPE^{NP}`, `SIZE^A`: the base names the class, the exponent is an oracle
@@ -329,9 +334,22 @@ def classes_in(tex):
         # font; `\mathcal{E}` is a set of events in half the papers in the field.
         short = len(re.sub(r"[^A-Za-z0-9#]", "", head)) < _BARE_MIN
         if short and not class_font: continue
+        # `\mathrm{e}^{-100}` is Euler's number. Case is folded downstream, so a
+        # one-letter name has to be capitalized here or it is not a class.
+        if short and head.strip().islower(): continue
+        # `L^2(R)`, `E^3`: a one-letter name with a numeric exponent is a norm
+        # or a space. Classes written that way (`AC^0`, `NC^1`) are longer.
+        if short and re.match(r"\s*\^\s*\{?\s*\d", tex[e:]): continue
+        # `QIP\textsubscript{U}\mathsf{L}` is one name the paper coined, not a
+        # containment involving L: a class does not start mid-word.
+        if short and tex[:s].rstrip().endswith(("}", "_")): continue
         # Blackboard bold is for number sets, probability and expectation —
         # `\mathrm{\mathbb{E}}` is still an expectation, whatever wraps it.
         if "\\mathbb" in body: continue
+        # A macro we could not expand may be anything. `_canon_key` deletes
+        # unknown control words, so `\mathrm{\bm{\newmathbb{E}}}` would read as
+        # the class E; only the names a class is actually written with pass.
+        if _UNEXPANDED.search(unwrap_fonts(body)): continue
         # `\mathsf{W}[1]` is the parameterized class, spelled across a bracket.
         if (w := re.match(r"\s*\[\s*([12tkP])\s*\]", tex[e:])) and head.strip() == "W":
             hits.append((f"W{w.group(1)}", s, e + w.end())); continue

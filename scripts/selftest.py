@@ -46,6 +46,14 @@ check("oracle superscripts merge", cls(r"$\mathsf{ZPE}^{\mathsf{NP}}$"),
       lambda g: "ZPE^NP" in g)
 check("hierarchy with a variable level", cls(r"$\Sigma_k^p$"), ["SigmakP"])
 check("W across a bracket", cls(r"$\mathsf{W}[1]$-hard"), ["W1"])
+check("mathrm e is Euler's number", cls(r"$1-\mathrm{e}^{-100}$"), [])
+check("L^2 is a function space", cls(r"for $f \in L^2(G)$"), [])
+check("a one-letter class needs a numeric-free exponent",
+      cls(r"$\mathrm{L}^2(R) \leq 40$"), [])
+check("a one-letter class does not start mid-word",
+      cls(r"$\mathsf{QIP}\textsubscript{U}\mathsf{L}$"), lambda g: "L" not in g)
+check("an unexpanded macro is not a class",
+      cls(r"$\mathrm{\bm{\newmathbb{E}}}[N]$"), [])
 
 print("\nrelations")
 rel = relations_in(r"$\mathsf{S_2E} \not\subset \ensuremath{i.o.}-\mathsf{SIZE}[2^n/n]$")
