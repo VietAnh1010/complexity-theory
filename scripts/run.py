@@ -542,6 +542,8 @@ def tasks_cmd(a):
     for r in sorted(rows, key=lambda r: (r["arxiv_id"], r["ordinal"])):
         text = r["statement_text"]
         for b in (r.get("bounds") or [])[:2]:
+            # A bound is about an input size. `2^\omega` is an ordinal.
+            if not re.search(r"(?<![A-Za-z])[nNmkstd](?![A-Za-z])|poly|log", b): continue
             p, hit = _mask_once(text, EX.detex(b, limit=200))
             if p: add("bound-cloze", r, p, hit, masked=b); break
         for rel in (r.get("relations") or [])[:2]:
@@ -559,8 +561,12 @@ def tasks_cmd(a):
             for nm in (r.get("named_objects") or [])[:2]:
                 p, hit = _mask_once(text, nm)
                 if p: add("problem-name", r, p, hit); break
-        if r["kind"] in ("theorem", "corollary", "lemma") and (r.get("categories")):
-            add("subarea", r, text + f"\n\n{MASK}", SEP.join(r["categories"]))
+        # The label is the *paper's* subareas, which is why it is named for the
+        # paper: a lemma about a Markov chain carries its paper's topic, not its
+        # own. Restricted to statements with formal content, and capped.
+        if (r["kind"] in ("theorem", "corollary") and r.get("categories")
+                and (r.get("classes") or r.get("problems") or r.get("bounds"))):
+            add("paper-subarea", r, text + f"\n\n{MASK}", SEP.join(r["categories"]))
 
     DATA.mkdir(parents=True, exist_ok=True)
     save_jsonl(DATA / "tasks.jsonl", out)
@@ -580,7 +586,7 @@ def verify_tasks(examples_by_id):
         e = examples_by_id.get(t["example_id"])
         if e is None:
             probs.append(("ERROR", f"{t['task_id']}: no such example {t['example_id']}")); continue
-        if t["type"] == "subarea":
+        if t["type"] == "paper-subarea":
             if t["answer"] != SEP.join(e.get("categories") or []):
                 probs.append(("ERROR", f"{t['task_id']}: answer is not the paper's subareas"))
             continue
