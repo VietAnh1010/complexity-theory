@@ -269,7 +269,7 @@ _DROP_ENV = ("figure", "figure*", "table", "table*", "tikzpicture", "wrapfigure"
              "algorithm", "algorithmic", "thebibliography", "comment")
 _ACCENT = {"\\'": "", '\\"': "", "\\`": "", "\\^": "", "\\~": "", "\\=": "", "\\.": ""}
 _SIMPLE = [
-    (r"\\(label|ref|eqref|cref|Cref|cpageref|autoref|nameref|vref|pageref|hyperref|cite[a-zA-Z]*|footnote|index|nonumber|noindent|qed|qedhere|vspace|hspace|smallskip|medskip|bigskip|centering|item)\s*(\*)?(\[[^\]]*\])?(\{[^{}]*\})?", " "),
+    (r"\\(label|ref|eqref|cref|Cref|cpageref|autoref|nameref|vref|pageref|hyperref|cite[a-zA-Z]*|footnote|index|nonumber|noindent|qed|qedhere|phantomsection|leavevmode|vspace|hspace|smallskip|medskip|bigskip|centering|item)\s*(\*)?(\[[^\]]*\])?(\{[^{}]*\})?", " "),
     # Font switches and spacing commands, which otherwise land in the text as words.
     (r"\\(xspace|normalfont|normalsize|sffamily|rmfamily|ttfamily|scshape|bfseries|itshape|upshape|mdseries|protect|relax|allowbreak|linebreak|newline|par|small|footnotesize|scriptsize|large|Large|huge|sf|rm|tt|it|bf|sc|em|enspace|thinspace|negthinspace|quad|qquad|hfill|hbox|strut|mathstrut)(?![A-Za-z])", " "),
     (r"\\frac\s*\{([^{}]{0,40})\}\s*\{([^{}]{0,40})\}", r"(\1)/(\2)"),
@@ -277,7 +277,7 @@ _SIMPLE = [
     # Longest first: `text` alone would eat `\textnormal` and leave "normal".
     (r"\\(?:text(?:normal|subscript|superscript|bf|it|sf|tt|sc|rm|up|md)?"
      r"|math(?:rm|sf|bf|bb|cal|it|frak|tt|scr)|emph|operatorname|ensuremath|mbox"
-     r"|boldsymbol|bm|class|cc|complexityclass|prob|problem|lang"
+     r"|boldsymbol|bm|pmb|varmathbb|class|cc|complexityclass|prob|problem|lang"
      r"|widetilde|widehat|overline|underline|tilde|hat|bar|vec)\s*\*?\s*", ""),
     (r"\\[\[\]\(\)]", " "),
     (r"\\(left|right|big|Big|bigg|Bigg|displaystyle|limits|,|;|:|!|/)", " "),

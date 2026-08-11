@@ -175,8 +175,10 @@ _CLASS_TEXT = {
 # The hierarchies are written with a level that is often a variable, not a digit.
 _CLASS_LIST += [f"{g}{i}{s}" for g in ("Sigma", "Pi", "Delta", "Theta")
                 for i in ("2", "3", "4", "k", "i", "j", "t") for s in ("P", "E", "EXP")]
-_CLASS_LIST += ["BH", "CH", "coUP", "AH", "EXPH", "PSPACEpoly", "EXPpoly", "NEXPpoly"]
+_CLASS_LIST += ["BH", "CH", "coUP", "AH", "EXPH", "PSPACEpoly", "EXPpoly", "NEXPpoly", "Wk"]
+CLASS_MARKS = {"PCLS": "P", "ECLS": "E", "LCLS": "L"}   # see mark_single_classes
 CLASS_CANON = {_canon_key(c): c for c in _CLASS_LIST}
+CLASS_CANON.update({_canon_key(k): v for k, v in CLASS_MARKS.items()})
 CLASS_CANON.update({_canon_key(k): v for k, v in {
     "#P": "sharpP", "\\#P": "sharpP", "\\oplus P": "parityP", "P/poly": "Ppoly",
     "NP/poly": "NPpoly", "\\Sigma_2^p": "Sigma2P", "\\Sigma_2 P": "Sigma2P",
@@ -220,12 +222,17 @@ _OLDMAP = {"rm": "mathrm", "sc": "mathrm", "tt": "mathrm", "sf": "mathsf",
            "scriptsize": "mathrm", "small": "mathrm"}
 
 
+# `W[1]` is one class name split across a bracket; every other class writes its
+# parameter as a subscript. Rewritten on the analysis copy only.
+_WCLASS = re.compile(r"(?<![A-Za-z0-9])W\s*\[\s*([12tkP])\s*\]")
+
+
 def normalize_old_fonts(tex, rounds=2):
     for _ in range(rounds):
         new = _OLDFONT.sub(lambda m: f"\\{_OLDMAP[m.group(1)]}{{{m.group(2)}}}", tex)
         if new == tex: break
         tex = new
-    return tex
+    return _WCLASS.sub(lambda m: f"W{m.group(1)}", tex)
 
 
 def unwrap_fonts(tex):
@@ -312,6 +319,7 @@ def classes_in(tex):
     Two passes on purpose: font-wrapped tokens may be single letters (`P`, `L`,
     `E`), plain-text ones may not — `\\bP\\b` matches ordinary prose.
     """
+    tex = normalize_old_fonts(tex)
     hits = []
     for body, s, e, class_font in _class_font_tokens(tex):
         inner = unwrap_fonts(body)
@@ -319,7 +327,17 @@ def classes_in(tex):
         head = re.split(r"[\[\(]", inner, 1)[0]
         # A one-letter name is a class only when the author set it in a class
         # font; `\mathcal{E}` is a set of events in half the papers in the field.
-        if len(re.sub(r"[^A-Za-z0-9#]", "", head)) < _BARE_MIN and not class_font: continue
+        short = len(re.sub(r"[^A-Za-z0-9#]", "", head)) < _BARE_MIN
+        if short and not class_font: continue
+        # Blackboard bold is for number sets, probability and expectation —
+        # `\mathrm{\mathbb{E}}` is still an expectation, whatever wraps it.
+        if "\\mathbb" in body: continue
+        # `\mathsf{W}[1]` is the parameterized class, spelled across a bracket.
+        if (w := re.match(r"\s*\[\s*([12tkP])\s*\]", tex[e:])) and head.strip() == "W":
+            hits.append((f"W{w.group(1)}", s, e + w.end())); continue
+        # `\E[X]`, `\P(A)`: expectation and probability, not E and P. No class
+        # with a one-letter name takes an argument.
+        if short and re.match(r"\s*(?:\\(?:left|big|Big|bigg|Bigg)l?)?\s*[\[\(]", tex[e:]): continue
         if (c := CLASS_CANON.get(_canon_key(head))): hits.append((c, s, e))
     sym = unwrap_fonts(tex)
     for c, _, _, _ in class_spans(sym):
@@ -490,6 +508,32 @@ def _strip_scripts(gap):
     return gap
 
 
+_SINGLE = {"P": "PCLS", "E": "ECLS", "L": "LCLS"}
+_UNMARK = re.compile("|".join(_SINGLE.values()))
+
+
+def mark_single_classes(tex):
+    """`\\mathsf{P}` -> `PCLS`, so a one-letter class survives font stripping.
+
+    Relations are matched on unwrapped text, where `\\mathsf{P}` and the letter
+    P are indistinguishable — and a bare P must not count. Marking keeps
+    `L \\subseteq NL \\subseteq P` matchable without letting prose in.
+    """
+    out, i = [], 0
+    for m in _FONT.finditer(tex):
+        if m.start() < i: continue
+        body, end = group_at(tex, m.end())
+        if body is None: continue
+        inner = re.sub(r"[\s{}$]", "", unwrap_fonts(body))
+        if _CLASS_FONT.match(m.group(0)) and inner in _SINGLE and "\\mathbb" not in body:
+            out.append(tex[i:m.start()]); out.append(_SINGLE[inner]); i = end
+    out.append(tex[i:])
+    return "".join(out)
+
+
+def _unmark(s): return _UNMARK.sub(lambda m: m.group(0)[0], s)
+
+
 def _operands(sym):
     """Merge class spans joined by ∩/∪/× into one operand, so `A ∩ B ⊄ C` stays whole.
 
@@ -536,7 +580,7 @@ def relations_in(tex):
     Two class operands separated by nothing but a relation symbol. The claim is
     the paper's, not ours; we only record where it sits in the source.
     """
-    sym, out = unwrap_fonts(tex), []
+    sym, out = unwrap_fonts(mark_single_classes(normalize_old_fonts(tex))), []
     ops = _operands(sym)
     for a, b in zip(ops, ops[1:]):
         # Both sides unknown is almost always two ordinary symbols, not a claim.
@@ -550,7 +594,7 @@ def relations_in(tex):
                     "lhs_known": a["known"], "relation": rel, "modifier": lmod,
                     "rhs": b["name"], "rhs_classes": b["classes"], "rhs_known": b["known"],
                     "rhs_arg": (rarg.group(1).strip() if rarg else ""),
-                    "tex": re.sub(r"\s+", " ", sym[a["start"]:end]).strip()})
+                    "tex": _unmark(re.sub(r"\s+", " ", sym[a["start"]:end]).strip())})
     return out
 
 
@@ -560,7 +604,7 @@ _RESOURCE = re.compile(r"(?<![A-Za-z])(SIZE|DEPTH|FORMULA|DTIME|NTIME|TIME|DSPAC
 
 def bounds_in(tex):
     """Asymptotic expressions, verbatim: `2^{n/2}`, `\\Omega(n\\log n)`, `SIZE[2^n/n]`."""
-    sym, out = unwrap_fonts(tex), []
+    sym, out = unwrap_fonts(normalize_old_fonts(tex)), []
     for m in _RESOURCE.finditer(sym):
         arg, _ = _balanced(sym, m.end() - 1)
         if arg and len(arg) <= 80: out.append(re.sub(r"\s+", " ", m.group(1) + arg).strip())
@@ -615,7 +659,7 @@ _MEASURE = re.compile(r"(?<![A-Za-z0-9_\\])(R_0|R_1|R|Q_E|Q_0|Q|D|deg|adeg|bs|fb
 
 def measures_in(tex):
     """Complexity measures the statement is about: R, Q, D, deg, bs, IC …"""
-    sym = unwrap_fonts(tex)
+    sym = unwrap_fonts(normalize_old_fonts(tex))
     return sorted({m.group(1) for m in _MEASURE.finditer(sym)})
 
 

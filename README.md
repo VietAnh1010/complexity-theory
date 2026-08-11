@@ -65,6 +65,7 @@ python3 scripts/run.py extract --limit 300       # arXiv source -> statements
 python3 scripts/run.py examples                  # the statement layer
 python3 scripts/run.py tasks                     # masked test items
 python3 scripts/run.py verify --all              # gate; non-zero on error
+python3 scripts/selftest.py                      # extractor checks, offline, ~1s
 ```
 
 `extract` fetches each paper's LaTeX source from arXiv, flattens `\input`s,
@@ -102,6 +103,7 @@ scripts/sources.py  arXiv, Crossref, OpenCitations
 scripts/fulltext.py arXiv e-print source: fetch, unpack, macros, de-TeX
 scripts/extract.py  statements, classes, problems, relations, bounds
 scripts/run.py      the CLI
+scripts/selftest.py 33 offline checks on the extractor
 papers/library.jsonl    every paper seen, deduped
 papers/extractions.jsonl  per paper: fetch outcome, terms used
 papers/examples.jsonl   every statement lifted out, with offsets

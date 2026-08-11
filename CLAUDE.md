@@ -97,6 +97,8 @@ problems, classes, relations and bounds the paper actually works with. Then
   every cached tarball with no network. Do this after any change to
   `extract.py` or `fulltext.py`; a parser fix must be applied to the whole
   store, not just to papers fetched afterwards.
+- **`python3 scripts/selftest.py` after any parser change.** It is offline and
+  takes a second; every case in it was a live bug.
 - **Read the output.** Sample 15 statements after any parser change and read
   them. Every defect found so far — `\ensuremath`, case folding, `\xspace`,
   dropped intersections — was invisible in the counts and obvious in the text.
