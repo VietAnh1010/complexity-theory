@@ -684,6 +684,20 @@ def measures_in(tex):
     return sorted({m.group(1) for m in _MEASURE.finditer(sym)})
 
 
+def class_mentions(tex):
+    """One entry per textual occurrence, for counting rather than set membership.
+
+    `classes_in` runs two passes and the same `\\mathsf{NP}` is found by both,
+    which doubles every count. Here each occurrence is claimed once: multi-letter
+    names from the unwrapped text, one-letter names only from their font markup.
+    """
+    tex = normalize_old_fonts(tex)
+    out = [c for c, _, _, _ in class_spans(unwrap_fonts(tex))]
+    for c, s, e in classes_in(tex):
+        if s >= 0 and len(c) < _BARE_MIN: out.append(c)
+    return out
+
+
 def terms_in(text, tex=""):
     """Named problems and hypotheses mentioned. Text is the de-TeXed form."""
     hay = text + " " + tex
@@ -772,7 +786,7 @@ def paper_terms(src, macros):
     exp = normalize_old_fonts(expand(body, macros, rounds=3, limit=1_200_000))
     text = detex(exp, limit=400_000)
     from collections import Counter
-    cc = Counter(c for c, _, _ in classes_in(exp))
+    cc = Counter(class_mentions(exp))
     pc = Counter(k for k, p in PROBLEM_RE.items() for _ in p.finditer(text))
     hc = Counter(k for k, p in HYPOTHESIS_RE.items() for _ in p.finditer(text))
     return ({k: v for k, v in cc.most_common(40)}, {k: v for k, v in pc.most_common(40)},
