@@ -11,13 +11,12 @@ fetched this session. A statement in `papers/examples.jsonl` is a byte-exact
 slice of a fetched LaTeX source or it does not belong there.
 
 You know this literature. That knowledge is for *choosing queries* and *judging
-results* — never for filling a field. This field makes the failure easy: its
-canonical results have names, and a name is enough to reconstruct a citation
-that looks right and is wrong. A plausible citation is worse than a missing
-one, because it is invisible. If a lookup fails, set `unavailable` and move on.
+results* — never for filling a field. A name is enough to reconstruct a citation
+that looks right and is wrong, and a plausible citation is worse than a missing
+one because it is invisible. If a lookup fails, set `unavailable` and move on.
 
-`run.py verify` re-resolves DOIs and arXiv ids live. Run it before declaring
-anything finished.
+`run.py verify` re-resolves DOIs and arXiv ids live, and re-derives every
+statement from its source. Run it before declaring anything finished.
 
 ## No model is in this pipeline
 
@@ -86,32 +85,25 @@ ECCC gap before calling a literature thin. A subarea over a quarter of the
 total means its regex is too loose; read 10 of its records. `uncategorized`
 above zero is a bug: `in_topic` requires a subarea. Never delete a record.
 
-**5. Extract the statements.** `run.py extract --limit N` fetches each paper's
-arXiv LaTeX source and lifts out its theorem and definition environments — the
-problems, classes, relations and bounds the paper actually works with. Then
-`run.py examples` and `run.py tasks`.
+**5. Extract the statements.** `run.py extract --limit N`, then `run.py
+examples` and `run.py tasks`. Selection is round-robin across subareas, so an
+interrupted run is still spread across the field; `--no-spread` for rank order.
 
-- **Selection is round-robin across subareas.** An interrupted run is still
-  spread across the field. `--no-spread` for rank order.
-- **Re-parsing is free.** `extract --refresh --no-fetch` re-runs the parser over
-  every cached tarball with no network. Do this after any change to
-  `extract.py` or `fulltext.py`; a parser fix must be applied to the whole
-  store, not just to papers fetched afterwards.
-- **`python3 scripts/selftest.py` after any parser change.** It is offline and
-  takes a second; every case in it was a live bug.
-- **Read the output.** Sample 15 statements after any parser change and read
-  them. Every defect found so far — `\ensuremath`, case folding, `\xspace`,
-  dropped intersections — was invisible in the counts and obvious in the text.
-- **Fetch outcomes are data.** `pdf-only`, `no-tex`, `gone` are recorded per
-  paper. Report the split; it is the reach of this layer.
-- **The vocabularies in `extract.py` are patterns, not facts.** Add names when
-  the papers show you names you are missing. Never add a claim.
+- **Read the output.** Sample 15 statements after any parser change. Every
+  defect found so far was invisible in the counts and obvious in the text.
+- **`python3 scripts/selftest.py` after any parser change.** Offline, one
+  second, and every case in it was a live bug.
+- **Re-parse the whole store, not just new papers.** `extract --refresh
+  --no-fetch` re-runs the parser over the cache with no network.
+- **Fetch outcomes are data.** Report the `pdf-only`/`no-tex`/`gone` split; it
+  is the reach of this layer.
+- **The vocabularies in `extract.py` are patterns, not facts.** Add names the
+  papers show you. Never add a claim.
 
 **6. Export and verify.** `run.py dataset --edges` then `run.py verify --all`.
-Fix every ERROR; re-run until clean. The `--edges` reach counters go in
-`STATUS.md`. `verify` re-derives every extracted statement from the cached
-source and re-checks it byte for byte, plus every test item against its
-statement.
+Fix every ERROR; re-run until clean. `verify` re-derives every statement from
+its cached source byte for byte, and every test item from its statement. The
+`--edges` reach counters go in `STATUS.md`.
 
 **Finally**, in `STATUS.md`: counts, which stopping criterion ended the run,
 thin subareas and whether that is the literature or the ECCC gap, the graph's

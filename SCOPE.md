@@ -68,29 +68,27 @@ regex; check.
 What `extract.py` lifts out of a paper's source, and what it leaves.
 
 **In:** theorem, lemma, corollary, proposition, definition, claim, conjecture,
-hypothesis/assumption, open question, problem, fact, observation, example — the
-environments the paper's own preamble declares, plus the usual short names for
-sources that declare none.
+hypothesis, open question, problem, fact, observation, example — the
+environments the preamble declares, plus the usual short names when it declares
+none.
 
 **Out:**
 
-- **proofs** — the argument, not the claim; long, and not a statement;
-- **remarks and notation blocks** — recognized, given a `kind`, and dropped from
-  `KEEP`, so a later run can take them without re-parsing;
+- **proofs** — the argument, not the claim;
+- **remarks and notation** — given a `kind`, then dropped from `KEEP`, so a
+  later run can take them without re-parsing;
 - **figures, tables, algorithms, bibliographies** — stripped before de-TeXing;
 - **bodies under 25 or over 9000 characters** — the second is a mis-parsed
   environment, not a theorem.
 
-A statement carries the classes, problems, hypotheses, relations and bounds
-found *in that statement*. Paper-level usage counts live in
-`papers/extractions.jsonl` — a paper is about Range Avoidance even when the
+A statement carries the terms found *in that statement*. Paper-level usage lives
+in `papers/extractions.jsonl` — a paper is about Range Avoidance even when the
 theorem stating the bound never names it.
 
 **A relation is a mention, not an assertion.** A triple records that the paper
-wrote `A ⊆ B` at that offset. The paper may be assuming it, refuting it, or
-deriving it from a hypothesis; `conditional` marks the last case, and the
-statement itself is the only full answer. Anyone reading `relations` as a set
-of established facts is misreading them.
+wrote `A ⊆ B` at that offset. It may be assuming it, refuting it, or deriving it
+from a hypothesis; `conditional` marks the last case. Reading `relations` as a
+set of established facts is a misreading.
 
 **A statement is a slice, never a summary.** `statement_tex` is the source
 between two offsets; `statement_text` is a mechanical de-TeXing of it. Neither
