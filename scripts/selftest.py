@@ -52,6 +52,9 @@ check("a one-letter class needs a numeric-free exponent",
       cls(r"$\mathrm{L}^2(R) \leq 40$"), [])
 check("a one-letter class does not start mid-word",
       cls(r"$\mathsf{QIP}\textsubscript{U}\mathsf{L}$"), lambda g: "L" not in g)
+check("a bound variable is not a class",
+      cls(r"Let $\mathrm{E}$ be any EXP-complete language"), lambda g: "E" not in g)
+check("a class in a claim survives", cls(r"then $\mathsf{L} = \mathsf{NL}$"), ["L", "NL"])
 check("an unexpanded macro is not a class",
       cls(r"$\mathrm{\bm{\newmathbb{E}}}[N]$"), [])
 
@@ -100,6 +103,11 @@ check("restatable takes its first argument as the kind",
       [e["kind"] for e in got if e["env"] == "proposition"], ["proposition"])
 check("restatable arguments are not in the statement",
       all("propfoo" not in e["statement_tex"] for e in got), True)
+src2, files2, macros2 = doc(
+    r"\begin{thm}\label{t:1}There are constants such that the game is hard to solve.\end{thm}",
+    r"\newtheorem{thm}{\protect\theoremname}")
+check("a macro-named theorem keeps its default kind",
+      [e["kind"] for e in extract(src2, files2, macros2)], ["theorem"])
 check("newtheorem is read from the preamble",
       [e["kind"] for e in got if e["env"] == "myclaim"], ["claim"])
 check("the label is kept", [e["label"] for e in got if e["env"] == "myclaim"], ["c:1"])

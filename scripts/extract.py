@@ -67,7 +67,13 @@ def theorem_envs(files):
             env, j = m.group(2), m.end()
             o, j = opt_at(raw, j) if j < len(raw) and raw[j] == "[" else (None, j)
             printed, _ = group_at(raw, j) if j < len(raw) and raw[j] == "{" else (None, j)
-            if printed: envs[env.lower()] = re.sub(r"\\[A-Za-z@]+|[{}]", "", printed).strip() or env
+            if not printed: continue
+            # LyX writes `\newtheorem{thm}{\protect\theoremname}`. Stripping the
+            # control words leaves nothing, and overriding the default mapping
+            # with nothing drops every statement in the paper.
+            if (nm := re.search(r"\\([A-Za-z]+?)name\b", printed)): printed = nm.group(1)
+            printed = re.sub(r"\\[A-Za-z@]+|[{}]", "", printed).strip()
+            if kind_of(printed) or env.lower() not in envs: envs[env.lower()] = printed or env
         for m in _DECLTHM.finditer(raw):
             opt, env = m.group(1) or "", m.group(2)
             nm = re.search(r"name\s*=\s*([^,\]]+)", opt)
@@ -252,6 +258,7 @@ def unwrap_fonts(tex):
 _CLASS_FONT = re.compile(r"\\(?:mathsf|mathbf|mathrm|textsf|textbf|texttt|mathtt|operatorname"
                          r"|class|cc|complexityclass|compclass|cls)\b")
 # Control words a class name may legitimately still contain once fonts are gone.
+_BINDER = re.compile(r"(?:^|[\s(,;])(?:let|for (?:any|every|each|some|all)|fix|given)\s*\$?\s*$", re.I)
 _UNEXPANDED = re.compile(r"\\(?!Sigma|Pi|Delta|Theta|#|oplus|,|;|!|:|\s)[A-Za-z@]+")
 
 
@@ -343,6 +350,11 @@ def classes_in(tex):
         # `QIP\textsubscript{U}\mathsf{L}` is one name the paper coined, not a
         # containment involving L: a class does not start mid-word.
         if short and tex[:s].rstrip().endswith(("}", "_")): continue
+        # "Let $E$ be any EXP-complete language": a name being bound here is a
+        # variable, whatever font it is in. Only one-letter names are ambiguous
+        # this way; nobody writes "let PSPACE be".
+        if short and (re.match(r"\s*\$?\s*be\b", tex[e:]) or _BINDER.search(tex[max(0, s - 12):s])):
+            continue
         # Blackboard bold is for number sets, probability and expectation —
         # `\mathrm{\mathbb{E}}` is still an expectation, whatever wraps it.
         if "\\mathbb" in body: continue
