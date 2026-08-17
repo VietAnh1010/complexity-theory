@@ -16,6 +16,11 @@ Open Scope string_scope.
 Inductive verdict :=
   (** The fitted label is exactly the proved growth rate. *)
   | Tight
+  (** A matching upper bound is proved, but no matching lower bound, so
+      tightness is open. Distinct from [Tight]: claiming tightness would
+      require a lower bound that is sometimes false of the real program —
+      Python's Timsort is linear on sorted input where merge sort is not. *)
+  | SoundUpperOnly
   (** The fitted label is a correct upper bound but not the tight one, or it
       names size parameters the program does not actually depend on. *)
   | SoundLoose
@@ -45,6 +50,14 @@ Definition catalog : list entry := [
      proved_bound := "cost = n * n exactly";
      theorem_name := "S2389_139.fitted_label_is_tight";
      v            := Tight |} ;
+
+  {| solution_id  := "603_284";
+     problem_name := "1041_A. Heist";
+     fitted_label := "O(nlogn)";
+     size_param   := "N, the length of the list read";
+     proved_bound := "cost <= 2n*log2_up(n) + 2n, and cost >= n; gap open";
+     theorem_name := "S603_284.fitted_label_sound";
+     v            := SoundUpperOnly |} ;
 
   {| solution_id  := "1421_53";
      problem_name := "p02899 AtCoder Beginner Contest 142 - Go to School";
