@@ -77,7 +77,7 @@ Definition T (n : nat) : nat := cost (solve (List.seq 0 n)).
 
 Lemma T_eq : forall n, T n = 2 * n.
 Proof.
-  intros n. unfold T. rewrite cost_solve, List.seq_length. reflexivity.
+  intros n. unfold T. rewrite cost_solve, List.length_seq. reflexivity.
 Qed.
 
 (** ** The true class: one parameter, linear. *)

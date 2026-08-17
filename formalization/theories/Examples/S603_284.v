@@ -107,14 +107,14 @@ Lemma T_upper : forall n, T n <= 2 * Nat.log2_up n * n + 2 * n.
 Proof.
   intros n. unfold T.
   pose proof (cost_solve (List.seq 0 n)) as H.
-  rewrite List.seq_length in H. exact H.
+  rewrite List.length_seq in H. exact H.
 Qed.
 
 Lemma T_lower : forall n, n <= T n.
 Proof.
   intros n. unfold T.
   pose proof (cost_solve_lower (List.seq 0 n)) as H.
-  rewrite List.seq_length in H. exact H.
+  rewrite List.length_seq in H. exact H.
 Qed.
 
 Lemma log2_up_ge_1 : forall n, 2 <= n -> 1 <= Nat.log2_up n.

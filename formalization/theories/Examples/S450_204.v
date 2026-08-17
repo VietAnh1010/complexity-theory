@@ -48,7 +48,7 @@ Definition T (n : nat) : nat := cost (palindromifier (List.seq 0 n)).
 
 Lemma T_eq : forall n, T n = n.
 Proof.
-  intros n. unfold T. rewrite cost_palindromifier, List.seq_length.
+  intros n. unfold T. rewrite cost_palindromifier, List.length_seq.
   reflexivity.
 Qed.
 

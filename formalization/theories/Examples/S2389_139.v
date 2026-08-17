@@ -69,7 +69,7 @@ Definition T (n : nat) : nat := cost (beautiful (List.seq 0 n)).
 
 Lemma T_eq : forall n, T n = n * n.
 Proof.
-  intros n. unfold T. rewrite cost_beautiful, List.seq_length. reflexivity.
+  intros n. unfold T. rewrite cost_beautiful, List.length_seq. reflexivity.
 Qed.
 
 Theorem fitted_label_is_tight : Theta T (fun n => n * n).
