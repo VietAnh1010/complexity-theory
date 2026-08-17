@@ -1,4 +1,4 @@
-(** * S450_204 — verdict: UNSOUND_UNDER
+(** * S450_204 — verdict: NOT_AN_UPPER_BOUND
 
     time_complexity_test_set: solution_id 450_204, "1421_C. Palindromifier",
     fitted O(1).

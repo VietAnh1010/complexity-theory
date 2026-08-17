@@ -43,24 +43,32 @@ samples/manifest.jsonl   provenance for every sample formalized here
 
 ## Entries
 
-Five, each the shortest solution in its label class. That is **not** a random
-sample — see Limits.
+Six. The first five were each the shortest solution in their label class —
+**not** a random sample. `167_177` is the first drawn at random (see Method
+step 1). Selection method is recorded per row in `samples/manifest.jsonl`.
 
 | solution | problem | fitted | proved | verdict | file |
 |---|---|---|---|---|---|
 | `2389_139` | p04012 ABC 044 Beautiful Strings | `O(n**2)` | `cost = n²` exactly | Tight | `Examples/S2389_139.v` |
 | `603_284` | 1041_A Heist | `O(nlogn)` | `n ≤ cost ≤ 2n·log₂⌈n⌉ + 2n` | SoundUpperOnly | `Examples/S603_284.v` |
 | `1421_53` | p02899 ABC 142 Go to School | `O(n+m)` | `cost = 2n`, 2nd param spurious | SoundLoose | `Examples/S1421_53.v` |
-| `450_204` | 1421_C Palindromifier | `O(1)` | `cost = n` | UnsoundUnder | `Examples/S450_204.v` |
-| `5_100` | 622_A Infinite Sequence | `O(n)` | `cost·(cost+1) ≤ 2n` | UnsoundOver | `Examples/S5_100.v` |
+| `450_204` | 1421_C Palindromifier | `O(1)` | `cost = n` | NotUpperBound | `Examples/S450_204.v` |
+| `5_100` | 622_A Infinite Sequence | `O(n)` | `cost·(cost+1) ≤ 2n`, and ≥ 2^k on 2k+3 bits | Overstated | `Examples/S5_100.v` |
+| `167_177` † | 1184_A1 Heidi Learns Hashing | `O(n)` | `cost ≤ √n` | Overstated | `Examples/S167_177.v` |
+
+† drawn at random, not shortest-in-class.
 
 | verdict | meaning |
 |---|---|
 | `Tight` | label is exactly the proved growth |
 | `SoundUpperOnly` | matching upper bound proved, no matching lower bound |
 | `SoundLoose` | correct upper bound, not tight, or names a spurious size parameter |
-| `UnsoundOver` | program is asymptotically *cheaper* than the label |
-| `UnsoundUnder` | program is *more expensive* — the label is not an upper bound |
+| `Overstated` | label *is* a valid upper bound, but asymptotically too large |
+| `NotUpperBound` | program is more expensive than the label — the label is wrong |
+
+Only `NotUpperBound` means the label is incorrect. `Overstated` is a precision
+failure: O(n) does bound a √n loop, it just says nothing useful. Keeping these
+apart matters — four of the six labels are sound.
 
 `Catalog.v` is an index, not evidence: its `proved_bound` is a string that Rocq
 does not check against the theorem. `make check` only guarantees no proof is
@@ -74,8 +82,12 @@ admitted.
 python3 tools/bench.py fetch
 python3 tools/bench.py labels
 python3 tools/bench.py list --label 'O(n**2)' --max-chars 300
+python3 tools/bench.py sample --n 30 --seed 20260817   # reproducible draw
 python3 tools/bench.py scaffold 5_100
 ```
+
+Prefer `sample` over `list` for anything meant to support a rate. `list` sorts
+by length, which is how the first five were picked and why they cannot.
 
 `scaffold` writes a stub carrying the source solution and fitted label, and
 appends provenance to `samples/manifest.jsonl`. Add the file to `_CoqProject`
@@ -104,10 +116,13 @@ That gap is the whole attack surface; five known holes.
   modelling the list as a Rocq `list` makes each store O(n) and turns linear
   programs quadratic. `S1421_53.v` uses `nat -> nat` with pointwise update for
   this reason. Conversely Python slicing copies, and a free model understates.
-- **What "n" means.** In `S5_100.v` it is an integer's *value*, not a length:
-  √n in the value, exponential in bit length. The framework takes sizes from
-  the dataclass fields, so these files follow that — not the textbook
-  convention.
+- **What "n" means.** In `S5_100.v` and `S167_177.v` it is an integer's
+  *value*, not a length. `S5_100.v` now proves both readings:
+  `iters_sqrt` gives ~√(2n) in the value, and
+  `iters_exponential_in_bitlength` gives ≥ 2^k iterations on a (2k+3)-bit
+  input. Under one convention the loop beats the fitted O(n); under the other
+  it is not polynomial at all. The framework takes sizes from the dataclass
+  fields, so these files follow that — not the textbook convention.
 - **Worst case vs. measured family.** A label reflects the inputs the
   framework's expansion generated; a proof reflects the family quantified over.
   An apparent disagreement may be average- vs. worst-case.
@@ -139,10 +154,14 @@ when scaffolding; do the same and note it when pasting by hand.
 
 ## Limits
 
-- Five samples, each the shortest in its class. Short solutions skew toward
-  one-liners and I/O-bound code, plausibly where the framework's input
-  expansion does worst. **The 2-of-5 unsound rate says nothing about the
-  640-record test set** and must not be quoted as if it did.
+- **No rate is claimed.** Five of six were the shortest in their class, which
+  skews toward one-liners and I/O-bound code — plausibly where the framework's
+  input expansion does worst. Counts from these six say nothing about the
+  640-record test set. `bench.py sample` exists to fix this; one entry
+  (`167_177`) is drawn that way so far.
+- Both `Overstated` verdicts are √n loops labelled O(n), reached by different
+  routes (a triangular sum, an explicit `math.sqrt` bound). Suggestive of a
+  systematic blind spot, but two cases is not evidence of one.
 - `603_284` has an open gap between its proved lower and upper bounds,
   recorded rather than closed with a model artefact.
 - Time test set only. Space is untouched: the monad counts steps and would

@@ -214,19 +214,19 @@
   <div class="eyebrow">Rocq formalization · BigO(Bench) · status as of 17 Aug 2026</div>
   <h1>Fitted Labels vs. Proved Bounds</h1>
   <p class="lede">
-    Five solutions from BigO(Bench)'s time test set, modelled in Rocq and given
+    Six solutions from BigO(Bench)'s time test set, modelled in Rocq and given
     machine-checked complexity bounds — then compared against the label the
-    benchmark's dynamic inference framework fitted for each. Two of the five
-    labels are not upper bounds on the program's cost.
+    benchmark's dynamic inference framework fitted for each. One label is not
+    an upper bound at all; two more are sound but overstate a √n loop as O(n).
   </p>
 </header>
 
 <section>
   <div class="strip">
-    <div class="stat"><span class="n">5</span><span class="k">solutions formalized</span></div>
+    <div class="stat"><span class="n">6</span><span class="k">solutions formalized</span></div>
     <div class="stat"><span class="n">1</span><span class="k">label proved tight</span></div>
-    <div class="stat"><span class="n">2</span><span class="k">sound but imprecise</span></div>
-    <div class="stat"><span class="n">2</span><span class="k">label contradicted</span></div>
+    <div class="stat"><span class="n">4</span><span class="k">sound but imprecise</span></div>
+    <div class="stat"><span class="n">1</span><span class="k">not an upper bound</span></div>
     <div class="stat"><span class="n">0</span><span class="k">admitted proofs</span></div>
     <div class="stat"><span class="n">0</span><span class="k">axioms assumed</span></div>
   </div>
@@ -300,23 +300,32 @@
           <td>1421_C — Palindromifier</td>
           <td class="lbl">O(1)</td>
           <td class="lbl">cost = n</td>
-          <td><span class="chip v-under">UnsoundUnder</span></td>
+          <td><span class="chip v-under">NotUpperBound</span></td>
           <td class="file">Examples/S450_204.v</td>
+        </tr>
+        <tr>
+          <td class="id">167_177 <span title="drawn at random">&#9733;</span></td>
+          <td>1184_A1 — Heidi Learns Hashing (Easy)</td>
+          <td class="lbl">O(n)</td>
+          <td class="lbl">cost &le; &radic;n</td>
+          <td><span class="chip v-over">Overstated</span></td>
+          <td class="file">Examples/S167_177.v</td>
         </tr>
         <tr>
           <td class="id">5_100</td>
           <td>622_A — Infinite Sequence</td>
           <td class="lbl">O(n)</td>
           <td class="lbl">cost·(cost+1) ≤ 2n</td>
-          <td><span class="chip v-over">UnsoundOver</span></td>
+          <td><span class="chip v-over">Overstated</span></td>
           <td class="file">Examples/S5_100.v</td>
         </tr>
       </tbody>
     </table>
   </div>
   <p class="prose" style="font-size:0.88rem;color:var(--muted)">
-    Each was picked as the <em>shortest</em> solution in its label class. That
-    is not a random sample — see Limits.
+    &#9733; drawn at random (<code>bench.py sample --seed 20260817</code>). The
+    other five were each the <em>shortest</em> solution in their label class —
+    not a random sample. See Limits.
   </p>
 </section>
 
@@ -328,7 +337,7 @@
     <div class="case-head">
       <span class="sid">450_204</span>
       <span class="pname">1421_C — Palindromifier</span>
-      <span class="chip v-under">UnsoundUnder — the label is not an upper bound</span>
+      <span class="chip v-under">NotUpperBound — the label is not an upper bound</span>
     </div>
     <div class="panes">
       <div class="pane">
@@ -364,7 +373,7 @@ Theorem true_class :
     <div class="case-head">
       <span class="sid">5_100</span>
       <span class="pname">622_A — Infinite Sequence</span>
-      <span class="chip v-over">UnsoundOver — program is cheaper than the label</span>
+      <span class="chip v-over">Overstated — program is cheaper than the label</span>
     </div>
     <div class="panes">
       <div class="pane">
@@ -391,10 +400,20 @@ print(n)</pre>
 Theorem iters_sqrt : forall n,
   iters n * (iters n + 1) &lt;= 2 * n.
 
+Theorem iters_lower : forall n j,
+  j*j + 2*j + 1 &lt; n -&gt; j &lt;= iters n.
+
+Theorem iters_exponential_in_bitlength :
+  forall k, 1 &lt;= k -&gt;
+  2 ^ k &lt;= iters (2 ^ (2*k+2)).
+
 Theorem fitted_label_not_tight :
   ~ BigOmega iters (fun n =&gt; n).
 
-Example iters_5050 : iters 5050 = 99.</pre>
+Example iters_table :
+  (iters 64, iters 256,
+   iters 1024, iters 4096)
+  = (10, 22, 44, 90).</pre>
       </div>
     </div>
     <div class="note">
@@ -402,12 +421,72 @@ Example iters_5050 : iters 5050 = 99.</pre>
       subtracts 1, 2, 3, … so it halts after about √(2n) steps. At n = 5050 that
       is 99 iterations, not 5050 — checked by computation.
       <br><br>
-      <strong>The caveat that makes this a discussion point:</strong> here “n” is
-      the integer's <em>value</em>, not a length. Measured against the input's
-      bit length this loop is <em>exponential</em>, not sublinear. The framework
-      and this proof both use the value, so the comparison is fair — but neither
-      uses the textbook convention. <em>Which convention should the dataset
-      adopt?</em>
+      <strong>Both sizing conventions are now proved, not asserted.</strong>
+      Here “n” is the integer's <em>value</em>, not a length.
+      <code>iters_sqrt</code> gives ~√(2n) in the value;
+      <code>iters_exponential_in_bitlength</code> gives at least 2<sup>k</sup>
+      iterations on a (2k+3)-bit input. So under one convention the loop
+      <em>beats</em> the fitted O(n), and under the other it is
+      <em>not polynomial at all</em>. The conventions do not merely shift
+      constants — they decide this record's verdict.
+      <em>Which one should the dataset use?</em>
+    </div>
+  </div>
+
+  <!-- ===================== 167_177 ===================== -->
+  <div class="case" data-v="over">
+    <div class="case-head">
+      <span class="sid">167_177 &#9733;</span>
+      <span class="pname">1184_A1 — Heidi Learns Hashing (Easy) · drawn at random</span>
+      <span class="chip v-over">Overstated — same failure, independent program</span>
+    </div>
+    <div class="panes">
+      <div class="pane">
+        <div class="eyebrow">Python source</div>
+<pre>import math
+n = int(input())
+x = math.floor(math.sqrt(n))
+p = 0
+for i in range(1, x):
+  if (n-1-i**2-i)%(2*i) == 0 :
+    print(i, (n-1-i**2-i)//(2*i))
+    p = 1
+    break
+if not p:
+  print("NO")</pre>
+      </div>
+      <div class="pane">
+        <div class="eyebrow">Cost model</div>
+        <p>One tick per loop iteration. <code>math.floor(math.sqrt(n))</code> is
+        <code>Nat.sqrt n</code> in Rocq — exactly floor of the real root — so
+        the loop bound is √n, not n.</p>
+        <p>Flagged, not modelled: <code>i**2</code> and the <code>%</code> /
+        <code>//</code> are O(1) only while values fit a machine word.</p>
+      </div>
+      <div class="pane">
+        <div class="eyebrow">Rocq proves</div>
+<pre>Theorem T_upper : forall n,
+  T n &lt;= Nat.sqrt n.
+
+Theorem fitted_label_sound :
+  BigO T (fun n =&gt; n).
+
+Theorem fitted_label_not_tight :
+  ~ BigOmega T (fun n =&gt; n).
+
+Example T_10000 : T 10000 &lt;= 99.</pre>
+      </div>
+    </div>
+    <div class="note">
+      <strong>A second √n loop labelled O(n) — and this one was drawn at
+      random.</strong> It reaches √n by an explicit <code>math.sqrt</code>
+      bound where 5_100 reaches it by summing 1+2+3+…, so these are two
+      independent programs hitting the same blind spot, not one bug seen twice.
+      At n = 10,000 the loop runs 99 times, not 10,000 — computed, and the
+      bound is attained rather than merely available.
+      <br><br>
+      Two cases is still not evidence of a systematic gap. It is the reason to
+      go and measure one.
     </div>
   </div>
 
@@ -591,11 +670,13 @@ Theorem fitted_label_is_tight :
   <h2>Limits — read before quoting any number</h2>
   <div class="callout warn">
     <p>
-      <strong>The 2-of-5 unsound rate says nothing about the 640-record test
-      set.</strong> These five were chosen as the shortest solution in each label
-      class. Short solutions skew heavily toward one-liners and I/O-bound code,
-      which is plausibly exactly where the framework's input expansion does
-      worst. A defensible rate needs a random sample.
+      <strong>No rate is being claimed, and none should be read off this
+      page.</strong> Five of the six were chosen as the shortest solution in
+      their label class — a selection that skews heavily toward one-liners and
+      I/O-bound code, plausibly exactly where the framework's input expansion
+      does worst. One entry (167_177) is drawn at random; that is a start, not
+      a sample. <code>bench.py sample --seed 20260817</code> produces a
+      reproducible draw when someone wants to measure this properly.
     </p>
   </div>
   <div class="prose">
@@ -606,8 +687,18 @@ Theorem fitted_label_is_tight :
         the ticks go is a judgement call, stated in each file's header.
       </li>
       <li>
+        <strong>“Overstated” is not “wrong”.</strong> Only 450_204's label
+        fails to bound the program. O(n) genuinely does bound a √n loop — it
+        just says nothing useful. Four of the six labels are sound.
+      </li>
+      <li>
         <strong>One case has an open gap</strong> (603_284: Ω(n) to O(n log n)),
         recorded rather than closed with a model artefact.
+      </li>
+      <li>
+        <strong>Two √n cases is suggestive, not systematic.</strong> They are
+        independent programs, which is what makes it worth measuring — but two
+        is not evidence of a pattern.
       </li>
       <li>
         <strong>Time test set only.</strong> Space is untouched — the monad
@@ -628,15 +719,26 @@ Theorem fitted_label_is_tight :
   <div class="prose">
     <ul>
       <li>
-        <strong>Is the disagreement rate worth measuring properly?</strong> A
-        random sample of, say, 30 across the 11 label classes would give a
-        defensible number. That is the difference between an anecdote and a
-        result.
+        <strong>Is the disagreement rate worth measuring properly?</strong> The
+        seeded sampler is in place; a draw of ~30 across the 11 label classes
+        would give a defensible number. Roughly a day of proof work per
+        non-trivial case is the cost estimate to weigh against it. That is the
+        difference between an anecdote and a result.
       </li>
       <li>
-        <strong>What should “n” mean?</strong> 5_100 turns on this. Value-based
-        sizing follows the benchmark; bit-length sizing follows the textbook and
-        would flip the verdict.
+        <strong>Are √n loops the blind spot?</strong> Both Overstated cases are
+        √n-bounded loops on integer <em>values</em>. If the framework's input
+        expansion scales a value linearly, a √n response curve is easy to read
+        as linear. Cheap to test directly against the framework rather than by
+        proof.
+      </li>
+      <li>
+        <strong>What should “n” mean?</strong> Now settled as a fact and open
+        only as a choice: 5_100 carries theorems for <em>both</em> readings —
+        ~√(2n) by value, ≥ 2<sup>k</sup> iterations on 2k+3 bits. Value-based
+        sizing follows the benchmark's dataclass; bit-length follows the
+        textbook and flips the verdict from “cheaper than labelled” to “not
+        polynomial”. Which does the dataset want?
       </li>
       <li>
         <strong>How far do we model the standard library?</strong> Timsort's

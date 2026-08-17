@@ -18,6 +18,7 @@ import argparse
 import collections
 import json
 import os
+import random
 import re
 import sys
 import urllib.request
@@ -99,6 +100,28 @@ def cmd_list(args):
     for size, sid, label, name in rows[: args.limit]:
         print(f"{size:6d}  {sid:14s} {label:18s} {name[:52]}")
     print(f"-- {len(rows)} match, showing {min(len(rows), args.limit)}")
+
+
+def cmd_sample(args):
+    """Draw a reproducible random sample.
+
+    The five examples formalized first were each the SHORTEST solution in
+    their label class, which skews hard toward one-liners. Any claim about how
+    often the fitted labels are wrong needs a sample drawn like this one
+    instead: seeded, uniform over the split, and fixed before anyone looks at
+    the solutions.
+    """
+    rows = [(get(r, "solution_id"), get(r, LABEL_KEY[args.set]),
+             len(r.get("solution_code") or ""), get(r, "problem_name"))
+            for r in records(args.set)]
+    rows.sort()  # deterministic order before seeding
+    rng = random.Random(args.seed)
+    picked = rng.sample(rows, min(args.n, len(rows)))
+    print(f"# seed={args.seed} set={args.set} n={len(picked)} of {len(rows)}")
+    for sid, label, size, name in picked:
+        print(f"{sid:14s} {label:18s} {size:6d}  {name[:48]}")
+    c = collections.Counter(label for _, label, _, _ in picked)
+    print("# label mix: " + ", ".join(f"{k}={v}" for k, v in c.most_common()))
 
 
 def find(which, solution_id):
@@ -231,6 +254,11 @@ def main():
     p.add_argument("--max-chars", type=int, default=0)
     p.add_argument("--limit", type=int, default=30)
     p.set_defaults(fn=cmd_list)
+
+    p = sub.add_parser("sample")
+    p.add_argument("--n", type=int, default=30)
+    p.add_argument("--seed", type=int, default=20260817)
+    p.set_defaults(fn=cmd_sample)
 
     p = sub.add_parser("show")
     p.add_argument("solution_id")

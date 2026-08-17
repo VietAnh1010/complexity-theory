@@ -5,6 +5,7 @@ theories/Asymptotic.v
 theories/MergeSort.v
 theories/Catalog.v
 theories/Examples/S2389_139.v
+theories/Examples/S167_177.v
 theories/Examples/S603_284.v
 theories/Examples/S1421_53.v
 theories/Examples/S450_204.v

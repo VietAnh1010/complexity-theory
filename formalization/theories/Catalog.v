@@ -23,10 +23,10 @@ Inductive verdict :=
   | SoundLoose
   (** Program is asymptotically CHEAPER than the label. The label still upper
       bounds the cost, so this is a precision failure, not a correctness one. *)
-  | UnsoundOver
+  | Overstated
   (** Program is asymptotically MORE EXPENSIVE than the label. The label is not
       an upper bound at all. *)
-  | UnsoundUnder.
+  | NotUpperBound.
 
 Record entry := {
   solution_id  : string;
@@ -48,6 +48,16 @@ Definition catalog : list entry := [
      source_file  := "theories/Examples/S2389_139.v";
      theorem_name := "S2389_139.fitted_label_is_tight";
      v            := Tight |} ;
+
+  (* First entry drawn at random rather than shortest-in-class. *)
+  {| solution_id  := "167_177";
+     problem_name := "1184_A1. Heidi Learns Hashing (Easy)";
+     fitted_label := "O(n)";
+     size_param   := "the numeric VALUE of the input integer";
+     proved_bound := "cost <= sqrt(n); not Omega(n)";
+     source_file  := "theories/Examples/S167_177.v";
+     theorem_name := "S167_177.fitted_label_not_tight";
+     v            := Overstated |} ;
 
   {| solution_id  := "603_284";
      problem_name := "1041_A. Heist";
@@ -74,7 +84,7 @@ Definition catalog : list entry := [
      proved_bound := "cost = n; not O(1)";
      source_file  := "theories/Examples/S450_204.v";
      theorem_name := "S450_204.fitted_label_unsound";
-     v            := UnsoundUnder |} ;
+     v            := NotUpperBound |} ;
 
   {| solution_id  := "5_100";
      problem_name := "622_A. Infinite Sequence";
@@ -83,5 +93,5 @@ Definition catalog : list entry := [
      proved_bound := "cost*(cost+1) <= 2n, i.e. ~sqrt(2n); not Omega(n)";
      source_file  := "theories/Examples/S5_100.v";
      theorem_name := "S5_100.fitted_label_not_tight";
-     v            := UnsoundOver |}
+     v            := Overstated |}
 ].

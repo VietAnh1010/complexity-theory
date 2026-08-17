@@ -1,4 +1,4 @@
-(** * S5_100 — verdict: UNSOUND_OVER
+(** * S5_100 — verdict: OVERSTATED
 
     time_complexity_test_set: solution_id 5_100, "622_A. Infinite Sequence",
     fitted O(n).
@@ -86,6 +86,81 @@ Theorem iters_sqrt : forall n, iters n * (iters n + 1) <= 2 * n.
 Proof.
   intros n. unfold iters, run. pose proof (loop_bound n n 1) as H. nia.
 Qed.
+
+(** ** A matching lower bound.
+
+    [iters_sqrt] alone does not pin the cost down: it is an upper bound, and
+    every upper bound is satisfied by a loop that exits immediately. To say
+    the cost really is about sqrt(n) — and, below, that it is exponential in
+    the input's bit length — we need the loop to be shown running at least
+    that many times.
+
+    After [j] iterations from state [(n, k)] the loop has consumed
+    [j*k + (0 + 1 + ... + (j-1))], which is at most [j*k + j*j], and the guard
+    is [k + j < n_j]. So [j*k + j*j + k + j < n] is a sufficient condition for
+    [j] full iterations. It is not the sharpest such condition; it is the one
+    that stays polynomial and lets [nia] close the step. *)
+
+Lemma iters_lower_gen : forall j fuel n k,
+    j <= fuel -> j * k + j * j + k + j < n -> j <= cost (loop fuel n k).
+Proof.
+  induction j as [| j' IH]; intros fuel n k Hf Hc; [lia |].
+  destruct fuel as [| f]; [lia |].
+  simpl. destruct (Nat.ltb_spec k n) as [Hlt | Hge]; [| nia].
+  rewrite cost_tick.
+  assert (Hj : j' <= cost (loop f (n - k) (S k))).
+  { apply IH; [lia |]. nia. }
+  lia.
+Qed.
+
+Theorem iters_lower : forall n j, j * j + 2 * j + 1 < n -> j <= iters n.
+Proof.
+  intros n j Hc. unfold iters, run.
+  apply iters_lower_gen; nia.
+Qed.
+
+(** ** The sizing convention, as a theorem rather than a remark.
+
+    Everything above measures the input by its numeric VALUE, which is what
+    the framework's dataclass does. Measured by BIT LENGTH the same loop is
+    exponential — [2 ^ (2*k+2)] is a [2*k+3]-bit number on which the loop runs
+    at least [2 ^ k] times.
+
+    So the two conventions do not merely shift constants: under one the loop
+    beats the fitted O(n), under the other it is not polynomial at all. Which
+    convention the dataset should use is a design question, not a bug — but it
+    decides this record's verdict. *)
+
+Lemma pow_2k2 : forall k, 2 ^ (2 * k + 2) = 4 * (2 ^ k * 2 ^ k).
+Proof.
+  intros k.
+  replace (2 * k + 2) with (k + k + 2) by lia.
+  rewrite !Nat.pow_add_r.
+  simpl (2 ^ 2). ring.
+Qed.
+
+Theorem iters_exponential_in_bitlength : forall k,
+    1 <= k -> 2 ^ k <= iters (2 ^ (2 * k + 2)).
+Proof.
+  intros k Hk. apply iters_lower.
+  rewrite pow_2k2.
+  assert (H2 : 2 <= 2 ^ k) by (rewrite <- (Nat.pow_1_r 2) at 1;
+                               apply Nat.pow_le_mono_r; lia).
+  nia.
+Qed.
+
+(** The bit length of the witness, so the exponent is legible: [2 ^ (2*k+2)]
+    occupies [2*k+3] bits, and the loop runs at least [2 ^ k] times on it. *)
+Lemma bitlength_witness : forall k, Nat.log2 (2 ^ (2 * k + 2)) + 1 = 2 * k + 3.
+Proof. intros k. rewrite Nat.log2_pow2 by lia. lia. Qed.
+
+(** Computed values, to show neither bound is vacuous. These track sqrt(2n)
+    closely: sqrt(2*4096) = 90.5 against 90 measured. Read as bit lengths,
+    these are the k = 2, 3, 4, 5 instances of the theorem above — 7, 9, 11 and
+    13-bit inputs on which the loop runs 10, 22, 44 and 90 times. *)
+Example iters_table :
+  (iters 64, iters 256, iters 1024, iters 4096) = (10, 22, 44, 90).
+Proof. vm_compute. reflexivity. Qed.
 
 (** ** The disagreement, as a theorem: the cost is not Omega(n), so O(n) is
        not a tight label. *)
