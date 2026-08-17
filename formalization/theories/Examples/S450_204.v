@@ -1,30 +1,23 @@
-(** * S450_204 — verdict: UNSOUND_UNDER (the program is more expensive than
-      the fitted label says)
+(** * S450_204 — verdict: UNSOUND_UNDER
 
-    BigO(Bench) time_complexity_test_set
-      solution_id   450_204
-      problem_name  1421_C. Palindromifier
-      fitted label  O(1)
+    time_complexity_test_set: solution_id 450_204, "1421_C. Palindromifier",
+    fitted O(1).
 
-    Source solution, verbatim:
+    Source, verbatim:
 
       print('3 L 2 R 2 R',len(input())*2-1)
 
-    COST MODEL. [len] on an existing Python [str] is O(1) and is charged
-    nothing. But [input()] must read the line, and that is linear in the
-    line's length — one tick per character consumed. Nothing else in the
-    program depends on the input.
+    COST MODEL. [len] on an existing Python [str] is O(1) and charged nothing,
+    but [input()] must read the line: one tick per character. Nothing else
+    depends on the input.
 
-    So the total cost is exactly the input length, and the fitted O(1) is
-    wrong: it is not a loose bound, it is not an upper bound at all. The
-    likely cause is that the framework's input expansion did not scale the
-    single line this problem reads, so runtime looked flat.
+    Total cost is exactly the input length, so the fitted O(1) is not a loose
+    bound — it is not an upper bound at all. Likely cause: the framework's
+    input expansion did not scale the single line this problem reads, so
+    runtime looked flat. Still consistent with the paper's framing that labels
+    are fitted performance profiles, not theorems. *)
 
-    This is the failure mode worth cataloguing: a label that is unsound rather
-    than imprecise. Note it is still consistent with the paper's own framing —
-    labels are fitted performance profiles, not theorems. *)
-
-From Coq Require Import List Arith Lia.
+From Stdlib Require Import List Arith Lia.
 Import ListNotations.
 From BigOBench Require Import Cost Asymptotic.
 

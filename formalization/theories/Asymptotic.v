@@ -1,22 +1,17 @@
 (** * Asymptotic.v — big-O over [nat], univariate and bivariate.
 
-    Deliberately the naive definition. Two warnings before you build on it.
+    Deliberately the naive definition. Two limits:
 
-    1. The bivariate definition below uses the *product* filter: [n] and [m]
-       both go to infinity independently. This is the definition that makes
-       [O(n*m)] and [O(n+m)] mean what you expect, but it is NOT the only
-       reasonable one, and multivariate big-O has real pitfalls — see
-       Gueneau/Chargueraud/Pottier, "A Fistful of Dollars" (ESOP 2018), which
-       formalises this properly with filters. If the project outgrows this
-       file, that is the design to copy.
+    - [BigO2] uses the product filter ([n] and [m] to infinity independently).
+      That makes [O(n*m)] and [O(n+m)] mean what you expect, but multivariate
+      big-O has real pitfalls; Gueneau/Chargueraud/Pottier, "A Fistful of
+      Dollars" (ESOP 2018) does it properly with filters. Copy that if this
+      file is outgrown.
+    - Bounds are over [nat -> nat], so they cannot mention the shape of an
+      input, only its size. Each example fixes a size-indexed family and says
+      so when the worst case is not attained on it. *)
 
-    2. [BigO f g] here quantifies over functions [nat -> nat], so it cannot
-       express a bound that depends on the *shape* of an input rather than
-       its size. Every example therefore fixes a family of inputs indexed by
-       size and states its bound over that family. Where the worst case is
-       not attained on that family, the example says so. *)
-
-From Coq Require Import Arith Lia.
+From Stdlib Require Import Arith Lia.
 
 Definition BigO (f g : nat -> nat) : Prop :=
   exists c n0, forall n, n0 <= n -> f n <= c * g n.

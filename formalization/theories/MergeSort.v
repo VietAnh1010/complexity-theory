@@ -1,30 +1,17 @@
 (** * MergeSort.v — a sort in the cost monad, with an O(n log n) bound.
 
-    Needed by any example whose Python calls [sort] or [sorted]. Kept separate
-    from the examples because it is reusable and because it is the first piece
-    of real infrastructure here.
+    Covers any solution calling [sort] or [sorted].
 
-    THREE DESIGN NOTES.
+    - Depth, not fuel. [msort] takes a depth [d] with precondition
+      [length l <= 2 ^ d], so the recurrence closes by induction on [d] alone
+      and [log2_up] appears only at [msort_top].
+    - Adequacy is required, not decoration. [fun l => ret l] and
+      [fun _ => ret []] both cost nothing and satisfy every upper bound, so
+      [msort_perm] and [msort_sorted] are what make [cost_msort] mean anything.
+    - [merge] is a nested fix and [simpl] unfolds it unpredictably. Proofs go
+      through the [merge_nil_l / merge_nil_r / merge_cons] equations. *)
 
-    Depth, not fuel. [msort] recurses on a depth [d] with the precondition
-    [length l <= 2 ^ d]. The recurrence then closes by induction on [d] alone,
-    and [log2_up] appears exactly once, when the top-level call instantiates
-    [d := log2_up (length l)]. Recursing on fuel instead would force log
-    reasoning inside the induction, which is much worse.
-
-    Adequacy. An upper bound on cost is vacuous if the function does not do
-    the work: [fun l => ret l] costs nothing and satisfies every upper bound,
-    and so does [fun _ => ret []]. So [msort_perm] and [msort_sorted] below
-    are not decoration — they are what makes [cost_msort] mean anything. The
-    first rules out dropping elements, the second rules out not sorting.
-
-    Equation lemmas. [merge] is a nested fix, and [simpl] on it unfolds
-    unpredictably — sometimes reducing [cost (ret _)] away before a rewrite
-    can fire, sometimes not. Every proof below goes through the [merge_nil_l /
-    merge_nil_r / merge_cons / msort_cons2] equations instead, which are all
-    [reflexivity] but fire predictably. *)
-
-From Coq Require Import List Arith Lia Sorting.Sorted Sorting.Permutation.
+From Stdlib Require Import List Arith Lia Sorting.Sorted Sorting.Permutation.
 Import ListNotations.
 From BigOBench Require Import Cost Asymptotic.
 

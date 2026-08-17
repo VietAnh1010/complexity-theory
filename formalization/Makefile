@@ -1,10 +1,13 @@
-COQMAKEFILE := Makefile.coq
+# Rocq 9.x. The binaries were renamed at 9.0: `rocq makefile` / `rocq compile`
+# replace `coq_makefile` / `coqc`.
+ROCQ ?= rocq
+COQMAKEFILE := Makefile.rocq
 
 all: $(COQMAKEFILE)
 	@$(MAKE) -f $(COQMAKEFILE)
 
 $(COQMAKEFILE): _CoqProject
-	coq_makefile -f _CoqProject -o $(COQMAKEFILE)
+	$(ROCQ) makefile -f _CoqProject -o $(COQMAKEFILE)
 
 # Fails loudly if any Admitted/admit survived. The catalog is only worth
 # reading if every entry it points at is actually proved.

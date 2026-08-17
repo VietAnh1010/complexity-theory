@@ -1,13 +1,10 @@
-(** * S1421_53 — verdict: SOUND_LOOSE (the label holds but names a size
-      parameter the program does not have)
+(** * S1421_53 — verdict: SOUND_LOOSE
 
-    BigO(Bench) time_complexity_test_set
-      solution_id   1421_53
-      problem_name  p02899 AtCoder Beginner Contest 142 - Go to School
-      fitted label  O(n+m)
+    time_complexity_test_set: solution_id 1421_53,
+    "p02899 AtCoder Beginner Contest 142 - Go to School", fitted O(n+m).
 
-    Source solution (one space added after "print(" — the Python is
-    "print(*B)", and that "(*" would open a nested Coq comment):
+    Source (one space added after "print(" — the Python is "print(*B)", and
+    that "(*" would open a nested Rocq comment):
 
       N = int(input())
       A = [int(i) for i in input().split()]
@@ -16,21 +13,18 @@
         B[A[i]-1]=i+1
       print( *B)
 
-    COST MODEL. One tick per element parsed by the list comprehension, and one
-    per iteration of the [for]. B is a Python list, so [B[k]=v] is O(1) — it
-    is modelled as a function [nat -> nat] with pointwise update, NOT as a
-    Coq list. Modelling it as a list would make each write O(n) and would
-    "prove" this program quadratic, which is the single easiest way to get a
-    wrong answer out of this whole setup. Allocating [B=[0]*N] is charged
-    nothing; adding N ticks for it changes no constant that matters.
+    COST MODEL. One tick per element parsed, one per iteration of the [for].
+    B is a Python list, so [B[k]=v] is O(1): it is modelled as [nat -> nat]
+    with pointwise update, NOT as a Rocq list. Modelling it as a list would
+    make each store O(n) and "prove" this program quadratic. Allocating
+    [B=[0]*N] is charged nothing.
 
-    There is only one input size here: N, which is also the length of A. The
-    fitted O(n+m) is therefore sound — O(n) is contained in O(n+m) — but its
-    second parameter is spurious. Worth cataloguing separately from a wrong
-    label: it says something about how the framework picks size variables from
-    the dataclass, not about the program. *)
+    There is one input size, N, which is also the length of A. The fitted
+    O(n+m) is sound — O(n) is contained in it — but its second parameter is
+    spurious. That is a fact about how size variables are picked from the
+    dataclass, not about the program. *)
 
-From Coq Require Import List Arith Lia.
+From Stdlib Require Import List Arith Lia.
 Import ListNotations.
 From BigOBench Require Import Cost Asymptotic.
 

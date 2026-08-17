@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Browse the BigO(Bench) test sets and scaffold a Coq example file.
+"""Browse the BigO(Bench) test sets and scaffold a Rocq example file.
 
 Stdlib only, no keys, matching the repo's sourcing rules. The test sets are
 downloaded once into .cache/ (gitignored); nothing large is committed.
@@ -123,7 +123,7 @@ def cmd_show(args):
         print(r.get("description", "MISSING"))
 
 
-# Coq's lexer nests comments, so a Python "(*" (unpacking inside a call, as in
+# Rocq's lexer nests comments, so a Python "(*" (unpacking inside a call, as in
 # `print(*B)`) opens a comment that never closes, and "*)" closes the doc
 # comment early. Both appear in real Code Contests solutions. A space breaks
 # the token without changing what a reader sees.
@@ -150,12 +150,12 @@ STUB = '''(** * S{ident} — verdict: TODO
       - what "n" is: a collection length, or the VALUE of an integer?
       - which Python primitives are not O(1) (str.count, slicing, "in" on a
         list, sorted, int arithmetic on bignums)
-      - which are O(1) and must NOT be modelled as Coq lists (list stores,
+      - which are O(1) and must NOT be modelled as Rocq lists (list stores,
         dict get/put)
       - whether the worst case is attained on the size-indexed family below
 *)
 
-From Coq Require Import List Arith Lia.
+From Stdlib Require Import List Arith Lia.
 Import ListNotations.
 From BigOBench Require Import Cost Asymptotic.
 
@@ -186,7 +186,7 @@ def cmd_scaffold(args):
     raw = r.get("solution_code") or ""
     clean = sanitize(raw)
     note = ("" if clean == raw else
-            ' (spaces inserted in "(*"/"*)" for Coq\'s lexer)')
+            ' (spaces inserted in "(*"/"*)" for Rocq\'s lexer)')
     body = "\n".join("      " + ln for ln in clean.splitlines())
 
     os.makedirs(EXAMPLES, exist_ok=True)

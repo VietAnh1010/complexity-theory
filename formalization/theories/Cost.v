@@ -1,17 +1,15 @@
-(** * Cost.v — a writer monad in [nat], for defining an algorithm and its
-      cost in one place.
+(** * Cost.v — a writer monad in [nat]: an algorithm and its cost, defined once.
 
-    The point of the monad is soundness of the *setup*, not of the proofs.
-    If a cost function is written as a separate definition next to the
-    algorithm, nothing connects the two: [cost := fun _ => 0] typechecks and
-    every bound becomes provable. Here the cost is a projection of the same
-    term that computes the value, so it cannot drift from the code.
+    A separately-written [cost] function has nothing tying it to the algorithm
+    it claims to measure, and [cost := fun _ => 0] would prove every bound.
+    Here [cost] is a projection of the term that computes the value, so it
+    cannot drift.
 
-    What the monad does NOT give you is fidelity to Python. Where the [tick]s
-    go is a modelling decision, and it is the only place unsoundness can now
-    enter. Every example file states its cost model in a header comment. *)
+    What this does NOT give is fidelity to Python: where the [tick]s go is a
+    modelling decision, stated in each example's header, and it is the only
+    place unsoundness can still enter. *)
 
-From Coq Require Import Arith Lia.
+From Stdlib Require Import Arith Lia.
 
 (** A computation returning [A] together with the number of steps it took. *)
 Record M (A : Type) : Type := Mk { val : A ; cost : nat }.

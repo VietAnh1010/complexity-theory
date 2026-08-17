@@ -1,12 +1,9 @@
-(** * S5_100 — verdict: UNSOUND_OVER (the program is cheaper than the fitted
-      label says, by a whole square root)
+(** * S5_100 — verdict: UNSOUND_OVER
 
-    BigO(Bench) time_complexity_test_set
-      solution_id   5_100
-      problem_name  622_A. Infinite Sequence
-      fitted label  O(n)
+    time_complexity_test_set: solution_id 5_100, "622_A. Infinite Sequence",
+    fitted O(n).
 
-    Source solution, verbatim:
+    Source, verbatim:
 
       n=int(input())
       k=1
@@ -17,31 +14,22 @@
 
     COST MODEL. One tick per loop iteration; the body is O(1) arithmetic.
 
-    THE INTERESTING PART. This is the example that shows why "what is n?" is
-    the crux of the whole exercise. Here [n] is the *value* of a single
-    integer, not the length of a collection. The loop subtracts 1, 2, 3, ...
-    so it stops after about sqrt(2n) iterations, not n. The fitted O(n) is an
-    upper bound but is off by a square root.
+    WHAT "n" IS. The value of a single integer, not the length of a
+    collection. The loop subtracts 1, 2, 3, ..., so it stops after about
+    sqrt(2n) iterations and the fitted O(n) is off by a square root. Two
+    caveats that decide whether this counts:
 
-    Two caveats stated up front, because they decide whether this counts as a
-    finding:
+    - Against the input's BIT LENGTH this loop is exponential, not sublinear.
+      The framework and this file both use the numeric value, so the
+      comparison is fair, but neither uses the textbook convention.
+    - The bound is stated as [c * (c + 1) <= 2 * n] — exactly "c is at most
+      about sqrt(2n)" with no [sqrt] on [nat], avoiding rounding questions.
 
-    - Measured against the *bit length* of the input, this loop is
-      exponential, not sublinear. The framework and this file both use the
-      numeric value as the size parameter. That is a modelling choice, and it
-      is the same choice in both, so the comparison is fair — but neither is
-      the textbook convention.
+    TERMINATION. Rocq needs structural recursion, so the loop takes fuel.
+    Fuel makes a cost bound trivially satisfiable by truncation, so
+    [run_finishes] proves the fuel is never exhausted at the call site. *)
 
-    - The bound is stated square-root-free, as [c * (c + 1) <= 2 * n], which
-      is exactly "c is at most about sqrt(2n)" without needing a [sqrt] on
-      [nat]. That avoids the rounding questions entirely.
-
-    TERMINATION. Coq needs the recursion to be structural, so the loop takes a
-    fuel argument. Fuel makes the cost bound trivially satisfiable by
-    truncating the loop, so [loop_adequate] below proves the fuel is never
-    exhausted at the call site: the loop really does exit through its guard. *)
-
-From Coq Require Import Arith Lia.
+From Stdlib Require Import Arith Lia.
 From BigOBench Require Import Cost Asymptotic.
 
 (** The bool tracks whether the loop exited through its guard (true) or ran

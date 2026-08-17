@@ -1,11 +1,9 @@
-(** * S2389_139 — verdict: TIGHT (the fitted label is right)
+(** * S2389_139 — verdict: TIGHT
 
-    BigO(Bench) time_complexity_test_set
-      solution_id   2389_139
-      problem_name  p04012 AtCoder Beginner Contest 044 - Beautiful Strings
-      fitted label  O(n**2)
+    time_complexity_test_set: solution_id 2389_139,
+    "p04012 AtCoder Beginner Contest 044 - Beautiful Strings", fitted O(n**2).
 
-    Source solution, verbatim:
+    Source, verbatim:
 
       s=input()
       ch=0
@@ -14,17 +12,15 @@
           ch=1
       print("YNeos"[ch::2])
 
-    COST MODEL. One tick per character comparison performed by [str.count],
-    which scans the whole string; the outer [for] is a single pass and is
-    charged nothing beyond the counts it triggers. Characters are modelled as
-    [nat] with decidable equality, strings as [list nat]. Input reading is not
-    charged here (it is O(n) and would not change the class).
+    COST MODEL. One tick per character compared by [str.count], which scans
+    the whole string; the outer [for] is charged only through the counts it
+    triggers. Strings are [list nat]. Input reading is not charged — linear,
+    and would not change the class.
 
-    This is the honest case: the fitted O(n^2) is not just an upper bound, it
-    is exact, and the cost does not depend on the string's contents — so the
-    size-indexed family below loses nothing. *)
+    Cost is independent of the string's contents, so the size-indexed family
+    below loses nothing. *)
 
-From Coq Require Import List Arith Lia.
+From Stdlib Require Import List Arith Lia.
 Import ListNotations.
 From BigOBench Require Import Cost Asymptotic.
 

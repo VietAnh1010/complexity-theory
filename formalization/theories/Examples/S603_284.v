@@ -1,12 +1,9 @@
-(** * S603_284 — verdict: SOUND_UPPER_ONLY (matching upper bound proved;
-      tightness deliberately not claimed)
+(** * S603_284 — verdict: SOUND_UPPER_ONLY
 
-    BigO(Bench) time_complexity_test_set
-      solution_id   603_284
-      problem_name  1041_A. Heist
-      fitted label  O(nlogn)
+    time_complexity_test_set: solution_id 603_284, "1041_A. Heist",
+    fitted O(nlogn).
 
-    Source solution, verbatim:
+    Source, verbatim:
 
       n=int(input())
       l=list(map(int,input().split()))
@@ -17,31 +14,16 @@
       print(x)
 
     COST MODEL. One tick per element parsed, the sort as modelled in
-    MergeSort.v, and one tick per iteration of the final pairwise scan. The
-    list is read sequentially by index, which is O(1) per access in Python, so
-    the scan is linear.
+    MergeSort.v, one tick per iteration of the pairwise scan (indexed access
+    is O(1) in Python, so the scan is linear).
 
-    WHY THE VERDICT IS NOT "Tight". Two separate gaps, and they point in
-    opposite directions:
+    NOT "Tight", deliberately. The upper bound transfers: CPython's [sort] is
+    Timsort, also O(n log n) worst case. The matching LOWER bound does not:
+    Timsort is Theta(n) on already-sorted input where merge sort is not, so
+    Omega(n log n) would be an artefact of the model and false of the program.
+    Proved here: Omega(n) <= cost <= O(n log n), with the gap left open. *)
 
-    - Upper bound. Proved: O(n log n), matching the label. CPython's [sort] is
-      Timsort, whose worst case is also O(n log n), so modelling it as merge
-      sort does not understate.
-
-    - Lower bound. NOT proved, and deliberately so. Merge sort is Theta(n log n)
-      on every input, but Timsort is Theta(n) on already-sorted input — it
-      detects existing runs. So a Theta(n log n) claim about the real program
-      is FALSE on sorted inputs, and "proving" it here by appealing to merge
-      sort would be an artefact of the model, not a fact about the code.
-
-    What is proved below is therefore a sandwich with a gap in it:
-    Omega(n) <= cost <= O(n log n). Closing it would require modelling Timsort's
-    run detection and quantifying over an input family that defeats it. The
-    fitted label sits at the top of that range, which is the right place for a
-    worst-case label — but this file does not establish that the framework's
-    input expansion ever reached the worst case. *)
-
-From Coq Require Import List Arith Lia.
+From Stdlib Require Import List Arith Lia.
 Import ListNotations.
 From BigOBench Require Import Cost Asymptotic MergeSort.
 
