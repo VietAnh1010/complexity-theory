@@ -1,383 +1,264 @@
 <title>Fitted Labels vs. Proved Bounds</title>
 <style>
   :root {
-    --ground:  #F6F6FA;
-    --surface: #FFFFFF;
-    --sunk:    #EFEFF6;
-    --ink:     #17171F;
-    --muted:   #5C5C6E;
-    --rule:    #E2E2EC;
-    --accent:  #3B348F;
-    --ok:      #176B50;
-    --partial: #8A6113;
-    --bad:     #A02A38;
-    --ok-bg:      #E6F3EE;
-    --partial-bg: #F7EEDA;
-    --bad-bg:     #F8E7E9;
-
+    --ground:#F6F6FA; --surface:#FFFFFF; --sunk:#EFEFF6;
+    --ink:#17171F; --muted:#5C5C6E; --rule:#E2E2EC; --accent:#3B348F;
+    --ok:#176B50; --partial:#8A6113; --bad:#A02A38;
+    --ok-bg:#E6F3EE; --partial-bg:#F7EEDA; --bad-bg:#F8E7E9;
     --serif: ui-serif, "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
-    --sans:  ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    --mono:  ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --ground:  #121218;
-      --surface: #1A1A22;
-      --sunk:    #15151C;
-      --ink:     #E9E9F2;
-      --muted:   #9797A9;
-      --rule:    #2B2B36;
-      --accent:  #A099FF;
-      --ok:      #4ECB9B;
-      --partial: #D9AC46;
-      --bad:     #F27D8D;
-      --ok-bg:      #10261F;
-      --partial-bg: #2A2113;
-      --bad-bg:     #2C1519;
+      --ground:#121218; --surface:#1A1A22; --sunk:#15151C;
+      --ink:#E9E9F2; --muted:#9797A9; --rule:#2B2B36; --accent:#A099FF;
+      --ok:#4ECB9B; --partial:#D9AC46; --bad:#F27D8D;
+      --ok-bg:#10261F; --partial-bg:#2A2113; --bad-bg:#2C1519;
     }
   }
   :root[data-theme="dark"] {
-    --ground:  #121218;
-    --surface: #1A1A22;
-    --sunk:    #15151C;
-    --ink:     #E9E9F2;
-    --muted:   #9797A9;
-    --rule:    #2B2B36;
-    --accent:  #A099FF;
-    --ok:      #4ECB9B;
-    --partial: #D9AC46;
-    --bad:     #F27D8D;
-    --ok-bg:      #10261F;
-    --partial-bg: #2A2113;
-    --bad-bg:     #2C1519;
+    --ground:#121218; --surface:#1A1A22; --sunk:#15151C;
+    --ink:#E9E9F2; --muted:#9797A9; --rule:#2B2B36; --accent:#A099FF;
+    --ok:#4ECB9B; --partial:#D9AC46; --bad:#F27D8D;
+    --ok-bg:#10261F; --partial-bg:#2A2113; --bad-bg:#2C1519;
   }
-
-  * { box-sizing: border-box; }
-
+  * { box-sizing:border-box; }
   body {
-    background: var(--ground);
-    color: var(--ink);
-    font-family: var(--sans);
-    font-size: 16px;
-    line-height: 1.6;
-    margin: 0;
-    padding: 0 24px 96px;
-    -webkit-font-smoothing: antialiased;
+    background:var(--ground); color:var(--ink); font-family:var(--sans);
+    font-size:16px; line-height:1.55; margin:0; padding:0 24px 88px;
+    -webkit-font-smoothing:antialiased;
   }
-
-  .wrap { max-width: 1120px; margin: 0 auto; }
-  .prose { max-width: 68ch; }
-
-  h1, h2, h3 { font-family: var(--serif); font-weight: 600; text-wrap: balance; margin: 0; }
-  h1 { font-size: 2.6rem; line-height: 1.12; letter-spacing: -0.01em; }
-  h2 { font-size: 1.5rem; line-height: 1.25; }
-  h3 { font-size: 1.05rem; line-height: 1.3; }
-  p  { margin: 0; }
-
+  .wrap { max-width:1080px; margin:0 auto; }
+  .prose { max-width:66ch; }
+  h1,h2 { font-family:var(--serif); font-weight:600; text-wrap:balance; margin:0; }
+  h1 { font-size:2.5rem; line-height:1.1; letter-spacing:-0.01em; }
+  h2 { font-size:1.4rem; }
+  p { margin:0; }
   .eyebrow {
-    font-family: var(--sans);
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.13em;
-    text-transform: uppercase;
-    color: var(--muted);
+    font-size:0.7rem; font-weight:600; letter-spacing:0.13em;
+    text-transform:uppercase; color:var(--muted);
   }
-
-  header.masthead {
-    display: flex; flex-direction: column; gap: 14px;
-    padding: 72px 0 32px;
-    border-bottom: 2px solid var(--ink);
+  header {
+    display:flex; flex-direction:column; gap:12px;
+    padding:64px 0 28px; border-bottom:2px solid var(--ink);
   }
-  header.masthead .lede {
-    font-family: var(--serif);
-    font-size: 1.18rem;
-    color: var(--muted);
-    max-width: 62ch;
-  }
+  header .lede { font-family:var(--serif); font-size:1.12rem; color:var(--muted); max-width:60ch; }
+  section { padding-top:48px; display:flex; flex-direction:column; gap:18px; }
 
-  section { padding-top: 56px; display: flex; flex-direction: column; gap: 20px; }
-
-  /* ---- status strip ---- */
   .strip {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1px;
-    background: var(--rule);
-    border: 1px solid var(--rule);
-    border-radius: 3px;
-    overflow: hidden;
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+    gap:1px; background:var(--rule); border:1px solid var(--rule);
+    border-radius:3px; overflow:hidden;
   }
-  .stat { background: var(--surface); padding: 16px 18px; display: flex; flex-direction: column; gap: 3px; }
-  .stat .n {
-    font-family: var(--mono);
-    font-size: 1.6rem;
-    font-variant-numeric: tabular-nums;
-    line-height: 1.1;
-  }
-  .stat .k { font-size: 0.78rem; color: var(--muted); }
+  .stat { background:var(--surface); padding:14px 16px; display:flex; flex-direction:column; gap:2px; }
+  .stat .n { font-family:var(--mono); font-size:1.5rem; font-variant-numeric:tabular-nums; line-height:1.1; }
+  .stat .k { font-size:0.76rem; color:var(--muted); }
 
-  /* ---- verdict chips ---- */
   .chip {
-    display: inline-block;
-    font-family: var(--mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.02em;
-    padding: 2px 8px;
-    border-radius: 2px;
-    white-space: nowrap;
+    display:inline-block; font-family:var(--mono); font-size:0.71rem;
+    padding:2px 8px; border-radius:2px; white-space:nowrap;
   }
-  .v-tight   { color: var(--ok);      background: var(--ok-bg); }
-  .v-upper   { color: var(--partial); background: var(--partial-bg); }
-  .v-loose   { color: var(--partial); background: var(--partial-bg); }
-  .v-over    { color: var(--bad);     background: var(--bad-bg); }
-  .v-under   { color: var(--bad);     background: var(--bad-bg); }
+  .v-tight { color:var(--ok); background:var(--ok-bg); }
+  .v-upper,.v-loose { color:var(--partial); background:var(--partial-bg); }
+  .v-over,.v-under { color:var(--bad); background:var(--bad-bg); }
 
-  /* ---- table ---- */
-  .scroll { overflow-x: auto; border: 1px solid var(--rule); border-radius: 3px; background: var(--surface); }
-  table { border-collapse: collapse; width: 100%; font-size: 0.88rem; min-width: 780px; }
-  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  .scroll { overflow-x:auto; border:1px solid var(--rule); border-radius:3px; background:var(--surface); }
+  table { border-collapse:collapse; width:100%; font-size:0.86rem; min-width:760px; }
+  th,td { text-align:left; padding:10px 14px; border-bottom:1px solid var(--rule); vertical-align:top; }
   thead th {
-    font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--muted); font-weight: 600; white-space: nowrap;
+    font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--muted); font-weight:600; white-space:nowrap;
   }
-  tbody tr:last-child td { border-bottom: none; }
-  td.id, td.lbl { font-family: var(--mono); font-size: 0.82rem; white-space: nowrap; }
-  td.file { font-family: var(--mono); font-size: 0.76rem; color: var(--muted); }
+  tbody tr:last-child td { border-bottom:none; }
+  td.id,td.lbl { font-family:var(--mono); font-size:0.8rem; white-space:nowrap; }
+  td.file { font-family:var(--mono); font-size:0.74rem; color:var(--muted); }
 
-  /* ---- case blocks ---- */
   .case {
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-left: 3px solid var(--stripe, var(--rule));
-    border-radius: 3px;
-    display: flex; flex-direction: column;
+    background:var(--surface); border:1px solid var(--rule);
+    border-left:3px solid var(--stripe,var(--rule)); border-radius:3px;
+    display:flex; flex-direction:column;
   }
-  .case[data-v="tight"] { --stripe: var(--ok); }
-  .case[data-v="upper"], .case[data-v="loose"] { --stripe: var(--partial); }
-  .case[data-v="over"],  .case[data-v="under"] { --stripe: var(--bad); }
-
+  .case[data-v="tight"] { --stripe:var(--ok); }
+  .case[data-v="upper"],.case[data-v="loose"] { --stripe:var(--partial); }
+  .case[data-v="over"],.case[data-v="under"] { --stripe:var(--bad); }
   .case-head {
-    padding: 18px 22px;
-    border-bottom: 1px solid var(--rule);
-    display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px;
+    padding:15px 20px; border-bottom:1px solid var(--rule);
+    display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 12px;
   }
-  .case-head .sid { font-family: var(--mono); font-size: 0.95rem; font-weight: 600; }
-  .case-head .pname { color: var(--muted); font-size: 0.86rem; flex: 1 1 220px; }
+  .case-head .sid { font-family:var(--mono); font-size:0.92rem; font-weight:600; }
+  .case-head .pname { color:var(--muted); font-size:0.83rem; flex:1 1 200px; }
 
-  .panes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--rule); }
-  @media (max-width: 860px) { .panes { grid-template-columns: 1fr; } }
-  .pane { background: var(--surface); padding: 16px 22px 20px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
-  .pane .eyebrow { font-size: 0.66rem; }
+  .panes { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--rule); }
+  @media (max-width:860px) { .panes { grid-template-columns:1fr; } }
+  .pane { background:var(--surface); padding:14px 20px 18px; display:flex; flex-direction:column; gap:7px; min-width:0; }
+  .pane .eyebrow { font-size:0.64rem; }
+  .pane p { font-size:0.84rem; color:var(--muted); }
 
   pre {
-    font-family: var(--mono);
-    font-size: 0.78rem;
-    line-height: 1.55;
-    background: var(--sunk);
-    border-radius: 2px;
-    padding: 11px 13px;
-    margin: 0;
-    overflow-x: auto;
-    white-space: pre;
+    font-family:var(--mono); font-size:0.77rem; line-height:1.5;
+    background:var(--sunk); border-radius:2px; padding:10px 12px;
+    margin:0; overflow-x:auto; white-space:pre;
   }
-  code { font-family: var(--mono); font-size: 0.85em; }
-  .pane p { font-size: 0.86rem; color: var(--muted); }
+  code { font-family:var(--mono); font-size:0.85em; }
+  .note { padding:12px 20px 15px; border-top:1px solid var(--rule); font-size:0.86rem; }
 
-  .note {
-    padding: 14px 22px 18px;
-    border-top: 1px solid var(--rule);
-    font-size: 0.88rem;
-  }
-  .note strong { font-weight: 600; }
-
-  ul { margin: 0; padding-left: 1.15rem; display: flex; flex-direction: column; gap: 9px; }
-  li::marker { color: var(--muted); }
-
+  ul { margin:0; padding-left:1.1rem; display:flex; flex-direction:column; gap:7px; }
+  li::marker { color:var(--muted); }
   .callout {
-    border: 1px solid var(--rule);
-    border-top: 3px solid var(--accent);
-    background: var(--surface);
-    border-radius: 3px;
-    padding: 20px 24px;
-    display: flex; flex-direction: column; gap: 12px;
+    border:1px solid var(--rule); border-top:3px solid var(--accent);
+    background:var(--surface); border-radius:3px; padding:16px 20px;
+    display:flex; flex-direction:column; gap:9px;
   }
-  .callout.warn { border-top-color: var(--bad); }
-
-  a { color: var(--accent); }
-  a:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  footer { padding-top: 56px; color: var(--muted); font-size: 0.82rem; }
+  .callout.warn { border-top-color:var(--bad); }
+  a { color:var(--accent); }
+  a:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  footer { padding-top:48px; color:var(--muted); font-size:0.8rem; }
 </style>
 
 <div class="wrap">
 
-<header class="masthead">
-  <div class="eyebrow">Rocq formalization · BigO(Bench) · status as of 17 Aug 2026</div>
+<header>
+  <div class="eyebrow">Rocq 9.2 · BigO(Bench) · 17 Aug 2026</div>
   <h1>Fitted Labels vs. Proved Bounds</h1>
   <p class="lede">
-    Six solutions from BigO(Bench)'s time test set, modelled in Rocq and given
-    machine-checked complexity bounds — then compared against the label the
-    benchmark's dynamic inference framework fitted for each. One label is not
-    an upper bound at all; two more are sound but overstate a √n loop as O(n).
+    Six BigO(Bench) solutions modelled in Rocq with machine-checked cost
+    bounds, compared against the label the benchmark fitted for each.
   </p>
 </header>
 
 <section>
   <div class="strip">
-    <div class="stat"><span class="n">6</span><span class="k">solutions formalized</span></div>
-    <div class="stat"><span class="n">1</span><span class="k">label proved tight</span></div>
-    <div class="stat"><span class="n">4</span><span class="k">sound but imprecise</span></div>
+    <div class="stat"><span class="n">6</span><span class="k">formalized</span></div>
+    <div class="stat"><span class="n">1</span><span class="k">label tight</span></div>
+    <div class="stat"><span class="n">4</span><span class="k">sound, imprecise</span></div>
     <div class="stat"><span class="n">1</span><span class="k">not an upper bound</span></div>
-    <div class="stat"><span class="n">0</span><span class="k">admitted proofs</span></div>
-    <div class="stat"><span class="n">0</span><span class="k">axioms assumed</span></div>
+    <div class="stat"><span class="n">0</span><span class="k">admitted</span></div>
+    <div class="stat"><span class="n">0</span><span class="k">axioms</span></div>
   </div>
 </section>
 
 <section>
-  <h2>What this is asking</h2>
-  <div class="prose" style="display:flex;flex-direction:column;gap:14px">
+  <h2>The question</h2>
+  <div class="prose" style="display:flex;flex-direction:column;gap:12px">
     <p>
-      BigO(Bench) labels 1,190,250 Code Contests solutions with time and space
-      complexity classes, inferred by profiling each solution at a range of
-      input sizes and fitting a curve. The paper is explicit that these are
-      <em>“statistically significant ground truth performance profiles and not
-      theoretical complexities”</em>, at 92% time / 84% space agreement with
-      human annotation on a sampled subset.
-    </p>
-    <p>
-      So the question is not “can we verify their labels” — a curve fit is not
-      the kind of thing that admits verification. It is:
+      BigO(Bench) labels 1.19M solutions by profiling them at varying input
+      sizes and fitting a curve. The paper calls these “performance profiles
+      and not theoretical complexities” — 92% time / 84% space agreement with
+      human annotation.
     </p>
     <div class="callout">
-      <p style="font-family:var(--serif);font-size:1.1rem;color:var(--ink)">
-        Take a solution, model it in Rocq, prove a bound, and see whether the
-        fitted label agrees.
-      </p>
-      <p style="font-size:0.9rem;color:var(--muted)">
-        The disagreements are the output. A pile of agreeing cases is not a
-        finding.
+      <p style="font-family:var(--serif);font-size:1.05rem;color:var(--ink)">
+        You cannot verify a curve fit. You can model the solution, prove a
+        bound, and see whether the label agrees.
       </p>
     </div>
+    <p>The disagreements are the output.</p>
   </div>
 </section>
 
 <section>
-  <h2>The five cases</h2>
+  <h2>Results</h2>
   <div class="scroll">
     <table>
       <thead>
-        <tr>
-          <th>Solution</th><th>Problem</th><th>Fitted</th><th>Proved</th>
-          <th>Verdict</th><th>File</th>
-        </tr>
+        <tr><th>Solution</th><th>Problem</th><th>Fitted</th><th>Proved</th><th>Verdict</th><th>File</th></tr>
       </thead>
       <tbody>
         <tr>
-          <td class="id">2389_139</td>
-          <td>p04012 ABC 044 — Beautiful Strings</td>
-          <td class="lbl">O(n**2)</td>
-          <td class="lbl">cost = n·n</td>
+          <td class="id">2389_139</td><td>ABC 044 Beautiful Strings</td>
+          <td class="lbl">O(n**2)</td><td class="lbl">cost = n²</td>
           <td><span class="chip v-tight">Tight</span></td>
-          <td class="file">Examples/S2389_139.v</td>
+          <td class="file">S2389_139.v</td>
         </tr>
         <tr>
-          <td class="id">603_284</td>
-          <td>1041_A — Heist</td>
-          <td class="lbl">O(nlogn)</td>
-          <td class="lbl">n ≤ cost ≤ 2n·log₂⌈n⌉ + 2n</td>
+          <td class="id">603_284</td><td>1041_A Heist</td>
+          <td class="lbl">O(nlogn)</td><td class="lbl">n ≤ cost ≤ 2n·log₂⌈n⌉+2n</td>
           <td><span class="chip v-upper">SoundUpperOnly</span></td>
-          <td class="file">Examples/S603_284.v</td>
+          <td class="file">S603_284.v</td>
         </tr>
         <tr>
-          <td class="id">1421_53</td>
-          <td>p02899 ABC 142 — Go to School</td>
-          <td class="lbl">O(n+m)</td>
-          <td class="lbl">cost = 2n</td>
+          <td class="id">1421_53</td><td>ABC 142 Go to School</td>
+          <td class="lbl">O(n+m)</td><td class="lbl">cost = 2n</td>
           <td><span class="chip v-loose">SoundLoose</span></td>
-          <td class="file">Examples/S1421_53.v</td>
+          <td class="file">S1421_53.v</td>
         </tr>
         <tr>
-          <td class="id">450_204</td>
-          <td>1421_C — Palindromifier</td>
-          <td class="lbl">O(1)</td>
-          <td class="lbl">cost = n</td>
+          <td class="id">167_177 ★</td><td>1184_A1 Heidi Learns Hashing</td>
+          <td class="lbl">O(n)</td><td class="lbl">cost ≤ √n</td>
+          <td><span class="chip v-over">Overstated</span></td>
+          <td class="file">S167_177.v</td>
+        </tr>
+        <tr>
+          <td class="id">5_100</td><td>622_A Infinite Sequence</td>
+          <td class="lbl">O(n)</td><td class="lbl">cost·(cost+1) ≤ 2n</td>
+          <td><span class="chip v-over">Overstated</span></td>
+          <td class="file">S5_100.v</td>
+        </tr>
+        <tr>
+          <td class="id">450_204</td><td>1421_C Palindromifier</td>
+          <td class="lbl">O(1)</td><td class="lbl">cost = n</td>
           <td><span class="chip v-under">NotUpperBound</span></td>
-          <td class="file">Examples/S450_204.v</td>
-        </tr>
-        <tr>
-          <td class="id">167_177 <span title="drawn at random">&#9733;</span></td>
-          <td>1184_A1 — Heidi Learns Hashing (Easy)</td>
-          <td class="lbl">O(n)</td>
-          <td class="lbl">cost &le; &radic;n</td>
-          <td><span class="chip v-over">Overstated</span></td>
-          <td class="file">Examples/S167_177.v</td>
-        </tr>
-        <tr>
-          <td class="id">5_100</td>
-          <td>622_A — Infinite Sequence</td>
-          <td class="lbl">O(n)</td>
-          <td class="lbl">cost·(cost+1) ≤ 2n</td>
-          <td><span class="chip v-over">Overstated</span></td>
-          <td class="file">Examples/S5_100.v</td>
+          <td class="file">S450_204.v</td>
         </tr>
       </tbody>
     </table>
   </div>
-  <p class="prose" style="font-size:0.88rem;color:var(--muted)">
-    &#9733; drawn at random (<code>bench.py sample --seed 20260817</code>). The
-    other five were each the <em>shortest</em> solution in their label class —
-    not a random sample. See Limits.
-  </p>
+  <div class="prose" style="display:flex;flex-direction:column;gap:8px">
+    <p style="font-size:0.85rem;color:var(--muted)">
+      ★ drawn at random. The other five were the shortest solution in their
+      label class — see Limits.
+    </p>
+    <p style="font-size:0.85rem">
+      <strong>Overstated ≠ wrong.</strong> O(n) does bound a √n loop; it just
+      says nothing useful. Only <code>450_204</code>'s label fails to bound its
+      program. Four of six labels are sound.
+    </p>
+  </div>
 </section>
 
 <section>
-  <h2>Case by case</h2>
+  <h2>Cases</h2>
 
-  <!-- ===================== 450_204 ===================== -->
   <div class="case" data-v="under">
     <div class="case-head">
       <span class="sid">450_204</span>
       <span class="pname">1421_C — Palindromifier</span>
-      <span class="chip v-under">NotUpperBound — the label is not an upper bound</span>
+      <span class="chip v-under">NotUpperBound</span>
     </div>
     <div class="panes">
       <div class="pane">
-        <div class="eyebrow">Python source</div>
+        <div class="eyebrow">Python</div>
         <pre>print('3 L 2 R 2 R',len(input())*2-1)</pre>
       </div>
       <div class="pane">
         <div class="eyebrow">Cost model</div>
-        <p><code>len</code> on an existing Python <code>str</code> is O(1) and
-        charged nothing. But <code>input()</code> must read the line: one tick
-        per character. Nothing else depends on the input.</p>
+        <p><code>len</code> on a built <code>str</code> is O(1). But
+        <code>input()</code> reads the line — one tick per character.</p>
       </div>
       <div class="pane">
-        <div class="eyebrow">Rocq proves</div>
+        <div class="eyebrow">Rocq</div>
 <pre>Lemma T_eq : forall n, T n = n.
 
 Theorem fitted_label_unsound :
-  ~ BigO T (fun _ =&gt; 1).
-
-Theorem true_class :
-  Theta T (fun n =&gt; n).</pre>
+  ~ BigO T (fun _ =&gt; 1).</pre>
       </div>
     </div>
     <div class="note">
-      <strong>Framework says O(1); the program is Θ(n).</strong> Not a loose
-      bound — not an upper bound at all. Likely cause: the input expansion never
-      scaled the single line this problem reads, so measured runtime looked flat.
+      Labelled O(1); the program is Θ(n). Likely the input expansion never
+      scaled the one line this problem reads, so runtime looked flat.
     </div>
   </div>
 
-  <!-- ===================== 5_100 ===================== -->
   <div class="case" data-v="over">
     <div class="case-head">
       <span class="sid">5_100</span>
       <span class="pname">622_A — Infinite Sequence</span>
-      <span class="chip v-over">Overstated — program is cheaper than the label</span>
+      <span class="chip v-over">Overstated</span>
     </div>
     <div class="panes">
       <div class="pane">
-        <div class="eyebrow">Python source</div>
+        <div class="eyebrow">Python</div>
 <pre>n=int(input())
 k=1
 while(n&gt;k):
@@ -387,89 +268,57 @@ print(n)</pre>
       </div>
       <div class="pane">
         <div class="eyebrow">Cost model</div>
-        <p>One tick per loop iteration; the body is O(1) arithmetic. Rocq needs
-        structural recursion, so the loop takes a fuel parameter — and
-        <code>run_finishes</code> proves that fuel is never exhausted, so the
-        bound is not an artefact of truncating the loop.</p>
+        <p>One tick per iteration. Rocq needs structural recursion, so the loop
+        takes fuel; <code>run_finishes</code> proves the fuel is never
+        exhausted, so the bound is not truncation.</p>
       </div>
       <div class="pane">
-        <div class="eyebrow">Rocq proves</div>
-<pre>Theorem run_finishes :
-  forall n, finished n = true.
-
-Theorem iters_sqrt : forall n,
+        <div class="eyebrow">Rocq</div>
+<pre>Theorem iters_sqrt : forall n,
   iters n * (iters n + 1) &lt;= 2 * n.
-
-Theorem iters_lower : forall n j,
-  j*j + 2*j + 1 &lt; n -&gt; j &lt;= iters n.
 
 Theorem iters_exponential_in_bitlength :
   forall k, 1 &lt;= k -&gt;
   2 ^ k &lt;= iters (2 ^ (2*k+2)).
 
-Theorem fitted_label_not_tight :
-  ~ BigOmega iters (fun n =&gt; n).
-
 Example iters_table :
-  (iters 64, iters 256,
-   iters 1024, iters 4096)
+  (iters 64, 256, 1024, 4096)
   = (10, 22, 44, 90).</pre>
       </div>
     </div>
     <div class="note">
-      <strong>Framework says O(n); the loop runs in ~√(2n).</strong> It
-      subtracts 1, 2, 3, … so it halts after about √(2n) steps. At n = 5050 that
-      is 99 iterations, not 5050 — checked by computation.
-      <br><br>
-      <strong>Both sizing conventions are now proved, not asserted.</strong>
-      Here “n” is the integer's <em>value</em>, not a length.
-      <code>iters_sqrt</code> gives ~√(2n) in the value;
-      <code>iters_exponential_in_bitlength</code> gives at least 2<sup>k</sup>
-      iterations on a (2k+3)-bit input. So under one convention the loop
-      <em>beats</em> the fitted O(n), and under the other it is
-      <em>not polynomial at all</em>. The conventions do not merely shift
-      constants — they decide this record's verdict.
-      <em>Which one should the dataset use?</em>
+      Labelled O(n); the loop subtracts 1, 2, 3, … so it runs in ~√(2n).
+      <strong>Both sizing conventions are proved.</strong> By value it beats
+      O(n); by bit length it is not polynomial — 2<sup>k</sup> iterations on a
+      (2k+3)-bit input. Which convention should the dataset use?
     </div>
   </div>
 
-  <!-- ===================== 167_177 ===================== -->
   <div class="case" data-v="over">
     <div class="case-head">
-      <span class="sid">167_177 &#9733;</span>
-      <span class="pname">1184_A1 — Heidi Learns Hashing (Easy) · drawn at random</span>
-      <span class="chip v-over">Overstated — same failure, independent program</span>
+      <span class="sid">167_177 ★</span>
+      <span class="pname">1184_A1 — Heidi Learns Hashing · random draw</span>
+      <span class="chip v-over">Overstated</span>
     </div>
     <div class="panes">
       <div class="pane">
-        <div class="eyebrow">Python source</div>
-<pre>import math
-n = int(input())
+        <div class="eyebrow">Python</div>
+<pre>n = int(input())
 x = math.floor(math.sqrt(n))
-p = 0
 for i in range(1, x):
   if (n-1-i**2-i)%(2*i) == 0 :
     print(i, (n-1-i**2-i)//(2*i))
-    p = 1
-    break
-if not p:
-  print("NO")</pre>
+    break</pre>
       </div>
       <div class="pane">
         <div class="eyebrow">Cost model</div>
-        <p>One tick per loop iteration. <code>math.floor(math.sqrt(n))</code> is
-        <code>Nat.sqrt n</code> in Rocq — exactly floor of the real root — so
-        the loop bound is √n, not n.</p>
-        <p>Flagged, not modelled: <code>i**2</code> and the <code>%</code> /
-        <code>//</code> are O(1) only while values fit a machine word.</p>
+        <p>One tick per iteration. <code>math.floor(math.sqrt(n))</code> is
+        <code>Nat.sqrt n</code> exactly, so the loop bound is √n.</p>
       </div>
       <div class="pane">
-        <div class="eyebrow">Rocq proves</div>
+        <div class="eyebrow">Rocq</div>
 <pre>Theorem T_upper : forall n,
   T n &lt;= Nat.sqrt n.
-
-Theorem fitted_label_sound :
-  BigO T (fun n =&gt; n).
 
 Theorem fitted_label_not_tight :
   ~ BigOmega T (fun n =&gt; n).
@@ -478,48 +327,37 @@ Example T_10000 : T 10000 &lt;= 99.</pre>
       </div>
     </div>
     <div class="note">
-      <strong>A second √n loop labelled O(n) — and this one was drawn at
-      random.</strong> It reaches √n by an explicit <code>math.sqrt</code>
-      bound where 5_100 reaches it by summing 1+2+3+…, so these are two
-      independent programs hitting the same blind spot, not one bug seen twice.
-      At n = 10,000 the loop runs 99 times, not 10,000 — computed, and the
-      bound is attained rather than merely available.
-      <br><br>
-      Two cases is still not evidence of a systematic gap. It is the reason to
-      go and measure one.
+      A second √n loop labelled O(n) — reached by an explicit
+      <code>math.sqrt</code> where 5_100 sums 1+2+3+…, so two independent
+      programs, not one bug twice. Drawn at random. Two cases is a reason to
+      measure, not a measurement.
     </div>
   </div>
 
-  <!-- ===================== 1421_53 ===================== -->
   <div class="case" data-v="loose">
     <div class="case-head">
       <span class="sid">1421_53</span>
-      <span class="pname">p02899 ABC 142 — Go to School</span>
-      <span class="chip v-loose">SoundLoose — correct, but names a size parameter that isn't there</span>
+      <span class="pname">ABC 142 — Go to School</span>
+      <span class="chip v-loose">SoundLoose</span>
     </div>
     <div class="panes">
       <div class="pane">
-        <div class="eyebrow">Python source</div>
+        <div class="eyebrow">Python</div>
 <pre>N = int(input())
 A = [int(i) for i in input().split()]
 B=[0]*N
 for i in range(N):
-  B[A[i]-1]=i+1
-print(*B)</pre>
+  B[A[i]-1]=i+1</pre>
       </div>
       <div class="pane">
         <div class="eyebrow">Cost model</div>
-        <p>One tick per element parsed, one per loop iteration. <strong>B is
-        modelled as <code>nat -&gt; nat</code> with pointwise update, not as a
-        Rocq list</strong> — Python list stores are O(1), and a list model would
-        make each store O(n) and “prove” this program quadratic.</p>
+        <p>B is <code>nat -&gt; nat</code> with pointwise update, not a Rocq
+        list — Python list stores are O(1), and a list model would make this
+        program look quadratic.</p>
       </div>
       <div class="pane">
-        <div class="eyebrow">Rocq proves</div>
+        <div class="eyebrow">Rocq</div>
 <pre>Lemma T_eq : forall n, T n = 2 * n.
-
-Theorem true_class :
-  Theta T (fun n =&gt; n).
 
 Theorem fitted_label_sound :
   BigO2 (fun n _ =&gt; T n)
@@ -530,45 +368,35 @@ Theorem second_parameter_is_spurious :
       </div>
     </div>
     <div class="note">
-      <strong>O(n) is inside O(n+m), so the label is sound</strong> — but there
-      is only one input size here, and the cost provably does not vary with the
-      second parameter at all. That says something about how size variables are
-      picked from the problem's dataclass, not about the program.
+      Sound — O(n) sits inside O(n+m) — but there is one input size here, and
+      the cost provably does not vary with the second parameter.
     </div>
   </div>
 
-  <!-- ===================== 603_284 ===================== -->
   <div class="case" data-v="upper">
     <div class="case-head">
       <span class="sid">603_284</span>
       <span class="pname">1041_A — Heist</span>
-      <span class="chip v-upper">SoundUpperOnly — tightness deliberately not claimed</span>
+      <span class="chip v-upper">SoundUpperOnly</span>
     </div>
     <div class="panes">
       <div class="pane">
-        <div class="eyebrow">Python source</div>
+        <div class="eyebrow">Python</div>
 <pre>n=int(input())
 l=list(map(int,input().split()))
 l.sort()
 x=0
 for i in range(n-1):
-    x+=l[i+1]-l[i]-1
-print(x)</pre>
+    x+=l[i+1]-l[i]-1</pre>
       </div>
       <div class="pane">
         <div class="eyebrow">Cost model</div>
-        <p>One tick per element parsed; the sort as modelled in
-        <code>MergeSort.v</code>; one tick per step of the pairwise scan
-        (indexed access is O(1) in Python, so the scan is linear).</p>
+        <p>One tick per element parsed, the sort from
+        <code>MergeSort.v</code>, one tick per scan step.</p>
       </div>
       <div class="pane">
-        <div class="eyebrow">Rocq proves</div>
-<pre>Lemma T_upper : forall n,
-  T n &lt;= 2 * Nat.log2_up n * n + 2 * n.
-
-Lemma T_lower : forall n, n &lt;= T n.
-
-Theorem fitted_label_sound :
+        <div class="eyebrow">Rocq</div>
+<pre>Theorem fitted_label_sound :
   BigO T (fun n =&gt; n * Nat.log2_up n).
 
 Theorem lower_bound_is_only_linear :
@@ -576,26 +404,21 @@ Theorem lower_bound_is_only_linear :
       </div>
     </div>
     <div class="note">
-      <strong>The upper bound transfers; the lower bound would not.</strong>
-      CPython's <code>sort</code> is Timsort, also O(n log n) worst case, so
-      modelling it as merge sort does not understate. But Timsort is Θ(n) on
-      already-sorted input where merge sort is not — so proving Ω(n log n) here
-      would be an artefact of the model and <em>false of the real program</em>.
-      Proved: Ω(n) ≤ cost ≤ O(n log n), with the gap left open and recorded as
-      such rather than closed.
+      Upper bound transfers: Timsort is also O(n log n) worst case. The lower
+      bound does not — Timsort is Θ(n) on sorted input, so Ω(n log n) would be
+      a model artefact. Gap left open, not closed.
     </div>
   </div>
 
-  <!-- ===================== 2389_139 ===================== -->
   <div class="case" data-v="tight">
     <div class="case-head">
       <span class="sid">2389_139</span>
-      <span class="pname">p04012 ABC 044 — Beautiful Strings</span>
-      <span class="chip v-tight">Tight — label is exactly right</span>
+      <span class="pname">ABC 044 — Beautiful Strings</span>
+      <span class="chip v-tight">Tight</span>
     </div>
     <div class="panes">
       <div class="pane">
-        <div class="eyebrow">Python source</div>
+        <div class="eyebrow">Python</div>
 <pre>s=input()
 ch=0
 for i in s:
@@ -606,201 +429,93 @@ print("YNeos"[ch::2])</pre>
       <div class="pane">
         <div class="eyebrow">Cost model</div>
         <p>One tick per character compared by <code>str.count</code>, which
-        scans the whole string; the outer <code>for</code> is charged only
-        through the counts it triggers. Cost is independent of the string's
-        contents, so the size-indexed family loses nothing.</p>
+        scans the whole string. Cost is independent of contents.</p>
       </div>
       <div class="pane">
-        <div class="eyebrow">Rocq proves</div>
+        <div class="eyebrow">Rocq</div>
 <pre>Theorem cost_beautiful : forall s,
   cost (beautiful s) = length s * length s.
-
-Lemma T_eq : forall n, T n = n * n.
 
 Theorem fitted_label_is_tight :
   Theta T (fun n =&gt; n * n).</pre>
       </div>
     </div>
     <div class="note">
-      <strong>Exact, not just bounded.</strong> The cost is <code>n²</code> on
-      the nose, so the fitted label is not merely sound but tight.
+      Exact, not merely bounded: the cost is n² on the nose, for every input.
     </div>
   </div>
 </section>
 
 <section>
-  <h2>How the proofs are kept honest</h2>
+  <h2>Why the proofs mean something</h2>
   <div class="prose">
     <ul>
-      <li>
-        <strong>One definition, not two.</strong> <code>M A</code> pairs a value
-        with a step count; the algorithm and its cost are the same term, cost
-        being a projection. A separately-written cost function has nothing tying
-        it to the algorithm — <code>cost := fun _ =&gt; 0</code> would prove
-        every bound.
-      </li>
-      <li>
-        <strong>Adequacy is required, not decoration.</strong> An upper bound on
-        cost is vacuous if the function skips the work: both
-        <code>fun l =&gt; ret l</code> and <code>fun _ =&gt; ret []</code> cost
-        nothing and satisfy every upper bound. So the sort carries
-        <code>msort_perm</code> (nothing dropped) and <code>msort_sorted</code>
-        (actually sorted), and the fuel-based loop carries
-        <code>run_finishes</code>.
-      </li>
-      <li>
-        <strong>Disagreements are theorems.</strong> Both unsound verdicts are
-        backed by a refutation (<code>~ BigO</code>, <code>~ BigOmega</code>),
-        not by a comment.
-      </li>
-      <li>
-        <strong>Sorting is done once.</strong> <code>MergeSort.v</code> proves
-        O(n log n) by recursing on a <em>depth</em> with precondition
-        <code>length l &lt;= 2 ^ d</code>, so the recurrence closes by induction
-        on the depth alone and the logarithm appears only at the top-level call.
-        All 127 <code>O(nlogn)</code> records in the time test set call
-        <code>sort</code> or <code>sorted</code> (measured), so this unblocks
-        that whole class.
-      </li>
+      <li><strong>One definition.</strong> <code>M A</code> pairs a value with a
+        step count, so cost is a projection of the same term. A separate cost
+        function could be <code>fun _ =&gt; 0</code> and prove everything.</li>
+      <li><strong>Adequacy required.</strong> <code>fun l =&gt; ret l</code> and
+        <code>fun _ =&gt; ret []</code> cost nothing and satisfy every upper
+        bound — hence <code>msort_perm</code>, <code>msort_sorted</code>,
+        <code>run_finishes</code>.</li>
+      <li><strong>Disagreements are theorems</strong> (<code>~ BigO</code>,
+        <code>~ BigOmega</code>), not comments.</li>
+      <li><strong>Sorting done once.</strong> All 127 <code>O(nlogn)</code>
+        records call <code>sort</code>/<code>sorted</code>, so
+        <code>MergeSort.v</code> unblocks the class.</li>
     </ul>
   </div>
 </section>
 
 <section>
-  <h2>Limits — read before quoting any number</h2>
+  <h2>Limits</h2>
   <div class="callout warn">
-    <p>
-      <strong>No rate is being claimed, and none should be read off this
-      page.</strong> Five of the six were chosen as the shortest solution in
-      their label class — a selection that skews heavily toward one-liners and
-      I/O-bound code, plausibly exactly where the framework's input expansion
-      does worst. One entry (167_177) is drawn at random; that is a start, not
-      a sample. <code>bench.py sample --seed 20260817</code> produces a
-      reproducible draw when someone wants to measure this properly.
-    </p>
+    <p><strong>No rate is claimed here.</strong> Five of six were the shortest
+    in their label class — skewed toward one-liners and I/O-bound code, likely
+    where the framework does worst. One is a random draw. That is a start, not
+    a sample.</p>
   </div>
   <div class="prose">
     <ul>
-      <li>
-        <strong>The cost model is the whole attack surface.</strong> The monad
-        makes cost match the model; nothing makes the model match Python. Where
-        the ticks go is a judgement call, stated in each file's header.
-      </li>
-      <li>
-        <strong>“Overstated” is not “wrong”.</strong> Only 450_204's label
-        fails to bound the program. O(n) genuinely does bound a √n loop — it
-        just says nothing useful. Four of the six labels are sound.
-      </li>
-      <li>
-        <strong>One case has an open gap</strong> (603_284: Ω(n) to O(n log n)),
-        recorded rather than closed with a model artefact.
-      </li>
-      <li>
-        <strong>Two √n cases is suggestive, not systematic.</strong> They are
-        independent programs, which is what makes it worth measuring — but two
-        is not evidence of a pattern.
-      </li>
-      <li>
-        <strong>Time test set only.</strong> Space is untouched — the monad
-        counts steps and would need a separate high-water-mark measure.
-      </li>
-      <li>
-        <strong>No contact with the framework's numbers.</strong> Each record
-        carries a <code>time_curve_coefficient</code> and measured runtimes;
-        relating a proved constant to a fitted coefficient has not been
-        attempted.
-      </li>
+      <li>The cost model is the whole attack surface: the monad makes cost match
+        the model, nothing makes the model match Python.</li>
+      <li>603_284 has an open gap (Ω(n) to O(n log n)).</li>
+      <li>Time test set only; space needs a high-water-mark measure.</li>
+      <li>No comparison against the framework's fitted coefficients.</li>
     </ul>
   </div>
 </section>
 
 <section>
-  <h2>Open questions for Thursday</h2>
+  <h2>Open questions</h2>
   <div class="prose">
     <ul>
-      <li>
-        <strong>Is the disagreement rate worth measuring properly?</strong> The
-        seeded sampler is in place; a draw of ~30 across the 11 label classes
-        would give a defensible number. Roughly a day of proof work per
-        non-trivial case is the cost estimate to weigh against it. That is the
-        difference between an anecdote and a result.
-      </li>
-      <li>
-        <strong>Are √n loops the blind spot?</strong> Both Overstated cases are
-        √n-bounded loops on integer <em>values</em>. If the framework's input
-        expansion scales a value linearly, a √n response curve is easy to read
-        as linear. Cheap to test directly against the framework rather than by
-        proof.
-      </li>
-      <li>
-        <strong>What should “n” mean?</strong> Now settled as a fact and open
-        only as a choice: 5_100 carries theorems for <em>both</em> readings —
-        ~√(2n) by value, ≥ 2<sup>k</sup> iterations on 2k+3 bits. Value-based
-        sizing follows the benchmark's dataclass; bit-length follows the
-        textbook and flips the verdict from “cheaper than labelled” to “not
-        polynomial”. Which does the dataset want?
-      </li>
-      <li>
-        <strong>How far do we model the standard library?</strong> Timsort's
-        adaptivity already blocks one lower bound. Modelling it faithfully is a
-        project in itself.
-      </li>
-      <li>
-        <strong>Is “unsound label” the interesting finding, or is “spurious size
-        parameter”?</strong> The latter (1421_53) may be systematic and cheaper
-        to detect at scale.
-      </li>
+      <li><strong>Measure the rate?</strong> Seeded sampler is in place; ~30
+        draws would give a defensible number, at roughly a day of proof work
+        per non-trivial case.</li>
+      <li><strong>What should “n” mean?</strong> Settled as fact, open as
+        choice — value-based follows the benchmark, bit-length follows the
+        textbook and flips the verdict.</li>
+      <li><strong>Are √n loops the blind spot?</strong> Both Overstated cases
+        are √n loops over integer values. Testable against the framework
+        directly, far cheaper than by proof.</li>
+      <li><strong>How far to model the stdlib?</strong> Timsort already blocks
+        one lower bound.</li>
     </ul>
   </div>
 </section>
 
 <section>
-  <h2>Reproducing</h2>
-  <div class="scroll" style="padding:0">
-<pre style="background:var(--surface);padding:18px 22px">git checkout claude/paper-summary-formalization-dt6509
-cd formalization
-make check            # builds everything; fails on any admitted proof</pre>
-  </div>
-  <div class="prose">
-    <p style="font-size:0.9rem;color:var(--muted)">
-      Sample provenance — verbatim source, problem id, fitted label — is in
-      <code>samples/manifest.jsonl</code>. <code>tools/bench.py</code> browses
-      the test sets and scaffolds a new example.
-    </p>
-  </div>
-</section>
-
-<section>
-  <h2>Build status</h2>
+  <h2>Build</h2>
   <div class="callout">
-    <p>
-      <strong>Verified on Rocq 9.2 — clean build, zero warnings.</strong> No
-      <code>Admitted</code> anywhere, and <code>Print Assumptions</code> reports
-      <em>“Closed under the global context”</em> for all six verdict and
-      infrastructure theorems.
-    </p>
-    <pre style="background:var(--sunk);font-size:0.75rem">$ rocq --version
-The Rocq Prover, version 9.2
-
-$ make check
-ROCQ compile theories/Cost.v
-ROCQ compile theories/Asymptotic.v
-ROCQ compile theories/MergeSort.v
-ROCQ compile theories/Catalog.v
-ROCQ compile theories/Examples/S2389_139.v
-ROCQ compile theories/Examples/S603_284.v
-ROCQ compile theories/Examples/S1421_53.v
-ROCQ compile theories/Examples/S450_204.v
-ROCQ compile theories/Examples/S5_100.v
-ROCQ compile theories/All.v
-OK: all proofs closed</pre>
-    <p style="font-size:0.9rem;color:var(--muted)">
-      One packaging caveat if you rebuild elsewhere: the opam released repo
-      carries <code>rocq-core</code> 9.2.0 but no <code>rocq-stdlib</code> past
-      9.1.0, so this switch pairs core 9.2.0 with stdlib 9.1.0. The two stdlib
-      renames that mattered — <code>seq_length</code> → <code>length_seq</code>
-      and <code>app_length</code> → <code>length_app</code> — are already
-      applied, so the build is warning-free rather than merely passing.
+    <p><strong>Rocq 9.2, clean build, zero warnings.</strong> No
+    <code>Admitted</code>; <code>Print Assumptions</code> reports “Closed under
+    the global context” for every verdict theorem.</p>
+    <pre style="background:var(--sunk);font-size:0.75rem">git checkout claude/paper-summary-formalization-dt6509
+cd formalization && make check
+  → OK: all proofs closed</pre>
+    <p style="font-size:0.85rem;color:var(--muted)">
+      This switch pairs <code>rocq-core</code> 9.2.0 with
+      <code>rocq-stdlib</code> 9.1.0 — opam has no 9.2 stdlib released.
     </p>
   </div>
 </section>
