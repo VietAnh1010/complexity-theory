@@ -36,6 +36,7 @@ theories/Asymptotic.v    BigO / BigOmega / Theta, univariate and bivariate
 theories/MergeSort.v     a sort in the monad, O(n log n), with adequacy proofs
 theories/Catalog.v       index: sample id -> label -> proved bound -> verdict
 theories/Examples/       one file per solution, named S<solution_id>.v
+theories/Alt/            a second, independent model — deep embedding
 tools/bench.py           browse the test sets, scaffold a new example
 samples/manifest.jsonl   provenance for every sample formalized here
 .cache/                  downloaded test sets (gitignored, ~82MB for time)
@@ -144,6 +145,29 @@ test set call one of them (measured), so it unblocks that class.
   nothing and satisfy every upper bound, so `msort_perm` and `msort_sorted` are
   what make `cost_msort` mean anything. Same reason `S5_100.v` proves its fuel
   is never exhausted.
+
+## Alternative model: deep embedding
+
+`Alt/Deep.v` is a tiny imperative language with a step-counting big-step
+semantics; `Alt/S2389_139_Deep.v` re-models `2389_139` in it. The two models
+share no definitions, and `models_agree` proves they assign the same cost to
+every input.
+
+The difference that matters: in the monad the cost model is a per-file
+judgement (where the `tick`s go); in the deep embedding it is one rule in the
+semantics, `EV_Count`, reviewed once and reused by every program.
+
+- Relational, so no fuel and no termination obligation — a diverging program
+  simply has no derivation. Compare `S5_100.v`'s `run_finishes`.
+- Cost theorems quantify over *every* derivation, so no determinism lemma is
+  needed to rule out a cheaper one.
+- Cost: 162 lines of language + 127 per example, against 78 for the monad
+  version. And the language has no `while`, so it cannot yet express
+  `S5_100.v`.
+
+It cross-validates bookkeeping, **not** the cost model: both encode the same
+judgement that `str.count` scans the string. If that reading is wrong, both
+are wrong together.
 
 ## Rocq trap
 

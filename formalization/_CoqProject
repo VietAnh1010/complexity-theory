@@ -4,10 +4,12 @@ theories/Cost.v
 theories/Asymptotic.v
 theories/MergeSort.v
 theories/Catalog.v
+theories/Alt/Deep.v
 theories/Examples/S2389_139.v
 theories/Examples/S167_177.v
 theories/Examples/S603_284.v
 theories/Examples/S1421_53.v
 theories/Examples/S450_204.v
 theories/Examples/S5_100.v
+theories/Alt/S2389_139_Deep.v
 theories/All.v
