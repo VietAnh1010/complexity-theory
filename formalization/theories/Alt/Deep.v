@@ -1,41 +1,32 @@
 (** * Alt/Deep.v — a deep embedding: syntax, and a big-step semantics that
       counts steps.
 
-    THE ALTERNATIVE TO THE COST MONAD, AND WHY IT MATTERS HERE.
+    An alternative to the cost monad of [Cost.v]. There the cost model is a
+    per-example judgement — where the [tick]s go in each [Examples/S*.v], with
+    nothing checking that decision. Here it lives in the semantics: one place,
+    reviewed once, shared by every program in the language. An example file is
+    then a syntax tree carrying no cost annotations at all.
 
-    In [Cost.v] the cost model is a per-example judgement: I decide where the
-    [tick]s go in each [Examples/S*.v], and nothing checks that decision. The
-    README calls that the whole attack surface, and it is.
-
-    Here the cost model lives in the semantics instead — one place,
-    reviewable once, shared by every program written in the language. An
-    example file becomes a syntax tree with no cost annotations at all, so
-    there is nothing left to get wrong per example. That is the entire point
-    of paying for a deep embedding.
-
-    Trade-offs, honestly:
+    Trade-offs:
 
     + Cost model stated once, not per file.
-    + Relational semantics: no fuel, no termination obligation. A program that
-      diverges simply has no derivation, rather than needing a fuel parameter
-      and an adequacy lemma (compare [S5_100.v]'s [run_finishes]).
-    + The program is data, so you can quantify over programs — "no program in
+    + No fuel and no termination obligation. A diverging program simply has no
+      derivation, where the monad needs a fuel parameter plus an adequacy
+      lemma (compare [S5_100.v]'s [run_finishes]).
+    + The program is data, so one can quantify over programs — "no program in
       this fragment costs more than ..." is expressible. The monad cannot say
       that.
-    - Much heavier per example: the program must be encoded as a tree, and
-      every proof goes through inversion on derivations.
-    - The language must cover the Python. [SWhile] is now included, and with
-      it the semantics is no longer total: [evalS] may have no derivation.
-      That is the honest reading of a diverging program, and it costs nothing
-      here because the relation never claimed totality — but a cost theorem
-      about a [while] loop is now conditional on a derivation existing.
-    - Care is needed to state cost theorems so they quantify over every
-      derivation, not merely assert that one exists — see the note below.
+    - Heavier per example: the program must be encoded as a tree and every
+      proof goes through inversion on derivations.
+    - With [SWhile] the semantics is not total, so a cost theorem about a loop
+      is conditional on a derivation existing. Each example therefore carries
+      a worked witness ([run_aa], [run_4]) to rule out vacuity.
+    - Cost theorems must be stated to quantify over every derivation, not to
+      assert that one exists — see the note at the end of this file.
 
     THE COST MODEL, in one place: [ECount] charges one step per character
-    scanned, matching Python's [str.count]. Everything else is free. That is
-    the same model [Examples/S2389_139.v] applies by hand, which is what makes
-    the cross-check in [S2389_139_Deep.v] meaningful. *)
+    scanned, matching Python's [str.count]; [ES_WhileTrue] charges one step
+    per iteration. Everything else is free. *)
 
 From Stdlib Require Import List Arith Lia.
 Import ListNotations.
@@ -72,9 +63,9 @@ Qed.
 
 (** ** Syntax.
 
-    Minimal: exactly what [S2389_139] needs. [SForVals] is an internal form —
-    the loop over an already-evaluated list — which lets the whole semantics
-    be one inductive instead of a mutual one. *)
+    Minimal: what the worked examples need, no more. [SForVals] is an internal
+    form — the loop over an already-evaluated list — which lets the whole
+    semantics be one inductive rather than a mutual one. *)
 
 Inductive expr : Type :=
   | EVar   : nat -> expr
@@ -179,13 +170,52 @@ Inductive evalS : state -> stmt -> state -> nat -> Prop :=
 Lemma EV_Var' : forall s x v, lookup s x = v -> evalE s (EVar x) v 0.
 Proof. intros s x v <-. apply EV_Var. Qed.
 
+(** ** Shared proof tactics.
+
+    All three match on hypothesis SHAPE rather than on [inversion]'s generated
+    names, which shift between Rocq versions.
+
+    - [peelE] eliminates every expression derivation in the context.
+    - [reconcile] / [reconcileN] merge two lookups of the same variable; the
+      [constr_eq] guard stops them pairing a hypothesis with itself.
+    - [inv_stmt] eliminates one statement derivation, named by its statement. *)
+
+Ltac peelE :=
+  repeat match goal with
+         | H : evalE _ (ECount _ _) _ _ |- _ => inversion H; subst; clear H
+         | H : evalE _ (EMod _ _)   _ _ |- _ => inversion H; subst; clear H
+         | H : evalE _ (EEq _ _)    _ _ |- _ => inversion H; subst; clear H
+         | H : evalE _ (EAdd _ _)   _ _ |- _ => inversion H; subst; clear H
+         | H : evalE _ (ESub _ _)   _ _ |- _ => inversion H; subst; clear H
+         | H : evalE _ (ELt _ _)    _ _ |- _ => inversion H; subst; clear H
+         | H : evalE _ (ENat _)     _ _ |- _ => inversion H; subst; clear H
+         | H : evalE _ (EVar _)     _ _ |- _ => inversion H; subst; clear H
+         end.
+
+Ltac reconcile :=
+  repeat match goal with
+         | H1 : lookup ?s ?x = VS ?a, H2 : lookup ?s ?x = VS ?b |- _ =>
+             tryif constr_eq a b then fail
+             else (assert (a = b) by congruence; subst)
+         end.
+
+Ltac reconcileN :=
+  repeat match goal with
+         | H1 : lookup ?s ?x = VN ?a, H2 : lookup ?s ?x = VN ?b |- _ =>
+             tryif constr_eq a b then fail
+             else (assert (a = b) by congruence; subst)
+         end.
+
+Ltac inv_stmt t :=
+  match goal with H : evalS _ t _ _ |- _ => inversion H; subst; clear H end.
+
 (** ** No determinism lemma, deliberately.
 
     A relational semantics tempts you to prove [evalS] deterministic so that
     "there is a derivation of cost c" upgrades to "the cost is c". It is not
     needed here: the example theorem is stated as
 
-      forall s' c, evalS (init str) prog s' c -> c = length str * length str
+      forall s' c, evalS (init x) prog s' c -> c = <closed form>
 
     which already quantifies over EVERY derivation. Nothing cheap can hide —
     if some derivation had a smaller cost, that statement would be false.

@@ -158,6 +158,40 @@
 </section>
 
 <section>
+  <h2>Three to walk through</h2>
+  <div class="prose">
+    <p style="font-size:0.9rem;color:var(--muted)">
+      Suggested demo path. One wrong label, one precision failure that raises a
+      design question, one clean case done twice in two different styles.
+    </p>
+  </div>
+  <div class="scroll">
+    <table>
+      <thead>
+        <tr><th>#</th><th>Case</th><th>Dataset claims</th><th>We prove</th><th>The point</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="lbl">1</td><td class="id">450_204</td>
+          <td class="lbl">O(1)</td><td class="lbl">cost = n</td>
+          <td>The label is not an upper bound. One line of Python.</td>
+        </tr>
+        <tr>
+          <td class="lbl">2</td><td class="id">5_100</td>
+          <td class="lbl">O(n)</td><td class="lbl">~&radic;(2n) by value, 2<sup>k</sup> by bit length</td>
+          <td>Both sizing conventions proved; they disagree on the verdict.</td>
+        </tr>
+        <tr>
+          <td class="lbl">3</td><td class="id">2389_139</td>
+          <td class="lbl">O(n**2)</td><td class="lbl">cost = n&sup2; exactly</td>
+          <td>Label is right. Modelled twice, two styles, same answer.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
   <h2>Results</h2>
   <div class="scroll">
     <table>
@@ -507,12 +541,13 @@ Theorem fitted_label_is_tight :
 <section>
   <h2>Build</h2>
   <div class="callout">
-    <p><strong>Rocq 9.2, clean build, zero warnings.</strong> No
-    <code>Admitted</code>; <code>Print Assumptions</code> reports “Closed under
-    the global context” for every verdict theorem.</p>
+    <p><strong>Rocq 9.2, clean build.</strong> <code>make check</code> is the
+    gate: it fails on a build error, on any <code>Admitted</code>, and on any
+    headline theorem that turns out to depend on an axiom.</p>
     <pre style="background:var(--sunk);font-size:0.75rem">git checkout claude/paper-summary-formalization-dt6509
 cd formalization && make check
-  → OK: all proofs closed</pre>
+  → OK: no admitted proofs
+  → OK: 17/17 headline theorems closed under the global context</pre>
     <p style="font-size:0.85rem;color:var(--muted)">
       This switch pairs <code>rocq-core</code> 9.2.0 with
       <code>rocq-stdlib</code> 9.1.0 — opam has no 9.2 stdlib released.

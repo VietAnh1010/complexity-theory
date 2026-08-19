@@ -1,18 +1,18 @@
 (** * Alt/S2389_139_Deep.v — 2389_139 again, in the deep embedding.
 
-    The payoff is [models_agree]: the cost-monad version and this one share no
-    definitions, yet assign the same cost to every input. A bookkeeping slip
-    would have to occur identically in both to survive.
+    The same solution as [Examples/S2389_139.v], modelled independently: there
+    the cost is [tick]s in a Gallina function, here it is read off a
+    derivation. Both reach n^2, so the verdict does not depend on which
+    modelling style was used.
 
-    It does NOT validate the cost model. Both encode the same judgement — that
-    [str.count] scans the whole string. If that reading of Python is wrong,
-    both are wrong together. *)
+    Neither validates the cost model itself. Both encode the same judgement —
+    that [str.count] scans the whole string. If that reading of Python is
+    wrong, both are wrong together. *)
 
 From Stdlib Require Import List Arith Lia.
 Import ListNotations.
-From BigOBench Require Import Cost Asymptotic.
+From BigOBench Require Import Asymptotic.
 From BigOBench.Alt Require Import Deep.
-From BigOBench.Examples Require S2389_139.
 
 Definition vs : nat := 0.
 Definition vch : nat := 1.
@@ -27,28 +27,6 @@ Definition prog : stmt :=
   SSeq (SAssign vch (ENat 0)) (SForEach vi (EVar vs) body).
 
 Definition init (str : list nat) : state := [(vs, VS str)].
-
-(** Matching on hypothesis SHAPE, not on [inversion]'s generated names, which
-    shift between Rocq versions. [reconcile]'s [constr_eq] guard stops it
-    pairing a hypothesis with itself. *)
-Ltac peelE :=
-  repeat match goal with
-         | H : evalE _ (EEq _ _)    _ _ |- _ => inversion H; subst; clear H
-         | H : evalE _ (EMod _ _)   _ _ |- _ => inversion H; subst; clear H
-         | H : evalE _ (ECount _ _) _ _ |- _ => inversion H; subst; clear H
-         | H : evalE _ (ENat _)     _ _ |- _ => inversion H; subst; clear H
-         | H : evalE _ (EVar _)     _ _ |- _ => inversion H; subst; clear H
-         end.
-
-Ltac reconcile :=
-  repeat match goal with
-         | H1 : lookup ?s ?x = VS ?a, H2 : lookup ?s ?x = VS ?b |- _ =>
-             tryif constr_eq a b then fail
-             else (assert (a = b) by congruence; subst)
-         end.
-
-Ltac inv_stmt c := match goal with
-  | H : evalS _ c _ _ |- _ => inversion H; subst; clear H end.
 
 Lemma guard_cost : forall st str v c,
     lookup st vs = VS str ->
@@ -108,8 +86,8 @@ Qed.
 
 (** ** Non-vacuity.
 
-    [prog_cost] and [models_agree] are conditional on a derivation existing,
-    so both would hold vacuously if the semantics admitted none. On "aa"
+    [prog_cost] is conditional on a derivation existing, so it would hold
+    vacuously if the semantics admitted none. On "aa"
     (here [[7;7]]) each of the two iterations scans the 2-character string
     once, so the cost is 4 = 2 * 2. *)
 
@@ -134,14 +112,7 @@ Proof.
   - reflexivity.
 Qed.
 
-(** ** The two models agree on every input. *)
-Theorem models_agree : forall str st' c,
-    evalS (init str) prog st' c -> c = cost (S2389_139.beautiful str).
-Proof.
-  intros. rewrite (prog_cost _ _ _ H). symmetry. apply S2389_139.cost_beautiful.
-Qed.
-
-(** So the deep embedding reproduces the verdict independently. *)
+(** ** The verdict, reproduced independently of the monad. *)
 Definition Tdeep (n : nat) : nat := n * n.
 
 Theorem deep_label_is_tight : Theta Tdeep (fun n => n * n).

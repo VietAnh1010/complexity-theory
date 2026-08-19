@@ -83,8 +83,3 @@ Qed.
 Lemma bind_assoc : forall {A B C} (m : M A) (f : A -> M B) (g : B -> M C),
     bind (bind m f) g = bind m (fun a => bind (f a) g).
 Proof. intros. unfold bind. simpl. f_equal. lia. Qed.
-
-(** Cost is monotone under sequencing: no step is ever refunded. *)
-Lemma cost_bind_ge_l : forall {A B} (m : M A) (f : A -> M B),
-    cost m <= cost (bind m f).
-Proof. intros. rewrite cost_bind. lia. Qed.

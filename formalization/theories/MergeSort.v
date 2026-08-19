@@ -143,12 +143,6 @@ Proof.
         apply Permutation_middle.
 Qed.
 
-Lemma merge_length : forall a b, length (val (merge a b)) = length a + length b.
-Proof.
-  intros a b. rewrite (Permutation_length (merge_perm a b)).
-  apply length_app.
-Qed.
-
 (** The head of a merge is one of the two heads, so a bound on both heads
     bounds the result's head. This is what carries [Sorted] through. *)
 Lemma merge_hdrel : forall z a b,

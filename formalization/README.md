@@ -24,9 +24,13 @@ Rocq 9.x. Source uses `From Stdlib Require`, so it does not build on Coq 8.x.
 
 ```bash
 make          # build everything
-make check    # build, then fail if any proof is Admitted
+make check    # build + gate: no admitted proofs, no axioms
 make clean
 ```
+
+`make check` is the gate. It fails on a build error, on any `Admitted`, and —
+via `tools/check_axioms.sh` — if any headline theorem turns out to depend on
+an axiom.
 
 ## Layout
 
@@ -149,9 +153,9 @@ test set call one of them (measured), so it unblocks that class.
 ## Alternative model: deep embedding
 
 `Alt/Deep.v` is a tiny imperative language with a step-counting big-step
-semantics; `Alt/S2389_139_Deep.v` re-models `2389_139` in it. The two models
-share no definitions, and `models_agree` proves they assign the same cost to
-every input.
+semantics. `Alt/S2389_139_Deep.v` and `Alt/S5_100_Deep.v` re-model two of the
+solutions in it, sharing no definitions with the monad versions and reaching
+the same bounds.
 
 The difference that matters: in the monad the cost model is a per-file
 judgement (where the `tick`s go); in the deep embedding it is one rule in the
@@ -171,9 +175,10 @@ semantics, `EV_Count`, reviewed once and reused by every program.
 - Cost: ~175 lines of language + ~130 per example, against 78 for the monad
   version.
 
-It cross-validates bookkeeping, **not** the cost model: both encode the same
-judgement that `str.count` scans the string. If that reading is wrong, both
-are wrong together.
+Agreement between the two styles is a sanity check, not a requirement: it is
+recorded where it falls out, and not forced where it does not. It would not
+validate the cost model anyway — both styles encode the same judgement about
+what `str.count` costs, so a wrong reading of Python is wrong in both.
 
 ## Rocq trap
 

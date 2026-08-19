@@ -24,31 +24,6 @@ Definition Theta (f g : nat -> nat) : Prop := BigO f g /\ BigOmega f g.
 Definition BigO2 (f g : nat -> nat -> nat) : Prop :=
   exists c p, forall n m, p <= n -> p <= m -> f n m <= c * g n m.
 
-(** ** Introduction *)
-
-Lemma BigO_intro : forall f g c n0,
-    (forall n, n0 <= n -> f n <= c * g n) -> BigO f g.
-Proof. intros f g c n0 H. exists c, n0. exact H. Qed.
-
-Lemma BigO_of_global : forall f g c,
-    (forall n, f n <= c * g n) -> BigO f g.
-Proof. intros f g c H. exists c, 0. auto. Qed.
-
-Lemma BigO_refl : forall f, BigO f f.
-Proof. intros f. exists 1, 0. intros. lia. Qed.
-
-Lemma Theta_refl : forall f, Theta f f.
-Proof. split; apply BigO_refl. Qed.
-
-Lemma BigO_trans : forall f g h, BigO f g -> BigO g h -> BigO f h.
-Proof.
-  intros f g h [c1 [n1 H1]] [c2 [n2 H2]].
-  exists (c1 * c2), (Nat.max n1 n2). intros n Hn.
-  assert (n1 <= n) by lia. assert (n2 <= n) by lia.
-  specialize (H1 n ltac:(lia)). specialize (H2 n ltac:(lia)).
-  nia.
-Qed.
-
 (** ** Refutation.
 
     The lemma that makes a *disagreement* with a fitted label provable rather

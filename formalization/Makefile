@@ -9,12 +9,13 @@ all: $(COQMAKEFILE)
 $(COQMAKEFILE): _CoqProject
 	$(ROCQ) makefile -f _CoqProject -o $(COQMAKEFILE)
 
-# Fails loudly if any Admitted/admit survived. The catalog is only worth
-# reading if every entry it points at is actually proved.
+# The gate. Three things, any of which would make the catalog worthless:
+# an admitted proof, a proof closed via an axiom, or a build failure.
 check: all
 	@! grep -rnE '\b(Admitted|admit)\b' theories --include='*.v' \
 	  || (echo "FAIL: admitted proofs above" && false)
-	@echo "OK: all proofs closed"
+	@echo "OK: no admitted proofs"
+	@sh tools/check_axioms.sh
 
 clean:
 	@if [ -f $(COQMAKEFILE) ]; then $(MAKE) -f $(COQMAKEFILE) cleanall; fi

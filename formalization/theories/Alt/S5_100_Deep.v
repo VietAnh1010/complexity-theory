@@ -38,22 +38,6 @@ Definition prog : stmt := SWhile guard wbody.
 
 Definition init (n : nat) : state := [(vn, VN n); (vk, VN 1)].
 
-Ltac peelE :=
-  repeat match goal with
-         | H : evalE _ (ELt _ _)  _ _ |- _ => inversion H; subst; clear H
-         | H : evalE _ (EAdd _ _) _ _ |- _ => inversion H; subst; clear H
-         | H : evalE _ (ESub _ _) _ _ |- _ => inversion H; subst; clear H
-         | H : evalE _ (ENat _)   _ _ |- _ => inversion H; subst; clear H
-         | H : evalE _ (EVar _)   _ _ |- _ => inversion H; subst; clear H
-         end.
-
-Ltac reconcileN :=
-  repeat match goal with
-         | H1 : lookup ?s ?x = VN ?a, H2 : lookup ?s ?x = VN ?b |- _ =>
-             tryif constr_eq a b then fail
-             else (assert (a = b) by congruence; subst)
-         end.
-
 (** One iteration: free, and it moves [(n,k)] to [(n-k, k+1)]. *)
 Lemma body_step : forall st st' c n k,
     lookup st vn = VN n -> lookup st vk = VN k ->
@@ -117,8 +101,8 @@ Qed.
     [prog_sqrt] is conditional on a derivation existing, so it would hold
     vacuously if the semantics admitted none. At n = 4 the loop runs twice
     (4,1) -> (3,2) -> (1,3), where 3 < 1 fails. *)
-(* The guard's operands must be given explicitly: until [a] and [b] are
-   known, the unifier cannot reduce [if a <? b then 1 else 0] to [1]. *)
+(** The guard's operands must be given explicitly: until [a] and [b] are
+    known, the unifier cannot reduce [if a <? b then 1 else 0] to [1]. *)
 Ltac iter a b :=
   eapply ES_WhileTrue;
   [ eapply (EV_Lt _ _ _ a b); (eapply EV_Var'; reflexivity)
@@ -137,9 +121,7 @@ Proof.
   - reflexivity.
 Qed.
 
-(** Reproduces [S5_100.iters_sqrt] with no fuel and no adequacy lemma. The
-    two developments share no definitions.
-
-    Not proved here: that the deep and monadic costs are EQUAL, only that both
-    satisfy the same bound. Exact agreement would need the fuel-indexed
-    [S5_100.loop] related to this derivation, which is a further induction. *)
+(** Reproduces [S5_100.iters_sqrt] with no fuel and no adequacy lemma, and
+    with no shared definitions. Only the BOUND is shown to coincide; exact
+    equality of the two costs is not proved and is not needed for the
+    verdict. *)
