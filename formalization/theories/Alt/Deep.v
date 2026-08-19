@@ -24,8 +24,11 @@
       that.
     - Much heavier per example: the program must be encoded as a tree, and
       every proof goes through inversion on derivations.
-    - The language must actually cover the Python. This one does not have
-      [while], so it cannot express [S5_100.v]. Extending it is real work.
+    - The language must cover the Python. [SWhile] is now included, and with
+      it the semantics is no longer total: [evalS] may have no derivation.
+      That is the honest reading of a diverging program, and it costs nothing
+      here because the relation never claimed totality — but a cost theorem
+      about a [while] loop is now conditional on a derivation existing.
     - Care is needed to state cost theorems so they quantify over every
       derivation, not merely assert that one exists — see the note below.
 
@@ -78,7 +81,10 @@ Inductive expr : Type :=
   | ENat   : nat -> expr
   | ECount : expr -> expr -> expr      (* e1.count(e2) *)
   | EMod   : expr -> expr -> expr
-  | EEq    : expr -> expr -> expr.
+  | EEq    : expr -> expr -> expr
+  | EAdd   : expr -> expr -> expr
+  | ESub   : expr -> expr -> expr
+  | ELt    : expr -> expr -> expr.
 
 Inductive stmt : Type :=
   | SSkip    : stmt
@@ -86,7 +92,8 @@ Inductive stmt : Type :=
   | SSeq     : stmt -> stmt -> stmt
   | SIf      : expr -> stmt -> stmt -> stmt
   | SForEach : nat -> expr -> stmt -> stmt        (* for x in e: body *)
-  | SForVals : nat -> list nat -> stmt -> stmt.   (* internal *)
+  | SForVals : nat -> list nat -> stmt -> stmt    (* internal *)
+  | SWhile   : expr -> stmt -> stmt.
 
 Fixpoint countocc (x : nat) (l : list nat) : nat :=
   match l with
@@ -116,7 +123,16 @@ Inductive evalE : state -> expr -> V -> nat -> Prop :=
   | EV_Eq : forall s e1 e2 a b c1 c2,
       evalE s e1 (VN a) c1 ->
       evalE s e2 (VN b) c2 ->
-      evalE s (EEq e1 e2) (VN (if Nat.eqb a b then 1 else 0)) (c1 + c2).
+      evalE s (EEq e1 e2) (VN (if Nat.eqb a b then 1 else 0)) (c1 + c2)
+  | EV_Add : forall s e1 e2 a b c1 c2,
+      evalE s e1 (VN a) c1 -> evalE s e2 (VN b) c2 ->
+      evalE s (EAdd e1 e2) (VN (a + b)) (c1 + c2)
+  | EV_Sub : forall s e1 e2 a b c1 c2,
+      evalE s e1 (VN a) c1 -> evalE s e2 (VN b) c2 ->
+      evalE s (ESub e1 e2) (VN (a - b)) (c1 + c2)
+  | EV_Lt : forall s e1 e2 a b c1 c2,
+      evalE s e1 (VN a) c1 -> evalE s e2 (VN b) c2 ->
+      evalE s (ELt e1 e2) (VN (if Nat.ltb a b then 1 else 0)) (c1 + c2).
 
 Inductive evalS : state -> stmt -> state -> nat -> Prop :=
   | ES_Skip : forall s,
@@ -146,7 +162,22 @@ Inductive evalS : state -> stmt -> state -> nat -> Prop :=
   | ES_ForCons : forall s x v vs body s1 s2 c1 c2,
       evalS (update x (VN v) s) body s1 c1 ->
       evalS s1 (SForVals x vs body) s2 c2 ->
-      evalS s (SForVals x (v :: vs) body) s2 (c1 + c2).
+      evalS s (SForVals x (v :: vs) body) s2 (c1 + c2)
+  (* One step per iteration, matching the [tick] in [S5_100.v]'s loop. *)
+  | ES_WhileTrue : forall s g body s1 s' cg cb cr,
+      evalE s g (VN 1) cg ->
+      evalS s body s1 cb ->
+      evalS s1 (SWhile g body) s' cr ->
+      evalS s (SWhile g body) s' (S (cg + cb + cr))
+  | ES_WhileFalse : forall s g body m cg,
+      evalE s g (VN m) cg -> m <> 1 ->
+      evalS s (SWhile g body) s cg.
+
+(** Variable lookup with the value given explicitly. [apply EV_Var] leaves the
+    value as [lookup s x], which the unifier will not reduce against an evar;
+    this form lets [reflexivity] compute it. *)
+Lemma EV_Var' : forall s x v, lookup s x = v -> evalE s (EVar x) v 0.
+Proof. intros s x v <-. apply EV_Var. Qed.
 
 (** ** No determinism lemma, deliberately.
 

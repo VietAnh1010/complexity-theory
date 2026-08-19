@@ -161,9 +161,15 @@ semantics, `EV_Count`, reviewed once and reused by every program.
   simply has no derivation. Compare `S5_100.v`'s `run_finishes`.
 - Cost theorems quantify over *every* derivation, so no determinism lemma is
   needed to rule out a cheaper one.
-- Cost: 162 lines of language + 127 per example, against 78 for the monad
-  version. And the language has no `while`, so it cannot yet express
-  `S5_100.v`.
+- `SWhile` is now in the language, so `Alt/S5_100_Deep.v` re-proves the √n
+  bound with **no fuel and no adequacy lemma** — `S5_100.v` needs
+  `run_finishes` only because a fuel-truncated loop satisfies any upper bound
+  for free. Here a truncated run simply is not a derivation.
+- The price: the semantics is no longer total, so `prog_sqrt` is conditional
+  on a derivation existing. `run_4` is a worked witness, which is what keeps
+  the theorem from being vacuous.
+- Cost: ~175 lines of language + ~130 per example, against 78 for the monad
+  version.
 
 It cross-validates bookkeeping, **not** the cost model: both encode the same
 judgement that `str.count` scans the string. If that reading is wrong, both
