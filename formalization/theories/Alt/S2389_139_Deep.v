@@ -106,6 +106,34 @@ Proof.
   lia.
 Qed.
 
+(** ** Non-vacuity.
+
+    [prog_cost] and [models_agree] are conditional on a derivation existing,
+    so both would hold vacuously if the semantics admitted none. On "aa"
+    (here [[7;7]]) each of the two iterations scans the 2-character string
+    once, so the cost is 4 = 2 * 2. *)
+
+Ltac scan_iter :=
+  eapply ES_ForCons;
+  [ eapply ES_IfFalse;
+    [ eapply EV_Eq;
+      [ eapply EV_Mod;
+        [ eapply EV_Count; (eapply EV_Var'; reflexivity) | apply EV_Nat ]
+      | apply EV_Nat ]
+    | cbn; discriminate
+    | apply ES_Skip ]
+  | ].
+
+Example run_aa : exists st' c, evalS (init [7; 7]) prog st' c /\ c = 4.
+Proof.
+  unfold prog, init, body, vs, vch, vi.
+  eexists; eexists; split.
+  - eapply ES_Seq; [eapply ES_Assign, EV_Nat |].
+    eapply ES_ForEach; [eapply EV_Var'; reflexivity |].
+    scan_iter. scan_iter. apply ES_ForNil.
+  - reflexivity.
+Qed.
+
 (** ** The two models agree on every input. *)
 Theorem models_agree : forall str st' c,
     evalS (init str) prog st' c -> c = cost (S2389_139.beautiful str).
