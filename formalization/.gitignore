@@ -8,5 +8,8 @@
 Makefile.coq
 Makefile.coq.conf
 .Makefile.coq.d
+Makefile.rocq
+Makefile.rocq.conf
+.Makefile.rocq.d
 .lia.cache
 .nia.cache
