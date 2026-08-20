@@ -3,11 +3,6 @@
     time_complexity_test_set: solution_id 167_177,
     "1184_A1. Heidi Learns Hashing (Easy)", fitted O(n).
 
-    FIRST ENTRY DRAWN AT RANDOM. Every earlier example was the shortest
-    solution in its label class, which skews toward one-liners. This one comes
-    from `bench.py sample --seed 20260817`, drawn before the solution was read.
-    See README "Limits".
-
     Source, verbatim (tabs as in the original):
 
       import math
@@ -23,34 +18,27 @@
         print("NO")
 
     COST MODEL. One tick per loop iteration; the body is O(1) arithmetic.
+    Reading the single integer is free, per the convention in [Cost.v].
     [math.floor(math.sqrt(n))] is [Nat.sqrt n], which is exactly floor of the
     real square root. The loop bound is therefore sqrt(n), not n.
 
-    Two things charged as O(1) that are not, in the limit: [i**2] and the
-    [%] / [//] on Python bignums are O(1) only while the values fit in a
-    machine word. At the sizes this problem uses they do; at n large enough to
-    matter the model would need a bit-cost for arithmetic. Flagged rather than
-    modelled.
+    Two things charged as O(1) that are not, in the limit: [i**2] and [%] /
+    [//] on Python bignums cost O(1) only while the values fit in a machine
+    word. At this problem's sizes they do; beyond that the model would need a
+    bit-cost for arithmetic. Flagged, not modelled.
 
-    WHY THIS ONE MATTERS. It is a second, independent instance of the same
-    failure as 5_100: a loop that runs in sqrt(n) labelled O(n). The two
-    programs reach sqrt(n) by different routes — 5_100 by summing 1+2+3+...,
-    this one by an explicit [math.sqrt] bound — so this is not the same bug
-    seen twice. And unlike 5_100 it was drawn at random, so it is evidence
-    about the split rather than about how examples were picked.
-
-    As with 5_100, "n" is the numeric VALUE of the input integer. *)
+    WHAT "n" IS. The numeric VALUE of the input integer, not a length. *)
 
 From Stdlib Require Import Arith Lia.
 From BigOBench Require Import Cost Asymptotic.
 
-(** The loop guard's test. Its value is irrelevant to the cost — what matters
-    is that the loop may exit early, so the cost is an upper bound. *)
+(** The loop guard's test. Its value does not affect the cost bound: the loop
+    may exit early, so the count below is an upper bound. *)
 Definition hit (n i : nat) : bool :=
   Nat.eqb ((n - 1 - i * i - i) mod (2 * i)) 0.
 
-(** [for i in range(1, x)] with the [break]. [count] is how many indices
-    remain. *)
+(** [for i in range(1, x)] with the [break]. [count] is the number of indices
+    remaining. *)
 Fixpoint scan (count i n : nat) : M bool :=
   match count with
   | 0 => ret false
@@ -80,8 +68,8 @@ Qed.
 
 (** ** The disagreement.
 
-    O(n) is a sound upper bound — [Nat.sqrt n <= n] — but not a tight one:
-    the cost is not Omega(n). Witness family: perfect squares, where
+    O(n) is a sound upper bound — [Nat.sqrt n <= n] — but not a tight one: the
+    cost is not Omega(n). Witness family: perfect squares, where
     [Nat.sqrt (m * m) = m] exactly. *)
 
 Theorem fitted_label_sound : BigO T (fun n => n).

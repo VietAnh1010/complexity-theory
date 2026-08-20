@@ -3,11 +3,11 @@
     Covers any solution calling [sort] or [sorted].
 
     - Depth, not fuel. [msort] takes a depth [d] with precondition
-      [length l <= 2 ^ d], so the recurrence closes by induction on [d] alone
-      and [log2_up] appears only at [msort_top].
-    - Adequacy is required, not decoration. [fun l => ret l] and
-      [fun _ => ret []] both cost nothing and satisfy every upper bound, so
-      [msort_perm] and [msort_sorted] are what make [cost_msort] mean anything.
+      [length l <= 2 ^ d], so the recurrence closes on [d] alone and [log2_up]
+      appears only at [msort_top].
+    - Adequacy is required. [fun l => ret l] and [fun _ => ret []] both cost
+      nothing and satisfy every upper bound, so [msort_perm] and
+      [msort_sorted] are what make [cost_msort] mean anything.
     - [merge] is a nested fix and [simpl] unfolds it unpredictably. Proofs go
       through the [merge_nil_l / merge_nil_r / merge_cons] equations. *)
 
@@ -15,8 +15,8 @@ From Stdlib Require Import List Arith Lia Sorting.Sorted Sorting.Permutation.
 Import ListNotations.
 From BigOBench Require Import Cost Asymptotic.
 
-(** Two-step induction, for the functions that consume a list two elements at
-    a time. *)
+(** Two-step induction, for the functions that consume two elements at a
+    time. *)
 Lemma list_ind2 : forall (A : Type) (P : list A -> Prop),
     P [] ->
     (forall x, P [x]) ->
@@ -32,8 +32,8 @@ Qed.
 
 (** ** Splitting.
 
-    Alternating split, one tick per element. Defined in the monad, with the
-    pure version read off it, so there is a single definition. *)
+    Alternating split, one tick per element. Defined in the monad; [halve] is
+    read off it, so cost and result come from one definition. *)
 
 Fixpoint halveM (l : list nat) : M (list nat * list nat) :=
   match l with
@@ -85,7 +85,7 @@ Proof. intros l. pose proof (halve_length l). lia. Qed.
 
 (** ** Merging.
 
-    The usual nested fix: the outer recursion is on [a], the inner on [b]. *)
+    The usual nested fix: outer recursion on [a], inner on [b]. *)
 
 Fixpoint merge (a : list nat) : list nat -> M (list nat) :=
   match a with
@@ -101,7 +101,7 @@ Fixpoint merge (a : list nat) : list nat -> M (list nat) :=
          end)
   end.
 
-(** The equations. All [reflexivity]; the third relies on the inner fix
+(** The equations, all by [reflexivity]. [merge_cons] relies on the inner fix
     [mergeA b'] being convertible with [merge (x :: a') b']. *)
 
 Lemma merge_nil_l : forall b, merge [] b = ret b.
@@ -143,8 +143,8 @@ Proof.
         apply Permutation_middle.
 Qed.
 
-(** The head of a merge is one of the two heads, so a bound on both heads
-    bounds the result's head. This is what carries [Sorted] through. *)
+(** The merged head is one of the two input heads, so a [z] below both is
+    below it. This is what carries [Sorted] through [merge_sorted]. *)
 Lemma merge_hdrel : forall z a b,
     HdRel le z a -> HdRel le z b -> HdRel le z (val (merge a b)).
 Proof.
@@ -181,9 +181,9 @@ Qed.
 
 (** ** The sort.
 
-    [d] is the recursion depth. The [d = 0] branch with a list of length >= 2
-    cannot be reached when [length l <= 2 ^ d], and every theorem below
-    carries that hypothesis. *)
+    [d] is the recursion depth. The [d = 0] branch with [length l >= 2] is
+    unreachable under [length l <= 2 ^ d], the hypothesis every theorem below
+    carries. *)
 
 Fixpoint msort (d : nat) (l : list nat) : M (list nat) :=
   match l with
@@ -246,16 +246,16 @@ Qed.
 
 (** ** The cost bound.
 
-    [2 * d * n]: each of the [d] levels does one split pass and one merge pass
-    over the whole level, and each pass is one tick per element. *)
+    [2 * d * n]: each of the [d] levels runs one split pass and one merge pass
+    over the whole level, at one tick per element. *)
 
 Theorem cost_msort : forall d l,
     length l <= 2 ^ d -> cost (msort d l) <= 2 * d * length l.
 Proof.
   induction d as [| d' IH]; intros l Hlen.
-  (* d = 0: [msort 0 l] returns [l] unchanged, at cost 0, in every branch.
-     Note [rewrite cost_ret] does NOT fire here — [msort 0 []] is convertible
-     with [ret []] but not syntactically equal to it, so [simpl] first. *)
+  (* d = 0: every branch returns [l] unchanged at cost 0. [rewrite cost_ret]
+     does not fire — [msort 0 []] is convertible with [ret []] but not
+     syntactically equal to it — so [simpl] first. *)
   - destruct l as [| x [| y r]]; simpl; lia.
   - destruct l as [| x [| y r]]; [simpl; lia | simpl; lia |].
     assert (Hfst : length (fst (halve (x :: y :: r))) <= 2 ^ d')
@@ -272,7 +272,7 @@ Proof.
     rewrite !msort_length in Hm.
     destruct (halve_length (x :: y :: r)) as [Hsum _].
     (* [lia] treats [d' * A] as an opaque atom, so it cannot distribute the
-       recursive bounds over the split. Supply both products by [ring]. *)
+       recursive bounds over the split. Supply the two products by [ring]. *)
     assert (Hdist : 2 * d' * length (fst (halve (x :: y :: r)))
                   + 2 * d' * length (snd (halve (x :: y :: r)))
                   = 2 * d' * length (x :: y :: r))
@@ -283,7 +283,7 @@ Proof.
     simpl length in *. lia.
 Qed.
 
-(** ** Top level: instantiate the depth with [log2_up]. *)
+(** ** Top level: instantiate [d] with [log2_up]. *)
 
 Lemma length_le_pow_log2_up : forall n, n <= 2 ^ Nat.log2_up n.
 Proof.

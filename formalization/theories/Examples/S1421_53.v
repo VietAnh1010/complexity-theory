@@ -13,16 +13,18 @@
         B[A[i]-1]=i+1
       print( *B)
 
-    COST MODEL. One tick per element parsed, one per iteration of the [for].
-    B is a Python list, so [B[k]=v] is O(1): it is modelled as [nat -> nat]
-    with pointwise update, NOT as a Rocq list. Modelling it as a list would
-    make each store O(n) and "prove" this program quadratic. Allocating
-    [B=[0]*N] is charged nothing.
+    COST MODEL. One tick per iteration of the [for]. Reading and parsing the
+    input is free, per the convention in [Cost.v]; [parse] is modelled so the
+    step is visible, but charged nothing. B is a Python list, so [B[k]=v] is
+    O(1): B is modelled as [nat -> nat] with pointwise update, NOT as a Rocq
+    list, which would make each store O(n) and "prove" this program quadratic.
+    Allocating [B=[0]*N] is charged nothing.
 
     There is one input size, N, which is also the length of A. The fitted
-    O(n+m) is sound — O(n) is contained in it — but its second parameter is
-    spurious. That is a fact about how size variables are picked from the
-    dataclass, not about the program. *)
+    O(n+m) is sound — O(n) is contained in it — but names a second parameter
+    the program has nothing to vary with: a fact about how size variables are
+    picked from the dataclass, not about the program. [true_class] is the
+    statement that matters, one parameter and linear. *)
 
 From Stdlib Require Import List Arith Lia.
 Import ListNotations.
@@ -32,23 +34,23 @@ From BigOBench Require Import Cost Asymptotic.
 Definition upd (b : nat -> nat) (k v : nat) : nat -> nat :=
   fun x => if Nat.eqb x k then v else b x.
 
-(** [A = [int(i) for i in input().split()]] — one tick per element. *)
+(** [A = [int(i) for i in input().split()]] — input parsing, charged nothing. *)
 Fixpoint parse (l : list nat) : M (list nat) :=
   match l with
   | [] => ret []
-  | x :: r => tick (t <- parse r ;; ret (x :: t))
+  | x :: r => t <- parse r ;; ret (x :: t)
   end.
 
-Lemma cost_parse : forall l, cost (parse l) = length l.
+Lemma cost_parse : forall l, cost (parse l) = 0.
 Proof.
   intros l. induction l as [| x r IH]; [reflexivity|].
-  simpl parse. rewrite cost_tick, cost_bind, IH. simpl. lia.
+  simpl parse. rewrite cost_bind, IH. reflexivity.
 Qed.
 
 Lemma val_parse : forall l, val (parse l) = l.
 Proof.
   intros l. induction l as [| x r IH]; [reflexivity|].
-  simpl parse. rewrite val_tick, val_bind, IH. reflexivity.
+  simpl parse. rewrite val_bind, IH. reflexivity.
 Qed.
 
 (** [for i in range(N): B[A[i]-1]=i+1] *)
@@ -67,7 +69,7 @@ Qed.
 Definition solve (a : list nat) : M (nat -> nat) :=
   a' <- parse a ;; fill 0 a' (fun _ => 0).
 
-Theorem cost_solve : forall a, cost (solve a) = 2 * length a.
+Theorem cost_solve : forall a, cost (solve a) = length a.
 Proof.
   intros a. unfold solve.
   rewrite cost_bind, cost_parse, val_parse, cost_fill. lia.
@@ -75,7 +77,7 @@ Qed.
 
 Definition T (n : nat) : nat := cost (solve (List.seq 0 n)).
 
-Lemma T_eq : forall n, T n = 2 * n.
+Lemma T_eq : forall n, T n = n.
 Proof.
   intros n. unfold T. rewrite cost_solve, List.length_seq. reflexivity.
 Qed.
@@ -83,7 +85,7 @@ Qed.
 (** ** The true class: one parameter, linear. *)
 Theorem true_class : Theta T (fun n => n).
 Proof.
-  split; [exists 2, 0 | exists 1, 0]; intros n _; rewrite T_eq; lia.
+  split; [exists 1, 0 | exists 1, 0]; intros n _; rewrite T_eq; lia.
 Qed.
 
 (** ** The fitted label is sound: O(n) is inside O(n+m). *)
@@ -91,12 +93,5 @@ Theorem fitted_label_sound :
   BigO2 (fun n _ => T n) (fun n m => n + m).
 Proof.
   apply (BigO2_of_BigO_left T (fun n => n)).
-  exists 2, 0. intros n _. rewrite T_eq. lia.
+  exists 1, 0. intros n _. rewrite T_eq. lia.
 Qed.
-
-(** ** ...but loose: the cost does not grow with the second parameter at all.
-       Fixing [n] and letting [m] run, the true cost is flat. *)
-Theorem second_parameter_is_spurious :
-  forall n m m',
-    (fun (n _ : nat) => T n) n m = (fun (n _ : nat) => T n) n m'.
-Proof. reflexivity. Qed.

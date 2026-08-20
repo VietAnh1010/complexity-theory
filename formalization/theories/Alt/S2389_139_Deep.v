@@ -2,10 +2,10 @@
 
     The same solution as [Examples/S2389_139.v], modelled independently: there
     the cost is [tick]s in a Gallina function, here it is read off a
-    derivation. Both reach n^2, so the verdict does not depend on which
-    modelling style was used.
+    derivation. Both reach n^2, so the verdict does not depend on the modelling
+    style.
 
-    Neither validates the cost model itself. Both encode the same judgement —
+    Neither validates the cost model itself. Both encode the same judgement,
     that [str.count] scans the whole string. If that reading of Python is
     wrong, both are wrong together. *)
 
@@ -34,8 +34,9 @@ Lemma guard_cost : forall st str v c,
     c = length str.
 Proof. intros. peelE. reconcile. lia. Qed.
 
-(** The body costs one scan and leaves [s] alone. The second half matters:
-    without it a later iteration could be scanning something shorter. *)
+(** The body costs one scan and leaves [s] unchanged. The second conjunct is
+    needed: without it a later iteration could be scanning something
+    shorter. *)
 Lemma body_cost : forall st v st' c str,
     lookup st vs = VS str ->
     evalS (update vi (VN v) st) body st' c ->
@@ -87,9 +88,9 @@ Qed.
 (** ** Non-vacuity.
 
     [prog_cost] is conditional on a derivation existing, so it would hold
-    vacuously if the semantics admitted none. On "aa"
-    (here [[7;7]]) each of the two iterations scans the 2-character string
-    once, so the cost is 4 = 2 * 2. *)
+    vacuously if the semantics admitted none. On "aa" (here [[7;7]]) each of
+    the two iterations scans the 2-character string once, so the cost is
+    4 = 2 * 2. *)
 
 Ltac scan_iter :=
   eapply ES_ForCons;

@@ -13,27 +13,24 @@
       print(n)
 
     COST MODEL. One tick per loop iteration; the body is O(1) arithmetic.
+    Reading the single integer is free, per the convention in [Cost.v].
 
     WHAT "n" IS. The value of a single integer, not the length of a
-    collection. The loop subtracts 1, 2, 3, ..., so it stops after about
-    sqrt(2n) iterations and the fitted O(n) is off by a square root. Two
-    caveats that decide whether this counts:
+    collection, which is what the framework's dataclass measures. The loop
+    subtracts 1, 2, 3, ..., so it stops after about sqrt(2n) iterations and the
+    fitted O(n) is off by a square root. The bound is stated as
+    [c * (c + 1) <= 2 * n] — exactly "c is at most about sqrt(2n)" with no
+    [sqrt] on [nat], avoiding rounding questions.
 
-    - Against the input's BIT LENGTH this loop is exponential, not sublinear.
-      The framework and this file both use the numeric value, so the
-      comparison is fair, but neither uses the textbook convention.
-    - The bound is stated as [c * (c + 1) <= 2 * n] — exactly "c is at most
-      about sqrt(2n)" with no [sqrt] on [nat], avoiding rounding questions.
-
-    TERMINATION. Rocq needs structural recursion, so the loop takes fuel.
-    Fuel makes a cost bound trivially satisfiable by truncation, so
-    [run_finishes] proves the fuel is never exhausted at the call site. *)
+    TERMINATION. Rocq needs structural recursion, so the loop takes fuel. A
+    truncated loop satisfies any upper bound, so [run_finishes] proves the fuel
+    is never exhausted at the call site. *)
 
 From Stdlib Require Import Arith Lia.
 From BigOBench Require Import Cost Asymptotic.
 
-(** The bool tracks whether the loop exited through its guard (true) or ran
-    out of fuel (false). It costs nothing and exists only to state
+(** The bool records whether the loop exited through its guard (true) or ran
+    out of fuel (false). It costs nothing and exists to state
     [loop_adequate]. *)
 Fixpoint loop (fuel n k : nat) : M (nat * bool) :=
   match fuel with
@@ -61,9 +58,20 @@ Proof. intros n. unfold finished, run. apply loop_adequate; lia. Qed.
 
 (** ** The cost bound.
 
-    The invariant: after [c] iterations starting at [k], the loop has consumed
-    [c*k + (0 + 1 + ... + (c-1))] from [n]. Stated without subtraction as
-    [2*k*c + c*c <= 2*n + c]. *)
+    [loop_bound] is the loop invariant, cleared of division and of [nat]
+    subtraction. Write [c] for [cost (loop fuel n k)].
+
+    From state [(n, k)] the loop subtracts [k], [k+1], ..., [k+c-1], so after
+    [c] iterations it has consumed
+
+      c*k + (0 + 1 + ... + (c-1))  =  c*k + c*(c-1)/2
+
+    and that cannot exceed [n]. Two rearrangements make it a statement [nia]
+    can work with:
+
+    - multiply by 2, clearing the division: [2*k*c + c*c - c <= 2*n];
+    - move the [-c] to the right, because [c*c - c] truncates at 0 in [nat]:
+      [2*k*c + c*c <= 2*n + c]. *)
 
 Lemma loop_bound : forall fuel n k,
     2 * k * cost (loop fuel n k) + cost (loop fuel n k) * cost (loop fuel n k)
@@ -87,19 +95,44 @@ Proof.
   intros n. unfold iters, run. pose proof (loop_bound n n 1) as H. nia.
 Qed.
 
+(** ** The fitted label is a sound upper bound.
+
+    From [iters_sqrt]: if the loop runs at all then [c <= c * (c + 1) <= 2n],
+    and [c = 0] is under the bound trivially. O(n) therefore holds — what
+    fails is tightness, below. *)
+
+Theorem fitted_label_sound : BigO iters (fun n => n).
+Proof.
+  exists 2, 0. intros n _. pose proof (iters_sqrt n) as H. nia.
+Qed.
+
 (** ** A matching lower bound.
 
-    [iters_sqrt] alone does not pin the cost down: it is an upper bound, and
-    every upper bound is satisfied by a loop that exits immediately. To say
-    the cost really is about sqrt(n) — and, below, that it is exponential in
-    the input's bit length — we need the loop to be shown running at least
-    that many times.
+    [iters_sqrt] alone does not pin the cost down: it is an upper bound, and a
+    loop that exits immediately satisfies every upper bound. To say the cost is
+    about sqrt(n) — and, below, that it is exponential in the input's bit
+    length — requires a proof that the loop runs at least that many times.
 
-    After [j] iterations from state [(n, k)] the loop has consumed
-    [j*k + (0 + 1 + ... + (j-1))], which is at most [j*k + j*j], and the guard
-    is [k + j < n_j]. So [j*k + j*j + k + j < n] is a sufficient condition for
-    [j] full iterations. It is not the sharpest such condition; it is the one
-    that stays polynomial and lets [nia] close the step. *)
+    [iters_lower_gen] is the mirror of [loop_bound]: same invariant, read as a
+    lower bound. It says [j] iterations happen, provided [n] starts far enough
+    above the counter for the guard to survive [j] of them.
+
+    Where the hypothesis comes from. After [j] iterations from [(n, k)] the
+    loop has consumed [j*k + (0 + 1 + ... + (j-1))], so the value is at least
+    [n - j*k - j*j] and the counter is [k + j]. The guard is
+    counter < value, and
+
+      k + j < n - (j*k + j*j)   iff   j*k + j*j + k + j < n
+
+    is enough for all [j] of them. Two deliberate weakenings: the consumed
+    total is really [j*k + j*(j-1)/2], and [j*j] over-counts it; and the guard
+    only has to hold at the last iteration, not uniformly. Both keep the
+    hypothesis polynomial and division-free, which is what [nia] needs. A
+    sharper condition would buy nothing — the constants wash out in
+    [cost_is_Omega_sqrt].
+
+    [j <= fuel] is a fact about the model, not the algorithm: the loop cannot
+    take [j] steps on less than [j] fuel. *)
 
 Lemma iters_lower_gen : forall j fuel n k,
     j <= fuel -> j * k + j * j + k + j < n -> j <= cost (loop fuel n k).
@@ -113,23 +146,57 @@ Proof.
   lia.
 Qed.
 
-Theorem iters_lower : forall n j, j * j + 2 * j + 1 < n -> j <= iters n.
+(** At the call site [k = 1] and [fuel = n], and the hypothesis collapses to
+    [(j+1)^2 < n]: the loop runs at least [j] times on any [n] past the next
+    square. [j <= fuel] follows from it. *)
+Theorem iters_lower : forall n j, (j + 1) * (j + 1) < n -> j <= iters n.
 Proof.
   intros n j Hc. unfold iters, run.
   apply iters_lower_gen; nia.
 Qed.
 
-(** ** The sizing convention, as a theorem rather than a remark.
+(** ** The tight class: Theta(sqrt n).
 
-    Everything above measures the input by its numeric VALUE, which is what
-    the framework's dataclass does. Measured by BIT LENGTH the same loop is
-    exponential — [2 ^ (2*k+2)] is a [2*k+3]-bit number on which the loop runs
-    at least [2 ^ k] times.
+    [fitted_label_sound] and [fitted_label_not_tight] say O(n) holds and is not
+    tight; these two pin down what does hold. [Nat.sqrt] is floor of the real
+    square root, so the constants absorb the rounding: the upper bound is
+    [2*sqrt n + 1], the lower [sqrt n - 2]. *)
 
-    So the two conventions do not merely shift constants: under one the loop
-    beats the fitted O(n), under the other it is not polynomial at all. Which
-    convention the dataset should use is a design question, not a bug — but it
-    decides this record's verdict. *)
+Lemma iters_upper_sqrt : forall n, iters n <= 2 * Nat.sqrt n + 1.
+Proof.
+  intros n. pose proof (iters_sqrt n) as H.
+  destruct (Nat.sqrt_spec n (Nat.le_0_l n)) as [Hlo Hhi]. nia.
+Qed.
+
+Lemma iters_lower_sqrt : forall n, 16 <= n -> Nat.sqrt n - 2 <= iters n.
+Proof.
+  intros n Hn.
+  assert (Hs : 4 <= Nat.sqrt n) by (apply Nat.sqrt_le_square; lia).
+  destruct (Nat.sqrt_spec n (Nat.le_0_l n)) as [Hlo Hhi].
+  apply iters_lower. nia.
+Qed.
+
+Theorem cost_is_O_sqrt : BigO iters Nat.sqrt.
+Proof.
+  exists 3, 1. intros n Hn.
+  assert (Hs : 1 <= Nat.sqrt n) by (apply Nat.sqrt_le_square; lia).
+  pose proof (iters_upper_sqrt n). lia.
+Qed.
+
+Theorem cost_is_Omega_sqrt : BigOmega iters Nat.sqrt.
+Proof.
+  exists 2, 16. intros n Hn.
+  assert (Hs : 4 <= Nat.sqrt n) by (apply Nat.sqrt_le_square; lia).
+  pose proof (iters_lower_sqrt n Hn). lia.
+Qed.
+
+Theorem cost_is_theta_sqrt : Theta iters Nat.sqrt.
+Proof. split; [apply cost_is_O_sqrt | apply cost_is_Omega_sqrt]. Qed.
+
+(** ** The same loop against the input's bit length.
+
+    [2 ^ (2*k+2)] is a [2*k+3]-bit number and the loop runs at least [2 ^ k]
+    times on it, so no polynomial in the bit length bounds the cost. *)
 
 Lemma pow_2k2 : forall k, 2 ^ (2 * k + 2) = 4 * (2 ^ k * 2 ^ k).
 Proof.
@@ -149,13 +216,9 @@ Proof.
   nia.
 Qed.
 
-(** The bit length of the witness, so the exponent is legible: [2 ^ (2*k+2)]
-    occupies [2*k+3] bits, and the loop runs at least [2 ^ k] times on it. *)
-Lemma bitlength_witness : forall k, Nat.log2 (2 ^ (2 * k + 2)) + 1 = 2 * k + 3.
-Proof. intros k. rewrite Nat.log2_pow2 by lia. lia. Qed.
 
-(** Computed values, to show neither bound is vacuous. These track sqrt(2n)
-    closely: sqrt(2*4096) = 90.5 against 90 measured. Read as bit lengths,
+(** Computed values, showing neither bound is vacuous. They track sqrt(2n)
+    closely: sqrt(2*4096) = 90.5 against 90 computed. Read as bit lengths,
     these are the k = 2, 3, 4, 5 instances of the theorem above — 7, 9, 11 and
     13-bit inputs on which the loop runs 10, 22, 44 and 90 times. *)
 Example iters_table :
@@ -183,8 +246,8 @@ Proof.
 Qed.
 
 (** A concrete witness, for the catalog: at n = 5050 the loop runs 99 times,
-    not 5050. It subtracts 1 + 2 + ... + 99 = 4950, leaving n = 100 = k, at
-    which point the guard [n > k] fails. *)
+    not 5050. It subtracts 1 + 2 + ... + 99 = 4950, leaving n = 100 = k, where
+    the guard [n > k] fails. *)
 Example iters_5050 : iters 5050 = 99.
 Proof. vm_compute. reflexivity. Qed.
 

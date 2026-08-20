@@ -119,7 +119,7 @@
 <div class="wrap">
 
 <header>
-  <div class="eyebrow">Rocq 9.2 · BigO(Bench) · 17 Aug 2026</div>
+  <div class="eyebrow">Rocq 9.2 · BigO(Bench) · 20 Aug 2026</div>
   <h1>Fitted Labels vs. Proved Bounds</h1>
   <p class="lede">
     Six BigO(Bench) solutions modelled in Rocq with machine-checked cost
@@ -130,9 +130,9 @@
 <section>
   <div class="strip">
     <div class="stat"><span class="n">6</span><span class="k">formalized</span></div>
-    <div class="stat"><span class="n">1</span><span class="k">label tight</span></div>
+    <div class="stat"><span class="n">2</span><span class="k">labels tight</span></div>
     <div class="stat"><span class="n">4</span><span class="k">sound, imprecise</span></div>
-    <div class="stat"><span class="n">1</span><span class="k">not an upper bound</span></div>
+    <div class="stat"><span class="n">0</span><span class="k">not an upper bound</span></div>
     <div class="stat"><span class="n">0</span><span class="k">admitted</span></div>
     <div class="stat"><span class="n">0</span><span class="k">axioms</span></div>
   </div>
@@ -161,8 +161,9 @@
   <h2>Three to walk through</h2>
   <div class="prose">
     <p style="font-size:0.9rem;color:var(--muted)">
-      Suggested demo path. One wrong label, one precision failure that raises a
-      design question, one clean case done twice in two different styles.
+      Suggested demo path. A finding that did not survive review, a precision
+      failure that raises a design question, one clean case done twice in two
+      different styles.
     </p>
   </div>
   <div class="scroll">
@@ -173,8 +174,8 @@
       <tbody>
         <tr>
           <td class="lbl">1</td><td class="id">450_204</td>
-          <td class="lbl">O(1)</td><td class="lbl">cost = n</td>
-          <td>The label is not an upper bound. One line of Python.</td>
+          <td class="lbl">O(1)</td><td class="lbl">cost = 0 once input is free</td>
+          <td>Withdrawn. The verdict was an artifact of charging the input read.</td>
         </tr>
         <tr>
           <td class="lbl">2</td><td class="id">5_100</td>
@@ -207,46 +208,44 @@
         </tr>
         <tr>
           <td class="id">603_284</td><td>1041_A Heist</td>
-          <td class="lbl">O(nlogn)</td><td class="lbl">n ≤ cost ≤ 2n·log₂⌈n⌉+2n</td>
+          <td class="lbl">O(nlogn)</td><td class="lbl">n−1 ≤ cost ≤ 2n·log₂⌈n⌉+n</td>
           <td><span class="chip v-upper">SoundUpperOnly</span></td>
           <td class="file">S603_284.v</td>
         </tr>
         <tr>
           <td class="id">1421_53</td><td>ABC 142 Go to School</td>
-          <td class="lbl">O(n+m)</td><td class="lbl">cost = 2n</td>
+          <td class="lbl">O(n+m)</td><td class="lbl">cost = n</td>
           <td><span class="chip v-loose">SoundLoose</span></td>
           <td class="file">S1421_53.v</td>
         </tr>
         <tr>
-          <td class="id">167_177 ★</td><td>1184_A1 Heidi Learns Hashing</td>
+          <td class="id">167_177</td><td>1184_A1 Heidi Learns Hashing</td>
           <td class="lbl">O(n)</td><td class="lbl">cost ≤ √n</td>
           <td><span class="chip v-over">Overstated</span></td>
           <td class="file">S167_177.v</td>
         </tr>
         <tr>
           <td class="id">5_100</td><td>622_A Infinite Sequence</td>
-          <td class="lbl">O(n)</td><td class="lbl">cost·(cost+1) ≤ 2n</td>
+          <td class="lbl">O(n)</td><td class="lbl">Θ(√n)</td>
           <td><span class="chip v-over">Overstated</span></td>
           <td class="file">S5_100.v</td>
         </tr>
         <tr>
-          <td class="id">450_204</td><td>1421_C Palindromifier</td>
-          <td class="lbl">O(1)</td><td class="lbl">cost = n</td>
-          <td><span class="chip v-under">NotUpperBound</span></td>
-          <td class="file">S450_204.v</td>
+          <td class="id">433_57</td><td>257_B Playing Cubes</td>
+          <td class="lbl">O(1)</td><td class="lbl">cost = 3 on every input</td>
+          <td><span class="chip v-tight">Tight</span></td>
+          <td class="file">S433_57.v</td>
         </tr>
       </tbody>
     </table>
   </div>
   <div class="prose" style="display:flex;flex-direction:column;gap:8px">
     <p style="font-size:0.85rem;color:var(--muted)">
-      ★ drawn at random. The other five were the shortest solution in their
-      label class — see Limits.
-    </p>
     <p style="font-size:0.85rem">
       <strong>Overstated ≠ wrong.</strong> O(n) does bound a √n loop; it just
-      says nothing useful. Only <code>450_204</code>'s label fails to bound its
-      program. Four of six labels are sound.
+      says nothing useful. No label in the set fails to bound its program:
+      all six are sound. <code>450_204</code>, formerly the one exception, was
+      withdrawn — see Cases.
     </p>
   </div>
 </section>
@@ -258,7 +257,7 @@
     <div class="case-head">
       <span class="sid">450_204</span>
       <span class="pname">1421_C — Palindromifier</span>
-      <span class="chip v-under">NotUpperBound</span>
+      <span class="chip v-under">Withdrawn</span>
     </div>
     <div class="panes">
       <div class="pane">
@@ -266,21 +265,24 @@
         <pre>print('3 L 2 R 2 R',len(input())*2-1)</pre>
       </div>
       <div class="pane">
-        <div class="eyebrow">Cost model</div>
-        <p><code>len</code> on a built <code>str</code> is O(1). But
-        <code>input()</code> reads the line — one tick per character.</p>
+        <div class="eyebrow">What was claimed</div>
+        <p>Charging <code>input()</code> one tick per character gives
+        cost = n, refuting the fitted O(1).</p>
       </div>
       <div class="pane">
-        <div class="eyebrow">Rocq</div>
-<pre>Lemma T_eq : forall n, T n = n.
+        <div class="eyebrow">Rocq, after the fix</div>
+<pre>Theorem cost_palindromifier :
+  forall s, cost (palindromifier s) = 0.
 
-Theorem fitted_label_unsound :
-  ~ BigO T (fun _ =&gt; 1).</pre>
+Theorem label_sound :
+  BigO T (fun _ =&gt; 1).</pre>
       </div>
     </div>
     <div class="note">
-      Labelled O(1); the program is Θ(n). Likely the input expansion never
-      scaled the one line this problem reads, so runtime looked flat.
+      Every program that reads its input is Ω(input size), so a proof whose
+      whole cost is the read says nothing about the algorithm.
+      <code>Cost.v</code> now fixes input and output as free; under it the
+      fitted O(1) is correct. Replaced by <code>433_57</code>.
     </div>
   </div>
 
@@ -330,8 +332,8 @@ Example iters_table :
 
   <div class="case" data-v="over">
     <div class="case-head">
-      <span class="sid">167_177 ★</span>
-      <span class="pname">1184_A1 — Heidi Learns Hashing · random draw</span>
+      <span class="sid">167_177</span>
+      <span class="pname">1184_A1 — Heidi Learns Hashing</span>
       <span class="chip v-over">Overstated</span>
     </div>
     <div class="panes">
@@ -363,8 +365,8 @@ Example T_10000 : T 10000 &lt;= 99.</pre>
     <div class="note">
       A second √n loop labelled O(n) — reached by an explicit
       <code>math.sqrt</code> where 5_100 sums 1+2+3+…, so two independent
-      programs, not one bug twice. Drawn at random. Two cases is a reason to
-      measure, not a measurement.
+      programs, not one bug twice. Two cases is a reason to measure, not a
+      measurement.
     </div>
   </div>
 
@@ -391,19 +393,18 @@ for i in range(N):
       </div>
       <div class="pane">
         <div class="eyebrow">Rocq</div>
-<pre>Lemma T_eq : forall n, T n = 2 * n.
+<pre>Lemma T_eq : forall n, T n = n.
+
+Theorem true_class : Theta T (fun n =&gt; n).
 
 Theorem fitted_label_sound :
   BigO2 (fun n _ =&gt; T n)
-        (fun n m =&gt; n + m).
-
-Theorem second_parameter_is_spurious :
-  forall n m m', ...</pre>
+        (fun n m =&gt; n + m).</pre>
       </div>
     </div>
     <div class="note">
-      Sound — O(n) sits inside O(n+m) — but there is one input size here, and
-      the cost provably does not vary with the second parameter.
+      Sound — O(n) sits inside O(n+m) — but there is one input size here, so
+      the label's second parameter has nothing to track.
     </div>
   </div>
 
@@ -503,16 +504,18 @@ Theorem fitted_label_is_tight :
 <section>
   <h2>Limits</h2>
   <div class="callout warn">
-    <p><strong>No rate is claimed here.</strong> Five of six were the shortest
-    in their label class — skewed toward one-liners and I/O-bound code, likely
-    where the framework does worst. One is a random draw. That is a start, not
-    a sample.</p>
+    <p><strong>No rate is claimed here.</strong> Six entries say nothing about
+    the 640-record test set, and selection was not uniform over it. A start,
+    not a sample.</p>
   </div>
   <div class="prose">
     <ul>
       <li>The cost model is the whole attack surface: the monad makes cost match
         the model, nothing makes the model match Python.</li>
-      <li>603_284 has an open gap (Ω(n) to O(n log n)).</li>
+      <li>603_284 has an open gap (Ω(n) to O(n log n)); the Ω(n) comes from the
+        pairwise scan, not from the input read.</li>
+      <li>Input and output are not charged. That convention is standard, and it
+        decided 450_204 — see Cases.</li>
       <li>Time test set only; space needs a high-water-mark measure.</li>
       <li>No comparison against the framework's fitted coefficients.</li>
     </ul>
@@ -523,9 +526,9 @@ Theorem fitted_label_is_tight :
   <h2>Open questions</h2>
   <div class="prose">
     <ul>
-      <li><strong>Measure the rate?</strong> Seeded sampler is in place; ~30
-        draws would give a defensible number, at roughly a day of proof work
-        per non-trivial case.</li>
+      <li><strong>Measure the rate?</strong> ~30 entries would give a
+        defensible number, at roughly a day of proof work per non-trivial
+        case.</li>
       <li><strong>What should “n” mean?</strong> Settled as fact, open as
         choice — value-based follows the benchmark, bit-length follows the
         textbook and flips the verdict.</li>
@@ -547,7 +550,7 @@ Theorem fitted_label_is_tight :
     <pre style="background:var(--sunk);font-size:0.75rem">git checkout claude/paper-summary-formalization-dt6509
 cd formalization && make check
   → OK: no admitted proofs
-  → OK: 17/17 headline theorems closed under the global context</pre>
+  → OK: 20/20 headline theorems closed under the global context</pre>
     <p style="font-size:0.85rem;color:var(--muted)">
       This switch pairs <code>rocq-core</code> 9.2.0 with
       <code>rocq-stdlib</code> 9.1.0 — opam has no 9.2 stdlib released.

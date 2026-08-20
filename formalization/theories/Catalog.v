@@ -2,8 +2,14 @@
 
     An INDEX, not evidence. [proved_bound] is a string; Rocq does not check it
     against the theorem named in [theorem_name]. The evidence is the theorem.
-    What keeps them in sync is [make check] failing on any admitted proof, plus
-    review. Do not add a row that no example file backs. *)
+    Keeping the two in sync rests on [make check] failing on any admitted
+    proof, plus review. Do not add a row that no example file backs.
+
+    WITHDRAWN: 450_204, formerly the set's only [NotUpperBound]. Its verdict
+    came from charging [input()] per character, which makes any program that
+    reads its input Omega(input size). Under [Cost.v]'s convention — input and
+    output are free — the fitted O(1) is correct. [Examples/S450_204.v] is kept
+    and still compiles; it has no row here. *)
 
 From Stdlib Require Import String List.
 Import ListNotations.
@@ -14,7 +20,7 @@ Inductive verdict :=
   (** Label is exactly the proved growth rate. *)
   | Tight
   (** Matching upper bound proved, no matching lower bound, so tightness is
-      open. Distinct from [Tight]: claiming it would need a lower bound that is
+      open. Distinct from [Tight]: [Tight] would need a lower bound that is
       sometimes false of the real program — Python's Timsort is linear on
       sorted input where merge sort is not. *)
   | SoundUpperOnly
@@ -25,7 +31,8 @@ Inductive verdict :=
       bounds the cost, so this is a precision failure, not a correctness one. *)
   | Overstated
   (** Program is asymptotically MORE EXPENSIVE than the label. The label is not
-      an upper bound at all. *)
+      an upper bound at all. No row currently uses this: the one entry that
+      did, 450_204, was withdrawn (see the header). *)
   | NotUpperBound.
 
 Record entry := {
@@ -49,7 +56,6 @@ Definition catalog : list entry := [
      theorem_name := "S2389_139.fitted_label_is_tight";
      v            := Tight |} ;
 
-  (* First entry drawn at random rather than shortest-in-class. *)
   {| solution_id  := "167_177";
      problem_name := "1184_A1. Heidi Learns Hashing (Easy)";
      fitted_label := "O(n)";
@@ -72,25 +78,26 @@ Definition catalog : list entry := [
      problem_name := "p02899 AtCoder Beginner Contest 142 - Go to School";
      fitted_label := "O(n+m)";
      size_param   := "N, which is also the length of A";
-     proved_bound := "cost = 2n; the label's second parameter is spurious";
+     proved_bound := "cost = n; the label names a second parameter unused";
      source_file  := "theories/Examples/S1421_53.v";
      theorem_name := "S1421_53.fitted_label_sound";
      v            := SoundLoose |} ;
 
-  {| solution_id  := "450_204";
-     problem_name := "1421_C. Palindromifier";
+  (* Replaces the withdrawn 450_204. *)
+  {| solution_id  := "433_57";
+     problem_name := "257_B. Playing Cubes";
      fitted_label := "O(1)";
-     size_param   := "length of the single input line";
-     proved_bound := "cost = n; not O(1)";
-     source_file  := "theories/Examples/S450_204.v";
-     theorem_name := "S450_204.fitted_label_unsound";
-     v            := NotUpperBound |} ;
+     size_param   := "length of the input line";
+     proved_bound := "cost = 3 on every input";
+     source_file  := "theories/Examples/S433_57.v";
+     theorem_name := "S433_57.fitted_label_is_tight";
+     v            := Tight |} ;
 
   {| solution_id  := "5_100";
      problem_name := "622_A. Infinite Sequence";
      fitted_label := "O(n)";
      size_param   := "the numeric VALUE of the input integer";
-     proved_bound := "cost*(cost+1) <= 2n, i.e. ~sqrt(2n); not Omega(n)";
+     proved_bound := "Theta(sqrt n): cost*(cost+1) <= 2n, cost >= sqrt(n)-2; not Omega(n)";
      source_file  := "theories/Examples/S5_100.v";
      theorem_name := "S5_100.fitted_label_not_tight";
      v            := Overstated |}

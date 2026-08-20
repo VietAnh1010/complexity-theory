@@ -7,16 +7,16 @@
          k+=1
       print(n)
 
-    This is the case the deep embedding could not express before. Note what
-    changes and what does not:
+    [SWhile] exists for this case: an unbounded loop, which the monad version
+    can only express with fuel. What changes and what does not:
 
     - No fuel, and so no [run_finishes]. [S5_100.v] needs an adequacy lemma
-      because a fuel-truncated loop would satisfy any upper bound for free;
-      here a truncated run simply is not a derivation.
-    - The theorem is now CONDITIONAL on a derivation existing. That is the
-      price of dropping totality: [prog_sqrt] says every terminating run costs
-      at most about sqrt(2n), and says nothing about non-terminating ones.
-      For this program termination is a separate fact, not proved here.
+      because a fuel-truncated loop satisfies any upper bound for free; here a
+      truncated run is not a derivation.
+    - The theorem is CONDITIONAL on a derivation existing. That is the price of
+      dropping totality: [prog_sqrt] bounds every terminating run by about
+      sqrt(2n) and says nothing about non-terminating ones. Termination of this
+      program is a separate fact, not proved here.
 
     Cost model: one step per iteration ([ES_WhileTrue]), arithmetic free —
     the same model [S5_100.v] applies by hand. *)
@@ -38,7 +38,7 @@ Definition prog : stmt := SWhile guard wbody.
 
 Definition init (n : nat) : state := [(vn, VN n); (vk, VN 1)].
 
-(** One iteration: free, and it moves [(n,k)] to [(n-k, k+1)]. *)
+(** One iteration: free, and it takes [(n,k)] to [(n-k, k+1)]. *)
 Lemma body_step : forall st st' c n k,
     lookup st vn = VN n -> lookup st vk = VN k ->
     evalS st wbody st' c ->
@@ -121,7 +121,6 @@ Proof.
   - reflexivity.
 Qed.
 
-(** Reproduces [S5_100.iters_sqrt] with no fuel and no adequacy lemma, and
-    with no shared definitions. Only the BOUND is shown to coincide; exact
-    equality of the two costs is not proved and is not needed for the
-    verdict. *)
+(** Reproduces [S5_100.iters_sqrt] with no fuel, no adequacy lemma, and no
+    shared definitions. Only the BOUND is shown to coincide; exact equality of
+    the two costs is not proved and the verdict does not need it. *)

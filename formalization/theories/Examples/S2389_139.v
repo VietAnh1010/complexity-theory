@@ -12,10 +12,10 @@
           ch=1
       print("YNeos"[ch::2])
 
-    COST MODEL. One tick per character compared by [str.count], which scans
-    the whole string; the outer [for] is charged only through the counts it
-    triggers. Strings are [list nat]. Input reading is not charged — linear,
-    and would not change the class.
+    COST MODEL. One tick per character scanned by [str.count], which reads the
+    whole string; the outer [for] is charged only through the counts it
+    triggers. Strings are [list nat]. Input reading is not charged, per the
+    convention in [Cost.v]; here it would not change the class anyway.
 
     Cost is independent of the string's contents, so the size-indexed family
     below loses nothing. *)
@@ -37,8 +37,8 @@ Proof.
   simpl count. rewrite cost_tick, cost_bind, IH. simpl. lia.
 Qed.
 
-(** The [for i in s] loop. [whole] is the string being counted in, kept
-    separate from the loop variable so the quadratic is visible. *)
+(** The [for i in s] loop. [whole] is the string counted in, kept separate
+    from the loop variable so the quadratic is visible. *)
 Fixpoint scan (s whole : list nat) : M bool :=
   match s with
   | [] => ret false
@@ -62,8 +62,8 @@ Proof. intros s. unfold beautiful. apply cost_scan. Qed.
 
 (** ** The asymptotic statement.
 
-    [T n] is the cost on an input of length [n]; by [cost_beautiful] the cost
-    depends only on the length, so any family of that length gives the same
+    [T n] is the cost on an input of length [n]. By [cost_beautiful] the cost
+    depends only on the length, so every family of that length gives the same
     number. *)
 Definition T (n : nat) : nat := cost (beautiful (List.seq 0 n)).
 

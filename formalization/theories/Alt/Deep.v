@@ -3,24 +3,24 @@
 
     An alternative to the cost monad of [Cost.v]. There the cost model is a
     per-example judgement — where the [tick]s go in each [Examples/S*.v], with
-    nothing checking that decision. Here it lives in the semantics: one place,
+    nothing checking that decision. Here it is in the semantics: one place,
     reviewed once, shared by every program in the language. An example file is
-    then a syntax tree carrying no cost annotations at all.
+    then a syntax tree with no cost annotations at all.
 
     Trade-offs:
 
     + Cost model stated once, not per file.
-    + No fuel and no termination obligation. A diverging program simply has no
+    + No fuel and no termination obligation. A diverging program has no
       derivation, where the monad needs a fuel parameter plus an adequacy
       lemma (compare [S5_100.v]'s [run_finishes]).
-    + The program is data, so one can quantify over programs — "no program in
-      this fragment costs more than ..." is expressible. The monad cannot say
+    + The program is data, so one can quantify over programs: "no program in
+      this fragment costs more than ..." is expressible. The monad cannot state
       that.
-    - Heavier per example: the program must be encoded as a tree and every
+    - Heavier per example: the program must be encoded as a tree, and every
       proof goes through inversion on derivations.
     - With [SWhile] the semantics is not total, so a cost theorem about a loop
-      is conditional on a derivation existing. Each example therefore carries
-      a worked witness ([run_aa], [run_4]) to rule out vacuity.
+      is conditional on a derivation existing. Each example carries a worked
+      witness ([run_aa], [run_4]) to rule out vacuity.
     - Cost theorems must be stated to quantify over every derivation, not to
       assert that one exists — see the note at the end of this file.
 
@@ -33,9 +33,9 @@ Import ListNotations.
 
 (** ** Values, state.
 
-    State is an association list rather than [nat -> V] so that state equality
-    is ordinary list equality; reasoning about [nat -> V] states would need
-    functional extensionality, and this development adds no axioms. *)
+    State is an association list, not [nat -> V], so state equality is ordinary
+    list equality. Reasoning about [nat -> V] states would need functional
+    extensionality, and this development adds no axioms. *)
 
 Inductive V : Type :=
   | VN : nat -> V
@@ -64,8 +64,8 @@ Qed.
 (** ** Syntax.
 
     Minimal: what the worked examples need, no more. [SForVals] is an internal
-    form — the loop over an already-evaluated list — which lets the whole
-    semantics be one inductive rather than a mutual one. *)
+    form — the loop over an already-evaluated list — which keeps the semantics
+    a single inductive rather than a mutual one. *)
 
 Inductive expr : Type :=
   | EVar   : nat -> expr
@@ -172,8 +172,8 @@ Proof. intros s x v <-. apply EV_Var. Qed.
 
 (** ** Shared proof tactics.
 
-    All three match on hypothesis SHAPE rather than on [inversion]'s generated
-    names, which shift between Rocq versions.
+    All three match on hypothesis SHAPE, not on [inversion]'s generated names,
+    which shift between Rocq versions.
 
     - [peelE] eliminates every expression derivation in the context.
     - [reconcile] / [reconcileN] merge two lookups of the same variable; the
@@ -211,13 +211,13 @@ Ltac inv_stmt t :=
 
 (** ** No determinism lemma, deliberately.
 
-    A relational semantics tempts you to prove [evalS] deterministic so that
-    "there is a derivation of cost c" upgrades to "the cost is c". It is not
+    A relational semantics invites proving [evalS] deterministic, so that
+    "there is a derivation of cost c" upgrades to "the cost is c". That is not
     needed here: the example theorem is stated as
 
       forall s' c, evalS (init x) prog s' c -> c = <closed form>
 
-    which already quantifies over EVERY derivation. Nothing cheap can hide —
-    if some derivation had a smaller cost, that statement would be false.
-    Determinism would be required only to conclude that a derivation exists,
-    which is a different claim and not one the verdict rests on. *)
+    which already quantifies over EVERY derivation. Nothing cheaper can hide —
+    a derivation of smaller cost would falsify it. Determinism is required only
+    to conclude that a derivation exists, a different claim, and not one the
+    verdict rests on. *)

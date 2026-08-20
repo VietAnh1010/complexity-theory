@@ -2,11 +2,11 @@
 
     Deliberately the naive definition. Two limits:
 
-    - [BigO2] uses the product filter ([n] and [m] to infinity independently).
-      That makes [O(n*m)] and [O(n+m)] mean what you expect, but multivariate
-      big-O has real pitfalls; Gueneau/Chargueraud/Pottier, "A Fistful of
-      Dollars" (ESOP 2018) does it properly with filters. Copy that if this
-      file is outgrown.
+    - [BigO2] uses the product filter ([n] and [m] to infinity independently),
+      so [O(n*m)] and [O(n+m)] mean what you expect. Multivariate big-O has
+      real pitfalls; Gueneau/Chargueraud/Pottier, "A Fistful of Dollars"
+      (ESOP 2018) does it properly with filters. Copy that if this file is
+      outgrown.
     - Bounds are over [nat -> nat], so they cannot mention the shape of an
       input, only its size. Each example fixes a size-indexed family and says
       so when the worst case is not attained on it. *)
@@ -26,8 +26,8 @@ Definition BigO2 (f g : nat -> nat -> nat) : Prop :=
 
 (** ** Refutation.
 
-    The lemma that makes a *disagreement* with a fitted label provable rather
-    than merely asserted: to refute [BigO f g], exhibit arbitrarily large [n]
+    The lemma that makes a *disagreement* with a fitted label provable, not
+    merely asserted: to refute [BigO f g], exhibit arbitrarily large [n]
     beating any constant. *)
 
 Lemma not_BigO : forall f g,
@@ -48,9 +48,9 @@ Qed.
 
 (** ** Relating the univariate and bivariate forms.
 
-    Used by examples whose fitted label names two size parameters but whose
-    code only has one. [O(n)] is contained in [O(n+m)], so such a label is
-    sound-but-loose rather than wrong. *)
+    Used by examples whose fitted label names two size parameters where the
+    code has one. [O(n)] is contained in [O(n+m)], so such a label is
+    sound-but-loose, not wrong. *)
 
 Lemma BigO2_of_BigO_left : forall f g,
     BigO f g -> BigO2 (fun n _ => f n) (fun n m => g n + m).

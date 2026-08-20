@@ -5,7 +5,8 @@
 # proof closed via an axiom (functional extensionality, classical logic, an
 # Axiom someone added). This asks Rocq directly.
 #
-# Every theorem a Catalog.v row names, plus the reusable infrastructure.
+# Every theorem a Catalog.v row names, plus the reusable infrastructure and the
+# withdrawn 450_204 entry, which still compiles and is still gated.
 set -eu
 cd "$(dirname "$0")/.."
 
@@ -14,8 +15,14 @@ S2389_139.fitted_label_is_tight
 S603_284.fitted_label_sound
 S603_284.lower_bound_is_only_linear
 S1421_53.fitted_label_sound
-S1421_53.second_parameter_is_spurious
-S450_204.fitted_label_unsound
+S433_57.fitted_label_is_tight
+S433_57.cost_is_constant
+S450_204.label_sound
+S450_204.label_unsound_if_io_charged
+S5_100.fitted_label_sound
+S5_100.cost_is_O_sqrt
+S5_100.cost_is_Omega_sqrt
+S5_100.cost_is_theta_sqrt
 S5_100.fitted_label_not_tight
 S5_100.iters_exponential_in_bitlength
 S5_100.run_finishes

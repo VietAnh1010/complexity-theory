@@ -5,9 +5,17 @@
     Here [cost] is a projection of the term that computes the value, so it
     cannot drift.
 
-    What this does NOT give is fidelity to Python: where the [tick]s go is a
-    modelling decision, stated in each example's header, and it is the only
-    place unsoundness can still enter. *)
+    What it does NOT give is fidelity to Python: where the [tick]s go is a
+    modelling decision, stated in each example's header, and the only place
+    unsoundness can still enter.
+
+    INPUT AND OUTPUT ARE NOT CHARGED. Cost counts the work a solution does once
+    its input is available. Reading stdin, parsing a line into a list, and
+    printing the answer are free. Every program that reads its input is
+    Omega(input size), so charging the read makes that trivial fact the finding
+    whenever the real work is smaller — which is exactly what happened to the
+    withdrawn entry 450_204 (see [Examples/S450_204.v]). Each example header
+    restates the rule where it bites. *)
 
 From Stdlib Require Import Arith Lia.
 
@@ -37,8 +45,8 @@ Open Scope cost_scope.
 Notation "x <- e ;; b" := (bind e (fun x => b))
   (at level 61, e at next level, right associativity) : cost_scope.
 
-(** ** Projection lemmas — all definitional, but rewriting is easier than
-       [simpl] once the terms get large. *)
+(** ** Projection lemmas — all definitional, but rewriting beats [simpl] once
+       the terms get large. *)
 
 Lemma val_ret : forall {A} (a : A), val (ret a) = a.
 Proof. reflexivity. Qed.
@@ -68,8 +76,8 @@ Proof. reflexivity. Qed.
 
 (** ** Monad laws.
 
-    Not used by the examples, but they are what justifies reading [<- ;;] as
-    sequencing: rearranging a program's phrasing must not change its cost. *)
+    Not used by the examples. They justify reading [<- ;;] as sequencing:
+    rephrasing a program must not change its cost. *)
 
 Lemma bind_ret_l : forall {A B} (a : A) (f : A -> M B), bind (ret a) f = f a.
 Proof. intros A B a f. unfold bind, ret. simpl. destruct (f a); reflexivity. Qed.
