@@ -128,6 +128,16 @@ venue over, fixed before it fired.
 - **FMCAD must precede CAV**, for the same reason ECCC precedes CC: "formal
   methods in computer-aided design" and "computer-aided verification" read
   alike, and CAV is a target venue.
+- **MFCS must precede FOCS.** "Mathematical Foundations of Computer Science"
+  contains "foundations of computer science". This one fired: an MFCS 2015
+  paper was tagged FOCS and promoted to target tier.
+- **A title-overlap floor is not a DOI match.** `tsim` .875 accepted
+  "Complexity of Propositional Independence and Inclusion Logic" for
+  "Parameterised Complexity of Propositional Inclusion and Independence Logic"
+  and gave one paper the other's DOI. `lib.title_match` folds accents, LaTeX
+  and markup, treats an added subtitle as the same paper and an added content
+  word as a different one, and corroborates with author surnames. `enrich`
+  re-checks every title-matched DOI and clears the ones that fail.
 
 ## Known gaps
 
@@ -136,5 +146,9 @@ venue over, fixed before it fired.
 - **Pre-2000 records mostly lack abstracts.** Crossref has none deposited and
   there is no arXiv preprint to recover one from. They anchor the citation
   graph but cannot be screened. `stats.json` reports `with_abstract`.
+- **LIPIcs references are invisible.** `10.4230` DOIs are registered with
+  DataCite, so Crossref 404s them: 85 of the 89 papers the graph has no
+  reference data for are LIPIcs. That is ITCS, CCC, ICALP, STACS, MFCS, ESA and
+  IPEC — a hole shaped like the target venues.
 - **arXiv 429s partway through a ~100-query pass** at its documented 3s floor.
   Raise `ARXIV_RATE_SECONDS` to ~10; a full grid then completes clean.

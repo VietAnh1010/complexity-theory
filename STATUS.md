@@ -5,26 +5,53 @@ git log is the entire handoff.
 
 ## Current
 
-- **Phase:** verification tier harvested; enriching, then screening
+- **Phase:** complete for this run; dataset exported, gate clean
 - **Last updated:** 2026-08-25
-- **Next action:** screen `--category verification-complexity`, then snowball
+- **Next action:** screen the remaining 520 verification candidates, then round 4
 
-New subarea `verification-complexity`: the machinery under Frama-C, Dafny, Why3,
-CBMC. 443 records, all with an abstract, 334 with no DOI. Its admission path is
-a cost-of-checking claim, not complexity vocabulary — `SCOPE.md` § In scope.
-
-Screening question for this tier is not "is it in scope" but "has this run on a
-large codebase". That verdict is a `tags` value, exported as a column.
+Stopped on **time budget**, not saturation: snowball yielded 156, 51, 48 new
+records across three rounds, never twice under 25.
 
 ## Counts
 
-_Refresh with `run.py dataset`, then read `dataset/stats.json`._
+From `dataset/stats.json` after `run.py dataset --edges`.
+
+| | |
+|---|---|
+| papers | 3164 |
+| with an abstract | 3106 |
+| with a DOI | 1908 |
+| uncategorized | 0 |
+| core tier | 121 included, 12 excluded, 17 unavailable |
+
+Subareas: `verification-complexity` 658 (20.8%, under the 25% cap), every
+subarea over 50, smallest `meta-complexity` at 60.
+
+Core tier by scale verdict — the tag, not the status, is the answer to "does
+this work on a large codebase":
+
+| tag | n | what it means |
+|---|---|---|
+| `theory-only` | 73 | decidability or complexity result, no code |
+| `scales-unclear` | 35 | technique with benchmark-scale evidence only |
+| `scales-large` | 8 | run on a real codebase, with numbers |
+| untagged | 5 | the four pre-existing complexity records |
+
+The eight `scales-large`: CEGAR, bi-abduction, LOCKSMITH, incremental CodeQL,
+symbolic partial-order execution, Goanna, automotive abstract interpretation,
+agentic separation-logic spec synthesis.
 
 ## Snowball rounds
 
 | Round | Direction | Seeds | Seeds w/o DOI | New |
 |---|---|---|---|---|
 | smoke | both | 4 | 0 | 39 |
+| 1 | both | 56 | 2 | 156 |
+| 2 | both | 101 | 12 | 51 |
+| 3 | both | 121 | 14 | 48 |
+
+Round 3 backward yielded 6 new against 2330 unseen refs: the reference sets of
+these seeds are largely inside the library already. Forward is what still pays.
 
 Smoke round reach: 92 unseen refs across 4 seeds, 65 refs with no DOI; 2 of 4
 seeds had citing works in OpenCitations.
@@ -33,19 +60,23 @@ Stopping criterion (`SCOPE.md`): two consecutive rounds each under 25 new.
 
 ## Citation graph
 
-From `run.py dataset --edges` on the 76-record smoke library:
+From `run.py dataset --edges` on the 3164-record library:
 
 | | |
 |---|---|
-| edges | 116 |
-| papers queried | 54 |
-| papers without a DOI | 21 |
-| references seen | 2211 |
-| deposited unstructured | 592 |
-| pointing outside the library | 1502 |
+| edges | 2716 |
+| papers queried | 1819 |
+| papers without a DOI | 1256 |
+| papers Crossref has no references for | 89 |
+| references seen | 60283 |
+| deposited unstructured | 16044 |
+| pointing outside the library | 41408 |
 
-592 of 2211 refs were plain text, so 27% of the graph is invisible to Crossref.
-Report that alongside the edge count.
+27% of references are deposited as plain text and are invisible to Crossref.
+**85 of the 89 papers with no reference data are LIPIcs** (`10.4230`): those
+DOIs are registered with DataCite, so Crossref 404s them. LIPIcs is ITCS, CCC,
+ICALP, STACS, MFCS, ESA, IPEC — a hole in the graph shaped exactly like the
+target venues, and a second structural gap alongside ECCC.
 
 ## Open questions
 
@@ -67,9 +98,34 @@ Report that alongside the edge count.
 
 | Record | Call | Why |
 |---|---|---|
-| — | — | — |
+| 17 with no abstract | `unavailable` | ACM/IEEE/Springer deposit none; several are on target, e.g. scalable shape analysis for systems code |
+| `linsyn2022` | included, p1 | neural-network certification, not code; a cost claim, so in, but doubt is in the reason |
+| LLM-for-verification papers | screened like any other | spec synthesis with a measured burden is in; a benchmark of 77 algorithms is `toy-scale` |
+| FO model checking papers | categories overridden | Courcelle-style meta-theorems moved to `parameterized`/`descriptive-logic`, off the verification tier |
+| `Faster FPT Algorithms…` DOI | kept | title differs by one word from the published version, but the authors match |
 
 ## Run log
+
+- `2026-08-25` — screened 142 records; core tier 4 -> 121 included.
+  - 109 of the 121 are `verification-complexity`; 83 are at a target venue.
+  - Snowball reached the anchors keyword search cannot: CEGAR (2003),
+    Nelson-Oppen (1979), congruence closure (1980), Cook-style relative
+    completeness (1978), bi-abduction (2011), abstract-interpretation
+    completeness (2000).
+  - 17 records are `unavailable`: no abstract deposited, no arXiv preprint.
+    - All ACM, IEEE, Springer or Elsevier. Nine landed in one batch.
+    - This is where the tier loses most: the pre-2015 tool papers are exactly
+      the ones with no abstract.
+- `2026-08-25` — two live metadata bugs, both found by running the gate.
+  - MFCS matched the `FOCS` pattern and was promoted to target tier.
+    - Same shape as ECCC before CC; the fix is ordering plus a note.
+  - `tsim >= .8` assigned one paper another paper's DOI.
+    - "Parameterised Complexity of X" vs "Complexity of X": overlap .875.
+    - Replaced by `title_match`; `enrich` re-checks and clears, 48 cleared.
+    - Tuned against the 114 pairs the first attempt flagged. 53 were accent or
+      LaTeX drift, 17 an empty Crossref title, 38 genuinely wrong.
+  - `verify --all`: 0 errors, 11 warnings, all preprint-vs-published years bar
+    one ACM DOI registered ahead of publication.
 
 - `2026-08-25` — verification tier added and harvested; library 2471 -> 2909.
   - 54 queries over cs.LO/cs.PL/cs.SE plus the complexity categories, 0 failures.

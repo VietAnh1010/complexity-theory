@@ -585,3 +585,5 @@
 {"ts": "2026-08-25T06:41:40", "kind": "doi_cleared", "id": "doi:10.1103/physrevlett.92.127901", "doi": "10.1103/physrevlett.92.127901", "resolves_to": "Bell’s Inequalities and Quantum Communication Complexity", "stored": "Violation of Bell's inequality: criterion for quantum communication complexity advantage"}
 {"ts": "2026-08-25T06:41:40", "kind": "doi_cleared", "id": "arxiv:quant-ph/0005032", "doi": "10.1023/a:1026009100467", "resolves_to": "Quantum Communication Complexity", "stored": "Quantum Communication Complexity"}
 {"ts": "2026-08-25T06:41:41", "kind": "enrich", "crossref": 0, "published": 37, "arxiv": 0, "no_abstract": 58, "no_doi": 1256, "dois_cleared": 48}
+{"ts": "2026-08-25T06:43:55", "kind": "dataset_export", "papers": 3164, "edges": true}
+{"ts": "2026-08-25T06:44:00", "kind": "verify", "papers": 121, "errors": 0, "warnings": 11}
