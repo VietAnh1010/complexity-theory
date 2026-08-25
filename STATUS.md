@@ -5,13 +5,16 @@ git log is the entire handoff.
 
 ## Current
 
-- **Phase:** harvest complete (107 queries, 0 failures); 2471 records
-- **Last updated:** 2026-08-10
-- **Next action:** `run.py enrich`, then screen the core tier
+- **Phase:** verification tier harvested; enriching, then screening
+- **Last updated:** 2026-08-25
+- **Next action:** screen `--category verification-complexity`, then snowball
 
-Coverage targets in `SCOPE.md` all met: every subarea over 50, largest at 20%,
-0 uncategorized, 2455 of 2471 with an abstract. Only 469 carry a DOI, so
-snowballing reaches under a fifth of the library until `enrich` runs.
+New subarea `verification-complexity`: the machinery under Frama-C, Dafny, Why3,
+CBMC. 443 records, all with an abstract, 334 with no DOI. Its admission path is
+a cost-of-checking claim, not complexity vocabulary — `SCOPE.md` § In scope.
+
+Screening question for this tier is not "is it in scope" but "has this run on a
+large codebase". That verdict is a `tags` value, exported as a column.
 
 ## Counts
 
@@ -46,6 +49,13 @@ Report that alongside the edge count.
 
 ## Open questions
 
+- Request read as: harvest the literature *behind* Frama-C and Dafny, not run
+  those tools on this repo.
+  - Nothing here is C or Dafny; there is no program for either to check.
+  - The reading that yields work is the theory and cost of program checking,
+    filtered for what survives a large codebase. Proceeded on that.
+  - If the other reading was meant, the deliverable would be a proof harness,
+    not a dataset — say so and it gets built instead.
 - No seed papers supplied; the harvest runs on `config/queries.txt` alone.
   - Resolve any through `run.py harvest --query "<title>"`.
   - Never enter one by hand into the library.
@@ -60,6 +70,18 @@ Report that alongside the edge count.
 | — | — | — |
 
 ## Run log
+
+- `2026-08-25` — verification tier added and harvested; library 2471 -> 2909.
+  - 54 queries over cs.LO/cs.PL/cs.SE plus the complexity categories, 0 failures.
+  - `in_topic` gains one alternative path, for this subarea only.
+    - The other 17 keep the original conjunction; no existing record moves.
+  - Venue table gains CAV, POPL, PLDI, TACAS, SAS and 18 more.
+    - FMCAD had to precede CAV, the same trap as ECCC before CC.
+  - 15 queries returned 0-2 hits; rewritten and re-run, worth 48 records.
+    - Same failure as the first harvest: three-concept ANDs, invented phrases.
+    - `concurrent separation logic` returns 41; the three-concept form returns 0.
+  - arXiv reach here is thinner than in complexity: CAV/POPL/PLDI papers often
+    never post a preprint. Report as a source gap, not a thin literature.
 
 - `2026-08-10` — ported from `lightweight-survey`; subject retargeted, no LLM
   content anywhere.

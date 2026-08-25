@@ -1,0 +1,5 @@
+[05:22:19] 2666 of 2909 missing an abstract, venue, or DOI
+[05:22:23] crossref: title-matching 2329 with no DOI
+[05:29:27] net <urlopen error [Errno 104] Connection reset by peer> 1/5 in 2s
+[05:31:29] net <urlopen error [Errno 104] Connection reset by peer> 1/5 in 2s
+[05:33:32] net <urlopen error [Errno 104] Connection reset by peer> 1/5 in 2s
