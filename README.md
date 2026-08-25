@@ -11,7 +11,7 @@ anywhere.** No API keys; stdlib Python only.
 
 | `dataset/` | |
 |---|---|
-| `papers.csv` | one row per paper, 25 columns |
+| `papers.csv` | one row per paper, 26 columns |
 | `papers.jsonl` | the same records, unflattened |
 | `edges.csv` | `citing_id, cited_id` — citation graph induced on the library |
 | `stats.json` | counts by status, subarea, venue, tier, year, source |
@@ -23,6 +23,8 @@ the library — so it stays closed instead of running off into all of mathematic
 
 ```bash
 python3 scripts/run.py harvest --queries-file config/queries.txt --max 100
+python3 scripts/run.py harvest --queries-file config/queries-verification.txt \
+    --categories cs.LO,cs.PL,cs.SE,cs.CC,cs.FL,cs.CR,cs.DS --max 100
 python3 scripts/run.py enrich                    # DOIs, venues, missing abstracts
 python3 scripts/run.py snowball --seed-status included
 python3 scripts/run.py dataset --edges           # the deliverable
@@ -51,8 +53,9 @@ SCOPE.md            scope contract; screening decisions cite it
 CLAUDE.md           operating rules + run procedure
 STATUS.md           live run state; the handoff if a session dies
 config/queries.txt  the query grid — a concept missing here is missing from the dataset
+config/queries-verification.txt  the same, for the verification tier
 scripts/lib.py      HTTP+cache, normalization, venue table, JSONL store
-scripts/topic.py    the subject: complexity vocabulary, 18 subareas
+scripts/topic.py    the subject: complexity vocabulary, 19 subareas
 scripts/sources.py  arXiv, Crossref, OpenCitations
 scripts/run.py      the CLI
 papers/library.jsonl  every paper seen, deduped
@@ -62,6 +65,25 @@ dataset/            the deliverable
 
 The subject lives in `SCOPE.md`, `topic.py`, `config/queries.txt`, and the
 venue table in `lib.py`. Everything else is subject-agnostic plumbing.
+
+## The verification tier
+
+`verification-complexity` is the one subarea whose papers are mostly not
+complexity papers. It covers the machinery under Frama-C, Dafny, Why3, CBMC and
+their relatives: decision procedures, separation logic, abstract interpretation,
+invariant inference — and, above all, what any of it costs on a real codebase.
+
+Two consequences, both in `SCOPE.md`:
+
+- **`in_topic` gains one alternative.** A cost-of-checking claim — decidability,
+  a decision-procedure complexity, or a measured analysis cost on real code —
+  substitutes for the complexity vocabulary, in this subarea only.
+- **`tags` carries the verdict.** Every included record is `scales-large`,
+  `scales-unclear`, or `theory-only`. Status says the paper is in scope; the tag
+  says whether the idea has been run on something big.
+
+The venue table gains CAV, POPL, PLDI, TACAS, SAS and the rest, because a paper
+about verifying millions of lines never appears at STOC.
 
 ## Design
 
@@ -88,7 +110,8 @@ both, exits 1.
 ## Traps
 
 Each of these was a live bug, and all four hit the old foundational records
-hardest — the ones snowballing exists to reach.
+hardest — the ones snowballing exists to reach. The fifth is the same bug one
+venue over, fixed before it fired.
 
 - **ECCC must precede CC in `VENUE_PATTERNS`.** Both contain "computational
   complexity". CC's negative lookahead only guards text *after* the match, and
@@ -102,6 +125,9 @@ hardest — the ones snowballing exists to reach.
 - **Old ACM proceedings deposit an `event.name` naming no committee** ("the
   twenty-sixth annual ACM symposium") while the container spells out STOC.
   `sources._cr_venue` prefers whichever field names a venue we know.
+- **FMCAD must precede CAV**, for the same reason ECCC precedes CC: "formal
+  methods in computer-aided design" and "computer-aided verification" read
+  alike, and CAV is a target venue.
 
 ## Known gaps
 

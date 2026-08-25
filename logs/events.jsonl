@@ -172,3 +172,72 @@
 {"ts": "2026-08-10T12:27:44", "kind": "query", "query": "threshold circuits AND lower bounds", "hits": 17, "kept": 17, "new": 11, "skipped": 0}
 {"ts": "2026-08-10T12:27:54", "kind": "query", "query": "ACC AND circuit lower bounds", "hits": 5, "kept": 5, "new": 1, "skipped": 0}
 {"ts": "2026-08-10T12:28:43", "kind": "dataset_export", "papers": 2471, "edges": false}
+{"ts": "2026-08-25T05:09:54", "kind": "query", "query": "Frama-C", "hits": 42, "kept": 14, "new": 14, "skipped": 28}
+{"ts": "2026-08-25T05:10:04", "kind": "query", "query": "ACSL AND specification", "hits": 17, "kept": 2, "new": 1, "skipped": 15}
+{"ts": "2026-08-25T05:10:14", "kind": "query", "query": "Dafny AND verification", "hits": 67, "kept": 22, "new": 21, "skipped": 45}
+{"ts": "2026-08-25T05:10:23", "kind": "query", "query": "Why3 AND deductive verification", "hits": 12, "kept": 4, "new": 4, "skipped": 8}
+{"ts": "2026-08-25T05:10:34", "kind": "query", "query": "Viper AND verification", "hits": 17, "kept": 4, "new": 3, "skipped": 13}
+{"ts": "2026-08-25T05:10:43", "kind": "query", "query": "VeriFast AND separation logic", "hits": 13, "kept": 5, "new": 4, "skipped": 8}
+{"ts": "2026-08-25T05:10:53", "kind": "query", "query": "SPARK Ada AND verification", "hits": 1, "kept": 0, "new": 0, "skipped": 1}
+{"ts": "2026-08-25T05:11:03", "kind": "query", "query": "KeY AND Java verification", "hits": 1, "kept": 1, "new": 1, "skipped": 0}
+{"ts": "2026-08-25T05:11:13", "kind": "query", "query": "CBMC AND bounded model checking", "hits": 8, "kept": 5, "new": 5, "skipped": 3}
+{"ts": "2026-08-25T05:11:23", "kind": "query", "query": "SeaHorn AND verification", "hits": 4, "kept": 2, "new": 2, "skipped": 2}
+{"ts": "2026-08-25T05:11:33", "kind": "query", "query": "Boogie AND intermediate verification language", "hits": 7, "kept": 0, "new": 0, "skipped": 7}
+{"ts": "2026-08-25T05:11:43", "kind": "query", "query": "verification condition generation AND size", "hits": 1, "kept": 1, "new": 1, "skipped": 0}
+{"ts": "2026-08-25T05:11:54", "kind": "query", "query": "deductive verification AND scalability", "hits": 12, "kept": 7, "new": 7, "skipped": 5}
+{"ts": "2026-08-25T05:12:03", "kind": "query", "query": "modular verification AND large programs", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-25T05:12:13", "kind": "query", "query": "contract-based verification AND modular", "hits": 1, "kept": 0, "new": 0, "skipped": 1}
+{"ts": "2026-08-25T05:12:23", "kind": "query", "query": "compositional program analysis AND summaries", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-25T05:12:33", "kind": "query", "query": "bi-abduction AND shape analysis", "hits": 1, "kept": 1, "new": 1, "skipped": 0}
+{"ts": "2026-08-25T05:12:43", "kind": "query", "query": "incremental static analysis", "hits": 1, "kept": 1, "new": 1, "skipped": 0}
+{"ts": "2026-08-25T05:12:53", "kind": "query", "query": "interprocedural analysis AND complexity", "hits": 4, "kept": 1, "new": 1, "skipped": 3}
+{"ts": "2026-08-25T05:13:16", "kind": "query", "query": "static analysis AND millions of lines", "hits": 6, "kept": 6, "new": 6, "skipped": 0}
+{"ts": "2026-08-25T05:13:16", "kind": "query", "query": "whole-program analysis AND scalability", "hits": 1, "kept": 1, "new": 1, "skipped": 0}
+{"ts": "2026-08-25T05:13:26", "kind": "query", "query": "proof engineering AND large scale", "hits": 2, "kept": 1, "new": 1, "skipped": 1}
+{"ts": "2026-08-25T05:13:36", "kind": "query", "query": "proof burden AND automation", "hits": 4, "kept": 4, "new": 4, "skipped": 0}
+{"ts": "2026-08-25T05:13:46", "kind": "query", "query": "annotation burden AND verification", "hits": 6, "kept": 4, "new": 3, "skipped": 2}
+{"ts": "2026-08-25T05:13:57", "kind": "query", "query": "separation logic AND scalability", "hits": 12, "kept": 6, "new": 6, "skipped": 6}
+{"ts": "2026-08-25T05:14:06", "kind": "query", "query": "separation logic AND concurrent program verification", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-25T05:14:16", "kind": "query", "query": "rely-guarantee AND compositional reasoning", "hits": 6, "kept": 2, "new": 2, "skipped": 4}
+{"ts": "2026-08-25T05:14:26", "kind": "query", "query": "program logic AND decidability", "hits": 6, "kept": 4, "new": 4, "skipped": 2}
+{"ts": "2026-08-25T05:14:37", "kind": "query", "query": "Hoare logic AND completeness", "hits": 48, "kept": 32, "new": 31, "skipped": 16}
+{"ts": "2026-08-25T05:14:46", "kind": "query", "query": "frame rule AND local reasoning", "hits": 7, "kept": 1, "new": 0, "skipped": 6}
+{"ts": "2026-08-25T05:14:57", "kind": "query", "query": "satisfiability modulo theories AND complexity", "hits": 38, "kept": 24, "new": 23, "skipped": 14}
+{"ts": "2026-08-25T05:15:07", "kind": "query", "query": "SMT AND decision procedure", "hits": 60, "kept": 45, "new": 45, "skipped": 15}
+{"ts": "2026-08-25T05:15:17", "kind": "query", "query": "quantifier instantiation AND SMT", "hits": 22, "kept": 12, "new": 8, "skipped": 10}
+{"ts": "2026-08-25T05:15:26", "kind": "query", "query": "decidable fragment AND program verification", "hits": 2, "kept": 2, "new": 1, "skipped": 0}
+{"ts": "2026-08-25T05:15:37", "kind": "query", "query": "constrained Horn clauses AND verification", "hits": 56, "kept": 19, "new": 17, "skipped": 37}
+{"ts": "2026-08-25T05:15:46", "kind": "query", "query": "Craig interpolation AND model checking", "hits": 7, "kept": 1, "new": 1, "skipped": 6}
+{"ts": "2026-08-25T05:15:56", "kind": "query", "query": "array theory AND decidability", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-25T05:16:06", "kind": "query", "query": "bit-vector logic AND complexity", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-25T05:16:16", "kind": "query", "query": "loop invariant inference AND automation", "hits": 2, "kept": 1, "new": 1, "skipped": 1}
+{"ts": "2026-08-25T05:16:26", "kind": "query", "query": "invariant synthesis AND complexity", "hits": 7, "kept": 5, "new": 5, "skipped": 2}
+{"ts": "2026-08-25T05:16:36", "kind": "query", "query": "predicate abstraction AND software model checking", "hits": 2, "kept": 1, "new": 1, "skipped": 1}
+{"ts": "2026-08-25T05:16:47", "kind": "query", "query": "abstract interpretation AND complexity", "hits": 49, "kept": 24, "new": 23, "skipped": 25}
+{"ts": "2026-08-25T05:16:56", "kind": "query", "query": "widening AND abstract interpretation", "hits": 20, "kept": 5, "new": 4, "skipped": 15}
+{"ts": "2026-08-25T05:17:06", "kind": "query", "query": "refinement types AND type inference", "hits": 14, "kept": 8, "new": 6, "skipped": 6}
+{"ts": "2026-08-25T05:17:17", "kind": "query", "query": "dependent types AND decidability", "hits": 30, "kept": 26, "new": 24, "skipped": 4}
+{"ts": "2026-08-25T05:17:26", "kind": "query", "query": "termination analysis AND complexity", "hits": 16, "kept": 11, "new": 10, "skipped": 5}
+{"ts": "2026-08-25T05:17:36", "kind": "query", "query": "program analysis AND undecidability", "hits": 10, "kept": 6, "new": 4, "skipped": 4}
+{"ts": "2026-08-25T05:17:46", "kind": "query", "query": "pointer analysis AND complexity", "hits": 8, "kept": 5, "new": 5, "skipped": 3}
+{"ts": "2026-08-25T05:17:56", "kind": "query", "query": "alias analysis AND undecidable", "hits": 1, "kept": 1, "new": 1, "skipped": 0}
+{"ts": "2026-08-25T05:18:08", "kind": "query", "query": "model checking AND complexity", "hits": 100, "kept": 81, "new": 71, "skipped": 19}
+{"ts": "2026-08-25T05:18:17", "kind": "query", "query": "symbolic execution AND path explosion", "hits": 27, "kept": 14, "new": 14, "skipped": 13}
+{"ts": "2026-08-25T05:18:26", "kind": "query", "query": "reachability AND complexity of verification", "hits": 4, "kept": 1, "new": 1, "skipped": 3}
+{"ts": "2026-08-25T05:18:37", "kind": "query", "query": "resource analysis AND worst-case cost", "hits": 1, "kept": 0, "new": 0, "skipped": 1}
+{"ts": "2026-08-25T05:18:47", "kind": "query", "query": "amortized resource analysis AND automatic", "hits": 15, "kept": 1, "new": 1, "skipped": 14}
+{"ts": "2026-08-25T05:19:25", "kind": "query", "query": "modular verification AND procedure", "hits": 5, "kept": 5, "new": 4, "skipped": 0}
+{"ts": "2026-08-25T05:19:35", "kind": "query", "query": "procedure summaries AND interprocedural", "hits": 1, "kept": 0, "new": 0, "skipped": 1}
+{"ts": "2026-08-25T05:19:46", "kind": "query", "query": "concurrent separation logic", "hits": 41, "kept": 18, "new": 18, "skipped": 23}
+{"ts": "2026-08-25T05:19:55", "kind": "query", "query": "theory of arrays AND decision procedure", "hits": 4, "kept": 4, "new": 2, "skipped": 0}
+{"ts": "2026-08-25T05:20:05", "kind": "query", "query": "bit-vector AND satisfiability", "hits": 23, "kept": 9, "new": 8, "skipped": 14}
+{"ts": "2026-08-25T05:20:15", "kind": "query", "query": "design by contract AND verification", "hits": 13, "kept": 1, "new": 0, "skipped": 12}
+{"ts": "2026-08-25T05:20:25", "kind": "query", "query": "incremental analysis AND program", "hits": 7, "kept": 3, "new": 3, "skipped": 4}
+{"ts": "2026-08-25T05:20:35", "kind": "query", "query": "whole program analysis", "hits": 13, "kept": 5, "new": 3, "skipped": 8}
+{"ts": "2026-08-25T05:20:45", "kind": "query", "query": "bi-abduction", "hits": 8, "kept": 6, "new": 3, "skipped": 2}
+{"ts": "2026-08-25T05:20:55", "kind": "query", "query": "verification condition generation", "hits": 19, "kept": 7, "new": 3, "skipped": 12}
+{"ts": "2026-08-25T05:21:05", "kind": "query", "query": "alias analysis AND precision", "hits": 12, "kept": 3, "new": 2, "skipped": 9}
+{"ts": "2026-08-25T05:21:15", "kind": "query", "query": "Ada SPARK AND program proof", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-25T05:21:25", "kind": "query", "query": "decidable logic AND heap", "hits": 1, "kept": 1, "new": 1, "skipped": 0}
+{"ts": "2026-08-25T05:21:38", "kind": "query", "query": "Ada AND deductive verification", "hits": 1, "kept": 1, "new": 0, "skipped": 0}
+{"ts": "2026-08-25T05:21:47", "kind": "query", "query": "procedure summaries", "hits": 10, "kept": 2, "new": 1, "skipped": 8}

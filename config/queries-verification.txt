@@ -13,6 +13,9 @@
 #
 # arXiv matches each concept as a literal phrase. Three-concept ANDs and
 # symbol-bearing names (F*, K framework) return nothing — do not add them.
+# Thirteen lines here are rewrites: four returned 0 hits and nine returned 1-2,
+# all of them three-concept ANDs or phrases nobody writes ("large programs",
+# "array theory"). Shorter and more literal wins.
 
 # --- deductive verification tools ------------------------------------------
 Frama-C
@@ -21,30 +24,30 @@ Dafny AND verification
 Why3 AND deductive verification
 Viper AND verification
 VeriFast AND separation logic
-SPARK Ada AND verification
+Ada AND deductive verification
 KeY AND Java verification
 CBMC AND bounded model checking
 SeaHorn AND verification
 Boogie AND intermediate verification language
-verification condition generation AND size
+verification condition generation
 
 # --- what makes a technique survive a large codebase -----------------------
 deductive verification AND scalability
-modular verification AND large programs
-contract-based verification AND modular
-compositional program analysis AND summaries
-bi-abduction AND shape analysis
-incremental static analysis
+modular verification AND procedure
+design by contract AND verification
+procedure summaries
+bi-abduction
+incremental analysis AND program
 interprocedural analysis AND complexity
 static analysis AND millions of lines
-whole-program analysis AND scalability
+whole program analysis
 proof engineering AND large scale
 proof burden AND automation
 annotation burden AND verification
 
 # --- separation logic and program logics -----------------------------------
 separation logic AND scalability
-separation logic AND concurrent program verification
+concurrent separation logic
 rely-guarantee AND compositional reasoning
 program logic AND decidability
 Hoare logic AND completeness
@@ -54,11 +57,11 @@ frame rule AND local reasoning
 satisfiability modulo theories AND complexity
 SMT AND decision procedure
 quantifier instantiation AND SMT
-decidable fragment AND program verification
+decidable logic AND heap
 constrained Horn clauses AND verification
 Craig interpolation AND model checking
-array theory AND decidability
-bit-vector logic AND complexity
+theory of arrays AND decision procedure
+bit-vector AND satisfiability
 
 # --- inference: what the tool has to guess ---------------------------------
 loop invariant inference AND automation
@@ -73,7 +76,7 @@ termination analysis AND complexity
 # --- the hardness underneath -----------------------------------------------
 program analysis AND undecidability
 pointer analysis AND complexity
-alias analysis AND undecidable
+alias analysis AND precision
 model checking AND complexity
 symbolic execution AND path explosion
 reachability AND complexity of verification
