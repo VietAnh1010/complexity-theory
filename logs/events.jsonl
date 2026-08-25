@@ -253,3 +253,6 @@
 {"ts": "2026-08-25T05:59:38", "kind": "snowball_leg", "direction": "forward", "new": 0}
 {"ts": "2026-08-25T06:06:15", "kind": "enrich", "crossref": 0, "published": 0, "arxiv": 2, "no_abstract": 54, "no_doi": 1242}
 {"ts": "2026-08-25T06:07:36", "kind": "screen_apply", "applied": 26, "failed": 0}
+{"ts": "2026-08-25T06:08:28", "kind": "snowball_leg", "direction": "backward", "new": 6, "unstructured_refs": 1022}
+{"ts": "2026-08-25T06:09:10", "kind": "snowball_leg", "direction": "forward", "new": 42}
+{"ts": "2026-08-25T06:09:51", "kind": "enrich", "crossref": 0, "published": 4, "arxiv": 0, "no_abstract": 58, "no_doi": 1245}
