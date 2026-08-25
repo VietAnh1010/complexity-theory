@@ -1,0 +1,44 @@
+[06:39:25] 2103 of 3164 missing an abstract, venue, or DOI
+[06:39:26] crossref: title-matching 1245 with no DOI
+[06:39:27] arxiv: title-matching 58 with no abstract
+[06:39:27] crossref: re-checking 1710 DOIs that came from a title match
+[06:39:27]   !! abel2026graded: 10.1145/3607862 is 'A Graded Modal Dependent Type Theory with a Universe and Erasure, Formalized'; clearing
+[06:39:27]   !! naeini2026dynamic: 10.1109/grc.2012.6468639 is 'Online pattern matching with wildcards'; clearing
+[06:39:28]   !! opler2026inapproximability: 10.1137/1.9781611978971.210 is 'Approximate Counting of Permutation Patterns'; clearing
+[06:39:28]   !! tabatabai2026proof: 10.1016/j.apal.2021.102972 is 'Proof complexity of substructural logics'; clearing
+[06:39:28]   !! ji2026quantum: 10.1007/978-3-032-27441-0_5 is 'Exploring Quantum Deep Learning: A Comprehensive Review'; clearing
+[06:39:29]   !! colnet2025compilation: 10.24963/ijcai.2024/367 is 'Towards Recognizing Spatial-temporal Collaboration of EEG Phase Brain Networks for Emotion Understanding'; clearing
+[06:39:30]   !! cornelissen2025quantum: 10.1103/physreva.61.052313 is 'Generalized quantum search with parallelism'; clearing
+[06:39:30]   !! dutta2025recent: 10.2105/ajph.27.1.50 is 'Recent Advances in Laboratory Methods'; clearing
+[06:39:30]   !! ishizuka2025ppp: 10.1016/j.tcs.2026.115990 is 'The PPP-completeness of Ward-Szabó'; clearing
+[06:39:30]   !! lyu2025comprehensive: 10.1109/tse.2026.3702537 is 'Towards Effective Sampling of SMT Solutions'; clearing
+[06:39:30]   !! berg2024algebraic: 10.1017/cbo9780511525995 is 'Representation Theory and Algebraic Geometry'; clearing
+[06:39:33]   !! li2023sat: 10.24963/ijcai.2024/210 is 'Coming Out of the Dark: Human Pose Estimation in Low-light Conditions'; clearing
+[06:39:37]   !! ascari2023sufficient: 10.1145/3720486 is 'Revealing Sources of (Memory) Errors via Backward Analysis'; clearing
+[06:39:42]   !! guha2022parikh: 10.1007/978-3-031-33264-7_2 is 'Jumping Automata over\xa0Infinite Words'; clearing
+[06:39:46]   !! bravyi2021complexity: 10.1038/s41567-022-01742-5 is 'Quantum Hamiltonian complexity in thermal equilibrium'; clearing
+[06:39:46]   !! mahmood2021parameterised: 10.1007/978-3-662-48057-1_21 is 'Complexity of Propositional Independence and Inclusion Logic'; clearing
+[06:39:46]   !! ho2021quantum: 10.1038/s41534-022-00520-8 is 'Entanglement-based quantum communication complexity beyond Bell nonlocality'; clearing
+[06:39:47]   !! bulatov2020dichotomy: 10.1109/focs.2017.37 is 'A Dichotomy Theorem for Nonuniform CSPs'; clearing
+[06:39:48]   !! fritzsch2020experiences: 10.1109/icst49551.2021.00049 is 'Experiences from Large-Scale Model Checking: Verifying a Vehicle Control System with NuSMV'; clearing
+[06:39:48]   !! anshu2020communication: 10.1038/s41567-022-01740-7 is 'Entanglement spread area law in gapped ground states'; clearing
+[06:39:52]   !! he2020petri: 10.1109/tcss.2022.3164052 is 'Petri-Net-Based Model Checking for Privacy-Critical Multiagent Systems'; clearing
+[06:39:56]   !! hamza2019system: 10.1145/3360592 is 'System FR: formalized foundations for the stainless verifier'; clearing
+[06:40:04]   !! marcozzi2017freeing: 10.1145/3180155.3180191 is 'Time to clean your test objectives'; clearing
+[06:40:05]   !! li2017quantum: 10.1109/ted.2018.2832118 is 'Determining External Quantum Efficiency From Energy Conversion Efficiency for Light-Emitting Diodes'; clearing
+[06:40:06]   !! morimae2017verified: 10.1103/physreva.96.062321 is 'Verification of hypergraph states'; clearing
+[06:40:07]   !! brit2016orthogonal: 10.26421/qic17.1-2-6 is 'On the orthogonal rank and impossibility of quantum round elimination'; clearing
+[06:40:09]   !! tavakoli2015magical: 10.1103/physreva.95.020302 is 'Dimensional discontinuity in quantum communication complexity at dimension seven'; clearing
+[06:40:10]   !! kerenidis2014privacy: 10.26421/qic16.3-4-1 is 'Information cost of quantum communication protocols'; clearing
+[06:40:10]   !! lovett2014recent: 10.1109/sfcs.1993.366870 is 'On the "log rank"-conjecture in communication complexity'; clearing
+[06:40:10]   !! huang2014two: 10.1109/isit44484.2020.9174029 is '2D Local Hamiltonian with Area Laws Is QMA-Complete'; clearing
+[06:40:10]   !! li2013generating: 10.1142/s021819671850011x is 'Witnessing matrix identities and proof complexity'; clearing
+[06:40:10]   !! forbes2013pseudorandomness: 10.1145/2591796.2591816 is 'Hitting sets for multilinear read-once algebraic branching programs, in any order'; clearing
+[06:40:10]   !! grochow2013unifying: 10.1007/s00037-015-0103-x is 'Unifying Known Lower Bounds via Geometric Complexity Theory'; clearing
+[06:40:10]   !! jain2012direct: 10.1007/s00453-015-0100-0 is 'A Direct Product Theorem for Two-Party Bounded-Round Public-Coin Communication Complexity'; clearing
+[06:40:11]   !! liberatore2010size: 10.1109/tc.2015.2512872 is 'The Size of BDDs and Other Data Structures in Temporal Logics Model Checking'; clearing
+[06:40:12]   !! grenet2010symmetric: 10.1090/conm/556 is 'Randomization, Relaxation, and Complexity in Polynomial Equation Solving'; clearing
+[06:40:12]   !! briquel2009dichotomy: 10.1007/978-3-642-03816-7 is 'Mathematical Foundations of Computer Science 2009'; clearing
+[06:40:12]   !! brukner2002violation: 10.1103/physrevlett.92.127901 is 'Bell’s Inequalities and Quantum Communication Complexity'; clearing
+[06:40:12] crossref 0, 48 published versions, arxiv 0, 12 venues revised, 0 titles cleaned, 38 wrong DOIs cleared
+[06:40:12] 58 still unscreenable (no abstract); 1235 cannot be snowballed from (no DOI)

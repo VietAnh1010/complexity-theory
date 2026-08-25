@@ -1,7 +1,7 @@
 """arXiv, Crossref, OpenCitations. All free, keyless, unmetered — keep it that way."""
 from __future__ import annotations
 import re, xml.etree.ElementTree as ET
-from lib import (CONTACT, chunk, clean, get, getj, log, narxiv, ndoi,
+from lib import (title_match, authors_agree, CONTACT, chunk, clean, get, getj, log, narxiv, ndoi,
                  strip_jats, strip_markup, tsim, venue)
 
 AX = "http://export.arxiv.org/api/query"
@@ -80,7 +80,8 @@ def ax_by_title(title):
         for r in (x for x in (ax_parse(e, "arxiv:title-match") for e in es) if x):
             if (s := tsim(r["title"], title)) > score: best, score = r, s
         if score >= THRESH: break
-    return best if score >= THRESH else None
+    # same rule as cr_by_title: an unmatched content word is a different paper
+    return best if best and title_match(best["title"], title, THRESH) else None
 
 
 # ---- Crossref ------------------------------------------------------------
@@ -139,7 +140,7 @@ def cr_by_dois(dois, via):
     return out
 
 
-def cr_by_title(title, via):
+def cr_by_title(title, via, authors=None):
     """Recovers the published DOI/venue for arXiv-only records. Low yield is the data."""
     if len(title.split()) < 3: return None
     try:
@@ -149,7 +150,11 @@ def cr_by_title(title, via):
     best, score = None, 0.
     for r in (x for x in (cr_parse(i, via) for i in (p.get("message") or {}).get("items") or []) if x):
         if (s := tsim(r["title"], title)) > score: best, score = r, s
-    return best if score >= THRESH else None
+    # THRESH alone accepts a title that merely adds a qualifier word; title_match
+    # rejects those, and a shared surname settles what the titles cannot.
+    # A wrong DOI is invisible, a missing one is recorded.
+    if not best or not title_match(best["title"], title, THRESH): return None
+    return best if authors_agree(best, {"authors": authors or []}) else None
 
 
 def cr_refs(doi):

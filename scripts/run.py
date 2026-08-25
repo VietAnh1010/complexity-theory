@@ -13,8 +13,8 @@ import xml.etree.ElementTree as ET
 from collections import Counter, defaultdict
 
 import sources as S
-from lib import (DATA, STATUSES, Store, citekeys, event, get, getj, log, ndoi,
-                 real_venue, strip_markup, tier, tsim, venue)
+from lib import (DATA, STATUSES, Store, authors_agree, citekeys, event, get, getj,
+                 log, ndoi, real_venue, strip_markup, tier, title_match, tsim, venue)
 from topic import categorize, in_topic, prior
 
 SAVE_EVERY = 5  # a ~100-query pass gets 429'd partway through; don't lose the rest
@@ -81,8 +81,9 @@ def enrich(a):
         pend = [r for r in tg if not r.get("doi") and r.get("title")]
         log(f"crossref: title-matching {len(pend)} with no DOI")
         for r in pend:
-            p = S.cr_by_title(r["title"], "enrich:crossref-title")
+            p = S.cr_by_title(r["title"], "enrich:crossref-title", r.get("authors"))
             if not p or not p.get("doi") or st.find({"doi": p["doi"]}): continue
+            event("title_matched", id=r["id"], doi=p["doi"], stored=r["title"], resolves_to=p["title"])
             r["doi"] = p["doi"]
             if p.get("venue"): r["venue"], r["venue_short"] = p["venue"], p.get("venue_short") or venue(p["venue"])
             if not r.get("abstract") and p.get("abstract"): r["abstract"] = p["abstract"]
@@ -100,6 +101,34 @@ def enrich(a):
                 if not r.get(k) and m.get(k): r[k] = m[k]
             r["sources"] = list(dict.fromkeys(r.get("sources", []) + ["arxiv"])); recovered += 1
 
+    # A title match that passed the old floor could assign a real paper another
+    # paper's DOI ("Complexity of X" vs "Parameterised Complexity of X"). Re-check
+    # every record that carries both a DOI and an arXiv id - the title-matched
+    # population - and drop the DOI when the live title says it is a different paper.
+    cleared = 0
+    if not a.skip_doi_recheck:
+        cand = [r for r in st.recs.values() if r.get("doi") and r.get("arxiv_id") and r.get("title")]
+        log(f"crossref: re-checking {len(cand)} DOIs that came from a title match")
+        for r in cand:
+            try: m = (S.getj(f"{S.CR}/{r['doi']}", {"mailto": S.CONTACT}).get("message") or {})
+            except Exception: continue          # unregistered or unreachable: verify reports it
+            ts = [t for t in (m.get("title") or []) if t and t.strip()]
+            # Crossref sometimes deposits no title at all; that is missing data,
+            # not evidence of a wrong DOI.
+            if not ts: continue
+            cr = {"authors": [f"{a.get('given','')} {a.get('family','')}".strip()
+                              for a in (m.get("author") or [])]}
+            if title_match(strip_markup(ts[0]), r["title"]) and authors_agree(cr, r): continue
+            log(f"  !! {r.get('citekey') or r['id']}: {r['doi']} is {ts[0]!r}; clearing")
+            event("doi_cleared", id=r["id"], doi=r["doi"], resolves_to=ts[0], stored=r["title"])
+            # Drop the alias too: left in place, the next paper carrying this DOI
+            # would merge into this record.
+            st._ax.pop(f"doi:{r['doi']}", None)
+            r["doi"] = ""
+            if not r.get("venue", "").lower().startswith("arxiv"):
+                r["venue"], r["venue_short"] = "arXiv", "arXiv"
+            cleared += 1
+
     revised = retitled = 0
     for r in st.recs.values():
         if (d := venue(r.get("venue"))) and d != r.get("venue_short", ""): r["venue_short"] = d; revised += 1
@@ -111,9 +140,10 @@ def enrich(a):
     na = sum(1 for r in pool if not r.get("abstract"))
     nd = sum(1 for r in pool if not r.get("doi"))
     log(f"crossref {filled}, {matched} published versions, arxiv {recovered}, "
-        f"{revised} venues revised, {retitled} titles cleaned")
+        f"{revised} venues revised, {retitled} titles cleaned, {cleared} wrong DOIs cleared")
     log(f"{na} still unscreenable (no abstract); {nd} cannot be snowballed from (no DOI)")
-    event("enrich", crossref=filled, published=matched, arxiv=recovered, no_abstract=na, no_doi=nd)
+    event("enrich", crossref=filled, published=matched, arxiv=recovered, no_abstract=na,
+          no_doi=nd, dois_cleared=cleared)
 
 
 # ---- screen --------------------------------------------------------------
@@ -328,25 +358,38 @@ def verify(a):
         if not a.all and a.sample < len(pool): pool = random.sample(pool, a.sample)
         for r in pool:
             l = r.get("citekey") or r["id"]
+            unresolved = ""
             if r.get("doi"):
                 try: m = (getj(f"{S.CR}/{r['doi']}").get("message") or {})
-                except Exception as e: probs.append(("ERROR", f"{l}: DOI {r['doi']} did not resolve ({e})")); continue
+                except Exception as e:
+                    # A DOI registered ahead of publication 404s at Crossref. That is
+                    # not a fabricated citation if an arXiv id verifies the title, so
+                    # fall through to that check and warn. With no arXiv id to fall
+                    # back on, nothing grounds the record and it stays an error.
+                    if not r.get("arxiv_id"):
+                        probs.append(("ERROR", f"{l}: DOI {r['doi']} did not resolve ({e})")); continue
+                    unresolved = f"{l}: DOI {r['doi']} does not resolve; verified against arXiv instead"
+                    m = {}
                 ts = m.get("title") or []
-                if not ts: probs.append(("WARN", f"{l}: Crossref returned no title")); continue
-                if (s := tsim(ts[0], r.get("title", ""))) < .8:
+                if not ts and not unresolved:
+                    probs.append(("WARN", f"{l}: Crossref returned no title")); continue
+                if ts and not title_match(ts[0], r.get("title", "")):
+                    s = tsim(ts[0], r.get("title", ""))
                     probs.append(("ERROR", f"{l}: DOI {r['doi']} resolves to {ts[0]!r}, "
                                            f"we stored {r.get('title')!r} (overlap {s:.2f})"))
                 p = ((m.get("issued") or {}).get("date-parts") or [[None]])[0]
                 if p and p[0] and r.get("year") and abs(int(p[0]) - int(r["year"])) > 1:
                     probs.append(("WARN", f"{l}: year {r['year']} but Crossref says {p[0]}"))
-            else:
+            if unresolved or not r.get("doi"):
+                if unresolved: probs.append(("WARN", unresolved))
                 try:
                     e = ET.fromstring(get(S.AX, {"id_list": r["arxiv_id"], "max_results": 1},
                                           headers={"Accept": "application/atom+xml"})).find("atom:entry", S.NS)
                 except Exception as x: probs.append(("ERROR", f"{l}: arXiv lookup failed ({x})")); continue
                 if e is None: probs.append(("ERROR", f"{l}: arXiv id {r['arxiv_id']} does not exist")); continue
                 lt = e.findtext("atom:title", "", S.NS)
-                if (s := tsim(lt, r.get("title", ""))) < .8:
+                if not title_match(lt, r.get("title", "")):
+                    s = tsim(lt, r.get("title", ""))
                     probs.append(("ERROR", f"{l}: arXiv {r['arxiv_id']} is {lt.strip()!r}, "
                                            f"we stored {r.get('title')!r} (overlap {s:.2f})"))
 
@@ -374,6 +417,7 @@ def main():
     e = sub.add_parser("enrich"); e.set_defaults(f=enrich)
     e.add_argument("--status"); e.add_argument("--skip-arxiv", action="store_true")
     e.add_argument("--skip-title-match", action="store_true")
+    e.add_argument("--skip-doi-recheck", action="store_true")
 
     s = sub.add_parser("screen"); s.set_defaults(f=screen)
     s.add_argument("action", choices=["next", "apply", "stats"])
