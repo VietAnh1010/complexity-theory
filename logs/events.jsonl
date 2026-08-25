@@ -242,3 +242,4 @@
 {"ts": "2026-08-25T05:21:38", "kind": "query", "query": "Ada AND deductive verification", "hits": 1, "kept": 1, "new": 0, "skipped": 0}
 {"ts": "2026-08-25T05:21:47", "kind": "query", "query": "procedure summaries", "hits": 10, "kept": 2, "new": 1, "skipped": 8}
 {"ts": "2026-08-25T05:45:44", "kind": "enrich", "crossref": 136, "published": 1093, "arxiv": 0, "no_abstract": 15, "no_doi": 1236}
+{"ts": "2026-08-25T05:47:45", "kind": "screen_apply", "applied": 30, "failed": 0}
