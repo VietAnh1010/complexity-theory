@@ -249,3 +249,6 @@
 {"ts": "2026-08-25T05:54:26", "kind": "enrich", "crossref": 0, "published": 3, "arxiv": 2, "no_abstract": 46, "no_doi": 1242}
 {"ts": "2026-08-25T05:56:23", "kind": "screen_apply", "applied": 30, "failed": 0}
 {"ts": "2026-08-25T05:57:49", "kind": "screen_apply", "applied": 30, "failed": 0}
+{"ts": "2026-08-25T05:58:48", "kind": "snowball_leg", "direction": "backward", "new": 51, "unstructured_refs": 809}
+{"ts": "2026-08-25T05:59:38", "kind": "snowball_leg", "direction": "forward", "new": 0}
+{"ts": "2026-08-25T06:06:15", "kind": "enrich", "crossref": 0, "published": 0, "arxiv": 2, "no_abstract": 54, "no_doi": 1242}
