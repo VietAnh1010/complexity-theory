@@ -1,0 +1,81 @@
+# Query grid for the verification tier (SCOPE.md § verification-complexity).
+#
+# Same format as queries.txt: one query per line, ` AND ` splits concepts,
+# each becomes all:"...". Harvest this file with cs.PL/cs.SE added:
+#
+#   run.py harvest --queries-file config/queries-verification.txt \
+#       --categories cs.LO,cs.PL,cs.SE,cs.CC,cs.FL,cs.CR,cs.DS --max 100
+#
+# The organising question is the cost of *checking* a program, and whether a
+# technique survives contact with a real codebase. Tool names are queried
+# directly because they are self-limiting; techniques are paired with a cost
+# or scale term.
+#
+# arXiv matches each concept as a literal phrase. Three-concept ANDs and
+# symbol-bearing names (F*, K framework) return nothing — do not add them.
+
+# --- deductive verification tools ------------------------------------------
+Frama-C
+ACSL AND specification
+Dafny AND verification
+Why3 AND deductive verification
+Viper AND verification
+VeriFast AND separation logic
+SPARK Ada AND verification
+KeY AND Java verification
+CBMC AND bounded model checking
+SeaHorn AND verification
+Boogie AND intermediate verification language
+verification condition generation AND size
+
+# --- what makes a technique survive a large codebase -----------------------
+deductive verification AND scalability
+modular verification AND large programs
+contract-based verification AND modular
+compositional program analysis AND summaries
+bi-abduction AND shape analysis
+incremental static analysis
+interprocedural analysis AND complexity
+static analysis AND millions of lines
+whole-program analysis AND scalability
+proof engineering AND large scale
+proof burden AND automation
+annotation burden AND verification
+
+# --- separation logic and program logics -----------------------------------
+separation logic AND scalability
+separation logic AND concurrent program verification
+rely-guarantee AND compositional reasoning
+program logic AND decidability
+Hoare logic AND completeness
+frame rule AND local reasoning
+
+# --- decision procedures underneath the tools ------------------------------
+satisfiability modulo theories AND complexity
+SMT AND decision procedure
+quantifier instantiation AND SMT
+decidable fragment AND program verification
+constrained Horn clauses AND verification
+Craig interpolation AND model checking
+array theory AND decidability
+bit-vector logic AND complexity
+
+# --- inference: what the tool has to guess ---------------------------------
+loop invariant inference AND automation
+invariant synthesis AND complexity
+predicate abstraction AND software model checking
+abstract interpretation AND complexity
+widening AND abstract interpretation
+refinement types AND type inference
+dependent types AND decidability
+termination analysis AND complexity
+
+# --- the hardness underneath -----------------------------------------------
+program analysis AND undecidability
+pointer analysis AND complexity
+alias analysis AND undecidable
+model checking AND complexity
+symbolic execution AND path explosion
+reachability AND complexity of verification
+resource analysis AND worst-case cost
+amortized resource analysis AND automatic

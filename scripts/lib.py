@@ -165,9 +165,38 @@ VENUES = {
     "IandC": r"information and (computation|control)",
     "TCS": r"\btheoretical computer science\b",
     "Combinatorica": r"\bcombinatorica\b",
+    # Verification venues. The tools live here, not in the complexity venues.
+    # FMCAD precedes CAV: "formal methods in computer-aided design" is not
+    # "computer-aided verification", but the two read alike at a glance.
+    "FMCAD": r"\bfmcad\b|formal methods in computer[- ]aided design",
+    "CAV": r"\bcav\b|computer[- ]aided verification",
+    "POPL": r"\bpopl\b|principles of programming languages",
+    "PLDI": r"\bpldi\b|programming language design and implementation",
+    "OOPSLA": r"\boopsla\b|object[- ]oriented programming,? systems",
+    "TACAS": r"\btacas\b|tools and algorithms for the construction",
+    "VMCAI": r"\bvmcai\b|verification, model checking,? and abstract interpretation",
+    "ESOP": r"\besop\b|european symposium on programming",
+    "SAS": r"\bsas\b|static analysis symposium|international static analysis",
+    "CADE": r"\bcade\b|conference on automated deduction",
+    "IJCAR": r"\bijcar\b|joint conference on automated reasoning",
+    "ITP": r"\bitp\b|interactive theorem proving",
+    "CPP": r"\bcpp\b|certified programs and proofs",
+    "LPAR": r"\blpar\b|logic for programming, artificial intelligence",
+    "SAT": r"theory and applications of satisfiability testing|\bsat 20\d\d\b",
+    "FMSD": r"formal methods in system design",
+    "FM": r"international symposium on formal methods|\bfm 20\d\d\b|world congress on formal methods",
+    "ICSE": r"\bicse\b|international conference on software engineering",
+    "FSE": r"\bfse\b|foundations of software engineering|\besec\b",
+    "TOPLAS": r"transactions on programming languages and systems|\btoplas\b",
+    "TOSEM": r"transactions on software engineering and methodology|\btosem\b",
+    "TSE": r"transactions on software engineering\b(?! and methodology)|\btse\b",
+    "JAR": r"journal of automated reasoning|\bjar\b",
     "arXiv": r"\barxiv\b|corr",
 }
-TARGET = {"STOC", "FOCS", "CCC", "SODA", "ITCS", "ICALP", "JACM", "SICOMP", "ToC", "CC"}
+TARGET = {"STOC", "FOCS", "CCC", "SODA", "ITCS", "ICALP", "JACM", "SICOMP", "ToC", "CC",
+          # verification tier (SCOPE.md § Venues)
+          "CAV", "POPL", "PLDI", "OOPSLA", "TACAS", "VMCAI", "CADE", "IJCAR",
+          "ITP", "CPP", "FM", "ICSE", "TOPLAS", "JAR"}
 # A preprint server is not the committee; enrichment must read these as empty.
 PLACEHOLDER = {"arxiv", "corr", "arxiv preprint", "preprint", "eccc",
                "electronic colloquium on computational complexity"}

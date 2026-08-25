@@ -230,7 +230,7 @@ def snowball(a):
 # ---- dataset -------------------------------------------------------------
 COLS = ["id", "citekey", "doi", "arxiv_id", "title", "authors", "n_authors", "year", "venue",
         "venue_short", "venue_tier", "cited_by_count", "categories", "n_categories",
-        "arxiv_categories", "status", "reason", "priority", "sources", "discovered_via",
+        "arxiv_categories", "status", "reason", "priority", "tags", "sources", "discovered_via",
         "snowball_depth", "first_seen", "url", "pdf_url", "abstract"]
 SEP = "; "  # not "," — it never occurs inside an author name or venue title
 
@@ -252,6 +252,7 @@ def dataset(a):
                 "categories": SEP.join(cats), "n_categories": len(cats),
                 "arxiv_categories": SEP.join(r.get("arxiv_categories") or []),
                 "priority": r.get("priority") if r.get("priority") is not None else "",
+                "tags": SEP.join(r.get("tags") or []),
                 "sources": SEP.join(r.get("sources") or []),
                 "discovered_via": SEP.join(r.get("discovered_via") or []),
                 "snowball_depth": r.get("snowball_depth", 0)}

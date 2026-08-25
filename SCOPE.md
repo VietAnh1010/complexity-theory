@@ -14,6 +14,21 @@ A record belongs if **both** hold:
 2. **At least one subarea below matches its title or abstract** — what
    `topic.py` checks, and what gates snowballing.
 
+**One alternative to (1), for `verification-complexity` only.** There the
+resource is the cost of *checking* a program, and a paper qualifies by claiming
+a bound on it in either sense:
+
+- **Theoretical** — decidability, a decision-procedure complexity, a fragment
+  that is or is not tractable, an unavoidable blow-up.
+- **Measured** — analysis cost on real code: lines analysed, proof or
+  annotation burden, what modularity or incrementality buys.
+
+The second is a departure. A Frama-C or Dafny paper reporting that a technique
+holds up on a million-line codebase makes a resource claim about verification
+even when it proves no theorem, and that claim is the reason this subarea
+exists. `topic.py:VERIF_TERMS` is the gate; `in_topic` applies it to this
+subarea and no other, so the other seventeen keep the original conjunction.
+
 **No year floor.** The load-bearing results are decades old, and backward
 snowballing is the only path to them. Nothing may filter by date.
 
@@ -29,6 +44,9 @@ Recorded in `reason`:
   resource bound. VC dimension alone does not qualify; computational hardness
   of learning **is** in scope.
 - **`not-a-paper`** — errata, corrigenda, retractions, front matter.
+- **`toy-scale`** — `verification-complexity` only: a tool demo or case study
+  on one small program, with neither a complexity claim nor a cost measurement.
+  Verifying a linked list in Dafny is not a scalability result.
 - **`unavailable`** — no abstract fetched, so nothing can be judged. A status,
   not a verdict. Never guess an abstract.
 
@@ -57,7 +75,7 @@ Assigned by `topic.py`, overridable when screening. A paper may hold several:
 `hardness-of-approximation`, `interactive-proofs`, `fine-grained`,
 `parameterized`, `meta-complexity`, `average-case`, `space-complexity`,
 `quantum-complexity`, `counting-complexity`, `total-search`, `structural`,
-`descriptive-logic`
+`descriptive-logic`, `verification-complexity`
 
 A record matching none does not enter the library — `in_topic` enforces that.
 An unusually high subarea count is either genuine cross-area work or a loose
@@ -68,10 +86,13 @@ regex; check.
 A signal, never a filter — nothing is excluded for its venue.
 
 **Target:** STOC, FOCS, CCC, SODA, ITCS, ICALP, JACM, SICOMP, Theory of
-Computing, *computational complexity*.
+Computing, *computational complexity*. For `verification-complexity` also
+CAV, POPL, PLDI, OOPSLA, TACAS, VMCAI, CADE, IJCAR, ITP, CPP, FM, ICSE, TOPLAS,
+JAR — the tools live there, not in the complexity venues.
 
 **Other:** APPROX, RANDOM, ESA, MFCS, STACS, IPEC, LICS, CSL, QIP, TQC, ITC,
-CRYPTO, EUROCRYPT, TCC, TOCT, JCSS, TCS, LMCS, QIC, Combinatorica, CSR.
+CRYPTO, EUROCRYPT, TCC, TOCT, JCSS, TCS, LMCS, QIC, Combinatorica, CSR; and for
+the verification tier SAS, ESOP, FMCAD, SAT, LPAR, FMSD, FSE, TSE, TOSEM.
 
 Preprints are in scope and will be most of the harvest. Where both exist,
 `enrich` prefers the published metadata.
@@ -88,6 +109,9 @@ hole — record it in `STATUS.md`.
   are the likely offenders — both overlap heavily with cs.DS.
 - Every record has an abstract, or is `unavailable`.
 - The core tier reaches **100 hand-screened papers** across subareas.
+- In `verification-complexity`, every `included` record is tagged with whether
+  the idea is known to run on a large codebase: `scales-large`, `scales-unclear`,
+  or `theory-only`. The tag, not the status, is what makes the subarea useful.
 
 ## Stopping
 
