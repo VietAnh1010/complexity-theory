@@ -78,6 +78,9 @@ Assigned by `topic.py`, overridable when screening. A paper may hold several:
 `descriptive-logic`, `verification-complexity`
 
 A record matching none does not enter the library — `in_topic` enforces that.
+An **excluded** record may still end up matching none: the gate is tightened when
+a query grid pulls in a neighbouring field, and what it already admitted stays.
+`stats.json` counts `uncategorized` over everything the gate still admits.
 An unusually high subarea count is either genuine cross-area work or a loose
 regex; check.
 

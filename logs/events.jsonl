@@ -652,3 +652,59 @@
 {"ts": "2026-08-27T03:04:03", "kind": "screen_apply", "applied": 3, "failed": 0}
 {"ts": "2026-08-27T03:04:44", "kind": "dataset_export", "papers": 3213, "edges": false}
 {"ts": "2026-08-27T03:06:01", "kind": "verify", "papers": 140, "errors": 0, "warnings": 11}
+{"ts": "2026-08-27T03:09:25", "kind": "query", "query": "static cost analysis AND industrial", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-27T03:09:33", "kind": "query", "query": "worst-case execution time AND industrial", "hits": 6, "kept": 0, "new": 0, "skipped": 6}
+{"ts": "2026-08-27T03:09:41", "kind": "query", "query": "timing analysis AND avionics", "hits": 2, "kept": 0, "new": 0, "skipped": 2}
+{"ts": "2026-08-27T03:09:49", "kind": "query", "query": "algorithmic complexity vulnerabilities", "hits": 3, "kept": 2, "new": 2, "skipped": 1}
+{"ts": "2026-08-27T03:09:57", "kind": "query", "query": "worst-case complexity AND denial of service", "hits": 1, "kept": 0, "new": 0, "skipped": 1}
+{"ts": "2026-08-27T03:10:05", "kind": "query", "query": "performance regression AND static analysis", "hits": 3, "kept": 2, "new": 2, "skipped": 1}
+{"ts": "2026-08-27T03:10:13", "kind": "query", "query": "loop bound analysis AND compiler", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-27T03:10:21", "kind": "query", "query": "symbolic complexity bounds", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-27T03:10:29", "kind": "query", "query": "cost analysis AND Java bytecode", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-27T03:10:37", "kind": "query", "query": "gas cost AND smart contract", "hits": 36, "kept": 0, "new": 0, "skipped": 36}
+{"ts": "2026-08-27T03:10:45", "kind": "query", "query": "performance bugs AND detection", "hits": 17, "kept": 0, "new": 0, "skipped": 17}
+{"ts": "2026-08-27T03:10:53", "kind": "query", "query": "complexity analysis AND continuous integration", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-27T03:11:01", "kind": "query", "query": "resource usage analysis AND scalable", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-27T03:11:09", "kind": "query", "query": "asymptotic performance AND profiling", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-27T03:11:17", "kind": "query", "query": "cost analysis AND abstract interpretation", "hits": 1, "kept": 1, "new": 1, "skipped": 0}
+{"ts": "2026-08-27T03:11:35", "kind": "query", "query": "static cost analysis AND industrial", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-27T03:11:35", "kind": "query", "query": "worst-case execution time AND industrial", "hits": 6, "kept": 1, "new": 1, "skipped": 5}
+{"ts": "2026-08-27T03:11:35", "kind": "query", "query": "timing analysis AND avionics", "hits": 2, "kept": 0, "new": 0, "skipped": 2}
+{"ts": "2026-08-27T03:11:35", "kind": "query", "query": "algorithmic complexity vulnerabilities", "hits": 3, "kept": 3, "new": 1, "skipped": 0}
+{"ts": "2026-08-27T03:11:35", "kind": "query", "query": "worst-case complexity AND denial of service", "hits": 1, "kept": 1, "new": 0, "skipped": 0}
+{"ts": "2026-08-27T03:11:35", "kind": "query", "query": "performance regression AND static analysis", "hits": 3, "kept": 2, "new": 0, "skipped": 1}
+{"ts": "2026-08-27T03:11:35", "kind": "query", "query": "loop bound analysis AND compiler", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-27T03:11:35", "kind": "query", "query": "symbolic complexity bounds", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-27T03:11:35", "kind": "query", "query": "cost analysis AND Java bytecode", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-27T03:11:35", "kind": "query", "query": "gas cost AND smart contract", "hits": 36, "kept": 8, "new": 8, "skipped": 28}
+{"ts": "2026-08-27T03:11:35", "kind": "query", "query": "performance bugs AND detection", "hits": 17, "kept": 0, "new": 0, "skipped": 17}
+{"ts": "2026-08-27T03:11:35", "kind": "query", "query": "complexity analysis AND continuous integration", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-27T03:11:35", "kind": "query", "query": "resource usage analysis AND scalable", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-27T03:11:35", "kind": "query", "query": "asymptotic performance AND profiling", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-27T03:11:35", "kind": "query", "query": "cost analysis AND abstract interpretation", "hits": 1, "kept": 1, "new": 0, "skipped": 0}
+{"ts": "2026-08-27T03:11:56", "kind": "title_matched", "id": "arxiv:2507.23151", "doi": "10.1007/s10009-026-00843-3", "stored": "Abstractions of Sequences, Functions and Operators", "resolves_to": "Abstractions of sequences, functions and operators"}
+{"ts": "2026-08-27T03:11:57", "kind": "title_matched", "id": "arxiv:2505.09928", "doi": "10.1145/3736590", "stored": "DeFeed: Secure Decentralized Cross-Contract Data Feed in Web 3.0 for Connected Autonomous Vehicles", "resolves_to": "DeFeed: Secure Decentralized Cross-Contract Data Feed in Web 3.0 for Connected Autonomous Vehicles"}
+{"ts": "2026-08-27T03:11:57", "kind": "title_matched", "id": "arxiv:2511.12543", "doi": "10.1016/j.jii.2026.101090", "stored": "High-level reasoning while low-level actuation in Cyber-Physical Systems: How efficient is it?", "resolves_to": "High-level reasoning while low-level actuation in cyber–physical systems: How efficient is it?"}
+{"ts": "2026-08-27T03:11:59", "kind": "title_matched", "id": "arxiv:2312.08945", "doi": "10.1007/978-3-031-69231-4_14", "stored": "A Comparative Gas Cost Analysis of Proxy and Diamond Patterns in EVM Blockchains for Trusted Smart Contract Engineering", "resolves_to": "A Comparative Gas Cost Analysis of Proxy and Diamond Patterns in EVM Blockchains for Trusted Smart Contract Engineering"}
+{"ts": "2026-08-27T03:12:00", "kind": "title_matched", "id": "arxiv:2312.04579", "doi": "10.1109/icaic60265.2024.10433831", "stored": "zkDFL: An efficient and privacy-preserving decentralized federated learning with zero-knowledge proof", "resolves_to": "zkFDL: An efficient and privacy-preserving decentralized federated learning with zero knowledge proof"}
+{"ts": "2026-08-27T03:12:01", "kind": "title_matched", "id": "arxiv:2210.11571", "doi": "10.1145/3576915.3623080", "stored": "TrustBoost: Boosting Trust among Interoperable Blockchains", "resolves_to": "TrustBoost: Boosting Trust among Interoperable Blockchains"}
+{"ts": "2026-08-27T03:12:02", "kind": "title_matched", "id": "arxiv:2101.07961", "doi": "10.1109/icse-seip52600.2021.00009", "stored": "LightSys: Lightweight and Efficient CI System for Improving Integration Speed of Software", "resolves_to": "LightSys: Lightweight and Efficient CI System for Improving Integration Speed of Software"}
+{"ts": "2026-08-27T03:12:02", "kind": "title_matched", "id": "arxiv:2011.00102", "doi": "10.1007/978-3-662-64331-0_16", "stored": "ACeD: Scalable Data Availability Oracle", "resolves_to": "ACeD: Scalable Data Availability Oracle"}
+{"ts": "2026-08-27T03:12:03", "kind": "enrich", "crossref": 2, "published": 8, "arxiv": 0, "no_abstract": 59, "no_doi": 1259, "dois_cleared": 0}
+{"ts": "2026-08-27T03:12:24", "kind": "query", "query": "differential cost analysis", "hits": 1, "kept": 1, "new": 1, "skipped": 0}
+{"ts": "2026-08-27T03:12:40", "kind": "query", "query": "Infer AND cost analysis", "hits": 10, "kept": 8, "new": 6, "skipped": 2}
+{"ts": "2026-08-27T03:12:48", "kind": "query", "query": "static analysis AND performance regression detection", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-27T03:12:56", "kind": "query", "query": "worst-case resource usage AND deployed", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-27T03:13:04", "kind": "query", "query": "resource analysis AND industrial code", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-27T03:13:26", "kind": "title_matched", "id": "arxiv:2406.18260", "doi": "10.1007/978-3-031-74776-2_14", "stored": "An Order Theory Framework of Recurrence Equations for Static Cost Analysis $-$ Dynamic Inference of Non-Linear Inequality Invariants", "resolves_to": "An Order Theory Framework of Recurrence Equations for Static Cost Analysis – Dynamic Inference of Non-Linear Inequality Invariants"}
+{"ts": "2026-08-27T03:13:27", "kind": "title_matched", "id": "arxiv:2204.00870", "doi": "10.1145/3519939.3523435", "stored": "Differential Cost Analysis with Simultaneous Potentials and Anti-potentials", "resolves_to": "Differential cost analysis with simultaneous potentials and anti-potentials"}
+{"ts": "2026-08-27T03:13:27", "kind": "title_matched", "id": "arxiv:2006.14010", "doi": "10.1145/3408992", "stored": "Raising Expectations: Automating Expected Cost Analysis with Types", "resolves_to": "Raising expectations: automating expected cost analysis with types"}
+{"ts": "2026-08-27T03:13:28", "kind": "title_matched", "id": "arxiv:1907.12345", "doi": "10.1017/s1471068419000310", "stored": "Control-Flow Refinement by Partial Evaluation, and its Application to Termination and Cost Analysis", "resolves_to": "Control-Flow Refinement by Partial Evaluation, and its Application to Termination and Cost Analysis"}
+{"ts": "2026-08-27T03:13:28", "kind": "title_matched", "id": "arxiv:1907.13272", "doi": "10.1007/978-3-030-45260-5_2", "stored": "Towards a General Framework for Static Cost Analysis of Parallel Logic Programs", "resolves_to": "A General Framework for Static Cost Analysis of Parallel Logic Programs"}
+{"ts": "2026-08-27T03:13:29", "kind": "enrich", "crossref": 1, "published": 5, "arxiv": 0, "no_abstract": 59, "no_doi": 1260, "dois_cleared": 0}
+{"ts": "2026-08-27T03:14:04", "kind": "screen_apply", "applied": 21, "failed": 0}
+{"ts": "2026-08-27T03:14:45", "kind": "dataset_export", "papers": 3235, "edges": false}
+{"ts": "2026-08-27T03:14:54", "kind": "verify", "papers": 150, "errors": 1, "warnings": 11}
+{"ts": "2026-08-27T03:15:07", "kind": "verify", "papers": 150, "errors": 1, "warnings": 11}
+{"ts": "2026-08-27T03:16:19", "kind": "dataset_export", "papers": 3235, "edges": false}
+{"ts": "2026-08-27T03:16:20", "kind": "verify", "papers": 150, "errors": 0, "warnings": 12}

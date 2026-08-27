@@ -327,7 +327,10 @@ def dataset(a):
             "with_doi": sum(1 for r in recs if r.get("doi")),
             "with_arxiv_id": sum(1 for r in recs if r.get("arxiv_id")),
             "with_abstract": sum(1 for r in recs if r.get("abstract")),
-            "uncategorized": sum(1 for r in recs if not (r.get("categories") or categorize(r)))}
+            # Excluded records may predate a gate tightening; the counter is a
+            # bug-detector for in_topic, so it looks only at what the gate still admits.
+            "uncategorized": sum(1 for r in recs if r.get("status") != "excluded"
+                                 and not (r.get("categories") or categorize(r)))}
     if reach: stat["citation_graph"] = reach
     (DATA / "stats.json").write_text(json.dumps(stat, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     log(f"{len(recs)} papers; {stat['with_abstract']} with an abstract, {stat['with_doi']} with a DOI, "
@@ -375,8 +378,16 @@ def verify(a):
                     probs.append(("WARN", f"{l}: Crossref returned no title")); continue
                 if ts and not title_match(ts[0], r.get("title", "")):
                     s = tsim(ts[0], r.get("title", ""))
-                    probs.append(("ERROR", f"{l}: DOI {r['doi']} resolves to {ts[0]!r}, "
-                                           f"we stored {r.get('title')!r} (overlap {s:.2f})"))
+                    # ACM sometimes deposits a short title ("SlowFuzz") for a paper
+                    # whose real title is a sentence. Same authors means the DOI is
+                    # this paper's and the deposit is thin; different authors means
+                    # the DOI belongs to someone else, which is the fabrication case.
+                    cr = {"authors": [f"{x.get('given','')} {x.get('family','')}".strip()
+                                      for x in (m.get("author") or [])]}
+                    lvl = "WARN" if authors_agree(cr, r) else "ERROR"
+                    probs.append((lvl, f"{l}: DOI {r['doi']} resolves to {ts[0]!r}, "
+                                       f"we stored {r.get('title')!r} (overlap {s:.2f})"
+                                       f"{'; authors agree' if lvl == 'WARN' else ''}"))
                 p = ((m.get("issued") or {}).get("date-parts") or [[None]])[0]
                 if p and p[0] and r.get("year") and abs(int(p[0]) - int(r["year"])) > 1:
                     probs.append(("WARN", f"{l}: year {r['year']} but Crossref says {p[0]}"))

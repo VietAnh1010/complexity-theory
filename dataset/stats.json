@@ -1,13 +1,13 @@
 {
-  "papers": 3213,
+  "papers": 3235,
   "by_status": {
-    "candidate": 3043,
-    "included": 140,
-    "excluded": 12,
+    "candidate": 3044,
+    "included": 150,
+    "excluded": 23,
     "unavailable": 18
   },
   "by_category": {
-    "verification-complexity": 696,
+    "verification-complexity": 715,
     "circuit-complexity": 513,
     "quantum-complexity": 502,
     "fine-grained": 356,
@@ -15,11 +15,11 @@
     "communication-complexity": 340,
     "parameterized": 309,
     "query-complexity": 244,
-    "space-complexity": 242,
+    "space-complexity": 243,
     "hardness-of-approximation": 224,
     "structural": 202,
     "derandomization": 179,
-    "interactive-proofs": 168,
+    "interactive-proofs": 169,
     "proof-complexity": 139,
     "average-case": 137,
     "total-search": 99,
@@ -28,12 +28,12 @@
     "meta-complexity": 60
   },
   "by_venue": {
-    "arXiv": 1304,
-    "unknown": 784,
+    "arXiv": 1311,
+    "unknown": 796,
     "STOC": 160,
     "FOCS": 121,
     "SODA": 101,
-    "TCS": 84,
+    "TCS": 85,
     "SICOMP": 69,
     "JACM": 53,
     "LMCS": 53,
@@ -59,14 +59,14 @@
     "CRYPTO": 7,
     "TheoretiCS": 7,
     "CADE": 6,
+    "PLDI": 6,
     "CSR": 6,
     "IPEC": 6,
     "EUROCRYPT": 5,
     "FMSD": 5,
-    "PLDI": 5,
+    "ICSE": 5,
     "SAT": 5,
     "ACM-TQC": 4,
-    "ICSE": 4,
     "VMCAI": 4,
     "JML": 4,
     "TQC": 4,
@@ -85,9 +85,9 @@
     "TSE": 1
   },
   "by_venue_tier": {
-    "other": 1678,
-    "unknown": 784,
-    "target": 751
+    "other": 1686,
+    "unknown": 796,
+    "target": 753
   },
   "by_year": {
     "0": 5,
@@ -124,23 +124,23 @@
     "2014": 123,
     "2015": 138,
     "2016": 139,
-    "2017": 185,
+    "2017": 186,
     "2018": 136,
-    "2019": 158,
-    "2020": 197,
-    "2021": 196,
-    "2022": 202,
-    "2023": 249,
-    "2024": 244,
-    "2025": 322,
-    "2026": 251
+    "2019": 160,
+    "2020": 199,
+    "2021": 197,
+    "2022": 205,
+    "2023": 253,
+    "2024": 246,
+    "2025": 327,
+    "2026": 253
   },
   "by_source": {
-    "arxiv": 2937,
-    "crossref": 1474
+    "arxiv": 2960,
+    "crossref": 1487
   },
-  "with_doi": 1959,
-  "with_arxiv_id": 2937,
-  "with_abstract": 3154,
+  "with_doi": 1975,
+  "with_arxiv_id": 2960,
+  "with_abstract": 3176,
   "uncategorized": 0
 }
