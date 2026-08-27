@@ -1,0 +1,7 @@
+-Q theories iris_msort
+-Q _deps/iris-time-proofs/theories iris_time
+-arg -w -arg -notation-overridden,-redundant-canonical-projection
+
+theories/MsortMath.v
+theories/MsortCode.v
+theories/MsortProof.v
