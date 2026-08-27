@@ -1,3 +1,15 @@
+DEPS_LIB := $(CURDIR)/_deps/lib
+
+# If setup.sh installed std++ and Iris into a local prefix, use it; otherwise
+# fall back to whatever is installed system-wide (or in the opam switch).
+ifneq ($(wildcard $(DEPS_LIB)),)
+ifeq ($(COQPATH),)
+export COQPATH := $(DEPS_LIB)
+else
+export COQPATH := $(DEPS_LIB):$(COQPATH)
+endif
+endif
+
 all: Makefile.coq
 	+@$(MAKE) -f Makefile.coq all
 

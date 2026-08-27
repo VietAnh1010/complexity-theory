@@ -51,16 +51,40 @@ The recurrence is closed in `theories/MsortMath.v`, independent of Iris:
 - The halving step is `Nat.log2_up a + 1 ≤ Nat.log2_up n` when `2a ≤ n + 1`.
 - `split2` splits by dealing alternate elements, so `a` and `b` are the halves.
 
+## What you need
+
+- **Coq 8.18.x** and nothing newer. The pinned Iris commit and the pinned
+  `iris-time-proofs` commit both require `>= 8.18 < 8.19`.
+  (Later `iris-time-proofs` commits need Rocq 9 plus `coq-tlc`.)
+- `git`, `make`, a shell. No OCaml work beyond what Coq already brings.
+- ~2 GB of disk and ~15 min of CPU: building Iris is the long pole.
+- **No sudo, no opam pins.** `setup.sh` installs std++ and Iris into
+  `_deps/lib` and points `COQPATH` at it; nothing touches your system Coq
+  or your opam switch.
+
+Getting Coq 8.18:
+
+| Platform | Command |
+|---|---|
+| Ubuntu 24.04 | `sudo apt-get install coq` (ships 8.18.0) |
+| opam, any OS | `opam switch create iris-msort 4.14.1 && opam pin add coq 8.18.0` |
+| Nix | a `coq_8_18` shell |
+
+Check with `coqc --version` before starting.
+
 ## Build
 
 ```sh
-./setup.sh          # clones + builds pinned deps, then this development
-make                # rebuild just this development
+./setup.sh          # clones + builds pinned deps into _deps, then this proof
+make                # rebuild just this development afterwards
 ```
 
-Tested on Ubuntu 24.04 with the distro's Coq 8.18 (`apt-get install coq`).
-Pinned: stdpp `cafd7113`, Iris `48162f10`, iris-time-proofs `ce6fccb`.
-`setup.sh` installs stdpp and Iris into Coq's user-contrib.
+`make` picks up `_deps/lib` through `COQPATH` automatically. If you already
+have std++ and Iris installed at exactly these commits, delete `_deps/lib`
+and `make` will use yours instead.
+
+Pinned: std++ `cafd7113`, Iris `48162f10`, iris-time-proofs `ce6fccb`.
+Verified on Ubuntu 24.04 with the distro's Coq 8.18.0.
 
 ## Caveats, stated plainly
 

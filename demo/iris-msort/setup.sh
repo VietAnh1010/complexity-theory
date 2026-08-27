@@ -6,10 +6,10 @@
 #   Iris      @ 48162f10
 #   iris-time-proofs @ ce6fccb   -- Mevel/Jourdan/Pottier, time credits
 #
-# stdpp and Iris are installed into Coq's user-contrib (needs write access
-# there); iris-time-proofs is built in place and referenced from _CoqProject.
-# Only its Examples.vo target is built: the union-find and thunk files need
-# coq-tlc, which this demo does not use.
+# Nothing is installed system-wide and no sudo is needed: std++ and Iris are
+# installed into _deps/lib and found through COQPATH. iris-time-proofs is
+# built in place and referenced from _CoqProject. Only its Examples.vo target
+# is built: the union-find and thunk files need coq-tlc, unused here.
 set -euo pipefail
 
 here="$(cd "$(dirname "$0")" && pwd)"
@@ -27,10 +27,14 @@ clone https://gitlab.mpi-sws.org/iris/stdpp.git            "$deps/stdpp"        
 clone https://gitlab.mpi-sws.org/iris/iris.git             "$deps/iris"             48162f10
 clone https://gitlab.inria.fr/gmevel/iris-time-proofs.git  "$deps/iris-time-proofs" ce6fccb
 
+lib="$deps/lib"
+mkdir -p "$lib"
+export COQPATH="$lib${COQPATH:+:$COQPATH}"
+
 make -C "$deps/stdpp" -j"$jobs"
-make -C "$deps/stdpp" install
+make -C "$deps/stdpp" install COQLIBINSTALL="$lib"
 make -C "$deps/iris" -j"$jobs"
-make -C "$deps/iris" install
+make -C "$deps/iris" install COQLIBINSTALL="$lib"
 make -C "$deps/iris-time-proofs" -j"$jobs" theories/Examples.vo
 
 make -C "$here" -j"$jobs"
