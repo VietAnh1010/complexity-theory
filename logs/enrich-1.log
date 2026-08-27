@@ -1,0 +1,12 @@
+[05:22:19] 2666 of 2909 missing an abstract, venue, or DOI
+[05:22:23] crossref: title-matching 2329 with no DOI
+[05:29:27] net <urlopen error [Errno 104] Connection reset by peer> 1/5 in 2s
+[05:31:29] net <urlopen error [Errno 104] Connection reset by peer> 1/5 in 2s
+[05:33:32] net <urlopen error [Errno 104] Connection reset by peer> 1/5 in 2s
+[05:38:17] net <urlopen error [Errno 104] Connection reset by peer> 1/5 in 2s
+[05:41:33] net <urlopen error [Errno 104] Connection reset by peer> 1/5 in 2s
+[05:42:03] net <urlopen error [Errno 104] Connection reset by peer> 1/5 in 2s
+[05:44:33] net <urlopen error [Errno 104] Connection reset by peer> 1/5 in 2s
+[05:45:01] arxiv: title-matching 15 with no abstract
+[05:45:44] crossref 136, 1093 published versions, arxiv 0, 6 venues revised, 0 titles cleaned
+[05:45:44] 15 still unscreenable (no abstract); 1236 cannot be snowballed from (no DOI)

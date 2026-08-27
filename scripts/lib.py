@@ -1,6 +1,6 @@
 """HTTP+cache, normalization, venue table, JSONL store. Subject-agnostic."""
 from __future__ import annotations
-import hashlib, json, os, re, sys, time, unicodedata
+import difflib, hashlib, json, os, re, sys, time, unicodedata
 import urllib.error, urllib.parse, urllib.request
 from pathlib import Path
 
@@ -96,6 +96,72 @@ def tsim(a, b):
     return len(x & y) / max(len(x), len(y)) if x and y else 0.
 
 
+# Words that mark an edition, not a different paper.
+EDITION = {"extended", "version", "abstract", "full", "preliminary", "technical",
+           "report", "revised", "corrected", "invited", "paper", "summary",
+           "part", "conference", "journal"}
+
+
+def _fold(t):
+    """Accents, markup and LaTeX out; letters, digits and single spaces left."""
+    t = unicodedata.normalize("NFKD", clean(t))
+    t = "".join(c for c in t if not unicodedata.combining(c)).lower()
+    t = re.sub(r"<[^>]+>", " ", t)
+    t = re.sub(r"\\[a-z]+|[{}$^_]", " ", t)
+    return " ".join(re.sub(r"[^a-z0-9]+", " ", t).split())
+
+
+def _stem(t): return t[:-1] if len(t) > 4 and t.endswith("s") else t
+
+
+def title_match(a, b, thresh=.8):
+    """Does this DOI belong to this paper?
+
+    Two failure modes, pulling opposite ways, both seen live:
+      - tsim alone accepted "Complexity of Propositional Independence and
+        Inclusion Logic" for "Parameterised Complexity of Propositional
+        Inclusion and Independence Logic" - overlap .875, two different papers.
+      - An unmatched-word rule alone rejects Schoenfinkel/Schönfinkel,
+        `$\\mathsf{\\#P}$`/#P, 3SAT/3-SAT - one paper, two spellings.
+    So: near-identical after folding is a match whatever the tokens say;
+    otherwise an unmatched content word means a different paper.
+    """
+    fa, fb = _fold(a), _fold(b)
+    if not fa or not fb: return False
+    if difflib.SequenceMatcher(None, fa, fb).ratio() >= .9: return True
+    # A published version that adds a subtitle is the same paper; a trailing
+    # single word ("... simplified") is not, so require the tail to be a phrase.
+    if fa.startswith(fb) or fb.startswith(fa):
+        head, tail = sorted((fa, fb), key=len)[0], (fa[len(fb):] if fa.startswith(fb) else fb[len(fa):])
+        # The shared head must be specific enough to identify a paper on its own:
+        # "Model Checking" prefixes hundreds of titles, and the tail must be a
+        # subtitle rather than a single trailing qualifier ("... simplified").
+        if len(head) >= 25 and len(head.split()) >= 3 and len(tail.split()) >= 2: return True
+    x, y = {_stem(t) for t in fa.split()}, {_stem(t) for t in fb.split()}
+    if len(x & y) / max(len(x), len(y)) < thresh: return False
+    return not any(len(t) >= 5 and t not in EDITION for t in x ^ y)
+
+
+def surnames(rec):
+    """Last whitespace-separated token of each author name, folded."""
+    out = set()
+    for a in rec.get("authors") or []:
+        parts = _fold(a).split()
+        if parts: out.add(parts[-1])
+    return out
+
+
+def authors_agree(a, b):
+    """True unless both sides list authors and none of the surnames overlap.
+
+    Title similarity alone cannot separate "Faster FPT Algorithms for X" from
+    "A FPT Algorithm for X". A shared surname can; no author list on either
+    side means no evidence either way, which is not evidence against.
+    """
+    x, y = surnames(a), surnames(b)
+    return not (x and y) or bool(x & y)
+
+
 def ndoi(d):
     if not d: return ""
     d = re.sub(r"^(https?://)?(dx\.)?doi\.org/", "", clean(d).lower())
@@ -126,9 +192,13 @@ def rid(r):
 
 # ---- venues --------------------------------------------------------------
 # Order matters. ECCC precedes CC (both contain "computational complexity",
-# and ECCC is a preprint server, not the journal). LMCS before LICS.
+# and ECCC is a preprint server, not the journal). LMCS before LICS. MFCS
+# before FOCS: "Mathematical Foundations of Computer Science" contains
+# "foundations of computer science", so on order alone MFCS became FOCS - and
+# FOCS is a target venue.
 VENUES = {
     "STOC": r"\bstoc\b|symposium on (the )?theory of computing|theory of computing conference",
+    "MFCS": r"\bmfcs\b|mathematical foundations of computer science",
     "FOCS": r"\bfocs\b|foundations of computer science",
     "CCC": r"\bccc\b|(conference on )?computational complexity conference|conference on computational complexity",
     "SODA": r"\bsoda\b|symposium on discrete algorithms",
@@ -137,7 +207,6 @@ VENUES = {
     "APPROX": r"\bapprox\b|approximation algorithms for combinatorial",
     "RANDOM": r"\brandom\b.{0,40}\b(workshop|international)|randomization and computation",
     "ESA": r"\besa\b|european symposium on algorithms",
-    "MFCS": r"\bmfcs\b|mathematical foundations of computer science",
     "STACS": r"\bstacs\b|theoretical aspects of computer science",
     "IPEC": r"\bipec\b|parameterized and exact computation",
     "LMCS": r"logical methods in computer science|\blmcs\b",
@@ -165,9 +234,38 @@ VENUES = {
     "IandC": r"information and (computation|control)",
     "TCS": r"\btheoretical computer science\b",
     "Combinatorica": r"\bcombinatorica\b",
+    # Verification venues. The tools live here, not in the complexity venues.
+    # FMCAD precedes CAV: "formal methods in computer-aided design" is not
+    # "computer-aided verification", but the two read alike at a glance.
+    "FMCAD": r"\bfmcad\b|formal methods in computer[- ]aided design",
+    "CAV": r"\bcav\b|computer[- ]aided verification",
+    "POPL": r"\bpopl\b|principles of programming languages",
+    "PLDI": r"\bpldi\b|programming language design and implementation",
+    "OOPSLA": r"\boopsla\b|object[- ]oriented programming,? systems",
+    "TACAS": r"\btacas\b|tools and algorithms for the construction",
+    "VMCAI": r"\bvmcai\b|verification, model checking,? and abstract interpretation",
+    "ESOP": r"\besop\b|european symposium on programming",
+    "SAS": r"\bsas\b|static analysis symposium|international static analysis",
+    "CADE": r"\bcade\b|conference on automated deduction",
+    "IJCAR": r"\bijcar\b|joint conference on automated reasoning",
+    "ITP": r"\bitp\b|interactive theorem proving",
+    "CPP": r"\bcpp\b|certified programs and proofs",
+    "LPAR": r"\blpar\b|logic for programming, artificial intelligence",
+    "SAT": r"theory and applications of satisfiability testing|\bsat 20\d\d\b",
+    "FMSD": r"formal methods in system design",
+    "FM": r"international symposium on formal methods|\bfm 20\d\d\b|world congress on formal methods",
+    "ICSE": r"\bicse\b|international conference on software engineering",
+    "FSE": r"\bfse\b|foundations of software engineering|\besec\b",
+    "TOPLAS": r"transactions on programming languages and systems|\btoplas\b",
+    "TOSEM": r"transactions on software engineering and methodology|\btosem\b",
+    "TSE": r"transactions on software engineering\b(?! and methodology)|\btse\b",
+    "JAR": r"journal of automated reasoning|\bjar\b",
     "arXiv": r"\barxiv\b|corr",
 }
-TARGET = {"STOC", "FOCS", "CCC", "SODA", "ITCS", "ICALP", "JACM", "SICOMP", "ToC", "CC"}
+TARGET = {"STOC", "FOCS", "CCC", "SODA", "ITCS", "ICALP", "JACM", "SICOMP", "ToC", "CC",
+          # verification tier (SCOPE.md § Venues)
+          "CAV", "POPL", "PLDI", "OOPSLA", "TACAS", "VMCAI", "CADE", "IJCAR",
+          "ITP", "CPP", "FM", "ICSE", "TOPLAS", "JAR"}
 # A preprint server is not the committee; enrichment must read these as empty.
 PLACEHOLDER = {"arxiv", "corr", "arxiv preprint", "preprint", "eccc",
                "electronic colloquium on computational complexity"}

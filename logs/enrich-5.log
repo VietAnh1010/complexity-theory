@@ -1,0 +1,120 @@
+[06:33:53] 2103 of 3164 missing an abstract, venue, or DOI
+[06:34:04] crossref: title-matching 1245 with no DOI
+[06:34:06] arxiv: title-matching 58 with no abstract
+[06:34:06] crossref: re-checking 1662 DOIs that came from a title match
+[06:34:06]   !! abel2026graded: 10.1145/3607862 is 'A Graded Modal Dependent Type Theory with a Universe and Erasure, Formalized'; clearing
+[06:34:06]   !! volk2026lower: 10.1016/0022-0000(87)90010-9 is 'A lower bound for read-once-only branching programs'; clearing
+[06:34:06]   !! naeini2026dynamic: 10.1109/grc.2012.6468639 is 'Online pattern matching with wildcards'; clearing
+[06:34:06]   !! opler2026inapproximability: 10.1137/1.9781611978971.210 is 'Approximate Counting of Permutation Patterns'; clearing
+[06:34:06]   !! pabbaraju2026optimal: 10.1137/22m1480616 is 'Unambiguous DNFs and Alon–Saks–Seymour'; clearing
+[06:34:07]   !! tabatabai2026proof: 10.1016/j.apal.2021.102972 is 'Proof complexity of substructural logics'; clearing
+[06:34:07]   !! ji2026quantum: 10.1007/978-3-032-27441-0_5 is 'Exploring Quantum Deep Learning: A Comprehensive Review'; clearing
+[06:34:08]   !! colnet2025compilation: 10.24963/ijcai.2024/367 is 'Towards Recognizing Spatial-temporal Collaboration of EEG Phase Brain Networks for Emotion Understanding'; clearing
+[06:34:08]   !! cornelissen2025quantum: 10.1103/physreva.61.052313 is 'Generalized quantum search with parallelism'; clearing
+[06:34:08]   !! dutta2025recent: 10.2105/ajph.27.1.50 is 'Recent Advances in Laboratory Methods'; clearing
+[06:34:08]   !! hair2025svp: 10.1145/3798129.3800879 is 'SVP\n                    <i>\n                      <sub>p</sub>\n                    </i>\n                    Is Deterministically NP-Hard for All p &gt; 2, Even to Approximate within a Factor of\n                    <i>\n                      2\n                      <sup>\n                        log\n                        <sup>1-ε</sup>\n                        n\n                      </sup>\n                    </i>'; clearing
+[06:34:08]   !! boneh2025complexity: 10.1137/1.9781611978971.67 is 'The Complexity of Dynamic LZ77 is \\(\\tilde \\Theta(n^{2/3})\\)'; clearing
+[06:34:08]   !! ishizuka2025ppp: 10.1016/j.tcs.2026.115990 is 'The PPP-completeness of Ward-Szabó'; clearing
+[06:34:08]   !! bressan2025parametrised: 10.1137/1.9781611978971.72 is 'The Parameterised Complexity of Counting Small Sub-Hypergraphs'; clearing
+[06:34:08]   !! lyu2025comprehensive: 10.1109/tse.2026.3702537 is 'Towards Effective Sampling of SMT Solutions'; clearing
+[06:34:08]   !! berg2024algebraic: 10.1017/cbo9780511525995 is 'Representation Theory and Algebraic Geometry'; clearing
+[06:34:10]   !! khurana2024founding: 10.1145/3717823.3718145 is 'Founding Quantum Cryptography on Quantum Advantage, or, Towards Cryptography from #P Hardness'; clearing
+[06:34:11]   !! zhandry2024separating: 10.1145/3798129.3800776 is 'Separating QMA from QCMA with a Classical Oracle'; clearing
+[06:34:12]   !! li2023sat: 10.24963/ijcai.2024/210 is 'Coming Out of the Dark: Human Pose Estimation in Low-light Conditions'; clearing
+[06:34:14]   !! colisson2023oblivious: 10.1007/978-981-99-8742-9_1 is 'Oblivious Transfer from\xa0Zero-Knowledge Proofs'; clearing
+[06:34:14]   !! li2023perspective: 10.1016/j.ic.2024.105230 is 'Perspective on complexity measures targeting read-once branching programs'; clearing
+[06:34:15]   !! ascari2023sufficient: 10.1145/3720486 is 'Revealing Sources of (Memory) Errors via Backward Analysis'; clearing
+[06:34:17]   !! creiner2022complexity: 10.1002/malq.202200068 is 'Borel complexity and Ramsey largeness of sets of oracles separating complexity classes'; clearing
+[06:34:20]   !! montecchiani2022parameterized: 10.1016/j.jcss.2026.103820 is 'On the parameterized complexity of s-club cluster edge deletion'; clearing
+[06:34:20]   !! low2022complexity: 10.1103/prxquantum.4.020323 is 'Complexity of Implementing Trotter Steps'; clearing
+[06:34:20]   !! guha2022parikh: 10.1007/978-3-031-33264-7_2 is 'Jumping Automata over\xa0Infinite Words'; clearing
+[06:34:20]   !! hu2022polynomial: 10.4086/toc.2024.v020a001 is ''; clearing
+[06:34:21]   !! liu2022exponential: 10.1007/978-3-031-49190-0_6 is 'Exponential Time Complexity of\xa0the\xa0Complex Weighted Boolean #CSP'; clearing
+[06:34:22]   !! assadi2021two: 10.1137/1.9781611977073.32 is 'A Two-Pass (Conditional) Lower Bound for Semi-Streaming Maximum Matching'; clearing
+[06:34:25]   !! bravyi2021complexity: 10.1038/s41567-022-01742-5 is 'Quantum Hamiltonian complexity in thermal equilibrium'; clearing
+[06:34:25]   !! mahmood2021parameterised: 10.1007/978-3-662-48057-1_21 is 'Complexity of Propositional Independence and Inclusion Logic'; clearing
+[06:34:25]   !! ho2021quantum: 10.1038/s41534-022-00520-8 is 'Entanglement-based quantum communication complexity beyond Bell nonlocality'; clearing
+[06:34:25]   !! bulatov2020dichotomy: 10.1109/focs.2017.37 is 'A Dichotomy Theorem for Nonuniform CSPs'; clearing
+[06:34:25]   !! drescher2020simple: 10.1007/978-3-030-83823-2_48 is 'A Simple $$(2+\\epsilon )$$-Approximation Algorithm for Split Vertex Deletion'; clearing
+[06:34:27]   !! fritzsch2020experiences: 10.1109/icst49551.2021.00049 is 'Experiences from Large-Scale Model Checking: Verifying a Vehicle Control System with NuSMV'; clearing
+[06:34:27]   !! saitoh2020fixed: 10.1007/978-3-030-68211-8_12 is 'Fixed-Treewidth-Efficient Algorithms for Edge-Deletion to Interval Graph Classes'; clearing
+[06:34:27]   !! anshu2020communication: 10.1038/s41567-022-01740-7 is 'Entanglement spread area law in gapped ground states'; clearing
+[06:34:27]   !! gaysin2020coloring: 10.1093/logcom/exab028 is 'ℋ-Colouring Dichotomy in Proof Complexity'; clearing
+[06:34:29]   !! jones2020intensional: 10.1145/3434336 is 'Intensional datatype refinement: with application to scalable verification of pattern-match safety'; clearing
+[06:34:30]   !! chechik2020near: 10.1137/1.9781611975482.126 is 'Near Optimal Algorithms For The Single Source Replacement Paths Problem'; clearing
+[06:34:31]   !! he2020petri: 10.1109/tcss.2022.3164052 is 'Petri-Net-Based Model Checking for Privacy-Critical Multiagent Systems'; clearing
+[06:34:31]   !! matsushita2020rusthorn: 10.1007/978-3-030-44914-8_18 is 'RustHorn: CHC-Based Verification for Rust Programs'; clearing
+[06:34:31]   !! filmus2020shrinkage: 10.4086/toc.2023.v019a007 is ''; clearing
+[06:34:31]   !! grahamlengrand2020solving: 10.1007/978-3-030-51074-9_7 is 'Solving Bitvectors with MCSAT: Explanations from Bits and Pieces'; clearing
+[06:34:32]   !! banerjee2019algorithm: 10.1007/978-3-030-25005-8_5 is 'Algorithm and Hardness Results on Liar’s Dominating Set and $$\\varvec{k}$$-tuple Dominating Set'; clearing
+[06:34:32]   !! agrawal2019coin: 10.4086/cjtcs.2020.004 is ''; clearing
+[06:34:34]   !! mahmood2019parametrised: 10.1007/978-3-030-39951-1_10 is 'Parameterised Complexity of Model Checking and Satisfiability in Propositional Dependence Logic'; clearing
+[06:34:34]   !! chaugule2019schur: 10.1007/s00037-023-00236-x is 'Schur Polynomials Do Not Have Small Formulas If the Determinant does not'; clearing
+[06:34:35]   !! hamza2019system: 10.1145/3360592 is 'System FR: formalized foundations for the stainless verifier'; clearing
+[06:34:36]   !! kumar2018arithmetic: 10.4086/toc.2017.v013a006 is ''; clearing
+[06:34:36]   !! chen2018average: 10.4086/toc.2018.v014a009 is ''; clearing
+[06:34:36]   !! christandl2018barriers: 10.4086/toc.2021.v017a002 is ''; clearing
+[06:34:37]   !! bhattiprolu2018inapproximability: 10.1137/18m1233418 is 'Inapproximability of Matrix   \\(\\boldsymbol{p \\rightarrow q}\\)   Norms'; clearing
+[06:34:37]   !! kumar2018near: 10.4086/toc.2023.v019a012 is ''; clearing
+[06:34:39]   !! du2018expressive: 10.1103/physrevresearch.2.033125 is 'Expressive power of parametrized quantum circuits'; clearing
+[06:34:42]   !! elderhalli2017dynamic: 10.1007/978-3-319-77935-5_10 is 'Formal Dynamic Fault Trees Analysis Using an Integration of Theorem Proving and Model Checking'; clearing
+[06:34:42]   !! marcozzi2017freeing: 10.1145/3180155.3180191 is 'Time to clean your test objectives'; clearing
+[06:34:43]   !! ognawala2017improving: 10.1145/3167132.3167289 is 'Improving function coverage with munch'; clearing
+[06:34:44]   !! usher2017non: 10.1103/physreva.96.032321 is 'Nonunitary quantum computation in the ground space of local Hamiltonians'; clearing
+[06:34:44]   !! xu2017completenessa: 10.1007/978-3-319-51963-0_10 is 'Completeness of Hoare Logic Relative to the Standard Model'; clearing
+[06:34:44]   !! krajicek2017monotone: 10.4086/cjtcs.2018.001 is ''; clearing
+[06:34:44]   !! li2017quantum: 10.1109/ted.2018.2832118 is 'Determining External Quantum Efficiency From Energy Conversion Efficiency for Light-Emitting Diodes'; clearing
+[06:34:44]   !! fijalkow2017semialgebraic: 10.1007/s00224-019-09913-3 is 'Complete Semialgebraic Invariant Synthesis for the Kannan-Lipton Orbit Problem'; clearing
+[06:34:44]   !! blser2017border: 10.4086/cjtcs.2018.005 is ''; clearing
+[06:34:45]   !! morimae2017verified: 10.1103/physreva.96.062321 is 'Verification of hypergraph states'; clearing
+[06:34:46]   !! landsberg2016geometry: 10.1137/16m1067457 is 'On the Geometry of Border Rank Decompositions for Matrix Multiplication and Other Tensors with Symmetry'; clearing
+[06:34:46]   !! brit2016orthogonal: 10.26421/qic17.1-2-6 is 'On the orthogonal rank and impossibility of quantum round elimination'; clearing
+[06:34:46]   !! moser2016polynomial: 10.1016/j.ic.2019.104483 is 'Polylog depth, highness and lowness for E'; clearing
+[06:34:46]   !! morimae2016power: 10.1103/physreva.95.042336 is 'Power of one nonclean qubit'; clearing
+[06:34:47]   !! reynolds2016reasoning: 10.1007/978-3-319-52234-0_25 is 'Reasoning in the Bernays-Schönfinkel-Ramsey Fragment of Separation Logic'; clearing
+[06:34:47]   !! xu2015experimental: 10.1038/ncomms9735 is 'Experimental quantum fingerprinting with weak coherent pulses'; clearing
+[06:34:47]   !! broadbent2015how: 10.4086/toc.2018.v014a011 is ''; clearing
+[06:34:47]   !! weinstein2015information: 10.1145/2789149.2789161 is 'Information Complexity and the Quest for Interactive Compression'; clearing
+[06:34:47]   !! grochow2015monotone: 10.4086/toc.2017.v013a018 is ''; clearing
+[06:34:48]   !! tavakoli2015magical: 10.1103/physreva.95.020302 is 'Dimensional discontinuity in quantum communication complexity at dimension seven'; clearing
+[06:34:48]   !! kerenidis2014privacy: 10.26421/qic16.3-4-1 is 'Information cost of quantum communication protocols'; clearing
+[06:34:48]   !! lovett2014recent: 10.1109/sfcs.1993.366870 is 'On the "log rank"-conjecture in communication complexity'; clearing
+[06:34:48]   !! etessami2014complexity: 10.1016/j.geb.2019.03.006 is 'The complexity of computing a (quasi-)perfect equilibrium for an n-player extensive form game'; clearing
+[06:34:48]   !! brit2014tight: 10.4086/toc.2017.v013a015 is ''; clearing
+[06:34:48]   !! huang2014two: 10.1109/isit44484.2020.9174029 is '2D Local Hamiltonian with Area Laws Is QMA-Complete'; clearing
+[06:34:48]   !! landau2013polynomial: 10.1038/nphys3345 is 'A polynomial time algorithm for the ground state of one-dimensional gapped local Hamiltonians'; clearing
+[06:34:48]   !! li2013generating: 10.1142/s021819671850011x is 'Witnessing matrix identities and proof complexity'; clearing
+[06:34:49]   !! forbes2013pseudorandomness: 10.1145/2591796.2591816 is 'Hitting sets for multilinear read-once algebraic branching programs, in any order'; clearing
+[06:34:49]   !! gutoski2013quantum: 10.4086/toc.2015.v011a003 is ''; clearing
+[06:34:49]   !! mullan2013sl2: 10.1007/s10623-015-0129-8 is '$${\\text {SL}}_2$$ SL 2 homomorphic hash functions: worst case to average case reduction and short collision search'; clearing
+[06:34:49]   !! tzameret2013sparser: 10.1007/978-3-662-43948-7_84 is 'Sparser Random 3-SAT Refutation Algorithms and the Interpolation Problem'; clearing
+[06:34:49]   !! grochow2013unifying: 10.1007/s00037-015-0103-x is 'Unifying Known Lower Bounds via Geometric Complexity Theory'; clearing
+[06:34:49]   !! jain2012direct: 10.1007/s00453-015-0100-0 is 'A Direct Product Theorem for Two-Party Bounded-Round Public-Coin Communication Complexity'; clearing
+[06:34:49]   !! gao2012delta: 10.1007/978-3-642-31365-3_23 is 'δ-Complete Decision Procedures for Satisfiability\xa0over\xa0the Reals'; clearing
+[06:34:50]   !! moore2012optimal: 10.1137/130934490 is 'Optimal $\\varepsilon$-Biased Sets with Just a Little Randomness'; clearing
+[06:34:50]   !! henry2012pagai: 10.1016/j.entcs.2012.11.003 is 'PAGAI: A Path Sensitive Static Analyser'; clearing
+[06:34:50]   !! agrawal2012quasi: 10.1145/2488608.2488649 is 'Quasi-polynomial hitting-set for set-depth-Δ formulas'; clearing
+[06:34:50]   !! fogarty2011chi: 10.2168/lmcs-8(1:13)2012 is 'B\\"uchi Complementation and Size-Change Termination'; clearing
+[06:34:50]   !! guruswami2011lasserre: 10.1109/focs.2011.36 is 'Lasserre Hierarchy, Higher Eigenvalues, and Approximation Schemes for Graph Partitioning and Quadratic Integer Programming with PSD Objectives'; clearing
+[06:34:50]   !! mertens2011complexity: 10.4086/toc.2013.v009a006 is ''; clearing
+[06:34:50]   !! yamakami2010dichotomy: 10.1007/978-3-642-17458-2_24 is 'A Trichotomy Theorem for the Approximate Counting of Complex-Weighted Bounded-Degree Boolean CSPs'; clearing
+[06:34:50]   !! gutoski2010interactive: 10.4086/cjtcs.2013.007 is ''; clearing
+[06:34:50]   !! nayak2010inverting: 10.4086/toc.2011.v007a002 is ''; clearing
+[06:34:50]   !! liberatore2010size: 10.1109/tc.2015.2512872 is 'The Size of BDDs and Other Data Structures in Temporal Logics Model Checking'; clearing
+[06:34:51]   !! grenet2010symmetric: 10.1090/conm/556 is 'Randomization, Relaxation, and Complexity in Polynomial Equation Solving'; clearing
+[06:34:51]   !! jansen2010vertex: 10.1007/s00224-012-9393-4 is 'Vertex Cover Kernelization Revisited'; clearing
+[06:34:51]   !! briquel2009dichotomy: 10.1007/978-3-642-03816-7 is 'Mathematical Foundations of Computer Science 2009'; clearing
+[06:34:51]   !! buergisser2009overview: 10.1137/090765328 is 'An Overview of Mathematical Issues Arising in the Geometric Complexity Theory Approach to $\\mathbf{VP}\\neq\\mathbf{VNP}$'; clearing
+[06:34:51]   !! kay2007qma: 10.1103/physreva.76.030307 is 'Quantum-Merlin-Arthur-complete translationally invariant Hamiltonian problem and the complexity of finding ground-state energies in physical systems'; clearing
+[06:34:51]   !! childs2007every: 10.1109/focs.2007.57 is 'Any AND-OR Formula of Size N can be Evaluated in time N^{1/2 + o(1)} on a Quantum Computer'; clearing
+[06:34:51]   !! narayanan2007geometric: 10.1007/s10801-011-0325-1 is 'Geometric complexity theory III: on deciding nonvanishing of a Littlewood–Richardson coefficient'; clearing
+[06:34:51]   !! nagaj2006new: 10.1063/1.2748377 is 'New construction for a QMA complete three-local Hamiltonian'; clearing
+[06:34:51]   !! jain2006parallel: 10.26421/qic9.5-6-11 is 'On parallel composition  of zero-knowledge proofs with black-box quantum'; clearing
+[06:34:51]   !! aaronson2004limitations: 10.4086/toc.2005.v001a001 is ''; clearing
+[06:34:51]   !! ambainis2004lower: 10.1145/2698587 is 'Lower Bounds on the Deterministic and Quantum Communication Complexity of Hamming-Distance Problems'; clearing
+[06:34:51]   !! brukner2002violation: 10.1103/physrevlett.92.127901 is 'Bell’s Inequalities and Quantum Communication Complexity'; clearing
+[06:34:51]   !! radhakrishnan2001depth: 10.1007/3-540-44450-5_14 is 'Depth-3 Arithmetic Circuits for S innsu2 (X) and Extensions of the Graham-Pollack Theorem'; clearing
+[06:34:51]   !! klauck2001one: 10.1137/s009753970140004x is 'One-Way Communication Complexity and the Nečiporuk Lower Bound on Formula Size'; clearing
+[06:34:51]   !! watrous1999pspace: 10.1016/s0304-3975(01)00375-9 is 'PSPACE has constant-round quantum interactive proof systems'; clearing
+[06:34:52] crossref 0, 0 published versions, arxiv 0, 12 venues revised, 0 titles cleaned, 114 wrong DOIs cleared
+[06:34:52] 58 still unscreenable (no abstract); 1359 cannot be snowballed from (no DOI)

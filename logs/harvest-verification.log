@@ -1,0 +1,55 @@
+[05:09:54] 'Frama-C': 42 hits, 14 kept, 14 new, 28 filtered
+[05:10:04] 'ACSL AND specification': 17 hits, 2 kept, 1 new, 15 filtered
+[05:10:14] 'Dafny AND verification': 67 hits, 22 kept, 21 new, 45 filtered
+[05:10:23] 'Why3 AND deductive verification': 12 hits, 4 kept, 4 new, 8 filtered
+[05:10:34] 'Viper AND verification': 17 hits, 4 kept, 3 new, 13 filtered
+[05:10:43] 'VeriFast AND separation logic': 13 hits, 5 kept, 4 new, 8 filtered
+[05:10:53] 'SPARK Ada AND verification': 1 hits, 0 kept, 0 new, 1 filtered
+[05:11:03] 'KeY AND Java verification': 1 hits, 1 kept, 1 new, 0 filtered
+[05:11:13] 'CBMC AND bounded model checking': 8 hits, 5 kept, 5 new, 3 filtered
+[05:11:23] 'SeaHorn AND verification': 4 hits, 2 kept, 2 new, 2 filtered
+[05:11:33] 'Boogie AND intermediate verification language': 7 hits, 0 kept, 0 new, 7 filtered
+[05:11:43] 'verification condition generation AND size': 1 hits, 1 kept, 1 new, 0 filtered
+[05:11:54] 'deductive verification AND scalability': 12 hits, 7 kept, 7 new, 5 filtered
+[05:12:03] 'modular verification AND large programs': 0 hits, 0 kept, 0 new, 0 filtered
+[05:12:13] 'contract-based verification AND modular': 1 hits, 0 kept, 0 new, 1 filtered
+[05:12:23] 'compositional program analysis AND summaries': 0 hits, 0 kept, 0 new, 0 filtered
+[05:12:33] 'bi-abduction AND shape analysis': 1 hits, 1 kept, 1 new, 0 filtered
+[05:12:43] 'incremental static analysis': 1 hits, 1 kept, 1 new, 0 filtered
+[05:12:53] 'interprocedural analysis AND complexity': 4 hits, 1 kept, 1 new, 3 filtered
+[05:13:16] 'static analysis AND millions of lines': 6 hits, 6 kept, 6 new, 0 filtered
+[05:13:16] 'whole-program analysis AND scalability': 1 hits, 1 kept, 1 new, 0 filtered
+[05:13:26] 'proof engineering AND large scale': 2 hits, 1 kept, 1 new, 1 filtered
+[05:13:36] 'proof burden AND automation': 4 hits, 4 kept, 4 new, 0 filtered
+[05:13:46] 'annotation burden AND verification': 6 hits, 4 kept, 3 new, 2 filtered
+[05:13:57] 'separation logic AND scalability': 12 hits, 6 kept, 6 new, 6 filtered
+[05:14:06] 'separation logic AND concurrent program verification': 0 hits, 0 kept, 0 new, 0 filtered
+[05:14:16] 'rely-guarantee AND compositional reasoning': 6 hits, 2 kept, 2 new, 4 filtered
+[05:14:26] 'program logic AND decidability': 6 hits, 4 kept, 4 new, 2 filtered
+[05:14:37] 'Hoare logic AND completeness': 48 hits, 32 kept, 31 new, 16 filtered
+[05:14:46] 'frame rule AND local reasoning': 7 hits, 1 kept, 0 new, 6 filtered
+[05:14:57] 'satisfiability modulo theories AND complexity': 38 hits, 24 kept, 23 new, 14 filtered
+[05:15:07] 'SMT AND decision procedure': 60 hits, 45 kept, 45 new, 15 filtered
+[05:15:17] 'quantifier instantiation AND SMT': 22 hits, 12 kept, 8 new, 10 filtered
+[05:15:26] 'decidable fragment AND program verification': 2 hits, 2 kept, 1 new, 0 filtered
+[05:15:37] 'constrained Horn clauses AND verification': 56 hits, 19 kept, 17 new, 37 filtered
+[05:15:46] 'Craig interpolation AND model checking': 7 hits, 1 kept, 1 new, 6 filtered
+[05:15:56] 'array theory AND decidability': 0 hits, 0 kept, 0 new, 0 filtered
+[05:16:06] 'bit-vector logic AND complexity': 0 hits, 0 kept, 0 new, 0 filtered
+[05:16:16] 'loop invariant inference AND automation': 2 hits, 1 kept, 1 new, 1 filtered
+[05:16:26] 'invariant synthesis AND complexity': 7 hits, 5 kept, 5 new, 2 filtered
+[05:16:36] 'predicate abstraction AND software model checking': 2 hits, 1 kept, 1 new, 1 filtered
+[05:16:47] 'abstract interpretation AND complexity': 49 hits, 24 kept, 23 new, 25 filtered
+[05:16:56] 'widening AND abstract interpretation': 20 hits, 5 kept, 4 new, 15 filtered
+[05:17:06] 'refinement types AND type inference': 14 hits, 8 kept, 6 new, 6 filtered
+[05:17:17] 'dependent types AND decidability': 30 hits, 26 kept, 24 new, 4 filtered
+[05:17:26] 'termination analysis AND complexity': 16 hits, 11 kept, 10 new, 5 filtered
+[05:17:36] 'program analysis AND undecidability': 10 hits, 6 kept, 4 new, 4 filtered
+[05:17:46] 'pointer analysis AND complexity': 8 hits, 5 kept, 5 new, 3 filtered
+[05:17:56] 'alias analysis AND undecidable': 1 hits, 1 kept, 1 new, 0 filtered
+[05:18:08] 'model checking AND complexity': 100 hits, 81 kept, 71 new, 19 filtered
+[05:18:17] 'symbolic execution AND path explosion': 27 hits, 14 kept, 14 new, 13 filtered
+[05:18:26] 'reachability AND complexity of verification': 4 hits, 1 kept, 1 new, 3 filtered
+[05:18:37] 'resource analysis AND worst-case cost': 1 hits, 0 kept, 0 new, 1 filtered
+[05:18:47] 'amortized resource analysis AND automatic': 15 hits, 1 kept, 1 new, 14 filtered
+[05:18:47] done: 390 new / 424 kept; library 2861: {'candidate': 2857, 'included': 4}

@@ -47,9 +47,28 @@ CATEGORIES = {
  "counting-complexity": r"counting complexity|\b#P\b|\b#CSP\b|sharp[- ]P|permanent .{0,20}(hard|comput)|holographic algorithm|holant|partition function .{0,20}(hard|approxim)|dichotomy (theorem|for counting)|approximate counting",
  "total-search": r"\bTFNP\b|\bPPAD\b|\bPLS\b|\bPPA\b|\bPPP\b|\bCLS\b|total (search|function) problem|Nash equilibrium .{0,20}(complexity|hard)|local search .{0,20}(complete|hard)|pigeonhole .{0,20}principle .{0,20}complexity",
  "structural": r"oracle separation|relativi[sz](e|ation|ing)|algebri[sz]ation|polynomial hierarchy|hierarchy theorem|\bKarp[- ]Lipton\b|sparse set|Berman[- ]Hartmanis|isomorphism conjecture|self[- ]reducib|completeness .{0,20}(under|for) .{0,20}reduction|padding argument|complexity class .{0,20}(separation|collapse|inclusion)",
+ "verification-complexity": r"deductive verification|program verification|software verification|static analys|abstract interpretation|separation logic|Hoare logic|bi[- ]abduction|weakest precondition|verification condition|loop invariant|invariant (synthesis|inference|generation)|predicate abstraction|model check|symbolic execution|decision procedure|satisfiability modulo theories|\bSMT\b|constrained Horn clause|Craig interpolat|refinement type|dependent type|type (inference|checking) .{0,20}(complexity|decidab)|pointer analysis|alias analysis|shape analysis|termination analysis|proof assistant|cost analysis|resource analysis|resource bound|runtime bound|loop bound|worst[- ]case execution time|\bWCET\b|amortized (analysis|complexity|resource)|time credit|complexity (bug|vulnerabilit)|performance regression|algorithmic complexity attack|\bFrama-?C\b|\bDafny\b|\bWhy3\b|\bViper\b|\bVeriFast\b|\bBoogie\b|\bCBMC\b|\bSeaHorn\b|\bACSL\b|\bSPARK Ada\b|\bKeY\b .{0,20}(Java|verif)",
  "descriptive-logic": r"descriptive complexity|finite model theory|\bFO\b .{0,20}(logic|definable)|constraint satisfaction .{0,20}(dichotomy|complexity)|polymorphism|\bFagin\b|logic .{0,20}captures .{0,20}(P|NP|PTIME)|monadic second[- ]order|Courcelle",
 }
 _C = {n: re.compile(p, re.I) for n, p in CATEGORIES.items()}
+
+# Second admission path, for `verification-complexity` only. The resource there
+# is the cost of *checking* a program: decision-procedure complexity, or the
+# analysis cost a real codebase imposes. A tool paper reporting neither is a
+# demo, and stays out.
+VERIF_TERMS = re.compile(
+    r"\b(un)?decidab(le|ility)\b|\bsemi[- ]decidab|\bdecision procedure\b"
+    r"|\bstate[- ](space )?explosion\b|\bexponential blow[- ]?up\b"
+    r"|\bcomplexity of (verification|model checking|program analysis|analysis|inference|type checking)\b"
+    r"|\bscal(e|es|ing|able|ability|ability)\b .{0,40}\b(code|codebase|program|software|line|system)"
+    r"|\bscal(e|es|ing) to\b|\blarge[- ](scale|sized) (code|codebase|program|software|system)"
+    r"|\bmillions? of lines\b|\blines of (code|source)\b|\bwhole[- ]program\b"
+    r"|\breal[- ]world (code|software|program|system)|\bindustrial (scale|code|deployment)\b"
+    r"|\b(modular|compositional|incremental|summary[- ]based|interprocedural) "
+    r"(analys(is|es)|verification|reasoning|proof|checking)\b"
+    r"|\bproof (burden|effort|automation)\b|\bannotation burden\b|\bverification effort\b"
+    r"|\bworst[- ]case (complexity|running time|cost|bound)\b", re.I)
+
 
 # Priors for screening, not verdicts.
 RESULT = re.compile(r"\bwe (prove|show|establish|construct|give|obtain|present|resolve|settle)\b"
@@ -65,10 +84,19 @@ SURVEY = re.compile(r"\b(survey|overview|tutorial|introduction to|lecture notes|
 def _h(r): return clean(f"{r.get('title','')} {r.get('abstract','')}")
 def is_complexity(r): return bool(TERMS.search(_h(r)))
 def categorize(r): return sorted(n for n, p in _C.items() if p.search(_h(r)))
-def in_topic(r): return is_complexity(r) and bool(categorize(r))
+def is_verification(r): return bool(VERIF_TERMS.search(_h(r)))
+
+
+def in_topic(r):
+    """A conjunction, as before, plus one alternative for the verification tier:
+    a cost-of-checking claim stands in for the complexity vocabulary there."""
+    cats = categorize(r)
+    if not cats: return False
+    return is_complexity(r) or ("verification-complexity" in cats and is_verification(r))
 
 
 def prior(r):
     t = _h(r)
     return {"complexity": bool(TERMS.search(t)), "categories": categorize(r),
+            "cost_of_checking": bool(VERIF_TERMS.search(t)),
             "result_signal": bool(RESULT.search(t)), "survey_signal": bool(SURVEY.search(t))}

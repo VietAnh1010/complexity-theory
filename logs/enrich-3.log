@@ -1,0 +1,12 @@
+[06:00:09] 2069 of 3116 missing an abstract, venue, or DOI
+[06:00:20] crossref: title-matching 1242 with no DOI
+[06:00:21] arxiv: title-matching 56 with no abstract
+[06:02:25] HTTP 503 export.arxiv.org 1/5 in 0s
+[06:02:36] HTTP 429 export.arxiv.org 2/5 in 0s
+[06:02:48] HTTP 429 export.arxiv.org 3/5 in 0s
+[06:03:48] net The read operation timed out 4/5 in 0s
+[06:04:14] HTTP 429 export.arxiv.org 1/5 in 2s
+[06:04:26] HTTP 429 export.arxiv.org 2/5 in 4s
+[06:04:46] HTTP 429 export.arxiv.org 3/5 in 8s
+[06:06:15] crossref 0, 0 published versions, arxiv 2, 0 venues revised, 0 titles cleaned
+[06:06:15] 54 still unscreenable (no abstract); 1242 cannot be snowballed from (no DOI)
