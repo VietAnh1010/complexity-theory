@@ -1,0 +1,6 @@
+[03:02:34] 2134 of 3213 missing an abstract, venue, or DOI
+[03:02:47] crossref: title-matching 1258 with no DOI
+[03:02:49] arxiv: title-matching 60 with no abstract
+[03:02:53] crossref: re-checking 1683 DOIs that came from a title match
+[03:03:42] crossref 2, 4 published versions, arxiv 1, 0 venues revised, 0 titles cleaned, 0 wrong DOIs cleared
+[03:03:42] 59 still unscreenable (no abstract); 1254 cannot be snowballed from (no DOI)

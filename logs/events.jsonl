@@ -625,3 +625,30 @@
 {"ts": "2026-08-27T02:53:03", "kind": "enrich", "crossref": 1, "published": 20, "arxiv": 0, "no_abstract": 58, "no_doi": 1254, "dois_cleared": 0}
 {"ts": "2026-08-27T02:53:43", "kind": "dataset_export", "papers": 3184, "edges": false}
 {"ts": "2026-08-27T02:53:52", "kind": "verify", "papers": 133, "errors": 0, "warnings": 11}
+{"ts": "2026-08-27T02:57:50", "kind": "query", "query": "union-find AND amortized complexity", "hits": 2, "kept": 0, "new": 0, "skipped": 2}
+{"ts": "2026-08-27T02:57:58", "kind": "query", "query": "amortized complexity AND verification", "hits": 1, "kept": 0, "new": 0, "skipped": 1}
+{"ts": "2026-08-27T02:58:06", "kind": "query", "query": "Isabelle AND amortized analysis", "hits": 2, "kept": 2, "new": 0, "skipped": 0}
+{"ts": "2026-08-27T02:58:14", "kind": "query", "query": "splay tree AND verification", "hits": 2, "kept": 1, "new": 1, "skipped": 1}
+{"ts": "2026-08-27T02:58:22", "kind": "query", "query": "verified functional data structures", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-27T02:58:30", "kind": "query", "query": "asymptotic complexity AND Isabelle", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-27T02:58:37", "kind": "query", "query": "big-O notation AND formalization", "hits": 1, "kept": 0, "new": 0, "skipped": 1}
+{"ts": "2026-08-27T02:58:46", "kind": "query", "query": "time credits AND union-find", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-27T02:58:54", "kind": "query", "query": "Imperative HOL AND running time", "hits": 1, "kept": 1, "new": 0, "skipped": 0}
+{"ts": "2026-08-27T02:59:02", "kind": "query", "query": "Why3 AND complexity", "hits": 2, "kept": 0, "new": 0, "skipped": 2}
+{"ts": "2026-08-27T02:59:10", "kind": "query", "query": "Dafny AND data structure", "hits": 3, "kept": 1, "new": 0, "skipped": 2}
+{"ts": "2026-08-27T02:59:18", "kind": "query", "query": "priority queue AND verified", "hits": 5, "kept": 1, "new": 1, "skipped": 4}
+{"ts": "2026-08-27T02:59:26", "kind": "query", "query": "binary search tree AND formal verification", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-27T02:59:34", "kind": "query", "query": "Frama-C AND data structure", "hits": 1, "kept": 0, "new": 0, "skipped": 1}
+{"ts": "2026-08-27T02:59:42", "kind": "query", "query": "Coq AND amortized", "hits": 3, "kept": 3, "new": 1, "skipped": 0}
+{"ts": "2026-08-27T02:59:51", "kind": "query", "query": "verified AND sorting algorithm complexity", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-27T03:00:45", "kind": "screen_apply", "applied": 5, "failed": 0}
+{"ts": "2026-08-27T03:01:24", "kind": "snowball_leg", "direction": "backward", "new": 17, "unstructured_refs": 1190}
+{"ts": "2026-08-27T03:02:24", "kind": "snowball_leg", "direction": "forward", "new": 9}
+{"ts": "2026-08-27T03:02:47", "kind": "title_matched", "id": "arxiv:2608.04886", "doi": "10.1145/3830439.3831276", "stored": "A Cost-Aware Probability Monad for Liquid Haskell", "resolves_to": "A Cost-Aware Probability Monad for Liquid Haskell"}
+{"ts": "2026-08-27T03:02:48", "kind": "title_matched", "id": "arxiv:2601.08492", "doi": "10.1007/978-3-032-22749-2_7", "stored": "On Deciding Constant Runtime of Linear Loops", "resolves_to": "On Deciding Constant Runtime of Linear Loops"}
+{"ts": "2026-08-27T03:02:48", "kind": "title_matched", "id": "arxiv:2510.14550", "doi": "10.1137/1.9781611978971.192", "stored": "Optimization Modulo Integer Linear-Exponential Programs", "resolves_to": "Optimization Modulo Integer Linear-Exponential Programs"}
+{"ts": "2026-08-27T03:02:49", "kind": "title_matched", "id": "arxiv:1004.3304", "doi": "10.1109/focs.2010.44", "stored": "Information Cost Tradeoffs for Augmented Index and Streaming Language Recognition", "resolves_to": "Information Cost Tradeoffs for Augmented Index and Streaming Language Recognition"}
+{"ts": "2026-08-27T03:03:42", "kind": "enrich", "crossref": 2, "published": 4, "arxiv": 1, "no_abstract": 59, "no_doi": 1254, "dois_cleared": 0}
+{"ts": "2026-08-27T03:04:03", "kind": "screen_apply", "applied": 3, "failed": 0}
+{"ts": "2026-08-27T03:04:44", "kind": "dataset_export", "papers": 3213, "edges": false}
+{"ts": "2026-08-27T03:06:01", "kind": "verify", "papers": 140, "errors": 0, "warnings": 11}
