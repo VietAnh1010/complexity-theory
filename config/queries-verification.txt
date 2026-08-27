@@ -82,3 +82,18 @@ symbolic execution AND path explosion
 reachability AND complexity of verification
 resource analysis AND worst-case cost
 amortized resource analysis AND automatic
+
+# --- proving a program's cost, not just its correctness --------------------
+# Added after the run: the grid reached this line only through KoAT. Three of
+# these ('formally verified AND worst-case execution time', 'Coq AND complexity
+# of algorithms', 'program cost AND verification') return 0 and are left out.
+amortized resource analysis
+time credits AND separation logic
+verified AND time complexity
+cost semantics AND functional programs
+runtime bounds AND integer programs
+resource analysis AND type system
+worst-case execution time AND static analysis
+proving AND asymptotic complexity
+resource bounds AND certified
+potential method AND amortized analysis

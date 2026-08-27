@@ -587,3 +587,41 @@
 {"ts": "2026-08-25T06:41:41", "kind": "enrich", "crossref": 0, "published": 37, "arxiv": 0, "no_abstract": 58, "no_doi": 1256, "dois_cleared": 48}
 {"ts": "2026-08-25T06:43:55", "kind": "dataset_export", "papers": 3164, "edges": true}
 {"ts": "2026-08-25T06:44:00", "kind": "verify", "papers": 121, "errors": 0, "warnings": 11}
+{"ts": "2026-08-27T02:48:52", "kind": "query", "query": "amortized resource analysis", "hits": 18, "kept": 2, "new": 1, "skipped": 16}
+{"ts": "2026-08-27T02:48:59", "kind": "query", "query": "time credits AND separation logic", "hits": 3, "kept": 3, "new": 1, "skipped": 0}
+{"ts": "2026-08-27T02:49:08", "kind": "query", "query": "verified AND time complexity", "hits": 47, "kept": 14, "new": 7, "skipped": 33}
+{"ts": "2026-08-27T02:49:15", "kind": "query", "query": "formally verified AND worst-case execution time", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-27T02:49:24", "kind": "query", "query": "cost semantics AND functional programs", "hits": 3, "kept": 1, "new": 1, "skipped": 2}
+{"ts": "2026-08-27T02:49:32", "kind": "query", "query": "automatic complexity analysis AND programs", "hits": 5, "kept": 1, "new": 0, "skipped": 4}
+{"ts": "2026-08-27T02:49:39", "kind": "query", "query": "runtime bounds AND integer programs", "hits": 6, "kept": 3, "new": 2, "skipped": 3}
+{"ts": "2026-08-27T02:49:48", "kind": "query", "query": "resource analysis AND type system", "hits": 20, "kept": 2, "new": 2, "skipped": 18}
+{"ts": "2026-08-27T02:49:55", "kind": "query", "query": "worst-case execution time AND static analysis", "hits": 2, "kept": 1, "new": 1, "skipped": 1}
+{"ts": "2026-08-27T02:50:03", "kind": "query", "query": "Coq AND complexity of algorithms", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-27T02:50:11", "kind": "query", "query": "proving AND asymptotic complexity", "hits": 11, "kept": 3, "new": 3, "skipped": 8}
+{"ts": "2026-08-27T02:50:19", "kind": "query", "query": "resource bounds AND certified", "hits": 3, "kept": 1, "new": 1, "skipped": 2}
+{"ts": "2026-08-27T02:50:27", "kind": "query", "query": "potential method AND amortized analysis", "hits": 4, "kept": 1, "new": 1, "skipped": 3}
+{"ts": "2026-08-27T02:50:35", "kind": "query", "query": "program cost AND verification", "hits": 0, "kept": 0, "new": 0, "skipped": 0}
+{"ts": "2026-08-27T02:51:20", "kind": "screen_apply", "applied": 12, "failed": 0}
+{"ts": "2026-08-27T02:51:45", "kind": "title_matched", "id": "arxiv:2601.12943", "doi": "10.1007/978-3-032-22723-2_13", "stored": "Dependently-Typed AARA: A Non-Affine Approach for Resource Analysis of Higher-Order Programs", "resolves_to": "Dependently-Typed AARA: A Non-Affine Approach for Resource Analysis of Higher-Order Programs"}
+{"ts": "2026-08-27T02:51:48", "kind": "title_matched", "id": "arxiv:2411.04718", "doi": "10.1137/1.9781611978971.210", "stored": "Approximate counting of permutation patterns", "resolves_to": "Approximate Counting of Permutation Patterns"}
+{"ts": "2026-08-27T02:51:49", "kind": "title_matched", "id": "doi:10.24963/ijcai.2024/210", "doi": "10.21203/rs.3.rs-2279231/v1", "stored": "A SAT Solver and Computer Algebra Attack on the Minimum Kochen-Specker Problem", "resolves_to": "A SAT Solver + Computer Algebra Attack on the Minimum Kochen-Specker Problem"}
+{"ts": "2026-08-27T02:51:50", "kind": "title_matched", "id": "arxiv:2307.10034", "doi": "10.1145/3632891", "stored": "Validation of Modern JSON Schema: Formalization and Complexity", "resolves_to": "Validation of Modern JSON Schema: Formalization and Complexity"}
+{"ts": "2026-08-27T02:51:50", "kind": "title_matched", "id": "arxiv:2211.12923", "doi": "10.1145/3571260", "stored": "A Calculus for Amortized Expected Runtimes", "resolves_to": "A Calculus for Amortized Expected Runtimes"}
+{"ts": "2026-08-27T02:51:51", "kind": "title_matched", "id": "arxiv:2202.04546", "doi": "10.1007/978-3-031-10769-6_41", "stored": "Proving Non-Termination and Lower Runtime Bounds with LoAT (System Description)", "resolves_to": "Proving Non-Termination and Lower Runtime Bounds with LoAT (System Description)"}
+{"ts": "2026-08-27T02:51:51", "kind": "title_matched", "id": "arxiv:2212.09505", "doi": "10.21203/rs.3.rs-3769828/v1", "stored": "Variational Quantum Search with Shallow Depth for Unstructured Database Search", "resolves_to": "Variational Quantum Search with Shallow Depth for Unstructured Database Search"}
+{"ts": "2026-08-27T02:51:55", "kind": "title_matched", "id": "arxiv:2006.09705", "doi": "10.1016/j.apal.2021.102972", "stored": "Proof Complexity of Substructural Logics", "resolves_to": "Proof complexity of substructural logics"}
+{"ts": "2026-08-27T02:51:55", "kind": "title_matched", "id": "arxiv:2003.11538", "doi": "10.3390/g11020019", "stored": "The Exact Query Complexity of Yes-No Permutation Mastermind", "resolves_to": "The Exact Query Complexity of Yes-No Permutation Mastermind"}
+{"ts": "2026-08-27T02:51:56", "kind": "title_matched", "id": "arxiv:1911.01077", "doi": "10.1145/3410331", "stored": "Inferring Lower Runtime Bounds for Integer Programs", "resolves_to": "Inferring Lower Runtime Bounds for Integer Programs"}
+{"ts": "2026-08-27T02:51:57", "kind": "title_matched", "id": "arxiv:1802.01336", "doi": "10.1007/978-3-319-94205-6_35", "stored": "Verifying Asymptotic Time Complexity of Imperative Programs in Isabelle", "resolves_to": "Verifying Asymptotic Time Complexity of Imperative Programs in Isabelle"}
+{"ts": "2026-08-27T02:51:57", "kind": "title_matched", "id": "arxiv:1703.03021", "doi": "10.1109/focs.2017.37", "stored": "A dichotomy theorem for nonuniform CSPs", "resolves_to": "A Dichotomy Theorem for Nonuniform CSPs"}
+{"ts": "2026-08-27T02:51:59", "kind": "title_matched", "id": "doi:10.1109/ted.2018.2832118", "doi": "10.1109/tit.2018.2883306", "stored": "Quantum query complexity of entropy estimation", "resolves_to": "Quantum Query Complexity of Entropy Estimation"}
+{"ts": "2026-08-27T02:52:00", "kind": "title_matched", "id": "arxiv:1605.02337", "doi": "10.1109/tkde.2016.2598171", "stored": "A Novel Framework for Online Amnesic Trajectory Compression in Resource-constrained Environments", "resolves_to": "A Novel Framework for Online Amnesic Trajectory Compression in Resource-Constrained Environments"}
+{"ts": "2026-08-27T02:52:02", "kind": "title_matched", "id": "doi:10.1109/isit44484.2020.9174029", "doi": "10.1016/j.jcp.2021.110534", "stored": "Two-dimensional local Hamiltonian problem with area laws is QMA-complete", "resolves_to": "Two-dimensional local Hamiltonian problem with area laws is QMA-complete"}
+{"ts": "2026-08-27T02:52:03", "kind": "title_matched", "id": "arxiv:1011.3049", "doi": "10.1137/11085178x", "stored": "Distributed Verification and Hardness of Distributed Approximation", "resolves_to": "Distributed Verification and Hardness of Distributed Approximation"}
+{"ts": "2026-08-27T02:52:04", "kind": "title_matched", "id": "arxiv:1004.0411", "doi": "10.21236/ada585814", "stored": "Quantum interactive proofs with short messages", "resolves_to": "Quantum Interactive Proofs with Short Messages"}
+{"ts": "2026-08-27T02:52:04", "kind": "title_matched", "id": "doi:10.1090/conm/556", "doi": "10.1090/conm/556/11008", "stored": "Symmetric Determinantal Representation of Formulas and Weakly Skew Circuits", "resolves_to": "Symmetric determinantal representation of formulas and weakly skew circuits"}
+{"ts": "2026-08-27T02:52:05", "kind": "title_matched", "id": "doi:10.1007/978-3-642-03816-7", "doi": "10.1007/978-3-642-03816-7_17", "stored": "A Dichotomy Theorem for Polynomial Evaluation", "resolves_to": "A Dichotomy Theorem for Polynomial Evaluation"}
+{"ts": "2026-08-27T02:52:06", "kind": "title_matched", "id": "arxiv:cs/0512035", "doi": "10.1016/j.dam.2007.04.023", "stored": "Semidefinite programming and arithmetic circuit evaluation", "resolves_to": "Semidefinite programming and arithmetic circuit evaluation"}
+{"ts": "2026-08-27T02:53:03", "kind": "enrich", "crossref": 1, "published": 20, "arxiv": 0, "no_abstract": 58, "no_doi": 1254, "dois_cleared": 0}
+{"ts": "2026-08-27T02:53:43", "kind": "dataset_export", "papers": 3184, "edges": false}
+{"ts": "2026-08-27T02:53:52", "kind": "verify", "papers": 133, "errors": 0, "warnings": 11}
