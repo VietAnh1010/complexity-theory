@@ -31,5 +31,43 @@ import opened Prelude
 
 method Solve(n: int, strings: seq<string>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var lines: seq<string> := [];
+  var si := 0;
+  while si < |strings|
+    decreases |strings| - si
+  {
+    var s := strings[si];
+    var mlen := |s|;
+    var tset: set<char> := {};
+    var j := 0;
+    while j < mlen
+      decreases mlen - j
+    {
+      if s[j] !in tset {
+        var c := 1;
+        while j < mlen - 1 && s[j] == s[j+1]
+          decreases mlen - j
+        {
+          j := j + 1;
+          c := c + 1;
+        }
+        if c % 2 == 1 {
+          tset := tset + {s[j]};
+        }
+      }
+      j := j + 1;
+    }
+    var elems: seq<char> := [];
+    var gg := tset;
+    while gg != {}
+      decreases |gg|
+    {
+      var x :| x in gg;
+      elems := elems + [x];
+      gg := gg - {x};
+    }
+    lines := lines + [Sort(elems, (a, b) => a < b)];
+    si := si + 1;
+  }
+  output := Join(lines, "\n");
 }

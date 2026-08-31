@@ -21,5 +21,16 @@ import opened Prelude
 
 method Solve(a: int, b: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var timeToSolve := 240 - b;
+  var prob := FloorDiv(timeToSolve, 5);
+  var m := 0;
+  var fuel := (if prob > 0 then prob else 0) + 2;
+  while fuel > 0 && (m+1)*(m+2) <= 2*prob
+    decreases fuel
+  {
+    m := m + 1;
+    fuel := fuel - 1;
+  }
+  var ans := if m > a then a else m;
+  output := IntToString(ans);
 }

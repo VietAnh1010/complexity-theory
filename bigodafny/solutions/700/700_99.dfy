@@ -21,5 +21,16 @@ import opened Prelude
 
 method Solve(s: string, n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var total := 0;
+  var i := 0;
+  while i < |s|
+    decreases |s| - i
+  {
+    var idx := (s[i] as int) - 97;
+    total := total + a_list[idx] * (i + 1);
+    i := i + 1;
+  }
+  var mx := MaxSeq(a_list);
+  total := total + mx * (n * |s| + (n * (n + 1)) / 2);
+  output := IntToString(total);
 }

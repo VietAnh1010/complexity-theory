@@ -44,5 +44,38 @@ import opened Prelude
 
 method Solve(n: int, data_points: seq<(int, int)>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var aArr := seq(|data_points|, i requires 0 <= i < |data_points| => data_points[i].0 + data_points[i].1);
+  var bArr := seq(|data_points|, i requires 0 <= i < |data_points| => data_points[i].0 - data_points[i].1);
+  var aSorted := SortInts(aArr);
+  var bSorted := SortInts(bArr);
+  var res := 0;
+  var i := 0;
+  while i < |aSorted|
+    decreases |aSorted| - i
+  {
+    var cnt := 1;
+    while i+1 < |aSorted| && aSorted[i] == aSorted[i+1]
+      decreases |aSorted| - i
+    {
+      cnt := cnt + 1;
+      i := i + 1;
+    }
+    res := res + cnt*(cnt-1)/2;
+    i := i + 1;
+  }
+  i := 0;
+  while i < |bSorted|
+    decreases |bSorted| - i
+  {
+    var cnt := 1;
+    while i+1 < |bSorted| && bSorted[i] == bSorted[i+1]
+      decreases |bSorted| - i
+    {
+      cnt := cnt + 1;
+      i := i + 1;
+    }
+    res := res + cnt*(cnt-1)/2;
+    i := i + 1;
+  }
+  output := IntToString(res);
 }

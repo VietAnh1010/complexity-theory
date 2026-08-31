@@ -25,5 +25,14 @@ import opened Prelude
 
 method Solve(n: int, edges: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var c := 0;
+  var i := 0;
+  while i < |edges|
+    decreases |edges| - i
+  {
+    var s := edges[i][0] + edges[i][1];
+    if s > c { c := s; }
+    i := i + 1;
+  }
+  output := IntToString(c);
 }

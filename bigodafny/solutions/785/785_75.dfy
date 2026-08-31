@@ -25,5 +25,33 @@ import opened Prelude
 
 method Solve(n: int, numbers: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var pairs := seq(|numbers|, i requires 0 <= i < |numbers| => (numbers[i], i+1));
+  var srt := Sort(pairs, (x: (int, int), y: (int, int)) => x.0 < y.0 || (x.0 == y.0 && x.1 < y.1));
+  var q := seq(|srt|, i requires 0 <= i < |srt| => srt[i].1);
+  var dp := new int[n+1];
+  var k := 0;
+  while k <= n
+    decreases n - k
+  {
+    dp[k] := 1;
+    k := k + 1;
+  }
+  var i := 1;
+  while i < n
+    decreases n - i
+  {
+    if q[i] > q[i-1] {
+      dp[i] := dp[i-1] + 1;
+    }
+    i := i + 1;
+  }
+  var mx := dp[0];
+  i := 1;
+  while i <= n
+    decreases n - i
+  {
+    if dp[i] > mx { mx := dp[i]; }
+    i := i + 1;
+  }
+  output := IntToString(n - mx);
 }

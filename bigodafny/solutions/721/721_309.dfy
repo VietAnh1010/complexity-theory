@@ -67,5 +67,25 @@ import opened Prelude
 
 method Solve(n: int, numbers: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var lines: seq<string> := [];
+  var i := 0;
+  while i < |numbers|
+    decreases |numbers| - i
+  {
+    var m := numbers[i];
+    var remain := FloorMod(m, 4);
+    var times := FloorDiv(m, 4);
+    var timesNat := if times >= 0 then times as nat else 0;
+    var yPart := Repeat("8", timesNat);
+    var zPart := if remain != 0 then "8" else "";
+    var digleft := m - times - 1;
+    if remain == 0 {
+      digleft := digleft + 1;
+    }
+    var digleftNat := if digleft >= 0 then digleft as nat else 0;
+    var xPart := Repeat("9", digleftNat);
+    lines := lines + [xPart + zPart + yPart];
+    i := i + 1;
+  }
+  output := Join(lines, "\n");
 }

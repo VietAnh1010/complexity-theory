@@ -31,5 +31,22 @@ import opened Prelude
 
 method Solve(a: int, b: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var cnt := 0;
+  var hrs := b;
+  if hrs > 240 {
+    output := "0";
+  } else {
+    var i := 1;
+    while i <= a
+      decreases a - i + 1
+    {
+      var ans := 5 * i;
+      hrs := hrs + ans;
+      if hrs <= 240 {
+        cnt := cnt + 1;
+      }
+      i := i + 1;
+    }
+    output := IntToString(cnt);
+  }
 }

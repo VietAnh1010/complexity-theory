@@ -29,5 +29,7 @@ import opened Prelude
 
 method Solve(n1: int, list1: seq<int>, n2: int, list2: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var maxA := if |list1| == 0 then -1 else MaxSeq(list1);
+  var maxB := if |list2| == 0 then -1 else MaxSeq(list2);
+  output := IntToString(maxA) + " " + IntToString(maxB);
 }

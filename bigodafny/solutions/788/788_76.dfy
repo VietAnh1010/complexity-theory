@@ -45,5 +45,51 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var l := SortInts(a_list);
+  var freq: map<int,int> := map[];
+  var i := 0;
+  while i < |l|
+    decreases |l| - i
+  {
+    var v := l[i];
+    if v in freq { freq := freq[v := freq[v]+1]; } else { freq := freq[v := 1]; }
+    i := i + 1;
+  }
+  if n == 0 {
+    output := "0";
+  } else if n == 1 {
+    output := "1";
+  } else {
+    var book: set<int> := {};
+    var cnt := 0;
+    i := 0;
+    while i < |l|
+      decreases |l| - i
+    {
+      var x := l[i];
+      if x !in book {
+        var flag := false;
+        var t := 1073741824;
+        while t >= 1 && !flag
+          decreases !flag, t
+        {
+          if t <= x {
+            t := 0;
+          } else if 2*x == t && x in freq && freq[x] == 1 {
+            t := t / 2;
+          } else if (t - x) in freq {
+            flag := true;
+            book := book + {x} + {t - x};
+          } else {
+            t := t / 2;
+          }
+        }
+        if !flag {
+          cnt := cnt + 1;
+        }
+      }
+      i := i + 1;
+    }
+    output := IntToString(cnt);
+  }
 }
