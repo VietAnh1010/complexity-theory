@@ -12,3 +12,10 @@ papers/pdf/
 __pycache__/
 *.pyc
 .DS_Store
+
+# bigodafny: regenerable from the cached download, and large.
+bigodafny/.cache/
+bigodafny/.build/
+bigodafny/data/tasks.jsonl
+bigodafny/data/smoke_*
+bigodafny/data/selftest_*

@@ -1,0 +1,22 @@
+{"ts": "2026-08-31T04:24:14", "kind": "fetch", "path": "/home/user/complexity-theory/bigodafny/.cache/time_complexity_test_set.jsonl", "bytes": 82341933}
+{"ts": "2026-08-31T04:24:16", "kind": "extract", "rows": 640, "problems": 311, "splits": {"strict": 522, "nondeterministic-output": 118}, "problems_per_split": {"strict": 253, "nondeterministic-output": 58}}
+{"ts": "2026-08-31T04:24:30", "kind": "extract", "rows": 640, "problems": 311, "splits": {"strict": 522, "nondeterministic-output": 118}, "problems_per_split": {"strict": 253, "nondeterministic-output": 58}}
+{"ts": "2026-08-31T04:25:11", "kind": "signatures", "ok": 309, "unmappable": 2, "total": 311}
+{"ts": "2026-08-31T04:28:57", "kind": "extract", "rows": 640, "problems": 311, "splits": {"strict": 522, "nondeterministic-output": 118}, "problems_per_split": {"strict": 253, "nondeterministic-output": 58}}
+{"ts": "2026-08-31T04:29:13", "kind": "scaffold", "written": 636, "kept": 0, "skipped": 4}
+{"ts": "2026-08-31T04:36:37", "kind": "baseline", "exact": 540, "none": 27, "partial": 73}
+{"ts": "2026-08-31T04:37:39", "kind": "extract", "rows": 640, "problems": 311, "nondet_hint": 118}
+{"ts": "2026-08-31T04:37:40", "kind": "signatures", "ok": 309, "unmappable": 2, "total": 311}
+{"ts": "2026-08-31T04:37:41", "kind": "scaffold", "written": 636, "kept": 0, "skipped": 4}
+{"ts": "2026-08-31T04:37:41", "kind": "dataset", "rows": 640, "problems": 311, "splits": {"strict": 540, "loose": 100}}
+{"ts": "2026-08-31T04:38:58", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 5, "valid": 5, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-08-31T04:39:15", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests", "generated_tests"], "validated": 5, "valid": 5, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-08-31T04:39:41", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 1, "valid": 0, "fail": 0, "build": 1, "error": 0}
+{"ts": "2026-08-31T04:39:42", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 1, "valid": 0, "fail": 0, "build": 1, "error": 0}
+{"ts": "2026-08-31T04:39:45", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 1, "valid": 1, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-08-31T04:40:07", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 1, "valid": 0, "fail": 1, "build": 0, "error": 0}
+{"ts": "2026-08-31T04:40:08", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 1, "valid": 0, "fail": 0, "build": 1, "error": 0}
+{"ts": "2026-08-31T04:40:12", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 1, "valid": 1, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-08-31T04:43:08", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 120, "valid": 2, "fail": 118, "build": 0, "error": 0}
+{"ts": "2026-08-31T04:43:41", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests", "generated_tests"], "validated": 5, "valid": 5, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-08-31T04:43:42", "kind": "dataset", "rows": 640, "problems": 311, "splits": {"strict": 540, "loose": 100}}

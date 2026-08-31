@@ -1,0 +1,52 @@
+{
+  "dafny_status": {
+    "untranslated": 635,
+    "valid": 5
+  },
+  "dafny_version": "4.11.0",
+  "problems": 311,
+  "problems_per_split": {
+    "loose": 59,
+    "strict": 273
+  },
+  "python_status": {
+    "exact": 540,
+    "none": 27,
+    "partial": 73
+  },
+  "rows": 640,
+  "signature_status": {
+    "ok": 636,
+    "unmappable": 4
+  },
+  "splits": {
+    "loose": 100,
+    "strict": 540
+  },
+  "strict_by_complexity": {
+    "O(1)": 40,
+    "O(logn)": 5,
+    "O(n)": 217,
+    "O(n**2)": 100,
+    "O(n**2+m**2)": 3,
+    "O(n*m)": 38,
+    "O(n+m)": 18,
+    "O(n+m)log(n+m)": 1,
+    "O(n+mlogm)": 5,
+    "O(nlogn)": 109,
+    "O(nlogn+mlogm)": 4
+  },
+  "time_complexity": {
+    "O(1)": 53,
+    "O(logn)": 5,
+    "O(n)": 251,
+    "O(n**2)": 118,
+    "O(n**2+m**2)": 3,
+    "O(n*m)": 48,
+    "O(n+m)": 23,
+    "O(n+m)log(n+m)": 2,
+    "O(n+mlogm)": 5,
+    "O(nlogn)": 127,
+    "O(nlogn+mlogm)": 5
+  }
+}
