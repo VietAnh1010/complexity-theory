@@ -19,5 +19,23 @@ import opened Prelude
 
 method Solve(a: int, b: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var n := a;
+  var m := b;
+  var c := 0;
+  var i := 0;
+  while i <= n
+    decreases n - i
+  {
+    var j := 0;
+    while j <= m
+      decreases m - j
+    {
+      if i * i + j == n && j * j + i == m {
+        c := c + 1;
+      }
+      j := j + 1;
+    }
+    i := i + 1;
+  }
+  output := IntToString(c);
 }

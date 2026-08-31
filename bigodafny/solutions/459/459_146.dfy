@@ -20,5 +20,7 @@ import opened Prelude
 
 method Solve(a: int, b: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var s := (a + b) / 3;
+  var mn := if a < b then a else b;
+  output := IntToString(if s < mn then s else mn);
 }

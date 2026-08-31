@@ -39,5 +39,34 @@ import opened Prelude
 
 method Solve(n_nodes: int, n_edges: int, edges: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var n := n_nodes - 1;
+  var canbe: set<int> := {};
+  var last := 0;
+  var i := 1;
+  while i < 200
+    decreases 200 - i
+  {
+    var good := true;
+    var j := 0;
+    while j < n_edges
+      decreases n_edges - j
+    {
+      var k := edges[j][0] - 1;
+      var f := edges[j][1] - 1;
+      if !(i * f <= k && k <= i * (f + 1) - 1) {
+        good := false;
+      }
+      j := j + 1;
+    }
+    if good {
+      canbe := canbe + {n / i};
+      last := n / i + 1;
+    }
+    i := i + 1;
+  }
+  if |canbe| == 1 {
+    output := IntToString(last) + "\n";
+  } else {
+    output := "-1\n";
+  }
 }

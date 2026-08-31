@@ -26,5 +26,24 @@ import opened Prelude
 
 method Solve(n: int, k: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+
+  var a := k;
+  var parity := FloorMod(a, 2);
+  var i := 1;
+  if parity == 0 {
+    var na := n;
+    while na != a
+    {
+      na := na - 2;
+      i := i + 1;
+    }
+  } else {
+    var na := 1;
+    while a != na
+    {
+      na := na + 2;
+      i := i + 1;
+    }
+  }
+  output := IntToString(i);
 }

@@ -31,5 +31,27 @@ import opened Prelude
 
 method Solve(n: int, numbers: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  output := "";
+  var t := 0;
+  while t < |numbers|
+    decreases |numbers| - t
+  {
+    var v := numbers[t];
+    if v % 3 == 0 {
+      output := output + IntToString(v / 3) + " 0 0\n";
+    } else if v % 3 == 1 {
+      if v / 3 >= 2 {
+        output := output + IntToString(v / 3 - 2) + " 0 1\n";
+      } else {
+        output := output + "-1\n";
+      }
+    } else {
+      if v / 3 >= 1 {
+        output := output + IntToString(v / 3 - 1) + " 1 0\n";
+      } else {
+        output := output + "-1\n";
+      }
+    }
+    t := t + 1;
+  }
 }

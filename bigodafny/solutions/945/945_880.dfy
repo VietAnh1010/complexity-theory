@@ -17,5 +17,13 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var m := n;
+  var count := 0;
+  while m > 0
+    decreases m
+  {
+    count := count + m % 2;
+    m := m / 2;
+  }
+  output := IntToString(count) + "\n";
 }

@@ -32,5 +32,34 @@ import opened Prelude
 
 method Solve(n: int, numbers_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+
+  var results: seq<string> := [];
+  var i := 0;
+  while i < |numbers_list|
+  {
+    var r := Pyramid(numbers_list[i]);
+    results := results + [IntToString(r)];
+    i := i + 1;
+  }
+  output := Join(results, "\n");
+}
+
+
+method Pyramid(nVal: int) returns (respuesta: int)
+{
+  var aux := nVal;
+  respuesta := 1;
+  var altura := 1;
+  if nVal < 2 { respuesta := 0; }
+  while aux >= 2
+  {
+    aux := aux - 2 * altura - altura + 1;
+    if aux < 0 {
+      aux := aux + 2 * altura + altura - 1;
+      altura := 1;
+      respuesta := respuesta + 1;
+    } else {
+      altura := altura + 1;
+    }
+  }
 }

@@ -37,5 +37,23 @@ import opened Prelude
 
 method Solve(n: int, rectangles: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var maxV := if rectangles[0][0] > rectangles[0][1] then rectangles[0][0] else rectangles[0][1];
+  var flag := true;
+  var i := 1;
+  while i < |rectangles| && flag
+    decreases |rectangles| - i
+  {
+    var row := rectangles[i];
+    var mx := if row[0] > row[1] then row[0] else row[1];
+    var mn := if row[0] < row[1] then row[0] else row[1];
+    if maxV >= mx {
+      maxV := mx;
+    } else if maxV >= mn {
+      maxV := mn;
+    } else {
+      flag := false;
+    }
+    i := i + 1;
+  }
+  output := if flag then "YES" else "NO";
 }

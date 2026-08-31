@@ -40,5 +40,62 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var count: map<int, int> := map[];
+  var i := 0;
+  while i < |a_list|
+    decreases |a_list| - i
+  {
+    var v := a_list[i];
+    if v in count { count := count[v := count[v] + 1]; } else { count := count[v := 1]; }
+    i := i + 1;
+  }
+  var maxCount := 0;
+  i := 0;
+  while i < |a_list|
+    decreases |a_list| - i
+  {
+    var c := count[a_list[i]];
+    if c > maxCount { maxCount := c; }
+    i := i + 1;
+  }
+  var pivot := 0;
+  var found := false;
+  i := 0;
+  while i < |a_list| && !found
+    decreases |a_list| - i
+  {
+    if count[a_list[i]] == maxCount {
+      pivot := i;
+      found := true;
+    }
+    i := i + 1;
+  }
+  var maxKey := a_list[pivot];
+  var ans: seq<string> := [];
+  var j := pivot - 1;
+  while j >= 0
+    decreases j + 1
+  {
+    if a_list[j] < maxKey {
+      ans := ans + ["1 " + IntToString(j + 1) + " " + IntToString(j + 2)];
+    } else {
+      ans := ans + ["2 " + IntToString(j + 1) + " " + IntToString(j + 2)];
+    }
+    j := j - 1;
+  }
+  j := pivot + 1;
+  while j < |a_list|
+    decreases |a_list| - j
+  {
+    if a_list[j] != maxKey {
+      if a_list[j] < maxKey {
+        ans := ans + ["1 " + IntToString(j + 1) + " " + IntToString(j)];
+      } else {
+        ans := ans + ["2 " + IntToString(j + 1) + " " + IntToString(j)];
+      }
+    }
+    j := j + 1;
+  }
+  var resultLines := [IntToString(|ans|)] + ans;
+  output := Join(resultLines, "\n");
 }

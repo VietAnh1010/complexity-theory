@@ -34,5 +34,31 @@ import opened Prelude
 
 method Solve(n: int, m: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var d := a_list + a_list;
+  var max_hugs := 0;
+  var i := 0;
+  var j := 0;
+  var days := 0;
+  var hugs := 0;
+  while i < n
+    decreases n - i
+  {
+    if days + d[j] <= m {
+      days := days + d[j];
+      hugs := hugs + SumProg(1, d[j]);
+      j := j + 1;
+    } else {
+      var cand := hugs + SumProg(d[j] - (m - days) + 1, d[j]);
+      if cand > max_hugs { max_hugs := cand; }
+      hugs := hugs - SumProg(1, d[i]);
+      days := days - d[i];
+      i := i + 1;
+    }
+  }
+  output := IntToString(max_hugs) + "\n";
+}
+
+function SumProg(a: int, b: int): int
+{
+  (a + b) * (b - a + 1) / 2
 }

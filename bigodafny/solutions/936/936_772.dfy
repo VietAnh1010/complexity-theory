@@ -27,5 +27,25 @@ import opened Prelude
 
 method Solve(n: int, grid: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  output := "";
+  var i := 0;
+  while i < |grid|
+    decreases |grid| - i
+  {
+    var row := grid[i];
+    var l1 := row[0];
+    var r1 := row[1];
+    var l2 := row[2];
+    var r2 := row[3];
+    if l1 != l2 {
+      output := output + IntToString(l1) + " " + IntToString(l2) + "\n";
+    } else if l1 != r2 {
+      output := output + IntToString(l1) + " " + IntToString(r2) + "\n";
+    } else if r1 != l2 {
+      output := output + IntToString(r1) + " " + IntToString(l2) + "\n";
+    } else if r1 != r2 {
+      output := output + IntToString(r1) + " " + IntToString(r2) + "\n";
+    }
+    i := i + 1;
+  }
 }

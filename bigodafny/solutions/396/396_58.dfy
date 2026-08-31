@@ -35,5 +35,28 @@ import opened Prelude
 
 method Solve(n: int, rectangles: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var last := 1000000000000000000;
+  var flag := true;
+  var i := 0;
+  while i < |rectangles| && flag
+    decreases |rectangles| - i
+  {
+    var row := rectangles[i];
+    var w := row[0];
+    var h := row[1];
+    if h < w {
+      var tmp := w;
+      w := h;
+      h := tmp;
+    }
+    if h <= last {
+      last := h;
+    } else if w <= last {
+      last := w;
+    } else {
+      flag := false;
+    }
+    i := i + 1;
+  }
+  output := if flag then "YES" else "NO";
 }

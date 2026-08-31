@@ -16,5 +16,7 @@ import opened Prelude
 
 method Solve(a: int, b: int, c: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var m := (a - 1) * (2 * b + 1);
+  var n := a * c;
+  output := IntToString(m) + " " + IntToString(n);
 }

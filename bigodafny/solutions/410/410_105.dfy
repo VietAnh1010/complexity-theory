@@ -28,5 +28,22 @@ import opened Prelude
 
 method Solve(n: int, arrows: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var begin := true;
+  var counter := 0;
+  var ans := 0;
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    if begin && arrows[i] == '<' {
+      ans := ans + 1;
+    } else if arrows[i] == '>' {
+      counter := counter + 1;
+      begin := false;
+    } else {
+      counter := 0;
+    }
+    i := i + 1;
+  }
+  output := IntToString(ans + counter);
 }

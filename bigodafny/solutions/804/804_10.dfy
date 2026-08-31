@@ -39,5 +39,38 @@ import opened Prelude
 
 method Solve(n_nodes: int, n_edges: int, edges: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var n := n_nodes - 1;
+  if n_edges == 0 {
+    if n == 0 {
+      output := "1\n";
+    } else {
+      output := "-1\n";
+    }
+  } else {
+    var minAps := 0;
+    var maxAps := 100000;
+    var i := 0;
+    while i < n_edges
+      decreases n_edges - i
+    {
+      var k := edges[i][0] - 1;
+      var f := edges[i][1] - 1;
+      if f == 0 {
+        if k + 1 > minAps { minAps := k + 1; }
+      } else {
+        var cand := 1 + k / (f + 1);
+        if cand > minAps { minAps := cand; }
+        var cand2 := k / f;
+        if cand2 < maxAps { maxAps := cand2; }
+      }
+      i := i + 1;
+    }
+    var minFloor := n / maxAps;
+    var maxFloor := n / minAps;
+    if minFloor == maxFloor {
+      output := IntToString(minFloor + 1) + "\n";
+    } else {
+      output := "-1\n";
+    }
+  }
 }

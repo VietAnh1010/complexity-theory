@@ -26,5 +26,23 @@ import opened Prelude
 
 method Solve(a: int, b: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var n := if a > b then a else b;
+  var m := if a < b then a else b;
+  var count := 0;
+  var av := 0;
+  while av <= n
+    decreases n - av
+  {
+    var bv := 0;
+    while bv <= n
+      decreases n - bv
+    {
+      if av * av + bv == n && av + bv * bv == m {
+        count := count + 1;
+      }
+      bv := bv + 1;
+    }
+    av := av + 1;
+  }
+  output := IntToString(count);
 }

@@ -18,5 +18,8 @@ import opened Prelude
 
 method Solve(number: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var ans := number / 5;
+  var r := number % 5;
+  if r != 0 { ans := ans + 1; }
+  output := IntToString(ans) + "\n";
 }

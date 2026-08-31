@@ -17,5 +17,39 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var total := 0;
+  var idx := 0;
+  while idx < |a_list|
+    decreases |a_list| - idx
+  {
+    total := total + a_list[idx];
+    idx := idx + 1;
+  }
+  var m := a_list[0];
+  idx := 0;
+  while idx < |a_list|
+    decreases |a_list| - idx
+  {
+    if a_list[idx] < m { m := a_list[idx]; }
+    idx := idx + 1;
+  }
+  var diff := 0;
+  idx := 0;
+  while idx < |a_list|
+    decreases |a_list| - idx
+  {
+    var v := a_list[idx];
+    var j := 1;
+    while j * j <= v
+      decreases v - j * j
+    {
+      if v % j == 0 {
+        var term := v + m - v / j - m * j;
+        if term > diff { diff := term; }
+      }
+      j := j + 1;
+    }
+    idx := idx + 1;
+  }
+  output := IntToString(total - diff);
 }

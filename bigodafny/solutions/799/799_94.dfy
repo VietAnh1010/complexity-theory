@@ -31,5 +31,35 @@ import opened Prelude
 
 method Solve(first_sentence: string, second_sentence: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var counts: map<char, int> := map[];
+  var i := 0;
+  while i < |first_sentence|
+    decreases |first_sentence| - i
+  {
+    var c := first_sentence[i];
+    if c in counts {
+      counts := counts[c := counts[c] + 1];
+    } else {
+      counts := counts[c := 1];
+    }
+    i := i + 1;
+  }
+  var ans := "YES";
+  var broke := false;
+  i := 0;
+  while i < |second_sentence| && !broke
+    decreases |second_sentence| - i
+  {
+    var c := second_sentence[i];
+    if c != ' ' {
+      if c in counts && counts[c] > 0 {
+        counts := counts[c := counts[c] - 1];
+      } else {
+        ans := "NO";
+        broke := true;
+      }
+    }
+    i := i + 1;
+  }
+  output := ans + "\n";
 }

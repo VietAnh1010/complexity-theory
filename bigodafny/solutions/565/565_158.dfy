@@ -33,5 +33,27 @@ import opened Prelude
 
 method Solve(n: int, numbers: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+
+  var maxV := 100000;
+  var s := new int[maxV + 1];
+  var z := 0;
+  while z <= maxV
+  {
+    s[z] := 0;
+    z := z + 1;
+  }
+  var i := 0;
+  while i < |numbers|
+  {
+    s[numbers[i]] := s[numbers[i]] + 1;
+    i := i + 1;
+  }
+  var found := false;
+  var j := 0;
+  while j <= maxV
+  {
+    if s[j] % 2 == 1 { found := true; }
+    j := j + 1;
+  }
+  output := if found then "Conan" else "Agasa";
 }

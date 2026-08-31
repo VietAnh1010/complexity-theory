@@ -28,7 +28,37 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+function ContainsInt(xs: seq<int>, x: int): bool
+  decreases |xs|
+{
+  if |xs| == 0 then false
+  else if xs[0] == x then true
+  else ContainsInt(xs[1..], x)
+}
+
 method Solve(n: int, v_list: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var start: seq<int> := [];
+  var end_: seq<int> := [];
+  var ans1 := 0;
+  var ans2 := 0;
+  var idx := 0;
+  while idx < |v_list|
+    decreases |v_list| - idx
+  {
+    var a := v_list[idx][0];
+    var b := v_list[idx][1];
+    var c := v_list[idx][2];
+    if ContainsInt(start, a) || ContainsInt(end_, b) {
+      ans1 := ans1 + c;
+      start := start + [b];
+      end_ := end_ + [a];
+    } else {
+      ans2 := ans2 + c;
+      start := start + [a];
+      end_ := end_ + [b];
+    }
+    idx := idx + 1;
+  }
+  output := IntToString(if ans1 < ans2 then ans1 else ans2);
 }

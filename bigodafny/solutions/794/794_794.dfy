@@ -33,5 +33,49 @@ import opened Prelude
 
 method Solve(n: int, data: seq<(int, int, int)>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  output := "";
+  var t := 0;
+  while t < |data|
+    decreases |data| - t
+  {
+    var (nn, x, y) := data[t];
+    var arr: seq<(int, int)> := [];
+    var i := 1;
+    while i < nn
+      decreases nn - i
+    {
+      if (y - x) % i == 0 {
+        var step := (y - x) / i;
+        var smol := x % step;
+        if smol == 0 { smol := smol + step; }
+        var total := smol + step * (nn - 1);
+        var m := if y > total then y else total;
+        arr := arr + [(m, step)];
+      }
+      i := i + 1;
+    }
+    var best := arr[0];
+    var j := 1;
+    while j < |arr|
+      decreases |arr| - j
+    {
+      if arr[j].0 < best.0 || (arr[j].0 == best.0 && arr[j].1 < best.1) {
+        best := arr[j];
+      }
+      j := j + 1;
+    }
+    var total := best.0;
+    var step := best.1;
+    var start := total - step * (nn - 1);
+    var vals: seq<int> := [];
+    var v := start;
+    while v <= total
+      decreases total - v
+    {
+      vals := vals + [v];
+      v := v + step;
+    }
+    output := output + JoinInts(vals, " ") + "\n";
+    t := t + 1;
+  }
 }

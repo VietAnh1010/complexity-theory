@@ -28,5 +28,23 @@ import opened Prelude
 
 method Solve(N: int, pairs_list: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var m := 0;
+  var c := 0;
+  var i := 0;
+  while i < |pairs_list|
+    decreases |pairs_list| - i
+  {
+    var a := pairs_list[i][0];
+    var b := pairs_list[i][1];
+    if a > b { m := m + 1; }
+    if b > a { c := c + 1; }
+    i := i + 1;
+  }
+  if m > c {
+    output := "Mishka";
+  } else if m < c {
+    output := "Chris";
+  } else {
+    output := "Friendship is magic!^^";
+  }
 }

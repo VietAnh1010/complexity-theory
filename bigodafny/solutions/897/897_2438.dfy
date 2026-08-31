@@ -32,5 +32,27 @@ import opened Prelude
 
 method Solve(number: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var x := number;
+  var step := 0;
+  while x != 0
+    decreases x
+  {
+    if x >= 5 {
+      step := step + 1;
+      x := x - 5;
+    } else if x >= 4 {
+      step := step + 1;
+      x := x - 4;
+    } else if x >= 3 {
+      step := step + 1;
+      x := x - 3;
+    } else if x >= 2 {
+      step := step + 1;
+      x := x - 2;
+    } else if x >= 1 {
+      step := step + 1;
+      x := x - 1;
+    }
+  }
+  output := IntToString(step) + "\n";
 }

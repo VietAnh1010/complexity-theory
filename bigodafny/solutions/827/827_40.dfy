@@ -41,5 +41,21 @@ import opened Prelude
 
 method Solve(n: int, pairs: seq<(int, int)>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var t := pairs[0].0;
+  var idx := 1;
+  while idx < |pairs|
+    decreases |pairs| - idx
+  {
+    var v := pairs[idx].0;
+    var k := pairs[idx].1;
+    if v <= t {
+      var a := t - v;
+      var c := a / k + 1;
+      t := v + k * c;
+    } else {
+      t := v;
+    }
+    idx := idx + 1;
+  }
+  output := IntToString(t) + "\n";
 }

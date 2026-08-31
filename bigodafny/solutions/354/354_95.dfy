@@ -29,7 +29,31 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+method Log2Floor(x: int) returns (k: int)
+  requires x >= 1
+{
+  k := 0;
+  var p := 1;
+  while p * 2 <= x
+    decreases x - p
+  {
+    p := p * 2;
+    k := k + 1;
+  }
+}
+
 method Solve(a: int, b: int, c: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var nn := a;
+  var matchesCount := 0;
+  while nn > 1
+    decreases nn
+  {
+    var power := Log2Floor(nn);
+    matchesCount := matchesCount + power;
+    nn := nn - power;
+  }
+  var bottles := matchesCount * (2 * b + 1);
+  var towels := a * c;
+  output := IntToString(bottles) + " " + IntToString(towels);
 }

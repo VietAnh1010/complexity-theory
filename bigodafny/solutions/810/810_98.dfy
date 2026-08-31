@@ -36,5 +36,44 @@ import opened Prelude
 
 method Solve(n: int, pairs: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  output := "";
+  var idx := 0;
+  while idx < |pairs|
+    decreases |pairs| - idx
+  {
+    var x := pairs[idx][0];
+    var y := pairs[idx][1];
+    var a := if x < y then x else y;
+    var b := if x < y then y else x;
+    if a == b || a == b - 1 {
+      output := output + IntToString(2 * a - 2) + "\n";
+    } else {
+      var l := 1;
+      var r := b - a;
+      while l + 1 < r
+        decreases r - l
+      {
+        var t := (l + r) / 2;
+        if Check(t, a, b) {
+          l := t;
+        } else {
+          r := t;
+        }
+      }
+      if Check(r, a, b) {
+        output := output + IntToString(2 * a - 2 + r) + "\n";
+      } else if Check(l, a, b) {
+        output := output + IntToString(2 * a - 2 + l) + "\n";
+      } else {
+        output := output + IntToString(2 * a - 1) + "\n";
+      }
+    }
+    idx := idx + 1;
+  }
+}
+
+function Check(t: int, a: int, b: int): bool
+{
+  var k := (2 * a + t) / 2;
+  k * (2 * a + t - k) < a * b
 }

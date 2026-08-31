@@ -21,7 +21,35 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+function CharInString(s: string, c: char): bool
+  decreases |s|
+{
+  if |s| == 0 then false
+  else if s[0] == c then true
+  else CharInString(s[1..], c)
+}
+
+function HasCommonChar(s: string, t: string): bool
+  decreases |s|
+{
+  if |s| == 0 then false
+  else if CharInString(t, s[0]) then true
+  else HasCommonChar(s[1..], t)
+}
+
 method Solve(n: int, string_pairs: seq<(string, string)>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var lines: seq<string> := [];
+  var i := 0;
+  while i < |string_pairs|
+    decreases |string_pairs| - i
+  {
+    if HasCommonChar(string_pairs[i].0, string_pairs[i].1) {
+      lines := lines + ["YES"];
+    } else {
+      lines := lines + ["NO"];
+    }
+    i := i + 1;
+  }
+  output := Join(lines, "\n");
 }

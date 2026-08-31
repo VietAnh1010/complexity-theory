@@ -43,5 +43,37 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var s := 0;
+  var minEl := a_list[0];
+  var i := 0;
+  while i < |a_list|
+    decreases |a_list| - i
+  {
+    s := s + a_list[i];
+    if a_list[i] < minEl { minEl := a_list[i]; }
+    i := i + 1;
+  }
+  var diff := 0;
+  i := 0;
+  while i < |a_list|
+    decreases |a_list| - i
+  {
+    var x := a_list[i];
+    if x != minEl {
+      var y := 2;
+      while y <= x / 2
+        decreases x - y
+      {
+        if x % y == 0 {
+          var newX := x / y;
+          var newMin := minEl * y;
+          var newDiff := x + minEl - newX - newMin;
+          if newDiff > diff { diff := newDiff; }
+        }
+        y := y + 1;
+      }
+    }
+    i := i + 1;
+  }
+  output := IntToString(s - diff);
 }

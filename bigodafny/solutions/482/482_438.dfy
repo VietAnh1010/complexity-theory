@@ -15,5 +15,23 @@ import opened Prelude
 
 method Solve(a: int, b: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var n := a;
+  var m := b;
+  var c := 0;
+  var av := 0;
+  while av < 32
+    decreases 32 - av
+  {
+    var bv := 0;
+    while bv < 32
+      decreases 32 - bv
+    {
+      if av * av + bv == n && bv * bv + av == m {
+        c := c + 1;
+      }
+      bv := bv + 1;
+    }
+    av := av + 1;
+  }
+  output := IntToString(c);
 }

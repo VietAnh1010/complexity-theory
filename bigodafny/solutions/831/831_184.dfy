@@ -28,5 +28,25 @@ import opened Prelude
 
 method Solve(word: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var s := word;
+  var t := "AKIHABARA";
+  var i := 0;
+  while i < |s| && i < 9
+    decreases 9 - i
+  {
+    if s[i] != t[i] {
+      if t[i] == 'A' {
+        s := s[..i] + "A" + s[i..];
+      }
+    }
+    i := i + 1;
+  }
+  if |s| > 0 && s[|s| - 1] != 'A' {
+    s := s + "A";
+  }
+  if s == t {
+    output := "YES\n";
+  } else {
+    output := "NO\n";
+  }
 }

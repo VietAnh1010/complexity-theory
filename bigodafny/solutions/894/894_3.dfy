@@ -24,5 +24,31 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>, x: int, y: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var s := 0;
+  var idx := 0;
+  while idx < |a_list|
+    decreases |a_list| - idx
+  {
+    s := s + a_list[idx];
+    idx := idx + 1;
+  }
+  var ps := 0;
+  var i := 0;
+  var found := false;
+  var ans := 0;
+  while i < |a_list| && !found
+    decreases |a_list| - i
+  {
+    ps := ps + a_list[i];
+    if x <= ps && ps <= y && x <= (s - ps) && (s - ps) <= y {
+      ans := i + 2;
+      found := true;
+    }
+    i := i + 1;
+  }
+  if found {
+    output := IntToString(ans) + "\n";
+  } else {
+    output := "0\n";
+  }
 }

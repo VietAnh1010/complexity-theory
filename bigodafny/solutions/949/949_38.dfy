@@ -36,5 +36,37 @@ import opened Prelude
 
 method Solve(directions: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var x := 0;
+  var y := 0;
+  var used: set<(int, int)> := {(0, 0)};
+  var bo := false;
+  var i := 0;
+  while i < |directions|
+    decreases |directions| - i
+  {
+    var e := directions[i];
+    if e == 'L' {
+      x := x + 1;
+    } else if e == 'R' {
+      x := x - 1;
+    } else if e == 'U' {
+      y := y + 1;
+    } else {
+      y := y - 1;
+    }
+    var a := (x - 1, y) in used;
+    var b := (x + 1, y) in used;
+    var c := (x, y - 1) in used;
+    var d := (x, y + 1) in used;
+    var cnt := (if a then 1 else 0) + (if b then 1 else 0) + (if c then 1 else 0) + (if d then 1 else 0);
+    if cnt > 1 {
+      bo := true;
+    }
+    if (x, y) in used {
+      bo := true;
+    }
+    used := used + {(x, y)};
+    i := i + 1;
+  }
+  output := (if !bo then "OK" else "BUG") + "\n";
 }

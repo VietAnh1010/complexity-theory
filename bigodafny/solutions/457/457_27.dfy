@@ -22,5 +22,21 @@ import opened Prelude
 
 method Solve(n: int, m: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  if m == 0 {
+    if n == 1 {
+      output := "0";
+    } else {
+      output := "No solution";
+    }
+  } else {
+    var s := IntToString(m);
+    var i := 0;
+    while i < n - 1
+      decreases n - 1 - i
+    {
+      s := s + "0";
+      i := i + 1;
+    }
+    output := s;
+  }
 }

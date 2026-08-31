@@ -2,11 +2,11 @@
   "build": 0,
   "dafny_version": "4.11.0",
   "error": 0,
-  "fail": 0,
+  "fail": 1,
   "tiers": [
     "public_tests",
     "private_tests"
   ],
-  "valid": 70,
-  "validated": 70
+  "valid": 64,
+  "validated": 65
 }

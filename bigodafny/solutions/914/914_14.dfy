@@ -21,5 +21,16 @@ import opened Prelude
 
 method Solve(n: int, matrix: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  output := "";
+  var i := 0;
+  while i < |matrix|
+    decreases |matrix| - i
+  {
+    var row := matrix[i];
+    var a := row[0] + row[1];
+    var b := row[2] + row[3];
+    var mx := if a > b then a else b;
+    output := output + IntToString(mx) + "\n";
+    i := i + 1;
+  }
 }

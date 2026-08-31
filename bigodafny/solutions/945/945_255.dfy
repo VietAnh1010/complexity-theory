@@ -24,5 +24,19 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var m := n;
+  var bacteria := 0;
+  var done := false;
+  while !done
+    decreases m
+  {
+    if m == 1 {
+      bacteria := bacteria + 1;
+      done := true;
+    } else {
+      bacteria := bacteria + m % 2;
+      m := m / 2;
+    }
+  }
+  output := IntToString(bacteria) + "\n";
 }

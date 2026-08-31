@@ -29,5 +29,37 @@ import opened Prelude
 
 method Solve(s: string, n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var strLen := |s|;
+  var l := new int[strLen + 1];
+  var idx := 0;
+  while idx < strLen + 1
+    decreases strLen + 1 - idx
+  {
+    l[idx] := 0;
+    idx := idx + 1;
+  }
+  idx := 0;
+  while idx < |a_list|
+    decreases |a_list| - idx
+  {
+    var v := a_list[idx];
+    l[v - 1] := l[v - 1] + 1;
+    l[strLen - v + 1] := l[strLen - v + 1] - 1;
+    idx := idx + 1;
+  }
+  var k := 0;
+  var result: seq<char> := [];
+  idx := 0;
+  while idx < strLen
+    decreases strLen - idx
+  {
+    k := k + l[idx];
+    if k % 2 == 0 {
+      result := result + [s[idx]];
+    } else {
+      result := result + [s[strLen - idx - 1]];
+    }
+    idx := idx + 1;
+  }
+  output := result;
 }

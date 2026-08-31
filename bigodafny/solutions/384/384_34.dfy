@@ -29,7 +29,68 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+function SumSeq(xs: seq<int>): int
+  decreases |xs|
+{
+  if |xs| == 0 then 0 else xs[0] + SumSeq(xs[1..])
+}
+
+function RemoveFirst(xs: seq<int>, v: int): seq<int>
+  decreases |xs|
+{
+  if |xs| == 0 then []
+  else if xs[0] == v then xs[1..]
+  else [xs[0]] + RemoveFirst(xs[1..], v)
+}
+
+method Reduce(petals: seq<int>) returns (result: string)
+  decreases |petals|
+{
+  if |petals| == 0 {
+    result := "0";
+    return;
+  }
+  var s := SumSeq(petals);
+  if s % 2 == 1 {
+    result := IntToString(s);
+    return;
+  }
+  var hasOdd := false;
+  var mOdd := 0;
+  var i := 0;
+  while i < |petals|
+    decreases |petals| - i
+  {
+    if petals[i] % 2 == 1 {
+      if !hasOdd || petals[i] < mOdd {
+        mOdd := petals[i];
+        hasOdd := true;
+      }
+    }
+    i := i + 1;
+  }
+  var m: int;
+  if hasOdd {
+    m := mOdd;
+  } else {
+    m := petals[0];
+    var j := 1;
+    while j < |petals|
+      decreases |petals| - j
+    {
+      if petals[j] < m { m := petals[j]; }
+      j := j + 1;
+    }
+  }
+  var newPetals := RemoveFirst(petals, m);
+  if |newPetals| == 0 {
+    result := "0";
+  } else {
+    result := Reduce(newPetals);
+  }
+}
+
 method Solve(v_0: int, v_1: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  output := Reduce(v_1);
 }

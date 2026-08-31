@@ -19,5 +19,14 @@ import opened Prelude
 
 method Solve(n: int, numbers: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+
+  var l := SortInts(numbers);
+  var x := 0;
+  var i := 0;
+  while i < n - 1
+  {
+    x := x + l[i+1] - l[i] - 1;
+    i := i + 1;
+  }
+  output := IntToString(x);
 }
