@@ -30,5 +30,25 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  // total[i] = sum of a_list[i..n-1]
+  var total := seq(n + 1, _ => 0);
+  var i := n - 1;
+  while i >= 0
+    decreases i
+  {
+    total := total[i := total[i+1] + a_list[i]];
+    i := i - 1;
+  }
+  var ali := seq(n + 1, _ => 0);
+  var bob := seq(n + 1, _ => 0);
+  i := n - 1;
+  while i >= 0
+    decreases i
+  {
+    var bv := if bob[i+1] > ali[i+1] + a_list[i] then bob[i+1] else ali[i+1] + a_list[i];
+    bob := bob[i := bv];
+    ali := ali[i := total[i] - bv];
+    i := i - 1;
+  }
+  output := IntToString(ali[0]) + " " + IntToString(bob[0]);
 }

@@ -22,5 +22,36 @@ import opened Prelude
 
 method Solve(n: int, ratings: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var distinct: seq<int> := [];
+  var i := 0;
+  while i < |ratings|
+    decreases |ratings| - i
+  {
+    if ratings[i] !in distinct {
+      distinct := distinct + [ratings[i]];
+    }
+    i := i + 1;
+  }
+  var c := 0;
+  i := 0;
+  while i < |distinct|
+    decreases |distinct| - i
+  {
+    var cnt := CountOccurrences659b(ratings, distinct[i]);
+    c := c + cnt / 2;
+    i := i + 1;
+  }
+  output := IntToString(c / 2);
+}
+
+method CountOccurrences659b(xs: seq<int>, v: int) returns (cnt: int)
+{
+  cnt := 0;
+  var i := 0;
+  while i < |xs|
+    decreases |xs| - i
+  {
+    if xs[i] == v { cnt := cnt + 1; }
+    i := i + 1;
+  }
 }

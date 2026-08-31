@@ -42,5 +42,59 @@ import opened Prelude
 
 method Solve(n: int, s: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var countClose := CountChar661(s, ')');
+  var countOpen := CountChar661(s, '(');
+  if countClose != countOpen {
+    output := "-1";
+  } else {
+    var a: seq<int> := [];
+    var b: seq<int> := [];
+    var i := 0;
+    while i < |s|
+      decreases |s| - i
+    {
+      if s[i] == ')' { a := a + [i]; } else { b := b + [i]; }
+      i := i + 1;
+    }
+    var c: seq<int> := [];
+    i := 0;
+    while i < |a|
+      decreases |a| - i
+    {
+      if b[i] > a[i] {
+        c := c + [a[i], b[i]];
+      }
+      i := i + 1;
+    }
+    c := SortInts(c);
+    var start := 0;
+    var sum := 0;
+    i := 0;
+    while i < |c| - 1
+      decreases |c| - 1 - i
+    {
+      if c[i] != c[i+1] - 1 {
+        sum := sum + (c[i] - c[start] + 1);
+        start := i + 1;
+      } else {
+        if i == |c| - 2 {
+          sum := sum + (c[i+1] - c[start] + 1);
+        }
+      }
+      i := i + 1;
+    }
+    output := IntToString(sum);
+  }
+}
+
+method CountChar661(s: string, ch: char) returns (cnt: int)
+{
+  cnt := 0;
+  var i := 0;
+  while i < |s|
+    decreases |s| - i
+  {
+    if s[i] == ch { cnt := cnt + 1; }
+    i := i + 1;
+  }
 }

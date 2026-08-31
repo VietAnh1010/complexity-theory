@@ -27,5 +27,20 @@ import opened Prelude
 
 method Solve(n1: int, list1: seq<int>, n2: int, list2: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var max1 := Max685(list1);
+  var max2 := Max685(list2);
+  output := IntToString(max1) + " " + IntToString(max2);
+}
+
+method Max685(xs: seq<int>) returns (m: int)
+  requires |xs| > 0
+{
+  m := xs[0];
+  var i := 1;
+  while i < |xs|
+    decreases |xs| - i
+  {
+    if xs[i] > m { m := xs[i]; }
+    i := i + 1;
+  }
 }

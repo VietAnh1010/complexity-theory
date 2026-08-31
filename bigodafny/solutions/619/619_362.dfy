@@ -37,5 +37,56 @@ import opened Prelude
 
 method Solve(n: int, strings: seq<string>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var sigs: seq<string> := [];
+  var i := 0;
+  while i < |strings|
+    decreases |strings| - i
+  {
+    var sg := Signature619b(strings[i]);
+    sigs := sigs + [sg];
+    i := i + 1;
+  }
+  var distinctCount := CountDistinct619b(sigs);
+  output := IntToString(distinctCount);
+}
+
+method Signature619b(s: string) returns (sig: string)
+{
+  var pres := seq(26, _ => false);
+  var i := 0;
+  while i < |s|
+    decreases |s| - i
+  {
+    var idx := (s[i] as int) - ('a' as int);
+    if 0 <= idx < 26 {
+      pres := pres[idx := true];
+    }
+    i := i + 1;
+  }
+  var alphabet := "abcdefghijklmnopqrstuvwxyz";
+  sig := "";
+  i := 0;
+  while i < 26
+    decreases 26 - i
+  {
+    if pres[i] {
+      sig := sig + [alphabet[i]];
+    }
+    i := i + 1;
+  }
+}
+
+method CountDistinct619b(xs: seq<string>) returns (c: int)
+{
+  var seen: seq<string> := [];
+  var i := 0;
+  while i < |xs|
+    decreases |xs| - i
+  {
+    if xs[i] !in seen {
+      seen := seen + [xs[i]];
+    }
+    i := i + 1;
+  }
+  c := |seen|;
 }

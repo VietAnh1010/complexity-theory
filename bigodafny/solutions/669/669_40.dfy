@@ -34,5 +34,32 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var mx := -1;
+  var mn := 10000000000;
+  var maxf := 0;
+  var minf := 0;
+  var i := 0;
+  while i < |a_list|
+    decreases |a_list| - i
+  {
+    var x := a_list[i];
+    if x > mx {
+      maxf := 1;
+      mx := x;
+    } else if x == mx {
+      maxf := maxf + 1;
+    }
+    if x < mn {
+      minf := 1;
+      mn := x;
+    } else if x == mn {
+      minf := minf + 1;
+    }
+    i := i + 1;
+  }
+  if mx == mn {
+    output := IntToString(mx - mn) + " " + IntToString(maxf * (maxf - 1) / 2);
+  } else {
+    output := IntToString(mx - mn) + " " + IntToString(maxf * minf);
+  }
 }

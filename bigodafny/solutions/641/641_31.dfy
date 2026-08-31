@@ -32,5 +32,39 @@ import opened Prelude
 
 method Solve(n: int, m: int, s: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var segments := SplitByDot(s);
+  var found := false;
+  var i := 0;
+  while i < |segments| && !found
+    decreases |segments| - i
+  {
+    if |segments[i]| > 0 && |segments[i]| + 1 > m {
+      found := true;
+    }
+    i := i + 1;
+  }
+  if found {
+    output := "NO";
+  } else {
+    output := "YES";
+  }
+}
+
+method SplitByDot(s: string) returns (parts: seq<string>)
+{
+  parts := [];
+  var cur := "";
+  var i := 0;
+  while i < |s|
+    decreases |s| - i
+  {
+    if s[i] == '.' {
+      parts := parts + [cur];
+      cur := "";
+    } else {
+      cur := cur + [s[i]];
+    }
+    i := i + 1;
+  }
+  parts := parts + [cur];
 }

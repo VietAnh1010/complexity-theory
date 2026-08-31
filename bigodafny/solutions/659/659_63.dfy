@@ -23,5 +23,22 @@ import opened Prelude
 
 method Solve(n: int, ratings: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var a := SortInts(ratings);
+  var bLen := 0;
+  var t := 1;
+  var c := 0;
+  var i := 0;
+  while i < |a|
+    decreases |a| - i
+  {
+    if i == |a| - 1 || a[i] != a[i+1] {
+      c := c + t / 4;
+      if t % 4 >= 2 { bLen := bLen + 1; }
+      t := 1;
+    } else {
+      t := t + 1;
+    }
+    i := i + 1;
+  }
+  output := IntToString(bLen / 2 + c);
 }

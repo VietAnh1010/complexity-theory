@@ -25,5 +25,17 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var x := 0;
+  var s := 0;
+  var i := |a_list| - 1;
+  while i >= 0
+    decreases i
+  {
+    var ai := a_list[i];
+    var candidate := ai + s - x;
+    if candidate > x { x := candidate; }
+    s := s + ai;
+    i := i - 1;
+  }
+  output := IntToString(s - x) + " " + IntToString(x);
 }

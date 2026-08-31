@@ -36,5 +36,23 @@ import opened Prelude
 
 method Solve(a: int, b: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var mod := 1000000007;
+  if a - b > 1 || b - a > 1 {
+    output := IntToString(0);
+  } else {
+    var mn := if a < b then a else b;
+    var fact := 1;
+    var i := 1;
+    while i <= mn
+      decreases mn - i + 1
+    {
+      fact := (fact * i) % mod;
+      i := i + 1;
+    }
+    if a == b {
+      output := IntToString((fact * fact % mod) * 2 % mod);
+    } else {
+      output := IntToString((fact * fact % mod) * (mn + 1) % mod);
+    }
+  }
 }

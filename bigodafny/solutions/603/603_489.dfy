@@ -26,5 +26,17 @@ import opened Prelude
 
 method Solve(n: int, numbers: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var mn := numbers[0];
+  var mx := numbers[0];
+  var i := 1;
+  while i < |numbers|
+    decreases |numbers| - i
+  {
+    if numbers[i] < mn { mn := numbers[i]; }
+    if numbers[i] > mx { mx := numbers[i]; }
+    i := i + 1;
+  }
+  var diff := mx - mn + 1;
+  var x := if diff < n then 0 else diff - n;
+  output := IntToString(x);
 }

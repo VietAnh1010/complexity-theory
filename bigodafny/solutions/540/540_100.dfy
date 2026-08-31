@@ -14,5 +14,9 @@ import opened Prelude
 
 method Solve(n: int, k: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  if k % 2 != 0 {
+    output := IntToString(k / 2 + 1);
+  } else {
+    output := IntToString((n - k + 2) / 2);
+  }
 }

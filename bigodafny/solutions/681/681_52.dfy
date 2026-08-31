@@ -22,5 +22,29 @@ import opened Prelude
 
 method Solve(a: int, b: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var mod := 1000000007;
+  var diff := if a >= b then a - b else b - a;
+  if a == b {
+    var fa := FactorialMod681(a, mod);
+    var fb := FactorialMod681(b, mod);
+    output := IntToString((fa * fb % mod) * 2 % mod);
+  } else if diff == 1 {
+    var fa := FactorialMod681(a, mod);
+    var fb := FactorialMod681(b, mod);
+    output := IntToString((fa * fb) % mod);
+  } else {
+    output := IntToString(0);
+  }
+}
+
+method FactorialMod681(n: int, mod: int) returns (r: int)
+{
+  r := 1;
+  var i := 1;
+  while i <= n
+    decreases n - i + 1
+  {
+    r := (r * i) % mod;
+    i := i + 1;
+  }
 }
