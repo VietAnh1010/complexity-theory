@@ -17,5 +17,24 @@ import opened Prelude
 
 method Solve(N: int, numbers: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var a := Sort(numbers, (x, y) => x > y);
+  var i := 0;
+  while i < N - 1
+    decreases N - 1 - i
+  {
+    var cand := a[i] - 1;
+    if a[i + 1] < cand { cand := a[i + 1]; }
+    if cand < 0 { cand := 0; }
+    a := a[i + 1 := cand];
+    i := i + 1;
+  }
+  var total := 0;
+  var j := 0;
+  while j < |a|
+    decreases |a| - j
+  {
+    total := total + a[j];
+    j := j + 1;
+  }
+  output := IntToString(total);
 }

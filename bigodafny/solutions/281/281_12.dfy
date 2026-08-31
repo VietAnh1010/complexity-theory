@@ -32,6 +32,45 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
+  decreases *
 {
-  output := ""; // TODO: translate the Python above
+  var no := a_list;
+  var flag := true;
+  while flag
+    decreases *
+  {
+    flag := false;
+    var oi := 0;
+    while oi < n
+      decreases n - oi
+    {
+      var iv := no[oi];
+      if iv > 0 {
+        var j := 0;
+        while j < n
+          decreases n - j
+        {
+          if no[j] > iv {
+            flag := true;
+            if no[j] % iv == 0 {
+              no := no[j := iv];
+            } else {
+              no := no[j := no[j] % iv];
+            }
+          }
+          j := j + 1;
+        }
+      }
+      oi := oi + 1;
+    }
+  }
+  var total := 0;
+  var k := 0;
+  while k < |no|
+    decreases |no| - k
+  {
+    total := total + no[k];
+    k := k + 1;
+  }
+  output := IntToString(total);
 }

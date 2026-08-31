@@ -36,5 +36,32 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  if n < 4 {
+    output := "-1";
+  } else {
+    var numSeven := n / 7;
+    var rem := n % 7;
+    var toBecomeFour := rem % 4;
+    var numFour := rem / 4;
+    var aux := 0;
+    if toBecomeFour != 0 {
+      if numSeven >= toBecomeFour {
+        numFour := rem / 4 + 2 * toBecomeFour;
+        numSeven := numSeven - toBecomeFour;
+      } else {
+        aux := 1;
+      }
+    }
+    if aux == 0 {
+      output := Repeat('4', numFour) + Repeat('7', numSeven);
+    } else {
+      output := "-1";
+    }
+  }
+}
+
+function Repeat(c: char, n: int): string
+  decreases if n < 0 then 0 else n
+{
+  if n <= 0 then "" else [c] + Repeat(c, n - 1)
 }

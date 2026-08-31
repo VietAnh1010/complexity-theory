@@ -73,6 +73,80 @@ module Prelude {
       SplitWsFrom(s, i + 1, cur + [s[i]], acc)
   }
 
+  // ---- min / max over a sequence ------------------------------------------
+  // Accumulator-passing, so these are O(n). The naive shape
+  //     if s[0] >= MaxOf(s[1..]) then s[0] else MaxOf(s[1..])
+  // evaluates the recursive call in BOTH the condition and the branch, giving
+  // T(n) = 2T(n-1) -- exponential. It passes tests on small inputs and blows up
+  // on large ones, which is the worst way for a bug to behave in a dataset
+  // whose rows carry complexity labels.
+
+  function MaxSeqFrom(s: seq<int>, i: nat, best: int): int
+    requires i <= |s|
+    decreases |s| - i
+  {
+    if i == |s| then best
+    else MaxSeqFrom(s, i + 1, if s[i] > best then s[i] else best)
+  }
+
+  function MaxSeq(s: seq<int>): int
+    requires |s| > 0
+  {
+    MaxSeqFrom(s, 1, s[0])
+  }
+
+  function MinSeqFrom(s: seq<int>, i: nat, best: int): int
+    requires i <= |s|
+    decreases |s| - i
+  {
+    if i == |s| then best
+    else MinSeqFrom(s, i + 1, if s[i] < best then s[i] else best)
+  }
+
+  function MinSeq(s: seq<int>): int
+    requires |s| > 0
+  {
+    MinSeqFrom(s, 1, s[0])
+  }
+
+  // ---- arithmetic ---------------------------------------------------------
+  // Present because translators kept writing these per file, and a local
+  // reimplementation is where the exponential MaxOf/MinOf bug came from.
+
+  function AbsInt(x: int): int { if x < 0 then -x else x }
+
+  function SumFrom(s: seq<int>, i: nat, acc: int): int
+    requires i <= |s|
+    decreases |s| - i
+  {
+    if i == |s| then acc else SumFrom(s, i + 1, acc + s[i])
+  }
+
+  function SumSeq(s: seq<int>): int { SumFrom(s, 0, 0) }
+
+  function Gcd(a: int, b: int): int
+    requires a >= 0 && b >= 0
+    decreases b
+  {
+    if b == 0 then a else Gcd(b, a % b)
+  }
+
+  function Repeat(s: string, n: nat): string
+    decreases n
+  {
+    if n == 0 then "" else s + Repeat(s, n - 1)
+  }
+
+  // Python str.replace: non-overlapping, left to right.
+  function ReplaceAll(s: string, pat: string, rep: string): string
+    requires |pat| > 0
+    decreases |s|
+  {
+    if |s| < |pat| then s
+    else if s[0..|pat|] == pat then rep + ReplaceAll(s[|pat|..], pat, rep)
+    else [s[0]] + ReplaceAll(s[1..], pat, rep)
+  }
+
   // ---- sorting ------------------------------------------------------------
   // Merge sort, so an O(n log n) translation stays O(n log n).
 

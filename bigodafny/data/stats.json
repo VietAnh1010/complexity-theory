@@ -1,7 +1,7 @@
 {
   "dafny_status": {
-    "untranslated": 570,
-    "valid": 70
+    "untranslated": 490,
+    "valid": 150
   },
   "dafny_version": "4.11.0",
   "problems": 311,

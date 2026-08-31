@@ -26,5 +26,21 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var xs := SortInts(a_list);
+  var g := xs[0];
+  var i := 1;
+  while i < |xs|
+    decreases |xs| - i
+  {
+    g := Gcd(g, xs[i]);
+    i := i + 1;
+  }
+  output := IntToString(g * n);
+}
+
+function Gcd(a: int, b: int): int
+  requires a >= 0 && b >= 0
+  decreases b
+{
+  if b == 0 then a else Gcd(b, a % b)
 }

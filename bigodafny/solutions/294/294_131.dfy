@@ -21,5 +21,32 @@ import opened Prelude
 
 method Solve(s: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var seen: set<char> := {};
+  var ans := 100;
+  var i := 0;
+  while i < |s|
+    decreases |s| - i
+  {
+    if s[i] !in seen {
+      seen := seen + {s[i]};
+      var v := MaxRunExcluding(s, s[i]);
+      if v < ans { ans := v; }
+    }
+    i := i + 1;
+  }
+  output := IntToString(ans);
+}
+
+function MaxRunExcluding(s: string, c: char): int
+{
+  MaxRunHelper(s, c, 0, 0, 0)
+}
+
+function MaxRunHelper(s: string, c: char, idx: int, curRun: int, best: int): int
+  requires 0 <= idx <= |s|
+  decreases |s| - idx
+{
+  if idx == |s| then (if curRun > best then curRun else best)
+  else if s[idx] == c then MaxRunHelper(s, c, idx + 1, 0, if curRun > best then curRun else best)
+  else MaxRunHelper(s, c, idx + 1, curRun + 1, best)
 }

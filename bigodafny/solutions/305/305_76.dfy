@@ -27,5 +27,21 @@ import opened Prelude
 
 method Solve(a: int, b: int, c_list: seq<int>, d_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var aSorted := SortInts(c_list);
+  var bSorted := SortInts(d_list);
+  var am := aSorted[0];
+  var bm := bSorted[0];
+  var amax := aSorted[|aSorted| - 1];
+  var i := bSorted[0] - 1;
+  while i >= 2 * am && amax <= i && i > 0
+    decreases i
+  {
+    i := i - 1;
+  }
+  i := i + 1;
+  if i == 0 || !(i >= 2 * am && amax <= i && i > 0) || bm <= i {
+    output := "-1";
+  } else {
+    output := IntToString(i);
+  }
 }

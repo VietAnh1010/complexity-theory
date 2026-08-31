@@ -27,5 +27,31 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  if n == 1 {
+    output := IntToString(a_list[0]);
+  } else {
+    var s := SortInts(a_list);
+    var i := 0;
+    while i < n && s[i] <= 0
+      decreases n - i
+    {
+      i := i + 1;
+    }
+    var ans: int;
+    if i == 0 {
+      ans := SumRange(s, 0, n) - 2 * s[0];
+    } else if i == n {
+      ans := 2 * s[n - 1] - SumRange(s, 0, n);
+    } else {
+      ans := SumRange(s, i, n) - SumRange(s, 0, i);
+    }
+    output := IntToString(ans);
+  }
+}
+
+function SumRange(s: seq<int>, lo: int, hi: int): int
+  requires 0 <= lo <= hi <= |s|
+  decreases hi - lo
+{
+  if lo == hi then 0 else s[lo] + SumRange(s, lo + 1, hi)
 }

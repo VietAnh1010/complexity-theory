@@ -30,5 +30,40 @@ import opened Prelude
 
 method Solve(N: int, numbers: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var a := numbers;
+  var ans := 0;
+  var brk := false;
+  while |a| > 0 && !brk
+    decreases |a|
+  {
+    var mxIdx := 0;
+    var k := 1;
+    while k < |a|
+      decreases |a| - k
+    {
+      if a[k] > a[mxIdx] { mxIdx := k; }
+      k := k + 1;
+    }
+    var mx := a[mxIdx];
+    if mx <= 0 {
+      brk := true;
+    } else {
+      ans := ans + mx;
+      a := a[..mxIdx] + a[mxIdx + 1..];
+      var newA: seq<int> := [];
+      var j := 0;
+      while j < |a|
+        decreases |a| - j
+      {
+        if a[j] == mx {
+          newA := newA + [a[j] - 1];
+        } else {
+          newA := newA + [a[j]];
+        }
+        j := j + 1;
+      }
+      a := newA;
+    }
+  }
+  output := IntToString(ans);
 }

@@ -20,3 +20,5 @@ bigodafny/data/tasks.jsonl
 bigodafny/data/smoke_*
 bigodafny/data/selftest_*
 bigodafny/data/agent*
+bigodafny/data/*_validation.jsonl
+bigodafny/data/*_validation_summary.json

@@ -21,5 +21,17 @@ import opened Prelude
 
 method Solve(n: int, k: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var d := 0;
+  var i := 0;
+  while i < |a_list|
+    decreases |a_list| - i
+  {
+    if a_list[i] > k {
+      d := d + 2;
+    } else {
+      d := d + 1;
+    }
+    i := i + 1;
+  }
+  output := IntToString(d);
 }

@@ -28,5 +28,64 @@ import opened Prelude
 
 method Solve(s: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var seen: set<char> := {};
+  var distinct: seq<char> := [];
+  var i := 0;
+  while i < |s|
+    decreases |s| - i
+  {
+    if s[i] !in seen {
+      seen := seen + {s[i]};
+      distinct := distinct + [s[i]];
+    }
+    i := i + 1;
+  }
+  var m := |s|;
+  var k := 0;
+  while k < |distinct|
+    decreases |distinct| - k
+  {
+    var cnt := ShrinkCount(s, distinct[k]);
+    if cnt < m { m := cnt; }
+    k := k + 1;
+  }
+  output := IntToString(m);
+}
+
+method AllSameChar(s: string) returns (r: bool)
+{
+  r := true;
+  var i := 1;
+  while i < |s|
+    decreases |s| - i
+  {
+    if s[i] != s[0] { r := false; }
+    i := i + 1;
+  }
+}
+
+method ShrinkCount(s0: string, alp: char) returns (cnt: int)
+{
+  var SL := s0;
+  cnt := 0;
+  var same := AllSameChar(SL);
+  while !same
+    decreases |SL|
+  {
+    var tmp: seq<char> := [];
+    var i := 0;
+    while i < |SL| - 1
+      decreases |SL| - 1 - i
+    {
+      if SL[i + 1] == alp {
+        tmp := tmp + [alp];
+      } else {
+        tmp := tmp + [SL[i]];
+      }
+      i := i + 1;
+    }
+    SL := tmp;
+    cnt := cnt + 1;
+    same := AllSameChar(SL);
+  }
 }

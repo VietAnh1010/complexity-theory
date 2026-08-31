@@ -20,5 +20,17 @@ import opened Prelude
 
 method Solve(n: int, coordinates: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var xs: set<int> := {};
+  var ys: set<int> := {};
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    xs := xs + {coordinates[i][0]};
+    ys := ys + {coordinates[i][1]};
+    i := i + 1;
+  }
+  var sx := |xs|;
+  var sy := |ys|;
+  output := IntToString(if sx <= sy then sx else sy);
 }

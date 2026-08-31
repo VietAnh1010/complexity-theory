@@ -29,5 +29,20 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var s := SortInts(a_list);
+  var i := 0;
+  var j := |s| - 1;
+  var res := 0;
+  while i < j
+    decreases j - i
+  {
+    if s[i] + s[j] <= 4 {
+      s := s[j := s[j] + s[i]];
+      i := i + 1;
+    } else {
+      j := j - 1;
+      res := res + 1;
+    }
+  }
+  output := IntToString(res + 1);
 }

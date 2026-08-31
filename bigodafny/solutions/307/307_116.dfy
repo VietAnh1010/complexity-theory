@@ -21,5 +21,27 @@ import opened Prelude
 
 method Solve(n: int, s: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var p := "ogo";
+  while |p| < |s|
+    decreases |s| - |p|
+  {
+    p := p + "go";
+  }
+  var cur := s;
+  while |p| > 1
+    decreases |p|
+  {
+    cur := ReplaceAll(cur, p, "***");
+    p := p[..|p| - 2];
+  }
+  output := cur;
+}
+
+function ReplaceAll(s: string, pat: string, rep: string): string
+  requires |pat| > 0
+  decreases |s|
+{
+  if |s| < |pat| then s
+  else if s[0..|pat|] == pat then rep + ReplaceAll(s[|pat|..], pat, rep)
+  else [s[0]] + ReplaceAll(s[1..], pat, rep)
 }

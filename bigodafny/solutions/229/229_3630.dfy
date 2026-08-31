@@ -186,5 +186,17 @@ import opened Prelude
 
 method Solve(n: int, k: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var tw := 0;
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    if a_list[i] <= k {
+      tw := tw + 1;
+    } else {
+      tw := tw + 2;
+    }
+    i := i + 1;
+  }
+  output := IntToString(tw);
 }

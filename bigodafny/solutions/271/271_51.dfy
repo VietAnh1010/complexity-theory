@@ -19,5 +19,19 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var x := n / 7;
+  var y := n % 7;
+  var z := y / 4;
+  var w := y % 4;
+  if x < w {
+    output := "-1";
+  } else {
+    output := Repeat('4', z + w * 2) + Repeat('7', x - w);
+  }
+}
+
+function Repeat(c: char, n: int): string
+  decreases if n < 0 then 0 else n
+{
+  if n <= 0 then "" else [c] + Repeat(c, n - 1)
 }
