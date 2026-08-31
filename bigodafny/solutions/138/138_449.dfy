@@ -27,5 +27,28 @@ import opened Prelude
 
 method Solve(n: int, k: int, numbers: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var sorted := SortInts(numbers);
+  var m := |sorted|;
+  var maxCount := 0;
+  var distinct := 0;
+  var i := 0;
+  while i < m
+    decreases m - i
+  {
+    var j := i;
+    while j < m && sorted[j] == sorted[i]
+      decreases m - j
+    {
+      j := j + 1;
+    }
+    var cnt := j - i;
+    if cnt > maxCount {
+      maxCount := cnt;
+    }
+    distinct := distinct + 1;
+    i := j;
+  }
+  var dishes := if maxCount % k == 0 then maxCount / k else maxCount / k + 1;
+  var eta := dishes * distinct * k;
+  output := IntToString(eta - n);
 }

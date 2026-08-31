@@ -38,5 +38,27 @@ import opened Prelude
 
 method Solve(n: int, k: int, ratings: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var listt: seq<int> := [];
+  var present: set<int> := {};
+  var idx := 0;
+  while idx < |ratings|
+    decreases |ratings| - idx
+  {
+    var v := ratings[idx];
+    if |listt| < k {
+      if v !in present {
+        listt := [v] + listt;
+        present := present + {v};
+      }
+    }
+    if |listt| == k {
+      if v !in present {
+        present := present - {listt[|listt| - 1]};
+        present := present + {v};
+        listt := [v] + listt[..|listt| - 1];
+      }
+    }
+    idx := idx + 1;
+  }
+  output := IntToString(|listt|) + "\n" + JoinInts(listt, " ");
 }

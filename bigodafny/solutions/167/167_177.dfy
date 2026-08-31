@@ -23,5 +23,40 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var x := IntSqrtFloor(n);
+  var p := 0;
+  var result := "";
+  var i := 1;
+  while i < x && p == 0
+    decreases x - i
+  {
+    var expr := n - 1 - i * i - i;
+    if expr % (2 * i) == 0 {
+      result := IntToString(i) + " " + IntToString(expr / (2 * i));
+      p := 1;
+    }
+    i := i + 1;
+  }
+  if p == 0 {
+    result := "NO";
+  }
+  output := result;
+}
+
+method IntSqrtFloor(x: int) returns (r: int)
+  requires x >= 0
+{
+  var lo := 0;
+  var hi := x + 1;
+  while lo < hi
+    decreases hi - lo
+  {
+    var mid := (lo + hi) / 2;
+    if mid * mid <= x {
+      lo := mid + 1;
+    } else {
+      hi := mid;
+    }
+  }
+  r := lo - 1;
 }

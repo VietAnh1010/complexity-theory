@@ -31,5 +31,28 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var sortedA := SortInts(a_list);
+  var ans := 0;
+  var d := 0;
+  var x := 1;
+  var doneFlag := false;
+  while x < n && !doneFlag
+    decreases n - x
+  {
+    if a_list[x - 1] > a_list[x] {
+      d := 1;
+      if sortedA == a_list[x..] + a_list[..x] {
+        ans := n - x;
+      } else {
+        ans := -1;
+      }
+      doneFlag := true;
+    }
+    x := x + 1;
+  }
+  if d == 0 {
+    output := IntToString(0);
+  } else {
+    output := IntToString(ans);
+  }
 }

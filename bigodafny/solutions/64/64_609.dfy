@@ -32,5 +32,25 @@ import opened Prelude
 
 method Solve(n: int, k: int, ratings: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  assume {:axiom} k >= 1;
+  var a: seq<int> := seq(k, i => 0);
+  var l := 0;
+  var curr: set<int> := {};
+  var idx := 0;
+  while idx < |ratings|
+    invariant |a| == k
+    decreases |ratings| - idx
+  {
+    var id := ratings[idx];
+    if id !in curr {
+      curr := curr + {id};
+      if a[k - 1] != 0 {
+        curr := curr - {a[k - 1]};
+      }
+      a := [id] + a[..k - 1];
+      l := if l + 1 < k then l + 1 else k;
+    }
+    idx := idx + 1;
+  }
+  output := IntToString(l) + "\n" + JoinInts(a[..l], " ");
 }

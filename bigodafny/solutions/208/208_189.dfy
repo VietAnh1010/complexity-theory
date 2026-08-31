@@ -22,5 +22,28 @@ import opened Prelude
 
 method Solve(s: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var d: set<string> := {};
+  var i := 0;
+  while i < |s|
+    decreases |s| - i
+  {
+    var a := 0;
+    while a < 26
+      decreases 26 - a
+    {
+      var ch := ((('a' as int) + a) as char);
+      d := d + {s[..i] + [ch] + s[i..]};
+      a := a + 1;
+    }
+    i := i + 1;
+  }
+  var a2 := 0;
+  while a2 < 26
+    decreases 26 - a2
+  {
+    var ch := ((('a' as int) + a2) as char);
+    d := d + {s + [ch]};
+    a2 := a2 + 1;
+  }
+  output := IntToString(|d|);
 }

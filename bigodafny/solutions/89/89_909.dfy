@@ -34,5 +34,26 @@ import opened Prelude
 
 method Solve(n: int, lists: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var parts: seq<string> := [];
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    var l := lists[i];
+    assume {:axiom} |l| >= 5;
+    var a := l[0];
+    var b := l[1];
+    var c := l[2];
+    var d := l[3];
+    var k := l[4];
+    var pens := if a % c == 0 then a / c else a / c + 1;
+    var pins := if b % d == 0 then b / d else b / d + 1;
+    if pins + pens > k {
+      parts := parts + ["-1"];
+    } else {
+      parts := parts + [IntToString(pens) + " " + IntToString(pins)];
+    }
+    i := i + 1;
+  }
+  output := Join(parts, "\n");
 }

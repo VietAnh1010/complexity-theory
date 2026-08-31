@@ -38,6 +38,23 @@ stages.
   bug where a fixture broke the `include` path and every case looked like a
   build failure.
 
+## `assume {:axiom}` in translations
+
+Some translations carry `assume {:axiom} ...` to discharge static bound proofs
+that follow from problem constraints but not from local loop structure.
+
+This is sound for THIS dataset and unsound for a different one. The gate here is
+`dafny translate --no-verify` plus the stored tests, and `assume` is erased at
+compile time -- verified: the emitted Python contains zero occurrences. So it
+cannot affect the behaviour the tests measure.
+
+But anyone who later runs `dafny verify` over `solutions/` will get vacuous
+successes wherever an `assume` sits. If verification ever becomes the gate,
+every `assume` must be discharged or removed first. Count them before trusting
+a verification result:
+
+    grep -rho "assume\s*{:axiom}" solutions --include='*.dfy' | wc -l
+
 ## Toolchain
 
 Dafny **4.11.0** (`dotnet tool install -g dafny --version 4.11.0`), Z3 4.12.1

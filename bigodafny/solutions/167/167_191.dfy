@@ -21,5 +21,10 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  if n < 5 || n % 2 == 0 {
+    output := "NO";
+  } else {
+    var y := (n - 3) / 2;
+    output := "1 " + IntToString(y);
+  }
 }

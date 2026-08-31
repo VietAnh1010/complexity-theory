@@ -29,5 +29,28 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var index := 0;
+  var count := 0;
+  var printed := false;
+  var result := "";
+  var i := 0;
+  while i < n && !printed
+    decreases n - i
+  {
+    var prevIdx := if i == 0 then n - 1 else i - 1;
+    if a_list[prevIdx] > a_list[i] {
+      index := i;
+      count := count + 1;
+    }
+    if count == 2 {
+      result := "-1";
+      printed := true;
+    }
+    i := i + 1;
+  }
+  if !printed {
+    var r := (n - index) % n;
+    result := IntToString(r);
+  }
+  output := result;
 }

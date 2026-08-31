@@ -32,5 +32,28 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  assume {:axiom} |a_list| == n;
+  var arr := a_list;
+  var i := 0;
+  while i < n
+    invariant |arr| == n
+    decreases n - i
+  {
+    var j := 0;
+    while j < n
+      invariant |arr| == n
+      decreases n - j
+    {
+      if arr[i] > arr[j] {
+        var tmp := arr[i];
+        arr := arr[i := arr[j]];
+        arr := arr[j := tmp];
+      }
+      j := j + 1;
+    }
+    i := i + 1;
+  }
+  var idx := n / 2;
+  assume {:axiom} 0 <= idx < |arr|;
+  output := IntToString(arr[idx]);
 }

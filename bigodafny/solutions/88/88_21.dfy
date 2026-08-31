@@ -20,5 +20,47 @@ import opened Prelude
 
 method Solve(n: int, string_list: seq<string>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var parts: seq<string> := [];
+  var t := 0;
+  while t < n
+    decreases n - t
+  {
+    var a := string_list[2 * t];
+    var b := string_list[2 * t + 1];
+    var bRev := ReverseString(b);
+    var k := 0;
+    var found := false;
+    var i := 0;
+    while i < |bRev| && !found
+      decreases |bRev| - i
+    {
+      if bRev[i] == '1' {
+        k := i;
+        found := true;
+      }
+      i := i + 1;
+    }
+    var aRev := ReverseString(a);
+    var p := 0;
+    var found2 := false;
+    var j := k;
+    while j < |aRev| && !found2
+      decreases |aRev| - j
+    {
+      if aRev[j] == '1' {
+        p := j - k;
+        found2 := true;
+      }
+      j := j + 1;
+    }
+    parts := parts + [IntToString(p)];
+    t := t + 1;
+  }
+  output := Join(parts, "\n");
+}
+
+function ReverseString(s: string): string
+  decreases |s|
+{
+  if |s| == 0 then s else ReverseString(s[1..]) + [s[0]]
 }
