@@ -21,5 +21,18 @@ import opened Prelude
 
 method Solve(n: int, edges: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var lines: seq<string> := [];
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    var a := edges[2 * i][0];
+    var b := edges[2 * i][1];
+    var c := edges[2 * i + 1][0];
+    var d := edges[2 * i + 1][1];
+    var flag := (c + b == a && a == d) || (a + d == b && b == c) || (a + c == d && d == b) || (b + d == a && a == c);
+    lines := lines + [if flag then "Yes" else "No"];
+    i := i + 1;
+  }
+  output := Join(lines, "\n");
 }

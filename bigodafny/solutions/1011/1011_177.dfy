@@ -34,5 +34,18 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var f := 0;
+  while (f + 1) * (f + 1) <= n
+    invariant f * f <= n
+    decreases n - f
+  {
+    f := f + 1;
+  }
+  var b := f;
+  if 4 * n > (2 * f + 1) * (2 * f + 1) {
+    b := f + 1;
+  }
+  var q := n / b;
+  if n % b != 0 { q := q + 1; }
+  output := IntToString(q + b);
 }

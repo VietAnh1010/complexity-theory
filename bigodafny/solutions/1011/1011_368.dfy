@@ -22,5 +22,12 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var a := 1;
+  var b := 1;
+  while a * b < n
+    decreases n - a * b
+  {
+    if a < b { a := a + 1; } else { b := b + 1; }
+  }
+  output := IntToString(a + b);
 }

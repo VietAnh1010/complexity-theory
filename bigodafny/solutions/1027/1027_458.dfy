@@ -26,5 +26,39 @@ import opened Prelude
 
 method Solve(a: int, b: int, c: int, d_list: seq<(int, int)>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var seenVertical := false;
+  var dxs: seq<int> := [];
+  var dys: seq<int> := [];
+  var shoot := 0;
+  var i := 0;
+  while i < |d_list|
+    decreases |d_list| - i
+  {
+    var dx := d_list[i].0 - b;
+    var dy := d_list[i].1 - c;
+    if dx == 0 {
+      if !seenVertical {
+        seenVertical := true;
+        shoot := shoot + 1;
+      }
+    } else {
+      var found := false;
+      var j := 0;
+      while j < |dxs|
+        decreases |dxs| - j
+      {
+        if dys[j] * dx == dy * dxs[j] {
+          found := true;
+        }
+        j := j + 1;
+      }
+      if !found {
+        dxs := dxs + [dx];
+        dys := dys + [dy];
+        shoot := shoot + 1;
+      }
+    }
+    i := i + 1;
+  }
+  output := IntToString(shoot);
 }

@@ -28,5 +28,29 @@ import opened Prelude
 
 method Solve(a: int, b: int, c: int, d_list: seq<(int, int)>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var dxs: seq<int> := [];
+  var dys: seq<int> := [];
+  var i := 0;
+  while i < |d_list|
+    decreases |d_list| - i
+  {
+    var x2 := d_list[i].0 - b;
+    var y2 := d_list[i].1 - c;
+    var found := false;
+    var j := 0;
+    while j < |dxs|
+      decreases |dxs| - j
+    {
+      if dxs[j] * y2 == x2 * dys[j] {
+        found := true;
+      }
+      j := j + 1;
+    }
+    if !found {
+      dxs := dxs + [x2];
+      dys := dys + [y2];
+    }
+    i := i + 1;
+  }
+  output := IntToString(|dxs|);
 }

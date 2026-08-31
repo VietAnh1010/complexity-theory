@@ -30,5 +30,27 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  if n % 2 == 0 {
+    output := "NO";
+  } else {
+    var partA: seq<int> := [];
+    var partB: seq<int> := [];
+    var toggle := true;
+    var i := 1;
+    while i <= n
+      decreases n - i + 1
+    {
+      if toggle {
+        partA := partA + [2 * i - 1];
+        partB := partB + [2 * i];
+        toggle := false;
+      } else {
+        partA := partA + [2 * i];
+        partB := partB + [2 * i - 1];
+        toggle := true;
+      }
+      i := i + 1;
+    }
+    output := "YES\n" + JoinInts(partA + partB, " ");
+  }
 }
