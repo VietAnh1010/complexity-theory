@@ -28,5 +28,26 @@ import opened Prelude
 
 method Solve(a: int, b: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var n := a;
+  var k := b;
+  var h := n;
+  var parts: seq<string> := [];
+  var f := 0;
+  var i := 2;
+  while k != f + 1 && 2 * i <= n
+    decreases n - i
+  {
+    if h % i == 0 {
+      f := f + 1;
+      parts := parts + [IntToString(i)];
+      h := h / i;
+    } else {
+      i := i + 1;
+    }
+  }
+  if k > f + 1 || h == 1 {
+    output := "-1\n";
+  } else {
+    output := Join(parts, " ") + (if |parts| > 0 then " " else "") + IntToString(h) + "\n";
+  }
 }

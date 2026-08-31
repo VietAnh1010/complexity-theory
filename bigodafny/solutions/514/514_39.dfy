@@ -32,5 +32,46 @@ import opened Prelude
 
 method Solve(n: int, total_score: int, scores: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var INF := 1000000000000000000;
+  var l := total_score;
+  var cost: seq<int> := scores;
+  var idxFill := n;
+  while idxFill < 31
+    decreases 31 - idxFill
+  {
+    cost := cost + [INF];
+    idxFill := idxFill + 1;
+  }
+  var i := 0;
+  while i < 30
+    decreases 30 - i
+  {
+    var doubled := cost[i] * 2;
+    cost := cost[i + 1 := if cost[i+1] < doubled then cost[i+1] else doubled];
+    i := i + 1;
+  }
+  var ans := INF;
+  var cur_cost := 0;
+  var ll := l;
+  var j := 30;
+  while j >= 0
+    decreases j + 1
+  {
+    if Pow2_39(j) >= ll {
+      var cand := cur_cost + cost[j];
+      ans := if cand < ans then cand else ans;
+    } else {
+      cur_cost := cur_cost + cost[j];
+      ll := ll - Pow2_39(j);
+    }
+    j := j - 1;
+  }
+  output := IntToString(ans) + "\n";
+}
+
+function Pow2_39(e: int): int
+  requires e >= 0
+  decreases e
+{
+  if e == 0 then 1 else 2 * Pow2_39(e - 1)
 }

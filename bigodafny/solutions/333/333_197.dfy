@@ -34,5 +34,27 @@ import opened Prelude
 
 method Solve(n: int, word: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  if |word| == 0 {
+    output := "\n";
+    return;
+  }
+  var buf := new char[|word|];
+  buf[0] := word[0];
+  var j := 1;
+  var i := 1;
+  while i < |word|
+    decreases |word| - i
+  {
+    if !(IsVowelWC197(word[i]) && IsVowelWC197(word[i-1])) {
+      buf[j] := word[i];
+      j := j + 1;
+    }
+    i := i + 1;
+  }
+  output := buf[0..j] + "\n";
+}
+
+predicate IsVowelWC197(c: char)
+{
+  c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || c == 'y'
 }

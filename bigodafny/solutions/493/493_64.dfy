@@ -17,5 +17,27 @@ import opened Prelude
 
 method Solve(string_: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var hasC := false;
+  var hasF := false;
+  var firstC := 0;
+  var lastF := 0;
+  var i := 0;
+  while i < |string_|
+    decreases |string_| - i
+  {
+    if string_[i] == 'C' && !hasC {
+      hasC := true;
+      firstC := i;
+    }
+    if string_[i] == 'F' {
+      hasF := true;
+      lastF := i;
+    }
+    i := i + 1;
+  }
+  if hasC && hasF && firstC < lastF {
+    output := "Yes\n";
+  } else {
+    output := "No\n";
+  }
 }

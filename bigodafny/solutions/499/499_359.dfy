@@ -35,5 +35,39 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var answer := 0;
+  var cnt_minus := 0;
+  var cnt_0 := 0;
+  var i := 0;
+  while i < |a_list|
+    decreases |a_list| - i
+  {
+    var v := a_list[i];
+    if v < 0 {
+      answer := answer + Abs359(v + 1);
+      cnt_minus := cnt_minus + 1;
+    }
+    if v == 0 {
+      answer := answer + 1;
+      cnt_0 := cnt_0 + 1;
+    }
+    if v > 0 {
+      answer := answer + Abs359(v - 1);
+    }
+    i := i + 1;
+  }
+  if cnt_0 == 0 {
+    if cnt_minus % 2 == 0 {
+      output := IntToString(answer) + "\n";
+    } else {
+      output := IntToString(answer + 2) + "\n";
+    }
+  } else {
+    output := IntToString(answer) + "\n";
+  }
+}
+
+function Abs359(x: int): int
+{
+  if x < 0 then -x else x
 }

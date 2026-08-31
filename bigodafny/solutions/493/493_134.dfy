@@ -20,5 +20,19 @@ import opened Prelude
 
 method Solve(string_: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var c := 0;
+  var flag := 0;
+  var i := 0;
+  while i < |string_|
+    decreases |string_| - i
+  {
+    if string_[i] == 'C' && c == 0 {
+      c := 1;
+    }
+    if string_[i] == 'F' && c == 1 {
+      flag := 1;
+    }
+    i := i + 1;
+  }
+  output := (if flag == 1 then "Yes" else "No") + "\n";
 }

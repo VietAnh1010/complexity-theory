@@ -30,5 +30,24 @@ import opened Prelude
 
 method Solve(a: int, b: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var n := a;
+  var k := b;
+  var sols: seq<int> := [];
+  var curr_div := 2;
+  while n != 1 && |sols| < k - 1
+    decreases n - curr_div
+  {
+    if n % curr_div == 0 {
+      sols := sols + [curr_div];
+      n := n / curr_div;
+    } else {
+      curr_div := curr_div + 1;
+    }
+  }
+  if |sols| == k - 1 && n != 1 {
+    sols := sols + [n];
+    output := JoinInts(sols, " ") + "\n";
+  } else {
+    output := "-1\n";
+  }
 }

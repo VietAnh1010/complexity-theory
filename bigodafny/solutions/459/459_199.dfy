@@ -30,5 +30,24 @@ import opened Prelude
 
 method Solve(a: int, b: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var n := a;
+  var m := b;
+  var t := 0;
+  var doneFlag := false;
+  while !doneFlag
+    decreases if n + m >= 0 then n + m else 0
+  {
+    if n >= m && n > 1 && m > 0 {
+      n := n - 2;
+      m := m - 1;
+      t := t + 1;
+    } else if n < m && n > 0 && m > 1 {
+      n := n - 1;
+      m := m - 2;
+      t := t + 1;
+    } else {
+      doneFlag := true;
+    }
+  }
+  output := IntToString(t) + "\n";
 }

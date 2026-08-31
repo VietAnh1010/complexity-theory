@@ -18,5 +18,21 @@ import opened Prelude
 
 method Solve(n: int, points_list: seq<seq<real>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var lines: seq<string> := [];
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    var pts := points_list[i];
+    var x1 := pts[0]; var y1 := pts[1]; var x2 := pts[2]; var y2 := pts[3];
+    var x3 := pts[4]; var y3 := pts[5]; var x4 := pts[6]; var y4 := pts[7];
+    var cross := (x2 - x1) * (y4 - y3) - (x4 - x3) * (y2 - y1);
+    if cross == 0.0 {
+      lines := lines + ["YES"];
+    } else {
+      lines := lines + ["NO"];
+    }
+    i := i + 1;
+  }
+  output := Join(lines, "\n") + "\n";
 }

@@ -24,5 +24,27 @@ import opened Prelude
 
 method Solve(n: int, points: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var count := 1;
+  var a := 0;
+  var b := 0;
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    var c := points[i][0];
+    var d := points[i][1];
+    var mn := if c < d then c else d;
+    var mx := if a > b then a else b;
+    if mn >= mx {
+      if a != b {
+        count := count + (mn - mx + 1);
+      } else {
+        count := count + (mn - mx);
+      }
+    }
+    a := c;
+    b := d;
+    i := i + 1;
+  }
+  output := IntToString(count) + "\n";
 }
