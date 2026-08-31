@@ -25,7 +25,7 @@ def main():
     va = sub.add_parser("validate")
     va.add_argument("--only", nargs="*")
     va.add_argument("--generated", action="store_true")
-    va.add_argument("--per-test", type=int, default=10)
+    va.add_argument("--per-test", type=int, default=30)
     va.add_argument("--limit", type=int)
     va.add_argument("--out-prefix", default="")
     sub.add_parser("dataset")

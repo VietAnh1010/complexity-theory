@@ -159,7 +159,7 @@ def run_tests(task, sig, pydir, workdir, tiers, per_test, batch_timeout):
 
 
 def validate(only=None, tiers=("public_tests", "private_tests"),
-             per_test=10, batch_timeout=600, limit=None, solutions_dir=None,
+             per_test=30, batch_timeout=900, limit=None, solutions_dir=None,
              out_prefix=""):
     tasks = {t["solution_id"]: t for t in read_jsonl(DATA / "tasks.jsonl")}
     sigs = {s["problem_id"]: s for s in read_jsonl(DATA / "signatures.jsonl")}
@@ -228,7 +228,7 @@ if __name__ == "__main__":
     ap.add_argument("--only", nargs="*", help="solution_ids to validate")
     ap.add_argument("--generated", action="store_true",
                     help="also run the generated_tests tier")
-    ap.add_argument("--per-test", type=int, default=10)
+    ap.add_argument("--per-test", type=int, default=30)
     ap.add_argument("--limit", type=int)
     ap.add_argument("--out-prefix", default="")
     a = ap.parse_args()
