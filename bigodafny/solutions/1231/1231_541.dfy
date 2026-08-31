@@ -16,5 +16,20 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var lines: seq<string> := [];
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    var row := a_list[i];
+    var nv := row[0];
+    var sv := row[1];
+    var tv := row[2];
+    var v1 := nv - sv + 1;
+    var v2 := nv - tv + 1;
+    var m := if v1 > v2 then v1 else v2;
+    lines := lines + [IntToString(m)];
+    i := i + 1;
+  }
+  output := Join(lines, "\n");
 }

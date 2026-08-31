@@ -18,5 +18,14 @@ import opened Prelude
 
 method Solve(n: int, a: int, b: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var ans := 0;
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    if i >= a && n - i - 1 <= b { ans := ans + 1; }
+    i := i + 1;
+  }
+  output := IntToString(ans);
 }
+

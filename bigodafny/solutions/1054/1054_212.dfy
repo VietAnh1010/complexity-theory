@@ -25,5 +25,18 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var counts: map<int, int> := map[];
+  var maxFreq := 0;
+  var idx := 0;
+  while idx < |a_list|
+    decreases |a_list| - idx
+  {
+    var x := a_list[idx];
+    var newcount := (if x in counts then counts[x] else 0) + 1;
+    counts := counts[x := newcount];
+    if newcount > maxFreq { maxFreq := newcount; }
+    idx := idx + 1;
+  }
+  output := IntToString(n - maxFreq);
 }
+

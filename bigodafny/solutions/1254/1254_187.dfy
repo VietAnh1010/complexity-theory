@@ -22,5 +22,21 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var x := 0;
+  var i := 1;
+  while i <= n
+    decreases n - i
+  {
+    var c := 0;
+    var j := 1;
+    while j <= i
+      decreases i - j
+    {
+      if i % j == 0 { c := c + 1; }
+      j := j + 1;
+    }
+    if c == 8 { x := x + 1; }
+    i := i + 2;
+  }
+  output := IntToString(x);
 }

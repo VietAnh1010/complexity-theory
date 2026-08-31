@@ -51,5 +51,81 @@ import opened Prelude
 
 method Solve(n: int, strings: seq<string>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var lines: seq<string> := [];
+  var idx := 0;
+  while idx < |strings|
+    decreases |strings| - idx
+  {
+    var a := strings[idx];
+    if IsRCFormat(a) {
+      var i := DigitRunEnd(a, 1);
+      var row := a[1..i];
+      var j := DigitRunEnd(a, i + 1);
+      var colStr := a[i + 1..j];
+      var col := ParseInt(colStr);
+      var letters := ColToLetters(col, "");
+      lines := lines + [letters + row];
+    } else {
+      var k := 0;
+      while k < |a| && IsAlpha(a[k])
+        decreases |a| - k
+      {
+        k := k + 1;
+      }
+      var col := a[0..k];
+      var row := a[k..];
+      var ans := 0;
+      var m := 0;
+      while m < |col|
+        decreases |col| - m
+      {
+        ans := 26 * ans + (col[m] as int - 64);
+        m := m + 1;
+      }
+      lines := lines + ["R" + row + "C" + IntToString(ans)];
+    }
+    idx := idx + 1;
+  }
+  output := Join(lines, "\n");
+}
+
+
+predicate IsDigit(c: char) { '0' <= c <= '9' }
+predicate IsAlpha(c: char) { 'A' <= c <= 'Z' }
+
+function DigitRunEnd(s: string, i: nat): nat
+  requires i <= |s|
+  decreases |s| - i
+{
+  if i < |s| && IsDigit(s[i]) then DigitRunEnd(s, i + 1) else i
+}
+
+predicate IsRCFormat(s: string)
+{
+  |s| >= 1 && s[0] == 'R' &&
+  (var i := DigitRunEnd(s, 1);
+   i > 1 && i < |s| && s[i] == 'C' &&
+   (var j := DigitRunEnd(s, i + 1);
+    j > i + 1 && j == |s|))
+}
+
+function ParseIntFrom(s: string, i: nat, acc: int): int
+  requires i <= |s|
+  decreases |s| - i
+{
+  if i == |s| then acc else ParseIntFrom(s, i + 1, acc * 10 + (s[i] as int - '0' as int))
+}
+
+function ParseInt(s: string): int { ParseIntFrom(s, 0, 0) }
+
+function ColToLetters(col: int, acc: string): string
+  decreases col
+{
+  if col <= 0 then acc
+  else
+    var temp0 := col % 26 + 64;
+    var overflow := temp0 == 64;
+    var letterIdx := if overflow then 25 else temp0 - 65;
+    var col2 := if overflow then col - 1 else col;
+    ColToLetters(col2 / 26, "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[letterIdx..letterIdx + 1] + acc)
 }

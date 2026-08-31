@@ -32,5 +32,44 @@ import opened Prelude
 
 method Solve(n: int, matrix: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var lines: seq<string> := [];
+  var t := 0;
+  while t < |matrix|
+    decreases |matrix| - t
+  {
+    var row := matrix[t];
+    var a := row[0];
+    var b := row[1];
+    var c := row[2];
+    var ans := Dis(a, b, c);
+    var i := -1;
+    while i <= 1
+      decreases 1 - i
+    {
+      var j := -1;
+      while j <= 1
+        decreases 1 - j
+      {
+        var k := -1;
+        while k <= 1
+          decreases 1 - k
+        {
+          var s := Dis(a + i, b + j, c + k);
+          if s < ans { ans := s; }
+          k := k + 1;
+        }
+        j := j + 1;
+      }
+      i := i + 1;
+    }
+    lines := lines + [IntToString(ans)];
+    t := t + 1;
+  }
+  output := Join(lines, "\n");
+}
+
+
+function Dis(a: int, b: int, c: int): int
+{
+  AbsInt(a - b) + AbsInt(b - c) + AbsInt(a - c)
 }

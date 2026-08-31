@@ -3,11 +3,17 @@
 The `split` is assigned here, from the measured Python baseline rather than
 from anything read out of the problem statement:
 
-  strict  -- the original Python reproduces every stored output byte-for-byte,
-             so a Dafny translation can be held to the same standard.
-  loose   -- it does not. The stored output is one accepted answer among
-             several, or the solution errors or times out on its own tests.
-             These rows are kept and labelled, never scored by byte-diff.
+  strict       -- the original Python reproduces every stored output
+                  byte-for-byte, so a Dafny translation can be held to the same
+                  standard.
+  loose        -- it does not. The stored output is one accepted answer among
+                  several, or the solution errors or times out on its own tests.
+  unvalidatable -- BigOBench's own `Input.from_str` raises on at least one of
+                  the row's stored tests, so the harness cannot feed the Dafny
+                  method at all. No translation of these rows can ever pass, and
+                  a `fail` against them measures the parser, not the code.
+
+Only `strict` is scored by byte-diff.
 """
 from __future__ import annotations
 from collections import Counter
@@ -18,6 +24,26 @@ EXPORT = ("problem_id", "solution_id", "problem_name", "split", "nondet_hint",
           "time_complexity_inferred", "time_curve_coefficient", "n_tests",
           "python_status", "python_pass_rate", "dafny_signature",
           "dafny_status", "dafny_tests_passed", "dafny_tests_total")
+
+
+def parser_ok(task):
+    """Can BigOBench's dataclass parse every test this row will be judged on?
+
+    Four rows dataset-wide cannot: their `from_str` asserts a trailing newline
+    the stored input does not have. Measured, not assumed."""
+    ns = {}
+    try:
+        exec(compile(task["dataclass_code"], "<dc>", "exec"), ns)
+        f = ns["Input"].from_str
+    except Exception:
+        return False
+    for k in ("public_tests", "private_tests"):
+        for t in task["tests"].get(k, []):
+            try:
+                f(t["input"])
+            except Exception:
+                return False
+    return True
 
 
 def build():
@@ -35,11 +61,14 @@ def build():
         v = val.get(t["solution_id"], {})
         st = b.get("python_status", "unmeasured")
         n = b.get("n_tests") or 0
+        pok = parser_ok(t)
         rows.append({
             "problem_id": t["problem_id"],
             "solution_id": t["solution_id"],
             "problem_name": t["problem_name"],
-            "split": "strict" if st == "exact" else "loose",
+            "split": ("unvalidatable" if not pok
+                      else "strict" if st == "exact" else "loose"),
+            "parser_ok": pok,
             "nondet_hint": t["nondet_hint"],
             "time_complexity_inferred": t["time_complexity_inferred"],
             "time_curve_coefficient": t["time_curve_coefficient"],

@@ -31,5 +31,33 @@ import opened Prelude
 
 method Solve(a: int, b: int, c_list: seq<int>, d_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var dorms := c_list[..a];
+  var lroom := d_list[..b];
+  var d_left := 0;
+  var l_left := 0;
+  var l_right := b - 1;
+  var lst: seq<(int,int)> := [];
+  var new_val := 0;
+  while l_left <= l_right
+    decreases l_right - l_left + 1
+  {
+    if lroom[l_left] <= dorms[d_left] {
+      lst := lst + [(d_left + 1, AbsInt(new_val - lroom[l_left]))];
+      l_left := l_left + 1;
+    } else {
+      d_left := d_left + 1;
+      new_val := dorms[d_left - 1];
+      dorms := dorms[d_left := dorms[d_left] + dorms[d_left - 1]];
+    }
+  }
+  var sorted_lst := Sort(lst, (p: (int,int), q: (int,int)) => p.0 < q.0 || (p.0 == q.0 && p.1 < q.1));
+  var lines: seq<string> := [];
+  var i := 0;
+  while i < |sorted_lst|
+    decreases |sorted_lst| - i
+  {
+    lines := lines + [IntToString(sorted_lst[i].0) + " " + IntToString(sorted_lst[i].1)];
+    i := i + 1;
+  }
+  output := Join(lines, "\n");
 }

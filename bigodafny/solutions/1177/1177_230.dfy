@@ -33,5 +33,35 @@ import opened Prelude
 
 method Solve(n: int, rectangles: seq<(int, int)>, m: int, checks: seq<(int, int)>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var l1 := 1000000005;
+  var z1 := 0;
+  var z2 := 1000000005;
+  var l2 := 0;
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    var x := rectangles[i].0;
+    var y := rectangles[i].1;
+    if y < l1 { l1 := y; }
+    if x > z1 { z1 := x; }
+    i := i + 1;
+  }
+  i := 0;
+  while i < m
+    decreases m - i
+  {
+    var x := checks[i].0;
+    var y := checks[i].1;
+    if x > l2 { l2 := x; }
+    if y < z2 { z2 := y; }
+    i := i + 1;
+  }
+  var o := z1 - z2;
+  if l2 - l1 > o { o := l2 - l1; }
+  if o < 0 {
+    output := "0";
+  } else {
+    output := IntToString(o);
+  }
 }

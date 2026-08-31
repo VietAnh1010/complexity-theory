@@ -27,5 +27,31 @@ import opened Prelude
 
 method Solve(text: string, n: int, text_list: seq<string>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var k := |text|;
+  var answer := "";
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    var a := text_list[i];
+    if |a| >= k && a[..k] == text {
+      if answer == "" || StringLess(a, answer) {
+        answer := a;
+      }
+    }
+    i := i + 1;
+  }
+  if answer != "" {
+    output := answer;
+  } else {
+    output := text;
+  }
+}
+
+function StringLess(a: string, b: string): bool
+{
+  if |a| == 0 then |b| > 0
+  else if |b| == 0 then false
+  else if a[0] != b[0] then a[0] < b[0]
+  else StringLess(a[1..], b[1..])
 }

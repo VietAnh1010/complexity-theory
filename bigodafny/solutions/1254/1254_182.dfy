@@ -17,5 +17,14 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var arr := [105, 135, 165, 189, 195];
+  var cnt := 0;
+  var i := 0;
+  while i < |arr|
+    decreases |arr| - i
+  {
+    if arr[i] <= n { cnt := cnt + 1; }
+    i := i + 1;
+  }
+  output := IntToString(cnt);
 }

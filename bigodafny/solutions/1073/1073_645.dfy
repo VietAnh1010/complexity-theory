@@ -19,5 +19,17 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var rawN := n + 1;
+  var half := FloorDiv(rawN, 2);
+  var numerator := Factorial(rawN) * Factorial(half - 1) * Factorial(half - 1);
+  var denom := Factorial(half) * Factorial(half);
+  var step := FloorDiv(numerator, denom);
+  output := IntToString(FloorDiv(step, 2));
+}
+
+
+function Factorial(a: int): int
+  decreases if a < 0 then 0 else a
+{
+  if a <= 0 then 1 else a * Factorial(a - 1)
 }

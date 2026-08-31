@@ -25,5 +25,17 @@ import opened Prelude
 
 method Solve(s1: string, s2: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  if multiset(s1) != multiset(s2) {
+    output := "NO";
+  } else {
+    var cntr := 0;
+    var i := 0;
+    while i < |s1|
+      decreases |s1| - i
+    {
+      if s1[i] != s2[i] { cntr := cntr + 1; }
+      i := i + 1;
+    }
+    output := if cntr == 2 then "YES" else "NO";
+  }
 }

@@ -17,5 +17,15 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var rawN := n + 1;
+  var fact := 1;
+  var i := 2;
+  while i < rawN
+    decreases rawN - i
+  {
+    fact := fact * i;
+    i := i + 1;
+  }
+  output := IntToString(FloorDiv(fact * 2, rawN));
 }
+

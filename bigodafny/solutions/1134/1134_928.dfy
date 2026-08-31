@@ -31,5 +31,21 @@ import opened Prelude
 
 method Solve(n: int, matrix: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var lines: seq<string> := [];
+  var t := 0;
+  while t < |matrix|
+    decreases |matrix| - t
+  {
+    var row := matrix[t];
+    var a := row[0];
+    var b := row[1];
+    var c := row[2];
+    var mi := MinSeq([a, b, c]) + 1;
+    var ma := MaxSeq([a, b, c]) - 1;
+    var ans := if ma - mi >= 0 then 2 * (ma - mi) else 0;
+    lines := lines + [IntToString(ans)];
+    t := t + 1;
+  }
+  output := Join(lines, "\n");
 }
+

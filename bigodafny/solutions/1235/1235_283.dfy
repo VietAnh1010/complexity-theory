@@ -33,5 +33,29 @@ import opened Prelude
 
 method Solve(n: int, matrix: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var lines: seq<string> := [];
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    var row := matrix[i];
+    var a := row[0];
+    var b := row[1];
+    var c := row[2];
+    var d := row[3];
+    var odds := 0;
+    if a % 2 == 1 { odds := odds + 1; }
+    if b % 2 == 1 { odds := odds + 1; }
+    if c % 2 == 1 { odds := odds + 1; }
+    if d % 2 == 1 { odds := odds + 1; }
+    var res: string;
+    if a == 0 || b == 0 || c == 0 {
+      res := if odds > 1 then "No" else "Yes";
+    } else {
+      res := if odds == 2 then "No" else "Yes";
+    }
+    lines := lines + [res];
+    i := i + 1;
+  }
+  output := Join(lines, "\n");
 }

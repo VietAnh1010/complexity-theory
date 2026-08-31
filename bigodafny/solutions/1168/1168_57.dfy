@@ -40,5 +40,36 @@ import opened Prelude
 
 method Solve(n: int, s: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  if |s| % 2 == 1 {
+    output := "-1";
+  } else {
+    var diff := 0;
+    var ans := 0;
+    var f := 'p';
+    var i := 0;
+    while i < n
+      decreases n - i
+    {
+      if s[i] == '(' {
+        diff := diff + 1;
+      } else if s[i] == ')' {
+        diff := diff - 1;
+      }
+      if diff >= 0 {
+        f := 'p';
+      } else {
+        ans := ans + 1;
+        if f == 'p' {
+          f := 'n';
+          ans := ans + 1;
+        }
+      }
+      i := i + 1;
+    }
+    if diff == 0 {
+      output := IntToString(ans);
+    } else {
+      output := "-1";
+    }
+  }
 }

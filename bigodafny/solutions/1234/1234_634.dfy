@@ -24,5 +24,27 @@ import opened Prelude
 
 method Solve(N: int, numbers: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var lines: seq<string> := [];
+  var t := 0;
+  while t < N
+    decreases N - t
+  {
+    var n := numbers[t];
+    var p := 1;
+    var found := false;
+    var i := 2;
+    while i * i <= n && !found
+      decreases n - i
+    {
+      if n % i == 0 {
+        p := i;
+        found := true;
+      }
+      i := i + 1;
+    }
+    var s := if found then FloorDiv(n, p) else 1;
+    lines := lines + [IntToString(s) + " " + IntToString(n - s)];
+    t := t + 1;
+  }
+  output := Join(lines, "\n");
 }

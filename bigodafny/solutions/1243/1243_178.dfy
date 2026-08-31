@@ -27,5 +27,25 @@ import opened Prelude
 
 method Solve(s1: string, s2: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var ans := "NO";
+  if |s1| == |s2| {
+    var diffs: seq<int> := [];
+    var i := 0;
+    while i < |s1|
+      decreases |s1| - i
+    {
+      if s1[i] != s2[i] { diffs := diffs + [i]; }
+      i := i + 1;
+    }
+    if |diffs| == 2 {
+      var a := s1;
+      var i0 := diffs[0];
+      var i1 := diffs[1];
+      var tmp := a[i0];
+      a := a[i0 := a[i1]];
+      a := a[i1 := tmp];
+      if a == s2 { ans := "YES"; }
+    }
+  }
+  output := ans;
 }

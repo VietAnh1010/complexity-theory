@@ -29,5 +29,24 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var countEven := 0;
+  var countOdd := 0;
+  var idxEven := 0;
+  var idxOdd := 0;
+  var i := 0;
+  while i < |a_list|
+    decreases |a_list| - i
+  {
+    if a_list[i] % 2 == 0 {
+      countEven := countEven + 1;
+      idxEven := i;
+    } else {
+      countOdd := countOdd + 1;
+      idxOdd := i;
+    }
+    i := i + 1;
+  }
+  var ans := if countEven == 1 then idxEven + 1 else idxOdd + 1;
+  output := IntToString(ans);
 }
+

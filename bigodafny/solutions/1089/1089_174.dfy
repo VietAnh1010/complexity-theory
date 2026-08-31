@@ -17,5 +17,6 @@ import opened Prelude
 
 method Solve(n: int, a: int, b: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  output := IntToString(if n - a < b + 1 then n - a else b + 1);
 }
+

@@ -27,5 +27,24 @@ import opened Prelude
 
 method Solve(N: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var pairs := seq(|a_list|, i requires 0 <= i < |a_list| => (a_list[i], i));
+  var sortedPairs := Sort(pairs, (x: (int, int), y: (int, int)) => x.0 < y.0 || (x.0 == y.0 && x.1 < y.1));
+  var idxSeq := seq(|sortedPairs|, i requires 0 <= i < |sortedPairs| => sortedPairs[i].1);
+  var b := 1;
+  var maxD := 0;
+  var i := 0;
+  while i < N - 1
+    decreases N - 1 - i
+  {
+    if idxSeq[i] < idxSeq[i + 1] {
+      b := b + 1;
+    } else {
+      if b > maxD { maxD := b; }
+      b := 1;
+    }
+    i := i + 1;
+  }
+  if b > maxD { maxD := b; }
+  output := IntToString(N - maxD);
 }
+

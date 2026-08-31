@@ -24,5 +24,28 @@ import opened Prelude
 
 method Solve(n: int, matrix: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var lines: seq<string> := [];
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    var l := matrix[i];
+    var odd := 0;
+    var j := 0;
+    while j < |l|
+      decreases |l| - j
+    {
+      if l[j] % 2 != 0 { odd := odd + 1; }
+      j := j + 1;
+    }
+    var cond1 := odd == 0 || odd == 1 || odd == 4;
+    var cond2 := odd == 3 && l[0] != 0 && l[1] != 0 && l[2] != 0;
+    if cond1 || cond2 {
+      lines := lines + ["Yes"];
+    } else {
+      lines := lines + ["No"];
+    }
+    i := i + 1;
+  }
+  output := Join(lines, "\n");
 }

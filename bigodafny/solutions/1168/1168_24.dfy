@@ -30,5 +30,29 @@ import opened Prelude
 
 method Solve(n: int, s: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var t := 0;
+  var l := 0;
+  var e := -1;
+  var i := 0;
+  while i < |s|
+    decreases |s| - i
+  {
+    if s[i] == '(' {
+      l := l + 1;
+      if l == 0 {
+        t := t + (i - e + 1);
+      }
+    } else if s[i] == ')' {
+      l := l - 1;
+      if l == -1 {
+        e := i;
+      }
+    }
+    i := i + 1;
+  }
+  if l != 0 {
+    output := "-1";
+  } else {
+    output := IntToString(t);
+  }
 }

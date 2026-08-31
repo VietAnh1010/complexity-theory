@@ -28,5 +28,24 @@ import opened Prelude
 
 method Solve(n: int, rectangles: seq<(int, int)>, m: int, checks: seq<(int, int)>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var c := Sort(rectangles, (p: (int,int), q: (int,int)) => p.0 < q.0 || (p.0 == q.0 && p.1 < q.1));
+  var p := Sort(checks, (a: (int,int), b: (int,int)) => a.0 < b.0 || (a.0 == b.0 && a.1 < b.1));
+  var ans := 0;
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    var cand := p[m-1].0 - c[i].1;
+    if cand > ans { ans := cand; }
+    i := i + 1;
+  }
+  i := 0;
+  while i < m
+    decreases m - i
+  {
+    var cand := c[n-1].0 - p[i].1;
+    if cand > ans { ans := cand; }
+    i := i + 1;
+  }
+  output := IntToString(ans);
 }

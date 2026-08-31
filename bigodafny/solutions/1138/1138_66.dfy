@@ -22,5 +22,20 @@ import opened Prelude
 
 method Solve(n: int, m: int, data: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var w := 0;
+  var mm := 1;
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    var l := data[i][0];
+    var r := data[i][1];
+    var k := r;
+    l := l - mm;
+    r := r - mm;
+    w := w + FloorMod(l, m) + (r - l + 1);
+    mm := k + 1;
+    i := i + 1;
+  }
+  output := IntToString(w);
 }
