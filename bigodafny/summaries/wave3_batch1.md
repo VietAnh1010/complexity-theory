@@ -9,8 +9,7 @@
 | Reverted | 0 |
 | Needed extended timeout | 0 |
 
-Fewest tool calls of the wave (24 for 20 rows), so the per-row budget cost
-nothing in quality here.
+Fewest tool calls of the wave, so the per-row budget cost nothing in quality.
 
 ## Examples
 
@@ -33,11 +32,10 @@ Without the annotations, `dafny translate py --no-verify` reports "type of the
 receiver is not fully determined". Two independent discoveries means this
 belongs in the agent prompt, not in a summary nobody reads mid-task.
 
-**A loop-termination idiom worth recording.** For loops whose natural
-`decreases` mixes a boolean flag with a numeric bound, `decreases !flag, t`
-worked every time it came up (`696_49`, `704_351`, `788_76`). Cheaper than
-proving the flag cannot fire without the bound also shrinking, and the gate here
-is tests, not verification.
+**A loop-termination idiom worth recording.** Where `decreases` mixes a boolean
+flag with a numeric bound, `decreases !flag, t` worked every time (`696_49`,
+`704_351`, `788_76`) -- cheaper than proving the flag cannot fire without the
+bound also shrinking, and the gate here is tests, not verification.
 
 ## Recurring gaps, measured across all 210 translations
 

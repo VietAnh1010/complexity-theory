@@ -170,4 +170,70 @@ module Prelude {
   {
     Sort(s, (x, y) => x < y)
   }
+
+  // ---- parsing integers ------------------------------------------------
+  // Hand-written in 9 translations before this was centralized.
+
+  function ParseInt(s: string): int
+  {
+    if |s| == 0 then 0
+    else if s[0] == '-' then -ParseIntFrom(s, 1, 0)
+    else if s[0] == '+' then ParseIntFrom(s, 1, 0)
+    else ParseIntFrom(s, 0, 0)
+  }
+
+  function ParseIntFrom(s: string, i: nat, acc: int): int
+    decreases |s| - i
+  {
+    if i >= |s| then acc
+    else if '0' <= s[i] <= '9' then
+      ParseIntFrom(s, i + 1, acc * 10 + (s[i] as int - '0' as int))
+    else acc
+  }
+
+  function ParseInts(parts: seq<string>): seq<int>
+  {
+    seq(|parts|, i requires 0 <= i < |parts| => ParseInt(parts[i]))
+  }
+
+  // ---- string ordering -------------------------------------------------
+
+  predicate StringLess(a: string, b: string)
+    decreases |a|
+  {
+    if |a| == 0 then |b| > 0
+    else if |b| == 0 then false
+    else if a[0] != b[0] then a[0] < b[0]
+    else StringLess(a[1..], b[1..])
+  }
+
+  function SortStrings(xs: seq<string>): seq<string>
+  {
+    Sort(xs, (a: string, b: string) => StringLess(a, b))
+  }
+
+  // ---- bitwise on int --------------------------------------------------
+  // Dafny's `int` has no bitwise operators. Translations were casting through
+  // bv64 inline; these wrap that so the width lives in one place.
+
+  function BitOr(x: int, y: int): int
+    requires 0 <= x < 0x1_0000_0000_0000_0000
+    requires 0 <= y < 0x1_0000_0000_0000_0000
+  {
+    ((x as bv64) | (y as bv64)) as int
+  }
+
+  function BitAnd(x: int, y: int): int
+    requires 0 <= x < 0x1_0000_0000_0000_0000
+    requires 0 <= y < 0x1_0000_0000_0000_0000
+  {
+    ((x as bv64) & (y as bv64)) as int
+  }
+
+  function BitXor(x: int, y: int): int
+    requires 0 <= x < 0x1_0000_0000_0000_0000
+    requires 0 <= y < 0x1_0000_0000_0000_0000
+  {
+    ((x as bv64) ^ (y as bv64)) as int
+  }
 }
