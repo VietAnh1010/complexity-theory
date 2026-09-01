@@ -9,40 +9,38 @@
 | 3 | 20/20 | **20/20** | 107k | 54 |
 | 4 | 18/20 | **18/20** | 109k | 69 |
 
-Batch 1 included the 8 rows reverted in wave 4; all 8 passed this time.
-1 row (`1861_28`) reverted after audit — see below.
+Batch 1 included the 8 rows reverted in wave 4; all 8 passed. `1861_28`
+reverted after audit.
 
 ## The finding: agents reuse one translation across sibling rows
 
-Batch 3 reimplemented `1861_28` with `1861_16`'s DP. All tests passed. It is
-still wrong: those two rows exist *because* their labels differ, O(n**2) vs
-O(n). The Dafny became an O(h*w) DP under an O(n**2) label.
+Batch 3 reimplemented `1861_28` with `1861_16`'s DP. All tests passed, and it is
+still wrong: the two rows exist *because* their labels differ, O(n**2) vs O(n).
 
-That prompted a dataset-wide scan, now `siblings.py`: for each problem, compare
-the Dafny of solution pairs whose complexity labels differ.
+That prompted a dataset-wide scan, now `siblings.py`: per problem, compare the
+Dafny of solution pairs whose complexity labels differ.
 
 **49 pairs across 41 problems, involving 87 of 313 translated rows.** Many are
 byte-identical Dafny from Python sources with 1-5% text similarity.
 
 Sampling five pairs by reading both Python sources:
 
-| pair | Python A | Python B | verdict |
-|---|---|---|---|
-| `1092_0`/`1092_11` | `bisect` binary search | unrolled linear compares | substitution |
-| `565_118`/`565_158` | counting array O(n) | sort + run-length O(nlogn) | substitution |
-| `1853_66`/`1853_137` | `Counter` dicts | sort + sweep | substitution |
-| `1577_411`/`1577_173` | generator + `try` | explicit loop | faithful |
-| `772_6`/`772_19` | segment tree | segment tree | faithful |
+| pair | Python A vs B | verdict |
+|---|---|---|
+| `1092_0`/`1092_11` | `bisect` vs unrolled compares | substitution |
+| `565_118`/`565_158` | counting array vs sort+run-length | substitution |
+| `1853_66`/`1853_137` | `Counter` dicts vs sort+sweep | substitution |
+| `1577_411`/`1577_173` | generator+`try` vs explicit loop | faithful |
+| `772_6`/`772_19` | segment tree vs segment tree | faithful |
 
-Three of five are real. Text similarity alone is not the test — same algorithm
-in different Python styles is faithful, and BigOBench's labels are measured, so
-two identical algorithms can still get different labels through profiling noise.
-Each pair needs its sources read.
+Three of five are real. Text similarity is not the test: the same algorithm in
+different Python styles is faithful, and BigOBench's labels are measured, so
+identical algorithms can draw different labels from profiling noise. Each pair
+needs its sources read.
 
-All 49 pairs were produced by the same agent. That is guaranteed by construction
-— manifests are ordered by problem id, so siblings always land in one batch — so
-it neither proves nor disproves reuse. It does remove any independent-convergence
-defence.
+All 49 pairs came from one agent, but manifests are ordered by problem id so
+siblings always share a batch. That neither proves nor disproves reuse; it does
+remove any independent-convergence defence.
 
 ## Second harness limit
 
