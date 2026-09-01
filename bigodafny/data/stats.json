@@ -1,4 +1,5 @@
 {
+  "complexity_proved": 0,
   "dafny_status": {
     "fail": 2,
     "untranslated": 345,
@@ -16,6 +17,11 @@
     "none": 27,
     "partial": 73
   },
+  "quarantine_reasons": {
+    "set-build-quadratic": 19,
+    "sibling-convergence": 91
+  },
+  "quarantined": 106,
   "rows": 640,
   "signature_status": {
     "ok": 636,

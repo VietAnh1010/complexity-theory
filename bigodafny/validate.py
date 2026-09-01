@@ -10,8 +10,8 @@ import argparse, json, os, shutil, subprocess, sys
 from collections import Counter
 from pathlib import Path
 
-from common import (BUILD, DAFNY_VERSION, DATA, PRELUDE, SOLUTIONS, event, log,
-                    read_jsonl, write_json, write_jsonl)
+from common import (BUILD, DAFNY_VERSION, DATA, INEXACT, PRELUDE, SOLUTIONS,
+                    VERIFIED, event, log, read_jsonl, write_json, write_jsonl)
 
 DAFNY = shutil.which("dafny") or os.path.expanduser("~/.dotnet/tools/dafny")
 SOLVER = shutil.which("z3") or "/usr/local/bin/z3"
@@ -164,11 +164,13 @@ def validate(only=None, tiers=("public_tests", "private_tests"),
     tasks = {t["solution_id"]: t for t in read_jsonl(DATA / "tasks.jsonl")}
     sigs = {s["problem_id"]: s for s in read_jsonl(DATA / "signatures.jsonl")}
 
-    root = Path(solutions_dir) if solutions_dir else SOLUTIONS
+    roots = ([Path(solutions_dir)] if solutions_dir
+             else [SOLUTIONS, INEXACT, VERIFIED])
     targets = []
     for sid, t in tasks.items():
-        dfy = root / t["problem_id"] / f"{sid}.dfy"
-        if not dfy.exists():
+        dfy = next((r / t["problem_id"] / f"{sid}.dfy" for r in roots
+                    if (r / t["problem_id"] / f"{sid}.dfy").exists()), None)
+        if dfy is None:
             continue
         if only and sid not in only:
             continue

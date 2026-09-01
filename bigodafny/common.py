@@ -8,6 +8,11 @@ CACHE = ROOT / ".cache"
 DATA = ROOT / "data"
 BUILD = ROOT / ".build"
 SOLUTIONS = ROOT / "solutions"
+# Behaviourally valid, but the complexity label may not describe the code:
+# sibling-convergence candidates and set<T> users. Quarantined, not deleted.
+INEXACT = ROOT / "solutions-inexact"
+# Complexity proved, not just tested: ghost step counter with a proved bound.
+VERIFIED = ROOT / "solutions-verified"
 PRELUDE = ROOT / "prelude.dfy"
 
 # The one upstream file this pipeline reads. Pinned by name, not by "latest".

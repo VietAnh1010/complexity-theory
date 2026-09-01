@@ -18,7 +18,8 @@ Only `strict` is scored by byte-diff.
 from __future__ import annotations
 from collections import Counter
 
-from common import DAFNY_VERSION, DATA, event, log, read_jsonl, write_json, write_jsonl
+from common import (DAFNY_VERSION, DATA, INEXACT, VERIFIED, event, log,
+                    read_jsonl, write_json, write_jsonl)
 
 EXPORT = ("problem_id", "solution_id", "problem_name", "split", "nondet_hint",
           "time_complexity_inferred", "time_curve_coefficient", "n_tests",
@@ -63,6 +64,9 @@ def build():
     tasks = list(read_jsonl(DATA / "tasks.jsonl"))
     sigs = {s["problem_id"]: s for s in read_jsonl(DATA / "signatures.jsonl")}
     base = {b["solution_id"]: b for b in read_jsonl(DATA / "baseline.jsonl")}
+    qpath = DATA / "quarantine.jsonl"
+    quarantine = ({q["solution_id"]: q["reasons"] for q in read_jsonl(qpath)}
+                  if qpath.exists() else {})
     vpath = DATA / "validation.jsonl"
     val = ({v["solution_id"]: v for v in read_jsonl(vpath)}
            if vpath.exists() else {})
@@ -91,6 +95,11 @@ def build():
             "dafny_signature": s.get("dafny"),
             "signature_status": s.get("status", "missing"),
             "dafny_status": v.get("status", "untranslated"),
+            # Behaviour is validated; the complexity label is not trusted.
+            "quarantined": t["solution_id"] in quarantine,
+            "quarantine_reasons": quarantine.get(t["solution_id"], []),
+            "complexity_proved": (VERIFIED / t["problem_id"] /
+                                  f'{t["solution_id"]}.dfy').exists(),
             "dafny_tests_passed": v.get("tests_passed"),
             "dafny_tests_total": v.get("tests_total"),
         })
@@ -108,6 +117,10 @@ def build():
         "python_status": dict(Counter(r["python_status"] for r in rows)),
         "signature_status": dict(Counter(r["signature_status"] for r in rows)),
         "dafny_status": dict(Counter(r["dafny_status"] for r in rows)),
+        "quarantined": sum(r["quarantined"] for r in rows),
+        "quarantine_reasons": dict(Counter(
+            x for r in rows for x in r["quarantine_reasons"])),
+        "complexity_proved": sum(r["complexity_proved"] for r in rows),
         "time_complexity": dict(Counter(r["time_complexity_inferred"]
                                         for r in rows).most_common()),
         "strict_by_complexity": dict(Counter(
