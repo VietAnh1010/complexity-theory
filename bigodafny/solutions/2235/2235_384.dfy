@@ -19,5 +19,22 @@ import opened Prelude
 
 method Solve(t: int, n_list: seq<int>, s_list: seq<string>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var lines: seq<string> := [];
+  var i := 0;
+  while i < t
+    decreases t - i
+  {
+    var s := s_list[i];
+    var res: seq<char> := [];
+    var j := 0;
+    while j < |s|
+      decreases |s| - j
+    {
+      if j % 2 == 0 { res := res + [s[j]]; }
+      j := j + 1;
+    }
+    lines := lines + [res];
+    i := i + 1;
+  }
+  output := Join(lines, "\n");
 }

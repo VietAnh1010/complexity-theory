@@ -23,9 +23,11 @@
 {"a": "1437_223", "a_complexity": "O(nlogn)", "b": "1437_284", "b_complexity": "O(n)", "dafny_similarity": 1.0, "problem_id": "1437", "python_similarity": 0.279}
 {"a": "799_281", "a_complexity": "O(n)", "b": "799_94", "b_complexity": "O(n**2)", "dafny_similarity": 0.863, "problem_id": "799", "python_similarity": 0.332}
 {"a": "482_366", "a_complexity": "O(n+m)", "b": "482_438", "b_complexity": "O(1)", "dafny_similarity": 0.821, "problem_id": "482", "python_similarity": 0.336}
+{"a": "2325_570", "a_complexity": "O(n)", "b": "2325_862", "b_complexity": "O(n*m)", "dafny_similarity": 0.844, "problem_id": "2325", "python_similarity": 0.34}
 {"a": "225_145", "a_complexity": "O(n*m)", "b": "225_85", "b_complexity": "O(n)", "dafny_similarity": 1.0, "problem_id": "225", "python_similarity": 0.346}
 {"a": "1548_179", "a_complexity": "O(n*m)", "b": "1548_552", "b_complexity": "O(n)", "dafny_similarity": 0.883, "problem_id": "1548", "python_similarity": 0.355}
 {"a": "1577_173", "a_complexity": "O(n)", "b": "1577_411", "b_complexity": "O(1)", "dafny_similarity": 1.0, "problem_id": "1577", "python_similarity": 0.36}
+{"a": "2577_283", "a_complexity": "O(n*m)", "b": "2577_822", "b_complexity": "O(n)", "dafny_similarity": 0.87, "problem_id": "2577", "python_similarity": 0.365}
 {"a": "482_438", "a_complexity": "O(1)", "b": "482_543", "b_complexity": "O(n*m)", "dafny_similarity": 0.808, "problem_id": "482", "python_similarity": 0.409}
 {"a": "482_385", "a_complexity": "O(n**2+m**2)", "b": "482_438", "b_complexity": "O(1)", "dafny_similarity": 0.893, "problem_id": "482", "python_similarity": 0.438}
 {"a": "281_138", "a_complexity": "O(nlogn)", "b": "281_250", "b_complexity": "O(n)", "dafny_similarity": 0.862, "problem_id": "281", "python_similarity": 0.448}

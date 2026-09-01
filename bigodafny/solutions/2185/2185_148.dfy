@@ -30,5 +30,38 @@ import opened Prelude
 
 method Solve(n: int, coord_list: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var p := coord_list[0..n];
+  var bset := coord_list[n..2*n];
+  var addSet: set<(int,int)> := {};
+  var idx := 0;
+  while idx < |bset|
+    decreases |bset| - idx
+  {
+    addSet := addSet + {(bset[idx][0], bset[idx][1])};
+    idx := idx + 1;
+  }
+  var foundT: (int,int) := (0,0);
+  var found := false;
+  idx := 0;
+  while idx < |bset| && !found
+    decreases |bset| - idx
+  {
+    var key := (bset[idx][0], bset[idx][1]);
+    var T := (key.0 + p[0][0], key.1 + p[0][1]);
+    var ok := true;
+    var i := 1;
+    while i < n && ok
+      decreases n - i
+    {
+      var diff := (T.0 - p[i][0], T.1 - p[i][1]);
+      if diff !in addSet { ok := false; }
+      i := i + 1;
+    }
+    if ok {
+      found := true;
+      foundT := T;
+    }
+    idx := idx + 1;
+  }
+  output := IntToString(foundT.0) + " " + IntToString(foundT.1);
 }

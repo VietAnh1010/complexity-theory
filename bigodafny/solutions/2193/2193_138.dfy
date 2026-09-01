@@ -28,5 +28,18 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var one := 0;
+  var two := 0;
+  var three := 0;
+  var i := 0;
+  while i < |a_list|
+    decreases |a_list| - i
+  {
+    if a_list[i] == 1 { one := one + 1; }
+    if a_list[i] == 2 { two := two + 1; }
+    if a_list[i] == 3 { three := three + 1; }
+    i := i + 1;
+  }
+  var mx := MaxSeq([one, two, three]);
+  output := IntToString(one + two + three - mx);
 }

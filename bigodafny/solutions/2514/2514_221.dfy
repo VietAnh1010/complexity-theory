@@ -34,5 +34,28 @@ import opened Prelude
 
 method Solve(a: int, b: int, c_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var arr := Sort(c_list, (x: int, y: int) => x > y);
+  var kk := MinSeq(c_list);
+  var su := 0;
+  var total := SumSeq(c_list);
+  if b > total {
+    output := "-1";
+  } else {
+    var i := 0;
+    while i < |arr| && su < b
+      decreases |arr| - i
+    {
+      if arr[i] > kk {
+        su := su + (arr[i] - kk);
+        arr := arr[i := kk];
+      }
+      i := i + 1;
+    }
+    if su < b {
+      var res := FloorDiv(a * kk - (b - su), a);
+      output := IntToString(res);
+    } else {
+      output := IntToString(kk);
+    }
+  }
 }

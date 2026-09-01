@@ -16,5 +16,8 @@ import opened Prelude
 
 method Solve(N: int, M: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var AA := N - 1;
+  var BB := M - 1;
+  var result := FloorDiv(BB + AA - 1, AA);
+  output := IntToString(result);
 }

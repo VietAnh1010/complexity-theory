@@ -20,5 +20,15 @@ import opened Prelude
 
 method Solve(n: int, coord_list: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var a := 0;
+  var b := 0;
+  var i := 0;
+  while i < |coord_list|
+    decreases |coord_list| - i
+  {
+    a := a + coord_list[i][0];
+    b := b + coord_list[i][1];
+    i := i + 1;
+  }
+  output := IntToString(FloorDiv(a, n)) + " " + IntToString(FloorDiv(b, n));
 }

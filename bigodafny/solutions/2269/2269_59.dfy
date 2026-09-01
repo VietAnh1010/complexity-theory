@@ -28,5 +28,39 @@ import opened Prelude
 
 method Solve(s: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  if !IsPalindrome269b(s) {
+    output := IntToString(|s|);
+  } else if AllSameChar269b(s) {
+    output := IntToString(0);
+  } else {
+    output := IntToString(|s| - 1);
+  }
+}
+
+function IsPalindrome269b(s: string): bool
+{
+  IsPalindromeFrom269b(s, 0, |s| / 2)
+}
+
+function IsPalindromeFrom269b(s: string, i: int, half: int): bool
+  decreases half - i
+{
+  if i >= half then true
+  else if s[i] != s[|s| - i - 1] then false
+  else IsPalindromeFrom269b(s, i + 1, half)
+}
+
+function AllSameChar269b(s: string): bool
+  requires |s| >= 0
+{
+  AllSameFrom269b(s, 0)
+}
+
+function AllSameFrom269b(s: string, i: int): bool
+  requires 0 <= i <= |s|
+  decreases |s| - i
+{
+  if i >= |s| || |s| == 0 then true
+  else if s[i] != s[0] then false
+  else AllSameFrom269b(s, i + 1)
 }

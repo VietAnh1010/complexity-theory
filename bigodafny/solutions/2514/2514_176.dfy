@@ -24,5 +24,24 @@ import opened Prelude
 
 method Solve(a: int, b: int, c_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var least := MinSeq(c_list);
+  var total := SumSeq(c_list);
+  if total < b {
+    output := "-1";
+  } else {
+    var s := b;
+    var i := 0;
+    while i < |c_list|
+      decreases |c_list| - i
+    {
+      s := s - (c_list[i] - least);
+      i := i + 1;
+    }
+    if s > 0 {
+      var res := least - FloorDiv(s + a - 1, a);
+      output := IntToString(res);
+    } else {
+      output := IntToString(least);
+    }
+  }
 }

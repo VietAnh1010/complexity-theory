@@ -28,5 +28,23 @@ import opened Prelude
 
 method Solve(n: int, rows: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var lines: seq<string> := [];
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    var row := rows[i];
+    var x0 := row[0]; var y0 := row[1]; var x1 := row[2]; var y1 := row[3];
+    var x2 := row[4]; var y2 := row[5]; var x3 := row[6]; var y3 := row[7];
+    var a1 := x1 - x0;
+    var a2 := x3 - x2;
+    var b1 := y1 - y0;
+    var b2 := y3 - y2;
+    var parallel := a1 * b2 - a2 * b1;
+    var orthogonal := a1 * a2 + b1 * b2;
+    var res := if parallel == 0 then 2 else if orthogonal == 0 then 1 else 0;
+    lines := lines + [IntToString(res)];
+    i := i + 1;
+  }
+  output := Join(lines, "\n");
 }

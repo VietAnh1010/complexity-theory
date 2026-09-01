@@ -112,5 +112,22 @@ import opened Prelude
 
 method Solve(n: int, binary_string: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var mvs := 0;
+  var cnt := 0;
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    if binary_string[i] == 'x' {
+      cnt := cnt + 1;
+    } else {
+      var extra := cnt - 2;
+      mvs := mvs + (if extra > 0 then extra else 0);
+      cnt := 0;
+    }
+    i := i + 1;
+  }
+  var extra2 := cnt - 2;
+  mvs := mvs + (if extra2 > 0 then extra2 else 0);
+  output := IntToString(mvs);
 }

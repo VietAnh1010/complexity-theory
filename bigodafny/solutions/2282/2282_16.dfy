@@ -36,5 +36,41 @@ import opened Prelude
 
 method Solve(n: int, k: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var n0 := n;
+  var n1 := k;
+  if n1 == 0 {
+    if n0 == 1 {
+      output := "0 0";
+    } else {
+      output := "-1 -1";
+    }
+  } else if n0 * 9 < n1 {
+    output := "-1 -1";
+  } else {
+    var i := (n1 - 1) / 9;
+    var q := (n1 - 1) % 9;
+    var mi := Pow10_2282(n0 - 1) + q * Pow10_2282(i);
+    var ii2 := i;
+    while ii2 > 0
+      decreases ii2
+    {
+      mi := mi + 9 * Pow10_2282(ii2 - 1);
+      ii2 := ii2 - 1;
+    }
+    var ii := n1 / 9;
+    var qq := n1 % 9;
+    var ma: string;
+    if qq == 0 {
+      ma := Repeat("9", ii) + Repeat("0", n0 - ii);
+    } else {
+      ma := Repeat("9", ii) + IntToString(qq) + Repeat("0", n0 - ii - 1);
+    }
+    output := IntToString(mi) + " " + ma;
+  }
+}
+
+function Pow10_2282(e: int): int
+  decreases if e > 0 then e else 0
+{
+  if e <= 0 then 1 else 10 * Pow10_2282(e - 1)
 }

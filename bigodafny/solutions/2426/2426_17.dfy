@@ -45,5 +45,51 @@ import opened Prelude
 
 method Solve(n: int, m: int, values: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var a := values;
+  var r4 := n;
+  var r2 := n * 2;
+  var v := 0;
+  while v < |a| && r4 != 0
+    decreases |a| - v
+  {
+    var mid := FloorDiv(a[v], 4);
+    var newVal := FloorMod(a[v], 4);
+    if mid <= r4 {
+      r4 := r4 - mid;
+      a := a[v := newVal];
+    } else {
+      newVal := newVal + 4 * (mid - r4);
+      r4 := 0;
+      a := a[v := newVal];
+    }
+    v := v + 1;
+  }
+
+  var mid2 := 0;
+  var r22 := 0;
+  var j := 0;
+  while j < |a|
+    decreases |a| - j
+  {
+    if FloorMod(a[j], 2) == 1 {
+      mid2 := mid2 + 1;
+    }
+    r22 := r22 + FloorDiv(a[j], 2);
+    j := j + 1;
+  }
+
+  if r4 > 0 {
+    mid2 := mid2 - r4;
+    r22 := r22 - r4;
+    if mid2 < 0 {
+      r22 := r22 - FloorDiv(mid2, -2);
+      mid2 := 0;
+    }
+  }
+
+  if r22 + mid2 > r2 {
+    output := "NO";
+  } else {
+    output := "YES";
+  }
 }

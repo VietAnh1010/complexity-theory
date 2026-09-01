@@ -19,5 +19,22 @@ import opened Prelude
 
 method Solve(a: int, b: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var n := a;
+  var l := b;
+  var total := 0;
+  var minAbsVal := 0;
+  var minAbs := 0;
+  var i := 1;
+  while i <= n
+    decreases n - i
+  {
+    var v := l + i - 1;
+    total := total + v;
+    if i == 1 || AbsInt(v) < minAbs {
+      minAbs := AbsInt(v);
+      minAbsVal := v;
+    }
+    i := i + 1;
+  }
+  output := IntToString(total - minAbsVal);
 }

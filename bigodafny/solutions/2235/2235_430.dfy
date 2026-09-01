@@ -26,5 +26,29 @@ import opened Prelude
 
 method Solve(t: int, n_list: seq<int>, s_list: seq<string>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var parts: seq<string> := [];
+  var x := 0;
+  while x < t
+    decreases t - x
+  {
+    var n := n_list[x];
+    var s := s_list[x];
+    var line: string;
+    if n == 1 {
+      line := s;
+    } else {
+      var buf: string := "";
+      var i := 0;
+      while i < |s|
+        decreases |s| - i
+      {
+        buf := buf + [s[i]];
+        i := i + 2;
+      }
+      line := buf;
+    }
+    parts := parts + [line];
+    x := x + 1;
+  }
+  output := Join(parts, "\n");
 }

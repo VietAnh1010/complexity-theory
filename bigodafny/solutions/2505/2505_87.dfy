@@ -21,5 +21,16 @@ import opened Prelude
 
 method Solve(n: int, coordinates: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var arr := SortInts(coordinates[0]);
+  var cnt := 0;
+  var i := 1;
+  while i < n
+    decreases n - i
+  {
+    if arr[i] == arr[i - 1] {
+      cnt := cnt + 1;
+    }
+    i := i + 1;
+  }
+  output := IntToString(cnt + 1);
 }

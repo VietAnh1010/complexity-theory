@@ -44,5 +44,36 @@ import opened Prelude
 
 method Solve(n: int, k: int, pairs: seq<(int, int)>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var d := Sort(pairs, (x: (int, int), y: (int, int)) => x.0 < y.0 || (x.0 == y.0 && x.1 < y.1));
+  var cur := 0;
+  var nex := 0;
+  var idx := 0;
+  var r := 0;
+  var limit := d[|d| - 1].0 + 2;
+  var i := 0;
+  while i < limit
+    decreases limit - i
+  {
+    nex := 0;
+    var p := k;
+    while idx < n && d[idx].0 < i
+      decreases n - idx
+    {
+      idx := idx + 1;
+    }
+    while idx < n && d[idx].0 == i
+      decreases n - idx
+    {
+      nex := nex + d[idx].1;
+      idx := idx + 1;
+    }
+    var m1 := if p < cur then p else cur;
+    r := r + m1;
+    p := p - m1;
+    var m2 := if p < nex then p else nex;
+    r := r + m2;
+    cur := nex - m2;
+    i := i + 1;
+  }
+  output := IntToString(r);
 }

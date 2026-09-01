@@ -29,5 +29,19 @@ import opened Prelude
 
 method Solve(n: int, binary_string: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var counter := 0;
+  var result := 0;
+  var i := 0;
+  while i < |binary_string|
+    decreases |binary_string| - i
+  {
+    if binary_string[i] == 'x' {
+      counter := counter + 1;
+      if counter >= 3 { result := result + 1; }
+    } else {
+      counter := 0;
+    }
+    i := i + 1;
+  }
+  output := IntToString(result);
 }

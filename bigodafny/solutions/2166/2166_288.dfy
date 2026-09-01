@@ -24,5 +24,19 @@ import opened Prelude
 
 method Solve(n: int, k: int, numbers: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var z := SortInts(numbers);
+  var k2 := 5 - k;
+  if k2 < 0 {
+    output := "0";
+  } else {
+    var count := 0;
+    var i := 0;
+    while i < |z|
+      decreases |z| - i
+    {
+      if z[i] <= k2 { count := count + 1; }
+      i := i + 1;
+    }
+    output := IntToString(FloorDiv(count, 3));
+  }
 }

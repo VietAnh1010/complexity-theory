@@ -23,5 +23,13 @@ import opened Prelude
 
 method Solve(n: int, k: int, numbers: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var count := 0;
+  var i := 0;
+  while i < |numbers|
+    decreases |numbers| - i
+  {
+    if 5 - numbers[i] >= k { count := count + 1; }
+    i := i + 1;
+  }
+  output := IntToString(FloorDiv(count, 3));
 }

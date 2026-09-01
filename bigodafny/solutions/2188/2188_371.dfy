@@ -21,5 +21,24 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>, b_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var ga := seq(n + 1, _ => 0);
+  var gb := seq(n + 1, _ => 0);
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    ga := ga[a_list[i] := i];
+    gb := gb[b_list[i] := i];
+    i := i + 1;
+  }
+  var counts := seq(if n >= 0 then n else 0, _ => 0);
+  i := 1;
+  while i <= n
+    decreases n - i + 1
+  {
+    var o := FloorMod(gb[i] - ga[i], n);
+    counts := counts[o := counts[o] + 1];
+    i := i + 1;
+  }
+  output := IntToString(MaxSeq(counts));
 }

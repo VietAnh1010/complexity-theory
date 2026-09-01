@@ -32,7 +32,26 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+function Power(base: int, e: nat): int
+  decreases e
+{
+  if e == 0 then 1 else base * Power(base, e - 1)
+}
+
+function HexHelper(s: string): int
+  decreases |s|
+{
+  if |s| == 0 then 1
+  else
+    var num := (s[0] as int) - ('0' as int);
+    if num == 0 then HexHelper(s[1..])
+    else if num == 1 then Power(2, |s| - 1) + HexHelper(s[1..])
+    else Power(2, |s|)
+}
+
 method Solve(n: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var s := IntToString(n);
+  var result := HexHelper(s) - 1;
+  output := IntToString(result);
 }

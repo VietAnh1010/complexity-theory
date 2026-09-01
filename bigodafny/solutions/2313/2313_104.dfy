@@ -18,5 +18,10 @@ import opened Prelude
 
 method Solve(a: int, b: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var n := a;
+  var l := b;
+  var s: seq<int> := seq(n, i requires 0 <= i < n => i + l);
+  var sorted := Sort(s, (x: int, y: int) => AbsInt(x) < AbsInt(y));
+  var total := SumSeq(sorted[1..]);
+  output := IntToString(total);
 }

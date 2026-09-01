@@ -55,5 +55,44 @@ import opened Prelude
 
 method Solve(a: int, b: int, string_: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var k := b;
+  var s := string_;
+  var arr: seq<string> := [];
+  if |s| > 0 {
+    var f := s[0];
+    var z: string := "";
+    var i := 0;
+    while i < |s|
+      decreases |s| - i
+    {
+      if s[i] == f {
+        z := z + [s[i]];
+      } else {
+        f := s[i];
+        arr := arr + [z];
+        z := [s[i]];
+      }
+      i := i + 1;
+    }
+    arr := arr + [z];
+  }
+  arr := SortStrings(arr);
+  var curChar := arr[0][0];
+  var c := 0;
+  var q: seq<int> := [];
+  var idx := 0;
+  while idx < |arr|
+    decreases |arr| - idx
+  {
+    if arr[idx][0] == curChar {
+      c := c + FloorDiv(|arr[idx]|, k);
+    } else {
+      q := q + [c];
+      c := FloorDiv(|arr[idx]|, k);
+      curChar := arr[idx][0];
+    }
+    idx := idx + 1;
+  }
+  q := q + [c];
+  output := IntToString(MaxSeq(q));
 }

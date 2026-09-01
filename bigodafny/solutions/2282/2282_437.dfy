@@ -41,5 +41,50 @@ import opened Prelude
 
 method Solve(n: int, k: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var m := n;
+  var s := k;
+  if s == 0 && m == 1 {
+    output := "0 0";
+  } else if s > 9 * m || s < 1 {
+    output := "-1 -1";
+  } else if m == 1 {
+    output := IntToString(s) + " " + IntToString(s);
+  } else {
+    var maxx := "";
+    var s1 := s;
+    var a := 0;
+    while a < m
+      decreases m - a
+    {
+      if s1 > 9 {
+        maxx := maxx + "9";
+        s1 := s1 - 9;
+      } else if s1 == 0 {
+        maxx := maxx + "0";
+      } else {
+        maxx := maxx + IntToString(s1);
+        s1 := 0;
+      }
+      a := a + 1;
+    }
+    var minn := "";
+    var s2 := s - 1;
+    a := 0;
+    while a < m - 1
+      decreases (m - 1) - a
+    {
+      if s2 > 9 {
+        minn := "9" + minn;
+        s2 := s2 - 9;
+      } else if s2 == 0 {
+        minn := "0" + minn;
+      } else {
+        minn := IntToString(s2) + minn;
+        s2 := 0;
+      }
+      a := a + 1;
+    }
+    minn := IntToString(s2 + 1) + minn;
+    output := minn + " " + maxx;
+  }
 }

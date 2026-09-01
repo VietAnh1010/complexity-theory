@@ -23,5 +23,32 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var l := SortInts(a_list);
+  var ans := 0;
+  var i := 0;
+  while i < |l|
+    decreases |l| - i
+  {
+    var v := l[i];
+    if v < 0 {
+      ans := v;
+    } else {
+      var r := IntSqrt2358(v);
+      if r * r != v {
+        ans := v;
+      }
+    }
+    i := i + 1;
+  }
+  output := IntToString(ans);
+}
+
+method IntSqrt2358(x: int) returns (r: int)
+{
+  r := 0;
+  while (r + 1) * (r + 1) <= x
+    decreases x - r
+  {
+    r := r + 1;
+  }
 }

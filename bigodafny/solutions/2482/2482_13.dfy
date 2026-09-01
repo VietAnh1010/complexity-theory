@@ -15,6 +15,13 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(N: int, M: int) returns (output: string)
+  decreases *
 {
-  output := ""; // TODO: translate the Python above
+  var n := 0;
+  while n * (N - 1) + 1 < M
+    decreases *
+  {
+    n := n + 1;
+  }
+  output := IntToString(n);
 }

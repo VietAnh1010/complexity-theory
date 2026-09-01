@@ -19,5 +19,28 @@ import opened Prelude
 
 method Solve(s: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var freq: map<char, int> := map[];
+  var i := 0;
+  while i < |s|
+    decreases |s| - i
+  {
+    var c := s[i];
+    if c in freq {
+      freq := freq[c := freq[c] + 1];
+    } else {
+      freq := freq[c := 1];
+    }
+    i := i + 1;
+  }
+  var a := "Yes";
+  var j := 0;
+  while j < |s|
+    decreases |s| - j
+  {
+    if freq[s[j]] % 2 != 0 {
+      a := "No";
+    }
+    j := j + 1;
+  }
+  output := a;
 }

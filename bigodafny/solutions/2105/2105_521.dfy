@@ -26,5 +26,33 @@ import opened Prelude
 
 method Solve(v_0: int, v_1: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var n := v_0;
+  var a := ParseInts(SplitWs(v_1));
+  var b: seq<int> := [];
+  var k := 0;
+  var c := a[0];
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    if a[i] == c {
+      k := k + 1;
+    } else {
+      b := b + [k];
+      k := 1;
+      c := a[i];
+    }
+    i := i + 1;
+  }
+  b := b + [k];
+  var ans: seq<int> := [];
+  var j := 0;
+  while j < |b| - 1
+    decreases |b| - 1 - j
+  {
+    var m := if b[j] < b[j+1] then b[j] else b[j+1];
+    ans := ans + [m];
+    j := j + 1;
+  }
+  output := IntToString(MaxSeq(ans) * 2);
 }

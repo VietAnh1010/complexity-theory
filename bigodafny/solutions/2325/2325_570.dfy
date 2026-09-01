@@ -31,5 +31,16 @@ import opened Prelude
 
 method Solve(n: int, lists: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var parts: seq<string> := [];
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    var row := lists[i];
+    var b := row[1];
+    var c := row[2];
+    parts := parts + [IntToString(b) + " " + IntToString(c) + " " + IntToString(c)];
+    i := i + 1;
+  }
+  output := Join(parts, "\n");
 }

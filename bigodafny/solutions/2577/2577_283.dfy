@@ -38,5 +38,14 @@ import opened Prelude
 
 method Solve(n: int, mat: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var lines: seq<string> := [];
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    var s := SumSeq(mat[i]) - 1;
+    lines := lines + [IntToString(s)];
+    i := i + 1;
+  }
+  output := Join(lines, "\n");
 }

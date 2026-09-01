@@ -18,5 +18,10 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  if n == 1 {
+    output := "1";
+  } else {
+    var result := FloorDiv(12 * (n - 1) * n, 2) + 1;
+    output := IntToString(result);
+  }
 }

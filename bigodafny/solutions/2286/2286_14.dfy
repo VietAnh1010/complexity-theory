@@ -16,5 +16,8 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var numinator5 := n * (n - 1) * (n - 2) * (n - 3) * (n - 4);
+  var result := numinator5 / 120 + numinator5 * (n - 5) / 720
+    + numinator5 * (n - 5) * (n - 6) / 5040;
+  output := IntToString(result);
 }

@@ -34,5 +34,39 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>, b_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var aPairs: seq<(int,int)> := [];
+  var bPairs: seq<(int,int)> := [];
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    aPairs := aPairs + [(i, a_list[i])];
+    bPairs := bPairs + [(i, b_list[i])];
+    i := i + 1;
+  }
+  var aSorted := Sort(aPairs, (x: (int,int), y: (int,int)) => x.1 < y.1);
+  var bSorted := Sort(bPairs, (x: (int,int), y: (int,int)) => x.1 < y.1);
+  var dif: seq<int> := [];
+  i := 0;
+  while i < n
+    decreases n - i
+  {
+    var q1 := aSorted[i].0;
+    var q2 := bSorted[i].0;
+    var d := if q2 - q1 < 0 then n + (q2 - q1) else q2 - q1;
+    dif := dif + [d];
+    i := i + 1;
+  }
+  var difmax := seq(if n >= 0 then n else 0, _ => 0);
+  var maxi := 0;
+  i := 0;
+  while i < |dif|
+    decreases |dif| - i
+  {
+    var s := dif[i];
+    difmax := difmax[s := difmax[s] + 1];
+    if difmax[s] > maxi { maxi := difmax[s]; }
+    i := i + 1;
+  }
+  output := IntToString(maxi);
 }

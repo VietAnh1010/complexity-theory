@@ -37,5 +37,34 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var total1 := 0;
+  var total2 := 0;
+  var ok := true;
+  var i := 0;
+  while i < |a_list| && ok
+    decreases |a_list| - i
+  {
+    var z := a_list[i];
+    if z == 25 {
+      total1 := total1 + 1;
+    } else if z == 50 {
+      if total1 >= 1 {
+        total1 := total1 - 1;
+        total2 := total2 + 1;
+      } else {
+        ok := false;
+      }
+    } else {
+      if total1 >= 1 && total2 >= 1 {
+        total1 := total1 - 1;
+        total2 := total2 - 1;
+      } else if total1 >= 3 {
+        total1 := total1 - 3;
+      } else {
+        ok := false;
+      }
+    }
+    i := i + 1;
+  }
+  output := if ok then "YES" else "NO";
 }

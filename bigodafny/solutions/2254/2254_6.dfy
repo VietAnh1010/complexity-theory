@@ -18,5 +18,26 @@ import opened Prelude
 
 method Solve(n: int, pairs: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var parts: seq<string> := [];
+  var t := 0;
+  while t < n
+    decreases n - t
+  {
+    var nn := pairs[t][0];
+    var kk := pairs[t][1];
+    var block: string := "";
+    var i := 0;
+    while i < kk
+      decreases kk - i
+    {
+      block := block + [((('a' as int) + i) as char)];
+      i := i + 1;
+    }
+    var reps := nn / kk;
+    var rem := nn % kk;
+    var s := Repeat(block, reps) + Repeat("a", rem);
+    parts := parts + [s];
+    t := t + 1;
+  }
+  output := Join(parts, "\n");
 }

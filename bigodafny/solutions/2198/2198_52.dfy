@@ -33,5 +33,27 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var b: seq<int> := [];
+  var i := 0;
+  while i < n - 1
+    decreases n - 1 - i
+  {
+    b := b + [AbsInt(a_list[i] - a_list[i+1])];
+    i := i + 1;
+  }
+  var c: seq<int> := [];
+  var s := 1;
+  var summ := 0;
+  i := 0;
+  while i < n - 1
+    decreases n - 1 - i
+  {
+    summ := summ + s * b[i];
+    s := -s;
+    c := c + [summ];
+    i := i + 1;
+  }
+  var sortedC := SortInts(c);
+  var result := if sortedC[0] < 0 then sortedC[n-2] - sortedC[0] else sortedC[n-2];
+  output := IntToString(result);
 }

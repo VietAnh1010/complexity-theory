@@ -61,5 +61,37 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var a1 := 0;
+  var b := 0;
+  var c := 0;
+  var f := true;
+  var i := 0;
+  while i < n && f
+    decreases n - i
+  {
+    var v := a_list[i];
+    if v == 50 {
+      if a1 > 0 {
+        a1 := a1 - 1;
+        b := b + 1;
+      } else {
+        f := false;
+      }
+    } else if v == 100 {
+      if a1 > 0 && b > 0 {
+        a1 := a1 - 1;
+        b := b - 1;
+        c := c + 1;
+      } else if a1 >= 3 {
+        a1 := a1 - 3;
+        c := c + 1;
+      } else {
+        f := false;
+      }
+    } else {
+      a1 := a1 + 1;
+    }
+    i := i + 1;
+  }
+  output := if f then "YES" else "NO";
 }

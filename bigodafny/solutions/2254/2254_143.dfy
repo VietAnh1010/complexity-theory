@@ -21,5 +21,26 @@ import opened Prelude
 
 method Solve(n: int, pairs: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var parts: seq<string> := [];
+  var t := 0;
+  while t < n
+    decreases n - t
+  {
+    var nn := pairs[t][0];
+    var kk := pairs[t][1];
+    var s: string := "";
+    var x := 0;
+    var i := 0;
+    while i < nn
+      decreases nn - i
+    {
+      s := s + [((x + 97) as char)];
+      x := x + 1;
+      x := x % kk;
+      i := i + 1;
+    }
+    parts := parts + [s];
+    t := t + 1;
+  }
+  output := Join(parts, "\n");
 }

@@ -14,7 +14,21 @@
 include "../../prelude.dfy"
 import opened Prelude
 
-method Solve(n: int) returns (output: string)
+function BinAsDecimal(x: int): int
+  decreases if x < 0 then 0 else x
 {
-  output := ""; // TODO: translate the Python above
+  if x <= 0 then 0
+  else BinAsDecimal(x / 2) * 10 + x % 2
+}
+
+method Solve(n: int) returns (output: string)
+  decreases *
+{
+  var ans := 1;
+  while BinAsDecimal(ans) <= n
+    decreases *
+  {
+    ans := ans + 1;
+  }
+  output := IntToString(ans - 1);
 }

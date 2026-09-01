@@ -20,5 +20,17 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var total := 1;
+  if n == 1 {
+    output := IntToString(total);
+  } else {
+    var i := 1;
+    while i < n
+      decreases n - i
+    {
+      total := total + 12 * i;
+      i := i + 1;
+    }
+    output := IntToString(total);
+  }
 }

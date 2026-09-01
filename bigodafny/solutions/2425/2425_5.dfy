@@ -28,5 +28,22 @@ import opened Prelude
 
 method Solve(n: int, k: int, pairs: seq<(int, int)>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var arr := pairs + [(0, -1)];
+  var sortedDesc := Sort(arr, (x: (int, int), y: (int, int)) => x.0 > y.0 || (x.0 == y.0 && x.1 > y.1));
+
+  var curr := k;
+  var t := 0;
+  var idx := 0;
+  while idx < |sortedDesc|
+    decreases |sortedDesc| - idx
+  {
+    var xi := sortedDesc[idx].0;
+    var yi := sortedDesc[idx].1;
+    var d := curr - xi;
+    curr := xi;
+    var cand := t + d;
+    t := if yi > cand then yi else cand;
+    idx := idx + 1;
+  }
+  output := IntToString(t);
 }

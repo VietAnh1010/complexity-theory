@@ -39,5 +39,53 @@ import opened Prelude
 
 method Solve(n: int, m: int, data_list: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var r := m;
+  var a: seq<(int,int)> := [];
+  var b: seq<(int,int)> := [];
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    var row := data_list[i];
+    if row[1] < 0 {
+      b := b + [(row[0], row[1])];
+    } else {
+      a := a + [(row[0], row[1])];
+    }
+    i := i + 1;
+  }
+  a := Sort(a, (x: (int,int), y: (int,int)) => x.0 < y.0);
+  b := Sort(b, (x: (int,int), y: (int,int)) => x.0 + x.1 > y.0 + y.1);
+  var z := 1;
+  var stop := false;
+  i := 0;
+  while i < |a| && !stop
+    decreases |a| - i
+  {
+    if a[i].0 > r {
+      z := 0;
+      stop := true;
+    } else {
+      r := r + a[i].1;
+      i := i + 1;
+    }
+  }
+  stop := false;
+  i := 0;
+  while i < |b| && !stop
+    decreases |b| - i
+  {
+    if b[i].0 > r {
+      z := 0;
+      stop := true;
+    } else {
+      r := r + b[i].1;
+      i := i + 1;
+    }
+  }
+  if z == 0 || r < 0 {
+    output := "NO";
+  } else {
+    output := "YES";
+  }
 }
