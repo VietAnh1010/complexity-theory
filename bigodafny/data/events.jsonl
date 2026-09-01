@@ -180,3 +180,6 @@
 {"ts": "2026-09-01T18:51:21", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 1, "valid": 1, "fail": 0, "build": 0, "error": 0}
 {"ts": "2026-09-01T18:51:45", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 3, "valid": 3, "fail": 0, "build": 0, "error": 0}
 {"ts": "2026-09-01T18:52:47", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 1, "valid": 1, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-01T18:54:04", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 4, "valid": 4, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-01T18:54:42", "kind": "proofs", "verified": 10, "total": 10, "with_assume": 0}
+{"ts": "2026-09-01T18:54:43", "kind": "dataset", "rows": 640, "problems": 311, "splits": {"strict": 534, "loose": 100, "unvalidatable": 6}}
