@@ -21,6 +21,18 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int) returns (output: string)
+  decreases *
 {
-  output := ""; // TODO: translate the Python above
+  var a := n;
+  var m := 1;
+  while 2 * a > m * m + m
+    decreases *
+  {
+    m := m + 1;
+  }
+  if 2 * a - (m * m + m) == 0 {
+    output := "YES";
+  } else {
+    output := "NO";
+  }
 }

@@ -31,5 +31,31 @@ import opened Prelude
 
 method Solve(a: int, b: int, c: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var d := c / a;
+  var e := c / b;
+  var test: seq<int> := [];
+  var i := 1;
+  while i <= d
+    decreases d - i + 1
+  {
+    test := test + [i * a];
+    i := i + 1;
+  }
+  var count := 0;
+  i := 1;
+  while i <= e
+    decreases e - i + 1
+  {
+    var found := false;
+    var k := 0;
+    while k < |test|
+      decreases |test| - k
+    {
+      if test[k] == i * b { found := true; }
+      k := k + 1;
+    }
+    if found { count := count + 1; }
+    i := i + 1;
+  }
+  output := IntToString(count);
 }

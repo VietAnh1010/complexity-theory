@@ -22,5 +22,14 @@ import opened Prelude
 
 method Solve(number: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  if number % 4 == 0 {
+    var x := number / 2;
+    output := IntToString(x - 1) + " " + IntToString(x + 1);
+  } else if number % 4 == 2 {
+    var x := number / 2;
+    output := IntToString(x - 2) + " " + IntToString(x + 2);
+  } else {
+    var x := number / 2;
+    output := IntToString(x) + " " + IntToString(x + 1);
+  }
 }

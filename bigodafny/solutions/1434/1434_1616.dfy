@@ -17,7 +17,23 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+function ContainsInt1434a(xs: seq<int>, v: int): bool
+  decreases |xs|
+{
+  if |xs| == 0 then false
+  else if xs[0] == v then true
+  else ContainsInt1434a(xs[1..], v)
+}
+
 method Solve(values: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var count := 0;
+  var i := 1;
+  while i < |values|
+    decreases |values| - i
+  {
+    if ContainsInt1434a(values[..i], values[i]) { count := count + 1; }
+    i := i + 1;
+  }
+  output := IntToString(count);
 }

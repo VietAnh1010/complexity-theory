@@ -39,5 +39,21 @@ import opened Prelude
 
 method Solve(n: int, coordinates: seq<(int, int)>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var total := 0;
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    var j := i + 1;
+    while j < n
+      decreases n - j
+    {
+      if coordinates[i].0 == coordinates[j].0 || coordinates[i].1 == coordinates[j].1 {
+        total := total + 1;
+      }
+      j := j + 1;
+    }
+    i := i + 1;
+  }
+  output := IntToString(total);
 }

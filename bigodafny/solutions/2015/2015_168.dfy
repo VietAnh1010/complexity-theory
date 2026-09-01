@@ -76,5 +76,26 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<string>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var a := ParseInts(a_list);
+  var y := n;
+  var mini := 0;
+  var p := -a[0];
+  var i := 1;
+  while i < y
+    decreases y - i
+  {
+    if p < mini {
+      mini := p;
+    }
+    p := p + a[i-1] - a[i];
+    i := i + 1;
+  }
+  if p < mini {
+    mini := p;
+  }
+  if mini < 0 {
+    output := IntToString(-1 * mini);
+  } else {
+    output := "0";
+  }
 }

@@ -15,5 +15,12 @@ import opened Prelude
 
 method Solve(a: int, b: int, c: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var bVal := a;
+  var gVal := b;
+  var nVal := c;
+  var m := bVal + gVal - nVal;
+  if bVal < m { m := bVal; }
+  if gVal < m { m := gVal; }
+  if nVal < m { m := nVal; }
+  output := IntToString(1 + m);
 }

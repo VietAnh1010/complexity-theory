@@ -27,5 +27,27 @@ import opened Prelude
 
 method Solve(N1: int, list1: seq<int>, N2: int, list2: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var boys := SortInts(list1);
+  var girls := SortInts(list2);
+  var mark := seq(N2, (idx: int) => 0);
+  var cnt := 0;
+  var bi := 0;
+  while bi < N1
+    decreases N1 - bi
+  {
+    var gj := 0;
+    var matched := false;
+    while gj < N2 && !matched
+      decreases N2 - gj
+    {
+      if mark[gj] == 0 && AbsInt(boys[bi] - girls[gj]) <= 1 {
+        mark := mark[gj := 1];
+        matched := true;
+        cnt := cnt + 1;
+      }
+      gj := gj + 1;
+    }
+    bi := bi + 1;
+  }
+  output := IntToString(cnt);
 }

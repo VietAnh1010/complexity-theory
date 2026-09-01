@@ -18,6 +18,19 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int) returns (output: string)
+  decreases *
 {
-  output := ""; // TODO: translate the Python above
+  var k := n;
+  var target := 8 * k + 1;
+  var s := 0;
+  while s * s < target
+    decreases *
+  {
+    s := s + 1;
+  }
+  if s * s == target {
+    output := "YES";
+  } else {
+    output := "NO";
+  }
 }

@@ -24,5 +24,30 @@ import opened Prelude
 
 method Solve(a: int, b: int, c: int, d_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var n := a;
+  var x := b;
+  var y := c;
+  var arr := d_list;
+  var i := 0;
+  var found := false;
+  var result := 0;
+  while i < n && !found
+    decreases !found, n - i
+  {
+    var lo := if i >= x then i - x else 0;
+    var hi := i + y + 1;
+    if hi > |arr| { hi := |arr|; }
+    var m := MinSeq(arr[lo..hi]);
+    if arr[i] == m {
+      result := i + 1;
+      found := true;
+    } else {
+      i := i + 1;
+    }
+  }
+  if found {
+    output := IntToString(result);
+  } else {
+    output := "";
+  }
 }

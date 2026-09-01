@@ -18,5 +18,16 @@ import opened Prelude
 
 method Solve(n: int, numbers: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var c := 0;
+  var i := 1;
+  while i < n
+    decreases n - i
+  {
+    var prefix := numbers[0..i];
+    if MinSeq(prefix) > numbers[i] || MaxSeq(prefix) < numbers[i] {
+      c := c + 1;
+    }
+    i := i + 1;
+  }
+  output := IntToString(c);
 }

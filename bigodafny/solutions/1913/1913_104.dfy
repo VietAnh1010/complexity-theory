@@ -21,5 +21,18 @@ import opened Prelude
 
 method Solve(s: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var n := |s|;
+  var r := seq(n, _ => 0);
+  var bChar := 'b';
+  var idx := n - 1;
+  while idx >= 0
+    decreases idx + 1
+  {
+    if s[idx] != bChar {
+      r := r[idx := 1];
+      bChar := if bChar == 'b' then 'a' else 'b';
+    }
+    idx := idx - 1;
+  }
+  output := JoinInts(r, " ");
 }

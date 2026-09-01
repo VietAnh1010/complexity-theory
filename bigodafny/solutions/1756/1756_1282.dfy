@@ -31,5 +31,27 @@ import opened Prelude
 
 method Solve(n: int, numbers: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  if n == 1 {
+    output := "0";
+  } else {
+    var maximum := numbers[0];
+    var minimum := numbers[0];
+    var count := 0;
+    var i := 0;
+    while i < |numbers|
+      decreases |numbers| - i
+    {
+      var v := numbers[i];
+      if v < minimum {
+        count := count + 1;
+        minimum := v;
+      }
+      if v > maximum {
+        count := count + 1;
+        maximum := v;
+      }
+      i := i + 1;
+    }
+    output := IntToString(count);
+  }
 }

@@ -24,7 +24,30 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+function MinInt1387b(a: int, b: int): int { if a < b then a else b }
+
 method Solve(n: int, k: int, s: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var half := n / 2;
+  var p := if k > half then n - k else k - 1;
+  var left := half;
+  var right := -1;
+  var steps := 0;
+  var i := 0;
+  while i < half
+    decreases half - i
+  {
+    var x := AbsInt((s[i] as int) - (s[n-1-i] as int));
+    steps := steps + MinInt1387b(x, 26 - x);
+    if x != 0 {
+      if i < left { left := i; }
+      if i > right { right := i; }
+    }
+    i := i + 1;
+  }
+  if steps != 0 {
+    output := IntToString(steps + right - left + MinInt1387b(AbsInt(p-left), AbsInt(right-p)));
+  } else {
+    output := "0";
+  }
 }

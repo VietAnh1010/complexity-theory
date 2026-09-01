@@ -22,5 +22,23 @@ import opened Prelude
 
 method Solve(a: int, b: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var cnt := 0;
+  var i := 1;
+  while i <= a
+    decreases a - i + 1
+  {
+    var j := 1;
+    while j <= b
+      decreases b - j + 1
+    {
+      var iti := j % 10;
+      var ju := j / 10;
+      if iti >= 2 && ju >= 2 && i == iti * ju {
+        cnt := cnt + 1;
+      }
+      j := j + 1;
+    }
+    i := i + 1;
+  }
+  output := IntToString(cnt);
 }

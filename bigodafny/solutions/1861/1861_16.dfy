@@ -15,5 +15,28 @@ import opened Prelude
 
 method Solve(a: int, b: int, c: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var h := a;
+  var w := b;
+  var k := c;
+  var f := [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89];
+  var MOD := 1000000007;
+  var arr := seq(w + 2, _ => 0);
+  arr := arr[1 := 1];
+  var i := 0;
+  while i < h
+    decreases h - i
+  {
+    var newArr := seq(w + 2, _ => 0);
+    var j := 1;
+    while j <= w
+      decreases w - j + 1
+    {
+      var val := (f[j - 1] * f[w - j + 1] * arr[j - 1] + f[j] * f[w - j + 1] * arr[j] + f[j] * f[w - j] * arr[j + 1]) % MOD;
+      newArr := newArr[j := val];
+      j := j + 1;
+    }
+    arr := newArr;
+    i := i + 1;
+  }
+  output := IntToString(arr[k]);
 }

@@ -22,5 +22,21 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var sorted := SortInts(a_list);
+  var maxCount := 0;
+  var i := 0;
+  while i < |sorted|
+    decreases |sorted| - i
+  {
+    var j := i;
+    while j < |sorted| && sorted[j] == sorted[i]
+      decreases |sorted| - j
+    {
+      j := j + 1;
+    }
+    var cnt := j - i;
+    if cnt > maxCount { maxCount := cnt; }
+    i := j;
+  }
+  output := IntToString(maxCount);
 }

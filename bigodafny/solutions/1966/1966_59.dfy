@@ -25,5 +25,24 @@ import opened Prelude
 
 method Solve(n: int, s: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var res: seq<string> := [];
+  if n % 2 == 0 {
+    var i := 0;
+    while i < n
+      decreases n - i
+    {
+      res := res + [s[i..i+2]];
+      i := i + 2;
+    }
+  } else {
+    var i := 0;
+    while i < n - 3
+      decreases (n - 3) - i
+    {
+      res := res + [s[i..i+2]];
+      i := i + 2;
+    }
+    res := res + [s[n-3..]];
+  }
+  output := Join(res, "-");
 }

@@ -22,5 +22,18 @@ import opened Prelude
 
 method Solve(a: int, b: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var count := 0;
+  var d := 1;
+  while d <= b
+    decreases b - d + 1
+  {
+    var d1 := d % 10;
+    var d10 := d / 10;
+    var m := d1 * d10;
+    if d1 > 1 && d10 > 1 && m <= a {
+      count := count + 1;
+    }
+    d := d + 1;
+  }
+  output := IntToString(count);
 }

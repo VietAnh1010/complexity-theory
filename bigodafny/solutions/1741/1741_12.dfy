@@ -19,5 +19,16 @@ import opened Prelude
 
 method Solve(n: int, scores: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var c := 0;
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    var mx := MaxSeq(scores[0..i + 1]);
+    if scores[i] >= mx {
+      c := c + 1;
+    }
+    i := i + 1;
+  }
+  output := IntToString(c);
 }

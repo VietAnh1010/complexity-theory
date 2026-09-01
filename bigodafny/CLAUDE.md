@@ -38,6 +38,27 @@ stages.
   bug where a fixture broke the `include` path and every case looked like a
   build failure.
 
+## Translate the algorithm, not just the behaviour
+
+**The validator cannot catch this one.** It checks stdout against stored tests.
+A translation that computes the right answer by a different algorithm passes
+every test and still corrupts the dataset.
+
+Every row carries BigOBench's time complexity label, measured on *that* Python.
+Two rows of the same problem exist precisely because they differ: problem 1861
+has `1861_16` at O(n) and `1861_28` at O(n**2). A wave-5 agent reimplemented
+`1861_28` using `1861_16`'s DP. All tests passed. The row then claimed O(n**2)
+while running O(h*w) -- the label, which is the dataset's whole point, became a
+lie. Reverted.
+
+So: match the source's asymptotic shape. Restructuring within a complexity class
+is fine and often necessary -- an array-backed buffer instead of O(n**2) string
+concatenation, an exact rational instead of a float, a mod-reduced product
+instead of a literal factorial. Replacing the algorithm is not.
+
+When two solutions of one problem look like they want the same code, that is the
+signal to check their labels, not to share an implementation.
+
 ## `assume {:axiom}` in translations
 
 Some translations carry `assume {:axiom} ...` to discharge static bound proofs

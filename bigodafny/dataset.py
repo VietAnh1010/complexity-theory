@@ -26,22 +26,35 @@ EXPORT = ("problem_id", "solution_id", "problem_name", "split", "nondet_hint",
           "dafny_status", "dafny_tests_passed", "dafny_tests_total")
 
 
-def parser_ok(task):
-    """Can BigOBench's dataclass parse every test this row will be judged on?
+def parser_ok(task, sig=None):
+    """Can the harness feed this row at all? Two ways it cannot.
 
-    Four rows dataset-wide cannot: their `from_str` asserts a trailing newline
-    the stored input does not have. Measured, not assumed."""
+    1. `from_str` raises. Four rows: their parser asserts a trailing newline the
+       stored input does not have.
+    2. `from_str` silently loses information. Two rows declare a `real`
+       argument and carry ~100-significant-digit decimals; Python `float()`
+       truncates them before Dafny is ever called, e.g.
+       4.6329496401734172195e50 -> 4.632949640173417e50. No implementation can
+       pass, so a `fail` there measures the harness, not the code.
+
+    Both measured, not assumed."""
     ns = {}
     try:
         exec(compile(task["dataclass_code"], "<dc>", "exec"), ns)
         f = ns["Input"].from_str
     except Exception:
         return False
+    has_real = bool(sig and sig.get("status") == "ok"
+                    and any(p["dafny_type"] == "real" for p in sig["params"]))
     for k in ("public_tests", "private_tests"):
         for t in task["tests"].get(k, []):
             try:
-                f(t["input"])
+                parsed = f(t["input"])
             except Exception:
+                return False
+            # Only checked where it can bite: a real-valued argument whose
+            # decimal text does not survive the float round-trip.
+            if has_real and repr(parsed) != t["input"]:
                 return False
     return True
 
@@ -61,7 +74,7 @@ def build():
         v = val.get(t["solution_id"], {})
         st = b.get("python_status", "unmeasured")
         n = b.get("n_tests") or 0
-        pok = parser_ok(t)
+        pok = parser_ok(t, s)
         rows.append({
             "problem_id": t["problem_id"],
             "solution_id": t["solution_id"],

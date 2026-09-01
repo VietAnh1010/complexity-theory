@@ -40,7 +40,43 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+function MinInt1387a(a: int, b: int): int { if a < b then a else b }
+
 method Solve(n: int, k: int, s: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var p := k - 1;
+  var ans := 0;
+  var pos: seq<int> := [];
+  var idx := 0;
+  var half := n / 2;
+  while idx < half
+    decreases half - idx
+  {
+    if s[idx] != s[n-1-idx] {
+      var diff := AbsInt((s[idx] as int) - (s[n-1-idx] as int));
+      ans := ans + MinInt1387a(diff, 26 - diff);
+      if p >= half {
+        pos := pos + [n-1-idx];
+      } else {
+        pos := pos + [idx];
+      }
+    }
+    idx := idx + 1;
+  }
+  var sortedPos := SortInts(pos);
+  if ans == 0 {
+    output := "0";
+  } else if |sortedPos| == 1 {
+    output := IntToString(ans + AbsInt(p - sortedPos[0]));
+  } else {
+    var first := sortedPos[0];
+    var last := sortedPos[|sortedPos|-1];
+    var a1 := AbsInt(p - first);
+    var a2 := AbsInt(p - last);
+    if a1 < a2 {
+      output := IntToString(ans + a1 + (last - first));
+    } else {
+      output := IntToString(ans + a2 + (last - first));
+    }
+  }
 }

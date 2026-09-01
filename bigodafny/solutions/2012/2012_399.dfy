@@ -18,5 +18,18 @@ import opened Prelude
 
 method Solve(n: int, k: int, pairs: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var mx := -1000000000;
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    var a := pairs[i][0];
+    var b := pairs[i][1];
+    var v := if a < a - (b - k) then a else a - (b - k);
+    if v > mx {
+      mx := v;
+    }
+    i := i + 1;
+  }
+  output := IntToString(mx);
 }

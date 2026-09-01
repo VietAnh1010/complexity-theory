@@ -26,5 +26,15 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var ok := true;
+  var i := 0;
+  while i < n - 1 && ok
+    decreases if ok then n - 1 - i else 0
+  {
+    if AbsInt(a_list[i] - a_list[i + 1]) > 1 {
+      ok := false;
+    }
+    i := i + 1;
+  }
+  output := if ok then "YES" else "NO";
 }

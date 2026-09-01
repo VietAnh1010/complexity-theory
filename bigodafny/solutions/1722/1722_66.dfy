@@ -60,5 +60,66 @@ import opened Prelude
 
 method Solve(n: int, lists: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var i := 1;
+  var ans := 0;
+  var done := false;
+  while i < 1000 && !done
+    decreases if done then 0 else 1000 - i
+  {
+    var s := Digits1722_66(i);
+    var skip := false;
+    if n == 1 {
+      if ContainsInt1722_66(lists[0], s[0]) { skip := true; }
+    } else if n == 2 {
+      if |s| == 1 {
+        if ContainsInt1722_66(lists[0], s[0]) || ContainsInt1722_66(lists[1], s[0]) { skip := true; }
+      } else if |s| == 2 {
+        if (ContainsInt1722_66(lists[0], s[0]) && ContainsInt1722_66(lists[1], s[1])) ||
+           (ContainsInt1722_66(lists[1], s[0]) && ContainsInt1722_66(lists[0], s[1])) {
+          skip := true;
+        }
+      }
+    } else if n == 3 {
+      if |s| == 1 {
+        if ContainsInt1722_66(lists[0], s[0]) || ContainsInt1722_66(lists[1], s[0]) || ContainsInt1722_66(lists[2], s[0]) { skip := true; }
+      } else if |s| == 2 {
+        if (ContainsInt1722_66(lists[0], s[0]) && ContainsInt1722_66(lists[1], s[1])) ||
+           (ContainsInt1722_66(lists[0], s[0]) && ContainsInt1722_66(lists[2], s[1])) ||
+           (ContainsInt1722_66(lists[1], s[0]) && ContainsInt1722_66(lists[0], s[1])) ||
+           (ContainsInt1722_66(lists[1], s[0]) && ContainsInt1722_66(lists[2], s[1])) ||
+           (ContainsInt1722_66(lists[2], s[0]) && ContainsInt1722_66(lists[0], s[1])) ||
+           (ContainsInt1722_66(lists[2], s[0]) && ContainsInt1722_66(lists[1], s[1])) {
+          skip := true;
+        }
+      } else if |s| == 3 {
+        if (ContainsInt1722_66(lists[0], s[0]) && ContainsInt1722_66(lists[1], s[1]) && ContainsInt1722_66(lists[2], s[2])) ||
+           (ContainsInt1722_66(lists[0], s[0]) && ContainsInt1722_66(lists[2], s[1]) && ContainsInt1722_66(lists[1], s[2])) ||
+           (ContainsInt1722_66(lists[1], s[0]) && ContainsInt1722_66(lists[0], s[1]) && ContainsInt1722_66(lists[2], s[2])) ||
+           (ContainsInt1722_66(lists[1], s[0]) && ContainsInt1722_66(lists[2], s[1]) && ContainsInt1722_66(lists[0], s[2])) ||
+           (ContainsInt1722_66(lists[2], s[0]) && ContainsInt1722_66(lists[0], s[1]) && ContainsInt1722_66(lists[1], s[2])) ||
+           (ContainsInt1722_66(lists[2], s[0]) && ContainsInt1722_66(lists[1], s[1]) && ContainsInt1722_66(lists[0], s[2])) {
+          skip := true;
+        }
+      }
+    }
+    if skip {
+      i := i + 1;
+    } else {
+      ans := i - 1;
+      done := true;
+    }
+  }
+  output := IntToString(ans);
+}
+
+function Digits1722_66(i: int): seq<int>
+{
+  if i < 10 then [i]
+  else if i < 100 then [i / 10, i % 10]
+  else [i / 100, (i / 10) % 10, i % 10]
+}
+
+function ContainsInt1722_66(xs: seq<int>, v: int): bool
+{
+  exists k :: 0 <= k < |xs| && xs[k] == v
 }

@@ -18,5 +18,15 @@ import opened Prelude
 
 method Solve(a: int, b: int, c: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var count := 0;
+  var i := 1;
+  while i <= c
+    decreases c - i + 1
+  {
+    if i % a == 0 && i % b == 0 {
+      count := count + 1;
+    }
+    i := i + 1;
+  }
+  output := IntToString(count);
 }

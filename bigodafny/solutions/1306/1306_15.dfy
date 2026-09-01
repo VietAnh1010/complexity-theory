@@ -28,7 +28,46 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+function CountOccur1306b(a: seq<int>, v: int): int
+  decreases |a|
+{
+  if |a| == 0 then 0
+  else (if a[0] == v then 1 else 0) + CountOccur1306b(a[1..], v)
+}
+
+function RemoveAll1306b(a: seq<int>, v: int): seq<int>
+  decreases |a|
+{
+  if |a| == 0 then []
+  else if a[0] == v then RemoveAll1306b(a[1..], v)
+  else [a[0]] + RemoveAll1306b(a[1..], v)
+}
+
+function GroupCounts1306b(a: seq<int>): seq<int>
+  decreases |a|
+{
+  if |a| == 0 then []
+  else [CountOccur1306b(a, a[0])] + GroupCounts1306b(RemoveAll1306b(a[1..], a[0]))
+}
+
+function SumDiv1306b(counts: seq<int>, day: int): int
+  requires day > 0
+  decreases |counts|
+{
+  if |counts| == 0 then 0
+  else counts[0] / day + SumDiv1306b(counts[1..], day)
+}
+
 method Solve(n: int, k: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var counts := GroupCounts1306b(a_list);
+  var count := 0;
+  var days := 1;
+  while days <= 100 && SumDiv1306b(counts, days) >= n
+    decreases 101 - days
+  {
+    count := count + 1;
+    days := days + 1;
+  }
+  output := IntToString(count);
 }

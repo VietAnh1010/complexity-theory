@@ -43,6 +43,37 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, edges: seq<seq<int>>) returns (output: string)
+  decreases *
 {
-  output := ""; // TODO: translate the Python above
+  var ans: seq<int> := [1];
+  var a := edges[0][0];
+  var b := edges[0][1];
+  var i: int;
+  var j: int;
+  if edges[a-1][0] == b || edges[a-1][1] == b {
+    ans := ans + [a, b];
+    i := a;
+    j := b;
+  } else {
+    ans := ans + [b, a];
+    i := b;
+    j := a;
+  }
+  while |ans| < n
+    decreases *
+  {
+    var c := if edges[i-1][0] != j then edges[i-1][0] else edges[i-1][1];
+    ans := ans + [c];
+    i := j;
+    j := c;
+  }
+  var parts: seq<string> := [];
+  var idx := 0;
+  while idx < |ans|
+    decreases |ans| - idx
+  {
+    parts := parts + [IntToString(ans[idx])];
+    idx := idx + 1;
+  }
+  output := Join(parts, " ");
 }

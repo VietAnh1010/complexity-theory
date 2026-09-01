@@ -48,5 +48,59 @@ import opened Prelude
 
 method Solve(v0: string, v1: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var s := v0;
+  var t := v1;
+  var i := 0;
+  var j := 0;
+  var nt := 0;
+  var ar := 0;
+  var at := 0;
+  var done := false;
+  while i <= |s| && j < |t| && !done
+    decreases if done then 0 else |t| - j + 1
+  {
+    if i == |s| {
+      i := 0;
+      ar := 1;
+    }
+    var found := false;
+    var idx := 0;
+    while idx < |s|
+      decreases |s| - idx
+    {
+      if s[idx] == t[j] {
+        found := true;
+      }
+      idx := idx + 1;
+    }
+    if found {
+      if s[i] == t[j] {
+        s := s[i := ':'];
+        j := j + 1;
+        i := i + 1;
+      } else {
+        i := i + 1;
+        at := 1;
+      }
+    } else {
+      nt := 1;
+      done := true;
+    }
+  }
+  if nt == 0 && |s| == |t| {
+    at := 0;
+  } else {
+    at := 1;
+  }
+  if nt == 1 {
+    output := "need tree";
+  } else if at == 1 && ar == 1 {
+    output := "both";
+  } else if at == 1 {
+    output := "automaton";
+  } else if ar == 1 {
+    output := "array";
+  } else {
+    output := "";
+  }
 }

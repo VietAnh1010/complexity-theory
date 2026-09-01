@@ -31,5 +31,45 @@ import opened Prelude
 
 method Solve(a: int, b: int, c: int, d_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var n := a;
+  var m := b;
+  var d := c;
+  var res: seq<string> := [];
+  var i := 0;
+  while i < m
+    decreases m - i
+  {
+    var ci := d_list[i];
+    var suffix := SumSeq(d_list[i..]);
+    var empty := n - |res| - suffix;
+    var zeros := if empty >= d - 1 then d - 1 else empty;
+    var z := 0;
+    while z < zeros
+      decreases zeros - z
+    {
+      res := res + ["0"];
+      z := z + 1;
+    }
+    var k := 0;
+    while k < ci
+      decreases ci - k
+    {
+      res := res + [IntToString(i + 1)];
+      k := k + 1;
+    }
+    i := i + 1;
+  }
+  if n - |res| < d {
+    var pad := n - |res|;
+    var p := 0;
+    while p < pad
+      decreases pad - p
+    {
+      res := res + ["0"];
+      p := p + 1;
+    }
+    output := "YES\n" + Join(res, " ");
+  } else {
+    output := "NO";
+  }
 }

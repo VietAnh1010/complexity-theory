@@ -32,5 +32,26 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var count1 := 0;
+  var count2 := 0;
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    if a_list[i] == 1 {
+      count1 := count1 + 1;
+    } else if a_list[i] == 2 {
+      count2 := count2 + 1;
+    }
+    i := i + 1;
+  }
+  var ans: seq<int>;
+  if count1 >= 1 && count2 >= 1 {
+    ans := [2] + [1] + seq(count2 - 1, _ => 2) + seq(count1 - 1, _ => 1);
+  } else if count1 == 0 {
+    ans := seq(count2, _ => 2);
+  } else {
+    ans := seq(count1, _ => 1);
+  }
+  output := JoinInts(ans, " ");
 }

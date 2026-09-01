@@ -37,5 +37,55 @@ import opened Prelude
 
 method Solve(n: int, numbers: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var ans: seq<char> := Repeat("A", n as nat);
+  var num := 0;
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    var cnt := CountOcc2005(numbers, numbers[i]);
+    if cnt <= 1 {
+      if num < 0 {
+        num := num + 1;
+        ans := ans[i := 'B'];
+      } else {
+        num := num - 1;
+      }
+    }
+    i := i + 1;
+  }
+  if num < 0 {
+    var j := 0;
+    var stop := false;
+    while j < n && !stop
+      decreases n - j
+    {
+      var cnt2 := CountOcc2005(numbers, numbers[j]);
+      if cnt2 > 2 {
+        ans := ans[j := 'B'];
+        num := 0;
+        stop := true;
+      }
+      j := j + 1;
+    }
+  }
+  if num == 0 {
+    output := "YES\n" + ans;
+  } else {
+    output := "NO";
+  }
+}
+
+method CountOcc2005(a: seq<int>, x: int) returns (c: int)
+{
+  c := 0;
+  var i := 0;
+  while i < |a|
+    decreases |a| - i
+  {
+    if a[i] == x {
+      c := c + 1;
+    }
+    i := i + 1;
+  }
 }

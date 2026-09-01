@@ -37,5 +37,23 @@ import opened Prelude
 
 method Solve(N1: int, list1: seq<int>, N2: int, list2: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var a := SortInts(list1);
+  var b := SortInts(list2);
+  var ia := 0;
+  var ib := 0;
+  var cnt := 0;
+  while ia < N1 && ib < N2
+    decreases N1 - ia + N2 - ib
+  {
+    if AbsInt(a[ia] - b[ib]) <= 1 {
+      ia := ia + 1;
+      ib := ib + 1;
+      cnt := cnt + 1;
+    } else if a[ia] > b[ib] {
+      ib := ib + 1;
+    } else {
+      ia := ia + 1;
+    }
+  }
+  output := IntToString(cnt);
 }

@@ -25,5 +25,18 @@ import opened Prelude
 
 method Solve(a: int, b: int, c: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var bLim := a;
+  var gLim := b;
+  var n := c;
+  var res := 0;
+  var i := 0;
+  while i <= n
+    decreases n - i
+  {
+    if i <= bLim && (n - i) <= gLim {
+      res := res + 1;
+    }
+    i := i + 1;
+  }
+  output := IntToString(res);
 }

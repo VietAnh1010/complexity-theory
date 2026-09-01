@@ -30,5 +30,17 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var arr := a_list;
+  var lcm := (arr[0] * arr[1]) / Gcd(arr[0], arr[1]);
+  var current := lcm;
+  var i := 2;
+  while i < |arr|
+    decreases |arr| - i
+  {
+    var running := (current * arr[i]) / Gcd(current, arr[i]);
+    lcm := Gcd(lcm, running);
+    current := Gcd(current, arr[i]);
+    i := i + 1;
+  }
+  output := IntToString(lcm);
 }

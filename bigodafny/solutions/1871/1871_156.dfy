@@ -27,5 +27,18 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var lst := SortInts(a_list);
+  var g := Gcd(lst[0], lst[1]);
+  var l := (lst[0] * lst[1]) / g;
+  var i := 2;
+  while i < n
+    decreases n - i
+  {
+    var gi := Gcd(g, lst[i]);
+    var running := (lst[i] * g) / gi;
+    l := Gcd(l, running);
+    g := Gcd(g, lst[i]);
+    i := i + 1;
+  }
+  output := IntToString(l);
 }

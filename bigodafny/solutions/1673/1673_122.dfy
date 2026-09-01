@@ -25,5 +25,21 @@ import opened Prelude
 
 method Solve(n: int, pairs: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var diff := 0;
+  var pieces: seq<string> := [];
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    var a := pairs[i][0];
+    if a + diff < 501 {
+      diff := diff + a;
+      pieces := pieces + ["A"];
+    } else {
+      diff := diff - (1000 - a);
+      pieces := pieces + ["G"];
+    }
+    i := i + 1;
+  }
+  output := Join(pieces, "");
 }

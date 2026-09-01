@@ -35,5 +35,43 @@ import opened Prelude
 
 method Solve(n: int, lists: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var used := seq(n, (idx: int) => false);
+  var pos := Gen1722_4(n, lists, 0, used, 0, {});
+  var x := 1;
+  while x in pos
+    decreases if x in pos then 1000000 - x else 0
+  {
+    x := x + 1;
+  }
+  output := IntToString(x - 1);
+}
+
+method Gen1722_4(n: int, a: seq<seq<int>>, cur: int, used: seq<bool>, x: int, posIn: set<int>) returns (posOut: set<int>)
+  decreases n - x
+{
+  var pos := posIn + {cur};
+  if x == n {
+    posOut := pos;
+    return;
+  }
+  var j := 0;
+  while j < n
+    decreases n - j
+  {
+    if !used[j] {
+      var k := 0;
+      while k < |a[j]|
+        decreases |a[j]| - k
+      {
+        var i := a[j][k];
+        if i != 0 || x != 0 {
+          var used2 := used[j := true];
+          pos := Gen1722_4(n, a, cur * 10 + i, used2, x + 1, pos);
+        }
+        k := k + 1;
+      }
+    }
+    j := j + 1;
+  }
+  posOut := pos;
 }

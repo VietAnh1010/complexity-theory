@@ -18,5 +18,13 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var b := seq(n, i => 0);
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    b := b[(a_list[i]-1) := i+1];
+    i := i + 1;
+  }
+  output := JoinInts(b, " ");
 }

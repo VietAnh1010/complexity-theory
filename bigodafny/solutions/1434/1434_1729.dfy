@@ -18,7 +18,24 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+function ContainsInt1434b(xs: seq<int>, v: int): bool
+  decreases |xs|
+{
+  if |xs| == 0 then false
+  else if xs[0] == v then true
+  else ContainsInt1434b(xs[1..], v)
+}
+
+function CountDistinct1434(xs: seq<int>): int
+  decreases |xs|
+{
+  if |xs| == 0 then 0
+  else if ContainsInt1434b(xs[1..], xs[0]) then CountDistinct1434(xs[1..])
+  else 1 + CountDistinct1434(xs[1..])
+}
+
 method Solve(values: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var h := CountDistinct1434(values);
+  output := IntToString(4 - h);
 }

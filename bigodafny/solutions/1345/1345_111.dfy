@@ -27,7 +27,22 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+function ReverseString1345(s: string): string
+  decreases |s|
+{
+  if |s| == 0 then "" else ReverseString1345(s[1..]) + [s[0]]
+}
+
 method Solve(n: int, board: seq<string>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var half := n / 2;
+  var ok := true;
+  var i := 0;
+  while i < half
+    decreases half - i
+  {
+    if ReverseString1345(board[n-1-i]) != board[i] { ok := false; }
+    i := i + 1;
+  }
+  output := if ok then "YES" else "NO";
 }

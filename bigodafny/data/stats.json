@@ -8,8 +8,8 @@
   "problems": 311,
   "problems_per_split": {
     "loose": 59,
-    "strict": 271,
-    "unvalidatable": 2
+    "strict": 270,
+    "unvalidatable": 3
   },
   "python_status": {
     "exact": 540,
@@ -23,14 +23,14 @@
   },
   "splits": {
     "loose": 100,
-    "strict": 536,
-    "unvalidatable": 4
+    "strict": 534,
+    "unvalidatable": 6
   },
   "strict_by_complexity": {
     "O(1)": 40,
     "O(logn)": 5,
-    "O(n)": 215,
-    "O(n**2)": 99,
+    "O(n)": 214,
+    "O(n**2)": 98,
     "O(n**2+m**2)": 3,
     "O(n*m)": 38,
     "O(n+m)": 18,

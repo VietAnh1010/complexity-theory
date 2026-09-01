@@ -30,5 +30,40 @@ import opened Prelude
 
 method Solve(s: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var n := |s|;
+  var counta: seq<int> := [0];
+  var countb: seq<int> := [0];
+  var curra := 0;
+  var currb := 0;
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    if s[i] == 'a' {
+      curra := curra + 1;
+    } else {
+      currb := currb + 1;
+    }
+    counta := counta + [curra];
+    countb := countb + [currb];
+    i := i + 1;
+  }
+  var ans := 0;
+  var ii := 0;
+  while ii <= n
+    decreases n - ii
+  {
+    var jj := ii;
+    while jj <= n
+      decreases n - jj
+    {
+      var v := countb[jj] - countb[ii] + counta[ii] + counta[n] - counta[jj];
+      if v > ans {
+        ans := v;
+      }
+      jj := jj + 1;
+    }
+    ii := ii + 1;
+  }
+  output := IntToString(ans);
 }

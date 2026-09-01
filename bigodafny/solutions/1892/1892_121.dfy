@@ -30,7 +30,39 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+function RemoveFirst(l: seq<int>, x: int): seq<int>
+  decreases |l|
+{
+  if |l| == 0 then []
+  else if l[0] == x then l[1..]
+  else [l[0]] + RemoveFirst(l[1..], x)
+}
+
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var l := a_list;
+  var flag1 := false;
+  var flag2 := false;
+  var i := 0;
+  while i < n && !flag1
+    decreases !flag1, n - i
+  {
+    if l[i] == 2 { flag1 := true; }
+    i := i + 1;
+  }
+  i := 0;
+  while i < n && !flag2
+    decreases !flag2, n - i
+  {
+    if l[i] == 1 { flag2 := true; }
+    i := i + 1;
+  }
+  if !flag1 || !flag2 {
+    output := JoinInts(l, " ");
+  } else {
+    var rest := RemoveFirst(l, 2);
+    rest := RemoveFirst(rest, 1);
+    var descending := Sort(rest, (x: int, y: int) => x > y);
+    output := "2 1 " + JoinInts(descending, " ");
+  }
 }

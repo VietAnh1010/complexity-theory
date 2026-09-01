@@ -23,5 +23,23 @@ import opened Prelude
 
 method Solve(n: int, pairs: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var sa := 0;
+  var sg := 0;
+  var pieces: seq<string> := [];
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    var a := pairs[i][0];
+    var g := pairs[i][1];
+    if sa - sg + a <= 500 {
+      pieces := pieces + ["A"];
+      sa := sa + a;
+    } else {
+      pieces := pieces + ["G"];
+      sg := sg + g;
+    }
+    i := i + 1;
+  }
+  output := Join(pieces, "");
 }

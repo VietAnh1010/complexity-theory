@@ -31,7 +31,43 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+function ContainsFrom1272b(hay: string, needle: string, pos: nat): bool
+  requires 1 <= |needle|
+  requires pos <= |hay|
+  decreases |hay| - pos
+{
+  if pos + |needle| > |hay| then false
+  else if hay[pos..pos+|needle|] == needle then true
+  else ContainsFrom1272b(hay, needle, pos + 1)
+}
+
+function Contains1272b(hay: string, needle: string): bool
+{
+  |needle| == 0 || ContainsFrom1272b(hay, needle, 0)
+}
+
 method Solve(n: int, strings: seq<string>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var arr := Sort(strings, (x: string, y: string) => |x| < |y|);
+  var flag := true;
+  var i := 0;
+  while i < |arr| - 1
+    decreases |arr| - 1 - i
+  {
+    if !Contains1272b(arr[i+1], arr[i]) { flag := false; }
+    i := i + 1;
+  }
+  if flag {
+    var lines: seq<string> := ["YES"];
+    var m := 0;
+    while m < |arr|
+      decreases |arr| - m
+    {
+      lines := lines + [arr[m]];
+      m := m + 1;
+    }
+    output := Join(lines, "\n");
+  } else {
+    output := "NO";
+  }
 }

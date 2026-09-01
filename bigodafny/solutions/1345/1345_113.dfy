@@ -32,7 +32,29 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+function CellVal1345b(board: seq<string>, n: int, r: int, c: int): int
+{
+  if r <= 0 || r >= n+1 || c <= 0 || c >= n+1 then 0
+  else if 0 <= r-1 < |board| && 0 <= c-1 < |board[r-1]| && board[r-1][c-1] == 'o' then 1 else 0
+}
+
 method Solve(n: int, board: seq<string>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var ok := true;
+  var i := 1;
+  while i <= n
+    decreases n - i
+  {
+    var j := 1;
+    while j <= n
+      decreases n - j
+    {
+      var s := CellVal1345b(board, n, i-1, j) + CellVal1345b(board, n, i+1, j)
+             + CellVal1345b(board, n, i, j-1) + CellVal1345b(board, n, i, j+1);
+      if s % 2 == 1 { ok := false; }
+      j := j + 1;
+    }
+    i := i + 1;
+  }
+  output := if ok then "YES" else "NO";
 }

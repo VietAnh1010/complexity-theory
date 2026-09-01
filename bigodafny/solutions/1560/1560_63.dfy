@@ -35,5 +35,29 @@ import opened Prelude
 
 method Solve(n: int, pairs: seq<(int, int)>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var a := Sort(pairs, (p: (int, int), q: (int, int)) => p.0 < q.0 || (p.0 == q.0 && p.1 < q.1));
+  var occ1 := a[0].0;
+  var ans := 1;
+  var j := 1;
+  while j < n
+    decreases n - j
+  {
+    var xi := a[j].0;
+    var hi := a[j].1;
+    var cur1_0 := xi - hi;
+    var cur1_1 := xi;
+    var cur2_0 := xi;
+    var cur2_1 := xi + hi;
+    if occ1 < cur1_0 {
+      occ1 := cur1_1;
+      ans := ans + 1;
+    } else if occ1 < cur2_0 && (j+1 == n || (j+1 < n && cur2_1 < a[j+1].0)) {
+      occ1 := cur2_1;
+      ans := ans + 1;
+    } else {
+      occ1 := xi;
+    }
+    j := j + 1;
+  }
+  output := IntToString(ans);
 }

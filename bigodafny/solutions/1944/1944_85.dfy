@@ -31,6 +31,40 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, numbers: seq<int>) returns (output: string)
+  decreases *
 {
-  output := ""; // TODO: translate the Python above
+  var results: seq<string> := [];
+  var idx := 0;
+  while idx < |numbers|
+    decreases |numbers| - idx
+  {
+    var nn := numbers[idx];
+    var c: int;
+    if nn == 1 {
+      c := 1;
+    } else if nn == 2 {
+      c := 2;
+    } else if nn == 3 {
+      c := 2;
+    } else {
+      var S := 1;
+      var cc := 1;
+      var i := 3;
+      while i < nn + 5 && S != nn
+        decreases *
+      {
+        if i + S <= nn {
+          S := S + i;
+        } else {
+          S := nn;
+        }
+        cc := cc + 1;
+        i := i + 2;
+      }
+      c := cc;
+    }
+    results := results + [IntToString(c)];
+    idx := idx + 1;
+  }
+  output := Join(results, "\n");
 }

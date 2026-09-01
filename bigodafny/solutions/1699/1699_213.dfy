@@ -23,5 +23,33 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var fib := [0, 1];
+  while fib[|fib| - 1] <= n
+    decreases n - fib[|fib| - 1] + 1
+  {
+    fib := fib + [fib[|fib| - 1] + fib[|fib| - 2]];
+  }
+  var parts: seq<string> := [];
+  var i := 1;
+  while i <= n
+    decreases n - i + 1
+  {
+    var isFib := false;
+    var k := 0;
+    while k < |fib|
+      decreases |fib| - k
+    {
+      if fib[k] == i {
+        isFib := true;
+      }
+      k := k + 1;
+    }
+    if isFib {
+      parts := parts + ["O"];
+    } else {
+      parts := parts + ["o"];
+    }
+    i := i + 1;
+  }
+  output := Join(parts, "");
 }

@@ -22,5 +22,30 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var size := n;
+  var data := a_list;
+  var error := false;
+  while size > 1
+    decreases size
+  {
+    var i := 0;
+    while i < size - 1
+      decreases size - 1 - i
+    {
+      if AbsInt(data[i] - data[i + 1]) >= 2 {
+        error := true;
+      }
+      i := i + 1;
+    }
+    var mx := MaxSeq(data);
+    var idx := 0;
+    while idx < size && data[idx] != mx
+      decreases size - idx
+    {
+      idx := idx + 1;
+    }
+    data := data[0..idx] + data[idx + 1..];
+    size := size - 1;
+  }
+  output := if error then "NO" else "YES";
 }

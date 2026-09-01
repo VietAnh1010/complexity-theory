@@ -25,5 +25,24 @@ import opened Prelude
 
 method Solve(n: int, values: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var present := seq(n, i => false);
+  var idx := 0;
+  while idx < |values|
+    decreases |values| - idx
+  {
+    var v := values[idx];
+    if 1 <= v <= n {
+      present := present[(v-1) := true];
+    }
+    idx := idx + 1;
+  }
+  var cnt := 0;
+  var j := 0;
+  while j < n
+    decreases n - j
+  {
+    if !present[j] { cnt := cnt + 1; }
+    j := j + 1;
+  }
+  output := IntToString(cnt);
 }

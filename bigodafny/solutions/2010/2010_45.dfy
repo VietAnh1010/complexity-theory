@@ -26,5 +26,22 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var s := SumSeq(a_list);
+  var bad := false;
+  var i := 0;
+  while i < |a_list|
+    decreases |a_list| - i
+  {
+    if s - a_list[i] < a_list[i] {
+      bad := true;
+    }
+    i := i + 1;
+  }
+  if bad {
+    output := "NO";
+  } else if s % 2 != 0 {
+    output := "NO";
+  } else {
+    output := "YES";
+  }
 }

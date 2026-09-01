@@ -20,5 +20,17 @@ import opened Prelude
 
 method Solve(n: int, scores: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var m := 0;
+  var c := 0;
+  var i := 0;
+  while i < |scores|
+    decreases |scores| - i
+  {
+    if m <= scores[i] {
+      m := scores[i];
+      c := c + 1;
+    }
+    i := i + 1;
+  }
+  output := IntToString(c);
 }

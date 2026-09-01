@@ -24,5 +24,35 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var l := [1, 1];
+  var i := 2;
+  while i <= n
+    decreases n - i + 1
+  {
+    l := l + [l[i - 2] + l[i - 1]];
+    i := i + 1;
+  }
+  var parts: seq<string> := [];
+  var j := 1;
+  while j <= n
+    decreases n - j + 1
+  {
+    var found := false;
+    var k := 0;
+    while k < |l|
+      decreases |l| - k
+    {
+      if l[k] == j {
+        found := true;
+      }
+      k := k + 1;
+    }
+    if found {
+      parts := parts + ["O"];
+    } else {
+      parts := parts + ["o"];
+    }
+    j := j + 1;
+  }
+  output := Join(parts, "");
 }
