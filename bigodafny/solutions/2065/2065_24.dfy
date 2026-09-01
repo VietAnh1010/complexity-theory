@@ -25,5 +25,36 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var tri: seq<int> := seq(50000, k requires 0 <= k < 50000 => (k + 1) * (k + 2) / 2);
+  var idx := 0;
+  var found := false;
+  while idx < |tri| && !found
+    decreases |tri| - idx
+  {
+    var target := n - tri[idx];
+    var lo := 0;
+    var hi := |tri| - 1;
+    var hitFound := false;
+    while lo <= hi && !hitFound
+      decreases hi - lo + 1
+    {
+      var mid := (lo + hi) / 2;
+      if tri[mid] == target {
+        hitFound := true;
+      } else if tri[mid] < target {
+        lo := mid + 1;
+      } else {
+        hi := mid - 1;
+      }
+    }
+    if hitFound {
+      found := true;
+    }
+    idx := idx + 1;
+  }
+  if found {
+    output := "YES";
+  } else {
+    output := "NO";
+  }
 }

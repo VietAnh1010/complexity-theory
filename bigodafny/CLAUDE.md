@@ -38,6 +38,25 @@ stages.
   bug where a fixture broke the `include` path and every case looked like a
   build failure.
 
+## `set<T>` is O(n**2) to build in the Python backend
+
+Measured, not assumed. Doubling n quadruples the time:
+
+    n=2000  0.017s     n=4000  0.070s (4.1x)     n=8000  0.278s (4.0x)
+
+against a `seq` built the same way at 0.004 / 0.006 / 0.011s. Dafny's Python
+runtime backs `set<T>` with a frozenset and does an incremental union per
+insert, copying each time.
+
+This matters more here than a normal performance note would. Every row carries a
+complexity label, so a translation that builds a set inside a loop silently
+carries an extra factor of n and stops matching its own label -- and the tests
+still pass, because they are small. Use a sorted `seq` with binary search for
+large lookup structures.
+
+Same shape as the doubly-recursive min/max trap: correct output, wrong
+complexity, green tests.
+
 ## Translate the algorithm, not just the behaviour
 
 **The validator cannot catch this one.** It checks stdout against stored tests.
