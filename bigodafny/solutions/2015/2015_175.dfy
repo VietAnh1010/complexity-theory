@@ -19,5 +19,14 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<string>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var h := ParseInts(a_list);
+  var ans := 0;
+  var i := 0;
+  while i < |h|
+    decreases |h| - i
+  {
+    if h[i] > ans { ans := h[i]; }
+    i := i + 1;
+  }
+  output := IntToString(ans);
 }

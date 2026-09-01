@@ -22,5 +22,21 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var data := a_list;
+  var mx := 0;
+  var box := 0;
+  var idx := 0;
+  while idx < |data|
+    decreases |data| - idx
+  {
+    var i := data[idx];
+    if i > mx {
+      box := box + mx;
+      mx := i;
+    } else {
+      box := box + i;
+    }
+    idx := idx + 1;
+  }
+  output := IntToString(mx - box + 1);
 }

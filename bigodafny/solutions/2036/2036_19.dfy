@@ -22,5 +22,39 @@ import opened Prelude
 
 method Solve(numbers: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var ls := new int[9];
+  var idx := 0;
+  while idx < 9
+    decreases 9 - idx
+    modifies ls
+  {
+    ls[idx] := 0;
+    idx := idx + 1;
+  }
+  idx := 0;
+  while idx < |numbers|
+    decreases |numbers| - idx
+    modifies ls
+  {
+    var pos := numbers[idx] - 1;
+    ls[pos] := ls[pos] + 1;
+    idx := idx + 1;
+  }
+  var x: seq<int> := [];
+  idx := 0;
+  while idx < 9
+    decreases 9 - idx
+  {
+    if ls[idx] > 0 {
+      x := x + [ls[idx]];
+    }
+    idx := idx + 1;
+  }
+  if x == [6] || x == [2, 4] || x == [4, 2] {
+    output := "Elephant";
+  } else if x == [1, 1, 4] || x == [1, 4, 1] || x == [4, 1, 1] || x == [1, 5] || x == [5, 1] {
+    output := "Bear";
+  } else {
+    output := "Alien";
+  }
 }

@@ -24,5 +24,21 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var a := Sort(a_list, (x: int, y: int) => x > y);
+  var s := SumSeq(a_list);
+  var t := 0;
+  var idx := 0;
+  var stopped := false;
+  while idx < |a| && !stopped
+    decreases |a| - idx
+  {
+    var i := a[idx];
+    t := t + i;
+    s := s - i;
+    if t >= s {
+      stopped := true;
+    }
+    idx := idx + 1;
+  }
+  output := IntToString(t - s + 1);
 }

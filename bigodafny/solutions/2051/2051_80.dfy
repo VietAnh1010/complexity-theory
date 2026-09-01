@@ -26,5 +26,24 @@ import opened Prelude
 
 method Solve(n: int, k: int, numbers: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var a := numbers;
+  var mx := 0;
+  var p: seq<int> := seq(n, idx requires 0 <= idx < n => 0);
+  var i := n - 1;
+  while i >= 0
+    decreases i + 1
+  {
+    if a[i] > mx { mx := a[i]; }
+    p := p[i := mx - a[i]];
+    i := i - 1;
+  }
+  var sortedP := SortInts(p);
+  var target := sortedP[|sortedP| - 1];
+  var lo := 0;
+  while lo < |sortedP| && sortedP[lo] < target
+    decreases |sortedP| - lo
+  {
+    lo := lo + 1;
+  }
+  output := IntToString(n - lo);
 }

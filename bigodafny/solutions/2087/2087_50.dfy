@@ -31,5 +31,43 @@ import opened Prelude
 
 method Solve(strings: seq<string>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var alphabet := "abcdefghijklmnopqrstuvwxyz";
+  var results: seq<string> := [];
+  var si := 0;
+  while si < |strings|
+    decreases |strings| - si
+  {
+    var a := strings[si];
+    var s := "";
+    while |a| != 1
+      decreases |a|
+    {
+      if a[0] > a[|a| - 1] {
+        s := s + [a[0]];
+        a := a[1..];
+      } else {
+        s := s + [a[|a| - 1]];
+        a := a[..|a| - 1];
+      }
+    }
+    s := s + "a";
+    var rev: string := seq(|s|, i requires 0 <= i < |s| => s[|s| - 1 - i]);
+    var found := false;
+    var start := 0;
+    while start + |rev| <= |alphabet| && !found
+      decreases |alphabet| - start
+    {
+      if alphabet[start..start + |rev|] == rev {
+        found := true;
+      }
+      start := start + 1;
+    }
+    if a != "a" || !found {
+      results := results + ["NO"];
+    } else {
+      results := results + ["YES"];
+    }
+    si := si + 1;
+  }
+  output := Join(results, "\n");
 }

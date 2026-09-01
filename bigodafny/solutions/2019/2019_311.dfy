@@ -31,5 +31,34 @@ import opened Prelude
 
 method Solve(a: int, b: int, c_list: seq<string>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var n := a;
+  var k := b;
+  var arr := ParseInts(c_list);
+  var count := 0;
+  var tank := 0;
+  var i := 0;
+  var stopped := false;
+  while i < n && !stopped
+    decreases n - i
+  {
+    tank := tank + arr[i];
+    if tank >= 8 {
+      count := count + 1;
+      tank := tank - 8;
+      k := k - 8;
+    } else {
+      count := count + 1;
+      k := k - tank;
+      tank := 0;
+    }
+    if k <= 0 {
+      stopped := true;
+    }
+    i := i + 1;
+  }
+  if k > 0 {
+    output := IntToString(-1);
+  } else {
+    output := IntToString(count);
+  }
 }

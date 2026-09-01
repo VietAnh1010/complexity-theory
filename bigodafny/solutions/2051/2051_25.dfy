@@ -26,5 +26,24 @@ import opened Prelude
 
 method Solve(n: int, k: int, numbers: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var a := numbers;
+  var x := 1000000000;
+  var d := 0;
+  var counter := 0;
+  var idx := 0;
+  while idx < |a|
+    decreases |a| - idx
+  {
+    var i := a[idx];
+    if i < x {
+      x := i;
+    } else if i - x > d {
+      d := i - x;
+      counter := 1;
+    } else if i - x == d {
+      counter := counter + 1;
+    }
+    idx := idx + 1;
+  }
+  output := IntToString(counter);
 }

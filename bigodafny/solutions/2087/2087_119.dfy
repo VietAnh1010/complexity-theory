@@ -27,5 +27,39 @@ import opened Prelude
 
 method Solve(strings: seq<string>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var results: seq<string> := [];
+  var si := 0;
+  while si < |strings|
+    decreases |strings| - si
+  {
+    var r := strings[si];
+    var idxLetter := |r| - 1;
+    var res := "";
+    var done := false;
+    while !done
+      decreases |r|
+    {
+      var n := (('a' as int) + idxLetter) as char;
+      if |r| == 1 {
+        if r[0] == n {
+          res := "YES";
+        } else {
+          res := "NO";
+        }
+        done := true;
+      } else if r[0] == n {
+        r := r[1..];
+        idxLetter := idxLetter - 1;
+      } else if r[|r| - 1] == n {
+        r := r[..|r| - 1];
+        idxLetter := idxLetter - 1;
+      } else {
+        res := "NO";
+        done := true;
+      }
+    }
+    results := results + [res];
+    si := si + 1;
+  }
+  output := Join(results, "\n");
 }

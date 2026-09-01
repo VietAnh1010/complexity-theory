@@ -35,5 +35,40 @@ import opened Prelude
 
 method Solve(a: int, b: int, c_list: seq<int>, d: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var k := b;
+  var arr := c_list;
+  var s := d;
+  var last := s[0];
+  var seg: seq<int> := [arr[0]];
+  var allSegs: seq<seq<int>> := [];
+  var i := 1;
+  while i < |s|
+    decreases |s| - i
+  {
+    if last == s[i] {
+      seg := seg + [arr[i]];
+    } else {
+      last := s[i];
+      allSegs := allSegs + [seg];
+      seg := [arr[i]];
+    }
+    i := i + 1;
+  }
+  if |seg| > 0 {
+    allSegs := allSegs + [seg];
+  }
+  var ans := 0;
+  var si := 0;
+  while si < |allSegs|
+    decreases |allSegs| - si
+  {
+    var segv := allSegs[si];
+    if k < |segv| {
+      var sortedDesc := Sort(segv, (x: int, y: int) => x > y);
+      segv := sortedDesc[..k];
+    }
+    ans := ans + SumSeq(segv);
+    si := si + 1;
+  }
+  output := IntToString(ans);
 }

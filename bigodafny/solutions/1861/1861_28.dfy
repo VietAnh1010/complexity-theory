@@ -31,5 +31,58 @@ import opened Prelude
 
 method Solve(a: int, b: int, c: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var H := a; var W := b; var K := c;
+  var MOD := 1000000007;
+  var pats: seq<seq<int>> := [[0]];
+  var i := 1;
+  while i < W
+    decreases W - i
+  {
+    var branch1: seq<seq<int>> := [];
+    var j := 0;
+    while j < |pats|
+      decreases |pats| - j
+    {
+      branch1 := branch1 + [pats[j] + [i]];
+      j := j + 1;
+    }
+    var branch2: seq<seq<int>> := [];
+    j := 0;
+    while j < |pats|
+      decreases |pats| - j
+    {
+      var p := pats[j];
+      if p[|p| - 1] == i - 1 {
+        branch2 := branch2 + [p[..|p| - 1] + [i, i - 1]];
+      }
+      j := j + 1;
+    }
+    pats := branch1 + branch2;
+    i := i + 1;
+  }
+  var rs: seq<int> := seq(W, k requires 0 <= k < W => if k == 0 then 1 else 0);
+  var row := 0;
+  while row < H
+    decreases H - row
+  {
+    var newrs: seq<int> := [];
+    var col := 0;
+    while col < W
+      decreases W - col
+    {
+      var s := 0;
+      var pi := 0;
+      while pi < |pats|
+        decreases |pats| - pi
+      {
+        s := (s + rs[pats[pi][col]]) % MOD;
+        pi := pi + 1;
+      }
+      newrs := newrs + [s];
+      col := col + 1;
+    }
+    rs := newrs;
+    row := row + 1;
+  }
+  output := IntToString(rs[K - 1]);
 }

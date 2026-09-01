@@ -48,5 +48,51 @@ import opened Prelude
 
 method Solve(v_0: int, v_1: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var n := v_0;
+  var tipos := ParseInts(SplitWs(v_1));
+  if tipos[n - 1] == 1 {
+    tipos := tipos + [2];
+  } else if tipos[n - 1] == 2 {
+    tipos := tipos + [1];
+  }
+  var cont1 := 1;
+  var cont2 := 1;
+  var arreglorepetidos: seq<int> := [];
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    if tipos[i] == 1 {
+      if tipos[i + 1] == 1 {
+        cont1 := cont1 + 1;
+      } else if tipos[i + 1] == 2 {
+        arreglorepetidos := arreglorepetidos + [cont1];
+        cont1 := 1;
+        cont2 := 1;
+      }
+    } else if tipos[i] == 2 {
+      if tipos[i + 1] == 2 {
+        cont2 := cont2 + 1;
+      } else if tipos[i + 1] == 1 {
+        arreglorepetidos := arreglorepetidos + [cont2];
+        cont1 := 1;
+        cont2 := 1;
+      }
+    }
+    i := i + 1;
+  }
+  var arregloacomodado: seq<int> := [];
+  var m := 0;
+  while m < |arreglorepetidos| - 1
+    decreases |arreglorepetidos| - 1 - m
+  {
+    if arreglorepetidos[m] <= arreglorepetidos[m + 1] {
+      arregloacomodado := arregloacomodado + [arreglorepetidos[m] * 2];
+    } else {
+      arregloacomodado := arregloacomodado + [arreglorepetidos[m + 1] * 2];
+    }
+    m := m + 1;
+  }
+  var sorted := Sort(arregloacomodado, (x: int, y: int) => x > y);
+  output := IntToString(sorted[0]);
 }

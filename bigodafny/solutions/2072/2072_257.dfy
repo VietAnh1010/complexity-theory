@@ -23,5 +23,47 @@ import opened Prelude
 
 method Solve(s: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var n := |s|;
+  var d := new char[4];
+  var idx := 0;
+  while idx < 4
+    decreases 4 - idx
+    modifies d
+  {
+    d[idx] := '?';
+    idx := idx + 1;
+  }
+  idx := 0;
+  while idx < n
+    decreases n - idx
+    modifies d
+  {
+    if s[idx] != '!' {
+      d[idx % 4] := s[idx];
+    }
+    idx := idx + 1;
+  }
+  var countR := 0;
+  var countB := 0;
+  var countY := 0;
+  var countG := 0;
+  idx := 0;
+  while idx < n
+    decreases n - idx
+  {
+    if s[idx] == '!' {
+      var c := d[idx % 4];
+      if c == 'R' {
+        countR := countR + 1;
+      } else if c == 'B' {
+        countB := countB + 1;
+      } else if c == 'Y' {
+        countY := countY + 1;
+      } else if c == 'G' {
+        countG := countG + 1;
+      }
+    }
+    idx := idx + 1;
+  }
+  output := IntToString(countR) + " " + IntToString(countB) + " " + IntToString(countY) + " " + IntToString(countG);
 }

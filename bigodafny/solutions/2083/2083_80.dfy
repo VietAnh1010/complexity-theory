@@ -28,5 +28,27 @@ import opened Prelude
 
 method Solve(a: int, b: int, c_list: seq<int>, d: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var n := a;
+  var k := b;
+  var l := c_list;
+  var s := d;
+  var t := 0;
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    var j := i;
+    var p: seq<int> := [];
+    while j < n && s[i] == s[j]
+      decreases n - j
+    {
+      p := p + [l[j]];
+      j := j + 1;
+    }
+    var sortedDesc := Sort(p, (x: int, y: int) => x > y);
+    var c := if k < |sortedDesc| then k else |sortedDesc|;
+    t := t + SumSeq(sortedDesc[0..c]);
+    i := j;
+  }
+  output := IntToString(t);
 }

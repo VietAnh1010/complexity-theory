@@ -26,5 +26,24 @@ import opened Prelude
 
 method Solve(a: int, b: int, c_list: seq<string>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var k := b;
+  var v := ParseInts(c_list);
+  var acc := 0;
+  var result := -1;
+  var i := 0;
+  var stopped := false;
+  while i < |v| && !stopped
+    decreases |v| - i
+  {
+    acc := acc + v[i];
+    var d := if acc < 8 then acc else 8;
+    k := k - d;
+    acc := acc - d;
+    if k <= 0 {
+      result := i + 1;
+      stopped := true;
+    }
+    i := i + 1;
+  }
+  output := IntToString(result);
 }
