@@ -24,5 +24,15 @@ import opened Prelude
 
 method Solve(n: int, a: int, b: int, numbers: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var keep := |numbers| - a;
+  var nominal := 0;
+  var i := 0;
+  while i < keep
+    decreases keep - i
+  {
+    nominal := nominal + numbers[i];
+    i := i + 1;
+  }
+  var total := nominal + a * b;
+  output := IntToString(total);
 }

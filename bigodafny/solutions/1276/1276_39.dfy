@@ -35,5 +35,70 @@ import opened Prelude
 
 method Solve(a: int, b: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+{
+
+  var n := a;
+  var k := b;
+  var mod := 1000000007;
+  var s := 0;
+  while (s+1)*(s+1) <= n
+    decreases n - s*s
+  {
+    s := s + 1;
+  }
+  var l := 2*s + 1;
+  var num0 := new int[l];
+  var ii := 0;
+  while ii <= s
+    decreases s - ii
+  {
+    num0[ii] := ii;
+    ii := ii + 1;
+  }
+  var tt := 0;
+  while tt < s
+    decreases s - tt
+  {
+    num0[s+1+tt] := n / (s - tt);
+    tt := tt + 1;
+  }
+  var num := new int[l];
+  num[0] := num0[0];
+  var jj := 1;
+  while jj < l
+    decreases l - jj
+  {
+    num[jj] := num0[jj] - num0[jj-1];
+    jj := jj + 1;
+  }
+
+  var prevRow := num;
+  var i := 1;
+  while i < k
+    decreases k - i
+  {
+    var row := new int[l];
+    var tmp := 0;
+    var j := 1;
+    while j < l
+      decreases l - j
+    {
+      tmp := (tmp + prevRow[j]) % mod;
+      row[l - j] := (tmp * num[l - j]) % mod;
+      j := j + 1;
+    }
+    prevRow := row;
+    i := i + 1;
+  }
+
+  var ans := 0;
+  var idx := 1;
+  while idx < l
+    decreases l - idx
+  {
+    ans := (ans + prevRow[idx]) % mod;
+    idx := idx + 1;
+  }
+  output := IntToString(ans);
+}
 }

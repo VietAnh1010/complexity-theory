@@ -29,5 +29,22 @@ import opened Prelude
 
 method Solve(n: int, k: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var lo := 0;
+  var hi := n - 1;
+  var c := 0;
+  var stop := false;
+  while lo <= hi && !stop
+    decreases hi - lo + 1
+  {
+    if a_list[lo] <= k {
+      c := c + 1;
+      lo := lo + 1;
+    } else if a_list[hi] <= k {
+      c := c + 1;
+      hi := hi - 1;
+    } else {
+      stop := true;
+    }
+  }
+  output := IntToString(c);
 }

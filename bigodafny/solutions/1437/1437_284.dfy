@@ -23,5 +23,5 @@ import opened Prelude
 
 method Solve(s: string, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  output := IntToString(if 1 in a_list then -1 else 1);
 }

@@ -41,5 +41,32 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var k := MaxSeq(a_list);
+  var t := 0;
+  while a_list[t] != k
+    decreases n - t
+  {
+    t := t + 1;
+  }
+  var c := if t > n - t - 1 then t else n - t - 1;
+  var e := 0;
+  var i := 0;
+  while i < c && e == 0
+    decreases c - i
+  {
+    if i < t {
+      if a_list[i] < a_list[i+1] {
+      } else {
+        e := 1;
+      }
+    }
+    if e == 0 && i + t < n - 1 {
+      if a_list[i+t] > a_list[i+1+t] {
+      } else {
+        e := 1;
+      }
+    }
+    i := i + 1;
+  }
+  output := if e == 1 then "NO" else "YES";
 }

@@ -30,5 +30,23 @@ import opened Prelude
 
 method Solve(n: int, scores: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var macas := Sort(scores, (x: int, y: int) => x > y);
+  var amigo1 := 0;
+  var amigo2 := 0;
+  var i := 0;
+  while i < |macas|
+    decreases |macas| - i
+  {
+    if amigo1 <= amigo2 {
+      amigo1 := amigo1 + macas[i];
+    } else {
+      amigo2 := amigo2 + macas[i];
+    }
+    i := i + 1;
+  }
+  if amigo1 == amigo2 {
+    output := "YES";
+  } else {
+    output := "NO";
+  }
 }

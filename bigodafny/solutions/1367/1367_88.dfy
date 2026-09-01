@@ -25,5 +25,24 @@ import opened Prelude
 
 method Solve(n: int, coordinates: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var b := seq(n + 1, i => 0);
+  var res := 1;
+  if n >= 1 {
+    b := b[1 := 1];
+  }
+  var i := 2;
+  while i <= n
+    decreases n - i
+  {
+    var key := coordinates[i - 1];
+    if b[key] == 0 {
+      b := b[i := 1];
+      res := res + 1;
+    } else {
+      b := b[i := 1];
+      b := b[key := 0];
+    }
+    i := i + 1;
+  }
+  output := IntToString(res);
 }

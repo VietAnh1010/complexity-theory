@@ -28,5 +28,23 @@ import opened Prelude
 
 method Solve(n: int, edges_list: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var lines: seq<string> := [];
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    var row := edges_list[i];
+    var l := row[0];
+    var r := row[1];
+    var d := row[2];
+    var line: string;
+    if l <= d && d <= r {
+      line := IntToString((FloorDiv(r, d) + 1) * d);
+    } else {
+      line := IntToString(d);
+    }
+    lines := lines + [line];
+    i := i + 1;
+  }
+  output := Join(lines, "\n");
 }

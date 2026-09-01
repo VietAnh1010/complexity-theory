@@ -20,5 +20,29 @@ import opened Prelude
 
 method Solve(string_: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var s := string_;
+  var n := |s|;
+  if n < 4 {
+    output := "0";
+  } else {
+    var a := 0;
+    var i := 0;
+    while i < n
+      decreases n - i
+    {
+      var d := -1;
+      var j := i;
+      while j <= n - 4 && d == -1
+        decreases n - 4 - j
+      {
+        if s[j..j+4] == "bear" { d := j; }
+        j := j + 1;
+      }
+      if d >= 0 {
+        a := a + (n - d - 3);
+      }
+      i := i + 1;
+    }
+    output := IntToString(a);
+  }
 }

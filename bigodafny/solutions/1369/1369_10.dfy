@@ -41,5 +41,46 @@ import opened Prelude
 
 method Solve(n: int, a: int, b: int, s: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var N := n;
+  var K := a;
+  var C := b;
+  var L := seq(K, _ => 0);
+  var R := seq(K, _ => 0);
+  var pos := 0;
+  var lc := 0;
+  while lc != K
+    decreases K - lc
+  {
+    if s[pos] == 'o' {
+      L := L[lc := pos + 1];
+      pos := pos + C + 1;
+      lc := lc + 1;
+    } else {
+      pos := pos + 1;
+    }
+  }
+  pos := N - 1;
+  var rc := 0;
+  while rc != K
+    decreases K - rc
+  {
+    if s[pos] == 'o' {
+      R := R[K - 1 - rc := pos + 1];
+      pos := pos - C - 1;
+      rc := rc + 1;
+    } else {
+      pos := pos - 1;
+    }
+  }
+  var parts: seq<string> := [];
+  var i := 0;
+  while i < K
+    decreases K - i
+  {
+    if R[i] == L[i] {
+      parts := parts + [IntToString(R[i])];
+    }
+    i := i + 1;
+  }
+  output := Join(parts, "\n");
 }

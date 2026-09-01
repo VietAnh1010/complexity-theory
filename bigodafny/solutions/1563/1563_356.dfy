@@ -19,5 +19,15 @@ import opened Prelude
 
 method Solve(n: int, m: int, values: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var best := 0;
+  var i := 0;
+  while i < |values|
+    decreases |values| - i
+  {
+    if FloorMod(m, values[i]) == 0 && values[i] > best {
+      best := values[i];
+    }
+    i := i + 1;
+  }
+  output := IntToString(FloorDiv(m, best));
 }

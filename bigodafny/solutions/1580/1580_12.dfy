@@ -34,5 +34,29 @@ import opened Prelude
 
 method Solve(a: int, b: int, c: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var res: seq<int> := [b];
+  var val := b;
+  var it := 2;
+  while val < a * c
+    decreases a * c - val
+  {
+    val := b * it;
+    res := res + [val];
+    it := it + 1;
+  }
+  var l := 0;
+  var h := |res| - 1;
+  var ans := -1;
+  while l <= h
+    decreases h - l
+  {
+    var mid := l + (h - l) / 2;
+    if res[mid] + b * (c - 1) < a * c {
+      ans := mid;
+      l := mid + 1;
+    } else {
+      h := mid - 1;
+    }
+  }
+  output := IntToString(ans + 1);
 }

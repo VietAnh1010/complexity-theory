@@ -19,5 +19,18 @@ import opened Prelude
 
 method Solve(n: int, m: int, values: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var asc := SortInts(values);
+  var result := 0;
+  var found := false;
+  var i := |asc| - 1;
+  while i >= 0 && !found
+    decreases i + 1
+  {
+    if FloorMod(m, asc[i]) == 0 {
+      result := FloorDiv(m, asc[i]);
+      found := true;
+    }
+    i := i - 1;
+  }
+  output := IntToString(result);
 }

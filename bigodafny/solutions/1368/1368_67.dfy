@@ -16,13 +16,13 @@
 // dic = defaultdict(int)
 // for i in s:
 //     dic[i] += 1
-// 
+//
 // if dic["a"] == 0 or dic["b"] == 0:
 //     flag = False
-// 
+//
 // if dic["a"] != dic["c"] and dic["b"] != dic["c"]:
 //     flag = False
-// 
+//
 // if flag:
 //     print("YES")
 // else:
@@ -34,5 +34,29 @@ import opened Prelude
 
 method Solve(s: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var n := |s|;
+  var flag := true;
+  if n == 0 || s[0] != 'a' { flag := false; }
+  var i := 0;
+  while i + 1 < n
+    decreases n - i
+  {
+    if s[i] > s[i+1] { flag := false; }
+    i := i + 1;
+  }
+  var ca := 0;
+  var cb := 0;
+  var cc := 0;
+  i := 0;
+  while i < n
+    decreases n - i
+  {
+    if s[i] == 'a' { ca := ca + 1; }
+    else if s[i] == 'b' { cb := cb + 1; }
+    else if s[i] == 'c' { cc := cc + 1; }
+    i := i + 1;
+  }
+  if ca == 0 || cb == 0 { flag := false; }
+  if ca != cc && cb != cc { flag := false; }
+  output := if flag then "YES" else "NO";
 }

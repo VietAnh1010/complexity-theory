@@ -30,5 +30,30 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+{
+
+  var results: seq<string> := [];
+  var t := 0;
+  while t < n
+    decreases n - t
+  {
+    var v := a_list[t];
+    var res: seq<int> := [];
+    var kk := 1;
+    while v != 0
+      decreases v
+    {
+      var d := v % 10;
+      if d != 0 {
+        res := res + [d * kk];
+      }
+      v := v / 10;
+      kk := kk * 10;
+    }
+    var sorted := Sort(res, (x: int, y: int) => x > y);
+    results := results + [IntToString(|res|), JoinInts(sorted, " ")];
+    t := t + 1;
+  }
+  output := Join(results, "\n");
+}
 }

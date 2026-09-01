@@ -34,5 +34,32 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var a := Sort(a_list, (x: int, y: int) => x > y);
+  var low := a[0];
+  var high := SumSeq(a);
+  while low < high
+    decreases high - low
+  {
+    var mid := (low + high) / 2;
+    var t := 0;
+    var i := 0;
+    var brk := false;
+    while i < n && t < mid && !brk
+      decreases n - i
+    {
+      if t >= a[i] {
+        t := mid;
+        brk := true;
+      } else {
+        t := t + (mid - a[i]);
+        i := i + 1;
+      }
+    }
+    if t >= mid {
+      high := mid;
+    } else {
+      low := mid + 1;
+    }
+  }
+  output := IntToString(high);
 }

@@ -34,5 +34,26 @@ import opened Prelude
 
 method Solve(n: int, k: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var idx1 := -1;
+  var i := 0;
+  while i < n && idx1 == -1
+    decreases n - i
+  {
+    if a_list[i] > k { idx1 := i; }
+    i := i + 1;
+  }
+  if idx1 == -1 {
+    output := IntToString(n);
+  } else {
+    var idx2 := n - 1;
+    var found2 := false;
+    var j := n - 1;
+    while j >= 0 && !found2
+      decreases j + 1
+    {
+      if a_list[j] > k { idx2 := j; found2 := true; }
+      j := j - 1;
+    }
+    output := IntToString(idx1 + (n - 1 - idx2));
+  }
 }

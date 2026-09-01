@@ -25,5 +25,22 @@ import opened Prelude
 
 method Solve(n: int, coordinates: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var di: map<int, int> := map[0 := 0];
+  var k := 1;
+  var q := 1;
+  var idx := 0;
+  while idx < |coordinates|
+    decreases |coordinates| - idx
+  {
+    var iv := coordinates[idx];
+    if iv in di {
+      di := di - {iv};
+    } else {
+      q := q + 1;
+    }
+    di := di[k := iv];
+    k := k + 1;
+    idx := idx + 1;
+  }
+  output := IntToString(q);
 }

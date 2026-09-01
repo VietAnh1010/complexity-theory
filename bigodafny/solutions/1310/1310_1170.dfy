@@ -22,5 +22,20 @@ import opened Prelude
 
 method Solve(n: int, edges: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+{
+
+  var people := 0;
+  var maxPeople := 0;
+  var i := 0;
+  while i < n
+    decreases n - i
+  {
+    var aa := edges[i][0];
+    var bb := edges[i][1];
+    people := people + bb - aa;
+    if people > maxPeople { maxPeople := people; }
+    i := i + 1;
+  }
+  output := IntToString(maxPeople);
+}
 }

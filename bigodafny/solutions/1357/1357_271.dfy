@@ -19,5 +19,18 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+{
+
+  var i := 2;
+  var parts: seq<string> := [];
+  while i * i <= n
+    decreases n - i*i
+  {
+    if n % i == 0 {
+      parts := parts + [IntToString(i), IntToString(n / i)];
+    }
+    i := i + 1;
+  }
+  output := Join(parts, "");
+}
 }

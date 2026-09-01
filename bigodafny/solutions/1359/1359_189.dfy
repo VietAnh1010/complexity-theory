@@ -38,5 +38,41 @@ import opened Prelude
 
 method Solve(a: int, b: int, c: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+{
+
+  var n := a;
+  var x := b;
+  var target := c;
+  var mod := 1000000007;
+  var ans := 1;
+  var cnt := 0;
+  var cnt1 := 0;
+  var i := 0;
+  var j := n;
+  while i < j
+    decreases j - i
+  {
+    var mid := (i + j) / 2;
+    if mid < target {
+      ans := (ans * (x - 1 - cnt1)) % mod;
+      cnt1 := cnt1 + 1;
+      i := mid + 1;
+    } else if mid > target {
+      ans := (ans * (n - x - cnt)) % mod;
+      cnt := cnt + 1;
+      j := mid;
+    } else {
+      i := mid + 1;
+    }
+  }
+  var cr := n - cnt - cnt1 - 1;
+  var k := 1;
+  while k <= cr
+    decreases cr - k
+  {
+    ans := (ans * k) % mod;
+    k := k + 1;
+  }
+  output := IntToString(ans);
+}
 }

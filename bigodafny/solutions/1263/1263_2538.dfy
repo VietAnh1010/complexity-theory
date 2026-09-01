@@ -20,5 +20,29 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+{
+
+  var results: seq<string> := [];
+  var t := 0;
+  while t < n
+    decreases n - t
+  {
+    var v := a_list[t];
+    var s := IntToString(v);
+    var ln := |s|;
+    var lst: seq<string> := [];
+    var i := 0;
+    while i < ln
+      decreases ln - i
+    {
+      if s[i] != '0' {
+        lst := lst + [[s[i]] + Repeat("0", ln - i - 1)];
+      }
+      i := i + 1;
+    }
+    results := results + [IntToString(|lst|), Join(lst, " ")];
+    t := t + 1;
+  }
+  output := Join(results, "\n");
+}
 }

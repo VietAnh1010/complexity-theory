@@ -17,5 +17,21 @@ import opened Prelude
 
 method Solve(n: int, numbers: seq<string>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var best := numbers[0];
+  var worst := numbers[0];
+  var idx := 1;
+  while idx < |numbers|
+    decreases |numbers| - idx
+  {
+    if StringLess(best, numbers[idx]) { best := numbers[idx]; }
+    if StringLess(numbers[idx], worst) { worst := numbers[idx]; }
+    idx := idx + 1;
+  }
+  var i := 0;
+  while i < |best| && i < |worst| && best[i] == worst[i]
+    decreases |best| - i
+  {
+    i := i + 1;
+  }
+  output := IntToString(i);
 }

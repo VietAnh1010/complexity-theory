@@ -37,5 +37,46 @@ import opened Prelude
 
 method Solve(n: int, a: int, b: int, s: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var N := n;
+  var K := a;
+  var C := b;
+  var l := seq(K, _ => 0);
+  var r := seq(K, _ => 0);
+  var i := 0;
+  var j := 0;
+  while i < N && l[K - 1] == 0
+    decreases N - i
+  {
+    if s[i] == 'o' {
+      l := l[j := i + 1];
+      i := i + C + 1;
+      j := j + 1;
+    } else {
+      i := i + 1;
+    }
+  }
+  i := 0;
+  j := K - 1;
+  while i < N && r[0] == 0
+    decreases N - i
+  {
+    if s[N - i - 1] == 'o' {
+      r := r[j := N - i];
+      i := i + C + 1;
+      j := j - 1;
+    } else {
+      i := i + 1;
+    }
+  }
+  var parts: seq<string> := [];
+  var k := 0;
+  while k < K
+    decreases K - k
+  {
+    if r[k] == l[k] {
+      parts := parts + [IntToString(r[k])];
+    }
+    k := k + 1;
+  }
+  output := Join(parts, "\n");
 }

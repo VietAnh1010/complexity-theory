@@ -36,5 +36,35 @@ import opened Prelude
 
 method Solve(n: int, k: int, d: int, binary_list: seq<string>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var arr := binary_list;
+  var len := |arr|;
+  var count := 0;
+  var i := 0;
+  while i < d
+    decreases d - i
+  {
+    var pos := len - i - 1;
+    if arr[pos] != "0" {
+      count := count + 1;
+      arr := arr[pos := "0"];
+    }
+    i := i + 1;
+  }
+  i := i + 1;
+  var pos2 := len - d - 1;
+  if arr[pos2] == "0" {
+    arr := arr[pos2 := "1"];
+    count := count + 1;
+  }
+  while i < k
+    decreases k - i
+  {
+    var pos3 := len - i - 1;
+    if arr[pos3] != "0" {
+      count := count + 1;
+      arr := arr[pos3 := "0"];
+    }
+    i := i + 1;
+  }
+  output := IntToString(count);
 }

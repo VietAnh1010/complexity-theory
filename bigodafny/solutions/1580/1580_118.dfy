@@ -23,5 +23,10 @@ import opened Prelude
 
 method Solve(a: int, b: int, c: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var t := a * c;
+  if FloorMod(t, b) == 0 {
+    output := IntToString(FloorDiv(t, b) - c);
+  } else {
+    output := IntToString(FloorDiv(t, b) - c + 1);
+  }
 }

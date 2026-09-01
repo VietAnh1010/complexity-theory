@@ -26,5 +26,17 @@ import opened Prelude
 
 method Solve(N: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  if N <= 9 {
+    output := IntToString(N);
+  } else if N <= 189 {
+    var num := FloorDiv(N - 10, 2) + 10;
+    var mod := FloorMod(N - 10, 2);
+    var s := IntToString(num);
+    output := [s[mod]];
+  } else {
+    var num := FloorDiv(N - 10 - 180, 3) + 100;
+    var mod := FloorMod(N - 10 - 180, 3);
+    var s := IntToString(num);
+    output := [s[mod]];
+  }
 }

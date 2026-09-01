@@ -138,5 +138,22 @@ import opened Prelude
 
 method Solve(s1: string, s2: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var na := Norm1628b(s1);
+  var nb := Norm1628b(s2);
+  if na == nb {
+    output := "YES";
+  } else {
+    output := "NO";
+  }
+}
+
+function Norm1628b(s: string): string
+  decreases |s|
+{
+  if |s| % 2 == 1 then s
+  else
+    var half := |s| / 2;
+    var a := Norm1628b(s[..half]);
+    var b := Norm1628b(s[half..]);
+    if StringLess(a, b) then a + b else b + a
 }

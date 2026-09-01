@@ -25,5 +25,22 @@ import opened Prelude
 
 method Solve(n: int, s: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var i := 0;
+  var found := false;
+  var idx := 0;
+  while i < n - 1 && !found
+    decreases n - 1 - i
+  {
+    if s[i+1] < s[i] {
+      found := true;
+      idx := i;
+    } else {
+      i := i + 1;
+    }
+  }
+  if found {
+    output := "YES\n" + IntToString(idx + 1) + " " + IntToString(idx + 2);
+  } else {
+    output := "NO";
+  }
 }

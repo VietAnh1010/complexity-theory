@@ -33,5 +33,43 @@ import opened Prelude
 
 method Solve(n: int, a: int, b: int, s: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var N := n;
+  var K := a;
+  var C := b;
+  var left: seq<int> := [];
+  var right: seq<int> := [];
+  var i := 0;
+  while |left| <= K - 1
+    decreases K - |left|
+  {
+    if s[i] == 'o' {
+      left := left + [i];
+      i := i + C + 1;
+    } else {
+      i := i + 1;
+    }
+  }
+  var j := N - 1;
+  while |right| <= K - 1
+    decreases K - |right|
+  {
+    if s[j] == 'o' {
+      right := right + [j];
+      j := j - C - 1;
+    } else {
+      j := j - 1;
+    }
+  }
+  right := SortInts(right);
+  var parts: seq<string> := [];
+  var k := 0;
+  while k < K
+    decreases K - k
+  {
+    if left[k] == right[k] {
+      parts := parts + [IntToString(left[k] + 1)];
+    }
+    k := k + 1;
+  }
+  output := Join(parts, "\n");
 }

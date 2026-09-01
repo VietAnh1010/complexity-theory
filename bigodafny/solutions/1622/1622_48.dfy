@@ -24,5 +24,21 @@ import opened Prelude
 
 method Solve(n: int, k: int, d: int, binary_list: seq<string>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var c := 0;
+  var i := n - k;
+  while i < n
+    decreases n - i
+  {
+    if i == n - d - 1 {
+      if binary_list[i] == "0" {
+        c := c + 1;
+      }
+    } else {
+      if binary_list[i] == "1" {
+        c := c + 1;
+      }
+    }
+    i := i + 1;
+  }
+  output := IntToString(c);
 }

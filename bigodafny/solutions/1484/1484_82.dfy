@@ -30,5 +30,16 @@ import opened Prelude
 
 method Solve(n: int, numbers: seq<string>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var sorted := SortStrings(numbers);
+  var first := sorted[0];
+  var last := sorted[|sorted|-1];
+  var ct := 0;
+  var i := 0;
+  while i < |first| && i < |last| && first[i] == last[i]
+    decreases |first| - i
+  {
+    ct := ct + 1;
+    i := i + 1;
+  }
+  output := IntToString(ct);
 }

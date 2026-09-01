@@ -33,5 +33,37 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var s := 0;
+  var i := 0;
+  while i < |a_list|
+    decreases |a_list| - i
+  {
+    if a_list[i] > 0 { s := s + a_list[i]; }
+    i := i + 1;
+  }
+  if FloorMod(s, 2) == 1 {
+    output := IntToString(s);
+  } else {
+    // sorted(n)[::-1] scanned for first odd == max odd negative (order-independent).
+    var m := -10000000;
+    var j := 0;
+    while j < |a_list|
+      decreases |a_list| - j
+    {
+      if a_list[j] < 0 && FloorMod(a_list[j], 2) == 1 && a_list[j] > m {
+        m := a_list[j];
+      }
+      j := j + 1;
+    }
+    j := 0;
+    while j < |a_list|
+      decreases |a_list| - j
+    {
+      if a_list[j] > 0 && FloorMod(a_list[j], 2) == 1 && -a_list[j] > m {
+        m := -a_list[j];
+      }
+      j := j + 1;
+    }
+    output := IntToString(s + m);
+  }
 }

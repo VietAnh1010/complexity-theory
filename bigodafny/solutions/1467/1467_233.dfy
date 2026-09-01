@@ -17,5 +17,14 @@ import opened Prelude
 
 method Solve(N: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var parts: seq<string> := [];
+  var i := 0;
+  while i < N + 100
+    decreases N + 100 - i
+  {
+    parts := parts + [IntToString(i)];
+    i := i + 1;
+  }
+  var t := Join(parts, "");
+  output := [t[N]];
 }

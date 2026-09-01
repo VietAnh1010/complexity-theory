@@ -33,5 +33,34 @@ import opened Prelude
 
 method Solve(v_0: int, v_1: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var counts: seq<int> := seq(26, i => 0);
+  var idx := 0;
+  while idx < |v_1|
+    decreases |v_1| - idx
+  {
+    var c := v_1[idx];
+    var pos := (c as int) - ('a' as int);
+    counts := counts[pos := counts[pos] + 1];
+    idx := idx + 1;
+  }
+  var ok := true;
+  var restring: string := "";
+  var ci := 0;
+  while ci < 26
+    decreases 26 - ci
+  {
+    if ok && counts[ci] > 0 {
+      if counts[ci] % v_0 != 0 {
+        ok := false;
+      } else {
+        restring := restring + Repeat([(('a' as int + ci) as char)], counts[ci] / v_0);
+      }
+    }
+    ci := ci + 1;
+  }
+  if ok {
+    output := Repeat(restring, v_0);
+  } else {
+    output := "-1";
+  }
 }

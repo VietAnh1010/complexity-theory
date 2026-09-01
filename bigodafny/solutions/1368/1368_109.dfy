@@ -31,7 +31,7 @@
 //     print('YES')
 // else:
 //     print('NO')
-// 	 		 			 	 		 			 		 		 	 				
+//
 // --------------------------------------------------------------------
 
 include "../../prelude.dfy"
@@ -39,5 +39,62 @@ import opened Prelude
 
 method Solve(s: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var n := |s|;
+  var step := 0;
+  var flag := 1;
+  var suma := 0;
+  var sumb := 0;
+  var sumc := 0;
+
+  var i := 0;
+  var found := false;
+  while i < n && !found
+    decreases n - i
+  {
+    if s[i] != 'a' {
+      step := i;
+      found := true;
+    } else {
+      suma := suma + 1;
+      i := i + 1;
+    }
+  }
+
+  i := step;
+  found := false;
+  while i < n && !found
+    decreases n - i
+  {
+    if s[i] != 'b' {
+      step := i;
+      found := true;
+    } else {
+      sumb := sumb + 1;
+      i := i + 1;
+    }
+  }
+
+  i := step;
+  found := false;
+  while i < n && !found
+    decreases n - i
+  {
+    if s[i] != 'c' {
+      flag := 0;
+      found := true;
+    } else {
+      sumc := sumc + 1;
+      step := i;
+      i := i + 1;
+    }
+  }
+
+  if step != n - 1 {
+    flag := 0;
+  }
+  if suma > 0 && sumb > 0 && sumc > 0 && (sumc == suma || sumc == sumb) && flag == 1 {
+    output := "YES";
+  } else {
+    output := "NO";
+  }
 }

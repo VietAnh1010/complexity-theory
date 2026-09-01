@@ -18,5 +18,16 @@ import opened Prelude
 
 method Solve(n: int, a: int, b: int, numbers: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var sortedA := SortInts(numbers);
+  var keep := n - a;
+  var total := 0;
+  var i := 0;
+  while i < keep
+    decreases keep - i
+  {
+    total := total + sortedA[i];
+    i := i + 1;
+  }
+  total := total + a * b;
+  output := IntToString(total);
 }

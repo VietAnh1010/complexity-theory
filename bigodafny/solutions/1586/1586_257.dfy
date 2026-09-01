@@ -21,5 +21,22 @@ import opened Prelude
 
 method Solve(n: int, scores: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var cnt100 := 0;
+  var cnt200 := 0;
+  var i := 0;
+  while i < |scores|
+    decreases |scores| - i
+  {
+    if scores[i] == 100 {
+      cnt100 := cnt100 + 1;
+    } else {
+      cnt200 := cnt200 + 1;
+    }
+    i := i + 1;
+  }
+  if cnt100 % 2 != 0 || (cnt100 == 0 && cnt200 % 2 != 0) {
+    output := "NO";
+  } else {
+    output := "YES";
+  }
 }

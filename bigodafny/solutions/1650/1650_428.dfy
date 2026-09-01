@@ -32,5 +32,17 @@ import opened Prelude
 
 method Solve(n: int, pairs: seq<seq<string>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var l := 0;
+  var p := 0;
+  var i := 0;
+  while i < |pairs|
+    decreases |pairs| - i
+  {
+    if pairs[i][0] == "1" { l := l + 1; }
+    if pairs[i][1] == "1" { p := p + 1; }
+    i := i + 1;
+  }
+  var t1 := if l < n - l then l else n - l;
+  var t2 := if p < n - p then p else n - p;
+  output := IntToString(t1 + t2);
 }
