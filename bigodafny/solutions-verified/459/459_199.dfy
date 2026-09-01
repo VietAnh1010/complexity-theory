@@ -28,26 +28,34 @@
 include "../../prelude.dfy"
 import opened Prelude
 
-method Solve(a: int, b: int) returns (output: string)
+method Solve(a: int, b: int) returns (output: string, ghost steps: nat)
+  requires a >= 0 && b >= 0
+  ensures steps <= a + b + 2
 {
   var n := a;
   var m := b;
   var t := 0;
   var doneFlag := false;
+  steps := 1;
   while !doneFlag
-    decreases if n + m >= 0 then n + m else 0
+    invariant n >= 0 && m >= 0
+    invariant steps == 1 + (a + b - n - m)
+    decreases (if n + m >= 0 then n + m else 0), (if doneFlag then 0 else 1)
   {
     if n >= m && n > 1 && m > 0 {
       n := n - 2;
       m := m - 1;
       t := t + 1;
+      steps := steps + 3;
     } else if n < m && n > 0 && m > 1 {
       n := n - 1;
       m := m - 2;
       t := t + 1;
+      steps := steps + 3;
     } else {
       doneFlag := true;
     }
   }
   output := IntToString(t) + "\n";
+  steps := steps + 1;
 }

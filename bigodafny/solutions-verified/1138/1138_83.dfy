@@ -25,11 +25,19 @@
 include "../../prelude.dfy"
 import opened Prelude
 
-method Solve(n: int, m: int, data: seq<seq<int>>) returns (output: string)
+method Solve(n: int, m: int, data: seq<seq<int>>) returns (output: string, ghost steps: nat)
+  requires n >= 0
+  requires m != 0
+  requires |data| == n
+  requires forall i :: 0 <= i < n ==> |data[i]| >= 2
+  ensures steps <= 4 * n + 4
 {
+  steps := 1;
   var result := 0;
   var i := 0;
   while i < n
+    invariant 0 <= i <= n
+    invariant steps == 4 * i + 1
     decreases n - i
   {
     if i == 0 {
@@ -39,6 +47,8 @@ method Solve(n: int, m: int, data: seq<seq<int>>) returns (output: string)
     }
     result := result + data[i][1] - data[i][0] + 1;
     i := i + 1;
+    steps := steps + 4;
   }
   output := IntToString(result);
+  steps := steps + 1;
 }
