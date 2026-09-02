@@ -67,6 +67,9 @@ def build():
     qpath = DATA / "quarantine.jsonl"
     quarantine = ({q["solution_id"]: q["reasons"] for q in read_jsonl(qpath)}
                   if qpath.exists() else {})
+    fpath = DATA / "verification.jsonl"
+    verif = ({f["solution_id"]: f for f in read_jsonl(fpath)}
+             if fpath.exists() else {})
     vpath = DATA / "validation.jsonl"
     val = ({v["solution_id"]: v for v in read_jsonl(vpath)}
            if vpath.exists() else {})
@@ -100,6 +103,9 @@ def build():
             "quarantine_reasons": quarantine.get(t["solution_id"], []),
             "complexity_proved": (VERIFIED / t["problem_id"] /
                                   f'{t["solution_id"]}.dfy').exists(),
+            # `dafny verify` with no user spec: seq bounds, division, termination.
+            "safety_verified": verif.get(t["solution_id"], {}).get("verified"),
+            "safety_failure": verif.get(t["solution_id"], {}).get("kind"),
             "dafny_tests_passed": v.get("tests_passed"),
             "dafny_tests_total": v.get("tests_total"),
         })
@@ -121,6 +127,9 @@ def build():
         "quarantine_reasons": dict(Counter(
             x for r in rows for x in r["quarantine_reasons"])),
         "complexity_proved": sum(r["complexity_proved"] for r in rows),
+        "safety_verified": sum(1 for r in rows if r["safety_verified"]),
+        "safety_failure": dict(Counter(r["safety_failure"] for r in rows
+                                       if r["safety_failure"])),
         "time_complexity": dict(Counter(r["time_complexity_inferred"]
                                         for r in rows).most_common()),
         "strict_by_complexity": dict(Counter(

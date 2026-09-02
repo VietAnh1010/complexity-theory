@@ -13,6 +13,10 @@ SOLUTIONS = ROOT / "solutions"
 INEXACT = ROOT / "solutions-inexact"
 # Complexity proved, not just tested: ghost step counter with a proved bound.
 VERIFIED = ROOT / "solutions-verified"
+# Behaviourally valid, but `dafny verify` cannot discharge the obligations it
+# raises with no user specification at all -- a seq index, a division, a
+# decreases clause. Safe on the stored tests; unproven for every other input.
+UNVERIFIED = ROOT / "solutions-unverified"
 # Same rows, stronger proof: the true n log n via a recursion-tree argument.
 # Kept apart so the simpler quadratic proof survives alongside it.
 NLOGN = ROOT / "solutions-nlogn"

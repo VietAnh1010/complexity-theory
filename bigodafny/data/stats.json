@@ -23,6 +23,17 @@
   },
   "quarantined": 106,
   "rows": 640,
+  "safety_failure": {
+    "division-by-zero": 11,
+    "index-out-of-range": 240,
+    "map-domain": 3,
+    "negative-seq-size": 1,
+    "other": 14,
+    "precondition": 25,
+    "subset-constraint": 1,
+    "termination": 14
+  },
+  "safety_verified": 143,
   "signature_status": {
     "ok": 636,
     "unmappable": 4

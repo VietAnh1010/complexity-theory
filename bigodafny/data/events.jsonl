@@ -185,3 +185,7 @@
 {"ts": "2026-09-01T18:54:43", "kind": "dataset", "rows": 640, "problems": 311, "splits": {"strict": 534, "loose": 100, "unvalidatable": 6}}
 {"ts": "2026-09-02T03:39:11", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 2, "valid": 2, "fail": 0, "build": 0, "error": 0}
 {"ts": "2026-09-02T03:39:38", "kind": "proofs", "verified": 12, "total": 12, "with_assume": 0}
+{"ts": "2026-09-02T03:51:26", "kind": "verify_all", "total": 452, "verified": 143, "unverified": 309, "kinds": {"index-out-of-range": 240, "precondition": 25, "other": 14, "termination": 14, "division-by-zero": 11, "map-domain": 3, "subset-constraint": 1, "negative-seq-size": 1}}
+{"ts": "2026-09-02T03:52:29", "kind": "dataset", "rows": 640, "problems": 311, "splits": {"strict": 534, "loose": 100, "unvalidatable": 6}}
+{"ts": "2026-09-02T03:53:04", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 25, "valid": 25, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T03:53:30", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 25, "valid": 25, "fail": 0, "build": 0, "error": 0}

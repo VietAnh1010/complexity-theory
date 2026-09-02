@@ -1,0 +1,15 @@
+{
+  "kinds": {
+    "division-by-zero": 11,
+    "index-out-of-range": 240,
+    "map-domain": 3,
+    "negative-seq-size": 1,
+    "other": 14,
+    "precondition": 25,
+    "subset-constraint": 1,
+    "termination": 14
+  },
+  "total": 452,
+  "unverified": 309,
+  "verified": 143
+}
