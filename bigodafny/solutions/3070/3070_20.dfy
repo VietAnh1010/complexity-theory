@@ -22,5 +22,14 @@ import opened Prelude
 
 method Solve(n: int, m: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  if |a_list| == 0 {
+    output := "YES";
+    return;
+  }
+  var summa := SumSeq(a_list) - MaxSeq(a_list);
+  if m < summa {
+    output := "NO";
+  } else {
+    output := "YES";
+  }
 }

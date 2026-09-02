@@ -20,5 +20,30 @@ import opened Prelude
 
 method Solve(string_: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var k := 0;
+  var t: char := ' ';
+  var i := 0;
+  while i < |string_|
+    invariant 0 <= i <= |string_|
+    decreases |string_| - i
+  {
+    var code := string_[i] as int;
+    if code > k {
+      k := code;
+      t := string_[i];
+    }
+    i := i + 1;
+  }
+  var count: nat := 0;
+  i := 0;
+  while i < |string_|
+    invariant 0 <= i <= |string_|
+    decreases |string_| - i
+  {
+    if (string_[i] as int) == k {
+      count := count + 1;
+    }
+    i := i + 1;
+  }
+  output := Repeat([t], count);
 }

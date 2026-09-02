@@ -42,5 +42,24 @@ import opened Prelude
 
 method Solve(n: int, values_list: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var geshua := 0; var geshub := 0; var zongshua := 0; var zongshub := 0;
+  var i := 0;
+  while i < |values_list|
+    invariant 0 <= i <= |values_list|
+  {
+    var row := values_list[i];
+    if |row| >= 2 {
+      if row[0] == 1 {
+        geshua := geshua + 1;
+        zongshua := zongshua + row[1];
+      } else {
+        geshub := geshub + 1;
+        zongshub := zongshub + row[1];
+      }
+    }
+    i := i + 1;
+  }
+  var line1 := if zongshua >= geshua * 5 then "LIVE" else "DEAD";
+  var line2 := if zongshub >= geshub * 5 then "LIVE" else "DEAD";
+  output := line1 + "\n" + line2;
 }

@@ -25,5 +25,28 @@ import opened Prelude
 
 method Solve(text: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var lines: seq<string> := [];
+  var letter := 0;
+  while letter < 26
+    invariant 0 <= letter <= 26
+    decreases 26 - letter
+  {
+    var c: char := (97 + letter) as char;
+    var count := 0;
+    var i := 0;
+    while i < |text|
+      invariant 0 <= i <= |text|
+      decreases |text| - i
+    {
+      var ch := text[i];
+      var lc: char := if ch >= 'A' && ch <= 'Z' then ((ch as int) + 32) as char else ch;
+      if lc == c {
+        count := count + 1;
+      }
+      i := i + 1;
+    }
+    lines := lines + [[c] + " : " + IntToString(count)];
+    letter := letter + 1;
+  }
+  output := Join(lines, "\n");
 }

@@ -34,5 +34,39 @@ import opened Prelude
 
 method Solve(n: int, s: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var sz := if n > 0 then n else 0;
+  var buf := new char[sz];
+  var k := 0;
+  while k < n
+    invariant 0 <= k <= sz
+  {
+    buf[k] := ' ';
+    k := k + 1;
+  }
+  if n % 2 == 0 {
+    var p := n / 2 - 1;
+    var i := 0;
+    while i < n
+      invariant 0 <= i <= sz
+    {
+      var pos := if i % 2 == 0 then p - i / 2 else p + (i + 1) / 2;
+      if 0 <= pos < n && i < |s| {
+        buf[pos] := s[i];
+      }
+      i := i + 1;
+    }
+  } else {
+    var p := n / 2;
+    var i := 0;
+    while i < n
+      invariant 0 <= i <= sz
+    {
+      var pos := if i % 2 == 0 then p + i / 2 else p - (i + 1) / 2;
+      if 0 <= pos < n && i < |s| {
+        buf[pos] := s[i];
+      }
+      i := i + 1;
+    }
+  }
+  output := buf[0..sz];
 }

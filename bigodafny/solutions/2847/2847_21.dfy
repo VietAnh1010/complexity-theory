@@ -32,6 +32,29 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(a: int, b: int) returns (output: string)
+  decreases *
 {
-  output := ""; // TODO: translate the Python above
+  var x := a; var y := b;
+  var curX := 0; var curY := 0;
+  var i := 1;
+  var pos := 0;
+  var signX := [1, 0, -1, 0];
+  var signY := [0, 1, 0, -1];
+  var ans := 0;
+  var j := 0;
+  while curX != x || curY != y
+    invariant 0 <= pos < 4
+    decreases *
+  {
+    if j == i {
+      j := 0;
+      if pos % 2 == 1 { i := i + 1; }
+      pos := (pos + 1) % 4;
+      ans := ans + 1;
+    }
+    curX := curX + signX[pos];
+    curY := curY + signY[pos];
+    j := j + 1;
+  }
+  output := IntToString(ans);
 }

@@ -15,5 +15,8 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var fact := 120;
+  var val := n * n * ((n - 1) * (n - 1)) * ((n - 2) * (n - 2)) * ((n - 3) * (n - 3)) * ((n - 4) * (n - 4));
+  var result := FloorDiv(val, fact);
+  output := IntToString(result);
 }

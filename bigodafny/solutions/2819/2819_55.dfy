@@ -31,5 +31,52 @@ import opened Prelude
 
 method Solve(n: int, pairs_list: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var results: seq<string> := [];
+  var t := 0;
+  while t < |pairs_list|
+    invariant 0 <= t <= |pairs_list|
+  {
+    var row := pairs_list[t];
+    if |row| >= 2 {
+      var nn := row[0];
+      var kk := row[1];
+      var sz := if nn > 0 then nn else 0;
+      var buf := new char[sz];
+      var z := 0;
+      while z < sz
+        invariant 0 <= z <= sz
+      {
+        buf[z] := 'a';
+        z := z + 1;
+      }
+      var i := nn - 2;
+      var right := 1;
+      var found := false;
+      while i >= 0 && !found
+        decreases i + 1
+      {
+        if kk > right {
+          kk := kk - right;
+        } else {
+          var j := nn;
+          var kk0 := kk;
+          while kk > 0
+            invariant j == nn - (kk0 - kk)
+            decreases kk
+          {
+            kk := kk - 1;
+            j := j - 1;
+          }
+          if 0 <= i < sz { buf[i] := 'b'; }
+          if 0 <= j < sz { buf[j] := 'b'; }
+          found := true;
+        }
+        i := i - 1;
+        right := right + 1;
+      }
+      results := results + [buf[0..sz]];
+    }
+    t := t + 1;
+  }
+  output := Join(results, "\n");
 }

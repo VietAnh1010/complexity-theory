@@ -21,5 +21,21 @@ import opened Prelude
 
 method Solve(n: int, pairs_list: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var count := 0;
+  var i := 0;
+  while i < |pairs_list|
+    invariant 0 <= i <= |pairs_list|
+    decreases |pairs_list| - i
+  {
+    var pr := pairs_list[i];
+    if |pr| >= 2 {
+      var p := pr[0];
+      var q := pr[1];
+      if p < q && (q - p) >= 2 {
+        count := count + 1;
+      }
+    }
+    i := i + 1;
+  }
+  output := IntToString(count);
 }

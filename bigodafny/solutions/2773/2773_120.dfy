@@ -17,5 +17,12 @@ import opened Prelude
 
 method Solve(a: int, b: int, c: int, d: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var n := a; var t := b; var k := c;
+  if k > 0 {
+    var ceilVal := (n + k - 1) / k;
+    var c1 := ceilVal * t;
+    output := if c1 - t > d then "YES" else "NO";
+  } else {
+    output := "NO";
+  }
 }

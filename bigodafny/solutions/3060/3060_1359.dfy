@@ -29,5 +29,27 @@ import opened Prelude
 
 method Solve(s1: string, s2: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var a := s1;
+  var b := s2;
+  var c := 0;
+  while true
+    invariant 0 <= c
+    decreases |a| - c
+  {
+    if c >= |a| || c >= |b| {
+      output := "0";
+      return;
+    }
+    var ca: char := if a[c] >= 'A' && a[c] <= 'Z' then ((a[c] as int) + 32) as char else a[c];
+    var cb: char := if b[c] >= 'A' && b[c] <= 'Z' then ((b[c] as int) + 32) as char else b[c];
+    if ca == cb {
+      c := c + 1;
+    } else if ca < cb {
+      output := "-1";
+      return;
+    } else {
+      output := "1";
+      return;
+    }
+  }
 }

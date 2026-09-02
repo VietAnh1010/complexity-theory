@@ -29,5 +29,47 @@ import opened Prelude
 
 method Solve(n: int, s: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var sz := if n > 0 then n else 0;
+  var idxArr := new int[sz];
+  var i := 0;
+  while i < sz
+    invariant 0 <= i <= sz
+  {
+    idxArr[i] := i;
+    i := i + 1;
+  }
+  var decoding := new int[sz];
+  var len := sz;
+  var step := 0;
+  while len > 0
+    invariant 0 <= len <= sz
+    invariant 0 <= step <= sz
+    invariant step + len == sz
+    decreases len
+  {
+    var pos := (len - 1) / 2;
+    decoding[step] := idxArr[pos];
+    var j := pos;
+    while j < len - 1
+      invariant pos <= j <= len - 1
+      decreases len - 1 - j
+    {
+      idxArr[j] := idxArr[j + 1];
+      j := j + 1;
+    }
+    len := len - 1;
+    step := step + 1;
+  }
+  var buf := new char[sz];
+  var k := 0;
+  while k < sz
+    invariant 0 <= k <= sz
+  {
+    var target := decoding[k];
+    if 0 <= target < sz && k < |s| {
+      buf[target] := s[k];
+    }
+    k := k + 1;
+  }
+  output := buf[0..sz];
 }

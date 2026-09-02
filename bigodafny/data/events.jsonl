@@ -189,3 +189,49 @@
 {"ts": "2026-09-02T03:52:29", "kind": "dataset", "rows": 640, "problems": 311, "splits": {"strict": 534, "loose": 100, "unvalidatable": 6}}
 {"ts": "2026-09-02T03:53:04", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 25, "valid": 25, "fail": 0, "build": 0, "error": 0}
 {"ts": "2026-09-02T03:53:30", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 25, "valid": 25, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:41:23", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 6, "valid": 6, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:42:26", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 5, "valid": 5, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:42:31", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 6, "valid": 6, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:42:49", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 5, "valid": 5, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:43:14", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 5, "valid": 5, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:43:23", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 5, "valid": 5, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:43:40", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 5, "valid": 5, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:43:53", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 5, "valid": 5, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:44:03", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 5, "valid": 5, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:44:08", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 5, "valid": 5, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:44:09", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 8, "valid": 7, "fail": 1, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:44:38", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 5, "valid": 5, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:44:41", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 20, "valid": 20, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:44:46", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 5, "valid": 5, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:44:50", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 1, "valid": 1, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:45:22", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 20, "valid": 20, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:45:31", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 20, "valid": 20, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:45:50", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 5, "valid": 5, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:46:19", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 1, "valid": 1, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:48:09", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 5, "valid": 4, "fail": 0, "build": 1, "error": 0}
+{"ts": "2026-09-02T12:48:31", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 1, "valid": 1, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:48:41", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 7, "valid": 7, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:49:19", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 20, "valid": 20, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:49:42", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 1, "valid": 1, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:49:48", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 3, "valid": 3, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:50:31", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 2, "valid": 2, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:50:53", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 2, "valid": 2, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:51:13", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 20, "valid": 20, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:51:36", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 1, "valid": 1, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:52:29", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 20, "valid": 20, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:52:40", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 20, "valid": 20, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:53:47", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 4, "valid": 4, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:53:48", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 20, "valid": 20, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:54:05", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 20, "valid": 20, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:55:38", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 20, "valid": 20, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:55:51", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 20, "valid": 20, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:57:42", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 20, "valid": 20, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T12:58:45", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 20, "valid": 20, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T13:00:47", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 4, "valid": 4, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T13:01:00", "kind": "dataset", "rows": 640, "problems": 311, "splits": {"strict": 534, "loose": 100, "unvalidatable": 6}}
+{"ts": "2026-09-02T13:05:48", "kind": "verify_all", "total": 532, "verified": 221, "unverified": 311, "termination_opt_out": 14, "kinds": {"index-out-of-range": 240, "precondition": 25, "other": 14, "termination": 14, "division-by-zero": 11, "map-domain": 3, "negative-seq-size": 3, "subset-constraint": 1}}
+{"ts": "2026-09-02T13:06:54", "kind": "dataset", "rows": 640, "problems": 311, "splits": {"strict": 534, "loose": 100, "unvalidatable": 6}}
+{"ts": "2026-09-02T13:07:20", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 20, "valid": 20, "fail": 0, "build": 0, "error": 0}
+{"ts": "2026-09-02T13:21:59", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 532, "valid": 529, "fail": 3, "build": 0, "error": 0}
+{"ts": "2026-09-02T13:22:21", "kind": "dataset", "rows": 640, "problems": 311, "splits": {"strict": 534, "loose": 100, "unvalidatable": 6}}
+{"ts": "2026-09-02T13:23:27", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 1, "valid": 1, "fail": 0, "build": 0, "error": 0}

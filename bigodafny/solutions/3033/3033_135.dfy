@@ -33,5 +33,26 @@ import opened Prelude
 
 method Solve(n: int, edges_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var a := edges_list;
+  var pairs: seq<(int, int)> := seq(|a|, i requires 0 <= i < |a| => (a[i], i + 1));
+  var sorted := Sort(pairs, (x: (int, int), y: (int, int)) => x.0 < y.0);
+  var length := 0;
+  var pos1 := 1;
+  var pos2 := 1;
+  var i := 0;
+  while i < |sorted|
+    invariant 0 <= i <= |sorted|
+    decreases |sorted| - i
+  {
+    var id := sorted[i].1;
+    if i % 2 == 1 {
+      length := length + AbsInt(pos2 - id);
+      pos2 := id;
+    } else {
+      length := length + AbsInt(pos1 - id);
+      pos1 := id;
+    }
+    i := i + 1;
+  }
+  output := IntToString(length);
 }

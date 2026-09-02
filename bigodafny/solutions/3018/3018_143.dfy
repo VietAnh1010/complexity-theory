@@ -23,5 +23,22 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  if |a_list| == 0 {
+    output := "";
+    return;
+  }
+  var a := SortInts(a_list);
+  var m := a[0];
+  var t := m;
+  var i := 0;
+  while i < |a|
+    invariant 0 <= i <= |a|
+    decreases |a| - i
+  {
+    if m != 0 && FloorMod(a[i], m) != 0 {
+      t := -1;
+    }
+    i := i + 1;
+  }
+  output := IntToString(t);
 }

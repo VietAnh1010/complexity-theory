@@ -35,5 +35,16 @@ import opened Prelude
 
 method Solve(a: int, b: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var x := a; var y := b;
+  if y >= x && y < -x {
+    output := IntToString(-4 * x - 1);
+  } else if y > x && y >= -x {
+    output := IntToString(4 * y - 2);
+  } else if y <= x && y > 1 - x {
+    output := IntToString(4 * x - 3);
+  } else if y < x && y <= 1 - x {
+    output := IntToString(-4 * y);
+  } else {
+    output := IntToString(0);
+  }
 }

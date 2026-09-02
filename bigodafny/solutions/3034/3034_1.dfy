@@ -32,5 +32,57 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var c1 := 0;
+  var c2 := 0;
+  var i := 0;
+  while i < |a_list|
+    invariant 0 <= i <= |a_list|
+    decreases |a_list| - i
+  {
+    if a_list[i] == 1 {
+      c1 := c1 + 1;
+    } else if a_list[i] == 2 {
+      c2 := c2 + 1;
+    }
+    i := i + 1;
+  }
+  var ans: seq<int> := [];
+  if c1 >= 1 && c2 >= 1 {
+    ans := [2, 1];
+    var k := 0;
+    while k < c2 - 1
+      invariant 0 <= k <= c2 - 1
+      decreases (c2 - 1) - k
+    {
+      ans := ans + [2];
+      k := k + 1;
+    }
+    k := 0;
+    while k < c1 - 1
+      invariant 0 <= k <= c1 - 1
+      decreases (c1 - 1) - k
+    {
+      ans := ans + [1];
+      k := k + 1;
+    }
+  } else if c1 == 0 {
+    var k := 0;
+    while k < c2
+      invariant 0 <= k <= c2
+      decreases c2 - k
+    {
+      ans := ans + [2];
+      k := k + 1;
+    }
+  } else if c2 == 0 {
+    var k := 0;
+    while k < c1
+      invariant 0 <= k <= c1
+      decreases c1 - k
+    {
+      ans := ans + [1];
+      k := k + 1;
+    }
+  }
+  output := JoinInts(ans, " ");
 }

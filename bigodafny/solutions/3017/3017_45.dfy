@@ -24,5 +24,20 @@ import opened Prelude
 
 method Solve(string_: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  if |string_| == 0 {
+    output := "";
+    return;
+  }
+  var sorted := Sort(string_, (a: char, b: char) => a > b);
+  var top := sorted[0];
+  var i := 0;
+  var result: seq<char> := [];
+  while i < |sorted| && sorted[i] == top
+    invariant 0 <= i <= |sorted|
+    decreases |sorted| - i
+  {
+    result := result + [sorted[i]];
+    i := i + 1;
+  }
+  output := result;
 }

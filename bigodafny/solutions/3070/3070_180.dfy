@@ -22,5 +22,21 @@ import opened Prelude
 
 method Solve(n: int, m: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var l := SortInts(a_list);
+  var sum1 := 0;
+  var i := 0;
+  while i < n - 1
+    invariant 0 <= i
+    decreases (n - 1) - i
+  {
+    if i < |l| {
+      sum1 := sum1 + l[i];
+    }
+    i := i + 1;
+  }
+  if sum1 <= m {
+    output := "YES";
+  } else {
+    output := "NO";
+  }
 }

@@ -23,5 +23,25 @@ import opened Prelude
 
 method Solve(n: int, pairs_list: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var a: seq<int> := [];
+  var i := 0;
+  while i < |pairs_list|
+    invariant 0 <= i <= |pairs_list|
+    decreases |pairs_list| - i
+  {
+    a := a + pairs_list[i];
+    i := i + 1;
+  }
+  var count := 0;
+  var idx := 0;
+  while idx + 1 < |a|
+    invariant 0 <= idx
+    decreases |a| - idx
+  {
+    if AbsInt(a[idx] - a[idx + 1]) >= 2 {
+      count := count + 1;
+    }
+    idx := idx + 2;
+  }
+  output := IntToString(count);
 }

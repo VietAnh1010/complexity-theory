@@ -150,7 +150,11 @@ module Prelude {
   // ---- sorting ------------------------------------------------------------
   // Merge sort, so an O(n log n) translation stays O(n log n).
 
+  // The length facts are `ensures` on the functions themselves, not separate
+  // lemmas, so every call site gets them without a proof call. Four wave-7
+  // translations had to `assume` this before it lived here.
   function Merge<T>(a: seq<T>, b: seq<T>, less: (T, T) -> bool): seq<T>
+    ensures |Merge(a, b, less)| == |a| + |b|
     decreases |a| + |b|
   {
     if |a| == 0 then b
@@ -160,6 +164,7 @@ module Prelude {
   }
 
   function Sort<T>(s: seq<T>, less: (T, T) -> bool): seq<T>
+    ensures |Sort(s, less)| == |s|
     decreases |s|
   {
     if |s| <= 1 then s
@@ -167,6 +172,7 @@ module Prelude {
   }
 
   function SortInts(s: seq<int>): seq<int>
+    ensures |SortInts(s)| == |s|
   {
     Sort(s, (x, y) => x < y)
   }
@@ -208,6 +214,7 @@ module Prelude {
   }
 
   function SortStrings(xs: seq<string>): seq<string>
+    ensures |SortStrings(xs)| == |xs|
   {
     Sort(xs, (a: string, b: string) => StringLess(a, b))
   }

@@ -31,5 +31,24 @@ import opened Prelude
 
 method Solve(n: int, values_list: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var a0 := 0; var a1 := 0; var b0 := 0; var b1 := 0;
+  var i := 0;
+  while i < |values_list|
+    invariant 0 <= i <= |values_list|
+  {
+    var row := values_list[i];
+    if |row| >= 3 {
+      if row[0] == 1 {
+        a0 := a0 + row[1];
+        a1 := a1 + row[2];
+      } else {
+        b0 := b0 + row[1];
+        b1 := b1 + row[2];
+      }
+    }
+    i := i + 1;
+  }
+  var line1 := if a0 >= a1 then "LIVE" else "DEAD";
+  var line2 := if b0 >= b1 then "LIVE" else "DEAD";
+  output := line1 + "\n" + line2;
 }
