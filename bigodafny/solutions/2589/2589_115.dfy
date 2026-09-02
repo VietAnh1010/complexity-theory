@@ -27,7 +27,46 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+function CountPairFrom(s: seq<char>, a: char, b: char, i: int, acc: int): int
+  requires 0 <= i <= |s|
+  decreases |s| - i
+{
+  if i >= |s| - 1 then acc
+  else if s[i] == a && s[i + 1] == b then CountPairFrom(s, a, b, i + 1, acc + 1)
+  else CountPairFrom(s, a, b, i + 1, acc)
+}
+
+function CountPair(s: seq<char>, a: char, b: char): int
+{
+  CountPairFrom(s, a, b, 0, 0)
+}
+
 method Solve(string_: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var s := string_;
+  var n := |s|;
+  var result := CountPair(s, 'v', 'k');
+  var i := 0;
+  while i < n
+    invariant 0 <= i <= n
+    invariant |s| == n
+    decreases n - i
+  {
+    var news := s[i := 'V'];
+    var c := CountPair(news, 'V', 'K');
+    if c > result { result := c; }
+    i := i + 1;
+  }
+  i := 0;
+  while i < n
+    invariant 0 <= i <= n
+    invariant |s| == n
+    decreases n - i
+  {
+    var news := s[i := 'K'];
+    var c := CountPair(news, 'V', 'K');
+    if c > result { result := c; }
+    i := i + 1;
+  }
+  output := IntToString(result);
 }

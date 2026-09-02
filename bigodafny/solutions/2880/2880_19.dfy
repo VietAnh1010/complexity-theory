@@ -25,5 +25,23 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var a := n;
+  var parts: seq<string> := [];
+  if a % 2 == 1 {
+    parts := parts + ["7"];
+  }
+  if a % 2 == 1 {
+    a := a - 3;
+  }
+  var raw := a / 2;
+  var cnt := if raw < 0 then 0 else raw;
+  var i := 0;
+  while i < cnt
+    invariant 0 <= i <= cnt
+    decreases cnt - i
+  {
+    parts := parts + ["1"];
+    i := i + 1;
+  }
+  output := Join(parts, "");
 }

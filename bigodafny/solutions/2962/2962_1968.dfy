@@ -35,5 +35,37 @@ import opened Prelude
 
 method Solve(first_name: seq<string>, second_name: seq<string>, jumbled_name: seq<string>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var need := first_name + second_name;
+  var remaining := jumbled_name;
+  var c := 0;
+  var i := 0;
+  while i < |need| && c == 0
+    invariant 0 <= i <= |need|
+    decreases |need| - i
+  {
+    var ch := need[i];
+    var idx := -1;
+    var j := 0;
+    while j < |remaining|
+      invariant 0 <= j <= |remaining|
+      invariant idx == -1 || (0 <= idx < j && remaining[idx] == ch)
+      decreases |remaining| - j
+    {
+      if idx == -1 && remaining[j] == ch { idx := j; }
+      j := j + 1;
+    }
+    if idx == -1 {
+      c := 1;
+    } else {
+      remaining := remaining[..idx] + remaining[idx + 1..];
+    }
+    i := i + 1;
+  }
+  if c == 1 {
+    output := "NO";
+  } else if |remaining| != 0 {
+    output := "NO";
+  } else {
+    output := "YES";
+  }
 }

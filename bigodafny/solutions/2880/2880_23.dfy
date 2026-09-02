@@ -17,5 +17,13 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  if n % 2 == 0 {
+    var raw := n / 2;
+    var c := if raw < 0 then 0 else raw;
+    output := Repeat("1", c);
+  } else {
+    var raw := (n - 3) / 2;
+    var c := if raw < 0 then 0 else raw;
+    output := "7" + Repeat("1", c);
+  }
 }

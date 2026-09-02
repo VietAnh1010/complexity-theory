@@ -55,9 +55,14 @@ def one(path_str):
         return {"solution_id": p.stem, "path": str(p.relative_to(ROOT)),
                 "verified": False, "kind": "verifier-timeout", "detail": ""}
     ok = r.returncode == 0 and "0 errors" in out
+    # `decreases *` makes Dafny accept a loop without proving it terminates.
+    # The file still verifies; termination specifically does not.
+    src = p.read_text(encoding="utf-8")
+    unbounded = "decreases *" in src
     errs = [l for l in out.splitlines() if re.search(r"Error:", l)]
     return {"solution_id": p.stem, "path": str(p.relative_to(ROOT)),
             "verified": ok,
+            "termination_opt_out": unbounded,
             "kind": None if ok else classify(out),
             "error_count": len(errs),
             "detail": "" if ok else (errs[0][:200] if errs else out.strip()[-200:])}
@@ -74,11 +79,13 @@ def run(dirs, workers=8, move=False):
 
     ok = sum(r["verified"] for r in rows)
     kinds = Counter(r["kind"] for r in rows if not r["verified"])
+    optout = sum(1 for r in rows if r.get("termination_opt_out"))
     summary = {"total": len(rows), "verified": ok, "unverified": len(rows) - ok,
-               "kinds": dict(kinds.most_common())}
+               "termination_opt_out": optout, "kinds": dict(kinds.most_common())}
     write_json(DATA / "verification_summary.json", summary)
     event("verify_all", **summary)
-    log(f"verified {ok}/{len(rows)}")
+    log(f"verified {ok}/{len(rows)}  ({optout} use `decreases *`, so their "
+        f"termination is not proved)")
     for k, n in kinds.most_common():
         log(f"  {k:<22} {n}")
 

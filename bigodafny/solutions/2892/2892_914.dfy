@@ -26,5 +26,48 @@ import opened Prelude
 
 method Solve(a: int, b: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var flag := false;
+  var tmp := 0;
+  var i := a;
+  while i <= b && !flag
+    invariant a <= i
+    decreases b - i + 1
+  {
+    tmp := i;
+    var temp := i;
+    var digits: seq<int> := [];
+    if temp == 0 {
+      digits := [0];
+    } else {
+      while temp > 0
+        decreases temp
+      {
+        digits := digits + [temp % 10];
+        temp := temp / 10;
+      }
+    }
+    var distinct := true;
+    var p := 0;
+    while p < |digits|
+      invariant 0 <= p <= |digits|
+      decreases |digits| - p
+    {
+      var q := p + 1;
+      while q < |digits|
+        invariant p < q <= |digits|
+        decreases |digits| - q
+      {
+        if digits[p] == digits[q] { distinct := false; }
+        q := q + 1;
+      }
+      p := p + 1;
+    }
+    if distinct { flag := true; }
+    i := i + 1;
+  }
+  if flag {
+    output := IntToString(tmp);
+  } else {
+    output := "-1";
+  }
 }

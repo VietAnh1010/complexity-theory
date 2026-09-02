@@ -32,6 +32,49 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
+  requires n == |a_list|
+  requires n >= 1
 {
-  output := ""; // TODO: translate the Python above
+  var d: map<int, int> := map[];
+  var count1 := 0;
+  var i := 0;
+  while i < n
+    invariant 0 <= i <= n
+    decreases n - i
+  {
+    var e := a_list[i];
+    var cur := if e in d then d[e] else 0;
+    d := d[e := cur + 1];
+    if cur + 1 == 2 { count1 := count1 + 1; }
+    i := i + 1;
+  }
+  var result := n;
+  if |d| == n { result := 0; }
+  i := 0;
+  while i < n
+    invariant 0 <= i <= n
+    decreases n - i
+  {
+    var f := d;
+    var count2 := count1;
+    var j := i;
+    var brk := false;
+    while j < n && !brk
+      invariant i <= j <= n
+      decreases n - j
+    {
+      var e := a_list[j];
+      var cur := (if e in f then f[e] else 0) - 1;
+      f := f[e := cur];
+      if cur == 1 { count2 := count2 - 1; }
+      if count2 == 0 {
+        var cand := j - i + 1;
+        if cand < result { result := cand; }
+        brk := true;
+      }
+      j := j + 1;
+    }
+    i := i + 1;
+  }
+  output := IntToString(result);
 }

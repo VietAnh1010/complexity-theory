@@ -33,5 +33,22 @@ import opened Prelude
 
 method Solve(a: int, b: int, c: int, d_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var n := a;
+  var x := b;
+  var y := c;
+  var l := SortInts(d_list);
+  var countA := 0;
+  var i := 0;
+  while i < n
+    invariant 0 <= i
+    decreases n - i
+  {
+    if i < |l| && l[i] <= x { countA := countA + 1; }
+    i := i + 1;
+  }
+  if x > y {
+    output := IntToString(n);
+  } else {
+    output := IntToString((countA % 2) + (countA / 2));
+  }
 }

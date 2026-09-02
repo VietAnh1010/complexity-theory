@@ -22,5 +22,20 @@ import opened Prelude
 
 method Solve(n: int, k: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var m := k;
+  var cc := if |a_list| > 0 && m != 0 then (a_list[0] + m - 1) / m else 0;
+  var x := 0;
+  var i := 0;
+  while i < |a_list|
+    invariant 0 <= i <= |a_list|
+    decreases |a_list| - i
+  {
+    var ceilVal := if m != 0 then (a_list[i] + m - 1) / m else 0;
+    if ceilVal >= cc {
+      x := i + 1;
+      cc := ceilVal;
+    }
+    i := i + 1;
+  }
+  output := IntToString(x);
 }

@@ -17,6 +17,17 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, data: seq<seq<int>>) returns (output: string)
+  requires n == |data|
+  requires forall k :: 0 <= k < |data| ==> |data[k]| >= 2
 {
-  output := ""; // TODO: translate the Python above
+  var lines: seq<string> := [];
+  var i := 0;
+  while i < n
+    invariant 0 <= i <= n
+    decreases n - i
+  {
+    lines := lines + [IntToString(2 * data[i][1])];
+    i := i + 1;
+  }
+  output := Join(lines, "\n");
 }

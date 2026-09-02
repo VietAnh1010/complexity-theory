@@ -28,5 +28,27 @@ import opened Prelude
 
 method Solve(n: int, k: int, s: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var flag := false;
+  var i := 0;
+  while i < |s|
+    invariant 0 <= i <= |s|
+    decreases |s| - i
+  {
+    var cnt := 0;
+    var j := 0;
+    while j < |s|
+      invariant 0 <= j <= |s|
+      decreases |s| - j
+    {
+      if s[j] == s[i] { cnt := cnt + 1; }
+      j := j + 1;
+    }
+    if cnt > k { flag := true; }
+    i := i + 1;
+  }
+  if flag {
+    output := "NO";
+  } else {
+    output := "YES";
+  }
 }

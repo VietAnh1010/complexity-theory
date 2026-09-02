@@ -18,5 +18,14 @@ import opened Prelude
 
 method Solve(N: int, pairs_list: seq<seq<int>>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var lines: seq<string> := [];
+  var i := 0;
+  while i < |pairs_list|
+    invariant 0 <= i <= |pairs_list|
+    decreases |pairs_list| - i
+  {
+    lines := lines + [IntToString(SumSeq(pairs_list[i]))];
+    i := i + 1;
+  }
+  output := Join(lines, "\n");
 }

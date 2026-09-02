@@ -220,7 +220,50 @@
 include "../../prelude.dfy"
 import opened Prelude
 
-method Solve(n: int, names: seq<string>) returns (output: string)
+function ContainsFrom(s: string, pat: string, i: int): bool
+  requires 0 <= i <= |s|
+  requires |pat| > 0
+  decreases |s| - i
 {
-  output := ""; // TODO: translate the Python above
+  if i > |s| - |pat| then false
+  else if s[i..i + |pat|] == pat then true
+  else ContainsFrom(s, pat, i + 1)
+}
+
+function ContainsSub(s: string, pat: string): bool
+  requires |pat| > 0
+{
+  ContainsFrom(s, pat, 0)
+}
+
+method Normalize(word: string) returns (result: string)
+  decreases *
+{
+  var w := ReplaceAll(word, "u", "oo");
+  while ContainsSub(w, "kkh")
+    decreases *
+  {
+    w := ReplaceAll(w, "kkh", "kh");
+  }
+  if ContainsSub(w, "kh") {
+    w := ReplaceAll(w, "kh", "h");
+  }
+  result := w;
+}
+
+method Solve(n: int, names: seq<string>) returns (output: string)
+  requires n == |names|
+  decreases *
+{
+  var seen: set<string> := {};
+  var i := 0;
+  while i < n
+    invariant 0 <= i <= n
+    decreases n - i
+  {
+    var w := Normalize(names[i]);
+    seen := seen + {w};
+    i := i + 1;
+  }
+  output := IntToString(|seen|);
 }

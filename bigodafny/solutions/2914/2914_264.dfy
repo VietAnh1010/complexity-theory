@@ -26,5 +26,21 @@ import opened Prelude
 
 method Solve(n: int, intervals: seq<seq<int>>, value: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  output := "";
+  var i := 0;
+  var found := false;
+  while i < n && !found
+    invariant 0 <= i
+    decreases if found then 0 else n - i
+  {
+    if i < |intervals| && |intervals[i]| >= 2 {
+      var lo := intervals[i][0];
+      var hi := intervals[i][1];
+      if value >= lo && value <= hi {
+        output := IntToString(n - i);
+        found := true;
+      }
+    }
+    i := i + 1;
+  }
 }

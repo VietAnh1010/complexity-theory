@@ -39,6 +39,46 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
+  requires n == |a_list|
+  requires n >= 1
 {
-  output := ""; // TODO: translate the Python above
+  var lastPos: map<int, int> := map[];
+  var idx := 0;
+  while idx < n
+    invariant 0 <= idx <= n
+    invariant forall kk :: 0 <= kk < idx ==> a_list[kk] in lastPos
+    decreases n - idx
+  {
+    lastPos := lastPos[a_list[idx] := idx];
+    idx := idx + 1;
+  }
+  assert forall kk :: 0 <= kk < n ==> a_list[kk] in lastPos;
+  var j := n - 1;
+  var repeated: set<int> := {};
+  while j >= 0 && a_list[j] !in repeated
+    invariant -1 <= j < n
+    decreases j
+  {
+    repeated := repeated + {a_list[j]};
+    j := j - 1;
+  }
+  repeated := {};
+  var ans := j + 1;
+  var i := 0;
+  var doneFlag := false;
+  while !doneFlag && a_list[i] !in repeated
+    invariant 0 <= i <= n
+    invariant !doneFlag ==> i < n
+    invariant forall kk :: 0 <= kk < n ==> a_list[kk] in lastPos
+    decreases n - i
+  {
+    repeated := repeated + {a_list[i]};
+    var lp := lastPos[a_list[i]];
+    if lp > j { j := lp; }
+    var cand := j - i;
+    if cand < ans { ans := cand; }
+    i := i + 1;
+    if i == n { doneFlag := true; }
+  }
+  output := IntToString(ans);
 }

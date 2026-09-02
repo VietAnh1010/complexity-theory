@@ -35,6 +35,40 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, list1: seq<int>, list2: seq<int>) returns (output: string)
+  decreases *
 {
-  output := ""; // TODO: translate the Python above
+  var a := list1;
+  var b := list2;
+  var mark: set<(seq<int>, seq<int>)> := {};
+  var ans := 0;
+  var out := "";
+  var found := false;
+  while |a| > 0 && |b| > 0 && !found
+    decreases *
+  {
+    if (a, b) in mark {
+      out := "-1";
+      found := true;
+    } else {
+      mark := mark + {(a, b)};
+      ans := ans + 1;
+      var aa := a[0];
+      var bb := b[0];
+      a := a[1..];
+      b := b[1..];
+      if aa > bb {
+        a := a + [bb, aa];
+      } else {
+        b := b + [aa, bb];
+      }
+    }
+  }
+  if !found {
+    if |a| > 0 {
+      out := JoinInts([ans, 1], " ");
+    } else {
+      out := JoinInts([ans, 2], " ");
+    }
+  }
+  output := out;
 }
