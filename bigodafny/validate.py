@@ -233,7 +233,9 @@ if __name__ == "__main__":
     ap.add_argument("--per-test", type=int, default=30)
     ap.add_argument("--limit", type=int)
     ap.add_argument("--out-prefix", default="")
+    ap.add_argument("--solutions-dir")
     a = ap.parse_args()
     tiers = ["public_tests", "private_tests"] + (["generated_tests"] if a.generated else [])
     validate(only=set(a.only) if a.only else None, tiers=tuple(tiers),
-             per_test=a.per_test, limit=a.limit, out_prefix=a.out_prefix)
+             per_test=a.per_test, limit=a.limit, out_prefix=a.out_prefix,
+             solutions_dir=a.solutions_dir)

@@ -74,6 +74,38 @@ profiling runs. A proved bound and the label can disagree, and the proof is the
 stronger statement. Where they disagree, record it; do not adjust the proof to
 match the label.
 
+## Logarithmic bounds
+
+Dafny has no `log`. `solutions-nlogn/` proves the true O(n log n) for merge sort
+with a recursion-tree argument. Two things make it work.
+
+**Use a ceiling log, not a floor log.**
+
+```dafny
+ghost function CeilLog2(n: nat): nat
+  decreases n
+{ if n <= 1 then 0 else 1 + CeilLog2((n + 1) / 2) }
+```
+
+The recursive step is `ceil(n/2)`. Both halves of a split of size k are at most
+`ceil(k/2)`, and `CeilLog2(ceil(k/2)) == CeilLog2(k) - 1` then holds *by
+definition*. With floor-log that step is false at k = 3: `floor(log2 2) = 1`,
+not `floor(log2 3) - 1 = 0`. The induction cannot close.
+
+**Isolate every multiplication.** Z3 does not do nonlinear arithmetic well. The
+first attempt timed out at 30s with the whole argument in one `calc`. Splitting
+the two multiplication facts into their own lemmas —
+
+```dafny
+lemma MulMonoRight(x: nat, p: nat, q: nat) requires p <= q ensures x * p <= x * q
+lemma MulDistrib(a: nat, b: nat, k: nat, L: nat) requires a + b == k
+  ensures a * L + b * L == k * L
+```
+
+— so the solver never has to discover one, took it to 2.8s. The result:
+
+    SortCost(k) <= 2 * k * (CeilLog2(k) + 1) + 1
+
 ## Constants
 
 The label is asymptotic, so any constants are acceptable: `steps <= 7*n + 12`

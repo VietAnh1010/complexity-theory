@@ -11,7 +11,8 @@ the proof is the stronger statement.
 from __future__ import annotations
 import re, shutil, subprocess, sys
 
-from common import DAFNY_VERSION, DATA, VERIFIED, event, log, read_jsonl, write_jsonl
+from common import (DAFNY_VERSION, DATA, NLOGN, VERIFIED, event, log,
+                    read_jsonl, write_jsonl)
 
 DAFNY = shutil.which("dafny") or "/root/.dotnet/tools/dafny"
 SOLVER = shutil.which("z3") or "/usr/local/bin/z3"
@@ -25,7 +26,9 @@ def bound_of(text):
 def run():
     ds = {r["solution_id"]: r for r in read_jsonl(DATA / "dataset.jsonl")}
     rows = []
-    for p in sorted(VERIFIED.rglob("*.dfy")):
+    files = [(d.name, f) for d in (VERIFIED, NLOGN) if d.exists()
+             for f in sorted(d.rglob("*.dfy"))]
+    for dirname, p in files:
         sid = p.stem
         text = p.read_text(encoding="utf-8")
         r = subprocess.run([DAFNY, "verify", str(p), "--solver-path", SOLVER],
@@ -36,6 +39,7 @@ def run():
         assumes = len(re.findall(r"\bassume\b", text))
         rows.append({
             "solution_id": sid,
+            "dir": dirname,
             "label": ds.get(sid, {}).get("time_complexity_inferred"),
             "proved_bound": bound_of(text),
             "verified": ok,
@@ -43,7 +47,7 @@ def run():
             "dafny_version": DAFNY_VERSION,
             "verifier_output": out.strip().splitlines()[-1] if out.strip() else "",
         })
-        log(f"  {sid:>10}  {'VERIFIED' if ok else 'FAILED  '}  "
+        log(f"  [{dirname[10:]:>8}] {sid:>10}  {'VERIFIED' if ok else 'FAILED  '}  "
             f"label={rows[-1]['label']}  bound={rows[-1]['proved_bound']}"
             + ("  ASSUMES!" if assumes else ""))
     write_jsonl(DATA / "complexity_proofs.jsonl", rows)

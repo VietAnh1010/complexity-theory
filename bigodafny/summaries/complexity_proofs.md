@@ -40,16 +40,31 @@ a scalar modulus; in `1650_428` every row is exactly two tokens. True cost is
 O(n) in both. 48 rows carry this label dataset-wide; two of two examined are
 wrong, which is a reason for suspicion, not yet a rate.
 
-## O(n log n) was not reached
+## O(n log n): reached on a second copy
 
-Dafny has no `log`. Both sort rows fall back to an honest `O(n^2)` via an opaque
-`SortCost(n) <= 2n^2 + 1`, proved rather than assumed. Reaching `n log n` needs
-a `Log2` recursion-tree argument with floor/ceil asymmetry. The weaker bound is
-true and strictly weaker than the label — reported, not massaged.
+The first pass fell back to an honest `O(n^2)`. A follow-up in
+`solutions-nlogn/` proves the real bound; `solutions-verified/` keeps the
+quadratic proof.
 
-`1484_82` is weaker in a second dimension: its trailing comparison loop is
-bounded by total string length, not by `n`, so it is charged against
-`SumLen(numbers)`.
+    SortCost(k) <= 2 * k * (CeilLog2(k) + 1) + 1
+
+| row | verified/ | nlogn/ |
+|---|---|---|
+| `603_284` | `2n^2 + 2n + 4` | `2n(CeilLog2(n)+1) + 2n + 4` |
+| `1484_82` | `2n^2 + 2n + 2·SumLen + 6` | `2n(CeilLog2(n)+1) + 2n + 2·SumLen + 6` |
+
+Both verify, both still pass their tests, neither uses `assume`. **The
+O(nlogn) label is now established for both rows.**
+
+Two things made it work. A **ceiling** log, `CeilLog2(n) = 1 + CeilLog2((n+1)/2)`,
+so `CeilLog2(ceil(k/2)) == CeilLog2(k) - 1` holds by definition — with floor-log
+that step is false at k = 3 and the induction cannot close. And **isolating every
+multiplication into its own lemma**: the one-`calc` version timed out at 30s,
+the version where Z3 never has to discover a nonlinear fact verifies in 2.8s.
+
+`1484_82` remains weaker in a second dimension: its trailing comparison loop is
+bounded by total string length, not `n`, so it is charged against
+`SumLen(numbers)`. That term is real work, not proof slack.
 
 ## `827_148` has no complexity without a value cap
 

@@ -13,6 +13,9 @@ SOLUTIONS = ROOT / "solutions"
 INEXACT = ROOT / "solutions-inexact"
 # Complexity proved, not just tested: ghost step counter with a proved bound.
 VERIFIED = ROOT / "solutions-verified"
+# Same rows, stronger proof: the true n log n via a recursion-tree argument.
+# Kept apart so the simpler quadratic proof survives alongside it.
+NLOGN = ROOT / "solutions-nlogn"
 PRELUDE = ROOT / "prelude.dfy"
 
 # The one upstream file this pipeline reads. Pinned by name, not by "latest".
