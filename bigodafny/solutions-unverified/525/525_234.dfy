@@ -23,12 +23,16 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, points: seq<seq<int>>) returns (output: string)
+  requires n >= 0
+  requires |points| == n
+  requires forall k :: 0 <= k < |points| ==> |points[k]| >= 2
 {
   var count := 1;
   var a := 0;
   var b := 0;
   var i := 0;
   while i < n
+    invariant 0 <= i <= n
     decreases n - i
   {
     var c := points[i][0];

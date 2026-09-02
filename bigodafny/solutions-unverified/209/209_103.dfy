@@ -16,10 +16,13 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(N: int, numbers: seq<int>) returns (output: string)
+  requires N == |numbers|
 {
   var a := Sort(numbers, (x, y) => x > y);
   var i := 0;
   while i < N - 1
+    invariant 0 <= i <= N
+    invariant |a| == N
     decreases N - 1 - i
   {
     var cand := a[i] - 1;
@@ -31,6 +34,7 @@ method Solve(N: int, numbers: seq<int>) returns (output: string)
   var total := 0;
   var j := 0;
   while j < |a|
+    invariant 0 <= j <= |a|
     decreases |a| - j
   {
     total := total + a[j];

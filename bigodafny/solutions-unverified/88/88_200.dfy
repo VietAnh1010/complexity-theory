@@ -24,10 +24,13 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, string_list: seq<string>) returns (output: string)
+  requires n >= 0
+  requires |string_list| == 2 * n
 {
   var parts: seq<string> := [];
   var t := 0;
   while t < n
+    invariant 0 <= t <= n
     decreases n - t
   {
     var x := ReverseString(string_list[2 * t]);

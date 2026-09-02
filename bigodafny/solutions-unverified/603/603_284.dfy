@@ -18,12 +18,16 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, numbers: seq<int>) returns (output: string)
+  requires |numbers| == n
 {
 
   var l := SortInts(numbers);
   var x := 0;
   var i := 0;
   while i < n - 1
+    invariant 0 <= i
+    invariant |l| == n
+    decreases n - i
   {
     x := x + l[i+1] - l[i] - 1;
     i := i + 1;

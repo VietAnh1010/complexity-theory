@@ -40,6 +40,7 @@ function ParseInt(s: string): int
 }
 
 method Solve(n: int, pairs: seq<seq<string>>) returns (output: string)
+  requires forall k :: 0 <= k < |pairs| ==> |pairs[k]| >= 2
 {
   var ct: map<int, int> := map[];
   var idx := 0;

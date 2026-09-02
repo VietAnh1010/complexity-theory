@@ -42,6 +42,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
+  requires |a_list| >= 1
 {
   var s := 0;
   var minEl := a_list[0];

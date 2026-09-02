@@ -59,12 +59,26 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+// Number of 1-entries in s[..k]: matches the count of taxi drivers seen so
+// far. The problem guarantees m (== |taxis|, once the classify loop
+// finishes) taxi drivers, and m >= 1.
+function CountOnesUpTo(s: seq<int>, k: nat): nat
+  requires k <= |s|
+  decreases k
+{
+  if k == 0 then 0 else CountOnesUpTo(s, k - 1) + (if s[k - 1] == 1 then 1 else 0)
+}
+
 method Solve(a: int, b: int, c_list: seq<int>, d_list: seq<int>) returns (output: string)
+  requires |d_list| == |c_list|
+  requires CountOnesUpTo(d_list, |d_list|) >= 1
 {
   var passengers: seq<int> := [];
   var taxis: seq<int> := [];
   var i := 0;
   while i < |c_list|
+    invariant 0 <= i <= |c_list|
+    invariant |taxis| == CountOnesUpTo(d_list, i)
     decreases |c_list| - i
   {
     if d_list[i] == 0 {
@@ -76,14 +90,14 @@ method Solve(a: int, b: int, c_list: seq<int>, d_list: seq<int>) returns (output
   }
   var passengersSorted := SortInts(passengers);
   var taxisSorted := SortInts(taxis);
-  assume {:axiom} |taxisSorted| >= 1;
   var answer: seq<int> := seq(|taxisSorted|, k => 0);
   var pIdx := 0;
   while pIdx < |passengersSorted|
+    invariant 0 <= pIdx <= |passengersSorted|
+    invariant |answer| == |taxisSorted|
     decreases |passengersSorted| - pIdx
   {
     var idx := BinarySearch(taxisSorted, passengersSorted[pIdx]);
-    assume {:axiom} 0 <= idx < |answer|;
     answer := answer[idx := answer[idx] + 1];
     pIdx := pIdx + 1;
   }
@@ -92,6 +106,7 @@ method Solve(a: int, b: int, c_list: seq<int>, d_list: seq<int>) returns (output
 
 method BinarySearch(arr: seq<int>, target: int) returns (idx: int)
   requires |arr| >= 1
+  ensures 0 <= idx < |arr|
 {
   var lower := 0;
   var upper := |arr| - 1;

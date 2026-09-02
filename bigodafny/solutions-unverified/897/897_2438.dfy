@@ -31,10 +31,12 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(number: int) returns (output: string)
+  requires number >= 0
 {
   var x := number;
   var step := 0;
   while x != 0
+    invariant x >= 0
     decreases x
   {
     if x >= 5 {

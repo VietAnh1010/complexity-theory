@@ -26,6 +26,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n1: int, list1: seq<int>, n2: int, list2: seq<int>) returns (output: string)
+  requires |list1| > 0 && |list2| > 0
 {
   var max1 := Max685(list1);
   var max2 := Max685(list2);

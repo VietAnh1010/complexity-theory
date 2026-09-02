@@ -29,13 +29,16 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(a: int, b: int) returns (output: string)
+  requires a >= 1
+  decreases *
 {
   var n := a;
   var k := b;
   var sols: seq<int> := [];
   var curr_div := 2;
   while n != 1 && |sols| < k - 1
-    decreases n - curr_div
+    invariant 1 <= n
+    decreases *
   {
     if n % curr_div == 0 {
       sols := sols + [curr_div];

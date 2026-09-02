@@ -34,6 +34,9 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
   var j := |s| - 1;
   var res := 0;
   while i < j
+    invariant 0 <= i
+    invariant j < |s|
+    invariant i <= j + 1
     decreases j - i
   {
     if s[i] + s[j] <= 4 {

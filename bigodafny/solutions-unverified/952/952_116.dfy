@@ -29,11 +29,14 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
+  requires n == |a_list|
 {
   var dc: map<int, int> := map[];
   var order: seq<int> := [];
   var idx := 0;
   while idx < |a_list|
+    invariant 0 <= idx <= |a_list|
+    invariant forall v :: v in order ==> v in dc
     decreases |a_list| - idx
   {
     var x := a_list[idx];
@@ -50,6 +53,8 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
   var mx := 0;
   var k := 0;
   while k < |order|
+    invariant 0 <= k <= |order|
+    invariant forall v :: v in order ==> v in dc
     decreases |order| - k
   {
     var xx := order[k];
@@ -62,6 +67,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
   var arr: seq<int> := [];
   var i := n - 1;
   while i >= 0
+    invariant -1 <= i <= n - 1
     decreases i + 1
   {
     if a_list[i] == ans {

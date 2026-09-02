@@ -25,6 +25,8 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, k: int) returns (output: string)
+  requires 1 <= k <= n
+  requires n % 2 == 0
 {
 
   var a := k;
@@ -33,6 +35,9 @@ method Solve(n: int, k: int) returns (output: string)
   if parity == 0 {
     var na := n;
     while na != a
+      invariant na >= a
+      invariant (na - a) % 2 == 0
+      decreases na - a
     {
       na := na - 2;
       i := i + 1;
@@ -40,6 +45,9 @@ method Solve(n: int, k: int) returns (output: string)
   } else {
     var na := 1;
     while a != na
+      invariant na <= a
+      invariant (a - na) % 2 == 0
+      decreases a - na
     {
       na := na + 2;
       i := i + 1;

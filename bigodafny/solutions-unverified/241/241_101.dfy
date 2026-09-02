@@ -26,6 +26,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
+  requires n >= 1 && n == |a_list|
 {
   if n == 1 {
     output := IntToString(a_list[0]);
@@ -33,6 +34,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
     var s := SortInts(a_list);
     var i := 0;
     while i < n && s[i] <= 0
+      invariant 0 <= i <= n
       decreases n - i
     {
       i := i + 1;

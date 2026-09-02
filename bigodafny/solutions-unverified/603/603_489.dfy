@@ -25,6 +25,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, numbers: seq<int>) returns (output: string)
+  requires |numbers| > 0
 {
   var mn := numbers[0];
   var mx := numbers[0];

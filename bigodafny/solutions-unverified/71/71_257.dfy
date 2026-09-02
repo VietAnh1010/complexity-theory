@@ -28,6 +28,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
+  requires n >= 1 && n == |a_list|
 {
   var index := 0;
   var count := 0;
@@ -35,6 +36,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
   var result := "";
   var i := 0;
   while i < n && !printed
+    invariant 0 <= i <= n
     decreases n - i
   {
     var prevIdx := if i == 0 then n - 1 else i - 1;

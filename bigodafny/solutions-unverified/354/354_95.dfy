@@ -31,10 +31,16 @@ import opened Prelude
 
 method Log2Floor(x: int) returns (k: int)
   requires x >= 1
+  ensures 0 <= k <= x
+  ensures x >= 2 ==> k >= 1
 {
   k := 0;
   var p := 1;
   while p * 2 <= x
+    invariant p >= 1
+    invariant p <= x
+    invariant k <= p
+    invariant (k == 0) == (p == 1)
     decreases x - p
   {
     p := p * 2;
@@ -43,10 +49,12 @@ method Log2Floor(x: int) returns (k: int)
 }
 
 method Solve(a: int, b: int, c: int) returns (output: string)
+  requires a >= 1
 {
   var nn := a;
   var matchesCount := 0;
   while nn > 1
+    invariant nn >= 0
     decreases nn
   {
     var power := Log2Floor(nn);

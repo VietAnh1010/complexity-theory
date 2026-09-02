@@ -40,12 +40,16 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, points: seq<seq<int>>) returns (output: string)
+  requires n >= 1
+  requires |points| == n
+  requires forall k :: 0 <= k < |points| ==> |points[k]| >= 2
 {
   var p0 := points[0];
   var mn0 := if p0[0] < p0[1] then p0[0] else p0[1];
   var count := if mn0 != 0 then mn0 + 1 else 1;
   var i := 1;
   while i < n
+    invariant 1 <= i <= n
     decreases n - i
   {
     var pi := points[i];

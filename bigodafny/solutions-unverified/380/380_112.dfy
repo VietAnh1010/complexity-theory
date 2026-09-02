@@ -24,11 +24,47 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+lemma MergeElemsInt(a: seq<int>, b: seq<int>, less: (int, int) -> bool)
+  ensures forall x :: x in Merge(a, b, less) ==> x in a || x in b
+  decreases |a| + |b|
+{
+  if |a| == 0 {
+  } else if |b| == 0 {
+  } else if less(b[0], a[0]) {
+    MergeElemsInt(a, b[1..], less);
+  } else {
+    MergeElemsInt(a[1..], b, less);
+  }
+}
+
+lemma SortElemsInt(s: seq<int>, less: (int, int) -> bool)
+  ensures forall x :: x in Sort(s, less) ==> x in s
+  decreases |s|
+{
+  if |s| <= 1 {
+  } else {
+    SortElemsInt(s[..|s| / 2], less);
+    SortElemsInt(s[|s| / 2..], less);
+    MergeElemsInt(Sort(s[..|s| / 2], less), Sort(s[|s| / 2..], less), less);
+  }
+}
+
+lemma SortIntsElems(s: seq<int>)
+  ensures forall x :: x in SortInts(s) ==> x in s
+{
+  SortElemsInt(s, (x, y) => x < y);
+}
+
 method Solve(s: string, n: int, a_list: seq<int>) returns (output: string)
+  requires |a_list| >= n
+  requires forall v :: v in a_list ==> 1 <= v <= |s|
 {
   var m := n;
   var strLen := |s|;
   var aSorted := SortInts(a_list);
+  assert |aSorted| == |a_list|;
+  SortIntsElems(a_list);
+  assert forall v :: v in aSorted ==> 1 <= v <= |s|;
   var has := new int[strLen + 3];
   var k := 0;
   while k < strLen + 3
@@ -39,9 +75,12 @@ method Solve(s: string, n: int, a_list: seq<int>) returns (output: string)
   }
   var i := 0;
   while i < m
+    invariant 0 <= i <= m <= |aSorted|
+    invariant forall v :: v in aSorted ==> 1 <= v <= |s|
     decreases m - i
   {
     var a := aSorted[i];
+    assert a in aSorted;
     has[a - 1] := has[a - 1] + 1;
     i := i + 1;
   }

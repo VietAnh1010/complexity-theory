@@ -27,6 +27,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(a: int, b: int) returns (output: string)
+  requires a >= 1
 {
   var n := a;
   var k := b;
@@ -35,7 +36,8 @@ method Solve(a: int, b: int) returns (output: string)
   var f := 0;
   var i := 2;
   while k != f + 1 && 2 * i <= n
-    decreases n - i
+    invariant h >= 1
+    decreases n - i, h
   {
     if h % i == 0 {
       f := f + 1;

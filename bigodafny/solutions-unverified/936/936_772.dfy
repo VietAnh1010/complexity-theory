@@ -26,10 +26,12 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, grid: seq<seq<int>>) returns (output: string)
+  requires forall k :: 0 <= k < |grid| ==> |grid[k]| >= 4
 {
   output := "";
   var i := 0;
   while i < |grid|
+    invariant 0 <= i <= |grid|
     decreases |grid| - i
   {
     var row := grid[i];

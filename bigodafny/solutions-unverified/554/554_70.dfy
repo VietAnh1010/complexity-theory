@@ -22,11 +22,15 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, pairs: seq<(int, int)>) returns (output: string)
+  requires forall t :: 0 <= t < |pairs| ==> 1 <= pairs[t].0 <= 150 && 0 <= pairs[t].1 <= 9
 {
 
   var results: seq<string> := [];
   var idx := 0;
   while idx < |pairs|
+    invariant 0 <= idx <= |pairs|
+    invariant forall t :: 0 <= t < |pairs| ==> 1 <= pairs[t].0 <= 150 && 0 <= pairs[t].1 <= 9
+    decreases |pairs| - idx
   {
     var N := pairs[idx].0;
     var K := pairs[idx].1;
@@ -34,10 +38,14 @@ method Solve(n: int, pairs: seq<(int, int)>) returns (output: string)
     var ans := 0;
     var i := 0;
     while i < 100 - K
+      invariant 0 <= i
+      decreases 100 - K - i
     {
       var val := 0;
       var j := i;
       while j <= i + K
+        invariant i <= j
+        decreases i + K - j
       {
         val := val + DigitSum(j);
         j := j + 1;
@@ -62,12 +70,14 @@ method Solve(n: int, pairs: seq<(int, int)>) returns (output: string)
 
 function DigitSum(x: int): int
   requires x >= 0
+  decreases x
 {
   if x < 10 then x else x % 10 + DigitSum(x / 10)
 }
 
 function RepeatChar(c: char, k: int): string
   requires k >= 0
+  decreases k
 {
   if k == 0 then "" else [c] + RepeatChar(c, k - 1)
 }
@@ -79,6 +89,7 @@ function PadTwo(i: int): string
 
 function ParseDecimalFrom(s: string, i: int, acc: int): int
   requires 0 <= i <= |s|
+  decreases |s| - i
 {
   if i >= |s| then acc
   else ParseDecimalFrom(s, i + 1, acc * 10 + ((s[i] as int) - ('0' as int)))

@@ -38,6 +38,9 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n_nodes: int, n_edges: int, edges: seq<seq<int>>) returns (output: string)
+  requires n_edges >= 0
+  requires |edges| == n_edges
+  requires forall i :: 0 <= i < n_edges ==> |edges[i]| >= 2 && edges[i][0] >= edges[i][1] >= 1
 {
   var n := n_nodes - 1;
   if n_edges == 0 {
@@ -51,6 +54,9 @@ method Solve(n_nodes: int, n_edges: int, edges: seq<seq<int>>) returns (output: 
     var maxAps := 100000;
     var i := 0;
     while i < n_edges
+      invariant 0 <= i <= n_edges
+      invariant i >= 1 ==> minAps >= 1
+      invariant maxAps >= 1
       decreases n_edges - i
     {
       var k := edges[i][0] - 1;

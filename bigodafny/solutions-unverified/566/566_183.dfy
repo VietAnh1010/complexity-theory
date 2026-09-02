@@ -44,6 +44,8 @@ method Solve(n: int, k: int, m: int, s: string) returns (output: string)
   var total := 0;
   var i := 0;
   while i < |row|
+    invariant 0 <= i <= |row|
+    decreases |row| - i
   {
     var l := row[i];
     var odd := l / 2 + l % 2;
@@ -78,6 +80,7 @@ function SplitChar(s: string, sep: char): seq<string>
 
 function SplitCharFrom(s: string, sep: char, i: int, cur: string, acc: seq<string>): seq<string>
   requires 0 <= i <= |s|
+  decreases |s| - i
 {
   if i >= |s| then acc + [cur]
   else if s[i] == sep then SplitCharFrom(s, sep, i + 1, "", acc + [cur])

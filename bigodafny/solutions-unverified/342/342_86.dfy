@@ -16,6 +16,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
+  requires |a_list| >= 1
 {
   var total := 0;
   var idx := 0;

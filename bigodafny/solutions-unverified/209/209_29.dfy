@@ -34,11 +34,13 @@ method Solve(N: int, numbers: seq<int>) returns (output: string)
   var ans := 0;
   var brk := false;
   while |a| > 0 && !brk
-    decreases |a|
+    decreases (if brk then 0 else 1), |a|
   {
     var mxIdx := 0;
     var k := 1;
     while k < |a|
+      invariant 0 <= mxIdx < |a|
+      invariant 1 <= k <= |a|
       decreases |a| - k
     {
       if a[k] > a[mxIdx] { mxIdx := k; }
@@ -53,6 +55,8 @@ method Solve(N: int, numbers: seq<int>) returns (output: string)
       var newA: seq<int> := [];
       var j := 0;
       while j < |a|
+        invariant 0 <= j <= |a|
+        invariant |newA| == j
         decreases |a| - j
       {
         if a[j] == mx {

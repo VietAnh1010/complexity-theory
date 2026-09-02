@@ -33,6 +33,7 @@ function ContainsInt(xs: seq<int>, x: int): bool
 }
 
 method Solve(n: int, v_list: seq<seq<int>>) returns (output: string)
+  requires forall k :: 0 <= k < |v_list| ==> |v_list[k]| >= 3
 {
   var source: seq<int> := [];
   var dest: seq<int> := [];
@@ -40,6 +41,7 @@ method Solve(n: int, v_list: seq<seq<int>>) returns (output: string)
   var c2 := 0;
   var idx := 0;
   while idx < |v_list|
+    invariant 0 <= idx <= |v_list|
     decreases |v_list| - idx
   {
     var s := v_list[idx][0];

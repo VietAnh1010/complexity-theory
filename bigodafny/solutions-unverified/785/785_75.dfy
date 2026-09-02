@@ -24,13 +24,17 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, numbers: seq<int>) returns (output: string)
+  requires n >= 1
+  requires |numbers| == n
 {
   var pairs := seq(|numbers|, i requires 0 <= i < |numbers| => (numbers[i], i+1));
   var srt := Sort(pairs, (x: (int, int), y: (int, int)) => x.0 < y.0 || (x.0 == y.0 && x.1 < y.1));
   var q := seq(|srt|, i requires 0 <= i < |srt| => srt[i].1);
+  assert |q| == n;
   var dp := new int[n+1];
   var k := 0;
   while k <= n
+    invariant 0 <= k <= n + 1
     decreases n - k
   {
     dp[k] := 1;
@@ -38,6 +42,7 @@ method Solve(n: int, numbers: seq<int>) returns (output: string)
   }
   var i := 1;
   while i < n
+    invariant 1 <= i <= n
     decreases n - i
   {
     if q[i] > q[i-1] {
@@ -48,6 +53,7 @@ method Solve(n: int, numbers: seq<int>) returns (output: string)
   var mx := dp[0];
   i := 1;
   while i <= n
+    invariant 1 <= i <= n + 1
     decreases n - i
   {
     if dp[i] > mx { mx := dp[i]; }

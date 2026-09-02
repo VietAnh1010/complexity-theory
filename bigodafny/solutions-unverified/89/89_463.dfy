@@ -35,14 +35,18 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, lists: seq<seq<int>>) returns (output: string)
+  requires n >= 0
+  requires |lists| == n
+  requires forall idx :: 0 <= idx < |lists| ==>
+    |lists[idx]| >= 5 && lists[idx][2] != 0 && lists[idx][3] != 0
 {
   var parts: seq<string> := [];
   var i := 0;
   while i < n
+    invariant 0 <= i <= n
     decreases n - i
   {
     var k := lists[i];
-    assume {:axiom} |k| >= 5;
     var k0 := k[0];
     var k1 := k[1];
     var k2 := k[2];

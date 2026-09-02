@@ -38,6 +38,7 @@ method Solve(a: int, b: int) returns (output: string)
 }
 
 method FactorialMod681(n: int, mod: int) returns (r: int)
+  requires mod != 0
 {
   r := 1;
   var i := 1;

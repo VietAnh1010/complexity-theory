@@ -26,6 +26,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(a: int, b: int, c_list: seq<int>, d_list: seq<int>) returns (output: string)
+  requires |c_list| >= 1 && |d_list| >= 1
 {
   var aSorted := SortInts(c_list);
   var bSorted := SortInts(d_list);

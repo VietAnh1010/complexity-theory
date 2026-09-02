@@ -19,12 +19,14 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(matrix: seq<seq<int>>) returns (output: string)
+  requires |matrix| >= 5
 {
   var row := 1;
   var col := 1;
   var i := 0;
   var found := false;
   while i < 5 && !found
+    invariant 0 <= i <= 5
     decreases 5 - i
   {
     var r := matrix[i];

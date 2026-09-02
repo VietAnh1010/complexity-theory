@@ -23,11 +23,16 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, total_score: int, scores: seq<int>) returns (output: string)
+  requires n >= 1
+  requires |scores| == n
+  requires total_score >= 0
 {
   var x := total_score;
   var a := scores;
   var i := 1;
   while i < n
+    invariant 1 <= i <= n
+    invariant |a| == n
     decreases n - i
   {
     var cand := 2 * a[i-1];
@@ -38,6 +43,7 @@ method Solve(n: int, total_score: int, scores: seq<int>) returns (output: string
   var ans := FCost90(bx, n, a);
   var j := 0;
   while j < |bx|
+    invariant 0 <= j <= |bx|
     decreases |bx| - j
   {
     if bx[j] == '0' {
@@ -53,6 +59,7 @@ method Solve(n: int, total_score: int, scores: seq<int>) returns (output: string
 function Pow2_90(e: int): int
   requires e >= 0
   decreases e
+  ensures Pow2_90(e) >= 1
 {
   if e == 0 then 1 else 2 * Pow2_90(e - 1)
 }

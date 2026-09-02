@@ -42,6 +42,9 @@ function ParseInt(s: string): int
 
 
 method Solve(n: int, values: seq<seq<string>>) returns (output: string)
+  requires 1 <= n <= 4
+  requires |values| == n
+  requires forall k :: 0 <= k < n ==> |values[k]| >= 2
 {
   if n == 1 {
     output := "-1";
@@ -50,6 +53,9 @@ method Solve(n: int, values: seq<seq<string>>) returns (output: string)
     var ys: seq<int> := [];
     var i := 0;
     while i < n
+      invariant 0 <= i <= n
+      invariant |xs| == i
+      invariant |ys| == i
       decreases n - i
     {
       xs := xs + [ParseInt(values[i][0])];

@@ -31,12 +31,16 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, total_score: int, scores: seq<int>) returns (output: string)
+  requires 0 <= n <= 31
+  requires |scores| == n
 {
   var INF := 1000000000000000000;
   var l := total_score;
   var cost: seq<int> := scores;
   var idxFill := n;
   while idxFill < 31
+    invariant n <= idxFill <= 31
+    invariant |cost| == idxFill
     decreases 31 - idxFill
   {
     cost := cost + [INF];
@@ -44,6 +48,8 @@ method Solve(n: int, total_score: int, scores: seq<int>) returns (output: string
   }
   var i := 0;
   while i < 30
+    invariant 0 <= i <= 30
+    invariant |cost| == 31
     decreases 30 - i
   {
     var doubled := cost[i] * 2;
@@ -55,6 +61,8 @@ method Solve(n: int, total_score: int, scores: seq<int>) returns (output: string
   var ll := l;
   var j := 30;
   while j >= 0
+    invariant -1 <= j <= 30
+    invariant |cost| == 31
     decreases j + 1
   {
     if Pow2_39(j) >= ll {
