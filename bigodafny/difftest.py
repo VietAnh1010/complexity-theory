@@ -25,6 +25,15 @@ from common import BUILD, INEXACT, SOLUTIONS, UNVERIFIED, VERIFIED
 PY_RUNNER = r'''
 import json, signal, sys, io
 sys.setrecursionlimit(100000)
+
+class _Stdin(io.StringIO):
+    """Some solutions read sys.stdin.buffer. A bare StringIO has no .buffer,
+    so the reference Python crashed under this harness and the row looked
+    incomparable when nothing was wrong with it."""
+    def __init__(self, text):
+        super().__init__(text)
+        self.buffer = io.BytesIO(text.encode())
+
 code = open(sys.argv[1], encoding="utf-8").read()
 tests = json.load(open(sys.argv[2], encoding="utf-8"))
 class T(Exception): pass
@@ -36,7 +45,7 @@ for t in tests:
     so, si = sys.stdout, sys.stdin
     buf = io.StringIO()
     try:
-        sys.stdin = io.StringIO(t["input"]); sys.stdout = buf
+        sys.stdin = _Stdin(t["input"]); sys.stdout = buf
         exec(obj, {"__name__": "__main__"})
         out.append({"ok": True, "out": buf.getvalue()})
     except SystemExit:
@@ -61,7 +70,7 @@ def python_outputs(task, tests):
         try:
             p = subprocess.run([sys.executable, str(d / "r.py"), str(d / "s.py"),
                                 str(d / "t.json")], capture_output=True,
-                               text=True, timeout=900, cwd=d)
+                               text=True, timeout=1800, cwd=d)
             return json.loads(p.stdout)
         except Exception:
             return None
