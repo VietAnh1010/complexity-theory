@@ -17,6 +17,9 @@ VERIFIED = ROOT / "solutions-verified"
 # raises with no user specification at all -- a seq index, a division, a
 # decreases clause. Safe on the stored tests; unproven for every other input.
 UNVERIFIED = ROOT / "solutions-unverified"
+# Deliberately not translated. Each file states its blocker; there is no stub
+# and no intent to fill one in. Kept so every dataset row has a file.
+UNTRANSLATED = ROOT / "solutions-untranslated"
 # Same rows, stronger proof: the true n log n via a recursion-tree argument.
 # Kept apart so the simpler quadratic proof survives alongside it.
 NLOGN = ROOT / "solutions-nlogn"

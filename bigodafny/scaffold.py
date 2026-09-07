@@ -12,8 +12,8 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-from common import (DATA, INEXACT, SOLUTIONS, UNVERIFIED, VERIFIED, event,
-                    log, read_jsonl)
+from common import (DATA, INEXACT, SOLUTIONS, UNTRANSLATED, UNVERIFIED,
+                    VERIFIED, event, log, read_jsonl)
 
 STUB_BODY = '  output := ""; // TODO: translate the Python above\n'
 
@@ -62,7 +62,7 @@ def scaffold(force=False):
         # that shadowed real translations living in the other directories.
         name = f"{t['solution_id']}.dfy"
         existing = next((d / t["problem_id"] / name
-                         for d in (SOLUTIONS, INEXACT, UNVERIFIED, VERIFIED)
+                         for d in (SOLUTIONS, INEXACT, UNVERIFIED, VERIFIED, UNTRANSLATED)
                          if (d / t["problem_id"] / name).exists()), None)
         if existing is not None and not force:
             kept += 1

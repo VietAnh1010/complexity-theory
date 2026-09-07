@@ -38,6 +38,22 @@ stages.
   bug where a fixture broke the `include` path and every case looked like a
   build failure.
 
+## `solutions-untranslated/` is a decision, not a backlog
+
+Four rows will not be translated. Each file states its own blocker in place of a
+body, and carries no stub: there is nothing to fill in.
+
+All four `print()` a bare Python float. Matching that byte-for-byte needs
+bit-exact IEEE-754 arithmetic (Dafny's `real` is an exact rational and does not
+round where a float rounds) **and** CPython's shortest-round-trip repr. Both
+gates compare stdout as text, so both are inapplicable rather than failing.
+
+The same problem with a format spec is tractable: `solutions/2496/2496_30.dfy`
+computes in exact rationals and replicates `'{:.9}'.format(x)`, agreeing on all
+42 comparable tests. It is bare `print(float)` that has no finite specification.
+
+`scaffold.py` treats these as present, so re-running never regenerates a stub.
+
 ## Two gates, and which row gets which
 
 `validate.py` compares a translation's stdout against BigOBench's **stored**

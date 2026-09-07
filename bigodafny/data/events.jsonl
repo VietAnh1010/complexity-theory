@@ -333,3 +333,6 @@
 {"ts": "2026-09-07T13:57:53", "kind": "difftest", "agrees": 1}
 {"ts": "2026-09-07T15:21:43", "kind": "verify_all", "total": 362, "verified": 350, "unverified": 12, "termination_opt_out": 13, "kinds": {"index-out-of-range": 5, "other": 5, "termination": 1, "division-by-zero": 1}}
 {"ts": "2026-09-07T15:22:16", "kind": "dataset", "rows": 640, "problems": 311, "splits": {"strict": 534, "loose": 100, "unvalidatable": 6}}
+{"ts": "2026-09-07T15:26:34", "kind": "difftest", "agrees": 95, "differs": 5, "error": 1}
+{"ts": "2026-09-07T18:39:17", "kind": "scaffold", "written": 0, "kept": 640, "skipped": 0}
+{"ts": "2026-09-07T18:39:22", "kind": "dataset", "rows": 640, "problems": 311, "splits": {"strict": 534, "loose": 100, "unvalidatable": 6}}

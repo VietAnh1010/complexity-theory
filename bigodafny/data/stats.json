@@ -62,5 +62,6 @@
     "O(n+mlogm)": 5,
     "O(nlogn)": 127,
     "O(nlogn+mlogm)": 5
-  }
+  },
+  "untranslatable": 4
 }

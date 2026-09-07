@@ -1,3 +1,5 @@
 {
-  "agrees": 1
+  "agrees": 95,
+  "differs": 5,
+  "error": 1
 }

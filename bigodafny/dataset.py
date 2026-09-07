@@ -18,8 +18,8 @@ Only `strict` is scored by byte-diff.
 from __future__ import annotations
 from collections import Counter
 
-from common import (DAFNY_VERSION, DATA, INEXACT, VERIFIED, event, log,
-                    read_jsonl, write_json, write_jsonl)
+from common import (DAFNY_VERSION, DATA, INEXACT, UNTRANSLATED, VERIFIED,
+                    event, log, read_jsonl, write_json, write_jsonl)
 
 EXPORT = ("problem_id", "solution_id", "problem_name", "split", "nondet_hint",
           "time_complexity_inferred", "time_curve_coefficient", "n_tests",
@@ -101,6 +101,9 @@ def build():
             # Behaviour is validated; the complexity label is not trusted.
             "quarantined": t["solution_id"] in quarantine,
             "quarantine_reasons": quarantine.get(t["solution_id"], []),
+            # Deliberately not translated; the file states why.
+            "untranslatable": (UNTRANSLATED / t["problem_id"] /
+                               f'{t["solution_id"]}.dfy').exists(),
             "complexity_proved": (VERIFIED / t["problem_id"] /
                                   f'{t["solution_id"]}.dfy').exists(),
             # `dafny verify` with no user spec: seq bounds, division, termination.
@@ -127,6 +130,7 @@ def build():
         "quarantine_reasons": dict(Counter(
             x for r in rows for x in r["quarantine_reasons"])),
         "complexity_proved": sum(r["complexity_proved"] for r in rows),
+        "untranslatable": sum(r["untranslatable"] for r in rows),
         "safety_verified": sum(1 for r in rows if r["safety_verified"]),
         "safety_failure": dict(Counter(r["safety_failure"] for r in rows
                                        if r["safety_failure"])),
