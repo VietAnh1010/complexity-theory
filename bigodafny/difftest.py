@@ -149,11 +149,25 @@ def run(sids, tiers=("public_tests", "private_tests"), workers=6):
     tasks = {t["solution_id"]: t for t in read_jsonl(DATA / "tasks.jsonl")}
     sigs = {s["problem_id"]: s for s in read_jsonl(DATA / "signatures.jsonl")}
     log(f"differential-testing {len(sids)} rows against their own Python")
+    # Write each result as it lands. A run over ~100 rows can take hours, and
+    # emitting only at the end means a kill loses the lot -- which is exactly
+    # what the session limit keeps doing to long jobs here.
+    partial = DATA / "difftest_partial.jsonl"
+    partial.unlink(missing_ok=True)
+    rows = []
     with ProcessPoolExecutor(max_workers=workers, initializer=init,
                              initargs=(tasks, sigs)) as ex:
-        rows = list(ex.map(one, [(s, tiers) for s in sids], chunksize=1))
+        for i, r in enumerate(ex.map(one, [(s, tiers) for s in sids],
+                                     chunksize=1), 1):
+            rows.append(r)
+            with partial.open("a", encoding="utf-8") as fh:
+                fh.write(json.dumps(r, sort_keys=True) + "\n")
+            if i % 10 == 0 or i == len(sids):
+                log(f"  {i}/{len(sids)}  "
+                    f"{sum(1 for x in rows if x['status'] == 'agrees')} agree")
     rows.sort(key=lambda r: (int(r["problem_id"]), r["solution_id"]))
     write_jsonl(DATA / "difftest.jsonl", rows)
+    partial.unlink(missing_ok=True)
     st = Counter(r["status"] for r in rows)
     write_json(DATA / "difftest_summary.json", dict(st))
     event("difftest", **st)
