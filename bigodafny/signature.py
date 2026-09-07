@@ -86,7 +86,33 @@ def input_fields(dataclass_code):
     raise Unmappable("no `class Input` in dataclass_code")
 
 
-def synthesize(dataclass_code):
+def observed_type(value):
+    """Dafny type of a value actually produced by `from_str`.
+
+    Used only where the annotation is a bare `list` with no element type. The
+    annotation is what an LLM wrote; the value is what the parser really built,
+    so observing beats guessing. Returns None if the value settles nothing (an
+    empty list) or holds something we do not map."""
+    if isinstance(value, bool):
+        return "bool"
+    if isinstance(value, int):
+        return "int"
+    if isinstance(value, float):
+        return "real"
+    if isinstance(value, str):
+        return "string"
+    if isinstance(value, (list, tuple)):
+        if not value:
+            return None
+        inner = {observed_type(v) for v in value}
+        if len(inner) != 1 or None in inner:
+            return None
+        t = inner.pop()
+        return f"seq<{t}>" if isinstance(value, list) else f"({t}, {t})"
+    return None
+
+
+def synthesize(dataclass_code, inputs_example=None):
     """-> {status, params, dafny, ...}. Never raises; records the reason."""
     try:
         fields = input_fields(dataclass_code)
@@ -98,17 +124,32 @@ def synthesize(dataclass_code):
     if not fields:
         return {"status": "unmappable", "reason": "`class Input` has no annotated fields"}
 
+    # A bare `list` annotation carries no element type. Rather than refuse,
+    # parse the row's own example input and look at what `from_str` built.
+    observed = {}
+    if inputs_example:
+        try:
+            ns = {}
+            exec(compile(dataclass_code, "<dc>", "exec"), ns)
+            parsed = ns["Input"].from_str(inputs_example)
+            observed = {f: getattr(parsed, f, None) for f, _ in fields}
+        except Exception:
+            observed = {}
+
     params, taken = [], set()
     for py_name, ann in fields:
         try:
             dt = dafny_type(ann)
         except Unmappable as e:
-            return {"status": "unmappable",
-                    "reason": f"unsupported annotation for `{py_name}`: {e}"}
+            dt = observed_type(observed.get(py_name))
+            if dt is None:
+                return {"status": "unmappable",
+                        "reason": f"unsupported annotation for `{py_name}`: {e}"}
         dn = safe_name(py_name, taken)
         taken.add(dn)
         params.append({"py_name": py_name, "dafny_name": dn,
-                       "py_type": ast.unparse(ann), "dafny_type": dt})
+                       "py_type": ast.unparse(ann), "dafny_type": dt,
+                       "from_observation": ast.unparse(ann) in ("list", "List")})
 
     args = ", ".join(f'{p["dafny_name"]}: {p["dafny_type"]}' for p in params)
     return {"status": "ok", "params": params, "arity": len(params),
@@ -127,7 +168,7 @@ def build():
 
     out = []
     for pid, t in sorted(by_problem.items(), key=lambda kv: int(kv[0])):
-        sig = synthesize(t["dataclass_code"])
+        sig = synthesize(t["dataclass_code"], t.get("inputs_example"))
         out.append({"problem_id": pid, "problem_name": t["problem_name"], **sig})
 
     write_jsonl(DATA / "signatures.jsonl", out)

@@ -12,7 +12,8 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-from common import DATA, SOLUTIONS, event, log, read_jsonl
+from common import (DATA, INEXACT, SOLUTIONS, UNVERIFIED, VERIFIED, event,
+                    log, read_jsonl)
 
 STUB_BODY = '  output := ""; // TODO: translate the Python above\n'
 
@@ -56,10 +57,17 @@ def scaffold(force=False):
         if not sig or sig["status"] != "ok":
             skipped += 1
             continue
-        path = SOLUTIONS / t["problem_id"] / f"{t['solution_id']}.dfy"
-        if path.exists() and not force:
+        # A translated row may have been moved out of solutions/ by the
+        # discrimination step. Checking only SOLUTIONS once recreated 274 stubs
+        # that shadowed real translations living in the other directories.
+        name = f"{t['solution_id']}.dfy"
+        existing = next((d / t["problem_id"] / name
+                         for d in (SOLUTIONS, INEXACT, UNVERIFIED, VERIFIED)
+                         if (d / t["problem_id"] / name).exists()), None)
+        if existing is not None and not force:
             kept += 1
             continue
+        path = SOLUTIONS / t["problem_id"] / name
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(stub_source(t, sig), encoding="utf-8")
         made += 1
