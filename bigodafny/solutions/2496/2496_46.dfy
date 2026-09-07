@@ -35,6 +35,53 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<real>) returns (output: string)
+  requires |a_list| >= 1
 {
-  output := ""; // TODO: translate the Python above
+  var ls := Sort(a_list, (x: real, y: real) => x < y);
+  var m := |ls|;
+  var mx := ls[m - 1];
+  var idx := 0;
+  while idx < m && ls[idx] < 0.5
+    invariant 0 <= idx <= m
+  {
+    idx := idx + 1;
+  }
+  if idx < m && ls[idx] < 0.5 {
+    idx := idx + 1;
+  }
+
+  var res: real := 0.0;
+  var st := 0;
+  while st < idx - 1
+    invariant 0 <= st
+  {
+    var temp: real := 0.0;
+    var i := st;
+    while i < idx
+      invariant st <= i <= idx
+    {
+      var t: real := 1.0;
+      var j := st;
+      while j < idx
+        invariant st <= j <= idx
+      {
+        if i != j {
+          t := t * (1.0 - ls[j]);
+        }
+        j := j + 1;
+      }
+      temp := temp + t * ls[i];
+      i := i + 1;
+    }
+    if temp > res { res := temp; }
+    st := st + 1;
+  }
+  if mx > res { res := mx; }
+
+  var scaled := (res * 1000000000000.0 + 0.5).Floor;
+  var digits := IntToString(scaled);
+  while |digits| < 13 { digits := "0" + digits; }
+  var intStr := digits[..|digits| - 12];
+  var fracStr := digits[|digits| - 12..];
+  output := intStr + "." + fracStr + "\n";
 }

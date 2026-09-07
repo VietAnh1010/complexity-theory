@@ -27,5 +27,40 @@ import opened Prelude
 
 method Solve(n: int, k: int, a_list: seq<int>, b_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var cnt := CountZeros(a_list);
+  if cnt > 1 {
+    output := "Yes\n";
+  } else {
+    var a := a_list;
+    var bv := if |b_list| > 0 then b_list[0] else 0;
+    var i := 0;
+    while i < |a|
+      invariant 0 <= i <= |a|
+      decreases |a| - i
+    {
+      if a[i] == 0 {
+        a := a[i := bv];
+      }
+      i := i + 1;
+    }
+    var found := false;
+    var j := 0;
+    while j < |a| - 1 && !found
+      invariant 0 <= j <= |a|
+      decreases |a| - j
+    {
+      if a[j+1] <= a[j] {
+        found := true;
+      }
+      j := j + 1;
+    }
+    output := if found then "Yes\n" else "No\n";
+  }
+}
+
+function CountZeros(s: seq<int>): int
+  decreases |s|
+{
+  if |s| == 0 then 0
+  else (if s[0] == 0 then 1 else 0) + CountZeros(s[1..])
 }

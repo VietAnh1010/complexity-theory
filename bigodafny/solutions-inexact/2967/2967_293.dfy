@@ -24,5 +24,29 @@ import opened Prelude
 
 method Solve(v_0: string, v_1: string, v_2: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var n := ParseInt(v_0);
+  var p := ParseInt(v_1);
+  var k := ParseInt(v_2);
+  var tokens: seq<string> := [];
+  if p - k > 1 {
+    tokens := tokens + ["<<"];
+  }
+  var i := p - k;
+  var hi := p + k;
+  while i <= hi
+    decreases hi - i
+  {
+    if i >= 1 && i <= n {
+      if i == p {
+        tokens := tokens + ["(" + IntToString(i) + ")"];
+      } else {
+        tokens := tokens + [IntToString(i)];
+      }
+    }
+    i := i + 1;
+  }
+  if p + k < n {
+    tokens := tokens + [">>"];
+  }
+  output := Join(tokens, " ") + "\n";
 }

@@ -18,5 +18,22 @@ import opened Prelude
 
 method Solve(n: int, m: int, s: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var ans := FloorDiv(n - m, 2);
+  var effAns := if ans < 0 then |s| else ans;
+  var openRemoved := 0;
+  var closeRemoved := 0;
+  var res := "";
+  var i := 0;
+  while i < |s|
+  {
+    if s[i] == '(' && openRemoved < effAns {
+      openRemoved := openRemoved + 1;
+    } else if s[i] == ')' && closeRemoved < effAns {
+      closeRemoved := closeRemoved + 1;
+    } else {
+      res := res + [s[i]];
+    }
+    i := i + 1;
+  }
+  output := res + "\n";
 }

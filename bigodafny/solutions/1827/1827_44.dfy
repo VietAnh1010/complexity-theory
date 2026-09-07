@@ -30,7 +30,47 @@
 include "../../prelude.dfy"
 import opened Prelude
 
-method Solve(a: int, b: int) returns (output: string)
+function Pow2(e: int): int
+  requires e >= 0
+  ensures Pow2(e) >= 1
+  decreases e
 {
-  output := ""; // TODO: translate the Python above
+  if e == 0 then 1 else 2 * Pow2(e - 1)
+}
+
+method Solve(a: int, b: int) returns (output: string)
+  requires a >= 0
+  requires b >= 1
+{
+  var s := a;
+  var l := b;
+  var x := 0;
+  while Pow2(x + 1) <= l
+    decreases l - Pow2(x + 1)
+  {
+    x := x + 1;
+  }
+  var S: seq<int> := [];
+  var ss := s;
+  var xx := x;
+  while xx >= 0
+    invariant ss >= 0
+    decreases xx + 1
+  {
+    var aa := 1;
+    while Pow2(xx) <= ss && aa * Pow2(xx) <= l
+      invariant ss >= 0
+      decreases ss
+    {
+      S := S + [aa * Pow2(xx)];
+      aa := aa + 2;
+      ss := ss - Pow2(xx);
+    }
+    xx := xx - 1;
+  }
+  if ss == 0 {
+    output := IntToString(|S|) + "\n" + JoinInts(S, " ");
+  } else {
+    output := IntToString(-1);
+  }
 }

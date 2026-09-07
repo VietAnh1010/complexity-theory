@@ -25,6 +25,32 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, m: int) returns (output: string)
+  requires n >= 1
+  requires 0 <= m <= 9
 {
-  output := ""; // TODO: translate the Python above
+  var k := n;
+  var d := m;
+  if k == 1 && d == 0 {
+    output := "0\n";
+  } else if k != 1 && d == 0 {
+    output := "No solution\n";
+  } else {
+    var nn := d;
+    var pow := 9;
+    while NumDigits(nn) != k
+      invariant nn >= 0
+      decreases if k - NumDigits(nn) >= 0 then k - NumDigits(nn) else NumDigits(nn) - k
+    {
+      nn := nn + pow;
+      pow := pow * 9;
+    }
+    output := IntToString(nn) + "\n";
+  }
+}
+
+function NumDigits(x: int): int
+  requires x >= 0
+  decreases x
+{
+  if x < 10 then 1 else 1 + NumDigits(x / 10)
 }

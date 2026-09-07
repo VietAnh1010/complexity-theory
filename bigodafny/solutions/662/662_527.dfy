@@ -21,5 +21,28 @@ import opened Prelude
 
 method Solve(n: int, binary_strings: seq<string>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var parts: seq<string> := [];
+  var i := 0;
+  while i < n && i < |binary_strings|
+    invariant 0 <= i
+    decreases n - i
+  {
+    var t := binary_strings[i];
+    var c1 := CountChar(t, '1');
+    var c0 := CountChar(t, '0');
+    if c1 == 0 || c0 == 0 {
+      parts := parts + [t + "\n"];
+    } else {
+      parts := parts + [Repeat("01", |t|) + "\n"];
+    }
+    i := i + 1;
+  }
+  output := Join(parts, "");
+}
+
+function CountChar(s: string, c: char): int
+  decreases |s|
+{
+  if |s| == 0 then 0
+  else (if s[0] == c then 1 else 0) + CountChar(s[1..], c)
 }

@@ -485,5 +485,40 @@ import opened Prelude
 
 method Solve(n: int, is_white_list: seq<bool>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var arr := seq(|is_white_list|, i requires 0 <= i < |is_white_list| => if is_white_list[i] then 0 else 1);
+  var b := 0;
+  var k := 0;
+  while k < |arr|
+    invariant 0 <= k <= |arr|
+  {
+    b := b + arr[k];
+    k := k + 1;
+  }
+  var w := n - b;
+  if b % 2 == 1 && w % 2 == 1 {
+    output := "-1\n";
+  } else if b == 0 || w == 0 {
+    output := "0\n";
+  } else {
+    var target := 0;
+    if b % 2 == 0 {
+      target := 0;
+    } else {
+      target := 1;
+    }
+    var ans: seq<int> := [];
+    var i := 0;
+    while i < n - 1
+      invariant 0 <= i
+      invariant |arr| == |is_white_list|
+    {
+      if i < |arr| && i + 1 < |arr| && arr[i] != target {
+        ans := ans + [i + 1];
+        arr := arr[i := target];
+        arr := arr[i + 1 := 1 - arr[i + 1]];
+      }
+      i := i + 1;
+    }
+    output := IntToString(|ans|) + "\n" + JoinInts(ans, " ") + "\n";
+  }
 }

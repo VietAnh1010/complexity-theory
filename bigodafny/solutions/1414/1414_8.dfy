@@ -47,7 +47,77 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+method SolveOne(a: string) returns (ok: bool)
+{
+  var m := |a|;
+  var cntA := 0;
+  var cntB := 0;
+  var cntC := 0;
+  var i := 0;
+  while i < m
+    invariant 0 <= i <= m
+    decreases m - i
+  {
+    if a[i] == 'A' { cntA := cntA + 1; }
+    else if a[i] == 'B' { cntB := cntB + 1; }
+    else if a[i] == 'C' { cntC := cntC + 1; }
+    i := i + 1;
+  }
+  var vs := SortInts([cntA, cntB, cntC]);
+  if vs[0] + vs[1] != vs[2] {
+    ok := false;
+    return;
+  }
+  if m == 0 {
+    ok := false;
+    return;
+  }
+  var first := a[0];
+  var last := a[m - 1];
+  if first == last {
+    ok := false;
+    return;
+  }
+  var other := first;
+  var cntFirst := if first == 'A' then cntA else if first == 'B' then cntB else cntC;
+  if cntFirst == vs[2] {
+    other := last;
+  }
+  var numOpen := 0;
+  var j := 0;
+  var failed := false;
+  while j < m && !failed
+    invariant 0 <= j <= m
+    decreases m - j
+  {
+    if a[j] == first {
+      numOpen := numOpen + 1;
+    } else if a[j] == last {
+      numOpen := numOpen - 1;
+    } else if other == first {
+      numOpen := numOpen + 1;
+    } else {
+      numOpen := numOpen - 1;
+    }
+    if numOpen < 0 {
+      failed := true;
+    }
+    j := j + 1;
+  }
+  ok := !failed && numOpen == 0;
+}
+
 method Solve(n: int, strings: seq<string>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var parts: seq<string> := [];
+  var i := 0;
+  while i < |strings|
+    invariant 0 <= i <= |strings|
+    decreases |strings| - i
+  {
+    var ok := SolveOne(strings[i]);
+    parts := parts + [if ok then "YES\n" else "NO\n"];
+    i := i + 1;
+  }
+  output := Join(parts, "");
 }

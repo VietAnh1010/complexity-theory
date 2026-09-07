@@ -31,6 +31,32 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, matrices: seq<seq<int>>) returns (output: string)
+  requires forall i :: 0 <= i < |matrices| ==> |matrices[i]| >= 4
 {
-  output := ""; // TODO: translate the Python above
+  var parts: seq<string> := [];
+  var idx := 0;
+  while idx < |matrices|
+    invariant 0 <= idx <= |matrices|
+    decreases |matrices| - idx
+  {
+    var l := matrices[idx];
+    var a := l[0];
+    var b := l[1];
+    var c := l[2];
+    var d := l[3];
+    var k0 := "Tidak";
+    var k1 := "Tidak";
+    var k2 := "Tidak";
+    var k3 := "Tidak";
+    if (a + b) % 2 == 0 {
+      if b + c != 0 { k2 := "Ya"; }
+      if a + d != 0 { k3 := "Ya"; }
+    } else {
+      if b + c != 0 { k1 := "Ya"; }
+      if a + d != 0 { k0 := "Ya"; }
+    }
+    parts := parts + [k0 + " " + k1 + " " + k2 + " " + k3 + "\n"];
+    idx := idx + 1;
+  }
+  output := Join(parts, "");
 }

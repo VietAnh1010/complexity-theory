@@ -28,6 +28,29 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(N: int, queries: seq<(string, int, string)>) returns (output: string)
+  requires N >= 0
+  requires |queries| >= N
 {
-  output := ""; // TODO: translate the Python above
+  var u := -2000000000;
+  var v := 2000000000;
+  var i := 0;
+  while i < N
+    invariant 0 <= i <= N
+    decreases N - i
+  {
+    var a := queries[i].0;
+    var k := queries[i].1;
+    var c := queries[i].2;
+    if a == ">=" {
+      if c == "Y" { if k > u { u := k; } } else { if k - 1 < v { v := k - 1; } }
+    } else if a == ">" {
+      if c == "Y" { if k + 1 > u { u := k + 1; } } else { if k < v { v := k; } }
+    } else if a == "<=" {
+      if c == "Y" { if k < v { v := k; } } else { if k + 1 > u { u := k + 1; } }
+    } else {
+      if c == "Y" { if k - 1 < v { v := k - 1; } } else { if k > u { u := k; } }
+    }
+    i := i + 1;
+  }
+  output := if u > v then "Impossible" else IntToString(u);
 }

@@ -35,5 +35,52 @@ import opened Prelude
 
 method Solve(n: int, numbers: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var parts: seq<string> := [];
+  var t := 0;
+  while t < n && t < |numbers|
+    invariant 0 <= t
+    decreases n - t
+  {
+    var nv := numbers[t];
+    var found := false;
+    var bi := 0;
+    var bj := 0;
+    var bk := 0;
+    if nv >= 0 {
+      var i := 0;
+      while i <= nv / 3 && !found
+        invariant 0 <= i
+        decreases (nv / 3 + 1) - i
+      {
+        var j := 0;
+        while j <= nv / 5 && !found
+          invariant 0 <= j
+          decreases (nv / 5 + 1) - j
+        {
+          var k := 0;
+          while k <= nv / 7 && !found
+            invariant 0 <= k
+            decreases (nv / 7 + 1) - k
+          {
+            if 3 * i + 5 * j + 7 * k == nv {
+              bi := i;
+              bj := j;
+              bk := k;
+              found := true;
+            }
+            k := k + 1;
+          }
+          j := j + 1;
+        }
+        i := i + 1;
+      }
+    }
+    if found {
+      parts := parts + [IntToString(bi) + " " + IntToString(bj) + " " + IntToString(bk) + "\n"];
+    } else {
+      parts := parts + ["-1\n"];
+    }
+    t := t + 1;
+  }
+  output := Join(parts, "");
 }

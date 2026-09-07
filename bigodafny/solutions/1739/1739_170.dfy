@@ -33,5 +33,29 @@ import opened Prelude
 
 method Solve(number: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var n := number;
+  var a := 1;
+  var b := 0;
+  if n % 2 != 0 {
+    var half := FloorDiv(n, 2);
+    while a < half
+      decreases half - a
+    {
+      a := a + 1;
+    }
+    b := n - a;
+  } else {
+    var half := FloorDiv(n, 2) - 1;
+    while a < half
+      decreases half - a
+    {
+      a := a + 1;
+    }
+    b := n - a;
+    if a % 2 == 0 && b % 2 == 0 {
+      a := a - 1;
+      b := b + 1;
+    }
+  }
+  output := IntToString(a) + "  " + IntToString(b);
 }

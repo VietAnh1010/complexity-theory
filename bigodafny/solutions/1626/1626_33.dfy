@@ -36,6 +36,22 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
+  requires |a_list| > 0
 {
-  output := ""; // TODO: translate the Python above
+  var m := MaxSeq(a_list);
+  var s := SumSeq(a_list);
+  var beg := 0;
+  var end := 1000000000000;
+  while beg < end - 1
+    invariant beg <= end
+    decreases end - beg
+  {
+    var mid := (beg + end) / 2;
+    if n * mid - s >= mid && mid >= m {
+      end := mid;
+    } else {
+      beg := mid;
+    }
+  }
+  output := IntToString(beg + 1);
 }

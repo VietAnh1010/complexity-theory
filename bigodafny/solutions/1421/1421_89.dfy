@@ -17,5 +17,12 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var pairs := seq(|a_list|, i requires 0 <= i < |a_list| => (a_list[i], i));
+  var srt := Sort(pairs, (x: (int, int), y: (int, int)) => x.0 < y.0 || (x.0 == y.0 && x.1 < y.1));
+  var vals := seq(|srt|, i requires 0 <= i < |srt| => srt[i].1 + 1);
+  if |vals| == 0 {
+    output := "";
+  } else {
+    output := JoinInts(vals, "\n") + "\n";
+  }
 }

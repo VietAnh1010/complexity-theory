@@ -25,5 +25,19 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var parts: seq<string> := [];
+  var i := 0;
+  while i < |a_list|
+    invariant 0 <= i <= |a_list|
+    decreases |a_list| - i
+  {
+    var m := a_list[i];
+    if m >= 2 {
+      parts := parts + ["23" + Repeat("3", (m - 2) as nat) + " \n"];
+    } else {
+      parts := parts + ["-1\n \n"];
+    }
+    i := i + 1;
+  }
+  output := Join(parts, "");
 }

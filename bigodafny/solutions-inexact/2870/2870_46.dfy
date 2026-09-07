@@ -20,6 +20,23 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, values_list: seq<seq<int>>) returns (output: string)
+  requires |values_list| == n
+  requires forall k :: 0 <= k < |values_list| ==> |values_list[k]| > 0
 {
-  output := ""; // TODO: translate the Python above
+  var lines: seq<string> := [];
+  var i := 0;
+  while i < n
+    invariant 0 <= i <= n
+  {
+    var s := values_list[i];
+    var d := SumSeq(s);
+    var m := MinSeq(s);
+    if m >= d / 9 && d % 9 == 0 {
+      lines := lines + ["YES"];
+    } else {
+      lines := lines + ["NO"];
+    }
+    i := i + 1;
+  }
+  output := if |lines| > 0 then Join(lines, "\n") + "\n" else "";
 }

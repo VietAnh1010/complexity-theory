@@ -34,6 +34,20 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
+  requires n >= 0
+  requires |a_list| == n
+  requires forall k :: 0 <= k < n ==> 1 <= a_list[k] <= n
 {
-  output := ""; // TODO: translate the Python above
+  var up := seq(n, i requires 0 <= i < n => 1 + i*20001);
+  var down := seq(n, i requires 0 <= i < n => up[n-1-i]);
+  var i := 0;
+  while i < n
+    invariant 0 <= i <= n
+    invariant |up| == n
+  {
+    var val := a_list[i];
+    up := up[(val-1) := up[val-1] + i];
+    i := i + 1;
+  }
+  output := JoinInts(up, " ") + "\n" + JoinInts(down, " ") + "\n";
 }

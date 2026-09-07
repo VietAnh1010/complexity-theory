@@ -34,5 +34,64 @@ import opened Prelude
 
 method Solve(n: int, numbers: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var sorted := SortInts(numbers);
+  var distinct: seq<int> := [];
+  var counts: seq<int> := [];
+  var i := 0;
+  while i < |sorted|
+    invariant 0 <= i <= |sorted|
+    invariant |distinct| == |counts|
+  {
+    var v := sorted[i];
+    var j := i;
+    while j < |sorted| && sorted[j] == v
+      invariant i <= j <= |sorted|
+    { j := j + 1; }
+    distinct := distinct + [v];
+    counts := counts + [j - i];
+    i := j;
+  }
+  var singlesCount := 0;
+  var multisNonEmpty := false;
+  var k := 0;
+  while k < |counts|
+  {
+    if counts[k] == 1 { singlesCount := singlesCount + 1; }
+    if counts[k] > 2 { multisNonEmpty := true; }
+    k := k + 1;
+  }
+  if singlesCount % 2 == 1 && !multisNonEmpty {
+    output := "NO\n";
+  } else {
+    var sin := singlesCount / 2;
+    var mul := singlesCount % 2;
+    var ansParts: seq<string> := [];
+    var m := 0;
+    while m < |numbers|
+    {
+      var x := numbers[m];
+      var lo := 0;
+      var hi := |distinct|;
+      while lo < hi
+        invariant 0 <= lo <= hi <= |distinct|
+      {
+        var mid := (lo + hi) / 2;
+        if distinct[mid] == x { lo := mid; hi := mid; }
+        else if distinct[mid] < x { lo := mid + 1; }
+        else { hi := mid; }
+      }
+      var cx := if lo < |distinct| && distinct[lo] == x then counts[lo] else 0;
+      if mul > 0 && cx > 2 {
+        mul := mul - 1;
+        ansParts := ansParts + ["A"];
+      } else if sin > 0 && cx == 1 {
+        sin := sin - 1;
+        ansParts := ansParts + ["A"];
+      } else {
+        ansParts := ansParts + ["B"];
+      }
+      m := m + 1;
+    }
+    output := "YES\n" + Join(ansParts, "") + "\n";
+  }
 }

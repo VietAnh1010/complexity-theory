@@ -40,6 +40,61 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, k: int, a_list: seq<int>) returns (output: string)
+  requires n == |a_list|
+  requires exists c :: 0 <= c < n && a_list[c] == k
 {
-  output := ""; // TODO: translate the Python above
+  var m := k;
+  var p := a_list;
+  var wIdx :| 0 <= wIdx < n && p[wIdx] == m;
+  var cur := 0;
+  while p[cur] != m
+    invariant 0 <= cur <= wIdx
+    decreases wIdx - cur
+  {
+    cur := cur + 1;
+  }
+  var pos := cur;
+  var s: map<int, int> := map[];
+  var cnt := 0;
+  var length := 0;
+  cur := pos;
+  while cur >= 0
+    invariant -1 <= cur <= pos
+    decreases cur + 1
+  {
+    if p[cur] <= m {
+      cnt := cnt + 1;
+    }
+    length := length + 1;
+    var key := 2 * cnt - length;
+    if key in s {
+      s := s[key := s[key] + 1];
+    } else {
+      s := s[key := 1];
+    }
+    cur := cur - 1;
+  }
+  cur := pos;
+  cnt := 0;
+  length := 0;
+  var ans := 0;
+  while cur < n
+    invariant pos <= cur <= n
+    decreases n - cur
+  {
+    if p[cur] <= m {
+      cnt := cnt + 1;
+    }
+    length := length + 1;
+    var k1 := length - 2 * cnt + 1;
+    var k2 := length - 2 * cnt + 2;
+    if k1 in s {
+      ans := ans + s[k1];
+    }
+    if k2 in s {
+      ans := ans + s[k2];
+    }
+    cur := cur + 1;
+  }
+  output := IntToString(ans) + "\n";
 }

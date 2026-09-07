@@ -15,5 +15,11 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var m := if n % 2 == 1 then n else 0;
+  if m < 1 {
+    output := "NO\n";
+  } else {
+    var vals := seq(2 * m, i requires 0 <= i < 2 * m => (i % m) * 2 + i % 2 + 1);
+    output := "YES " + JoinInts(vals, " ") + "\n";
+  }
 }

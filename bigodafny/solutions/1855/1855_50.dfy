@@ -50,5 +50,11 @@ import opened Prelude
 
 method Solve(hour: string, minute: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var h := ParseInt(hour);
+  var m := ParseInt(minute);
+  var num := 60 * (h % 12) + m;
+  var half := num / 2;
+  var firstStr := if num % 2 == 0 then IntToString(half) + ".0" else IntToString(half) + ".5";
+  var second := m * 6;
+  output := firstStr + " " + IntToString(second);
 }

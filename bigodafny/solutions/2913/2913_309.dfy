@@ -27,5 +27,31 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var flag := false;
+  var a := 0;
+  var b := 0;
+  var i := 1;
+  while i <= n && !flag
+    invariant 1 <= i
+    decreases n - i
+  {
+    var j := 1;
+    while j <= n && !flag
+      invariant 1 <= j
+      decreases n - j
+    {
+      if i % j == 0 && i * j > n && i % j < n {
+        a := i;
+        b := j;
+        flag := true;
+      }
+      j := j + 1;
+    }
+    i := i + 1;
+  }
+  if flag {
+    output := IntToString(a) + " " + IntToString(b) + "\n";
+  } else {
+    output := "-1\n";
+  }
 }

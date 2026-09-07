@@ -18,6 +18,21 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, grid: seq<seq<int>>) returns (output: string)
+  requires forall r :: r in grid ==> |r| >= 3
 {
-  output := ""; // TODO: translate the Python above
+  var parts: seq<string> := [];
+  var i := 0;
+  while i < n && i < |grid|
+    invariant 0 <= i
+    decreases n - i
+  {
+    var row := grid[i];
+    if row[0] == row[2] {
+      parts := parts + [IntToString(row[0]) + " " + IntToString(row[2] + 1) + "\n"];
+    } else {
+      parts := parts + [IntToString(row[0]) + " " + IntToString(row[2]) + "\n"];
+    }
+    i := i + 1;
+  }
+  output := Join(parts, "");
 }

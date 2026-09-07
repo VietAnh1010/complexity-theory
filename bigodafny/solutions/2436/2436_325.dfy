@@ -30,7 +30,38 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+predicate IsVowel(c: char)
+{
+  c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u'
+}
+
+predicate IsCons(c: char)
+{
+  'a' <= c <= 'z' && !IsVowel(c)
+}
+
 method Solve(a: string, b: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var n := |a|;
+  var i := 0;
+  var broke := false;
+  while i < n && !broke
+    invariant 0 <= i <= n
+    decreases n - i, (if broke then 0 else 1)
+  {
+    if n != |b| {
+      broke := true;
+    } else if (IsCons(a[i]) && IsVowel(b[i])) || (IsVowel(a[i]) && IsCons(b[i])) {
+      broke := true;
+    } else {
+      i := i + 1;
+    }
+  }
+  if broke {
+    output := "No\n";
+  } else if i == n {
+    output := "Yes\n";
+  } else {
+    output := "";
+  }
 }

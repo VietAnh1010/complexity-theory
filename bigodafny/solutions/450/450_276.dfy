@@ -34,5 +34,24 @@ import opened Prelude
 
 method Solve(s: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  if IsPalindrome(s) {
+    output := "0\n";
+  } else {
+    output := "3\n" + "R " + IntToString(|s| - 1) + "\n" + "L " + IntToString(|s|) + "\n" + "L 2\n";
+  }
+}
+
+function IsPalindrome(s: string): bool
+{
+  IsPalinFrom(s, 0, |s| - 1)
+}
+
+function IsPalinFrom(s: string, i: int, j: int): bool
+  requires 0 <= i <= |s|
+  requires -1 <= j < |s|
+  decreases j - i
+{
+  if i >= j then true
+  else if s[i] != s[j] then false
+  else IsPalinFrom(s, i + 1, j - 1)
 }

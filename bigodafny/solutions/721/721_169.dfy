@@ -23,5 +23,23 @@ import opened Prelude
 
 method Solve(n: int, numbers: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var parts: seq<string> := [];
+  var i := 0;
+  while i < n && i < |numbers|
+    invariant 0 <= i
+    decreases n - i
+  {
+    var nv := numbers[i];
+    if nv == 1 {
+      parts := parts + ["8\n" + "\n"];
+    } else if nv > 0 {
+      var cnt8 := (nv + 3) / 4;
+      var cnt9 := nv - cnt8;
+      parts := parts + [Repeat("9", cnt9) + Repeat("8", cnt8) + "\n"];
+    } else {
+      parts := parts + ["\n"];
+    }
+    i := i + 1;
+  }
+  output := Join(parts, "");
 }

@@ -13,5 +13,15 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var parts: seq<string> := [];
+  var x := 1;
+  while x < 2778
+    invariant 1 <= x <= 2778
+    decreases 2778 - x
+  {
+    parts := parts + [IntToString(x)];
+    x := x + 1;
+  }
+  var s := Join(parts, "");
+  output := [s[n - 1]] + "\n";
 }

@@ -270,3 +270,66 @@
 {"ts": "2026-09-02T14:44:22", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 20, "valid": 20, "fail": 0, "build": 0, "error": 0}
 {"ts": "2026-09-02T14:50:22", "kind": "verify_all", "total": 258, "verified": 258, "unverified": 0, "termination_opt_out": 12, "kinds": {}}
 {"ts": "2026-09-02T14:50:23", "kind": "dataset", "rows": 640, "problems": 311, "splits": {"strict": 534, "loose": 100, "unvalidatable": 6}}
+{"ts": "2026-09-07T07:28:57", "kind": "difftest", "agrees": 3}
+{"ts": "2026-09-07T07:30:53", "kind": "signatures", "ok": 311, "unmappable": 0, "total": 311}
+{"ts": "2026-09-07T07:31:01", "kind": "scaffold", "written": 278, "kept": 362, "skipped": 0}
+{"ts": "2026-09-07T07:31:35", "kind": "scaffold", "written": 0, "kept": 640, "skipped": 0}
+{"ts": "2026-09-07T07:37:45", "kind": "difftest", "agrees": 10}
+{"ts": "2026-09-07T07:38:52", "kind": "difftest", "agrees": 6, "differs": 1}
+{"ts": "2026-09-07T07:39:56", "kind": "difftest", "agrees": 1}
+{"ts": "2026-09-07T07:40:11", "kind": "difftest", "agrees": 17, "untranslated": 1}
+{"ts": "2026-09-07T07:40:16", "kind": "difftest", "agrees": 4, "differs": 2}
+{"ts": "2026-09-07T07:40:24", "kind": "difftest", "agrees": 4, "differs": 2}
+{"ts": "2026-09-07T07:40:47", "kind": "difftest", "differs": 1, "no-comparable": 1, "agrees": 3}
+{"ts": "2026-09-07T07:40:54", "kind": "difftest", "agrees": 1}
+{"ts": "2026-09-07T07:41:04", "kind": "difftest", "agrees": 6}
+{"ts": "2026-09-07T07:41:54", "kind": "difftest", "agrees": 2}
+{"ts": "2026-09-07T07:42:23", "kind": "difftest", "agrees": 5}
+{"ts": "2026-09-07T07:43:26", "kind": "difftest", "agrees": 5}
+{"ts": "2026-09-07T07:43:33", "kind": "difftest", "agrees": 3}
+{"ts": "2026-09-07T07:43:40", "kind": "difftest", "differs": 1, "no-comparable": 1}
+{"ts": "2026-09-07T07:44:04", "kind": "difftest", "agrees": 1}
+{"ts": "2026-09-07T07:45:19", "kind": "difftest", "agrees": 1}
+{"ts": "2026-09-07T07:45:55", "kind": "difftest", "agrees": 17, "untranslated": 1}
+{"ts": "2026-09-07T07:46:15", "kind": "difftest", "agrees": 1}
+{"ts": "2026-09-07T07:46:28", "kind": "difftest", "agrees": 5}
+{"ts": "2026-09-07T07:48:45", "kind": "difftest", "differs": 1, "agrees": 9}
+{"ts": "2026-09-07T07:48:48", "kind": "difftest", "agrees": 4}
+{"ts": "2026-09-07T07:50:30", "kind": "difftest", "differs": 1, "no-comparable": 1, "agrees": 16}
+{"ts": "2026-09-07T07:51:18", "kind": "difftest", "agrees": 1}
+{"ts": "2026-09-07T07:51:39", "kind": "difftest", "agrees": 1}
+{"ts": "2026-09-07T07:51:56", "kind": "difftest", "agrees": 1}
+{"ts": "2026-09-07T07:53:05", "kind": "difftest", "agrees": 1}
+{"ts": "2026-09-07T07:53:34", "kind": "difftest", "agrees": 10}
+{"ts": "2026-09-07T07:53:54", "kind": "difftest", "differs": 2, "agrees": 6}
+{"ts": "2026-09-07T07:54:31", "kind": "difftest", "agrees": 16, "differs": 2}
+{"ts": "2026-09-07T07:56:28", "kind": "difftest", "agrees": 10, "python-harness-error": 1, "differs": 1}
+{"ts": "2026-09-07T07:59:26", "kind": "difftest", "agrees": 3, "build": 1, "differs": 1}
+{"ts": "2026-09-07T08:07:06", "kind": "difftest", "agrees": 63, "untranslated": 2, "build": 1, "differs": 5, "python-harness-error": 1}
+{"ts": "2026-09-07T08:13:05", "kind": "difftest", "agrees": 1}
+{"ts": "2026-09-07T08:14:02", "kind": "difftest", "python-harness-error": 1}
+{"ts": "2026-09-07T08:18:59", "kind": "difftest", "build": 1, "agrees": 1, "python-harness-error": 1}
+{"ts": "2026-09-07T08:19:18", "kind": "difftest", "agrees": 1}
+{"ts": "2026-09-07T08:34:38", "kind": "difftest", "error": 1}
+{"ts": "2026-09-07T08:45:40", "kind": "difftest", "agrees": 3, "error": 1}
+{"ts": "2026-09-07T13:48:47", "kind": "difftest", "agrees": 4}
+{"ts": "2026-09-07T13:48:54", "kind": "difftest", "agrees": 4}
+{"ts": "2026-09-07T13:48:59", "kind": "difftest", "agrees": 2}
+{"ts": "2026-09-07T13:49:25", "kind": "difftest", "agrees": 6}
+{"ts": "2026-09-07T13:51:27", "kind": "difftest", "differs": 1, "agrees": 3}
+{"ts": "2026-09-07T13:52:00", "kind": "difftest", "agrees": 4}
+{"ts": "2026-09-07T13:52:06", "kind": "difftest", "agrees": 4}
+{"ts": "2026-09-07T13:52:11", "kind": "difftest", "agrees": 2}
+{"ts": "2026-09-07T13:52:53", "kind": "difftest", "agrees": 1, "differs": 2}
+{"ts": "2026-09-07T13:53:36", "kind": "difftest", "agrees": 2}
+{"ts": "2026-09-07T13:53:47", "kind": "difftest", "agrees": 3}
+{"ts": "2026-09-07T13:53:56", "kind": "difftest", "agrees": 12, "untranslated": 1}
+{"ts": "2026-09-07T13:54:25", "kind": "difftest", "agrees": 4}
+{"ts": "2026-09-07T13:54:37", "kind": "difftest", "agrees": 1}
+{"ts": "2026-09-07T13:55:12", "kind": "difftest", "agrees": 65, "error": 1, "differs": 4}
+{"ts": "2026-09-07T13:56:23", "kind": "difftest", "agrees": 2}
+{"ts": "2026-09-07T13:57:11", "kind": "difftest", "agrees": 1}
+{"ts": "2026-09-07T13:57:15", "kind": "difftest", "agrees": 13}
+{"ts": "2026-09-07T13:57:53", "kind": "difftest", "agrees": 1}
+{"ts": "2026-09-07T15:21:43", "kind": "verify_all", "total": 362, "verified": 350, "unverified": 12, "termination_opt_out": 13, "kinds": {"index-out-of-range": 5, "other": 5, "termination": 1, "division-by-zero": 1}}
+{"ts": "2026-09-07T15:22:16", "kind": "dataset", "rows": 640, "problems": 311, "splits": {"strict": 534, "loose": 100, "unvalidatable": 6}}

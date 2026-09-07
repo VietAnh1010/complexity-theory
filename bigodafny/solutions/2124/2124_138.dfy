@@ -27,6 +27,20 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, queries: seq<seq<int>>) returns (output: string)
+  requires forall k :: 0 <= k < |queries| ==> |queries[k]| >= 3
 {
-  output := ""; // TODO: translate the Python above
+  var parts: seq<string> := [];
+  var i := 0;
+  while i < |queries|
+  {
+    var right := queries[i][0];
+    var left := queries[i][1];
+    var k := queries[i][2];
+    var jump := right - left;
+    var kk := FloorDiv(k, 2);
+    var val := if k % 2 == 0 then jump * kk else jump * kk + right;
+    parts := parts + [IntToString(val)];
+    i := i + 1;
+  }
+  output := if |parts| == 0 then "" else Join(parts, "\n") + "\n";
 }

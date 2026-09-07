@@ -18,5 +18,20 @@ import opened Prelude
 
 method Solve(a: int, b: int, c: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var li: seq<int> := [];
+  var i := 0;
+  var p := 1;
+  while i < 100
+  {
+    if p >= a && p <= b {
+      li := li + [p];
+    }
+    p := p * c;
+    i := i + 1;
+  }
+  if |li| == 0 {
+    output := "-1\n";
+  } else {
+    output := JoinInts(li, " ") + "\n";
+  }
 }

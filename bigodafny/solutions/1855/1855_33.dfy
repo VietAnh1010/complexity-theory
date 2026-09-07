@@ -22,5 +22,11 @@ import opened Prelude
 
 method Solve(hour: string, minute: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var h := 12 - (ParseInt(hour) % 12);
+  var m := ParseInt(minute);
+  var num := 720 - 60 * h + m;
+  var half := num / 2;
+  var firstStr := if num % 2 == 0 then IntToString(half) + ".0" else IntToString(half) + ".5";
+  var second := (m * 6) % 360;
+  output := firstStr + " " + IntToString(second);
 }

@@ -16,7 +16,25 @@
 include "../../prelude.dfy"
 import opened Prelude
 
-method Solve(n: int, a_list: seq<int>) returns (output: string)
+function FormatLenAndElems(l: seq<int>): string
 {
-  output := ""; // TODO: translate the Python above
+  if |l| == 0 then IntToString(0) else IntToString(|l|) + " " + JoinInts(l, " ")
+}
+
+method Solve(n: int, a_list: seq<int>) returns (output: string)
+  requires |a_list| >= 3
+{
+  var sorted := SortInts(a_list);
+  var b := [sorted[0]];
+  var rest := sorted[1..];
+  var c: seq<int>;
+  var a: seq<int>;
+  if rest[|rest| - 1] > 0 {
+    c := [rest[|rest| - 1]];
+    a := rest[..|rest| - 1];
+  } else {
+    c := [rest[0], rest[1]];
+    a := rest[2..];
+  }
+  output := FormatLenAndElems(b) + "\n" + FormatLenAndElems(c) + "\n" + FormatLenAndElems(a);
 }

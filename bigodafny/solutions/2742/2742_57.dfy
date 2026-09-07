@@ -18,5 +18,7 @@ import opened Prelude
 
 method Solve(N: int, values: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var ans := FloorDiv(N * (N + 1), 2);
+  ans := ans - SumSeq(values);
+  output := IntToString(ans) + "\n";
 }

@@ -13,5 +13,5 @@ import opened Prelude
 
 method Solve(s: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  output := "3 L 2 R 2 R " + IntToString(|s| * 2 - 1) + "\n";
 }

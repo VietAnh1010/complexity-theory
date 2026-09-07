@@ -15,7 +15,7 @@ Where both gates apply they should agree; `strict` rows can be run under either.
 from __future__ import annotations
 import argparse, json, subprocess, sys, tempfile
 from collections import Counter
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 
 from common import DATA, event, log, read_jsonl, write_json, write_jsonl
@@ -152,18 +152,29 @@ def run(sids, tiers=("public_tests", "private_tests"), workers=6):
     # Write each result as it lands. A run over ~100 rows can take hours, and
     # emitting only at the end means a kill loses the lot -- which is exactly
     # what the session limit keeps doing to long jobs here.
+    # Resume: rows already in the partial file are not re-run. One slow row
+    # used to block everything behind it, because ex.map yields in order --
+    # as_completed reports each row the moment it lands instead.
     partial = DATA / "difftest_partial.jsonl"
-    partial.unlink(missing_ok=True)
-    rows = []
+    rows, done = [], set()
+    if partial.exists():
+        for line in partial.read_text(encoding="utf-8").splitlines():
+            if line.strip():
+                r = json.loads(line)
+                rows.append(r); done.add(r["solution_id"])
+        log(f"  resuming: {len(done)} rows already done")
+    todo = [s for s in sids if s not in done]
+
     with ProcessPoolExecutor(max_workers=workers, initializer=init,
                              initargs=(tasks, sigs)) as ex:
-        for i, r in enumerate(ex.map(one, [(s, tiers) for s in sids],
-                                     chunksize=1), 1):
+        futs = {ex.submit(one, (s, tiers)): s for s in todo}
+        for i, fut in enumerate(as_completed(futs), 1):
+            r = fut.result()
             rows.append(r)
             with partial.open("a", encoding="utf-8") as fh:
                 fh.write(json.dumps(r, sort_keys=True) + "\n")
-            if i % 10 == 0 or i == len(sids):
-                log(f"  {i}/{len(sids)}  "
+            if i % 10 == 0 or i == len(todo):
+                log(f"  {len(done) + i}/{len(sids)}  "
                     f"{sum(1 for x in rows if x['status'] == 'agrees')} agree")
     rows.sort(key=lambda r: (int(r["problem_id"]), r["solution_id"]))
     write_jsonl(DATA / "difftest.jsonl", rows)

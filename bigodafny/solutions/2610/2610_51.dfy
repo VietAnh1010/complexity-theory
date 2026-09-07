@@ -20,5 +20,33 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var a0: seq<int> := [];
+  var a1: seq<int> := [];
+  var a2: seq<int> := [];
+  var idx := 0;
+  while idx < |a_list|
+    invariant 0 <= idx <= |a_list|
+  {
+    var x := a_list[idx];
+    if x == 1 { a0 := a0 + [idx + 1]; }
+    else if x == 2 { a1 := a1 + [idx + 1]; }
+    else if x == 3 { a2 := a2 + [idx + 1]; }
+    idx := idx + 1;
+  }
+  var k := |a0|;
+  if |a1| < k { k := |a1|; }
+  if |a2| < k { k := |a2|; }
+  var lines: seq<string> := [];
+  var i := 0;
+  while i < k
+    invariant 0 <= i <= k <= |a0| && k <= |a1| && k <= |a2|
+    invariant |lines| == i
+  {
+    lines := lines + [IntToString(a0[i]) + " " + IntToString(a1[i]) + " " + IntToString(a2[i])];
+    i := i + 1;
+  }
+  output := IntToString(k) + "\n";
+  if |lines| > 0 {
+    output := output + Join(lines, "\n") + "\n";
+  }
 }

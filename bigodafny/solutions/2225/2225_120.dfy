@@ -27,6 +27,28 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, dimensions: seq<int>) returns (output: string)
+  requires n >= 1
+  requires |dimensions| == n
 {
-  output := ""; // TODO: translate the Python above
+  var a := dimensions;
+  if (n == 2 && a[0] == a[1]) || n == 1 {
+    output := "-1\n";
+  } else {
+    var total := SumSeq(a);
+    var idx := -1;
+    var i := 0;
+    while i < n && idx == -1
+      invariant 0 <= i <= n
+    {
+      if a[i] != total - a[i] {
+        idx := i;
+      }
+      i := i + 1;
+    }
+    if idx != -1 {
+      output := "1\n" + IntToString(idx + 1) + "\n";
+    } else {
+      output := "";
+    }
+  }
 }

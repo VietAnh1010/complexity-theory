@@ -25,6 +25,34 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, abc_list: seq<seq<int>>) returns (output: string)
+  requires forall r :: r in abc_list ==> |r| == 3
 {
-  output := ""; // TODO: translate the Python above
+  var parts: seq<string> := [];
+  var i := 0;
+  while i < n && i < |abc_list|
+    invariant 0 <= i
+    decreases n - i
+  {
+    var row := abc_list[i];
+    var x := row[0];
+    var y := row[1];
+    var z := row[2];
+    if x != y && y != z && x != z {
+      parts := parts + ["NO\n"];
+    } else if x == y && x != z && x == Min2(x, z) {
+      parts := parts + ["NO\n"];
+    } else if y == z && y != x && y == Min2(y, x) {
+      parts := parts + ["NO\n"];
+    } else if x == z && x != y && x == Min2(y, z) {
+      parts := parts + ["NO\n"];
+    } else {
+      var mn := MinSeq(row);
+      var mx := MaxSeq(row);
+      parts := parts + ["YES\n" + IntToString(mn) + " " + IntToString(mn) + " " + IntToString(mx) + "\n"];
+    }
+    i := i + 1;
+  }
+  output := Join(parts, "");
 }
+
+function Min2(a: int, b: int): int { if a < b then a else b }

@@ -38,5 +38,54 @@ import opened Prelude
 
 method Solve(n: int, data: seq<(int, int, int)>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var parts: seq<string> := [];
+  var ti := 0;
+  while ti < n && ti < |data|
+    invariant 0 <= ti
+    decreases n - ti
+  {
+    var (nv, x, y) := data[ti];
+    var diff := y - x;
+    var d := diff;
+    var i := 1;
+    while i < nv
+      invariant 1 <= i
+      decreases nv - i
+    {
+      if diff % i == 0 {
+        var cand := diff / i;
+        if cand < d { d := cand; }
+      }
+      i := i + 1;
+    }
+    var ans: seq<int> := [];
+    var p := x;
+    var cnt := nv;
+    while p <= y && cnt > 0
+      decreases cnt
+    {
+      ans := ans + [p];
+      p := p + d;
+      cnt := cnt - 1;
+    }
+    p := x - d;
+    while p > 0 && cnt > 0
+      decreases cnt
+    {
+      ans := ans + [p];
+      p := p - d;
+      cnt := cnt - 1;
+    }
+    p := y + d;
+    while cnt > 0
+      decreases cnt
+    {
+      ans := ans + [p];
+      p := p + d;
+      cnt := cnt - 1;
+    }
+    parts := parts + [JoinInts(ans, " ") + "\n"];
+    ti := ti + 1;
+  }
+  output := Join(parts, "");
 }

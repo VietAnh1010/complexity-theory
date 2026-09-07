@@ -34,5 +34,31 @@ import opened Prelude
 
 method Solve(n: int, binary_strings: seq<string>) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var parts: seq<string> := [];
+  var i := 0;
+  while i < n && i < |binary_strings|
+    invariant 0 <= i
+    decreases n - i
+  {
+    var s := binary_strings[i];
+    if IsAllChar(s, '0') || IsAllChar(s, '1') {
+      parts := parts + [s + "\n"];
+    } else {
+      var nn := |s|;
+      if s[0] == '0' {
+        parts := parts + [Repeat("01", nn) + "\n"];
+      } else {
+        parts := parts + [Repeat("10", nn) + "\n"];
+      }
+    }
+    i := i + 1;
+  }
+  output := Join(parts, "");
+}
+
+function IsAllChar(s: string, c: char): bool
+  decreases |s|
+{
+  if |s| == 0 then true
+  else s[0] == c && IsAllChar(s[1..], c)
 }

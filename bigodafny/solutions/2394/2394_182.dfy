@@ -32,6 +32,36 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, string_: string) returns (output: string)
+  requires |string_| >= 1
 {
-  output := ""; // TODO: translate the Python above
+  var s := string_;
+  var m := |s|;
+  var ans := new char[m];
+  ans[0] := '1';
+  var fstLast := s[0];
+  var sndOk := true;
+  var haveSnd := false;
+  var sndLast := s[0];
+  var i := 1;
+  while i < m
+    invariant 1 <= i <= m
+  {
+    if fstLast <= s[i] {
+      fstLast := s[i];
+      ans[i] := '1';
+    } else {
+      if haveSnd && sndLast > s[i] {
+        sndOk := false;
+      }
+      sndLast := s[i];
+      haveSnd := true;
+      ans[i] := '0';
+    }
+    i := i + 1;
+  }
+  if sndOk {
+    output := "YES\n" + ans[..] + "\n";
+  } else {
+    output := "NO\n";
+  }
 }

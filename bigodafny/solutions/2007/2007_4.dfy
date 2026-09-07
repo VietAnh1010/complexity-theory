@@ -36,6 +36,47 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, edges: seq<seq<int>>) returns (output: string)
+  requires n >= 3
+  requires |edges| == n
+  requires forall k :: 0 <= k < n ==> |edges[k]| >= 2
+  requires forall k :: 0 <= k < n ==> 1 <= edges[k][0] <= n && 1 <= edges[k][1] <= n
 {
-  output := ""; // TODO: translate the Python above
+  if n == 3 {
+    output := "3 2 1\n";
+  } else {
+    var d: seq<seq<int>> := [[0,0]];
+    var i := 0;
+    while i < n
+      invariant 0 <= i <= n
+      invariant |d| == i + 1
+      invariant forall k :: 1 <= k <= i ==> |d[k]| >= 2 && 1 <= d[k][0] <= n && 1 <= d[k][1] <= n
+    {
+      d := d + [edges[i]];
+      i := i + 1;
+    }
+    var x := 1;
+    var ans: seq<int> := [1];
+    var cont := true;
+    while cont
+      invariant 1 <= x <= n
+      invariant |d| == n + 1
+      invariant forall k :: 1 <= k <= n ==> |d[k]| >= 2 && 1 <= d[k][0] <= n && 1 <= d[k][1] <= n
+      invariant cont == (|ans| < n)
+      decreases if |ans| < n then n - |ans| else 0
+    {
+      var t := d[x][0];
+      if d[t][0] == d[x][1] || d[t][1] == d[x][1] {
+        ans := ans + [t, d[x][1]];
+        x := d[x][1];
+      } else {
+        ans := ans + [d[x][1], t];
+        x := t;
+      }
+      if |ans| >= n {
+        cont := false;
+      }
+    }
+    var res := ans[..n];
+    output := JoinInts(res, " ") + "\n";
+  }
 }

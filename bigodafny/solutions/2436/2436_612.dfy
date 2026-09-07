@@ -14,7 +14,32 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+predicate IsVowel612(c: char)
+{
+  c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u'
+}
+
 method Solve(a: string, b: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  if |a| != |b| {
+    output := "NO\n";
+  } else {
+    var i := 0;
+    var mismatch := false;
+    while i < |a| && !mismatch
+      invariant 0 <= i <= |a|
+      decreases |a| - i, (if mismatch then 0 else 1)
+    {
+      if IsVowel612(a[i]) != IsVowel612(b[i]) {
+        mismatch := true;
+      } else {
+        i := i + 1;
+      }
+    }
+    if mismatch {
+      output := "NO\n";
+    } else {
+      output := "YES\n";
+    }
+  }
 }

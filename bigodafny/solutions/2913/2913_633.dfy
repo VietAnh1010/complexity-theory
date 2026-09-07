@@ -13,5 +13,9 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  if n == 1 {
+    output := "-1\n";
+  } else {
+    output := IntToString(n - n % 2) + " " + IntToString(2) + "\n";
+  }
 }

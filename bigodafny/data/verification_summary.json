@@ -1,7 +1,12 @@
 {
-  "kinds": {},
-  "termination_opt_out": 12,
-  "total": 258,
-  "unverified": 0,
-  "verified": 258
+  "kinds": {
+    "division-by-zero": 1,
+    "index-out-of-range": 5,
+    "other": 5,
+    "termination": 1
+  },
+  "termination_opt_out": 13,
+  "total": 362,
+  "unverified": 12,
+  "verified": 350
 }

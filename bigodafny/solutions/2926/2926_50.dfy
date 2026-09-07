@@ -25,5 +25,28 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var primes := [2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,
+                 73,79,83,89,97,101,103,107,109,113,127,131,137,139,149,151,157,163,167,173,
+                 179,181,191,193,197,199,211,223,227,229,233,239,241];
+  if n == 2 {
+    output := "-1\n";
+  } else if n <= 0 {
+    output := "";
+  } else {
+    var l1 := seq(n, _ => 1);
+    var last := 1;
+    var i := 0;
+    while i < n - 1 && i + 1 < |primes|
+      invariant 0 <= i
+      invariant |l1| == n
+      decreases n - 1 - i
+    {
+      l1 := l1[i := 2 * primes[i+1]];
+      last := last * primes[i+1];
+      i := i + 1;
+    }
+    l1 := l1[n - 1 := last];
+    var lines := seq(n, k requires 0 <= k < n => IntToString(l1[k]));
+    output := Join(lines, "\n") + "\n";
+  }
 }

@@ -31,6 +31,34 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, numbers: seq<int>) returns (output: string)
+  requires n >= 0
+  requires |numbers| >= n
 {
-  output := ""; // TODO: translate the Python above
+  var lines: seq<string> := [];
+  var qi := 0;
+  while qi < n
+    invariant 0 <= qi <= n
+    decreases n - qi
+  {
+    var val := numbers[qi];
+    if val == 1 {
+      lines := lines + ["1337"];
+    } else {
+      var x := 2;
+      while x * (x - 1) / 2 < val
+        decreases val - x * (x - 1) / 2
+      {
+        x := x + 1;
+      }
+      x := x - 1;
+      var rem := val - x * (x - 1) / 2;
+      var remN := if rem < 0 then 0 else rem;
+      var threes := x - 2;
+      var threesN := if threes < 0 then 0 else threes;
+      var ans := "133" + Repeat("7", remN) + Repeat("3", threesN) + "7";
+      lines := lines + [ans];
+    }
+    qi := qi + 1;
+  }
+  output := Join(lines, "\n");
 }

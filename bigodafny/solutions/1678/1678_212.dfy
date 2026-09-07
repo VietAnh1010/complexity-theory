@@ -22,6 +22,23 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(rows: int, columns: int, value: int) returns (output: string)
+  requires rows >= 1
+  requires columns >= 1
 {
-  output := ""; // TODO: translate the Python above
+  var a := rows;
+  var b := columns;
+  var c := value;
+  var ok := false;
+  var limit := c / a + 1;
+  var i := 0;
+  while i < limit
+    invariant 0 <= i
+    decreases limit - i
+  {
+    if c - a * i >= 0 && (c - a * i) % b == 0 {
+      ok := true;
+    }
+    i := i + 1;
+  }
+  output := if ok then "Yes" else "No";
 }

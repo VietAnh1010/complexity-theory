@@ -23,5 +23,23 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var a := 1;
+  var found := false;
+  var ans := 0;
+  while a <= n && !found
+    invariant 1 <= a
+    decreases n - a, if found then 0 else 1
+  {
+    if a * a > n {
+      ans := a;
+      found := true;
+    } else {
+      a := a + 1;
+    }
+  }
+  if found {
+    output := IntToString(ans) + " " + IntToString(ans) + "\n";
+  } else {
+    output := "-1\n";
+  }
 }

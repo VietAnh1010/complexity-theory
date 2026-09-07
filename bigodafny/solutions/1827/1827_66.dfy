@@ -27,7 +27,46 @@
 include "../../prelude.dfy"
 import opened Prelude
 
-method Solve(a: int, b: int) returns (output: string)
+function Lowbit(v: int): int
+  requires v >= 1
+  decreases v
 {
-  output := ""; // TODO: translate the Python above
+  if v % 2 == 1 then 1 else 2 * Lowbit(v / 2)
+}
+
+method Solve(a: int, b: int) returns (output: string)
+  requires b >= 1
+{
+  var s := a;
+  var l := b;
+  var list1: seq<(int, int)> := [];
+  var i := 1;
+  while i <= l
+    invariant 1 <= i <= l + 1
+    invariant |list1| == i - 1
+    decreases l - i
+  {
+    list1 := list1 + [(Lowbit(i), i)];
+    i := i + 1;
+  }
+  var sorted := Sort(list1, (p: (int, int), q: (int, int)) =>
+    if p.0 != q.0 then p.0 > q.0 else p.1 > q.1);
+  var ll: seq<int> := [];
+  var k := 0;
+  while k < l
+    invariant 0 <= k <= l
+    invariant |sorted| == l
+    decreases l - k
+  {
+    if sorted[k].0 <= s {
+      ll := ll + [sorted[k].1];
+      s := s - sorted[k].0;
+    }
+    k := k + 1;
+  }
+  if s == 0 {
+    output := IntToString(|ll|) + "\n" + JoinInts(ll, " ");
+  } else {
+    output := IntToString(-1);
+  }
 }

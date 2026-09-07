@@ -23,5 +23,22 @@ import opened Prelude
 
 method Solve(a: int, b: int) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  if a <= b {
+    output := "-1\n";
+  } else {
+    var lst: seq<int> := [a - b];
+    var i := 2;
+    while i <= a - b
+    {
+      lst := lst + [i-1];
+      i := i + 1;
+    }
+    var j := a - b + 1;
+    while j <= a
+    {
+      lst := lst + [j];
+      j := j + 1;
+    }
+    output := JoinInts(lst, " ") + "\n";
+  }
 }

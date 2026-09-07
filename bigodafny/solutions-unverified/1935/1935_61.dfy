@@ -28,5 +28,21 @@ import opened Prelude
 
 method Solve(n: int, m: int, s: string) returns (output: string)
 {
-  output := ""; // TODO: translate the Python above
+  var st: seq<char> := [];
+  var req := n - m;
+  var flag := 0;
+  var i := 0;
+  while i < |s|
+  {
+    var x := s[i];
+    if x == ')' && flag == 0 && req > 0 {
+      req := req - 2;
+      st := st[..|st|-1];
+      if req == 0 { flag := 1; }
+    } else {
+      st := st + [x];
+    }
+    i := i + 1;
+  }
+  output := st + "\n";
 }

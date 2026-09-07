@@ -28,7 +28,40 @@
 include "../../prelude.dfy"
 import opened Prelude
 
-method Solve(rows: int, columns: int, value: int) returns (output: string)
+function GcdEx(a: int, b: int): (int, int, int)
+  decreases if a < 0 then -a else a
 {
-  output := ""; // TODO: translate the Python above
+  if a == 0 then (0, 1, b)
+  else
+    var r := GcdEx(b % a, a);
+    (r.1 - (b / a) * r.0, r.0, r.2)
+}
+
+function CeilDiv(p: int, q: int): int
+  requires q > 0
+{
+  -FloorDiv(-p, q)
+}
+
+method Solve(rows: int, columns: int, value: int) returns (output: string)
+  requires rows >= 1
+  requires columns >= 1
+{
+  var a := rows;
+  var b := columns;
+  var c := value;
+  var r := GcdEx(a, b);
+  var x := r.0;
+  var y := r.1;
+  var g := r.2;
+  if c % g != 0 {
+    output := "No";
+  } else {
+    var xp := FloorDiv(x * c, g);
+    var yp := FloorDiv(y * c, g);
+    var k1 := CeilDiv(-xp * g, b);
+    var k2 := FloorDiv(yp * g, a);
+    var cc := AbsInt(k2 - k1 + 1);
+    output := if cc > 0 then "Yes" else "No";
+  }
 }

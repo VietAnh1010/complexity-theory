@@ -39,6 +39,25 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, k: int, ignored_lines: seq<int>) returns (output: string)
+  requires n >= 1
+  requires |ignored_lines| == n
 {
-  output := ""; // TODO: translate the Python above
+  var a := SortInts(ignored_lines);
+  var sum := SumSeq(a);
+  if n == 1 {
+    output := IntToString(k + a[0]) + " " + IntToString(k + a[0]) + "\n";
+  } else {
+    var mx := k + a[n-1];
+    var temp := a[n-1] * n;
+    if temp - sum >= k {
+      output := IntToString(a[n-1]) + " " + IntToString(mx) + "\n";
+    } else {
+      var m := k - (temp - sum);
+      var mn := a[n-1] + (m / n);
+      if m % n != 0 {
+        mn := mn + 1;
+      }
+      output := IntToString(mn) + " " + IntToString(mx) + "\n";
+    }
+  }
 }
