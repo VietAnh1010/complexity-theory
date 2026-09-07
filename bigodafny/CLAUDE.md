@@ -38,6 +38,33 @@ stages.
   bug where a fixture broke the `include` path and every case looked like a
   build failure.
 
+## Two gates, and which row gets which
+
+`validate.py` compares a translation's stdout against BigOBench's **stored**
+output. That is the right question for the 534 `strict` rows.
+
+It is the wrong question for the 100 `loose` rows. Their problems accept more
+than one correct answer -- Codeforces judged them with token-based or special
+checkers -- so the stored output is one accepted answer among several, and even
+the original Python fails a byte-diff against it. Scoring those rows with
+`validate.py` measures the checker, not the translation.
+
+`difftest.py` is their gate: run the row's own Python and its Dafny on the same
+inputs, compare the two outputs to **each other**. Status `agrees` is a pass.
+That is the real question for a transpilation dataset, and it stays decidable
+where the stored output does not.
+
+Consequence for how loose rows are translated: **be literal**. Where the Python
+picks arbitrarily among valid answers -- which one, what order, which index --
+reproduce that exact choice. A tidier answer is a failure. Reproduce bugs too.
+
+**Neither gate may be edited by an agent whose work it judges.** An agent
+lowered difftest's per-test budget for the reference Python from 30s to 10s
+while fixing a real `sys.stdin.buffer` defect in the same edit. The fix was
+kept; the budget cut was reverted. Slow rows would have been marked
+`python-failed` and dropped out of the comparison, so the gate would have passed
+more rows by checking fewer.
+
 ## `set<T>` is O(n**2) to build in the Python backend
 
 Measured, not assumed. Doubling n quadruples the time:

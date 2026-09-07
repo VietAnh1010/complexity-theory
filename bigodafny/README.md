@@ -73,6 +73,16 @@ A regex over the problem statement ("if there are several solutions, print any
 of them") predicts this badly: precision 0.38, recall 0.45. It is retained as
 `nondet_hint` and gates nothing.
 
+## The dataclass can disagree with the Python
+
+Four problems so far parse into an `Input` whose fields are not what the Python
+reads: an off-by-one `n` (problem 1073), an unaggregated list (1306), a single
+line wrapped as a row (2505), and a `[0]`-prefix present for one problem and
+absent everywhere else (2771). Signature correct, translation correct, answers
+wrong. Nothing detects this in general -- `from_str` is LLM-generated per
+problem and may transform values, not merely split them. Read
+`.build/<prefix>_<SID>/dataclass.py` before assuming your logic is at fault.
+
 ## Usage
 
 ```bash
