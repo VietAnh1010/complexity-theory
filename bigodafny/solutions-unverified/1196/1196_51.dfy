@@ -26,11 +26,13 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(text: string, n: int, text_list: seq<string>) returns (output: string)
+  requires n == |text_list|
 {
   var k := |text|;
   var answer := "";
   var i := 0;
   while i < n
+    invariant 0 <= i <= n
     decreases n - i
   {
     var a := text_list[i];

@@ -32,10 +32,13 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, matrix: seq<seq<int>>) returns (output: string)
+  requires n == |matrix|
+  requires forall k :: 0 <= k < n ==> |matrix[k]| >= 4
 {
   var lines: seq<string> := [];
   var i := 0;
   while i < n
+    invariant 0 <= i <= n
     decreases n - i
   {
     var row := matrix[i];

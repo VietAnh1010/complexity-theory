@@ -38,6 +38,11 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, intervals: seq<seq<int>>) returns (output: string)
+  requires n >= 2
+  requires n == |intervals|
+  requires forall k :: 0 <= k < n ==> |intervals[k]| >= 2
+  requires forall k :: 0 <= k < n ==> intervals[k][1] < 10000000000
+  requires exists k :: 0 <= k < n && intervals[k][0] > -1
 {
 {
 
@@ -49,12 +54,23 @@ method Solve(n: int, intervals: seq<seq<int>>) returns (output: string)
   var r1 := -1;
   var i := 0;
   while i < n
+    invariant 0 <= i <= n
+    invariant l1 == -1 ==> maxl == -1
+    invariant l1 == -1 ==> forall k :: 0 <= k < i ==> l[k] <= -1
+    invariant l1 != -1 ==> 0 <= l1 < i
+    invariant r1 == -1 ==> minr == 10000000000
+    invariant r1 == -1 ==> forall k :: 0 <= k < i ==> r[k] >= minr
+    invariant r1 != -1 ==> 0 <= r1 < i
     decreases n - i
   {
     if l[i] > maxl { maxl := l[i]; l1 := i; }
     if r[i] < minr { minr := r[i]; r1 := i; }
     i := i + 1;
   }
+  assert forall k :: 0 <= k < n ==> l[k] == intervals[k][0];
+  assert forall k :: 0 <= k < n ==> r[k] == intervals[k][1];
+  assert l1 != -1;
+  assert r1 != -1;
   var l_1 := l[..l1] + l[l1+1..];
   var r_1 := r[..l1] + r[l1+1..];
   var l_2 := l[..r1] + l[r1+1..];

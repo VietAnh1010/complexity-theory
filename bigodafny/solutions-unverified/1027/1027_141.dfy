@@ -29,6 +29,8 @@ method Solve(a: int, b: int, c: int, d_list: seq<(int, int)>) returns (output: s
   var dens: seq<int> := [];
   var i := 0;
   while i < |d_list|
+    invariant 0 <= i <= |d_list|
+    invariant |signs| == i && |nums| == i && |dens| == i
     decreases |d_list| - i
   {
     var dx := d_list[i].0 - b;
@@ -44,11 +46,13 @@ method Solve(a: int, b: int, c: int, d_list: seq<(int, int)>) returns (output: s
   var count := 0;
   i := 0;
   while i < |d_list|
+    invariant 0 <= i <= |d_list|
     decreases |d_list| - i
   {
     var isNew := true;
     var j := 0;
     while j < i
+      invariant 0 <= j <= i
       decreases i - j
     {
       if signs[j] == signs[i] && nums[i] * dens[j] == nums[j] * dens[i] {

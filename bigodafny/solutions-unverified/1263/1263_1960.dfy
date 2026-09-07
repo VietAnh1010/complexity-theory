@@ -29,18 +29,22 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
+  requires n == |a_list|
+  requires forall k :: 0 <= k < n ==> a_list[k] >= 1
 {
 {
 
   var results: seq<string> := [];
   var t := 0;
   while t < n
+    invariant 0 <= t <= n
     decreases n - t
   {
     var v := a_list[t];
     var res: seq<int> := [];
     var kk := 1;
     while v != 0
+      invariant v >= 0
       decreases v
     {
       var d := v % 10;

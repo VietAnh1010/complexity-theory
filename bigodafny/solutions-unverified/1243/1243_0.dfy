@@ -28,9 +28,13 @@ method Solve(s1: string, s2: string) returns (output: string)
   if multiset(s1) != multiset(s2) {
     output := "NO";
   } else {
+    assert |s1| == |s2| by {
+      assert |multiset(s1)| == |multiset(s2)|;
+    }
     var cntr := 0;
     var i := 0;
     while i < |s1|
+      invariant 0 <= i <= |s1|
       decreases |s1| - i
     {
       if s1[i] != s2[i] { cntr := cntr + 1; }

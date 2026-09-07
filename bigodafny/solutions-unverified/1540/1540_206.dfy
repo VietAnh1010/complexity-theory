@@ -17,6 +17,8 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a: int, b: int, numbers: seq<int>) returns (output: string)
+  requires |numbers| == n
+  requires 0 <= a <= n
 {
   var sortedA := SortInts(numbers);
   var keep := n - a;

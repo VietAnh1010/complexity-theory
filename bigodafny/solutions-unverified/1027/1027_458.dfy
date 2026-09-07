@@ -32,6 +32,8 @@ method Solve(a: int, b: int, c: int, d_list: seq<(int, int)>) returns (output: s
   var shoot := 0;
   var i := 0;
   while i < |d_list|
+    invariant 0 <= i <= |d_list|
+    invariant |dxs| == |dys|
     decreases |d_list| - i
   {
     var dx := d_list[i].0 - b;
@@ -45,6 +47,7 @@ method Solve(a: int, b: int, c: int, d_list: seq<(int, int)>) returns (output: s
       var found := false;
       var j := 0;
       while j < |dxs|
+        invariant 0 <= j <= |dxs|
         decreases |dxs| - j
       {
         if dys[j] * dx == dy * dxs[j] {

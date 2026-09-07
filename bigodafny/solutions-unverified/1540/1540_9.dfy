@@ -23,6 +23,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a: int, b: int, numbers: seq<int>) returns (output: string)
+  requires 0 <= a <= |numbers|
 {
   var keep := |numbers| - a;
   var nominal := 0;

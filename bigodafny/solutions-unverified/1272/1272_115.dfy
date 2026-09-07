@@ -50,14 +50,19 @@ function Contains1272a(hay: string, needle: string): bool
 }
 
 method Solve(n: int, strings: seq<string>) returns (output: string)
+  requires n == |strings|
 {
   var list1 := strings;
   var i := 0;
   while i < n - 1
+    invariant 0 <= i <= n
+    invariant |list1| == n
     decreases n - 1 - i
   {
     var j := i;
     while j < n
+      invariant i <= j <= n
+      invariant |list1| == n
       decreases n - j
     {
       if |list1[i]| > |list1[j]| {
@@ -71,6 +76,8 @@ method Solve(n: int, strings: seq<string>) returns (output: string)
   var f := 0;
   var k := 0;
   while k < n - 1
+    invariant 0 <= k <= n
+    invariant |list1| == n
     decreases n - 1 - k
   {
     if !Contains1272a(list1[k+1], list1[k]) { f := 1; }
@@ -80,6 +87,7 @@ method Solve(n: int, strings: seq<string>) returns (output: string)
     var lines: seq<string> := ["YES"];
     var m := 0;
     while m < n
+      invariant 0 <= m <= n
       decreases n - m
     {
       lines := lines + [list1[m]];

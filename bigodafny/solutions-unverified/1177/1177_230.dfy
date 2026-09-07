@@ -32,6 +32,8 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, rectangles: seq<(int, int)>, m: int, checks: seq<(int, int)>) returns (output: string)
+  requires n == |rectangles|
+  requires m == |checks|
 {
   var l1 := 1000000005;
   var z1 := 0;
@@ -39,6 +41,7 @@ method Solve(n: int, rectangles: seq<(int, int)>, m: int, checks: seq<(int, int)
   var l2 := 0;
   var i := 0;
   while i < n
+    invariant 0 <= i <= n
     decreases n - i
   {
     var x := rectangles[i].0;
@@ -49,6 +52,7 @@ method Solve(n: int, rectangles: seq<(int, int)>, m: int, checks: seq<(int, int)
   }
   i := 0;
   while i < m
+    invariant 0 <= i <= m
     decreases m - i
   {
     var x := checks[i].0;

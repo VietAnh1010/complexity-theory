@@ -39,6 +39,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, s: string) returns (output: string)
+  requires n == |s|
 {
   if |s| % 2 == 1 {
     output := "-1";
@@ -48,6 +49,7 @@ method Solve(n: int, s: string) returns (output: string)
     var f := 'p';
     var i := 0;
     while i < n
+      invariant 0 <= i <= n
       decreases n - i
     {
       if s[i] == '(' {

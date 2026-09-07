@@ -29,6 +29,9 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, intervals: seq<seq<int>>) returns (output: string)
+  requires n >= 2
+  requires n == |intervals|
+  requires forall k :: 0 <= k < n ==> |intervals[k]| >= 2
 {
 {
 

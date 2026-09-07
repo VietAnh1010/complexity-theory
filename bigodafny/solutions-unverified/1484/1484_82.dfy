@@ -29,6 +29,8 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, numbers: seq<string>) returns (output: string)
+  requires |numbers| == n
+  requires n >= 1
 {
   var sorted := SortStrings(numbers);
   var first := sorted[0];

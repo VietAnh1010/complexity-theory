@@ -19,10 +19,18 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(a: int, b: int, c_list: seq<int>, d_list: seq<int>) returns (output: string)
+  requires a == |c_list|
+  requires b == |d_list|
+  requires a >= 0
+  requires b >= 0
+  requires forall k :: 0 <= k < b ==> d_list[k] >= 1
 {
   var x := [1];
   var i := 0;
   while i < a
+    invariant 0 <= i <= a
+    invariant |x| == i + 1
+    invariant x[0] == 1
     decreases a - i
   {
     x := x + [x[|x|-1] + c_list[i]];
@@ -31,12 +39,16 @@ method Solve(a: int, b: int, c_list: seq<int>, d_list: seq<int>) returns (output
   var lines: seq<string> := [];
   i := 0;
   while i < b
+    invariant 0 <= i <= b
     decreases b - i
   {
     var v := d_list[i];
     var cnt := 0;
     var j := 0;
     while j < |x|
+      invariant 0 <= j <= |x|
+      invariant 0 <= cnt <= j
+      invariant j >= 1 ==> cnt >= 1
       decreases |x| - j
     {
       if x[j] <= v { cnt := cnt + 1; }

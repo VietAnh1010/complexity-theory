@@ -75,12 +75,16 @@ method Solve(a: int, b: int) returns (output: string)
   var prevRow := num;
   var i := 1;
   while i < k
+    invariant prevRow.Length == l
     decreases k - i
   {
     var row := new int[l];
     var tmp := 0;
     var j := 1;
     while j < l
+      invariant 1 <= j <= l
+      invariant row.Length == l
+      invariant prevRow.Length == l
       decreases l - j
     {
       tmp := (tmp + prevRow[j]) % mod;
@@ -94,6 +98,8 @@ method Solve(a: int, b: int) returns (output: string)
   var ans := 0;
   var idx := 1;
   while idx < l
+    invariant 1 <= idx <= l
+    invariant prevRow.Length == l
     decreases l - idx
   {
     ans := (ans + prevRow[idx]) % mod;

@@ -16,6 +16,8 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, numbers: seq<string>) returns (output: string)
+  requires |numbers| == n
+  requires n >= 1
 {
   var best := numbers[0];
   var worst := numbers[0];

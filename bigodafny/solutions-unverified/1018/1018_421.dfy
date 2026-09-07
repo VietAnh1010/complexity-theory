@@ -23,10 +23,14 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, edges: seq<seq<int>>) returns (output: string)
+  requires n >= 0
+  requires |edges| == 2 * n
+  requires forall k :: 0 <= k < |edges| ==> |edges[k]| == 2
 {
   var lines: seq<string> := [];
   var t := 0;
   while t < n
+    invariant 0 <= t <= n
     decreases n - t
   {
     var a := edges[2 * t];

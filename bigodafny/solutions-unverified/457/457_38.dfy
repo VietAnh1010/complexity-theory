@@ -27,6 +27,7 @@ import opened Prelude
 method Solve(n: int, m: int) returns (output: string)
   requires n >= 1
   requires 0 <= m <= 9
+  decreases *
 {
   var k := n;
   var d := m;
@@ -39,7 +40,8 @@ method Solve(n: int, m: int) returns (output: string)
     var pow := 9;
     while NumDigits(nn) != k
       invariant nn >= 0
-      decreases if k - NumDigits(nn) >= 0 then k - NumDigits(nn) else NumDigits(nn) - k
+      invariant pow >= 1
+      decreases *
     {
       nn := nn + pow;
       pow := pow * 9;

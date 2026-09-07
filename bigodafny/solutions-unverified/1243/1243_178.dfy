@@ -32,6 +32,8 @@ method Solve(s1: string, s2: string) returns (output: string)
     var diffs: seq<int> := [];
     var i := 0;
     while i < |s1|
+      invariant 0 <= i <= |s1|
+      invariant forall k :: 0 <= k < |diffs| ==> 0 <= diffs[k] < i
       decreases |s1| - i
     {
       if s1[i] != s2[i] { diffs := diffs + [i]; }
