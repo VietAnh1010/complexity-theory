@@ -1,5 +1,11 @@
 # bigodafny -- operating rules
 
+**Resuming with a clean context?** Read `.claude/skills/bigodafny/SKILL.md`
+first -- it holds the map, the gates, and the findings. Sub-skills:
+`bigodafny-translate`, `bigodafny-verify`, `bigodafny-prove`. Then run
+`python3 dataset.py` and read `data/stats.json`; the directory a row sits in is
+its status, never an earlier message.
+
 Builds a Python -> Dafny translation dataset from BigOBench's
 `time_complexity_test_set`. Independent of the arXiv paper-mining pipeline in
 `../scripts`: no shared sources, cache, or record shape.
