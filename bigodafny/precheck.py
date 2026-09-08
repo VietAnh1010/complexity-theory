@@ -209,9 +209,25 @@ def _top_level_op(s, op):
     return -1
 
 
+def _strip_outer_parens(s):
+    """Drop one fully-enclosing paren pair, so the operator splits can see in."""
+    s = s.strip()
+    while len(s) >= 2 and s[0] == "(" and s[-1] == ")":
+        depth = 0
+        for i, ch in enumerate(s):
+            if ch == "(":
+                depth += 1
+            elif ch == ")":
+                depth -= 1
+                if depth == 0 and i != len(s) - 1:
+                    return s
+        s = s[1:-1].strip()
+    return s
+
+
 def to_python(clause, bound=()):
     """Translate one Dafny precondition into a Python expression over `I`."""
-    s = clause
+    s = _strip_outer_parens(clause)
     # A call to a Dafny function we cannot evaluate makes the clause
     # untranslatable. Checked after the prelude rewrite, against a whitelist of
     # the calls that rewrite itself emits -- see _unknown_call.

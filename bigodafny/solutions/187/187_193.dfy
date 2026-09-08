@@ -20,9 +20,10 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
+  requires n == |a_list|
+  requires n >= 1
 {
   var sorted := SortInts(a_list);
   var idx := if n % 2 == 0 then n / 2 - 1 else n / 2;
-  assume {:axiom} 0 <= idx < |sorted|;
   output := IntToString(sorted[idx]);
 }

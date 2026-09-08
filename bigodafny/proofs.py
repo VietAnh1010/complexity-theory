@@ -11,8 +11,8 @@ the proof is the stronger statement.
 from __future__ import annotations
 import re, shutil, subprocess, sys
 
-from common import (DAFNY_VERSION, DATA, NLOGN, VERIFIED, event, log,
-                    read_jsonl, write_jsonl)
+from common import (DAFNY_VERSION, DATA, INEXACT, NLOGN, SOLUTIONS, UNVERIFIED,
+                    VERIFIED, event, log, read_jsonl, write_jsonl)
 
 DAFNY = shutil.which("dafny") or "/root/.dotnet/tools/dafny"
 SOLVER = shutil.which("z3") or "/usr/local/bin/z3"
@@ -21,6 +21,29 @@ SOLVER = shutil.which("z3") or "/usr/local/bin/z3"
 def bound_of(text):
     m = re.search(r"ensures\s+steps\s*<=\s*(.+?)\s*(?://.*)?$", text, re.M)
     return m.group(1).strip() if m else None
+
+
+def scan_assumes():
+    """`assume` anywhere in the corpus, not just in the proofs.
+
+    `assume {:axiom} 0 <= idx < |arr|` discharges an index obligation silently:
+    the file verifies, and nothing in the summary says why. Two rows in
+    solutions/ carried one for several waves because the audits only ever
+    grepped solutions-unverified/.
+    """
+    hits = []
+    for d in (SOLUTIONS, UNVERIFIED, INEXACT, VERIFIED, NLOGN):
+        if not d.exists():
+            continue
+        for f in sorted(d.rglob("*.dfy")):
+            for i, line in enumerate(f.read_text(encoding="utf-8").splitlines(), 1):
+                if re.search(r"\bassume\b", line):
+                    hits.append((str(f), i, line.strip()))
+    for path, i, line in hits:
+        log(f"  ASSUME {path}:{i}  {line}")
+    log(f"assume scan: {len(hits)} occurrence(s) across the corpus")
+    event("assume_scan", count=len(hits))
+    return hits
 
 
 def run():
@@ -60,4 +83,6 @@ def run():
 
 if __name__ == "__main__":
     rows = run()
-    sys.exit(0 if all(r["verified"] and not r["assume_count"] for r in rows) else 1)
+    hits = scan_assumes()
+    sys.exit(0 if (all(r["verified"] and not r["assume_count"] for r in rows)
+                   and not hits) else 1)

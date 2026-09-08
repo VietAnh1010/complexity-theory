@@ -24,6 +24,9 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, numbers_list: seq<int>) returns (output: string)
+  // all Dfs needs is a non-negative argument. The earlier attempt asked for
+  // the problem's full stated range 1..1e9, which 3 stored inputs exceed.
+  requires forall t :: 0 <= t < |numbers_list| ==> numbers_list[t] >= 0
 {
 
   var check := [2];

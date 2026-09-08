@@ -30,6 +30,13 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(a: int, b: int, c_list: seq<string>) returns (output: string)
+  requires a >= 0 && b >= 0
+  // Either the array is long enough outright, or every entry is positive -- in
+  // which case k falls by at least 1 per step, so the loop stops within b
+  // steps and never reaches past the end. Both violating stored inputs take
+  // the second branch, and the row's Python survives them for this reason.
+  requires a <= |c_list|
+       || (1 <= b <= |c_list| && forall t :: 0 <= t < |c_list| ==> ParseInts(c_list)[t] >= 1)
 {
   var n := a;
   var k := b;
@@ -39,6 +46,12 @@ method Solve(a: int, b: int, c_list: seq<string>) returns (output: string)
   var i := 0;
   var stopped := false;
   while i < n && !stopped
+    invariant 0 <= i
+    invariant |arr| == |c_list|
+    invariant tank >= 0
+    invariant a <= |c_list| ==> i <= a
+    invariant (forall t :: 0 <= t < |arr| ==> arr[t] >= 1) ==> k <= b - i
+    invariant !stopped ==> (k > 0 || i == 0)
     decreases n - i
   {
     tank := tank + arr[i];

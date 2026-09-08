@@ -31,14 +31,16 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, k: int, ratings: seq<int>) returns (output: string)
+  requires k >= 1
 {
-  assume {:axiom} k >= 1;
   var a: seq<int> := seq(k, i => 0);
   var l := 0;
   var curr: set<int> := {};
   var idx := 0;
   while idx < |ratings|
+    invariant 0 <= idx <= |ratings|
     invariant |a| == k
+    invariant 0 <= l <= k
     decreases |ratings| - idx
   {
     var id := ratings[idx];

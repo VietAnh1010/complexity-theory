@@ -31,16 +31,19 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
+  requires n == |a_list|
+  requires n >= 1
 {
-  assume {:axiom} |a_list| == n;
   var arr := a_list;
   var i := 0;
   while i < n
+    invariant 0 <= i
     invariant |arr| == n
     decreases n - i
   {
     var j := 0;
     while j < n
+      invariant 0 <= j
       invariant |arr| == n
       decreases n - j
     {
@@ -54,6 +57,5 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
     i := i + 1;
   }
   var idx := n / 2;
-  assume {:axiom} 0 <= idx < |arr|;
   output := IntToString(arr[idx]);
 }
