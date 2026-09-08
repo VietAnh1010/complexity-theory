@@ -31,7 +31,13 @@ def plan(run_id, exclude=()):
     nb = (len(exs) + SIZE - 1) // SIZE
     batches = [[] for _ in range(nb)]
     for i, e in enumerate(exs):
-        batches[i % nb].append(e["sid"])
+        batches[i % nb].append(e)
+    # Easiest first WITHIN a batch. The pilot's labeled agent spent all 62 of
+    # its tool calls on the hardest example, which happened to be first, and
+    # wrote nothing for the other three. Ordering the other way costs the tail.
+    batches = [[e["sid"] for e in sorted(b, key=lambda e: (e["difficulty_static"],
+                                                          -e["score"]))]
+               for b in batches]
     out = {"size": SIZE, "batches": batches}
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps(out, indent=1) + "\n", encoding="utf-8")

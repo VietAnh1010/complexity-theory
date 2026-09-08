@@ -63,11 +63,15 @@ TASK_LABELED = """# Your task
 claimed for it.
 
 1. Read `GUIDE.md`, then `description.md`, `solution.py` and `task.dfy`.
-2. Instrument `Solve` with a ghost step counter and prove a bound of the
+2. Write `result.json` NOW, following `RESULT.schema.json`, with
+   `verdict: "gave_up"` and every other field null. You will update it. An
+   example whose agent runs out of budget with no `result.json` is a lost
+   example, and that is the most common way to lose one.
+3. Instrument `Solve` with a ghost step counter and prove a bound of the
    claimed shape.
-3. If the claim is wrong, prove the bound that is actually true and set
+4. If the claim is wrong, prove the bound that is actually true and set
    `verdict` to `refutes`. Do not bend the proof to fit the claim.
-4. Write `result.json` following `RESULT.schema.json`.
+5. Update `result.json` with what you proved.
 """
 
 TASK_BLIND = """# Your task
@@ -76,8 +80,10 @@ TASK_BLIND = """# Your task
 
 1. Read `GUIDE.md`, then `description.md`, `solution.py` and `task.dfy`.
 2. Decide which of the classes listed in `GUIDE.md` this method belongs to.
-   Write `result.json` now, with `guess` and `guess_basis` filled in and every
-   other field null. Do this BEFORE you attempt any proof.
+   Write `result.json` NOW, with `guess` and `guess_basis` filled in,
+   `verdict: "gave_up"`, and every other field null. Do this BEFORE you
+   attempt any proof: a guess written afterwards measures nothing, and an
+   example whose agent runs out of budget with no `result.json` is lost.
 3. Then instrument `Solve` with a ghost step counter and prove your guess.
 4. If the proof forces you to a different bound, keep the original `guess`
    unchanged, record the bound you proved in `proved_class`, and set `verdict`
@@ -147,11 +153,28 @@ def stage_one(dst: Path, ex, row, arm):
     return redacted
 
 
+def refresh_instructions(dst: Path, arm):
+    """Rewrite only the constant files. `task.dfy` may hold an agent's work."""
+    if not dst.exists():
+        return
+    (dst / "GUIDE.md").write_text(GUIDE, encoding="utf-8")
+    (dst / "TASK.md").write_text(
+        TASK_LABELED if arm == "labeled" else TASK_BLIND, encoding="utf-8")
+    (dst / "RESULT.schema.json").write_text(SCHEMA, encoding="utf-8")
+
+
+# The files this script stages, as staged. `.original.dfy` stands in for
+# `task.dfy`: they are written identical and only `.original.dfy` is immutable,
+# so scanning it audits the input while an agent's own added comments -- which
+# will name complexity classes, that being the task -- are correctly ignored.
+STAGED = (".original.dfy", "solution.py", "description.md")
+
+
 def scrub_check(root: Path, ex, row):
     """Every way the answer could still be sitting in a blind example."""
     bad = []
     for p in sorted(root.rglob("*")):
-        if not p.is_file() or p.name in CONSTANT:
+        if not p.is_file() or p.name not in STAGED:
             continue
         t = p.read_text(encoding="utf-8", errors="replace")
         for m in LEAK_RE.finditer(t):
@@ -181,6 +204,9 @@ def main():
     ap.add_argument("--run-id", required=True)
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--only", nargs="*")
+    ap.add_argument("--instructions-only", action="store_true",
+                    help="rewrite TASK.md/GUIDE.md/schema only; never "
+                         "touch task.dfy, so work in progress survives")
     a = ap.parse_args()
 
     man = json.loads(MANIFEST.read_text())
@@ -196,7 +222,9 @@ def main():
         row = rows[e["sid"]]
         for arm in ("labeled", "blind"):
             d = run / arm / e["sid"]
-            if not a.check:
+            if a.instructions_only:
+                refresh_instructions(d, arm)
+            elif not a.check:
                 if stage_one(d, e, row, arm) and arm == "blind":
                     redacted.append(e["sid"])
         for b in scrub_check(run / "blind" / e["sid"], e, row):

@@ -26,8 +26,9 @@ You have {n} examples. Each is a self-contained directory:
 
 {dirs}
 
-Work them ONE AT A TIME, in the order listed. In each directory read TASK.md
-first, then GUIDE.md, then description.md, solution.py and task.dfy.
+Work them ONE AT A TIME, in the order listed -- they are ordered easiest
+first. In each directory read TASK.md first, then GUIDE.md, then
+description.md, solution.py and task.dfy.
 
 Start every Bash call that runs dafny with:
     export PATH="$PATH:/root/.dotnet/tools"
@@ -41,6 +42,10 @@ errors"` would also match "10 errors" -- read the number. A lemma reported as
 timed out proves nothing even when its callers report verified.
 
 `task.dfy` already verifies as given. Your additions are what can break it.
+
+Run every dafny call in the FOREGROUND and wait for it. Do not background a
+verification, do not set a Monitor on one, and never end your turn waiting for
+something. The pilot lost three of its four examples that way.
 
 # What counts
 
@@ -66,18 +71,23 @@ timed out proves nothing even when its callers report verified.
   the values as a `requires` and say so in `added_requires`. That is a
   finding, not a failure.
 
-# Write result.json as you go
+# result.json first, then the proof
 
-The session limit kills agents mid-batch. Write `result.json` in an example's
-own directory the MOMENT you finish that example, before starting the next.
-An example with no result.json is a lost example. Follow
+Your FIRST act in each directory, before any proof work, is to write its
+`result.json` with `verdict: "gave_up"` and the fields TASK.md names. Then
+update it as you learn more. Written that way, an example you run out of
+budget on is still recorded; written afterwards, it is lost. Follow
 `RESULT.schema.json` exactly; `verdict` must be one of `proves`, `refutes`,
 `gave_up`.
 
-Give an example about 20 tool calls. If it will not close, set
-`verdict: "gave_up"`, record in `notes` what the obstacle was -- which
-obligation, which invariant you could not find -- and move on. A precise
-give-up is data; a vague one is not.
+BUDGET, and it is hard: about 20 tool calls per example, 25 at the very most.
+When you hit it, set `verdict: "gave_up"`, record in `notes` what the obstacle
+was -- which obligation, which invariant you could not find -- and MOVE ON to
+the next example. A precise give-up is data. Four give-ups are a result; one
+polished proof and three untouched examples is not.
+
+The examples are ordered easiest first. If you are still on the first one after
+25 calls, you are over budget for it -- write it off and go.
 
 # Report
 
