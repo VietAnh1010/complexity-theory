@@ -25,12 +25,16 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, k: int, numbers: seq<int>) returns (output: string)
+  requires n >= 1
+  requires n == |numbers|
 {
   var a := numbers;
   var mx := 0;
   var p: seq<int> := seq(n, idx requires 0 <= idx < n => 0);
   var i := n - 1;
   while i >= 0
+    invariant -1 <= i <= n - 1
+    invariant |p| == n
     decreases i + 1
   {
     if a[i] > mx { mx := a[i]; }

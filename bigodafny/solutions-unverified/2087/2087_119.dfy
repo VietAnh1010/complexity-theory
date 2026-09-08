@@ -26,6 +26,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(strings: seq<string>) returns (output: string)
+  requires forall k :: 0 <= k < |strings| ==> 1 <= |strings[k]| <= 26
 {
   var results: seq<string> := [];
   var si := 0;
@@ -37,7 +38,9 @@ method Solve(strings: seq<string>) returns (output: string)
     var res := "";
     var done := false;
     while !done
-      decreases |r|
+      invariant 1 <= |r| <= 26
+      invariant idxLetter == |r| - 1
+      decreases !done, |r|
     {
       var n := (('a' as int) + idxLetter) as char;
       if |r| == 1 {

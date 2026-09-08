@@ -22,25 +22,32 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
+  requires |a_list| >= 1
 {
   var distinct: seq<int> := [];
   var i := 0;
   while i < |a_list|
+    invariant 0 <= i <= |a_list|
+    invariant i >= 1 ==> |distinct| >= 1
     decreases |a_list| - i
   {
     var v := a_list[i];
     if v !in distinct { distinct := distinct + [v]; }
     i := i + 1;
   }
+  assert |distinct| >= 1;
   var counts: seq<int> := [];
   var j := 0;
   while j < |distinct|
+    invariant 0 <= j <= |distinct|
+    invariant |counts| == j
     decreases |distinct| - j
   {
     var v := distinct[j];
     var c := 0;
     var k := 0;
     while k < |a_list|
+      invariant 0 <= k <= |a_list|
       decreases |a_list| - k
     {
       if a_list[k] == v { c := c + 1; }
@@ -49,7 +56,9 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
     counts := counts + [c];
     j := j + 1;
   }
+  assert |counts| >= 1;
   var sortedCounts := Sort(counts, (x: int, y: int) => x > y);
+  assert |sortedCounts| >= 1;
   var total := SumSeq(sortedCounts[1..]);
   output := IntToString(total);
 }

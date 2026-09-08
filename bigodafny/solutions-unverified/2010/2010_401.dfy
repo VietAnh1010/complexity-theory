@@ -25,6 +25,8 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
+  requires n == |a_list|
+  requires n >= 1
 {
   var a := SortInts(a_list);
   var count := 0;

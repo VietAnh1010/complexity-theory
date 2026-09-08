@@ -30,6 +30,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(strings: seq<string>) returns (output: string)
+  requires forall k :: 0 <= k < |strings| ==> |strings[k]| >= 1
 {
   var alphabet := "abcdefghijklmnopqrstuvwxyz";
   var results: seq<string> := [];
@@ -40,6 +41,7 @@ method Solve(strings: seq<string>) returns (output: string)
     var a := strings[si];
     var s := "";
     while |a| != 1
+      invariant |a| >= 1
       decreases |a|
     {
       if a[0] > a[|a| - 1] {
@@ -55,6 +57,7 @@ method Solve(strings: seq<string>) returns (output: string)
     var found := false;
     var start := 0;
     while start + |rev| <= |alphabet| && !found
+      invariant 0 <= start <= |alphabet|
       decreases |alphabet| - start
     {
       if alphabet[start..start + |rev|] == rev {

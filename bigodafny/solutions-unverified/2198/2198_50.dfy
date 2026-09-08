@@ -21,12 +21,15 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
+  requires n >= 2
+  requires |a_list| == n
 {
   var d0 := 0;
   var d1 := AbsInt(a_list[1] - a_list[0]);
   var maxi := d1;
   var i := 1;
   while i < n - 1
+    invariant 1 <= i
     decreases n - 1 - i
   {
     var diff := AbsInt(a_list[i] - a_list[i+1]);

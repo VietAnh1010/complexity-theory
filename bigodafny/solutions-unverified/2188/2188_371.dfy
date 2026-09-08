@@ -20,11 +20,19 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>, b_list: seq<int>) returns (output: string)
+  requires n >= 1
+  requires |a_list| == n
+  requires |b_list| == n
+  requires forall k :: 0 <= k < n ==> 1 <= a_list[k] <= n
+  requires forall k :: 0 <= k < n ==> 1 <= b_list[k] <= n
 {
   var ga := seq(n + 1, _ => 0);
   var gb := seq(n + 1, _ => 0);
   var i := 0;
   while i < n
+    invariant 0 <= i <= n
+    invariant |ga| == n + 1
+    invariant |gb| == n + 1
     decreases n - i
   {
     ga := ga[a_list[i] := i];
@@ -34,9 +42,15 @@ method Solve(n: int, a_list: seq<int>, b_list: seq<int>) returns (output: string
   var counts := seq(if n >= 0 then n else 0, _ => 0);
   i := 1;
   while i <= n
+    invariant 1 <= i <= n + 1
+    invariant |counts| == n
     decreases n - i + 1
   {
     var o := FloorMod(gb[i] - ga[i], n);
+    assert 0 <= o < n by {
+      reveal FloorMod();
+      reveal FloorDiv();
+    }
     counts := counts[o := counts[o] + 1];
     i := i + 1;
   }

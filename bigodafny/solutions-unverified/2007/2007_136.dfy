@@ -43,6 +43,11 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, edges: seq<seq<int>>) returns (output: string)
+  requires n == |edges|
+  requires n >= 1
+  requires forall k :: 0 <= k < |edges| ==> |edges[k]| == 2
+  requires forall k :: 0 <= k < |edges| ==> 1 <= edges[k][0] <= n
+  requires forall k :: 0 <= k < |edges| ==> 1 <= edges[k][1] <= n
   decreases *
 {
   var ans: seq<int> := [1];
@@ -60,6 +65,8 @@ method Solve(n: int, edges: seq<seq<int>>) returns (output: string)
     j := a;
   }
   while |ans| < n
+    invariant 1 <= i <= n
+    invariant 1 <= j <= n
     decreases *
   {
     var c := if edges[i-1][0] != j then edges[i-1][0] else edges[i-1][1];

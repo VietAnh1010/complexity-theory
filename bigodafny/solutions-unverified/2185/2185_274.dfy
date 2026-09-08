@@ -19,11 +19,14 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, coord_list: seq<seq<int>>) returns (output: string)
+  requires n != 0
+  requires forall k :: 0 <= k < |coord_list| ==> |coord_list[k]| >= 2
 {
   var a := 0;
   var b := 0;
   var i := 0;
   while i < |coord_list|
+    invariant 0 <= i <= |coord_list|
     decreases |coord_list| - i
   {
     a := a + coord_list[i][0];

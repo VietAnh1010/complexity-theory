@@ -30,6 +30,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(numbers: seq<int>) returns (output: string)
+  requires |numbers| == 6
 {
   var l := SortInts(numbers);
   if l[2] != l[3] {
@@ -49,6 +50,8 @@ method Solve(numbers: seq<int>) returns (output: string)
       var removed := 0;
       idx := 0;
       while idx < |l|
+        invariant |newl| + removed == idx
+        invariant removed <= 4
         decreases |l| - idx
       {
         if l[idx] == k && removed < 4 {

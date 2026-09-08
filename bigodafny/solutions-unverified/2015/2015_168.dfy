@@ -75,6 +75,8 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<string>) returns (output: string)
+  requires n >= 1
+  requires n <= |a_list|
 {
   var a := ParseInts(a_list);
   var y := n;
@@ -82,6 +84,7 @@ method Solve(n: int, a_list: seq<string>) returns (output: string)
   var p := -a[0];
   var i := 1;
   while i < y
+    invariant 1 <= i
     decreases y - i
   {
     if p < mini {

@@ -23,12 +23,14 @@ method CeilSqrt(x: int) returns (r: int)
   if x <= 1 { return x; }
   var hi := 1;
   while hi * hi < x
+    invariant hi >= 1
     decreases x - hi * hi
   {
     hi := hi * 2;
   }
   var lo := 0;
   while lo < hi
+    invariant 0 <= lo <= hi
     decreases hi - lo
   {
     var mid := (lo + hi) / 2;

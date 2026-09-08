@@ -34,6 +34,9 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(a: int, b: int, c_list: seq<int>, d: string) returns (output: string)
+  requires |d| >= 1
+  requires |c_list| == |d|
+  requires b >= 0
 {
   var k := b;
   var arr := c_list;

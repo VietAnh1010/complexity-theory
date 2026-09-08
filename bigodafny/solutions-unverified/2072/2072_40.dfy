@@ -44,11 +44,15 @@ method Solve(s: string) returns (output: string)
     var ltrs: seq<char> := [];
     var j := i;
     while j < n
+      invariant j >= i
+      invariant (j - i) % 4 == 0
+      invariant |ltrs| == (j - i) / 4
       decreases n - j
     {
       ltrs := ltrs + [s[j]];
       j := j + 4;
     }
+    assert |ltrs| >= 1;
     var sorted := Sort(ltrs, (x: char, z: char) => x < z);
     var letc := sorted[|sorted| - 1];
     var a := 0;

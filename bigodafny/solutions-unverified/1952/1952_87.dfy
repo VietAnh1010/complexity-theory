@@ -37,6 +37,9 @@ method Solve(s: string) returns (output: string)
   var currb := 0;
   var i := 0;
   while i < n
+    invariant 0 <= i <= n
+    invariant |counta| == i + 1
+    invariant |countb| == i + 1
     decreases n - i
   {
     if s[i] == 'a' {
@@ -51,10 +54,16 @@ method Solve(s: string) returns (output: string)
   var ans := 0;
   var ii := 0;
   while ii <= n
+    invariant 0 <= ii <= n + 1
+    invariant |counta| == n + 1
+    invariant |countb| == n + 1
     decreases n - ii
   {
     var jj := ii;
     while jj <= n
+      invariant ii <= jj <= n + 1
+      invariant |counta| == n + 1
+      invariant |countb| == n + 1
       decreases n - jj
     {
       var v := countb[jj] - countb[ii] + counta[ii] + counta[n] - counta[jj];

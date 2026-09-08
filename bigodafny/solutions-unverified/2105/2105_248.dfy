@@ -47,6 +47,11 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(v_0: int, v_1: string) returns (output: string)
+  requires v_0 >= 1
+  requires |ParseInts(SplitWs(v_1))| == v_0
+  requires forall k :: 0 <= k < v_0 ==> ParseInts(SplitWs(v_1))[k] == 1 || ParseInts(SplitWs(v_1))[k] == 2
+  requires exists k :: 0 <= k < v_0 && ParseInts(SplitWs(v_1))[k] == 1
+  requires exists k :: 0 <= k < v_0 && ParseInts(SplitWs(v_1))[k] == 2
 {
   var n := v_0;
   var tipos := ParseInts(SplitWs(v_1));
@@ -59,7 +64,26 @@ method Solve(v_0: int, v_1: string) returns (output: string)
   var cont2 := 1;
   var arreglorepetidos: seq<int> := [];
   var i := 0;
+  assert exists p :: 0 <= p < n && tipos[p] != tipos[0] by {
+    if tipos[0] == 1 {
+      var k2 :| 0 <= k2 < n && ParseInts(SplitWs(v_1))[k2] == 2;
+      assert tipos[k2] == ParseInts(SplitWs(v_1))[k2];
+      assert tipos[k2] != tipos[0];
+    } else {
+      var k1 :| 0 <= k1 < n && ParseInts(SplitWs(v_1))[k1] == 1;
+      assert tipos[k1] == ParseInts(SplitWs(v_1))[k1];
+      assert tipos[k1] != tipos[0];
+    }
+  }
   while i < n
+    invariant 0 <= i <= n
+    invariant exists p :: 0 <= p < n && tipos[p] != tipos[0]
+    invariant |tipos| == n + 1
+    invariant forall k :: 0 <= k < n ==> tipos[k] == 1 || tipos[k] == 2
+    invariant tipos[n] == 1 || tipos[n] == 2
+    invariant tipos[n] != tipos[n - 1]
+    invariant |arreglorepetidos| >= 1 || (forall j :: 0 <= j < n && j <= i ==> tipos[j] == tipos[0])
+    invariant i == n ==> |arreglorepetidos| >= 2
     decreases n - i
   {
     if tipos[i] == 1 {
@@ -84,6 +108,8 @@ method Solve(v_0: int, v_1: string) returns (output: string)
   var arregloacomodado: seq<int> := [];
   var m := 0;
   while m < |arreglorepetidos| - 1
+    invariant 0 <= m <= |arreglorepetidos| - 1
+    invariant |arregloacomodado| == m
     decreases |arreglorepetidos| - 1 - m
   {
     if arreglorepetidos[m] <= arreglorepetidos[m + 1] {
@@ -93,6 +119,8 @@ method Solve(v_0: int, v_1: string) returns (output: string)
     }
     m := m + 1;
   }
+  assert |arregloacomodado| >= 1;
   var sorted := Sort(arregloacomodado, (x: int, y: int) => x > y);
+  assert |sorted| >= 1;
   output := IntToString(sorted[0]);
 }

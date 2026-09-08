@@ -21,6 +21,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(numbers: seq<int>) returns (output: string)
+  requires forall idx :: 0 <= idx < |numbers| ==> 1 <= numbers[idx] <= 9
 {
   var ls := new int[9];
   var idx := 0;
@@ -33,6 +34,8 @@ method Solve(numbers: seq<int>) returns (output: string)
   }
   idx := 0;
   while idx < |numbers|
+    invariant 0 <= idx
+    invariant ls.Length == 9
     decreases |numbers| - idx
     modifies ls
   {

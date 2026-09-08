@@ -36,10 +36,14 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, rows: seq<seq<int>>) returns (output: string)
+  requires n >= 0
+  requires |rows| == n
+  requires forall k :: 0 <= k < n ==> |rows[k]| >= 8
 {
   var lines: seq<string> := [];
   var i := 0;
   while i < n
+    invariant 0 <= i <= n
     decreases n - i
   {
     var row := rows[i];
@@ -47,6 +51,10 @@ method Solve(n: int, rows: seq<seq<int>>) returns (output: string)
     var py: seq<int> := [];
     var j := 0;
     while j < 8
+      invariant 0 <= j <= 8
+      invariant j % 2 == 0
+      invariant |px| == j / 2
+      invariant |py| == j / 2
       decreases 8 - j
     {
       px := px + [row[j]];

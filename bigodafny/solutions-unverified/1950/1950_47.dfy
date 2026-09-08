@@ -49,7 +49,9 @@ method Solve(coefficient: real, exponent: int) returns (output: string)
     var intStr := digits[..|digits|-12];
     var fracStr0 := digits[|digits|-12..];
     var fl := |fracStr0|;
-    while fl > 0 && fracStr0[fl-1] == '0' { fl := fl - 1; }
+    while fl > 0 && fracStr0[fl-1] == '0'
+      invariant 0 <= fl <= |fracStr0|
+    { fl := fl - 1; }
     var fracStr := fracStr0[..fl];
     output := (if neg then "-" else "") + intStr + (if |fracStr| > 0 then "." + fracStr else "") + "\n";
   }

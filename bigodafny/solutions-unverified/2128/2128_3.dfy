@@ -38,12 +38,16 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, m: int, data_list: seq<seq<int>>) returns (output: string)
+  requires n >= 0
+  requires |data_list| == n
+  requires forall k :: 0 <= k < n ==> |data_list[k]| >= 2
 {
   var r := m;
   var a: seq<(int,int)> := [];
   var b: seq<(int,int)> := [];
   var i := 0;
   while i < n
+    invariant 0 <= i <= n
     decreases n - i
   {
     var row := data_list[i];
@@ -60,7 +64,8 @@ method Solve(n: int, m: int, data_list: seq<seq<int>>) returns (output: string)
   var stop := false;
   i := 0;
   while i < |a| && !stop
-    decreases |a| - i
+    invariant 0 <= i <= |a|
+    decreases !stop, |a| - i
   {
     if a[i].0 > r {
       z := 0;
@@ -73,7 +78,8 @@ method Solve(n: int, m: int, data_list: seq<seq<int>>) returns (output: string)
   stop := false;
   i := 0;
   while i < |b| && !stop
-    decreases |b| - i
+    invariant 0 <= i <= |b|
+    decreases !stop, |b| - i
   {
     if b[i].0 > r {
       z := 0;

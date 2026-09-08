@@ -35,12 +35,27 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+lemma RepeatLen(s: string, n: nat)
+  ensures |Repeat(s, n)| == n * |s|
+  decreases n
+{
+  if n == 0 {
+  } else {
+    RepeatLen(s, n - 1);
+  }
+}
+
 method Solve(n: int, numbers: seq<int>) returns (output: string)
+  requires n >= 0
+  requires n == |numbers|
 {
   var ans: seq<char> := Repeat("A", n as nat);
+  RepeatLen("A", n as nat);
   var num := 0;
   var i := 0;
   while i < n
+    invariant 0 <= i <= n
+    invariant |ans| == n
     decreases n - i
   {
     var cnt := CountOcc2005(numbers, numbers[i]);
@@ -58,6 +73,8 @@ method Solve(n: int, numbers: seq<int>) returns (output: string)
     var j := 0;
     var stop := false;
     while j < n && !stop
+      invariant 0 <= j <= n
+      invariant |ans| == n
       decreases n - j
     {
       var cnt2 := CountOcc2005(numbers, numbers[j]);

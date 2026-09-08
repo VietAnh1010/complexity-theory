@@ -36,7 +36,9 @@ method Solve(n: int) returns (output: string)
     var hi := |tri| - 1;
     var hitFound := false;
     while lo <= hi && !hitFound
-      decreases hi - lo + 1
+      invariant 0 <= lo <= |tri|
+      invariant -1 <= hi < |tri|
+      decreases !hitFound, hi - lo + 1
     {
       var mid := (lo + hi) / 2;
       if tri[mid] == target {

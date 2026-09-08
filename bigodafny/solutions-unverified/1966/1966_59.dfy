@@ -24,11 +24,15 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, s: string) returns (output: string)
+  requires n == |s|
+  requires n % 2 == 0 || n >= 3
 {
   var res: seq<string> := [];
   if n % 2 == 0 {
     var i := 0;
     while i < n
+      invariant 0 <= i <= n
+      invariant i % 2 == 0
       decreases n - i
     {
       res := res + [s[i..i+2]];
@@ -37,6 +41,8 @@ method Solve(n: int, s: string) returns (output: string)
   } else {
     var i := 0;
     while i < n - 3
+      invariant 0 <= i <= n - 3
+      invariant i % 2 == 0
       decreases (n - 3) - i
     {
       res := res + [s[i..i+2]];

@@ -33,11 +33,19 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>, b_list: seq<int>) returns (output: string)
+  requires n >= 1
+  requires |a_list| == n
+  requires |b_list| == n
 {
   var aPairs: seq<(int,int)> := [];
   var bPairs: seq<(int,int)> := [];
   var i := 0;
   while i < n
+    invariant 0 <= i <= n
+    invariant |aPairs| == i
+    invariant |bPairs| == i
+    invariant forall k :: 0 <= k < i ==> aPairs[k].0 == k
+    invariant forall k :: 0 <= k < i ==> bPairs[k].0 == k
     decreases n - i
   {
     aPairs := aPairs + [(i, a_list[i])];
@@ -46,11 +54,20 @@ method Solve(n: int, a_list: seq<int>, b_list: seq<int>) returns (output: string
   }
   var aSorted := Sort(aPairs, (x: (int,int), y: (int,int)) => x.1 < y.1);
   var bSorted := Sort(bPairs, (x: (int,int), y: (int,int)) => x.1 < y.1);
+  SortKeepsElems(aPairs, (x: (int,int), y: (int,int)) => x.1 < y.1);
+  SortKeepsElems(bPairs, (x: (int,int), y: (int,int)) => x.1 < y.1);
+  assert forall p :: p in aPairs ==> 0 <= p.0 < n;
+  assert forall p :: p in bPairs ==> 0 <= p.0 < n;
   var dif: seq<int> := [];
   i := 0;
   while i < n
+    invariant 0 <= i <= n
+    invariant |dif| == i
+    invariant forall k :: 0 <= k < i ==> 0 <= dif[k] < n
     decreases n - i
   {
+    assert aSorted[i] in aSorted;
+    assert bSorted[i] in bSorted;
     var q1 := aSorted[i].0;
     var q2 := bSorted[i].0;
     var d := if q2 - q1 < 0 then n + (q2 - q1) else q2 - q1;
@@ -61,6 +78,9 @@ method Solve(n: int, a_list: seq<int>, b_list: seq<int>) returns (output: string
   var maxi := 0;
   i := 0;
   while i < |dif|
+    invariant 0 <= i <= |dif|
+    invariant |difmax| == n
+    invariant forall k :: 0 <= k < |dif| ==> 0 <= dif[k] < n
     decreases |dif| - i
   {
     var s := dif[i];
