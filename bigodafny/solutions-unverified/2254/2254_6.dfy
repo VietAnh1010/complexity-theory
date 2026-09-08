@@ -17,10 +17,16 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, pairs: seq<seq<int>>) returns (output: string)
+  requires n <= |pairs|
+  requires forall k :: 0 <= k < |pairs| ==> |pairs[k]| >= 2
+  // k is an alphabet size: at least 1 (it is a divisor) and at most 26
+  requires forall k :: 0 <= k < |pairs| ==> 1 <= pairs[k][1] <= 26
+  requires forall k :: 0 <= k < |pairs| ==> pairs[k][0] >= 0
 {
   var parts: seq<string> := [];
   var t := 0;
   while t < n
+    invariant 0 <= t
     decreases n - t
   {
     var nn := pairs[t][0];
@@ -28,6 +34,7 @@ method Solve(n: int, pairs: seq<seq<int>>) returns (output: string)
     var block: string := "";
     var i := 0;
     while i < kk
+      invariant 0 <= i
       decreases kk - i
     {
       block := block + [((('a' as int) + i) as char)];

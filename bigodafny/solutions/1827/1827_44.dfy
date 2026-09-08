@@ -40,7 +40,6 @@ function Pow2(e: int): int
 
 method Solve(a: int, b: int) returns (output: string)
   requires a >= 0
-  requires b >= 1
 {
   var s := a;
   var l := b;

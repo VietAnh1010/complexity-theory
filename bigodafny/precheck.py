@@ -31,7 +31,9 @@ def requires_of(text):
     head = text.split("method Solve(", 1)[1].split("{", 1)[0] if "method Solve(" in text else ""
     out, cur = [], None
     for line in head.splitlines():
-        s = line.strip()
+        s = line.split("//", 1)[0].strip()   # a comment is never part of a clause
+        if not s:
+            continue
         if s.startswith("requires "):
             if cur:
                 out.append(cur)
@@ -60,13 +62,122 @@ def unrename(w):
     return w
 
 
+def _mask_literals(s):
+    """Hide quoted char/string literals so the field rewrite cannot reach inside.
+
+    Without this, `'A' <= c <= 'Z'` became `'I.A' <= I.c <= 'I.Z'` -- still valid
+    Python, silently False, and reported as a VIOLATED precondition.
+    """
+    lits = []
+    def take(mo):
+        lits.append(mo.group(0))
+        return f"\x00{len(lits)-1}\x00"
+    return re.sub(r"'(?:\\.|[^'\\])*'|\"(?:\\.|[^\"\\])*\"", take, s), lits
+
+
+def _unmask_literals(s, lits):
+    for i, lit in enumerate(lits):
+        s = s.replace(f"\x00{i}\x00", lit)
+    return s
+
+
+# Python keywords can precede "(" without being a call: `for _t in (x).split()`.
+ALLOWED_CALLS = {"len", "int", "sum", "abs", "max", "min", "all", "any",
+                 "range", "split",
+                 "in", "for", "if", "else", "not", "and", "or"}
+
+
+def _unknown_call(s):
+    """True if `s` calls something we cannot evaluate in Python."""
+    return any(mo.group(1) not in ALLOWED_CALLS
+               for mo in re.finditer(r"(?<![.\w|])([A-Za-z_]\w*)\s*\(", s))
+
+
+def _len_bars(s):
+    """`|X|` -> `len(X)` for an arbitrary balanced X, not just a bare name."""
+    out, i = "", 0
+    while i < len(s):
+        if s[i] == "|":
+            depth, j = 0, i + 1
+            while j < len(s):
+                c = s[j]
+                if c in "([":
+                    depth += 1
+                elif c in ")]":
+                    depth -= 1
+                elif c == "|" and depth == 0:
+                    break
+                j += 1
+            if j < len(s):
+                out += "len(" + _len_bars(s[i + 1:j]) + ")"
+                i = j + 1
+                continue
+        out += s[i]
+        i += 1
+    return out
+
+
+def _balanced_arg(s, i):
+    """Text of the parenthesised argument starting at s[i] == '(' , and the index after it."""
+    depth, j = 0, i
+    while j < len(s):
+        if s[j] == "(":
+            depth += 1
+        elif s[j] == ")":
+            depth -= 1
+            if depth == 0:
+                return s[i + 1:j], j + 1
+        j += 1
+    return None, None
+
+
+def _prelude_calls(s):
+    """Rewrite the prelude functions that show up inside preconditions.
+
+    Without these the clause hits the unknown-call guard and is reported
+    `unchecked` -- which reads as "needs a human", not "checked".
+    """
+    reps = [("ParseInts(SplitWs(", "PARSEINTSPLIT"),
+            ("ParseInts(", "PARSEINTS"), ("SplitWs(", "SPLITWS"),
+            ("ParseInt(", "PARSEINT"), ("SumSeq(", "SUMSEQ")]
+    changed = True
+    while changed:
+        changed = False
+        for name, _ in reps:
+            i = s.find(name)
+            if i < 0:
+                continue
+            open_at = i + len(name) - 1
+            if name == "ParseInts(SplitWs(":
+                open_at = i + len("ParseInts(SplitWs") - len("SplitWs")
+                arg, end = _balanced_arg(s, i + len("ParseInts") )
+                if arg is None:
+                    return s
+                inner, _ = _balanced_arg(arg, arg.find("("))
+                if inner is None:
+                    return s
+                s = s[:i] + f"[int(_t) for _t in ({inner}).split()]" + s[end:]
+            else:
+                arg, end = _balanced_arg(s, open_at)
+                if arg is None:
+                    return s
+                body = {"ParseInts(": f"[int(_t) for _t in ({arg})]",
+                        "SplitWs(": f"({arg}).split()",
+                        "ParseInt(": f"int({arg})",
+                        "SumSeq(": f"sum({arg})"}[name]
+                s = s[:i] + body + s[end:]
+            changed = True
+            break
+    return s
+
+
 def to_python(clause, bound=()):
     """Translate one Dafny precondition into a Python expression over `I`."""
     s = clause
-    # Guard first, on the ORIGINAL text: a call to a Dafny function we cannot
-    # evaluate. Doing this after the |x| -> len(...) rewrite would match our own
-    # generated `len(`.
-    if re.search(r"(?<![|\w])[A-Za-z_]\w*\s*\(", s):
+    # A call to a Dafny function we cannot evaluate makes the clause
+    # untranslatable. Checked after the prelude rewrite, against a whitelist of
+    # the calls that rewrite itself emits -- see _unknown_call.
+    if _unknown_call(_prelude_calls(_mask_literals(s)[0])):
         return None
     m = re.match(r"forall (\w+) :: 0 <= \1 < (\|\w+\||\w+) ==> (.+)$", s)
     if m:
@@ -74,22 +185,63 @@ def to_python(clause, bound=()):
         inner = to_python(body, tuple(bound) + (var,))
         if inner is None:
             return None
-        hi_py = (f"len(I.{hi[1:-1]})" if hi.startswith("|") else f"I.{hi}")
+        hi_py = (f"len(I.{unrename(hi[1:-1])})" if hi.startswith("|")
+                 else f"I.{unrename(hi)}")
         return f"all(({inner}) for {var} in range({hi_py}))"
-    s = re.sub(r"\|(\w+)\[(\w+)\]\|", r"len(\1[\2])", s)
-    s = re.sub(r"\|(\w+)\|", r"len(\1)", s)
-    s = re.sub(r"(\w+)\[(\w+)\]\.(\d)", r"\1[\2][\3]", s)
-
+    # exists over an index range
+    m = re.match(r"exists (\w+) :: 0 <= \1 < (\|\w+\||\w+) && (.+)$", s)
+    if m:
+        var, hi, body = m.groups()
+        inner = to_python(body, tuple(bound) + (var,))
+        if inner is None:
+            return None
+        hi_py = (f"len(I.{unrename(hi[1:-1])})" if hi.startswith("|")
+                 else f"I.{unrename(hi)}")
+        return f"any(({inner}) for {var} in range({hi_py}))"
+    # quantifier over an arbitrary numeric range
+    m = re.match(r"(forall|exists) (\w+) :: (.+?) <= \2 (<=?) (.+?) (?:==>|&&) (.+)$", s)
+    if m:
+        kind, var, lo, op, hi, body = m.groups()
+        parts = [to_python(x, tuple(bound) + (var,)) for x in (lo, hi, body)]
+        if any(x is None for x in parts):
+            return None
+        lo_py, hi_py, inner = parts
+        stop = f"({hi_py}) + 1" if op == "<=" else f"({hi_py})"
+        fn = "all" if kind == "forall" else "any"
+        return f"{fn}(({inner}) for {var} in range({lo_py}, {stop}))"
+    # quantifier over the ELEMENTS of a sequence, not its indices
+    m = re.match(r"(forall|exists) (\w+) :: \2 in (\w+) (?:==>|&&) (.+)$", s)
+    if m:
+        kind, var, xs, body = m.groups()
+        inner = to_python(body, tuple(bound) + (var,))
+        if inner is None:
+            return None
+        fn = "all" if kind == "forall" else "any"
+        return f"{fn}(({inner}) for {var} in I.{unrename(xs)})"
+    # implication at the top level
+    m = re.match(r"(.+?) ==> (.+)$", s)
+    if m and "::" not in m.group(1):
+        a, b = (to_python(x, bound) for x in m.groups())
+        if a is None or b is None:
+            return None
+        return f"((not ({a})) or ({b}))"
     s = s.replace("&&", " and ").replace("||", " or ")
+    s = _prelude_calls(s)
+    s = _len_bars(s)
+    s = re.sub(r"(\w+)\[(\w+)\]\.(\d)", r"\1[\2][\3]", s)
+    if _unknown_call(_mask_literals(s)[0]):
+        return None
     # bare identifiers that are not python keywords/numbers -> Input fields
     def field(mo):
         w = mo.group(0)
-        if w in ("and", "or", "not", "len", "all", "range", "I", "true",
-                 "false") or w in bound:
+        if w in ("and", "or", "not", "in", "if", "else", "for", "len", "all",
+                 "any", "int", "sum", "abs", "max", "min", "range", "I",
+                 "true", "false", "_t") or w in bound:
             return w
         return f"I.{unrename(w)}"
+    s, lits = _mask_literals(s)
     s = re.sub(r"(?<![.\w])[a-zA-Z_]\w*(?![\w(])", field, s)
-    return s
+    return _unmask_literals(s, lits)
 
 
 def run(sids):

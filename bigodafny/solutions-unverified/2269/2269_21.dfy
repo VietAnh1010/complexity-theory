@@ -25,11 +25,16 @@ method Solve(s: string) returns (output: string)
   var r := 0;
   var i := |s|;
   while i > r
+    invariant 0 <= r
+    invariant 0 <= i <= |s|
     decreases i
   {
     var j := 0;
     var found := false;
     while j < i - r && !found
+      invariant 0 <= j
+      invariant 0 <= r
+      invariant 0 <= i <= |s|
       decreases (i - r) - j
     {
       var t := s[j..i];
@@ -50,6 +55,8 @@ function IsPalindrome269(t: string): bool
 }
 
 function IsPalindromeFrom269(t: string, lo: int, hi: int): bool
+  requires 0 <= lo
+  requires hi < |t|
   decreases hi - lo
 {
   if lo >= hi then true
