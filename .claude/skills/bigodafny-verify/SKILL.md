@@ -71,8 +71,15 @@ split -l 20 -d -a 2 --additional-suffix=.txt /tmp/pool batches/verifyN/w_
     5. Nested/ragged shape: `forall k :: 0 <= k < |xs| ==> |xs[k]| >= 2`.
     6. Carry a searched index forward: `invariant idx == -1 || 0 <= idx < p`.
     7. `Prelude.FloorDiv(a, b)` requires `b != 0`; establish it.
-    8. `Prelude.Sort`/`SortInts`/`SortStrings` already carry
-       `ensures |Sort(s, less)| == |s|`. Do not hand-roll a length lemma.
+    8. `Prelude.Sort`/`SortInts`/`SortStrings` carry `ensures |Sort(s,less)|
+       == |s|`, and the prelude lemmas `SortKeepsElems`, `SortIntsKeepsElems`,
+       `SortStringsKeepsElems`, `SortIsPermutation` give you the contents back
+       across a sort. Call the lemma; do not hand-roll one. State the fact you
+       need in MEMBERSHIP form (`forall x :: x in arr ==> P(x)`), not indexed
+       form -- that is what the lemma delivers.
+    9. `Prelude.MaxSeq`/`MinSeq` require `|s| > 0` and have NO membership
+       postcondition. If you need `MaxSeq(s) in s`, prove it locally by
+       induction on `MaxSeqFrom`.
 
     # Rules, in priority order
     - **NEVER use `assume`.** It silences the obligation instead of discharging
@@ -139,6 +146,11 @@ python3 difftest.py --only <the loose ids among them>
 `precheck.py` translates each Dafny `requires` into Python and evaluates it
 against every stored input. A clause that fails is reverted — not argued with.
 
+**Read its four counters, not just VIOLATED.** `unchecked` means the shape did
+not translate; `no-data` means it translated and then raised on every input.
+Both are "not checked", and neither is a pass. A batch that reports
+`ok 3, no-data 2` has had two preconditions wave through.
+
 **A precondition is how a verification pass fakes itself.** Narrow the contract
 far enough and the obligation is trivial. That is why step 3 is not optional and
 why the agent is told the parent will run it.
@@ -169,6 +181,10 @@ prefix-sum argument, not a loop invariant. Left unverified deliberately.
 - `1944_50`, hand-written carefully to prove the pipeline end-to-end and passing
   101 tests, fails a postcondition.
 - `577_509`'s precondition is the problem's stated constraint verbatim
-  (`1 <= n <= 10^9`); three generated tests feed `n = 1000001000`. The
-  precondition is right and the test data is out of spec. Third such case, after
-  `827_148` and `1254_187`.
+  (`1 <= n <= 10^9`); three generated tests feed `n = 1000001000`. An earlier
+  wave kept it on that basis and a later one dropped it: **the rule is that a
+  precondition must hold on every stored input**, because the row ships with
+  every tier. Apply it uniformly rather than arguing the data is wrong.
+- Three rows have now tried `requires exists k :: <the answer exists>`.
+  `1332_41`'s failed on a *private* test, which validate.py does gate on. Treat
+  any existential precondition as suspect until precheck clears it.

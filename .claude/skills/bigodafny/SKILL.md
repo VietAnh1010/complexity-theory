@@ -53,6 +53,11 @@ benchmark and load-bearing for this dataset.
 | `precheck.py` | every added `requires` holds on real inputs | anything with `requires` |
 | `siblings.py` | same-problem rows converged despite different labels | everything |
 
+`precheck.py` prints four counters. `ok` and `VIOLATED` are verdicts;
+`unchecked` (shape did not translate) and `no-data` (translated, then raised on
+every input) both mean **not checked**. Treating them as passes is how a gate
+stops gating — it happened, and hid four real violations.
+
 `validate.py` is the **wrong** gate for `loose` rows: their problems accept
 several correct answers, so the stored output is one of them and even the
 original Python fails a byte-diff against it. Use `difftest.py` there.
@@ -94,3 +99,12 @@ Sub-skills: `bigodafny-translate`, `bigodafny-verify`, `bigodafny-prove`.
   your logic is at fault.
 - Asking for verification **while translating** gets 97.5%; retrofitting later
   also reached 97.5%, but only after the rows were written.
+- **A gate with a bug is worse than no gate**, because it reports success.
+  `precheck.py` had four: it swallowed `//` comments into the clause, rewrote
+  char literals like `'A'` into field lookups (producing false VIOLATIONs), hid
+  its own `no-data` count, and could not translate `exists`, element
+  quantifiers, or the prelude helpers. 29 of 444 clauses were passing without
+  ever being evaluated, and six genuinely bad preconditions were invisible.
+- `Sort` now carries permutation lemmas (`SortKeepsElems` and friends). Before
+  that, every fact about a sequence's contents was lost across a sort and rows
+  hand-wrote the same lemma over and over.
