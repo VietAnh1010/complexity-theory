@@ -23,7 +23,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from bound import CLASSES, same_class                             # noqa: E402
+from bound import CLASSES, direction, same_class                  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 RUNS = HERE / "runs"
@@ -32,12 +32,30 @@ FIELDS = ["run_id", "arm", "sid", "problem_id", "label", "split", "model",
           "difficulty_static", "difficulty_measured", "drift", "drift_kind",
           "guess", "guess_correct", "verdict",
           "proved", "bound_class", "bound_shape", "bound_ensures",
-          "label_match", "added_requires",
+          "label_match", "direction", "degenerate", "added_requires",
           "gate_verify", "gate_no_assume", "gate_skeleton", "gate_behaviour",
           "gate_requires", "requires_detail",
           "code_identical", "added_exec_lines", "assumes",
           "dafny_calls", "tool_calls", "wall_s", "output_tokens",
           "leak_attempts", "attempts", "agent_id", "notes"]
+
+
+def degenerate(bound_class, ex):
+    """A constant bound on a program that loops over its input.
+
+    If the problem statement caps a value numerically -- `1 <= n <= 10^9` --
+    then every loop it controls runs a bounded number of times and `steps <= 2e10`
+    is true, verifiable, and says nothing. One blind agent proved exactly that
+    for a row whose labeled counterpart proved `steps <= n + 3`.
+
+    The guide tells agents to fold a statement's cap into the constant when a
+    loop is otherwise unbounded, which is right; folding it in until the bound
+    stops mentioning the input at all is where it becomes vacuous. Flagged, and
+    never counted as refuting a label.
+    """
+    if bound_class != "O(1)" or not ex:
+        return False
+    return (ex.get("features", {}).get("loops", 0) or 0) > 0
 
 
 def measured_difficulty(dafny_calls, wall_s, proved):
@@ -120,6 +138,8 @@ def rows(run_id):
             "bound_shape": g.get("bound_shape"),
             "bound_ensures": g.get("bound_ensures"),
             "label_match": g.get("label_match"),
+            "direction": direction(g.get("bound_class"), g["label"]),
+            "degenerate": degenerate(g.get("bound_class"), man.get(g["sid"])),
             "added_requires": "; ".join(res.get("added_requires") or []),
             "gate_verify": (g.get("gate_verify") or {}).get("ok"),
             "gate_no_assume": g.get("gate_no_assume"),
@@ -197,24 +217,36 @@ def report(rs):
         w("")
 
     w("## Where a passing proof disagrees with the label\n")
-    w("Split by whether the TRANSLATION drifts from its Python. A proof is")
-    w("about the Dafny; where the two differ in shape, a disagreement with the")
-    w("label is a fact about this dataset's translation, not about BigOBench.\n")
-    dis = [r for r in rs if r["proved"] and r["label_match"] is False]
-    w(f"- disagreements on rows with NO drift signal: "
-      f"**{sum(1 for r in dis if not r['drift'])}**")
-    w(f"- disagreements on rows WITH a drift signal:  "
-      f"**{sum(1 for r in dis if r['drift'])}**\n")
-    if dis:
-        w("| arm | sid | label | proved | drift | ensures |")
-        w("|---|---|---|---|---|---|")
-        for r in dis:
-            w(f"| {r['arm']} | `{r['sid']}` | `{r['label']}` | "
-              f"`{r['bound_class']}` | {r['drift_kind'] or '-'} | "
-              f"`{r['bound_ensures']}` |")
-    else:
-        w("None.")
-    w("")
+    w("A proof gives an UPPER bound, so the direction of a disagreement decides")
+    w("what it means. Only a bound strictly tighter than the label contradicts")
+    w("it -- an n log n program also satisfies steps <= c*n^2, so a looser bound")
+    w("is consistent with the label and carries no news. An agent charging a seq")
+    w("append flatly produces exactly that kind of loose bound.\n")
+    dis = [r for r in rs if r["proved"] and r["label_match"] is False
+           and not r["degenerate"]]
+    deg = [r for r in rs if r["degenerate"]]
+    if deg:
+        w(f"**{len(deg)} bound(s) excluded as degenerate**: a constant bound on a")
+        w("program that loops over its input, bought by folding the statement's")
+        w("numeric cap into the constant. True, verifiable, and vacuous.\n")
+        for r in deg:
+            w(f"- {r['arm']} `{r['sid']}` (label `{r['label']}`): "
+              f"`{r['bound_ensures']}`")
+        w("")
+    for kind, gloss in (
+            ("tighter", "**refutes the label** -- provably cheaper than claimed"),
+            ("same-rank", "same growth rank, different naming of the sizes"),
+            ("looser", "consistent with the label; the proof is loose, not news")):
+        g = [r for r in dis if r["direction"] == kind]
+        w(f"### {kind}: {len(g)} -- {gloss}\n")
+        if g:
+            w("| arm | sid | label | proved | drift | ensures |")
+            w("|---|---|---|---|---|---|")
+            for r in g:
+                w(f"| {r['arm']} | `{r['sid']}` | `{r['label']}` | "
+                  f"`{r['bound_class']}` | {r['drift_kind'] or '-'} | "
+                  f"`{r['bound_ensures']}` |")
+        w("")
 
     w("## Gate failures\n")
     w("| gate | labeled | blind |")

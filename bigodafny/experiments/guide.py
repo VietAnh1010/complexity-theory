@@ -86,6 +86,17 @@ lemma MulDistrib(a: nat, b: nat, k: nat, L: nat) requires a + b == k
   ensures a * L + b * L == k * L {}
 ```
 
+## The bound must still mention the input
+
+A problem statement that caps a value -- `1 <= n <= 10^9` -- makes every loop it
+controls run a bounded number of times, so `steps <= 20000000000` is provable
+for almost anything here. It is also worthless: it describes no relationship
+between input and work. A bound whose expression does not mention the input at
+all is rejected unless the method genuinely has no input-dependent loop.
+
+State the bound in the input's size, and put the cap in the constant factor --
+`steps <= 1000 * n + 20`, not `steps <= 20000000000`.
+
 ## When there is no bound
 
 Some loops are data-dependent and have no bound in the input *size* at all --

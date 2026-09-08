@@ -71,6 +71,9 @@ something. The pilot lost three of its four examples that way.
   bound bought by narrowing the problem is not a bound.
 - Constants are free. `steps <= 7 * n + 12` establishes linear. Do not tune
   them; tuning wastes the run.
+- The bound must mention the input. A statement that caps a value makes
+  `steps <= 20000000000` provable for almost any of these, and it says nothing.
+  Put the cap in the constant factor, not in place of the input.
 
 # result.json first, then the proof
 

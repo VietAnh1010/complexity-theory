@@ -78,6 +78,45 @@ def canon(s):
     return s
 
 
+# Coarse growth rank, used to give a disagreement a DIRECTION.
+#
+# A proof establishes an UPPER bound. So `proved O(n**2)` against a label of
+# `O(nlogn)` is not a refutation -- an n log n algorithm also satisfies
+# steps <= c*n^2, and the proof may simply be loose (an agent charging a seq
+# append flatly produces exactly this). Only a bound STRICTLY TIGHTER than the
+# label contradicts it, because BigOBench's labels are measured, and so meant
+# as the class the program actually is, not merely an upper bound on it.
+#
+# Ranked with n = m = s, which is why O(n) and O(n+m) share a rank, as do
+# O(n*m) and O(n**2).
+RANK = {
+    "O(1)": 0,
+    "O(logn)": 1,
+    "O(n)": 2, "O(n+m)": 2,
+    "O(nlogn)": 3, "O(n+mlogm)": 3, "O(nlogn+mlogm)": 3, "O(n+m)log(n+m)": 3,
+    "O(n*m)": 4, "O(n**2)": 4, "O(n**2+m**2)": 4,
+}
+
+
+def direction(proved, label):
+    """How a proved bound stands against a claimed class.
+
+    'tighter'      -- provably cheaper than claimed: refutes the label.
+    'looser'       -- consistent with the label; the proof carries no news.
+    'same-rank'    -- same growth rank, different spelling of the variables.
+    'equal'        -- the same class.
+    None           -- one side is missing or unclassified.
+    """
+    if not proved or not label or proved == "unclassified":
+        return None
+    if same_class(proved, label):
+        return "equal"
+    a, b = RANK.get(canon(proved)), RANK.get(canon(label))
+    if a is None or b is None:
+        return None
+    return "tighter" if a < b else ("looser" if a > b else "same-rank")
+
+
 def _lg(x):
     return max(1.0, math.ceil(math.log2(max(2.0, x))))
 
