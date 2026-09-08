@@ -33,6 +33,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(v_0: int, v_1: string) returns (output: string)
+  requires 1 <= v_0 <= 1000
 {
   var sorted := Sort(v_1, (a: char, b: char) => a < b);
   var len := |sorted|;
@@ -42,6 +43,8 @@ method Solve(v_0: int, v_1: string) returns (output: string)
     var groups: seq<(char,int)> := [];
     var i := 0;
     while i < len
+      invariant 0 <= i <= len
+      invariant forall k :: 0 <= k < |groups| ==> groups[k].1 >= 1
       decreases len - i
     {
       var c := sorted[i];
@@ -57,6 +60,8 @@ method Solve(v_0: int, v_1: string) returns (output: string)
     var ans: string := "";
     var j := 0;
     while j < |groups|
+      invariant 0 <= j <= |groups|
+      invariant forall k :: 0 <= k < |groups| ==> groups[k].1 >= 1
       decreases |groups| - j
     {
       var pr := groups[j];

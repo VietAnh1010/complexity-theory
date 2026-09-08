@@ -29,6 +29,13 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+function Pow2(e: nat): int
+  ensures Pow2(e) >= 1
+  decreases e
+{
+  if e == 0 then 1 else 2 * Pow2(e - 1)
+}
+
 method Solve(a: int, b: int) returns (output: string)
 {
   var l := 2;
@@ -38,7 +45,13 @@ method Solve(a: int, b: int) returns (output: string)
   var ans := 0;
   var done := false;
   while !done
-    decreases (if powL - 1 - powPos > b then 0 else b - (powL - 1 - powPos) + 1)
+    invariant l >= 2
+    invariant 0 <= pos <= l - 2
+    invariant powL == Pow2(l)
+    invariant powPos == Pow2(pos)
+    invariant powPos >= 1
+    invariant powL >= 4
+    decreases (if done then 0 else 1), (if powL - 1 - powPos > b then 0 else b - (powL - 1 - powPos) + 1)
   {
     var n := powL - 1 - powPos;
     if n > b {
@@ -48,6 +61,8 @@ method Solve(a: int, b: int) returns (output: string)
         ans := ans + 1;
       }
       if pos > 0 {
+        assert powPos == Pow2(pos) && pos - 1 >= 0;
+        assert Pow2(pos) == 2 * Pow2(pos - 1);
         pos := pos - 1;
         powPos := powPos / 2;
       } else {

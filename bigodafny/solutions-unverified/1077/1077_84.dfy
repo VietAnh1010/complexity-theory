@@ -37,6 +37,7 @@ method Solve(n: int) returns (output: string)
 
 
 function Factorial(a: int): int
+  ensures Factorial(a) >= 1
   decreases if a < 0 then 0 else a
 {
   if a <= 0 then 1 else a * Factorial(a - 1)

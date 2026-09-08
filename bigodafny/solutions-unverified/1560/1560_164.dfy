@@ -26,11 +26,14 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, pairs: seq<(int, int)>) returns (output: string)
+  requires |pairs| == n
 {
   var trees := pairs;
   var felled := if n < 2 then n else 2;
   var i := 1;
   while i < n - 1
+    invariant 1 <= i
+    invariant |trees| == n
     decreases n - 1 - i
   {
     var left := trees[i].0 - trees[i].1;

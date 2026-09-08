@@ -17,10 +17,13 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(N: int, a_list: seq<int>) returns (output: string)
+  requires N >= 0
+  requires forall k :: 0 <= k < |a_list| ==> 1 <= a_list[k] <= N
 {
   var l := new int[N + 1];
   var ii := 0;
   while ii <= N
+    invariant 0 <= ii <= N + 1
     decreases N - ii
   {
     l[ii] := N;
@@ -28,6 +31,8 @@ method Solve(N: int, a_list: seq<int>) returns (output: string)
   }
   var idx := 0;
   while idx < |a_list|
+    invariant 0 <= idx <= |a_list|
+    invariant l.Length == N + 1
     decreases |a_list| - idx
   {
     var c := a_list[idx];
@@ -37,6 +42,8 @@ method Solve(N: int, a_list: seq<int>) returns (output: string)
   var minVal := l[0];
   var kk := 1;
   while kk <= N
+    invariant 1 <= kk <= N + 1
+    invariant l.Length == N + 1
     decreases N - kk
   {
     if l[kk] < minVal { minVal := l[kk]; }

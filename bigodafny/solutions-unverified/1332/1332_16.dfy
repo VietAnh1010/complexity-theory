@@ -56,18 +56,59 @@ import opened Prelude
 
 function Lowbit(x: int): int
   requires x > 0
+  ensures 0 < Lowbit(x) <= x
   decreases x
 {
   if x % 2 != 0 then 1 else 2 * Lowbit(x / 2)
 }
 
 function DedupSorted(s: seq<int>): seq<int>
+  ensures forall v :: v in s <==> v in DedupSorted(s)
+  ensures |DedupSorted(s)| <= |s|
   decreases |s|
 {
   if |s| == 0 then []
   else if |s| == 1 then [s[0]]
   else if s[0] == s[1] then DedupSorted(s[1..])
   else [s[0]] + DedupSorted(s[1..])
+}
+
+lemma MergeMultiset(a: seq<int>, b: seq<int>, less: (int, int) -> bool)
+  ensures multiset(Merge(a, b, less)) == multiset(a) + multiset(b)
+  decreases |a| + |b|
+{
+  if |a| == 0 {
+  } else if |b| == 0 {
+  } else if less(b[0], a[0]) {
+    MergeMultiset(a, b[1..], less);
+    assert b == [b[0]] + b[1..];
+  } else {
+    MergeMultiset(a[1..], b, less);
+    assert a == [a[0]] + a[1..];
+  }
+}
+
+lemma SortMultiset(s: seq<int>, less: (int, int) -> bool)
+  ensures multiset(Sort(s, less)) == multiset(s)
+  decreases |s|
+{
+  if |s| <= 1 {
+  } else {
+    SortMultiset(s[..|s| / 2], less);
+    SortMultiset(s[|s| / 2..], less);
+    MergeMultiset(Sort(s[..|s| / 2], less), Sort(s[|s| / 2..], less), less);
+    assert s == s[..|s| / 2] + s[|s| / 2..];
+  }
+}
+
+lemma SortIntsElems(s: seq<int>)
+  ensures forall v :: v in s <==> v in SortInts(s)
+{
+  assert SortInts(s) == Sort(s, (x, y) => x < y);
+  SortMultiset(s, (x, y) => x < y);
+  assert multiset(SortInts(s)) == multiset(s);
+  assert forall v :: v in s <==> v in multiset(s);
+  assert forall v :: v in SortInts(s) <==> v in multiset(SortInts(s));
 }
 
 method SolveX(n: int, a: seq<int>, x: int) returns (res: int)
@@ -87,26 +128,36 @@ method SolveX(n: int, a: seq<int>, x: int) returns (res: int)
     i := i + 1;
   }
   var vals := DedupSorted(SortInts(tmp2));
+  SortIntsElems(tmp2);
+  assert forall v :: v in tmp2 <==> v in vals;
   var comp: map<int, int> := map[];
   var j := 0;
   while j < |vals|
     invariant 0 <= j <= |vals|
+    invariant comp.Keys == set k | 0 <= k < j :: vals[k]
+    invariant forall v :: v in comp ==> 1 <= comp[v] <= j
     decreases |vals| - j
   {
     comp := comp[vals[j] := j + 1];
     j := j + 1;
   }
+  assert comp.Keys == set v | v in vals;
   var bitArr: seq<int> := seq(n + 2, _ => 0);
   res := 0;
   var t := 0;
   while t < |tmp2|
     invariant 0 <= t <= |tmp2|
+    invariant |bitArr| == n + 2
     decreases |tmp2| - t
   {
+    assert tmp2[t] in tmp2;
+    assert tmp2[t] in vals;
     var c := comp[tmp2[t]];
+    assert 1 <= c <= |vals| <= |tmp2|;
     var qidx := c;
     var sm := 0;
     while qidx > 0
+      invariant 0 <= qidx <= n + 1
       decreases qidx
     {
       sm := sm + bitArr[qidx];
@@ -115,6 +166,8 @@ method SolveX(n: int, a: seq<int>, x: int) returns (res: int)
     res := res + sm;
     var uidx := c;
     while uidx <= n + 1
+      invariant c <= uidx
+      invariant |bitArr| == n + 2
       decreases n + 1 - uidx
     {
       bitArr := bitArr[uidx := bitArr[uidx] + 1];

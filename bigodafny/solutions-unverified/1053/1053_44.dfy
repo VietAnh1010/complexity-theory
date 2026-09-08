@@ -26,6 +26,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(N: int, a_list: seq<int>) returns (output: string)
+  requires |a_list| == N
 {
   var pairs := seq(|a_list|, i requires 0 <= i < |a_list| => (a_list[i], i));
   var sortedPairs := Sort(pairs, (x: (int, int), y: (int, int)) => x.0 < y.0 || (x.0 == y.0 && x.1 < y.1));
@@ -34,6 +35,8 @@ method Solve(N: int, a_list: seq<int>) returns (output: string)
   var maxD := 0;
   var i := 0;
   while i < N - 1
+    invariant 0 <= i
+    invariant |idxSeq| == N
     decreases N - 1 - i
   {
     if idxSeq[i] < idxSeq[i + 1] {

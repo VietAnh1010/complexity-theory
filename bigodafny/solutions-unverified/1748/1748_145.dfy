@@ -28,8 +28,35 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+ghost function Suf1748(s: seq<int>, i: nat): int
+  requires i <= |s|
+  decreases |s| - i
+{ if i == |s| then 0 else s[i] + Suf1748(s, i + 1) }
+
+lemma SumFromIsSuf1748(s: seq<int>, i: nat, acc: int)
+  requires i <= |s|
+  ensures SumFrom(s, i, acc) == acc + Suf1748(s, i)
+  decreases |s| - i
+{ if i < |s| { SumFromIsSuf1748(s, i + 1, acc + s[i]); } }
+
+lemma SufNonNeg1748(s: seq<int>, i: nat)
+  requires i <= |s|
+  requires forall k :: 0 <= k < |s| ==> s[k] >= 0
+  ensures Suf1748(s, i) >= 0
+  decreases |s| - i
+{ if i < |s| { SufNonNeg1748(s, i + 1); } }
+
+// Codeforces 1256C: platform lengths are non-negative and fit in the n cells.
+// (the statement says >= 1; 26 generated tests feed 0, so >= 0 is what is provable
+// AND true of the data -- s >= -1 carries the extra case.)
 method Solve(a: int, b: int, c: int, d_list: seq<int>) returns (output: string)
+  requires a >= 0
+  requires 0 <= b <= |d_list|
+  requires c >= 1
+  requires forall k :: 0 <= k < |d_list| ==> d_list[k] >= 0
+  requires SumSeq(d_list) <= a
 {
+  SumFromIsSuf1748(d_list, 0, 0);
   var n := a;
   var m := b;
   var d := c;
@@ -38,11 +65,22 @@ method Solve(a: int, b: int, c: int, d_list: seq<int>) returns (output: string)
   var s := 0;
   var i := 0;
   while i < m
+    invariant 0 <= i <= m
+    invariant |ans| == n + 1
+    invariant ss == Suf1748(d_list, i)
+    invariant ss <= SumSeq(d_list)
+    invariant s >= -1
     decreases m - i
   {
+    SufNonNeg1748(d_list, i);
+    SufNonNeg1748(d_list, i + 1);
+    assert ss == d_list[i] + Suf1748(d_list, i + 1);
     var pos := if s + d <= n + 1 - ss then s + d else n + 1 - ss;
+    assert 0 <= pos && pos + d_list[i] <= n + 1;
     var j := pos;
     while j < pos + d_list[i]
+      invariant pos <= j <= pos + d_list[i]
+      invariant |ans| == n + 1
       decreases pos + d_list[i] - j
     {
       ans := ans[j := i + 1];
@@ -58,6 +96,7 @@ method Solve(a: int, b: int, c: int, d_list: seq<int>) returns (output: string)
     var parts: seq<string> := [];
     var k := 1;
     while k <= n
+      invariant 1 <= k
       decreases n - k + 1
     {
       parts := parts + [IntToString(ans[k])];

@@ -22,6 +22,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(a: int, b: int, c: int) returns (output: string)
+  requires b >= 1
 {
   var t := a * c;
   if FloorMod(t, b) == 0 {

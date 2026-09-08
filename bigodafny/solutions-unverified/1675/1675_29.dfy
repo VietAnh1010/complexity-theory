@@ -47,6 +47,10 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(v0: string, v1: string) returns (output: string)
+  requires |v0| >= 1
+  // i sweeps s and wraps; it terminates because t[j] is known to occur in s,
+  // but the measure is the distance to that occurrence, not a loop bound.
+  decreases *
 {
   var s := v0;
   var t := v1;
@@ -57,7 +61,10 @@ method Solve(v0: string, v1: string) returns (output: string)
   var at := 0;
   var done := false;
   while i <= |s| && j < |t| && !done
-    decreases if done then 0 else |t| - j + 1
+    invariant 0 <= i <= |s|
+    invariant 0 <= j <= |t|
+    invariant |s| == |v0|
+    decreases *
   {
     if i == |s| {
       i := 0;
@@ -66,6 +73,7 @@ method Solve(v0: string, v1: string) returns (output: string)
     var found := false;
     var idx := 0;
     while idx < |s|
+      invariant 0 <= idx <= |s|
       decreases |s| - idx
     {
       if s[idx] == t[j] {

@@ -68,6 +68,7 @@ method Solve(n: int, strings: seq<string>) returns (output: string)
     } else {
       var k := 0;
       while k < |a| && IsAlpha(a[k])
+        invariant 0 <= k <= |a|
         decreases |a| - k
       {
         k := k + 1;

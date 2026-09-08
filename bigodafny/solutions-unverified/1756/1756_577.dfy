@@ -17,10 +17,12 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, numbers: seq<int>) returns (output: string)
+  requires n <= |numbers|
 {
   var c := 0;
   var i := 1;
   while i < n
+    invariant 1 <= i
     decreases n - i
   {
     var prefix := numbers[0..i];

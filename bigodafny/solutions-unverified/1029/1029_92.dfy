@@ -27,6 +27,7 @@ import opened Prelude
 
 function BitOr(a: int, b: int): int
   requires a >= 0 && b >= 0
+  ensures BitOr(a, b) >= 0
   decreases a + b
 {
   if a == 0 then b
@@ -36,16 +37,24 @@ function BitOr(a: int, b: int): int
 
 
 method Solve(n: int, a_list: seq<int>, b_list: seq<int>) returns (output: string)
+  requires n >= 0
+  requires |a_list| == n
+  requires |b_list| == n
+  requires forall k :: 0 <= k < n ==> a_list[k] >= 0
+  requires forall k :: 0 <= k < n ==> b_list[k] >= 0
 {
   var maxi := 0;
   var l := 0;
   while l < n
+    invariant 0 <= l <= n
     decreases n - l
   {
     var sa := a_list[l];
     var sb := b_list[l];
     var r := l;
     while r < n
+      invariant l <= r <= n
+      invariant sa >= 0 && sb >= 0
       decreases n - r
     {
       sa := BitOr(sa, a_list[r]);

@@ -26,6 +26,8 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(N1: int, list1: seq<int>, N2: int, list2: seq<int>) returns (output: string)
+  requires 0 <= N1 <= |list1|
+  requires 0 <= N2 <= |list2|
 {
   var boys := SortInts(list1);
   var girls := SortInts(list2);
@@ -33,11 +35,16 @@ method Solve(N1: int, list1: seq<int>, N2: int, list2: seq<int>) returns (output
   var cnt := 0;
   var bi := 0;
   while bi < N1
+    invariant 0 <= bi
+    invariant |mark| == N2
+    invariant |boys| == |list1| && |girls| == |list2|
     decreases N1 - bi
   {
     var gj := 0;
     var matched := false;
     while gj < N2 && !matched
+      invariant 0 <= gj
+      invariant |mark| == N2
       decreases N2 - gj
     {
       if mark[gj] == 0 && AbsInt(boys[bi] - girls[gj]) <= 1 {

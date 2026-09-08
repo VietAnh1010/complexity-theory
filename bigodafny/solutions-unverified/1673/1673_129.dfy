@@ -22,12 +22,15 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, pairs: seq<seq<int>>) returns (output: string)
+  requires n <= |pairs|
+  requires forall k :: 0 <= k < |pairs| ==> |pairs[k]| >= 2
 {
   var sa := 0;
   var sg := 0;
   var pieces: seq<string> := [];
   var i := 0;
   while i < n
+    invariant 0 <= i
     decreases n - i
   {
     var a := pairs[i][0];

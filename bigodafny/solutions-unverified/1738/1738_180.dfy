@@ -30,6 +30,8 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(a: int, b: int, c: int) returns (output: string)
+  requires a >= 1
+  requires b >= 1
 {
   var d := c / a;
   var e := c / b;
@@ -49,6 +51,7 @@ method Solve(a: int, b: int, c: int) returns (output: string)
     var found := false;
     var k := 0;
     while k < |test|
+      invariant 0 <= k <= |test|
       decreases |test| - k
     {
       if test[k] == i * b { found := true; }

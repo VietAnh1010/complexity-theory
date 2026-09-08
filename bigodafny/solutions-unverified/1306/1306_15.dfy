@@ -36,6 +36,7 @@ function CountOccur1306b(a: seq<int>, v: int): int
 }
 
 function RemoveAll1306b(a: seq<int>, v: int): seq<int>
+  ensures |RemoveAll1306b(a, v)| <= |a|
   decreases |a|
 {
   if |a| == 0 then []

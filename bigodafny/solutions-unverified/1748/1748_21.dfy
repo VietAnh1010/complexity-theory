@@ -30,6 +30,8 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(a: int, b: int, c: int, d_list: seq<int>) returns (output: string)
+  // b is the number of blocks, one per entry of d_list
+  requires b <= |d_list|
 {
   var n := a;
   var m := b;
@@ -37,6 +39,7 @@ method Solve(a: int, b: int, c: int, d_list: seq<int>) returns (output: string)
   var res: seq<string> := [];
   var i := 0;
   while i < m
+    invariant 0 <= i
     decreases m - i
   {
     var ci := d_list[i];

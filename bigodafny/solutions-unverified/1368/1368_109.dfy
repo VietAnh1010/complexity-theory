@@ -49,7 +49,9 @@ method Solve(s: string) returns (output: string)
   var i := 0;
   var found := false;
   while i < n && !found
-    decreases n - i
+    invariant 0 <= i <= n
+    invariant 0 <= step <= n
+    decreases (if found then 0 else 1), n - i
   {
     if s[i] != 'a' {
       step := i;
@@ -63,7 +65,9 @@ method Solve(s: string) returns (output: string)
   i := step;
   found := false;
   while i < n && !found
-    decreases n - i
+    invariant 0 <= i <= n
+    invariant 0 <= step <= n
+    decreases (if found then 0 else 1), n - i
   {
     if s[i] != 'b' {
       step := i;
@@ -77,7 +81,8 @@ method Solve(s: string) returns (output: string)
   i := step;
   found := false;
   while i < n && !found
-    decreases n - i
+    invariant 0 <= i <= n
+    decreases (if found then 0 else 1), n - i
   {
     if s[i] != 'c' {
       flag := 0;

@@ -25,6 +25,7 @@ import opened Prelude
 
 function FirstDigitIndex(s: string, i: nat): nat
   requires i <= |s|
+  ensures i <= FirstDigitIndex(s, i) <= |s|
   decreases |s| - i
 {
   if i >= |s| then i
@@ -34,6 +35,8 @@ function FirstDigitIndex(s: string, i: nat): nat
 
 function DigitRunLen(s: string, i: nat): nat
   requires i <= |s|
+  ensures i + DigitRunLen(s, i) <= |s|
+  ensures forall j :: i <= j < i + DigitRunLen(s, i) ==> '0' <= s[j] <= '9'
   decreases |s| - i
 {
   if i < |s| && '0' <= s[i] <= '9' then 1 + DigitRunLen(s, i + 1) else 0
@@ -57,6 +60,9 @@ function NumToLetters(n: int): string
 
 function ParseIntFrom(s: string, i: nat, acc: int): int
   requires 0 <= i <= |s|
+  requires acc >= 0
+  requires forall k :: i <= k < |s| ==> '0' <= s[k] <= '9'
+  ensures ParseIntFrom(s, i, acc) >= 0
   decreases |s| - i
 {
   if i == |s| then acc
@@ -64,6 +70,8 @@ function ParseIntFrom(s: string, i: nat, acc: int): int
 }
 
 function ParseInt(s: string): int
+  requires forall k :: 0 <= k < |s| ==> '0' <= s[k] <= '9'
+  ensures ParseInt(s) >= 0
 {
   ParseIntFrom(s, 0, 0)
 }
@@ -91,6 +99,7 @@ method Solve(n: int, strings: seq<string>) returns (output: string)
     if isRC {
       var rowDigits := cell[1..1 + d1];
       var colDigits := cell[1 + d1 + 1..];
+      assert forall k :: 0 <= k < |colDigits| ==> '0' <= colDigits[k] <= '9';
       var colNum := ParseInt(colDigits);
       lines := lines + [NumToLetters(colNum) + rowDigits];
     } else {

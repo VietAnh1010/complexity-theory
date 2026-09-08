@@ -33,6 +33,8 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
+  requires |a_list| == n
+  requires n >= 1
 {
   var a := Sort(a_list, (x: int, y: int) => x > y);
   var low := a[0];
@@ -45,7 +47,8 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
     var i := 0;
     var brk := false;
     while i < n && t < mid && !brk
-      decreases n - i
+      invariant 0 <= i <= n
+      decreases !brk, n - i
     {
       if t >= a[i] {
         t := mid;

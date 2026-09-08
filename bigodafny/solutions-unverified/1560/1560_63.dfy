@@ -34,12 +34,16 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, pairs: seq<(int, int)>) returns (output: string)
+  requires |pairs| == n
+  requires n >= 1
 {
   var a := Sort(pairs, (p: (int, int), q: (int, int)) => p.0 < q.0 || (p.0 == q.0 && p.1 < q.1));
   var occ1 := a[0].0;
   var ans := 1;
   var j := 1;
   while j < n
+    invariant 1 <= j <= n
+    invariant |a| == n
     decreases n - j
   {
     var xi := a[j].0;

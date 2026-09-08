@@ -54,6 +54,9 @@ function ParseIntList(ss: seq<string>): seq<int>
 
 
 method Solve(n_str: string, a_list_str: string) returns (output: string)
+  requires var nums := ParseIntList(SplitWs(a_list_str));
+           var n := ParseInt(n_str);
+           n >= 0 && |nums| == n && forall k :: 0 <= k < |nums| ==> 1 <= nums[k] <= n
 {
   var n := ParseInt(n_str);
   var nums := ParseIntList(SplitWs(a_list_str));
@@ -62,6 +65,8 @@ method Solve(n_str: string, a_list_str: string) returns (output: string)
   var lastPos := seq(n + 1, _ => -1);
   var i := 0;
   while i < |nums|
+    invariant 0 <= i <= |nums|
+    invariant |firstPos| == n + 1
     decreases |nums| - i
   {
     var x := nums[i];
@@ -72,6 +77,8 @@ method Solve(n_str: string, a_list_str: string) returns (output: string)
   }
   i := 0;
   while i < |nums|
+    invariant 0 <= i <= |nums|
+    invariant |lastPos| == n + 1
     decreases |nums| - i
   {
     var x := nums[i];
@@ -82,12 +89,15 @@ method Solve(n_str: string, a_list_str: string) returns (output: string)
   var total := 0;
   i := 0;
   while i <= n
+    invariant 0 <= i <= n + 1
+    invariant |firstPos| == n + 1
     decreases n - i
   {
     var first := firstPos[i];
     var lo := 0;
     var hi := |sortedLast|;
     while lo < hi
+      invariant 0 <= lo <= hi <= |sortedLast|
       decreases hi - lo
     {
       var mid := (lo + hi) / 2;

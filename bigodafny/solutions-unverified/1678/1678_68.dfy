@@ -37,6 +37,15 @@ function GcdEx(a: int, b: int): (int, int, int)
     (r.1 - (b / a) * r.0, r.0, r.2)
 }
 
+// Dafny's % is Euclidean, so b % a is in [0, a) for a > 0; induct on a.
+lemma GcdExPos(a: int, b: int)
+  requires a >= 0 && b > 0
+  ensures GcdEx(a, b).2 > 0
+  decreases a
+{
+  if a != 0 { GcdExPos(b % a, a); }
+}
+
 function CeilDiv(p: int, q: int): int
   requires q > 0
 {
@@ -54,6 +63,7 @@ method Solve(rows: int, columns: int, value: int) returns (output: string)
   var x := r.0;
   var y := r.1;
   var g := r.2;
+  GcdExPos(a, b);
   if c % g != 0 {
     output := "No";
   } else {

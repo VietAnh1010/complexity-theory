@@ -33,11 +33,14 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(a: int, b: int, c: int) returns (output: string)
+  requires b >= 1
 {
   var res: seq<int> := [b];
   var val := b;
   var it := 2;
   while val < a * c
+    invariant it >= 2
+    invariant val == b * (it - 1)
     decreases a * c - val
   {
     val := b * it;
@@ -48,6 +51,8 @@ method Solve(a: int, b: int, c: int) returns (output: string)
   var h := |res| - 1;
   var ans := -1;
   while l <= h
+    invariant 0 <= l
+    invariant h <= |res| - 1
     decreases h - l
   {
     var mid := l + (h - l) / 2;

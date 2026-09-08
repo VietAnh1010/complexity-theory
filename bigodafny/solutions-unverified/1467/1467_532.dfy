@@ -24,7 +24,33 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+lemma DigitsAtLeast1(x: int)
+  requires x >= 0
+  ensures |IntToString(x)| >= 1
+  decreases x
+{
+  if x < 10 {
+  } else {
+    DigitsAtLeast1(x / 10);
+  }
+}
+
+lemma DigitsAtLeast2(x: int)
+  requires x >= 10
+  ensures |IntToString(x)| >= 2
+{
+  DigitsAtLeast1(x / 10);
+}
+
+lemma DigitsAtLeast3(x: int)
+  requires x >= 100
+  ensures |IntToString(x)| >= 3
+{
+  DigitsAtLeast2(x / 10);
+}
+
 method Solve(N: int) returns (output: string)
+  requires 1 <= N <= 1000
 {
   if N <= 9 {
     output := IntToString(N);
@@ -32,11 +58,13 @@ method Solve(N: int) returns (output: string)
     var num := FloorDiv(N - 10, 2) + 10;
     var mod := FloorMod(N - 10, 2);
     var s := IntToString(num);
+    DigitsAtLeast2(num);
     output := [s[mod]];
   } else {
     var num := FloorDiv(N - 10 - 180, 3) + 100;
     var mod := FloorMod(N - 10 - 180, 3);
     var s := IntToString(num);
+    DigitsAtLeast3(num);
     output := [s[mod]];
   }
 }

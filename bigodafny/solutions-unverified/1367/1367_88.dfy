@@ -24,6 +24,9 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, coordinates: seq<int>) returns (output: string)
+  requires n >= 0
+  requires n == |coordinates|
+  requires forall idx :: 1 <= idx < n ==> 0 <= coordinates[idx] <= idx
 {
   var b := seq(n + 1, i => 0);
   var res := 1;
@@ -32,6 +35,8 @@ method Solve(n: int, coordinates: seq<int>) returns (output: string)
   }
   var i := 2;
   while i <= n
+    invariant 2 <= i
+    invariant |b| == n + 1
     decreases n - i
   {
     var key := coordinates[i - 1];

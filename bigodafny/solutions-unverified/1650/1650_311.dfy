@@ -27,6 +27,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, pairs: seq<seq<string>>) returns (output: string)
+  requires forall k :: 0 <= k < |pairs| ==> |pairs[k]| >= 2
 {
   var left0 := 0;
   var left1 := 0;
@@ -34,6 +35,7 @@ method Solve(n: int, pairs: seq<seq<string>>) returns (output: string)
   var right1 := 0;
   var i := 0;
   while i < |pairs|
+    invariant 0 <= i <= |pairs|
     decreases |pairs| - i
   {
     if pairs[i][0] == "0" { left0 := left0 + 1; } else { left1 := left1 + 1; }

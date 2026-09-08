@@ -57,6 +57,8 @@ function Z(n: int): int
 }
 
 method Solve(a: int, b: int) returns (output: string)
+  requires a >= 1
+  requires b >= 0
 {
   output := IntToString(Z(b) - Z(a - 1));
 }

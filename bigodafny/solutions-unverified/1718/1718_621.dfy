@@ -36,6 +36,8 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(N1: int, list1: seq<int>, N2: int, list2: seq<int>) returns (output: string)
+  requires N1 <= |list1|
+  requires N2 <= |list2|
 {
   var a := SortInts(list1);
   var b := SortInts(list2);
@@ -43,6 +45,8 @@ method Solve(N1: int, list1: seq<int>, N2: int, list2: seq<int>) returns (output
   var ib := 0;
   var cnt := 0;
   while ia < N1 && ib < N2
+    invariant 0 <= ia && 0 <= ib
+    invariant |a| == |list1| && |b| == |list2|
     decreases N1 - ia + N2 - ib
   {
     if AbsInt(a[ia] - b[ib]) <= 1 {

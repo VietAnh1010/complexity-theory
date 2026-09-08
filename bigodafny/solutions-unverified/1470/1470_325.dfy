@@ -28,13 +28,16 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, k: int, a_list: seq<int>) returns (output: string)
+  requires |a_list| == n
 {
   var lo := 0;
   var hi := n - 1;
   var c := 0;
   var stop := false;
   while lo <= hi && !stop
-    decreases hi - lo + 1
+    invariant 0 <= lo
+    invariant hi <= n - 1
+    decreases !stop, hi - lo + 1
   {
     if a_list[lo] <= k {
       c := c + 1;

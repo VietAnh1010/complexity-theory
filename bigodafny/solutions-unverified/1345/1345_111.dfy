@@ -34,11 +34,14 @@ function ReverseString1345(s: string): string
 }
 
 method Solve(n: int, board: seq<string>) returns (output: string)
+  requires n >= 0
+  requires n == |board|
 {
   var half := n / 2;
   var ok := true;
   var i := 0;
   while i < half
+    invariant 0 <= i <= half
     decreases half - i
   {
     if ReverseString1345(board[n-1-i]) != board[i] { ok := false; }

@@ -27,6 +27,8 @@ method Solve(n: int) returns (output: string)
   var l := [1, 1];
   var i := 2;
   while i <= n
+    invariant 2 <= i
+    invariant |l| == i
     decreases n - i + 1
   {
     l := l + [l[i - 2] + l[i - 1]];
@@ -40,6 +42,7 @@ method Solve(n: int) returns (output: string)
     var found := false;
     var k := 0;
     while k < |l|
+      invariant 0 <= k <= |l|
       decreases |l| - k
     {
       if l[k] == j {

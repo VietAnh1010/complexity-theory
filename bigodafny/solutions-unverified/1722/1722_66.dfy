@@ -59,6 +59,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, lists: seq<seq<int>>) returns (output: string)
+  requires n <= |lists|
 {
   var i := 1;
   var ans := 0;
@@ -113,6 +114,7 @@ method Solve(n: int, lists: seq<seq<int>>) returns (output: string)
 }
 
 function Digits1722_66(i: int): seq<int>
+  ensures 1 <= |Digits1722_66(i)| <= 3
 {
   if i < 10 then [i]
   else if i < 100 then [i / 10, i % 10]

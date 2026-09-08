@@ -24,8 +24,13 @@ import opened Prelude
 method Solve(n: int) returns (output: string)
 {
   var fib := [0, 1];
+  // the seed [0,1] repeats 1 once, so the last term is not yet strictly
+  // increasing; the second component retires that one step.
   while fib[|fib| - 1] <= n
-    decreases n - fib[|fib| - 1] + 1
+    invariant |fib| >= 2
+    invariant fib[|fib| - 2] >= 0
+    invariant fib[|fib| - 1] >= 1
+    decreases n - fib[|fib| - 1] + 1, if fib[|fib| - 2] == 0 then 1 else 0
   {
     fib := fib + [fib[|fib| - 1] + fib[|fib| - 2]];
   }
@@ -37,6 +42,7 @@ method Solve(n: int) returns (output: string)
     var isFib := false;
     var k := 0;
     while k < |fib|
+      invariant 0 <= k <= |fib|
       decreases |fib| - k
     {
       if fib[k] == i {

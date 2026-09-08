@@ -33,10 +33,12 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, k: int, a_list: seq<int>) returns (output: string)
+  requires |a_list| == n
 {
   var idx1 := -1;
   var i := 0;
   while i < n && idx1 == -1
+    invariant 0 <= i <= n
     decreases n - i
   {
     if a_list[i] > k { idx1 := i; }
@@ -49,6 +51,7 @@ method Solve(n: int, k: int, a_list: seq<int>) returns (output: string)
     var found2 := false;
     var j := n - 1;
     while j >= 0 && !found2
+      invariant -1 <= j <= n - 1
       decreases j + 1
     {
       if a_list[j] > k { idx2 := j; found2 := true; }

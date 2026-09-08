@@ -21,11 +21,16 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, m: int, data: seq<seq<int>>) returns (output: string)
+  requires m >= 1
+  requires n >= 0
+  requires |data| == n
+  requires forall k :: 0 <= k < |data| ==> |data[k]| >= 2
 {
   var w := 0;
   var mm := 1;
   var i := 0;
   while i < n
+    invariant 0 <= i <= n
     decreases n - i
   {
     var l := data[i][0];

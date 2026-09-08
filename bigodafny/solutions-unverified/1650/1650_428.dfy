@@ -31,11 +31,14 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, pairs: seq<seq<string>>) returns (output: string)
+  // each line of input is a pair of tokens
+  requires forall k :: 0 <= k < |pairs| ==> |pairs[k]| >= 2
 {
   var l := 0;
   var p := 0;
   var i := 0;
   while i < |pairs|
+    invariant 0 <= i <= |pairs|
     decreases |pairs| - i
   {
     if pairs[i][0] == "1" { l := l + 1; }

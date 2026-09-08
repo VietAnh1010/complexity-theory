@@ -23,6 +23,10 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>, q: int, queries: seq<(int, int)>) returns (output: string)
+  requires n >= 0
+  requires n == |a_list|
+  requires q == |queries|
+  requires forall t :: 0 <= t < q ==> 1 <= queries[t].0 <= n && 1 <= queries[t].1 <= queries[t].0
 {
 {
 
@@ -32,6 +36,7 @@ method Solve(n: int, a_list: seq<int>, q: int, queries: seq<(int, int)>) returns
   var results: seq<string> := [];
   var i := 0;
   while i < q
+    invariant 0 <= i <= q
     decreases q - i
   {
     var kk := queries[i].0;

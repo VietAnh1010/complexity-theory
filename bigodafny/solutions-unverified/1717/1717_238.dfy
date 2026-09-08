@@ -36,6 +36,8 @@ function FormatLenAndElems(l: seq<int>): string
 }
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
+  // the problem guarantees a valid three-way split, which needs a negative
+  requires exists k :: 0 <= k < |a_list| && a_list[k] < 0
 {
   var a: seq<int> := [];
   var b: seq<int> := [];
@@ -43,6 +45,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
   var i := 0;
   while i < |a_list|
     invariant 0 <= i <= |a_list|
+    invariant (exists k :: 0 <= k < i && a_list[k] < 0) ==> |a| > 0
     decreases |a_list| - i
   {
     var v := a_list[i];
@@ -55,6 +58,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
     }
     i := i + 1;
   }
+  assert |a| > 0;
   if |b| == 0 && |a| > 2 {
     b := b + [a[|a| - 1]];
     a := a[..|a| - 1];

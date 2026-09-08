@@ -30,6 +30,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, numbers: seq<int>) returns (output: string)
+  requires |numbers| >= 1
 {
   if n == 1 {
     output := "0";
@@ -39,6 +40,7 @@ method Solve(n: int, numbers: seq<int>) returns (output: string)
     var count := 0;
     var i := 0;
     while i < |numbers|
+      invariant 0 <= i <= |numbers|
       decreases |numbers| - i
     {
       var v := numbers[i];
