@@ -53,10 +53,17 @@ benchmark and load-bearing for this dataset.
 | `precheck.py` | every added `requires` holds on real inputs | anything with `requires` |
 | `siblings.py` | same-problem rows converged despite different labels | everything |
 
-`precheck.py` prints four counters. `ok` and `VIOLATED` are verdicts;
+**Before an unproven obligation, ask whether the TRANSLATION is wrong.** Python
+wraps a negative subscript; Dafny faults. Three rows read a negative index on
+real inputs — they were wrong there, not merely unproven, and two waves had
+recorded that as "the data is out of spec". `Prelude.PyIndex` is the fix.
+
+`precheck.py` prints five counters. `ok` and `VIOLATED` are verdicts;
 `unchecked` (shape did not translate) and `no-data` (translated, then raised on
-every input) both mean **not checked**. Treating them as passes is how a gate
-stops gating — it happened, and hid four real violations.
+every input) both mean **not checked**. `py-fails` means the clause only
+excludes inputs the row's own Python also crashes on, which is a pass. Treating
+`unchecked`/`no-data` as passes is how a gate stops gating — it happened, and
+hid four real violations.
 
 `validate.py` is the **wrong** gate for `loose` rows: their problems accept
 several correct answers, so the stored output is one of them and even the
@@ -67,8 +74,10 @@ original Python fails a byte-diff against it. Use `difftest.py` there.
 - **Audit every agent batch yourself.** Re-verify and re-validate from scratch.
   This has caught a 19/20 reported that was 18/20, a batch reported as 0/20 that
   had 20 drafts stranded in `.new` files, and an agent editing the gate.
-- **Never accept `assume`.** It silences an obligation rather than discharging
-  it. Unverified is strictly better than a hollow proof.
+- **Never accept `assume`, including `assume {:axiom}`.** It silences an
+  obligation rather than discharging it, and the file still reports 0 errors.
+  Run `python3 proofs.py` — it scans the whole corpus and exits non-zero on any
+  hit. Four hid for waves because audits grepped only one directory.
 - **Check every added `requires`** with `precheck.py`. A precondition narrows the
   contract until the obligation is trivial; that is the cheap way to fake a proof.
 - **Never let an agent edit a gate it is judged by.** One cut difftest's

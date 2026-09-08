@@ -82,8 +82,10 @@ split -l 20 -d -a 2 --additional-suffix=.txt /tmp/pool batches/verifyN/w_
        induction on `MaxSeqFrom`.
 
     # Rules, in priority order
-    - **NEVER use `assume`.** It silences the obligation instead of discharging
-      it. A row left unverified is strictly better.
+    - **NEVER use `assume`, in any form.** `assume {:axiom} 0 <= idx < |a|`
+      verifies silently and discharges nothing. Four sat undetected for waves
+      because the audit only grepped solutions-unverified/. A row left
+      unverified is strictly better.
     - **Prefer an invariant to a precondition.** An invariant proves the code
       safe; a precondition narrows the contract until it is.
     - Any `requires` you add must be something the PROBLEM guarantees -- read
@@ -144,12 +146,27 @@ python3 difftest.py --only <the loose ids among them>
 ```
 
 `precheck.py` translates each Dafny `requires` into Python and evaluates it
-against every stored input. A clause that fails is reverted — not argued with.
+against every stored input.
 
-**Read its four counters, not just VIOLATED.** `unchecked` means the shape did
+**The rule.** A precondition must not exclude an input the original Python
+*answers*. Excluding an input the Python itself *crashes on* is fine — the row's
+contract is to reproduce that Python, and there is nothing there to reproduce.
+precheck measures this: it runs the row's own `solution_code` on every violating
+input and reports `py-fails` separately from `VIOLATED`.
+
+So an `exists` precondition is fine when the Python raises without it —
+`p.index(k)` raising ValueError, `m // 0` raising ZeroDivisionError. I banned
+existentials for two waves on a proxy rule and rejected a correct clause twice
+because of it.
+
+**Read its five counters, not just VIOLATED.** `unchecked` means the shape did
 not translate; `no-data` means it translated and then raised on every input.
-Both are "not checked", and neither is a pass. A batch that reports
-`ok 3, no-data 2` has had two preconditions wave through.
+Both are "not checked", and neither is a pass. `py-fails` is a pass, with the
+exemption above.
+
+`unchecked` is not merely a gap — it hides real failures. `OnlyBrackets(s)` came
+back `unchecked`, and once precheck could evaluate it, it failed on 6 inputs and
+both bracket proofs had to be rewritten around a weaker fact.
 
 **A precondition is how a verification pass fakes itself.** Narrow the contract
 far enough and the obligation is trivial. That is why step 3 is not optional and
@@ -180,6 +197,11 @@ prefix-sum argument, not a loop invariant. Left unverified deliberately.
 - Two sort rows indexed `l[i+1]` with no length fact.
 - `1944_50`, hand-written carefully to prove the pipeline end-to-end and passing
   101 tests, fails a postcondition.
+- **`grep -q "0 errors"` also matches "10 errors".** Match
+  `verifier finished with \d+ verified, 0 errors`.
+- **A timed-out lemma proves nothing** — but a lemma that *calls* it still
+  reports verified. Check for `time out` in the output, not just `Error`.
+- `dafny verify` caps output at 5 errors; use `--error-limit 0` while diagnosing.
 - `577_509`'s precondition is the problem's stated constraint verbatim
   (`1 <= n <= 10^9`); three generated tests feed `n = 1000001000`. An earlier
   wave kept it on that basis and a later one dropped it: **the rule is that a
