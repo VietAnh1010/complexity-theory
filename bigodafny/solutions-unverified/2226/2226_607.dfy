@@ -111,11 +111,13 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, binary_string: string) returns (output: string)
+  requires n <= |binary_string|
 {
   var mvs := 0;
   var cnt := 0;
   var i := 0;
   while i < n
+    invariant 0 <= i
     decreases n - i
   {
     if binary_string[i] == 'x' {

@@ -14,6 +14,7 @@ import json, re, sys
 from pathlib import Path
 
 from common import DATA, INEXACT, SOLUTIONS, UNVERIFIED, log, read_jsonl, write_jsonl
+from signature import input_fields
 
 ROOTS = [SOLUTIONS, UNVERIFIED, INEXACT]
 
@@ -44,6 +45,21 @@ def requires_of(text):
     return [re.sub(r"\s+", " ", c).strip() for c in out]
 
 
+FIELDS: set = set()
+
+
+def unrename(w):
+    """Undo signature.py's keyword dodge: it appends `_` until the name is legal."""
+    if w in FIELDS:
+        return w
+    cand = w
+    while cand.endswith("_"):
+        cand = cand[:-1]
+        if cand in FIELDS:
+            return cand
+    return w
+
+
 def to_python(clause, bound=()):
     """Translate one Dafny precondition into a Python expression over `I`."""
     s = clause
@@ -71,7 +87,7 @@ def to_python(clause, bound=()):
         if w in ("and", "or", "not", "len", "all", "range", "I", "true",
                  "false") or w in bound:
             return w
-        return f"I.{w}"
+        return f"I.{unrename(w)}"
     s = re.sub(r"(?<![.\w])[a-zA-Z_]\w*(?![\w(])", field, s)
     return s
 
@@ -90,6 +106,11 @@ def run(sids):
         t = tasks[sid]
         ns = {}
         exec(compile(t["dataclass_code"], "<dc>", "exec"), ns)
+        global FIELDS
+        try:
+            FIELDS = {n for n, _ in input_fields(t["dataclass_code"])}
+        except Exception:
+            FIELDS = set()
         for c in clauses:
             expr = to_python(c)
             rec = {"solution_id": sid, "clause": c, "expr": expr,
@@ -112,15 +133,20 @@ def run(sids):
     write_jsonl(DATA / "precondition_check.jsonl", rows)
     bad = [r for r in rows if r["status"] == "violated"]
     unk = [r for r in rows if r["status"] == "unchecked"]
+    nod = [r for r in rows if r["status"] == "no-data"]
     log(f"preconditions: {len(rows)} clauses over {len({r['solution_id'] for r in rows})} rows")
     log(f"  ok        {sum(1 for r in rows if r['status']=='ok')}")
     log(f"  VIOLATED  {len(bad)}")
     log(f"  unchecked {len(unk)}  (needs reading, not guessing)")
+    log(f"  no-data   {len(nod)}  (translated but never evaluated -- NOT a pass)")
     for r in bad:
         log(f"    VIOLATED {r['solution_id']}: {r['clause']}  "
             f"(holds {r['holds']}, violated {r['violated']})")
     for r in unk:
         log(f"    unchecked {r['solution_id']}: {r['clause']}")
+    for r in nod:
+        log(f"    no-data {r['solution_id']}: {r['clause']}  "
+            f"(errors {r['error']})")
     return rows
 
 

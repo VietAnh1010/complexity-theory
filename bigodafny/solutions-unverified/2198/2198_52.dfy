@@ -32,10 +32,14 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
+  requires n >= 2
+  requires n <= |a_list|
 {
   var b: seq<int> := [];
   var i := 0;
   while i < n - 1
+    invariant 0 <= i <= n - 1
+    invariant |b| == i
     decreases n - 1 - i
   {
     b := b + [AbsInt(a_list[i] - a_list[i+1])];
@@ -46,6 +50,9 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
   var summ := 0;
   i := 0;
   while i < n - 1
+    invariant 0 <= i
+    invariant |b| == n - 1
+    invariant |c| == i
     decreases n - 1 - i
   {
     summ := summ + s * b[i];

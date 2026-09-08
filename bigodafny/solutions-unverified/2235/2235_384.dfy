@@ -18,16 +18,19 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(t: int, n_list: seq<int>, s_list: seq<string>) returns (output: string)
+  requires t <= |s_list|
 {
   var lines: seq<string> := [];
   var i := 0;
   while i < t
+    invariant 0 <= i
     decreases t - i
   {
     var s := s_list[i];
     var res: seq<char> := [];
     var j := 0;
     while j < |s|
+      invariant 0 <= j <= |s|
       decreases |s| - j
     {
       if j % 2 == 0 { res := res + [s[j]]; }

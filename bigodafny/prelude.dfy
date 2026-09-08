@@ -171,6 +171,63 @@ module Prelude {
     else Merge(Sort(s[..|s| / 2], less), Sort(s[|s| / 2..], less), less)
   }
 
+  // Sort is a permutation. Proved as lemmas rather than  because a
+  // Dafny function has no place to put the two sequence-split hints.
+  lemma MergeIsPermutation<T>(a: seq<T>, b: seq<T>, less: (T, T) -> bool)
+    ensures multiset(Merge(a, b, less)) == multiset(a) + multiset(b)
+    decreases |a| + |b|
+  {
+    if |a| == 0 {
+    } else if |b| == 0 {
+    } else if less(b[0], a[0]) {
+      MergeIsPermutation(a, b[1..], less);
+      assert b == [b[0]] + b[1..];
+    } else {
+      MergeIsPermutation(a[1..], b, less);
+      assert a == [a[0]] + a[1..];
+    }
+  }
+
+  lemma SortIsPermutation<T>(s: seq<T>, less: (T, T) -> bool)
+    ensures multiset(Sort(s, less)) == multiset(s)
+    decreases |s|
+  {
+    if |s| <= 1 {
+    } else {
+      var k := |s| / 2;
+      SortIsPermutation(s[..k], less);
+      SortIsPermutation(s[k..], less);
+      MergeIsPermutation(Sort(s[..k], less), Sort(s[k..], less), less);
+      assert s == s[..k] + s[k..];
+    }
+  }
+
+  // The usable corollary: sorting neither invents nor drops an element.
+  lemma SortKeepsElems<T>(s: seq<T>, less: (T, T) -> bool)
+    ensures forall x :: x in Sort(s, less) <==> x in s
+  {
+    SortIsPermutation(s, less);
+    forall x ensures x in Sort(s, less) <==> x in s {
+      assert multiset(Sort(s, less))[x] == multiset(s)[x];
+    }
+  }
+
+  lemma SortIntsKeepsElems(s: seq<int>)
+    ensures multiset(SortInts(s)) == multiset(s)
+    ensures forall x :: x in SortInts(s) <==> x in s
+  {
+    SortKeepsElems(s, (x, y) => x < y);
+    SortIsPermutation(s, (x, y) => x < y);
+  }
+
+  lemma SortStringsKeepsElems(xs: seq<string>)
+    ensures multiset(SortStrings(xs)) == multiset(xs)
+    ensures forall x :: x in SortStrings(xs) <==> x in xs
+  {
+    SortKeepsElems(xs, (a: string, b: string) => StringLess(a, b));
+    SortIsPermutation(xs, (a: string, b: string) => StringLess(a, b));
+  }
+
   function SortInts(s: seq<int>): seq<int>
     ensures |SortInts(s)| == |s|
   {

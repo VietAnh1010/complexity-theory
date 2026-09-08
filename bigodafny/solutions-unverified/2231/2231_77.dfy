@@ -25,6 +25,9 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(a: int, b: int, string_: string) returns (output: string)
+  // the sentinel run is flushed on the first character, which is never NUL
+  requires b >= 1
+  requires |string_| >= 1 ==> string_[0] != '\0'
 {
   var k := b;
   var strSeq := string_ + "$";
@@ -33,15 +36,24 @@ method Solve(a: int, b: int, string_: string) returns (output: string)
   var value := 0;
   var i := 0;
   while i < |strSeq|
+    invariant 0 <= i <= |strSeq|
+    invariant |strSeq| == |string_| + 1
+    invariant strSeq[0] != '\0'
+    invariant i == 0 ==> prev == '\0'
+    invariant i >= 1 ==> |entries| >= 1
     decreases |strSeq| - i
   {
     var letter := strSeq[i];
+    assert i == 0 ==> letter != prev;
     if letter != prev {
       var addition := FloorDiv(value, k);
       var found := false;
       var newEntries: seq<(char,int)> := [];
       var j := 0;
       while j < |entries|
+        invariant 0 <= j <= |entries|
+        invariant |newEntries| == j
+        invariant found ==> j >= 1
         decreases |entries| - j
       {
         if entries[j].0 == prev {
@@ -53,6 +65,7 @@ method Solve(a: int, b: int, string_: string) returns (output: string)
         j := j + 1;
       }
       if !found { newEntries := newEntries + [(prev, addition)]; }
+      assert |newEntries| >= 1;
       entries := newEntries;
       prev := letter;
       value := 0;
@@ -63,6 +76,8 @@ method Solve(a: int, b: int, string_: string) returns (output: string)
   var vals: seq<int> := [];
   var j2 := 0;
   while j2 < |entries|
+    invariant 0 <= j2 <= |entries|
+    invariant |vals| == j2
     decreases |entries| - j2
   {
     vals := vals + [entries[j2].1];

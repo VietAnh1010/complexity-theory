@@ -27,17 +27,24 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, handles: seq<string>) returns (output: string)
+  // every line is "old new": two whitespace-separated tokens
+  requires 1 <= n <= |handles|
+  requires forall k :: 0 <= k < |handles| ==> |SplitWs(handles[k])| >= 2
 {
   var first := SplitWs(handles[0]);
   var chains: seq<seq<string>> := [ [first[0], first[1]] ];
   var x := 1;
   while x < n
+    invariant 0 <= x
+    invariant forall y :: 0 <= y < |chains| ==> |chains[y]| >= 2
     decreases n - x
   {
     var s := SplitWs(handles[x]);
     var f := false;
     var y := 0;
     while y < |chains| && !f
+      invariant 0 <= y <= |chains|
+      invariant forall z :: 0 <= z < |chains| ==> |chains[z]| >= 2
       decreases |chains| - y
     {
       var chain := chains[y];
@@ -55,6 +62,8 @@ method Solve(n: int, handles: seq<string>) returns (output: string)
   var lines: seq<string> := [IntToString(|chains|)];
   var k := 0;
   while k < |chains|
+    invariant 0 <= k <= |chains|
+    invariant forall y :: 0 <= y < |chains| ==> |chains[y]| >= 2
     decreases |chains| - k
   {
     var chain := chains[k];

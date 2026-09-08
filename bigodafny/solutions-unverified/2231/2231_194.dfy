@@ -54,6 +54,8 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(a: int, b: int, string_: string) returns (output: string)
+  requires b >= 1
+  requires |string_| >= 1
 {
   var k := b;
   var s := string_;
@@ -63,6 +65,10 @@ method Solve(a: int, b: int, string_: string) returns (output: string)
     var z: string := "";
     var i := 0;
     while i < |s|
+      invariant 0 <= i <= |s|
+      invariant i == 0 ==> f == s[0]
+      invariant i >= 1 ==> |z| >= 1
+      invariant forall x :: x in arr ==> |x| >= 1
       decreases |s| - i
     {
       if s[i] == f {
@@ -76,12 +82,18 @@ method Solve(a: int, b: int, string_: string) returns (output: string)
     }
     arr := arr + [z];
   }
-  arr := SortStrings(arr);
+  assert |arr| >= 1;
+  SortStringsKeepsElems(arr);
+  var sortedArr := SortStrings(arr);
+  assert forall x :: x in sortedArr ==> |x| >= 1;
+  arr := sortedArr;
   var curChar := arr[0][0];
   var c := 0;
   var q: seq<int> := [];
   var idx := 0;
   while idx < |arr|
+    invariant 0 <= idx <= |arr|
+    invariant forall x :: x in arr ==> |x| >= 1
     decreases |arr| - idx
   {
     if arr[idx][0] == curChar {
