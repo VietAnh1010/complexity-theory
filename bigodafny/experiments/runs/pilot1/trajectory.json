@@ -117,6 +117,168 @@
   "wall_s": 1775.4
  },
  {
+  "agent_id": "agent-a60e2af7d87293c22",
+  "arm": "blind",
+  "description": "Wave1 blind batch0",
+  "model": "sonnet",
+  "output_tokens": 40039,
+  "per_example": {
+   "1733_64": {
+    "dafny_calls": 0,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 5,
+    "tools": {
+     "Bash": 5
+    },
+    "wall_s": 232.8
+   },
+   "2465_212": {
+    "dafny_calls": 0,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 5,
+    "tools": {
+     "Bash": 4,
+     "Read": 1
+    },
+    "wall_s": 380.5
+   },
+   "2704_92": {
+    "dafny_calls": 0,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 5,
+    "tools": {
+     "Bash": 5
+    },
+    "wall_s": 158.6
+   },
+   "354_95": {
+    "dafny_calls": 2,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 10,
+    "tools": {
+     "Bash": 7,
+     "Edit": 2,
+     "Read": 1
+    },
+    "wall_s": 328.3
+   },
+   "shared": {
+    "dafny_calls": 0,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 1,
+    "tools": {
+     "Skill": 1
+    },
+    "wall_s": 0
+   }
+  },
+  "sids": [
+   "1733_64",
+   "354_95",
+   "2704_92",
+   "2465_212"
+  ],
+  "tool_calls": 26,
+  "wall_s": 1113.0
+ },
+ {
+  "agent_id": "agent-a73866142f47a0588",
+  "arm": "labeled",
+  "description": "Wave1 labeled batch0",
+  "model": "sonnet",
+  "output_tokens": 51785,
+  "per_example": {
+   "1733_64": {
+    "dafny_calls": 4,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 17,
+    "tools": {
+     "Bash": 6,
+     "Edit": 6,
+     "Read": 3,
+     "Write": 2
+    },
+    "wall_s": 1054.3
+   },
+   "shared": {
+    "dafny_calls": 0,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 1,
+    "tools": {
+     "Skill": 1
+    },
+    "wall_s": 0
+   }
+  },
+  "sids": [
+   "1733_64",
+   "354_95",
+   "2704_92",
+   "2465_212"
+  ],
+  "tool_calls": 18,
+  "wall_s": 1057.6
+ },
+ {
+  "agent_id": "agent-a74e9e796cb4d3861",
+  "arm": "blind",
+  "description": "Wave1 blind batch1",
+  "model": "sonnet",
+  "output_tokens": 7361,
+  "per_example": {
+   "1338_61": {
+    "dafny_calls": 8,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 33,
+    "tools": {
+     "Bash": 13,
+     "Edit": 12,
+     "Read": 6,
+     "Write": 2
+    },
+    "wall_s": 1004.1
+   },
+   "2381_176": {
+    "dafny_calls": 0,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 5,
+    "tools": {
+     "Bash": 3,
+     "Edit": 1,
+     "Write": 1
+    },
+    "wall_s": 97.1
+   },
+   "shared": {
+    "dafny_calls": 0,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 1,
+    "tools": {
+     "Skill": 1
+    },
+    "wall_s": 0
+   }
+  },
+  "sids": [
+   "1338_61",
+   "2381_176",
+   "1563_497",
+   "1332_16"
+  ],
+  "tool_calls": 39,
+  "wall_s": 1105.6
+ },
+ {
   "agent_id": "agent-a74efbdb901ebf011",
   "arm": "blind",
   "description": "Pilot blind arm",
@@ -194,5 +356,80 @@
   ],
   "tool_calls": 59,
   "wall_s": 1155.4
+ },
+ {
+  "agent_id": "agent-af676393e2a9d96f4",
+  "arm": "labeled",
+  "description": "Wave1 labeled batch1",
+  "model": "sonnet",
+  "output_tokens": 55585,
+  "per_example": {
+   "1332_16": {
+    "dafny_calls": 0,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 2,
+    "tools": {
+     "Bash": 1,
+     "Write": 1
+    },
+    "wall_s": 220.8
+   },
+   "1338_61": {
+    "dafny_calls": 6,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 22,
+    "tools": {
+     "Bash": 10,
+     "Edit": 9,
+     "Read": 1,
+     "Write": 2
+    },
+    "wall_s": 847.5
+   },
+   "1563_497": {
+    "dafny_calls": 1,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 6,
+    "tools": {
+     "Bash": 3,
+     "Edit": 1,
+     "Write": 2
+    },
+    "wall_s": 62.6
+   },
+   "2381_176": {
+    "dafny_calls": 1,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 5,
+    "tools": {
+     "Bash": 2,
+     "Edit": 1,
+     "Write": 2
+    },
+    "wall_s": 104.4
+   },
+   "shared": {
+    "dafny_calls": 0,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 1,
+    "tools": {
+     "Skill": 1
+    },
+    "wall_s": 0
+   }
+  },
+  "sids": [
+   "1338_61",
+   "2381_176",
+   "1563_497",
+   "1332_16"
+  ],
+  "tool_calls": 36,
+  "wall_s": 1244.2
  }
 ]
