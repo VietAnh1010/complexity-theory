@@ -38,6 +38,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(a: int, b: int, c: int, d_list: seq<int>) returns (output: string)
+  requires a <= |d_list|
 {
   var n := a;
   var x := b;

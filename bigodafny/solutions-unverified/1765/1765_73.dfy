@@ -25,10 +25,12 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
+  requires n <= |a_list|
 {
   var ok := true;
   var i := 0;
   while i < n - 1 && ok
+    invariant 0 <= i
     decreases if ok then n - 1 - i else 0
   {
     if AbsInt(a_list[i] - a_list[i + 1]) > 1 {

@@ -35,12 +35,16 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, k: int, d: int, binary_list: seq<string>) returns (output: string)
+  requires 0 <= d < |binary_list|
+  requires k <= |binary_list|
 {
   var arr := binary_list;
   var len := |arr|;
   var count := 0;
   var i := 0;
   while i < d
+    invariant 0 <= i <= d
+    invariant |arr| == len
     decreases d - i
   {
     var pos := len - i - 1;
@@ -57,6 +61,8 @@ method Solve(n: int, k: int, d: int, binary_list: seq<string>) returns (output: 
     count := count + 1;
   }
   while i < k
+    invariant d + 1 <= i
+    invariant |arr| == len
     decreases k - i
   {
     var pos3 := len - i - 1;

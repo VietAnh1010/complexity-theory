@@ -50,11 +50,16 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, k: int, string_: string) returns (output: string)
+  requires n <= |string_|
+  requires forall t :: 0 <= t < |string_| ==> 'A' <= string_[t] <= 'Z'
 {
   var st := seq(26, _ => 0);
   var ed := seq(26, _ => 0);
   var idx := 0;
   while idx < n
+    invariant 0 <= idx
+    invariant |st| == 26
+    invariant |ed| == 26
     decreases n - idx
   {
     var code := string_[idx] as int - 'A' as int;
@@ -67,6 +72,8 @@ method Solve(n: int, k: int, string_: string) returns (output: string)
   }
   var i := 0;
   while i < 26
+    invariant |st| == 26
+    invariant |ed| == 26
     decreases 26 - i
   {
     if st[i] != 0 && ed[i] == 0 {

@@ -36,11 +36,14 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, k: int, string_: string) returns (output: string)
+  requires forall t :: 0 <= t < |string_| ==> 'A' <= string_[t] <= 'Z'
 {
   var a := seq(30, _ => 0);
   var b := seq(30, _ => 0);
   var idx := 0;
   while idx < |string_|
+    invariant |a| == 30
+    invariant |b| == 30
     decreases |string_| - idx
   {
     var q := string_[idx] as int - 'A' as int;
@@ -52,6 +55,8 @@ method Solve(n: int, k: int, string_: string) returns (output: string)
   idx := 0;
   var stopped := false;
   while idx < |string_| && !stopped
+    invariant |a| == 30
+    invariant |b| == 30
     decreases !stopped, |string_| - idx
   {
     var q := string_[idx] as int - 'A' as int;

@@ -39,12 +39,14 @@ function RemoveFirst(l: seq<int>, x: int): seq<int>
 }
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
+  requires n <= |a_list|
 {
   var l := a_list;
   var flag1 := false;
   var flag2 := false;
   var i := 0;
   while i < n && !flag1
+    invariant 0 <= i
     decreases !flag1, n - i
   {
     if l[i] == 2 { flag1 := true; }
@@ -52,6 +54,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
   }
   i := 0;
   while i < n && !flag2
+    invariant 0 <= i
     decreases !flag2, n - i
   {
     if l[i] == 1 { flag2 := true; }

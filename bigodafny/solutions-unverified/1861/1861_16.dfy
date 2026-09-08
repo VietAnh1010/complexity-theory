@@ -14,6 +14,8 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(a: int, b: int, c: int) returns (output: string)
+  requires 1 <= b <= 11
+  requires 0 <= c <= b + 1
 {
   var h := a;
   var w := b;
@@ -24,11 +26,14 @@ method Solve(a: int, b: int, c: int) returns (output: string)
   arr := arr[1 := 1];
   var i := 0;
   while i < h
+    invariant |arr| == w + 2
     decreases h - i
   {
     var newArr := seq(w + 2, _ => 0);
     var j := 1;
     while j <= w
+      invariant 1 <= j <= w + 1
+      invariant |newArr| == w + 2
       decreases w - j + 1
     {
       var val := (f[j - 1] * f[w - j + 1] * arr[j - 1] + f[j] * f[w - j + 1] * arr[j] + f[j] * f[w - j] * arr[j + 1]) % MOD;

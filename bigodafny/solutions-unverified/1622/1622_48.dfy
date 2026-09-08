@@ -23,10 +23,13 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, k: int, d: int, binary_list: seq<string>) returns (output: string)
+  requires k <= n
+  requires n <= |binary_list|
 {
   var c := 0;
   var i := n - k;
   while i < n
+    invariant n - k <= i
     decreases n - i
   {
     if i == n - d - 1 {

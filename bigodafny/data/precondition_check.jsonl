@@ -1,1 +1,2 @@
-{"clause": "n == |a_list|", "error": 0, "expr": "I.n == len(I.a_list)", "holds": 20, "solution_id": "1453_211", "status": "ok", "violated": 0}
+{"clause": "1 <= a <= |b_list|", "error": 0, "expr": "1 <= I.a <= len(I.b_list)", "holds": 119, "solution_id": "1386_19", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |b_list| ==> b_list[k] >= 1", "error": 0, "expr": "all((I.b_list[k] >= 1) for k in range(len(I.b_list)))", "holds": 119, "solution_id": "1386_19", "status": "ok", "violated": 0}

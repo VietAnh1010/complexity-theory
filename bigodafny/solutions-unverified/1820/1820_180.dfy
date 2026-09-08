@@ -23,6 +23,9 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(a: int, b: int, c: int, d_list: seq<int>) returns (output: string)
+  requires a <= |d_list|
+  requires b >= 0
+  requires c >= 0
 {
   var n := a;
   var x := b;
@@ -32,11 +35,14 @@ method Solve(a: int, b: int, c: int, d_list: seq<int>) returns (output: string)
   var found := false;
   var result := 0;
   while i < n && !found
+    invariant 0 <= i
     decreases !found, n - i
   {
     var lo := if i >= x then i - x else 0;
     var hi := i + y + 1;
     if hi > |arr| { hi := |arr|; }
+    assert lo <= i;
+    assert hi >= i + 1;
     var m := MinSeq(arr[lo..hi]);
     if arr[i] == m {
       result := i + 1;
