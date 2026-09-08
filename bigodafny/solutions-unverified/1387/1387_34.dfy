@@ -27,6 +27,7 @@ import opened Prelude
 function MinInt1387b(a: int, b: int): int { if a < b then a else b }
 
 method Solve(n: int, k: int, s: string) returns (output: string)
+  requires n == |s|
 {
   var half := n / 2;
   var p := if k > half then n - k else k - 1;
@@ -35,6 +36,7 @@ method Solve(n: int, k: int, s: string) returns (output: string)
   var steps := 0;
   var i := 0;
   while i < half
+    invariant 0 <= i <= half
     decreases half - i
   {
     var x := AbsInt((s[i] as int) - (s[n-1-i] as int));

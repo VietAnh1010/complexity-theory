@@ -35,14 +35,14 @@ function Lowbit(v: int): int
 }
 
 method Solve(a: int, b: int) returns (output: string)
-  requires b >= 1
 {
   var s := a;
   var l := b;
   var list1: seq<(int, int)> := [];
   var i := 1;
   while i <= l
-    invariant 1 <= i <= l + 1
+    invariant 1 <= i
+    invariant l >= 1 ==> i <= l + 1
     invariant |list1| == i - 1
     decreases l - i
   {
@@ -51,11 +51,13 @@ method Solve(a: int, b: int) returns (output: string)
   }
   var sorted := Sort(list1, (p: (int, int), q: (int, int)) =>
     if p.0 != q.0 then p.0 > q.0 else p.1 > q.1);
+  // l < 1 leaves list1 empty and the next loop never runs.
+  assert l >= 1 ==> |sorted| == l;
   var ll: seq<int> := [];
   var k := 0;
   while k < l
-    invariant 0 <= k <= l
-    invariant |sorted| == l
+    invariant 0 <= k
+    invariant l >= 1 ==> |sorted| == l
     decreases l - k
   {
     if sorted[k].0 <= s {

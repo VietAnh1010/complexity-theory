@@ -32,10 +32,14 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(v_0: int, v_1: string) returns (output: string)
+  requires v_0 >= 1
+  requires forall k :: 0 <= k < |v_1| ==> 'a' <= v_1[k] <= 'z'
 {
   var counts: seq<int> := seq(26, i => 0);
   var idx := 0;
   while idx < |v_1|
+    invariant 0 <= idx <= |v_1|
+    invariant |counts| == 26
     decreases |v_1| - idx
   {
     var c := v_1[idx];
@@ -47,6 +51,8 @@ method Solve(v_0: int, v_1: string) returns (output: string)
   var restring: string := "";
   var ci := 0;
   while ci < 26
+    invariant 0 <= ci <= 26
+    invariant |counts| == 26
     decreases 26 - ci
   {
     if ok && counts[ci] > 0 {

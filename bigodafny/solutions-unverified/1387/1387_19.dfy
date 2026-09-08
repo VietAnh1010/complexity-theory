@@ -43,6 +43,7 @@ import opened Prelude
 function MinInt1387a(a: int, b: int): int { if a < b then a else b }
 
 method Solve(n: int, k: int, s: string) returns (output: string)
+  requires n == |s|
 {
   var p := k - 1;
   var ans := 0;
@@ -50,6 +51,8 @@ method Solve(n: int, k: int, s: string) returns (output: string)
   var idx := 0;
   var half := n / 2;
   while idx < half
+    invariant 0 <= idx <= half
+    invariant |pos| == 0 ==> ans == 0
     decreases half - idx
   {
     if s[idx] != s[n-1-idx] {

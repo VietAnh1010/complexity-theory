@@ -39,12 +39,35 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+lemma MaxSeqFromIn(s: seq<int>, i: nat, best: int)
+  requires i <= |s|
+  ensures MaxSeqFrom(s, i, best) == best || MaxSeqFrom(s, i, best) in s[i..]
+  decreases |s| - i
+{
+  if i == |s| {
+  } else {
+    MaxSeqFromIn(s, i + 1, if s[i] > best then s[i] else best);
+  }
+}
+
+lemma MaxSeqIn(s: seq<int>)
+  requires |s| > 0
+  ensures MaxSeq(s) in s
+{
+  MaxSeqFromIn(s, 1, s[0]);
+}
+
 method Solve(n: int, a_list: seq<int>) returns (output: string)
+  requires n == |a_list|
+  requires n >= 1
 {
   var k := MaxSeq(a_list);
+  MaxSeqIn(a_list);
+  var m :| 0 <= m < |a_list| && a_list[m] == k;
   var t := 0;
   while a_list[t] != k
-    decreases n - t
+    invariant 0 <= t <= m
+    decreases m - t
   {
     t := t + 1;
   }

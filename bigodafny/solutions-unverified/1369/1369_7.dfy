@@ -36,6 +36,9 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a: int, b: int, s: string) returns (output: string)
+  requires a >= 1
+  requires b >= 0
+  requires n == |s|
 {
   var N := n;
   var K := a;
@@ -45,6 +48,9 @@ method Solve(n: int, a: int, b: int, s: string) returns (output: string)
   var i := 0;
   var j := 0;
   while i < N && l[K - 1] == 0
+    invariant 0 <= i
+    invariant |l| == K
+    invariant l[K - 1] == 0 ==> 0 <= j <= K - 1
     decreases N - i
   {
     if s[i] == 'o' {
@@ -58,6 +64,9 @@ method Solve(n: int, a: int, b: int, s: string) returns (output: string)
   i := 0;
   j := K - 1;
   while i < N && r[0] == 0
+    invariant 0 <= i
+    invariant |r| == K
+    invariant r[0] == 0 ==> 0 <= j <= K - 1
     decreases N - i
   {
     if s[N - i - 1] == 'o' {
@@ -71,6 +80,9 @@ method Solve(n: int, a: int, b: int, s: string) returns (output: string)
   var parts: seq<string> := [];
   var k := 0;
   while k < K
+    invariant 0 <= k <= K
+    invariant |r| == K
+    invariant |l| == K
     decreases K - k
   {
     if r[k] == l[k] {
