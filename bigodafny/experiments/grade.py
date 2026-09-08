@@ -188,12 +188,21 @@ def main():
     sigs = {s["problem_id"]: s for s in read_jsonl(DATA / "signatures.jsonl")}
     arms = ["labeled", "blind"] if a.arm == "both" else [a.arm]
 
-    out = []
+    out, skipped = [], 0
     for arm in arms:
         for ex in man["examples"]:
             if a.only and ex["sid"] not in a.only:
                 continue
-            if not (CX_ROOT / a.run_id / arm / ex["sid"] / "task.dfy").exists():
+            d = CX_ROOT / a.run_id / arm / ex["sid"]
+            if not (d / "task.dfy").exists():
+                continue
+            # Staging leaves every example with a task.dfy, so "the file
+            # exists" is not evidence an agent worked on it. An example with
+            # no result.json AND an untouched file was never attempted; the
+            # first grading run spent half an hour compiling 96 of those.
+            if not (d / "result.json").exists() and \
+                    (d / "task.dfy").read_bytes() == (d / ".original.dfy").read_bytes():
+                skipped += 1
                 continue
             r = grade_one(a.run_id, arm, ex, tasks[ex["sid"]],
                           sigs[ex["problem_id"]], not a.no_behaviour)
@@ -211,7 +220,8 @@ def main():
     rows = sorted(existing.values(), key=lambda r: (r["arm"], r["sid"]))
     p.write_text("".join(json.dumps(r, sort_keys=True) + "\n" for r in rows),
                  encoding="utf-8")
-    print(f"graded {len(out)} -> {p}  (file now holds {len(rows)})")
+    print(f"graded {len(out)} -> {p}  (file now holds {len(rows)}); "
+          f"{skipped} unattempted examples skipped")
 
 
 if __name__ == "__main__":
