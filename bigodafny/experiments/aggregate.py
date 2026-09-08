@@ -36,7 +36,7 @@ FIELDS = ["run_id", "arm", "sid", "problem_id", "label", "split", "model",
           "gate_verify", "gate_no_assume", "gate_skeleton", "gate_behaviour",
           "code_identical", "added_exec_lines", "assumes",
           "dafny_calls", "tool_calls", "wall_s", "output_tokens",
-          "leak_attempts", "agent_id", "notes"]
+          "leak_attempts", "attempts", "agent_id", "notes"]
 
 
 def measured_difficulty(dafny_calls, wall_s, proved):
@@ -59,11 +59,34 @@ def load(run_id):
               (rd / "graded.jsonl").read_text().splitlines() if l.strip()]
     traj = json.loads((rd / "trajectory.json").read_text()) \
         if (rd / "trajectory.json").exists() else []
-    by_sid = {}
+    # Keyed by (arm, sid), not sid. Keyed by sid alone, the labeled rows
+    # silently inherited the blind agent's tool counts for the same example.
+    # Several agents can touch one (arm, sid) -- an example that was retried --
+    # so their effort is summed and the attempt count recorded.
+    by_key = {}
     for ag in traj:
         for sid, v in ag["per_example"].items():
-            by_sid.setdefault(sid, []).append((ag, v))
-    return graded, by_sid
+            by_key.setdefault((ag.get("arm", "?"), sid), []).append((ag, v))
+    return graded, by_key
+
+
+def combine(entries):
+    """Sum the effort of every agent that worked one (arm, sid)."""
+    if not entries:
+        return {}, {}
+    agents = [a for a, _ in entries]
+    vs = [v for _, v in entries]
+    tot = {
+        "tool_calls": sum(v.get("tool_calls") or 0 for v in vs),
+        "dafny_calls": sum(v.get("dafny_calls") or 0 for v in vs),
+        "wall_s": round(sum(v.get("wall_s") or 0 for v in vs), 1),
+        "leak_attempts": sum(v.get("leak_attempts") or 0 for v in vs),
+        "attempts": len(vs),
+    }
+    ag = {"model": agents[0].get("model"),
+          "agent_id": ",".join(a["agent_id"][6:14] for a in agents),
+          "output_tokens": sum(a.get("output_tokens") or 0 for a in agents)}
+    return tot, ag
 
 
 def rows(run_id):
@@ -71,8 +94,7 @@ def rows(run_id):
     out = []
     for g in graded:
         res = g.get("result") or {}
-        t = next((v for ag, v in traj.get(g["sid"], [])), None)
-        ag = next((ag for ag, v in traj.get(g["sid"], [])), None)
+        t, ag = combine(traj.get((g["arm"], g["sid"]), []))
         proved = bool(g.get("gate_all"))
         beh = g.get("gate_behaviour") or {}
         r = {
@@ -103,6 +125,7 @@ def rows(run_id):
             "wall_s": (t or {}).get("wall_s"),
             "output_tokens": (ag or {}).get("output_tokens"),
             "leak_attempts": (t or {}).get("leak_attempts", 0),
+            "attempts": (t or {}).get("attempts", 0),
             "agent_id": (ag or {}).get("agent_id"),
             "notes": (res.get("notes") or "").replace("\n", " ")[:300],
         }

@@ -166,14 +166,20 @@ def classify(expr):
             cand_arity, g = CAND[name]
             if cand_arity != arity:
                 continue
-            ratios = [f / g(ns, ms) for ns, ms, f in pts]
-            # every point, not just the largest: a linear ratio against a
-            # true n log n looks flat over any two adjacent scales.
-            if min(ratios) <= 0:
+            # Theta allows a different constant along each direction -- it
+            # forbids the ratio GROWING with scale. So stability is checked
+            # within each scaling separately, never across them. Checking
+            # across them reads `n**2 + m**2 + n*m` (constant 20 on the axes,
+            # 30 on the diagonal) as a mismatch and collapses it to O(n**2);
+            # checking within them keeps n and n log n apart, because there
+            # the ratio really does climb with scale.
+            groups = {}
+            for ns, ms, f in pts:
+                groups.setdefault((ns > BASE, ms > BASE), []).append(f / g(ns, ms))
+            if any(min(v) <= 0 or max(v) / min(v) > 1.35 for v in groups.values()):
                 continue
-            if max(ratios) / min(ratios) <= 1.35:
-                best = (name, assign)
-                break
+            best = (name, assign)
+            break
         if best:
             break
 

@@ -181,7 +181,28 @@ def main():
     ap.add_argument("--arm", choices=["labeled", "blind", "both"], default="both")
     ap.add_argument("--only", nargs="*")
     ap.add_argument("--no-behaviour", action="store_true")
+    ap.add_argument("--reclassify", action="store_true",
+                    help="recompute bound_class from the stored ensures only; "
+                         "no verify, no compile, no tests")
     a = ap.parse_args()
+
+    if a.reclassify:
+        p = RUNS / a.run_id / "graded.jsonl"
+        rows = list(read_jsonl(p))
+        for r in rows:
+            if not r.get("bound_ensures"):
+                continue
+            cls, shape, det = classify(r["bound_ensures"])
+            was = r.get("bound_class")
+            r["bound_class"], r["bound_shape"], r["bound_detail"] = cls, shape, det
+            r["label_match"] = (same_class(cls, r["label"])
+                                if r.get("gate_all") else None)
+            if was != cls:
+                print(f"  {r['arm']:8} {r['sid']:10} {was} -> {cls}")
+        p.write_text("".join(json.dumps(r, sort_keys=True) + "\n" for r in rows),
+                     encoding="utf-8")
+        print(f"reclassified {len(rows)} rows")
+        return
 
     man = json.loads((HERE / "manifest.json").read_text())
     tasks = {t["solution_id"]: t for t in read_jsonl(DATA / "tasks.jsonl")}

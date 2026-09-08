@@ -1,0 +1,183 @@
+[
+ {
+  "agent_id": "agent-a42cc4d627d84a5f7",
+  "arm": "labeled",
+  "description": "Pilot labeled arm rerun",
+  "model": "sonnet",
+  "output_tokens": 1058,
+  "per_example": {
+   "1243_0": {
+    "dafny_calls": 1,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 7,
+    "tools": {
+     "Bash": 4,
+     "Edit": 1,
+     "Write": 2
+    },
+    "wall_s": 101.3
+   },
+   "1718_1166": {
+    "dafny_calls": 0,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 1,
+    "tools": {
+     "Bash": 1
+    },
+    "wall_s": 0
+   },
+   "2962_1209": {
+    "dafny_calls": 1,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 5,
+    "tools": {
+     "Bash": 2,
+     "Edit": 1,
+     "Write": 2
+    },
+    "wall_s": 111.1
+   },
+   "shared": {
+    "dafny_calls": 0,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 1,
+    "tools": {
+     "Skill": 1
+    },
+    "wall_s": 0
+   }
+  },
+  "sids": [
+   "1243_0",
+   "2962_1209",
+   "1718_1166",
+   "2650_140"
+  ],
+  "tool_calls": 14,
+  "wall_s": 220.0
+ },
+ {
+  "agent_id": "agent-a4ed616b01af4870b",
+  "arm": "labeled",
+  "description": "Pilot labeled arm",
+  "model": "sonnet",
+  "output_tokens": 57126,
+  "per_example": {
+   "2650_140": {
+    "dafny_calls": 18,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 88,
+    "tools": {
+     "Bash": 49,
+     "Edit": 16,
+     "Monitor": 7,
+     "Read": 15,
+     "ToolSearch": 1
+    },
+    "wall_s": 1772.2
+   },
+   "shared": {
+    "dafny_calls": 0,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 1,
+    "tools": {
+     "Skill": 1
+    },
+    "wall_s": 0
+   }
+  },
+  "sids": [
+   "2650_140",
+   "1718_1166",
+   "2962_1209",
+   "1243_0"
+  ],
+  "tool_calls": 89,
+  "wall_s": 1775.4
+ },
+ {
+  "agent_id": "agent-a74efbdb901ebf011",
+  "arm": "blind",
+  "description": "Pilot blind arm",
+  "model": "sonnet",
+  "output_tokens": 31789,
+  "per_example": {
+   "1243_0": {
+    "dafny_calls": 2,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 7,
+    "tools": {
+     "Bash": 3,
+     "Edit": 1,
+     "Read": 1,
+     "Write": 2
+    },
+    "wall_s": 86.4
+   },
+   "1718_1166": {
+    "dafny_calls": 4,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 13,
+    "tools": {
+     "Bash": 5,
+     "Edit": 5,
+     "Read": 1,
+     "Write": 2
+    },
+    "wall_s": 262.3
+   },
+   "2650_140": {
+    "dafny_calls": 6,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 28,
+    "tools": {
+     "Bash": 10,
+     "Edit": 13,
+     "Read": 3,
+     "Write": 2
+    },
+    "wall_s": 707.5
+   },
+   "2962_1209": {
+    "dafny_calls": 3,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 10,
+    "tools": {
+     "Bash": 4,
+     "Edit": 3,
+     "Read": 1,
+     "Write": 2
+    },
+    "wall_s": 90.0
+   },
+   "shared": {
+    "dafny_calls": 0,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 1,
+    "tools": {
+     "Skill": 1
+    },
+    "wall_s": 0
+   }
+  },
+  "sids": [
+   "2650_140",
+   "1718_1166",
+   "2962_1209",
+   "1243_0"
+  ],
+  "tool_calls": 59,
+  "wall_s": 1155.4
+ }
+]
