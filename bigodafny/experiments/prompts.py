@@ -65,11 +65,12 @@ something. The pilot lost three of its four examples that way.
   not invoke any bigodafny skill. This is enforced, not requested: a
   containment hook denies those calls and logs every attempt, and an example
   whose agent attempted one is thrown out of the results.
+- Add a `requires` only if the problem statement in description.md actually
+  says it. Every clause you add is checked against this row's real stored
+  inputs, and one that excludes an input the row answers fails the example. A
+  bound bought by narrowing the problem is not a bound.
 - Constants are free. `steps <= 7 * n + 12` establishes linear. Do not tune
   them; tuning wastes the run.
-- If a loop has no bound in the input size, add the problem statement's cap on
-  the values as a `requires` and say so in `added_requires`. That is a
-  finding, not a failure.
 
 # result.json first, then the proof
 
