@@ -36,6 +36,8 @@ import opened Prelude
 method Solve(n: int, a_list: seq<int>) returns (output: string)
   requires n >= 0
   requires |a_list| == n
+  // Python wraps a negative subscript; 152 occur across the stored tests.
+  requires forall k :: 0 <= k < n ==> -n <= a_list[k] - 1 < n
 {
   var up := seq(n, i requires 0 <= i < n => 1 + i*20001);
   var down := seq(n, i requires 0 <= i < n => up[n-1-i]);
@@ -44,8 +46,8 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
     invariant 0 <= i <= n
     invariant |up| == n
   {
-    var val := a_list[i];
-    up := up[(val-1) := up[val-1] + i];
+    var val := PyIndex(a_list[i] - 1, |up|);
+    up := up[val := up[val] + i];
     i := i + 1;
   }
   output := JoinInts(up, " ") + "\n" + JoinInts(down, " ") + "\n";

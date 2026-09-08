@@ -1,16 +1,10 @@
-{"clause": "N == |tree_heights|", "error": 0, "expr": "I.N == len(I.tree_heights)", "holds": 209, "solution_id": "1336_157", "status": "ok", "violated": 0}
-{"clause": "a >= 1", "error": 0, "expr": "I.a >= 1", "holds": 103, "solution_id": "1369_7", "status": "ok", "violated": 0}
-{"clause": "b >= 0", "error": 0, "expr": "I.b >= 0", "holds": 103, "solution_id": "1369_7", "status": "ok", "violated": 0}
-{"clause": "n == |s|", "error": 0, "expr": "I.n == len(I.s)", "holds": 103, "solution_id": "1369_7", "status": "ok", "violated": 0}
-{"clause": "1 <= a <= |b_list|", "error": 0, "expr": "1 <= I.a <= len(I.b_list)", "holds": 119, "solution_id": "1386_19", "status": "ok", "violated": 0}
-{"clause": "forall k :: 0 <= k < |b_list| ==> b_list[k] >= 1", "error": 0, "expr": "all((I.b_list[k] >= 1) for k in range(len(I.b_list)))", "holds": 119, "solution_id": "1386_19", "status": "ok", "violated": 0}
-{"clause": "1 <= a <= |b_list|", "error": 0, "expr": "1 <= I.a <= len(I.b_list)", "holds": 119, "solution_id": "1386_38", "status": "ok", "violated": 0}
-{"clause": "forall k :: 0 <= k < |b_list| ==> b_list[k] >= 1", "error": 0, "expr": "all((I.b_list[k] >= 1) for k in range(len(I.b_list)))", "holds": 119, "solution_id": "1386_38", "status": "ok", "violated": 0}
-{"clause": "n == |s|", "error": 0, "expr": "I.n == len(I.s)", "holds": 99, "solution_id": "1387_19", "status": "ok", "violated": 0}
-{"clause": "n == |s|", "error": 0, "expr": "I.n == len(I.s)", "holds": 99, "solution_id": "1387_34", "status": "ok", "violated": 0}
-{"clause": "n == |a_list|", "error": 0, "expr": "I.n == len(I.a_list)", "holds": 20, "solution_id": "1453_211", "status": "ok", "violated": 0}
-{"clause": "n == |a_list|", "error": 0, "expr": "I.n == len(I.a_list)", "holds": 20, "solution_id": "1453_483", "status": "ok", "violated": 0}
-{"clause": "n >= 1", "error": 0, "expr": "I.n >= 1", "holds": 20, "solution_id": "1453_483", "status": "ok", "violated": 0}
-{"clause": "N >= 0", "error": 0, "expr": "I.N >= 0", "holds": 136, "solution_id": "1467_233", "status": "ok", "violated": 0}
-{"clause": "v_0 >= 1", "error": 0, "expr": "I.v_0 >= 1", "holds": 133, "solution_id": "1582_315", "status": "ok", "violated": 0}
-{"clause": "forall k :: 0 <= k < |v_1| ==> 'a' <= v_1[k] <= 'z'", "error": 0, "expr": "all(('a' <= I.v_1[k] <= 'z') for k in range(len(I.v_1)))", "holds": 133, "solution_id": "1582_315", "status": "ok", "violated": 0}
+{"clause": "a >= 0", "error": 0, "expr": "I.a >= 0", "holds": 99, "solution_id": "1276_62", "status": "violated-python-also-fails", "violated": 4, "violated_python_ok": 0}
+{"clause": "n >= 0", "error": 0, "expr": "I.n >= 0", "holds": 42, "solution_id": "1421_53", "status": "ok", "violated": 0}
+{"clause": "n <= |a_list|", "error": 0, "expr": "I.n <= len(I.a_list)", "holds": 42, "solution_id": "1421_53", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < n ==> -n <= a_list[k] - 1 < n", "error": 0, "expr": "all((-I.n <= I.a_list[k] - 1 < I.n) for k in range(I.n))", "holds": 42, "solution_id": "1421_53", "status": "ok", "violated": 0}
+{"clause": "n >= 0", "error": 0, "expr": "I.n >= 0", "holds": 103, "solution_id": "1981_39", "status": "ok", "violated": 0}
+{"clause": "|a_list| == n", "error": 0, "expr": "len(I.a_list) == I.n", "holds": 103, "solution_id": "1981_39", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < n ==> -n <= a_list[k] - 1 < n", "error": 0, "expr": "all((-I.n <= I.a_list[k] - 1 < I.n) for k in range(I.n))", "holds": 103, "solution_id": "1981_39", "status": "ok", "violated": 0}
+{"clause": "n >= 0", "error": 0, "expr": "I.n >= 0", "holds": 103, "solution_id": "1981_62", "status": "ok", "violated": 0}
+{"clause": "|a_list| == n", "error": 0, "expr": "len(I.a_list) == I.n", "holds": 103, "solution_id": "1981_62", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < n ==> -n <= a_list[k] - 1 < n", "error": 0, "expr": "all((-I.n <= I.a_list[k] - 1 < I.n) for k in range(I.n))", "holds": 103, "solution_id": "1981_62", "status": "ok", "violated": 0}

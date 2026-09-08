@@ -30,6 +30,16 @@ module Prelude {
     "0123456789"[if 0 <= d < 10 then d else 0]
   }
 
+  // Python subscripts from the end when the index is negative; Dafny faults.
+  // Three rows read a negative index on real stored inputs, so a translation
+  // that ignores this is WRONG there, not merely unproven.
+  function PyIndex(i: int, len: int): int
+    requires -len <= i < len
+    ensures 0 <= PyIndex(i, len) < len
+  {
+    if i < 0 then len + i else i
+  }
+
   function IntToString(x: int): string
     decreases if x < 0 then 1 - x else x
   {
@@ -44,6 +54,61 @@ module Prelude {
     if |parts| == 0 then ""
     else if |parts| == 1 then parts[0]
     else parts[0] + sep + Join(parts[1..], sep)
+  }
+
+  lemma IntToStringNonEmpty(x: int)
+    ensures |IntToString(x)| >= 1
+    decreases if x < 0 then 1 - x else x
+  {
+    if x < 0 { IntToStringNonEmpty(-x); }
+    else if x >= 10 { IntToStringNonEmpty(x / 10); }
+  }
+
+  // Join can only be shorter than its parts if a part is empty.
+  lemma JoinLenGeCount(parts: seq<string>, sep: string)
+    requires forall k :: 0 <= k < |parts| ==> |parts[k]| >= 1
+    ensures |Join(parts, sep)| >= |parts|
+    decreases |parts|
+  {
+    if |parts| > 1 { JoinLenGeCount(parts[1..], sep); }
+  }
+
+  // With an empty separator Join distributes over concatenation, so a long
+  // Join can be measured one uniform band at a time.
+  lemma JoinSplitEmptySep(a: seq<string>, b: seq<string>)
+    ensures Join(a + b, "") == Join(a, "") + Join(b, "")
+    decreases |a|
+  {
+    if |a| == 0 {
+      assert a + b == b;
+    } else if |a| == 1 {
+      if |b| == 0 {
+        assert a + b == a;
+      } else {
+        assert (a + b)[1..] == b;
+      }
+    } else {
+      assert (a + b)[1..] == a[1..] + b;
+      JoinSplitEmptySep(a[1..], b);
+    }
+  }
+
+  lemma JoinLenUniform(parts: seq<string>, d: nat)
+    requires forall k :: 0 <= k < |parts| ==> |parts[k]| == d
+    ensures |Join(parts, "")| == d * |parts|
+    decreases |parts|
+  {
+    if |parts| > 1 { JoinLenUniform(parts[1..], d); }
+  }
+
+  lemma IntToStringLen(x: int)
+    requires x >= 1
+    ensures 1 <= x <= 9        ==> |IntToString(x)| == 1
+    ensures 10 <= x <= 99      ==> |IntToString(x)| == 2
+    ensures 100 <= x <= 999    ==> |IntToString(x)| == 3
+    ensures 1000 <= x <= 9999  ==> |IntToString(x)| == 4
+  {
+    if x >= 10 { IntToStringLen(x / 10); }
   }
 
   function JoinInts(xs: seq<int>, sep: string): string

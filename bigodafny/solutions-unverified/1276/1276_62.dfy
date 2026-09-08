@@ -30,6 +30,9 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(a: int, b: int) returns (output: string)
+  // 4 of 103 stored inputs give a < 0; all four make the row's own Python
+  // raise while parsing, so there is no behaviour there to reproduce.
+  requires a >= 0
 {
 {
 
@@ -48,6 +51,10 @@ method Solve(a: int, b: int) returns (output: string)
   var s := 0;
   var i := 1;
   while i < lim
+    invariant 1 <= i <= lim
+    invariant wsPart.Length == partCount
+    // the terms telescope: sum_{j<i} (n/j - n/(j+1)) == n - n/i
+    invariant s == n - n / i
     decreases lim - i
   {
     var w := n / i - n / (i + 1);
@@ -60,12 +67,16 @@ method Solve(a: int, b: int) returns (output: string)
   var ws := new int[m];
   var q := 0;
   while q < partCount
+    invariant 0 <= q <= partCount
+    invariant ws.Length == m && wsPart.Length == partCount && partCount <= m
     decreases partCount - q
   {
     ws[q] := wsPart[q];
     q := q + 1;
   }
   while q < m
+    invariant 0 <= q
+    invariant ws.Length == m
     decreases m - q
   {
     ws[q] := 1;
@@ -75,6 +86,8 @@ method Solve(a: int, b: int) returns (output: string)
   var dp := new int[m];
   q := 0;
   while q < m
+    invariant 0 <= q
+    invariant ws.Length == m && dp.Length == m
     decreases m - q
   {
     dp[q] := ws[q];
@@ -83,12 +96,15 @@ method Solve(a: int, b: int) returns (output: string)
 
   var rep := 0;
   while rep < k - 1
+    invariant ws.Length == m && dp.Length == m
     decreases k - 1 - rep
   {
     var newdp := new int[m];
     var acc := 0;
     var t := 0;
     while t < m
+      invariant 0 <= t
+      invariant ws.Length == m && dp.Length == m && newdp.Length == m
       decreases m - t
     {
       acc := (acc + dp[m-1-t]) % md;
@@ -102,6 +118,8 @@ method Solve(a: int, b: int) returns (output: string)
   var ans := 0;
   var t2 := 0;
   while t2 < m
+    invariant 0 <= t2
+    invariant dp.Length == m
     decreases m - t2
   {
     ans := (ans + dp[t2]) % md;

@@ -10,7 +10,7 @@ them against the parsed test inputs. Shapes it cannot translate are reported as
 `unchecked` -- they need reading, not guessing.
 """
 from __future__ import annotations
-import json, re, sys
+import json, re, subprocess, sys
 from pathlib import Path
 
 from common import DATA, INEXACT, SOLUTIONS, UNVERIFIED, log, read_jsonl, write_jsonl
@@ -244,6 +244,16 @@ def to_python(clause, bound=()):
     return _unmask_literals(s, lits)
 
 
+def python_fails(code, stdin, timeout=20):
+    """Does the row's ORIGINAL Python fail on this input?"""
+    try:
+        p = subprocess.run([sys.executable, "-c", code], input=stdin,
+                           capture_output=True, text=True, timeout=timeout)
+        return p.returncode != 0
+    except Exception:
+        return True
+
+
 def run(sids):
     tasks = {t["solution_id"]: t for t in read_jsonl(DATA / "tasks.jsonl")}
     rows = []
@@ -270,35 +280,58 @@ def run(sids):
             if expr is None:
                 rec["status"] = "unchecked"
                 rows.append(rec); continue
+            offenders = []
             for k in ("public_tests", "private_tests", "generated_tests"):
                 for tst in t["tests"].get(k, []):
                     try:
                         I = ns["Input"].from_str(tst["input"])
-                        val = eval(expr, {"len": len, "all": all,
+                        val = eval(expr, {"len": len, "all": all, "any": any,
+                                          "int": int, "sum": sum, "abs": abs,
+                                          "max": max, "min": min,
                                           "range": range, "I": I})
-                        rec["holds" if val else "violated"] += 1
+                        if val:
+                            rec["holds"] += 1
+                        else:
+                            rec["violated"] += 1
+                            offenders.append(tst["input"])
                     except Exception:
                         rec["error"] += 1
-            rec["status"] = ("violated" if rec["violated"] else
-                             "ok" if rec["holds"] else "no-data")
+            if rec["violated"]:
+                # A precondition may exclude an input the ORIGINAL Python also
+                # fails on: the row's contract is to reproduce that Python, and
+                # there is no behaviour to reproduce. Excluding an input the
+                # Python handles is the dishonest case.
+                live = sum(1 for inp in offenders
+                           if not python_fails(t["solution_code"], inp))
+                rec["violated_python_ok"] = live
+                rec["status"] = "violated" if live else "violated-python-also-fails"
+            else:
+                rec["status"] = "ok" if rec["holds"] else "no-data"
             rows.append(rec)
     write_jsonl(DATA / "precondition_check.jsonl", rows)
     bad = [r for r in rows if r["status"] == "violated"]
     unk = [r for r in rows if r["status"] == "unchecked"]
     nod = [r for r in rows if r["status"] == "no-data"]
+    vpf = [r for r in rows if r["status"] == "violated-python-also-fails"]
     log(f"preconditions: {len(rows)} clauses over {len({r['solution_id'] for r in rows})} rows")
     log(f"  ok        {sum(1 for r in rows if r['status']=='ok')}")
     log(f"  VIOLATED  {len(bad)}")
     log(f"  unchecked {len(unk)}  (needs reading, not guessing)")
     log(f"  no-data   {len(nod)}  (translated but never evaluated -- NOT a pass)")
+    log(f"  py-fails  {len(vpf)}  (violated only where the original Python also fails)")
     for r in bad:
         log(f"    VIOLATED {r['solution_id']}: {r['clause']}  "
-            f"(holds {r['holds']}, violated {r['violated']})")
+            f"(holds {r['holds']}, violated {r['violated']}, of which "
+            f"{r.get('violated_python_ok', '?')} run fine in Python)")
     for r in unk:
         log(f"    unchecked {r['solution_id']}: {r['clause']}")
     for r in nod:
         log(f"    no-data {r['solution_id']}: {r['clause']}  "
             f"(errors {r['error']})")
+    for r in vpf:
+        log(f"    py-fails {r['solution_id']}: {r['clause']}  "
+            f"(holds {r['holds']}, violated {r['violated']}, all of which "
+            f"crash the original Python)")
     return rows
 
 
