@@ -24,7 +24,6 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, numbers_list: seq<int>) returns (output: string)
-  requires forall t :: 0 <= t < |numbers_list| ==> 1 <= numbers_list[t] <= 1000000000
 {
 
   var check := [2];

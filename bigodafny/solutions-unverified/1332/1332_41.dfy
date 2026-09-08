@@ -41,7 +41,6 @@ import opened Prelude
 
 method Solve(n: int, k: int, a_list: seq<int>) returns (output: string)
   requires n == |a_list|
-  requires exists c :: 0 <= c < n && a_list[c] == k
 {
   var m := k;
   var p := a_list;

@@ -42,7 +42,6 @@ lemma SortElems<T>(s: seq<T>, less: (T, T) -> bool)
 }
 
 method Solve(n: int, m: int, values: seq<int>) returns (output: string)
-  requires forall x :: x in values ==> 1 <= x <= 100
 {
   var asc := SortInts(values);
   SortElems(values, (x, y) => x < y);

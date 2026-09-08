@@ -36,7 +36,6 @@ import opened Prelude
 method Solve(n: int, a_list: seq<int>) returns (output: string)
   requires n >= 0
   requires |a_list| == n
-  requires forall k :: 0 <= k < n ==> 1 <= a_list[k] <= n
 {
   var up := seq(n, i requires 0 <= i < n => 1 + i*20001);
   var down := seq(n, i requires 0 <= i < n => up[n-1-i]);

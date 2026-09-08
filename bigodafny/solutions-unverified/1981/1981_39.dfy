@@ -24,7 +24,6 @@ import opened Prelude
 method Solve(n: int, a_list: seq<int>) returns (output: string)
   requires n >= 0
   requires |a_list| == n
-  requires forall k :: 0 <= k < n ==> 1 <= a_list[k] <= n
 {
   var a := seq(n, i requires 0 <= i < n => i*40000+1);
   var b := seq(n, i requires 0 <= i < n => a[n-1-i]);
