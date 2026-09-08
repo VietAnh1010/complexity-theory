@@ -60,6 +60,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
+  requires n <= |a_list|
 {
   var a1 := 0;
   var b := 0;
@@ -67,6 +68,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
   var f := true;
   var i := 0;
   while i < n && f
+    invariant 0 <= i
     decreases n - i
   {
     var v := a_list[i];

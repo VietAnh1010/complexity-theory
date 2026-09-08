@@ -33,6 +33,8 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(a: int, b: int, c_list: seq<int>) returns (output: string)
+  requires |c_list| >= 1
+  requires a >= 1
 {
   var arr := Sort(c_list, (x: int, y: int) => x > y);
   var kk := MinSeq(c_list);
@@ -43,6 +45,8 @@ method Solve(a: int, b: int, c_list: seq<int>) returns (output: string)
   } else {
     var i := 0;
     while i < |arr| && su < b
+      invariant 0 <= i <= |arr|
+      invariant |arr| == |c_list|
       decreases |arr| - i
     {
       if arr[i] > kk {

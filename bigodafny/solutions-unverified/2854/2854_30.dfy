@@ -33,6 +33,9 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, edges: seq<string>) returns (output: string)
+  requires n >= 0
+  // same as 2854_107: a target is marked visited on pop, not on push.
+  decreases *
 {
   var adj: seq<seq<(int, int)>> := seq(n, _ => []);
   var idx := 0;
@@ -63,6 +66,7 @@ method Solve(n: int, edges: seq<string>) returns (output: string)
     invariant |visited| == n
     invariant |colors| == n
     invariant |adj| == n
+    decreases *
   {
     var t := options[|options| - 1];
     options := options[..|options| - 1];

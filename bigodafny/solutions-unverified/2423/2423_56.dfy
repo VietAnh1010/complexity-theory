@@ -29,10 +29,14 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, k: int, pairs: seq<(int, int)>) returns (output: string)
+  requires n <= |pairs|
+  requires forall t :: 0 <= t < |pairs| ==> 0 <= pairs[t].0 < 3010
 {
   var l: seq<int> := [];
   var z := 0;
   while z < 3010
+    invariant 0 <= z <= 3010
+    invariant |l| == z
     decreases 3010 - z
   {
     l := l + [0];
@@ -41,6 +45,8 @@ method Solve(n: int, k: int, pairs: seq<(int, int)>) returns (output: string)
 
   var idx := 0;
   while idx < n
+    invariant 0 <= idx
+    invariant |l| == 3010
     decreases n - idx
   {
     var a := pairs[idx].0;
@@ -53,6 +59,9 @@ method Solve(n: int, k: int, pairs: seq<(int, int)>) returns (output: string)
   var day := 1;
   var i := 0;
   while i < 3004
+    invariant 0 <= i <= 3004
+    invariant day == i + 1
+    invariant |l| == 3010
     decreases 3004 - i
   {
     var temp := if k < l[day - 1] then k else l[day - 1];

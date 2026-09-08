@@ -22,6 +22,8 @@ method Solve(s: string) returns (output: string)
   var freq: map<char, int> := map[];
   var i := 0;
   while i < |s|
+    invariant 0 <= i <= |s|
+    invariant forall t :: 0 <= t < i ==> s[t] in freq
     decreases |s| - i
   {
     var c := s[i];
@@ -35,6 +37,8 @@ method Solve(s: string) returns (output: string)
   var a := "Yes";
   var j := 0;
   while j < |s|
+    invariant 0 <= j <= |s|
+    invariant forall t :: 0 <= t < |s| ==> s[t] in freq
     decreases |s| - j
   {
     if freq[s[j]] % 2 != 0 {

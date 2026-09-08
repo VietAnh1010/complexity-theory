@@ -15,6 +15,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(N: int, M: int) returns (output: string)
+  requires N >= 2
 {
   var AA := N - 1;
   var BB := M - 1;

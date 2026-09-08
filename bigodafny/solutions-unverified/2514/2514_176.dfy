@@ -23,6 +23,8 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(a: int, b: int, c_list: seq<int>) returns (output: string)
+  requires |c_list| >= 1
+  requires a >= 1
 {
   var least := MinSeq(c_list);
   var total := SumSeq(c_list);
@@ -32,6 +34,7 @@ method Solve(a: int, b: int, c_list: seq<int>) returns (output: string)
     var s := b;
     var i := 0;
     while i < |c_list|
+      invariant 0 <= i <= |c_list|
       decreases |c_list| - i
     {
       s := s - (c_list[i] - least);

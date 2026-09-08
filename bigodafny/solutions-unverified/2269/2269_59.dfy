@@ -43,6 +43,8 @@ function IsPalindrome269b(s: string): bool
 }
 
 function IsPalindromeFrom269b(s: string, i: int, half: int): bool
+  requires 0 <= i
+  requires half <= |s|
   decreases half - i
 {
   if i >= half then true

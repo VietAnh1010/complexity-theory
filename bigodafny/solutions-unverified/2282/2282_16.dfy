@@ -35,6 +35,8 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, k: int) returns (output: string)
+  requires n >= 0
+  requires k >= 0
 {
   var n0 := n;
   var n1 := k;
@@ -60,6 +62,8 @@ method Solve(n: int, k: int) returns (output: string)
     var ii := n1 / 9;
     var qq := n1 % 9;
     var ma: string;
+    assert 9 * ii + qq == n1;
+    assert 9 * n0 >= n1;
     if qq == 0 {
       ma := Repeat("9", ii) + Repeat("0", n0 - ii);
     } else {

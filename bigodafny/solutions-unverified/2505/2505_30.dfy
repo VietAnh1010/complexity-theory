@@ -26,11 +26,17 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, coordinates: seq<seq<int>>) returns (output: string)
+  requires n >= 0
+  requires |coordinates| >= 1
+  requires n <= |coordinates[0]|
+  requires forall t :: 0 <= t < n ==> 0 <= coordinates[0][t] < n + 4
 {
   var data := coordinates[0];
   var d: seq<bool> := [];
   var z := 0;
   while z < n + 4
+    invariant 0 <= z <= n + 4
+    invariant |d| == z
     decreases n + 4 - z
   {
     d := d + [false];
@@ -40,6 +46,8 @@ method Solve(n: int, coordinates: seq<seq<int>>) returns (output: string)
   var res := 1;
   var i := 0;
   while i < n
+    invariant 0 <= i <= n
+    invariant |d| == n + 4
     decreases n - i
   {
     if d[data[i]] {

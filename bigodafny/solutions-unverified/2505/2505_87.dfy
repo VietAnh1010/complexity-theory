@@ -20,11 +20,15 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, coordinates: seq<seq<int>>) returns (output: string)
+  requires |coordinates| >= 1
+  requires n <= |coordinates[0]|
 {
   var arr := SortInts(coordinates[0]);
   var cnt := 0;
   var i := 1;
   while i < n
+    invariant 1 <= i
+    invariant |arr| == |coordinates[0]|
     decreases n - i
   {
     if arr[i] == arr[i - 1] {

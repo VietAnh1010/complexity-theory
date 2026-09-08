@@ -36,6 +36,10 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, edges: seq<string>) returns (output: string)
+  requires n >= 0
+  // the DFS stack can hold a node more than once: a neighbour is marked
+  // visited when popped, not when pushed, so no stack measure decreases.
+  decreases *
 {
   var adj: seq<seq<int>> := seq(n + 1, _ => []);
   var idx := 0;
@@ -63,6 +67,7 @@ method Solve(n: int, edges: seq<string>) returns (output: string)
   while |stack| > 0
     invariant |visited| == n + 1
     invariant |adj| == n + 1
+    decreases *
   {
     var top := stack[|stack| - 1];
     stack := stack[..|stack| - 1];

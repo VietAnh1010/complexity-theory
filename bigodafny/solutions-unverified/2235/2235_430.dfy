@@ -25,10 +25,13 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(t: int, n_list: seq<int>, s_list: seq<string>) returns (output: string)
+  requires t <= |n_list|
+  requires t <= |s_list|
 {
   var parts: seq<string> := [];
   var x := 0;
   while x < t
+    invariant 0 <= x
     decreases t - x
   {
     var n := n_list[x];
@@ -40,6 +43,7 @@ method Solve(t: int, n_list: seq<int>, s_list: seq<string>) returns (output: str
       var buf: string := "";
       var i := 0;
       while i < |s|
+        invariant 0 <= i
         decreases |s| - i
       {
         buf := buf + [s[i]];

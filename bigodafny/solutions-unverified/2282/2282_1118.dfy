@@ -64,6 +64,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, k: int) returns (output: string)
+  requires n >= 0
 {
   var m := n;
   var s := k;

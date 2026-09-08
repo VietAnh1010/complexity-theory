@@ -41,10 +41,13 @@ method C2286(n: int, k: int) returns (r: int)
 }
 
 method Fac2286(x: int) returns (p: int)
+  ensures p >= 1
 {
   p := 1;
   var i := 2;
   while i <= x
+    invariant p >= 1
+    invariant i >= 2
     decreases x - i
   {
     p := p * i;

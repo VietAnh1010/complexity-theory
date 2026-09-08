@@ -43,6 +43,8 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, k: int, pairs: seq<(int, int)>) returns (output: string)
+  requires |pairs| >= 1
+  requires n <= |pairs|
 {
   var d := Sort(pairs, (x: (int, int), y: (int, int)) => x.0 < y.0 || (x.0 == y.0 && x.1 < y.1));
   var cur := 0;
@@ -52,16 +54,20 @@ method Solve(n: int, k: int, pairs: seq<(int, int)>) returns (output: string)
   var limit := d[|d| - 1].0 + 2;
   var i := 0;
   while i < limit
+    invariant 0 <= idx
+    invariant |d| == |pairs|
     decreases limit - i
   {
     nex := 0;
     var p := k;
     while idx < n && d[idx].0 < i
+      invariant 0 <= idx
       decreases n - idx
     {
       idx := idx + 1;
     }
     while idx < n && d[idx].0 == i
+      invariant 0 <= idx
       decreases n - idx
     {
       nex := nex + d[idx].1;

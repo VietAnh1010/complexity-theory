@@ -37,10 +37,13 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, string_: string) returns (output: string)
+  requires 1 <= n <= |string_|
 {
   var dp: seq<int> := [];
   var t := 0;
   while t < n
+    invariant 0 <= t <= n
+    invariant |dp| == t
     decreases n - t
   {
     dp := dp + [1];
@@ -49,10 +52,14 @@ method Solve(n: int, string_: string) returns (output: string)
 
   var i := 1;
   while i < n
+    invariant 1 <= i
+    invariant |dp| == n
     decreases n - i
   {
     var j := 0;
     while j < i
+      invariant 0 <= j <= i
+      invariant |dp| == n
       decreases i - j
     {
       if string_[j] > string_[i] {
@@ -68,6 +75,8 @@ method Solve(n: int, string_: string) returns (output: string)
   var fl := true;
   var k := 0;
   while k < n
+    invariant 0 <= k
+    invariant |dp| == n
     decreases n - k
   {
     if dp[k] >= 3 {
@@ -83,6 +92,7 @@ method Solve(n: int, string_: string) returns (output: string)
     var mx := string_[0];
     var m := 1;
     while m < n
+      invariant 1 <= m
       decreases n - m
     {
       if string_[m] >= mx {
