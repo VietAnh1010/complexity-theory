@@ -1,4 +1,17 @@
 {
+  "hooks": {
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "python3 /home/user/complexity-theory/bigodafny/experiments/guard.py",
+            "type": "command"
+          }
+        ],
+        "matcher": "Bash|Read|Edit|Write|Grep|Glob|NotebookEdit"
+      }
+    ]
+  },
   "permissions": {
     "allow": [
       "Bash(cp:*)",

@@ -1,0 +1,4 @@
+runs/*/guard.log
+runs/*/AGENTS_CONFINED
+guard_trace.log
+GUARD_TRACE
