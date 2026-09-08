@@ -34,6 +34,7 @@ FIELDS = ["run_id", "arm", "sid", "problem_id", "label", "split", "model",
           "proved", "bound_class", "bound_shape", "bound_ensures",
           "label_match", "added_requires",
           "gate_verify", "gate_no_assume", "gate_skeleton", "gate_behaviour",
+          "gate_requires", "requires_detail",
           "code_identical", "added_exec_lines", "assumes",
           "dafny_calls", "tool_calls", "wall_s", "output_tokens",
           "leak_attempts", "attempts", "agent_id", "notes"]
@@ -117,6 +118,8 @@ def rows(run_id):
             "gate_no_assume": g.get("gate_no_assume"),
             "gate_skeleton": g.get("gate_skeleton"),
             "gate_behaviour": beh.get("gate"),
+            "gate_requires": (g.get("gate_requires") or {}).get("gate"),
+            "requires_detail": (g.get("gate_requires") or {}).get("detail"),
             "code_identical": g.get("code_identical"),
             "added_exec_lines": g.get("added_exec_lines"),
             "assumes": g.get("assumes"),
@@ -204,7 +207,8 @@ def report(rs):
     for g, nice in (("gate_verify", "did not verify"),
                     ("gate_no_assume", "used `assume`"),
                     ("gate_skeleton", "compiled control flow changed"),
-                    ("gate_behaviour", "behaviour changed")):
+                    ("gate_behaviour", "behaviour changed"),
+                    ("gate_requires", "a `requires` excludes real inputs")):
         w(f"| {nice} | {sum(1 for r in L if r[g] is False)} "
           f"| {sum(1 for r in B if r[g] is False)} |")
     w("")

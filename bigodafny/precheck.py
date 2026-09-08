@@ -13,10 +13,17 @@ from __future__ import annotations
 import json, re, subprocess, sys
 from pathlib import Path
 
-from common import DATA, INEXACT, SOLUTIONS, UNVERIFIED, log, read_jsonl, write_jsonl
+from common import (DATA, INEXACT, NLOGN, SOLUTIONS, UNVERIFIED, VERIFIED,
+                    log, read_jsonl, write_jsonl)
 from signature import input_fields
 
-ROOTS = [SOLUTIONS, UNVERIFIED, INEXACT]
+# solutions-verified/ and solutions-nlogn/ were missing here, so the twelve
+# complexity proofs' preconditions were never checked against real inputs --
+# and the proofs are exactly where new preconditions get added, to make a
+# bound provable. Two of the twelve turned out to exclude inputs their own
+# row answers. A gate that skips the files most likely to need it is not a
+# gate.
+ROOTS = [SOLUTIONS, UNVERIFIED, INEXACT, VERIFIED, NLOGN]
 
 
 def find(sid, pid):
@@ -25,6 +32,21 @@ def find(sid, pid):
         if p.exists():
             return p
     return None
+
+
+def find_all(sid, pid):
+    """EVERY copy of the row, not the first.
+
+    A row can exist in two places at once: the plain translation in
+    `solutions/` or `solutions-inexact/`, and an instrumented copy carrying a
+    complexity proof in `solutions-verified/` or `solutions-nlogn/`. Returning
+    only the first meant the proofs -- the copies most likely to have gained a
+    new `requires`, since that is often what makes a bound provable -- were
+    never the file this checked. 827_148 has two different precondition sets in
+    two directories and only the weaker one was ever seen.
+    """
+    return [r / pid / f"{sid}.dfy" for r in ROOTS
+            if (r / pid / f"{sid}.dfy").exists()]
 
 
 def requires_of(text):
@@ -324,66 +346,86 @@ def run(sids):
     rows = []
     for sid in sids:
         pid = sid.split("_")[0]
-        p = find(sid, pid)
-        if p is None or sid not in tasks:
-            continue
-        clauses = requires_of(p.read_text(encoding="utf-8"))
-        if not clauses:
+        if sid not in tasks:
             continue
         t = tasks[sid]
-        ns = {}
-        exec(compile(t["dataclass_code"], "<dc>", "exec"), ns)
-        global FIELDS
-        try:
-            FIELDS = {n for n, _ in input_fields(t["dataclass_code"])}
-        except Exception:
-            FIELDS = set()
-        for c in clauses:
-            expr = to_python(c)
-            rec = {"solution_id": sid, "clause": c, "expr": expr,
-                   "holds": 0, "violated": 0, "error": 0}
-            if expr is None:
-                rec["status"] = "unchecked"
-                rows.append(rec); continue
-            offenders = []
-            for k in ("public_tests", "private_tests", "generated_tests"):
-                for tst in t["tests"].get(k, []):
-                    try:
-                        I = ns["Input"].from_str(tst["input"])
-                        val = eval(expr, {"len": len, "all": all, "any": any,
-                                          "int": int, "sum": sum, "abs": abs,
-                                          "max": max, "min": min,
-                                          "range": range, "I": I})
-                        if val:
-                            rec["holds"] += 1
-                        else:
-                            rec["violated"] += 1
-                            offenders.append(tst["input"])
-                    except Exception:
-                        rec["error"] += 1
-            if rec["violated"]:
-                # A precondition may exclude an input the ORIGINAL Python also
-                # fails on: the row's contract is to reproduce that Python, and
-                # there is no behaviour to reproduce. Excluding an input the
-                # Python handles is the dishonest case.
-                live = sum(1 for inp in offenders
-                           if not python_fails(t["solution_code"], inp))
-                rec["violated_python_ok"] = live
-                rec["status"] = "violated" if live else "violated-python-also-fails"
-            else:
-                rec["status"] = "ok" if rec["holds"] else "no-data"
-            rows.append(rec)
+        for p in find_all(sid, pid):
+          clauses = requires_of(p.read_text(encoding="utf-8"))
+          if not clauses:
+            continue
+          ns = {}
+          exec(compile(t["dataclass_code"], "<dc>", "exec"), ns)
+          global FIELDS
+          try:
+              FIELDS = {n for n, _ in input_fields(t["dataclass_code"])}
+          except Exception:
+              FIELDS = set()
+          for c in clauses:
+              expr = to_python(c)
+              rec = {"solution_id": sid, "root": p.parent.parent.name,
+                   "clause": c, "expr": expr,
+                     "holds": 0, "violated": 0, "error": 0}
+              if expr is None:
+                  rec["status"] = "unchecked"
+                  rows.append(rec); continue
+              offenders, by_tier = [], {}
+              for k in ("public_tests", "private_tests", "generated_tests"):
+                  for tst in t["tests"].get(k, []):
+                      try:
+                          I = ns["Input"].from_str(tst["input"])
+                          val = eval(expr, {"len": len, "all": all, "any": any,
+                                            "int": int, "sum": sum, "abs": abs,
+                                            "max": max, "min": min,
+                                            "range": range, "I": I})
+                          if val:
+                              rec["holds"] += 1
+                          else:
+                              rec["violated"] += 1
+                              by_tier[k] = by_tier.get(k, 0) + 1
+                              offenders.append(tst["input"])
+                      except Exception:
+                          rec["error"] += 1
+              if rec["violated"]:
+                  # A precondition may exclude an input the ORIGINAL Python also
+                  # fails on: the row's contract is to reproduce that Python, and
+                  # there is no behaviour to reproduce. Excluding an input the
+                  # Python handles is the dishonest case.
+                  live = sum(1 for inp in offenders
+                             if not python_fails(t["solution_code"], inp))
+                  rec["violated_python_ok"] = live
+                  rec["violated_by_tier"] = by_tier
+                  real = by_tier.get("public_tests", 0) + by_tier.get("private_tests", 0)
+                  if not live:
+                      rec["status"] = "violated-python-also-fails"
+                  elif not real:
+                      # Only BigOBench's synthetic `generated_tests` violate it.
+                      # Those are scaled inputs and can leave the problem's own
+                      # stated constraints -- 827_148's cap is the statement's
+                      # own `1 <= si, di <= 1000`, honoured by all 35 real tests
+                      # and exceeded (max 1101) by 39 generated ones. A clause
+                      # faithful to the statement is not the same defect as one
+                      # that excludes a real test, and collapsing them would
+                      # either excuse the second or condemn the first.
+                      rec["status"] = "violated-generated-only"
+                  else:
+                      rec["status"] = "violated"
+              else:
+                  rec["status"] = "ok" if rec["holds"] else "no-data"
+              rows.append(rec)
     write_jsonl(DATA / "precondition_check.jsonl", rows)
     bad = [r for r in rows if r["status"] == "violated"]
     unk = [r for r in rows if r["status"] == "unchecked"]
     nod = [r for r in rows if r["status"] == "no-data"]
     vpf = [r for r in rows if r["status"] == "violated-python-also-fails"]
+    vgo = [r for r in rows if r["status"] == "violated-generated-only"]
     log(f"preconditions: {len(rows)} clauses over {len({r['solution_id'] for r in rows})} rows")
     log(f"  ok        {sum(1 for r in rows if r['status']=='ok')}")
     log(f"  VIOLATED  {len(bad)}")
     log(f"  unchecked {len(unk)}  (needs reading, not guessing)")
     log(f"  no-data   {len(nod)}  (translated but never evaluated -- NOT a pass)")
     log(f"  py-fails  {len(vpf)}  (violated only where the original Python also fails)")
+    log(f"  gen-only  {len(vgo)}  (violated only by synthetic generated_tests, "
+        f"never by a real one)")
     for r in bad:
         log(f"    VIOLATED {r['solution_id']}: {r['clause']}  "
             f"(holds {r['holds']}, violated {r['violated']}, of which "
@@ -393,6 +435,10 @@ def run(sids):
     for r in nod:
         log(f"    no-data {r['solution_id']}: {r['clause']}  "
             f"(errors {r['error']})")
+    for r in vgo:
+        log(f"    gen-only {r['solution_id']}: {r['clause']}  "
+            f"(holds {r['holds']}, violated {r['violated']}, all in "
+            f"generated_tests)")
     for r in vpf:
         log(f"    py-fails {r['solution_id']}: {r['clause']}  "
             f"(holds {r['holds']}, violated {r['violated']}, all of which "

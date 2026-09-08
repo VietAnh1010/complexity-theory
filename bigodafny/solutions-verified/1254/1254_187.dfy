@@ -28,15 +28,21 @@ lemma SqMono(a: int, b: int)
   assert (b - a) * (b + a) >= 0;
 }
 
+// `requires n >= 1` used to sit here, and 48 of this row's 102 stored inputs
+// violate it -- the Python answers n = 0 and every negative n perfectly well.
+// It was never caught because precheck.py's roots did not include this
+// directory. The bound is now stated for every n. n*n + 12*n + 70 has negative
+// discriminant, so it is positive everywhere, and its minimum of 34 at n = -6
+// still covers the 10 steps the method takes when the loop never runs.
 method Solve(n: int) returns (output: string, ghost steps: nat)
-  requires n >= 1
-  ensures steps <= (n + 2) * (n + 2) + 8 * (n + 2) + 20
+  ensures steps <= n * n + 12 * n + 70
 {
   steps := 1;
   var x := 0;
   var i := 1;
   while i <= n
-    invariant 1 <= i <= n + 2
+    invariant 1 <= i
+    invariant i > 1 ==> i <= n + 2
     invariant steps <= i * i + 4 * i + 5
     decreases n - i
   {
@@ -61,6 +67,10 @@ method Solve(n: int) returns (output: string, ghost steps: nat)
     assert (iOld + 2) * (iOld + 2) + 4 * (iOld + 2) + 5 == iOld * iOld + 8 * iOld + 17;
     assert i == iOld + 2;
   }
-  SqMono(i, n + 2);
+  if i > 1 {
+    SqMono(i, n + 2);          // the loop ran, so n >= 1 and i <= n + 2
+  } else {
+    assert (n + 6) * (n + 6) >= 0;    // hence n*n + 12*n + 70 >= 34 >= steps
+  }
   output := IntToString(x);
 }

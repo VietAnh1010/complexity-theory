@@ -23,6 +23,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import BUILD, DATA, read_jsonl, log                   # noqa: E402
 import validate as V                                              # noqa: E402
 import difftest as DT                                             # noqa: E402
+import precheck as PC                                             # noqa: E402
 from bound import classify, extract_ensures, same_class           # noqa: E402
 from stage import CX_ROOT                                         # noqa: E402
 
@@ -106,6 +107,40 @@ def behaviour(sid, task, sig, dfy: Path, work: Path, split):
             "passed": npass, "total": len(res)}
 
 
+def preconditions(sid, dfy: Path):
+    """Every `requires` on the final Solve, checked against the row's inputs.
+
+    An agent can make a bound true by narrowing the problem: add
+    `requires |a| <= 100` and the quadratic loop is constant. Nothing else here
+    can see that. `dafny verify` is happy, the compiled Python has no
+    precondition in it at all, so every test still passes.
+
+    `precheck.py` already answers this question for the corpus, including the
+    exemption that matters: a clause may exclude an input the row's OWN Python
+    also crashes on, because there is no behaviour to reproduce there. Reused
+    rather than reimplemented -- two versions of this rule would drift.
+    """
+    old_find, old_write = PC.find_all, PC.write_jsonl
+    PC.find_all = lambda s, p, _d=dfy: [_d]
+    PC.write_jsonl = lambda *a, **k: None    # do not touch the corpus-level file
+    try:
+        rows = PC.run([sid])
+    except Exception as e:
+        return {"gate": None, "detail": f"precheck error: {str(e)[:150]}"}
+    finally:
+        PC.find_all, PC.write_jsonl = old_find, old_write
+    if not rows:
+        return {"gate": True, "detail": "no requires clauses", "clauses": 0}
+    # `violated` only. A clause violated solely by synthetic generated_tests,
+    # or solely where the row's own Python also crashes, is not a clause that
+    # excludes work the row actually does.
+    bad = [r for r in rows if r["status"] == "violated"]
+    unknown = [r for r in rows if r["status"] in ("unchecked", "no-data")]
+    return {"gate": not bad, "clauses": len(rows),
+            "detail": ", ".join(f"{r['status']}: {r['clause']}" for r in rows)[:400],
+            "violated": len(bad), "unverifiable": len(unknown)}
+
+
 def grade_one(run_id, arm, ex, task, sig, do_behaviour=True):
     d = CX_ROOT / run_id / arm / ex["sid"]
     rec = {"run_id": run_id, "arm": arm, "sid": ex["sid"],
@@ -151,7 +186,9 @@ def grade_one(run_id, arm, ex, task, sig, do_behaviour=True):
     # 4 -- behaviour on the row's own gate
     rec["gate_behaviour"] = (behaviour(ex["sid"], task, sig, cur, work / "beh",
                                        ex["split"]) if do_behaviour else None)
-    # 5 -- what class did it actually prove
+    # 5 -- every `requires` on the final method holds on the row's own inputs
+    rec["gate_requires"] = preconditions(ex["sid"], cur)
+    # 6 -- what class did it actually prove
     ens = extract_ensures(text)
     rec["bound_ensures"] = ens
     if ens:
@@ -162,6 +199,7 @@ def grade_one(run_id, arm, ex, task, sig, do_behaviour=True):
 
     ok = (rec["gate_verify"]["ok"] and rec["gate_no_assume"]
           and rec["gate_skeleton"] and bool(ens)
+          and rec["gate_requires"]["gate"] is not False
           and (rec["gate_behaviour"] is None
                or rec["gate_behaviour"]["gate"] is not False))
     rec["gate_all"] = ok
@@ -229,7 +267,8 @@ def main():
                           sigs[ex["problem_id"]], not a.no_behaviour)
             out.append(r)
             log(f"  {arm:8} {ex['sid']:10} verify={r.get('gate_verify',{}).get('ok')} "
-                f"skel={r.get('gate_skeleton')} bound={r.get('bound_class')} "
+                f"skel={r.get('gate_skeleton')} req={(r.get('gate_requires') or {}).get('gate')} "
+                f"bound={r.get('bound_class')} "
                 f"label={ex['label']} all={r.get('gate_all')}")
 
     (RUNS / a.run_id).mkdir(parents=True, exist_ok=True)
