@@ -1,12 +1,12 @@
 # Complexity-proving experiment
 
-6 runs: 2 labeled, 4 blind.
+8 runs: 4 labeled, 4 blind.
 
 ## Proof rate
 
 | arm | attempted | proved | verified but gate-failed | no bound |
 |---|---|---|---|---|
-| labeled | 2 | 2 | 0 | 0 |
+| labeled | 4 | 4 | 0 | 0 |
 | blind | 4 | 4 | 0 | 0 |
 
 ## Blind arm: did it name the class
@@ -32,12 +32,21 @@
 
 ## Where a passing proof disagrees with the label
 
-| arm | sid | label | proved | ensures |
-|---|---|---|---|---|
-| blind | `1243_0` | `O(nlogn+mlogm)` | `O(n+m)` | `10 * |s1| + 10 * |s2| + 30` |
-| blind | `1718_1166` | `O(n*m)` | `O(n**2+m**2)` | `20 * N1 * N1 + 20 * N2 * N2 + 20 * N1 * N2 + 20 * N1 + 20 * N2 + 30` |
-| blind | `2650_140` | `O(nlogn)` | `O(n**2)` | `50 * n * n + 50 * n + 50` |
-| labeled | `1243_0` | `O(nlogn+mlogm)` | `O(n+m)` | `2 * |s1| + 2 * |s2| + 3` |
+Split by whether the TRANSLATION drifts from its Python. A proof is
+about the Dafny; where the two differ in shape, a disagreement with the
+label is a fact about this dataset's translation, not about BigOBench.
+
+- disagreements on rows with NO drift signal: **2**
+- disagreements on rows WITH a drift signal:  **4**
+
+| arm | sid | label | proved | drift | ensures |
+|---|---|---|---|---|---|
+| blind | `1243_0` | `O(nlogn+mlogm)` | `O(n+m)` | sort-mismatch | `10 * |s1| + 10 * |s2| + 30` |
+| blind | `1718_1166` | `O(n*m)` | `O(n**2+m**2)` | - | `20 * N1 * N1 + 20 * N2 * N2 + 20 * N1 * N2 + 20 * N1 + 20 * N2 + 30` |
+| blind | `2650_140` | `O(nlogn)` | `O(n**2)` | append-in-loop | `50 * n * n + 50 * n + 50` |
+| labeled | `1243_0` | `O(nlogn+mlogm)` | `O(n+m)` | sort-mismatch | `2 * |s1| + 2 * |s2| + 3` |
+| labeled | `1718_1166` | `O(n*m)` | `O(n**2+m**2)` | - | `2 * N1 * N1 + 2 * N2 * N2 + 4 * N1 + 2 * N2 + 4` |
+| labeled | `2650_140` | `O(nlogn)` | `O(n**2)` | append-in-loop | `4 * n * n + 15 * n + 16` |
 
 ## Gate failures
 
@@ -47,6 +56,7 @@
 | used `assume` | 0 | 0 |
 | compiled control flow changed | 0 | 0 |
 | behaviour changed | 0 | 0 |
+| a `requires` excludes real inputs | 0 | 0 |
 
 ## Difficulty: declared before the run vs measured
 
@@ -54,8 +64,8 @@
 |---|---|---|---|---|
 | 1 | 2 | 2 | 1.5 | 1.0 |
 | 2 | 2 | 2 | 2.0 | 1.0 |
-| 3 | 1 | 1 | 4.0 | 2.0 |
-| 4 | 1 | 1 | 6.0 | 3.0 |
+| 3 | 2 | 2 | 5.0 | 2.5 |
+| 4 | 2 | 2 | 13.0 | 3.5 |
 
 ## Anti-cheat
 

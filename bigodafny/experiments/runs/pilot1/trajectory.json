@@ -4,7 +4,7 @@
   "arm": "labeled",
   "description": "Pilot labeled arm rerun",
   "model": "sonnet",
-  "output_tokens": 1058,
+  "output_tokens": 17701,
   "per_example": {
    "1243_0": {
     "dafny_calls": 1,
@@ -19,14 +19,29 @@
     "wall_s": 101.3
    },
    "1718_1166": {
-    "dafny_calls": 0,
+    "dafny_calls": 6,
     "leak_attempts": 0,
     "leaks": [],
-    "tool_calls": 1,
+    "tool_calls": 17,
     "tools": {
-     "Bash": 1
+     "Bash": 7,
+     "Edit": 8,
+     "Write": 2
     },
-    "wall_s": 0
+    "wall_s": 832.5
+   },
+   "2650_140": {
+    "dafny_calls": 2,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 10,
+    "tools": {
+     "Bash": 3,
+     "Edit": 4,
+     "Read": 1,
+     "Write": 2
+    },
+    "wall_s": 429.0
    },
    "2962_1209": {
     "dafny_calls": 1,
@@ -57,8 +72,8 @@
    "1718_1166",
    "2650_140"
   ],
-  "tool_calls": 14,
-  "wall_s": 220.0
+  "tool_calls": 40,
+  "wall_s": 1484.8
  },
  {
   "agent_id": "agent-a4ed616b01af4870b",

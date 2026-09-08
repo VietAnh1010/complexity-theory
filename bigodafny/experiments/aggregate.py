@@ -29,7 +29,7 @@ HERE = Path(__file__).resolve().parent
 RUNS = HERE / "runs"
 
 FIELDS = ["run_id", "arm", "sid", "problem_id", "label", "split", "model",
-          "difficulty_static", "difficulty_measured",
+          "difficulty_static", "difficulty_measured", "drift", "drift_kind",
           "guess", "guess_correct", "verdict",
           "proved", "bound_class", "bound_shape", "bound_ensures",
           "label_match", "added_requires",
@@ -92,17 +92,24 @@ def combine(entries):
 
 def rows(run_id):
     graded, traj = load(run_id)
+    man = {e["sid"]: e for e in
+           json.loads((HERE / "manifest.json").read_text())["examples"]}
     out = []
     for g in graded:
         res = g.get("result") or {}
         t, ag = combine(traj.get((g["arm"], g["sid"]), []))
         proved = bool(g.get("gate_all"))
+        dr = (man.get(g["sid"], {}) or {}).get("drift", {})
         beh = g.get("gate_behaviour") or {}
         r = {
             "run_id": g["run_id"], "arm": g["arm"], "sid": g["sid"],
             "problem_id": g["problem_id"], "label": g["label"],
             "split": g["split"], "model": (ag or {}).get("model"),
             "difficulty_static": g["difficulty_static"],
+            "drift": bool(dr.get("drift_slower") or dr.get("drift_sort")),
+            "drift_kind": ("append-in-loop" if dr.get("drift_slower") else "")
+                          + ("|" if dr.get("drift_slower") and dr.get("drift_sort") else "")
+                          + ("sort-mismatch" if dr.get("drift_sort") else ""),
             "difficulty_measured": measured_difficulty(
                 (t or {}).get("dafny_calls"), (t or {}).get("wall_s"), proved),
             "guess": g.get("guess") or res.get("guess"),
@@ -190,13 +197,21 @@ def report(rs):
         w("")
 
     w("## Where a passing proof disagrees with the label\n")
+    w("Split by whether the TRANSLATION drifts from its Python. A proof is")
+    w("about the Dafny; where the two differ in shape, a disagreement with the")
+    w("label is a fact about this dataset's translation, not about BigOBench.\n")
     dis = [r for r in rs if r["proved"] and r["label_match"] is False]
+    w(f"- disagreements on rows with NO drift signal: "
+      f"**{sum(1 for r in dis if not r['drift'])}**")
+    w(f"- disagreements on rows WITH a drift signal:  "
+      f"**{sum(1 for r in dis if r['drift'])}**\n")
     if dis:
-        w("| arm | sid | label | proved | ensures |")
-        w("|---|---|---|---|---|")
+        w("| arm | sid | label | proved | drift | ensures |")
+        w("|---|---|---|---|---|---|")
         for r in dis:
             w(f"| {r['arm']} | `{r['sid']}` | `{r['label']}` | "
-              f"`{r['bound_class']}` | `{r['bound_ensures']}` |")
+              f"`{r['bound_class']}` | {r['drift_kind'] or '-'} | "
+              f"`{r['bound_ensures']}` |")
     else:
         w("None.")
     w("")

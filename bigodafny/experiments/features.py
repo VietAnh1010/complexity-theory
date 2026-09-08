@@ -94,6 +94,69 @@ def _loop_nesting(code):
     return maxd, count, guards
 
 
+# `x := x + [e]` / `x := x + ys` where x is a seq. Never `i := i + 1`: `1` is a
+# word character, and the first version of this counted integer accumulators as
+# appends, inflating the affected row count from 21 to 30.
+APPEND_RE = re.compile(r"\b(\w+)\s*:=\s*\1\s*\+\s*(\[|[A-Za-z_]\w*\b(?!\s*\())")
+
+
+def _loop_bodies(code):
+    for m in re.finditer(r"\bwhile\b", code):
+        i = code.find("{", m.end())
+        if i < 0:
+            continue
+        d, j = 0, i
+        while j < len(code):
+            if code[j] == "{":
+                d += 1
+            elif code[j] == "}":
+                d -= 1
+                if d == 0:
+                    break
+            j += 1
+        yield code[i:j]
+
+
+def seq_appends_in_loops(body):
+    """Sites where a loop grows a seq by concatenation -- O(len) each time."""
+    n = 0
+    for seg in _loop_bodies(body):
+        for a in APPEND_RE.finditer(seg):
+            if a.group(2) == "[" or re.search(
+                    r"\b%s\s*:\s*(seq|string)" % re.escape(a.group(2)), body):
+                n += 1
+    return n
+
+
+def drift(body, python_src):
+    """Does the translation's asymptotic shape differ from its Python's?
+
+    This is not a proof, it is a flag, and it exists because the pilot found
+    the distinction the hard way. An agent that proves a bound proves it about
+    the DAFNY. When the Dafny and the Python differ in shape, the proof says
+    nothing about BigOBench's label, which was measured on the Python -- so a
+    "refuted label" may be nothing of the kind.
+
+    Two shapes seen in the pilot, in opposite directions:
+      * `seq2 := seq2 + [x]` in a loop where the Python used `list.append`.
+        Amortised O(1) in Python, O(len) per step in Dafny: a class slower.
+      * `multiset(a) != multiset(b)` where the Python used `sorted(a) != sorted(b)`.
+        A class faster -- linear against n log n, measured, not assumed.
+    """
+    py_sorts = bool(re.search(r"\bsorted\s*\(|\.sort\s*\(", python_src))
+    dfy_sorts = bool(re.search(r"\bSort(?:Ints|Strings)?\s*\(", body))
+    py_append = bool(re.search(r"\.append\s*\(|\+= *\[", python_src))
+    appends = seq_appends_in_loops(body)
+    return {
+        "seq_append_in_loop": appends,
+        "drift_slower": bool(appends and py_append),
+        "drift_sort": py_sorts != dfy_sorts,
+        "py_sorts": py_sorts,
+        "dfy_sorts": dfy_sorts,
+        "dfy_multiset": bool(re.search(r"\bmultiset\s*\(", body)),
+    }
+
+
 def extract(text):
     header, code = split_file(text)
     body = strip_comments(code)

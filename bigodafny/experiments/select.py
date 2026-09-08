@@ -23,7 +23,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from common import DATA, SOLUTIONS, VERIFIED, NLOGN, read_jsonl   # noqa: E402
-from features import extract, difficulty_static, score            # noqa: E402
+from features import (difficulty_static, drift, extract, score,
+                      split_file, strip_comments)                # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 MANIFEST = HERE / "manifest.json"
@@ -40,6 +41,8 @@ def already_proved():
 
 def candidates():
     rows = {r["solution_id"]: r for r in read_jsonl(DATA / "dataset.jsonl")}
+    tasks_src = {r["solution_id"]: r["solution_code"]
+                 for r in read_jsonl(DATA / "tasks.jsonl")}
     proved = already_proved()
     rarity = Counter()
     out = []
@@ -54,6 +57,7 @@ def candidates():
         if "TODO: translate" in text:
             continue
         f = extract(text)
+        dr = drift(strip_comments(split_file(text)[1]), tasks_src.get(sid, ""))
         out.append({
             "sid": sid,
             "problem_id": r["problem_id"],
@@ -62,6 +66,7 @@ def candidates():
             "split": r["split"],
             "path": str(p.relative_to(SOLUTIONS.parent)),
             "features": f,
+            "drift": dr,
             "difficulty_static": difficulty_static(f),
         })
         rarity[r["time_complexity_inferred"]] += 1
