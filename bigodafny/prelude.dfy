@@ -23,6 +23,39 @@ module Prelude {
     a - b * FloorDiv(a, b)
   }
 
+  // ---- bracket sequences --------------------------------------------------
+  // Two rows pop a stack on every ')'. That is safe exactly because the input
+  // is a regular bracket sequence, which is a fact about every prefix.
+
+  ghost function Opens(s: string, t: nat): nat
+    requires t <= |s|
+    decreases t
+  {
+    if t == 0 then 0 else Opens(s, t - 1) + (if s[t - 1] == '(' then 1 else 0)
+  }
+
+  ghost function Closes(s: string, t: nat): nat
+    requires t <= |s|
+    decreases t
+  {
+    if t == 0 then 0 else Closes(s, t - 1) + (if s[t - 1] == ')' then 1 else 0)
+  }
+
+  ghost predicate OnlyBrackets(s: string)
+  {
+    forall t :: 0 <= t < |s| ==> s[t] == '(' || s[t] == ')'
+  }
+
+  // every character is one or the other, so the two counts partition the prefix
+  lemma OpensPlusCloses(s: string, t: nat)
+    requires t <= |s|
+    requires OnlyBrackets(s)
+    ensures Opens(s, t) + Closes(s, t) == t
+    decreases t
+  {
+    if t > 0 { OpensPlusCloses(s, t - 1); }
+  }
+
   // ---- formatting ---------------------------------------------------------
 
   function DigitChar(d: int): char

@@ -137,7 +137,31 @@ def _prelude_calls(s):
     Without these the clause hits the unknown-call guard and is reported
     `unchecked` -- which reads as "needs a human", not "checked".
     """
-    reps = [("ParseInts(SplitWs(", "PARSEINTSPLIT"),
+    # two-argument helpers first; both are exactly Python's floor / % on ints
+    for name, fmt in (("FloorDiv(", "({0} // {1})"), ("FloorMod(", "({0} % {1})"),
+                      ("Opens(", "({0})[:{1}].count('(')"),
+                      ("Closes(", "({0})[:{1}].count(')')")):
+        while True:
+            i = s.find(name)
+            if i < 0:
+                break
+            arg, end = _balanced_arg(s, i + len(name) - 1)
+            if arg is None:
+                return s
+            depth, cut = 0, -1
+            for j, ch in enumerate(arg):
+                if ch in "([":
+                    depth += 1
+                elif ch in ")]":
+                    depth -= 1
+                elif ch == "," and depth == 0:
+                    cut = j
+                    break
+            if cut < 0:
+                return s
+            s = s[:i] + fmt.format(arg[:cut].strip(), arg[cut + 1:].strip()) + s[end:]
+    reps = [("OnlyBrackets(", "ONLYBRACKETS"),
+            ("ParseInts(SplitWs(", "PARSEINTSPLIT"),
             ("ParseInts(", "PARSEINTS"), ("SplitWs(", "SPLITWS"),
             ("ParseInt(", "PARSEINT"), ("SumSeq(", "SUMSEQ")]
     changed = True
@@ -161,7 +185,8 @@ def _prelude_calls(s):
                 arg, end = _balanced_arg(s, open_at)
                 if arg is None:
                     return s
-                body = {"ParseInts(": f"[int(_t) for _t in ({arg})]",
+                body = {"OnlyBrackets(": f"all(_t in '()' for _t in ({arg}))",
+                        "ParseInts(": f"[int(_t) for _t in ({arg})]",
                         "SplitWs(": f"({arg}).split()",
                         "ParseInt(": f"int({arg})",
                         "SumSeq(": f"sum({arg})"}[name]

@@ -42,6 +42,8 @@ lemma SortElems<T>(s: seq<T>, less: (T, T) -> bool)
 }
 
 method Solve(n: int, m: int, values: seq<int>) returns (output: string)
+  // Python evaluates m % v for the same v; a zero raises ZeroDivisionError.
+  requires forall k :: 0 <= k < |values| ==> values[k] != 0
 {
   var asc := SortInts(values);
   SortElems(values, (x, y) => x < y);

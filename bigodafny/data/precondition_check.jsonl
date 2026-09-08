@@ -1,10 +1,2 @@
-{"clause": "a >= 0", "error": 0, "expr": "I.a >= 0", "holds": 99, "solution_id": "1276_62", "status": "violated-python-also-fails", "violated": 4, "violated_python_ok": 0}
-{"clause": "n >= 0", "error": 0, "expr": "I.n >= 0", "holds": 42, "solution_id": "1421_53", "status": "ok", "violated": 0}
-{"clause": "n <= |a_list|", "error": 0, "expr": "I.n <= len(I.a_list)", "holds": 42, "solution_id": "1421_53", "status": "ok", "violated": 0}
-{"clause": "forall k :: 0 <= k < n ==> -n <= a_list[k] - 1 < n", "error": 0, "expr": "all((-I.n <= I.a_list[k] - 1 < I.n) for k in range(I.n))", "holds": 42, "solution_id": "1421_53", "status": "ok", "violated": 0}
-{"clause": "n >= 0", "error": 0, "expr": "I.n >= 0", "holds": 103, "solution_id": "1981_39", "status": "ok", "violated": 0}
-{"clause": "|a_list| == n", "error": 0, "expr": "len(I.a_list) == I.n", "holds": 103, "solution_id": "1981_39", "status": "ok", "violated": 0}
-{"clause": "forall k :: 0 <= k < n ==> -n <= a_list[k] - 1 < n", "error": 0, "expr": "all((-I.n <= I.a_list[k] - 1 < I.n) for k in range(I.n))", "holds": 103, "solution_id": "1981_39", "status": "ok", "violated": 0}
-{"clause": "n >= 0", "error": 0, "expr": "I.n >= 0", "holds": 103, "solution_id": "1981_62", "status": "ok", "violated": 0}
-{"clause": "|a_list| == n", "error": 0, "expr": "len(I.a_list) == I.n", "holds": 103, "solution_id": "1981_62", "status": "ok", "violated": 0}
-{"clause": "forall k :: 0 <= k < n ==> -n <= a_list[k] - 1 < n", "error": 0, "expr": "all((-I.n <= I.a_list[k] - 1 < I.n) for k in range(I.n))", "holds": 103, "solution_id": "1981_62", "status": "ok", "violated": 0}
+{"clause": "forall t :: 0 <= t < |s| && s[t] == ')' ==> 2 * Closes(s, t) < t", "error": 0, "expr": "all((((not (I.s[t] == ')')) or (2 * (I.s)[:t].count(')') < t))) for t in range(0, (len(I.s))))", "holds": 68, "solution_id": "1935_61", "status": "ok", "violated": 0}
+{"clause": "forall t :: 0 <= t < |s| && s[t] != '(' ==> 2 * Opens(s, t) > t", "error": 0, "expr": "all((((not (I.s[t] != '(')) or (2 * (I.s)[:t].count('(') > t))) for t in range(0, (len(I.s))))", "holds": 68, "solution_id": "1935_144", "status": "ok", "violated": 0}

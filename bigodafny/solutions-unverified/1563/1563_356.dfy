@@ -18,10 +18,18 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, m: int, values: seq<int>) returns (output: string)
+  // m % v and the final m // best are what Python does; both raise
+  // ZeroDivisionError without these, so the clauses exclude nothing Python
+  // computes an answer for.
+  requires forall k :: 0 <= k < |values| ==> values[k] != 0
+  requires exists k :: 0 <= k < |values| && FloorMod(m, values[k]) == 0 && values[k] > 0
 {
   var best := 0;
   var i := 0;
   while i < |values|
+    invariant 0 <= i <= |values|
+    invariant best >= 0
+    invariant (exists k :: 0 <= k < i && FloorMod(m, values[k]) == 0 && values[k] > 0) ==> best > 0
     decreases |values| - i
   {
     if FloorMod(m, values[i]) == 0 && values[i] > best {
@@ -29,5 +37,6 @@ method Solve(n: int, m: int, values: seq<int>) returns (output: string)
     }
     i := i + 1;
   }
+  assert best > 0;
   output := IntToString(FloorDiv(m, best));
 }

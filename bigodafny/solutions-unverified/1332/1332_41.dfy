@@ -41,6 +41,9 @@ import opened Prelude
 
 method Solve(n: int, k: int, a_list: seq<int>) returns (output: string)
   requires n == |a_list|
+  // Python does p.index(k), which raises ValueError when k is absent, so this
+  // excludes no input Python answers.
+  requires exists c :: 0 <= c < n && a_list[c] == k
 {
   var m := k;
   var p := a_list;
