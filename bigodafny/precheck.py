@@ -196,6 +196,19 @@ def _prelude_calls(s):
     return s
 
 
+def _top_level_op(s, op):
+    """Index of `op` at bracket depth 0, or -1."""
+    depth = 0
+    for i, ch in enumerate(s):
+        if ch in "([":
+            depth += 1
+        elif ch in ")]":
+            depth -= 1
+        elif depth == 0 and s.startswith(op, i):
+            return i
+    return -1
+
+
 def to_python(clause, bound=()):
     """Translate one Dafny precondition into a Python expression over `I`."""
     s = clause
@@ -243,6 +256,17 @@ def to_python(clause, bound=()):
             return None
         fn = "all" if kind == "forall" else "any"
         return f"{fn}(({inner}) for {var} in I.{unrename(xs)})"
+    # top-level || / && where one side is itself a quantifier: the plain
+    # textual substitution below would leave the quantifier in Dafny syntax
+    for op, py in (("||", "or"), ("&&", "and")):
+        cut = _top_level_op(s, op)
+        if cut >= 0:
+            lhs, rhs = s[:cut], s[cut + len(op):]
+            if "::" in rhs and "::" not in lhs:
+                a, b = to_python(lhs.strip(), bound), to_python(rhs.strip(), bound)
+                if a is None or b is None:
+                    return None
+                return f"(({a}) {py} ({b}))"
     # implication at the top level
     m = re.match(r"(.+?) ==> (.+)$", s)
     if m and "::" not in m.group(1):

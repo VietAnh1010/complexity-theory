@@ -1,2 +1,7 @@
-{"clause": "forall t :: 0 <= t < |s| && s[t] == ')' ==> 2 * Closes(s, t) < t", "error": 0, "expr": "all((((not (I.s[t] == ')')) or (2 * (I.s)[:t].count(')') < t))) for t in range(0, (len(I.s))))", "holds": 68, "solution_id": "1935_61", "status": "ok", "violated": 0}
-{"clause": "forall t :: 0 <= t < |s| && s[t] != '(' ==> 2 * Opens(s, t) > t", "error": 0, "expr": "all((((not (I.s[t] != '(')) or (2 * (I.s)[:t].count('(') > t))) for t in range(0, (len(I.s))))", "holds": 68, "solution_id": "1935_144", "status": "ok", "violated": 0}
+{"clause": "n == |a_list|", "error": 0, "expr": "I.n == len(I.a_list)", "holds": 113, "solution_id": "888_179", "status": "ok", "violated": 0}
+{"clause": "n >= 1", "error": 0, "expr": "I.n >= 1", "holds": 113, "solution_id": "888_179", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |a_list| ==> a_list[k] >= 0", "error": 0, "expr": "all((I.a_list[k] >= 0) for k in range(len(I.a_list)))", "holds": 113, "solution_id": "888_179", "status": "ok", "violated": 0}
+{"clause": "m <= SumSeq(a_list)", "error": 0, "expr": "I.m <= sum(I.a_list)", "holds": 113, "solution_id": "888_179", "status": "ok", "violated": 0}
+{"clause": "m < SumSeq(a_list) || forall k :: 0 <= k < |a_list| ==> a_list[k] >= 1", "error": 0, "expr": "((I.m < sum(I.a_list)) or (all((I.a_list[k] >= 1) for k in range(len(I.a_list)))))", "holds": 113, "solution_id": "888_179", "status": "ok", "violated": 0}
+{"clause": "n == |a_list|", "error": 0, "expr": "I.n == len(I.a_list)", "holds": 113, "solution_id": "888_6", "status": "ok", "violated": 0}
+{"clause": "n >= 0", "error": 0, "expr": "I.n >= 0", "holds": 113, "solution_id": "888_6", "status": "ok", "violated": 0}

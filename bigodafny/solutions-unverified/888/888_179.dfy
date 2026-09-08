@@ -33,6 +33,15 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, m: int, a_list: seq<int>) returns (output: string)
+  requires n == |a_list|
+  requires n >= 1
+  // The vacation fits inside one year, which is what bounds the window at n
+  // months. A zero-length month only breaks that when the vacation is exactly
+  // a year long, so the last clause rules out precisely that pairing -- 24
+  // stored inputs contain a zero and the row's Python handles every one.
+  requires forall k :: 0 <= k < |a_list| ==> a_list[k] >= 0
+  requires m <= SumSeq(a_list)
+  requires m < SumSeq(a_list) || forall k :: 0 <= k < |a_list| ==> a_list[k] >= 1
 {
   var d := a_list + a_list;
   var max_hugs := 0;
@@ -40,10 +49,19 @@ method Solve(n: int, m: int, a_list: seq<int>) returns (output: string)
   var j := 0;
   var days := 0;
   var hugs := 0;
+  PrefixSumIsSumSeq(a_list);
   while i < n
-    decreases n - i
+    invariant 0 <= i <= n
+    // i can overtake j when a single month already exceeds x, so no i <= j here
+    invariant 0 <= j <= i + n
+    invariant |d| == 2 * n
+    invariant days == PrefixSum(d, j) - PrefixSum(d, i)
+    decreases n - i, |d| - j
   {
+    PrefixSumWindowDoubled(a_list, i);
+    assert j == i + n ==> days == PrefixSum(a_list, |a_list|);
     if days + d[j] <= m {
+      assert j < i + n;
       days := days + d[j];
       hugs := hugs + SumProg(1, d[j]);
       j := j + 1;

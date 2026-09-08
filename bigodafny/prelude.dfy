@@ -222,6 +222,58 @@ module Prelude {
 
   function SumSeq(s: seq<int>): int { SumFrom(s, 0, 0) }
 
+  // ---- prefix sums --------------------------------------------------------
+  // The sliding-window rows run two pointers over `a + a`. Safety there is a
+  // statement about window sums, not about the loop counters.
+
+  ghost function PrefixSum(s: seq<int>, t: nat): int
+    requires t <= |s|
+    decreases t
+  {
+    if t == 0 then 0 else PrefixSum(s, t - 1) + s[t - 1]
+  }
+
+  lemma SumFromIsPrefixSum(s: seq<int>, i: nat, acc: int)
+    requires i <= |s|
+    ensures SumFrom(s, i, acc) == acc + PrefixSum(s, |s|) - PrefixSum(s, i)
+    decreases |s| - i
+  {
+    if i < |s| { SumFromIsPrefixSum(s, i + 1, acc + s[i]); }
+  }
+
+  lemma PrefixSumIsSumSeq(s: seq<int>)
+    ensures PrefixSum(s, |s|) == SumSeq(s)
+  {
+    SumFromIsPrefixSum(s, 0, 0);
+  }
+
+  lemma PrefixSumDoubledLo(a: seq<int>, t: nat)
+    requires t <= |a|
+    ensures PrefixSum(a + a, t) == PrefixSum(a, t)
+    decreases t
+  {
+    if t > 0 { PrefixSumDoubledLo(a, t - 1); }
+  }
+
+  lemma PrefixSumDoubledHi(a: seq<int>, t: nat)
+    requires |a| <= t <= 2 * |a|
+    ensures PrefixSum(a + a, t) == PrefixSum(a, |a|) + PrefixSum(a, t - |a|)
+    decreases t
+  {
+    if t == |a| { PrefixSumDoubledLo(a, t); }
+    else { PrefixSumDoubledHi(a, t - 1); }
+  }
+
+  // any |a| consecutive entries of `a + a` sum to the whole of `a`
+  lemma PrefixSumWindowDoubled(a: seq<int>, i: nat)
+    requires i <= |a|
+    ensures PrefixSum(a + a, i + |a|) - PrefixSum(a + a, i)
+         == PrefixSum(a, |a|)
+  {
+    PrefixSumDoubledLo(a, i);
+    PrefixSumDoubledHi(a, i + |a|);
+  }
+
   function Gcd(a: int, b: int): int
     requires a >= 0 && b >= 0
     decreases b

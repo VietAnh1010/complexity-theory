@@ -19,6 +19,8 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, m: int, a_list: seq<int>) returns (output: string)
+  requires n == |a_list|
+  requires n >= 0
 {
   var doubled := a_list + a_list;
   var D := ReverseSeq(doubled);
@@ -26,6 +28,8 @@ method Solve(n: int, m: int, a_list: seq<int>) returns (output: string)
   var Ans: seq<int> := [];
   var t := 0;
   while t < |D|
+    invariant 0 <= t <= |D|
+    invariant |Ans| == t
     decreases |D| - t
   {
     var v := D[t];
@@ -37,10 +41,16 @@ method Solve(n: int, m: int, a_list: seq<int>) returns (output: string)
   var q := 0;
   var tot := 0;
   var ans := 0;
+  // q advances on every iteration that takes a branch; the only iteration that
+  // does not is the one where the inner loop drove p to twoN, and that one is
+  // the last. Hence the lexicographic measure.
   while p < twoN && q < twoN
-    decreases twoN - q
+    invariant 0 <= p <= twoN && 0 <= q <= twoN
+    invariant |D| == twoN && |Ans| == twoN
+    decreases twoN - q, twoN - p
   {
     while p < twoN && q < twoN && d + D[p] < m
+      invariant 0 <= p <= twoN
       decreases twoN - p
     {
       d := d + D[p];
@@ -70,6 +80,7 @@ method Solve(n: int, m: int, a_list: seq<int>) returns (output: string)
 }
 
 function ReverseSeq(s: seq<int>): seq<int>
+  ensures |ReverseSeq(s)| == |s|
   decreases |s|
 {
   if |s| == 0 then [] else ReverseSeq(s[1..]) + [s[0]]
