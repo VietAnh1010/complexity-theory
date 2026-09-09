@@ -2,9 +2,12 @@
 
 `solutions/` proves behaviour. `solutions-verified/` proves the label.
 
-22 rows instrumented with a ghost step counter and a proved bound, plus 2 tight
-copies in `solutions-nlogn/`. **24/24 verify, 0 contain `assume`, 24/24 emit
+31 rows instrumented with a ghost step counter and a proved bound, plus 2 tight
+copies in `solutions-nlogn/`. **33/33 verify, 0 contain `assume`, 33/33 emit
 byte-identical Python to the row they were copied from.**
+
+What could not be proved, and why, is in `proof_obstructions.md`. It is the
+other half of this record: 164 rows are blocked on `Join` alone.
 
 ## Technique
 
@@ -22,16 +25,21 @@ proof contains `assume`.
 | row | label | proved bound | verdict |
 |---|---|---|---|
 | `208_290` | O(1) | `6` | agrees |
+| `1089_174` | O(1) | `5` | agrees |
 | `945_255` | O(logn) | `4·Log2(n) + 8` | agrees |
 | `5_100` | O(n) | `2n + 3` | agrees |
 | `1011_368` | O(n) | `8n + 5` | agrees |
 | `2742_57` | O(n) | `\|values\| + 6` | agrees |
+| `2166_84` | O(n) | `5\|numbers\| + 4` | agrees |
+| `3070_20` | O(n) | `2\|a_list\| + 6` | agrees |
 | `459_199` | O(n+m) | `a + b + 2` | agrees |
 | `1029_119` | O(n+m) | `2\|a\| + 2\|b\| + 3` | agrees |
 | `685_777` | O(n+m) | `\|list1\| + \|list2\| + 8` | agrees |
 | `1254_187` | O(n**2) | `n² + 12n + 70` | agrees |
 | `827_148` | O(n**2) | `10000n² + 50000n + 600` | agrees* |
+| `1756_577` | O(n**2) | `3n² + 4n + 7` | agrees |
 | `1855_50` | O(n**2) | `\|hour\| + \|minute\| + 12` | **label wrong** |
+| `2962_1209` | O(n**2+m**2) | `\|need\|(2\|need\|+2\|total\|+6) + …` | agrees |
 | `3046_65` | O(n*m) | `6n + 2·TotalLen + 3` | agrees |
 | `3091_384` | O(n*m) | `4n + 3·TotalLen + 4` | agrees |
 | `1138_83` | O(n*m) | `4n + 4` | **label wrong** |
@@ -40,7 +48,11 @@ proof contains `assume`.
 | `2914_264` | O(n*m) | `7·max(n,0) + 3` | **label wrong** |
 | `396_361` | O(n*m) | `8\|rectangles\| + 6` | **label wrong** |
 | `525_273` | O(n*m) | `10n + 8` | **label wrong** |
+| `2012_399` | O(n*m) | `8·max(n,0) + 4` | **label wrong** |
 | `187_193` | O(nlogn) | `2n(CeilLog2(n)+1) + 6` | agrees |
+| `1540_206` | O(nlogn) | `2n(CeilLog2(n)+1) + 3n + 6` | agrees |
+| `2166_288` | O(nlogn) | `2n(CeilLog2(n)+1) + 4n + 7` | agrees |
+| `685_583` | O(nlogn+mlogm) | `3\|list1\| + 3\|list2\| + 8` | **label wrong** |
 | `603_284` | O(nlogn) | `2n² + 2n + 4` | not established here |
 | `1484_82` | O(nlogn) | `2n² + 2n + 2·SumLen + 6` | not established here |
 
@@ -49,7 +61,7 @@ proof contains `assume`.
 
 ## O(n*m): the label is right when the body scans a row, wrong when it does not
 
-Eight rows examined, **six wrong, two right**, and the split is not subtle.
+Nine rows examined, **seven wrong, two right**, and the split is not subtle.
 
 `3046_65` and `3091_384` walk every token of every row, so a wider row really
 does cost more and the bound carries a genuine second dimension. The six wrong
@@ -58,13 +70,25 @@ sometimes up to `row[4]` — and never scan one. A row of width 1000 costs them
 exactly what a row of width 2 costs. There is no second dimension to name, so
 the honest bound is O(n).
 
-That is a usable rule for the remaining 40 rows carrying this label: read the
-loop body, not the input shape. Six of eight is a rate, not yet a prior for the
+That is a usable rule for the remaining 39 rows carrying this label: read the
+loop body, not the input shape. Seven of nine is a rate, not yet a prior for the
 rest — the sample was drawn shortest-file-first, and short bodies are exactly
 the ones that do not scan.
 
 `1138_83` fails differently again: its `m` is a scalar modulus, a number the
 program divides by, not a size at all.
+
+## `685_583`: an O(nlogn+mlogm) label on a row that never sorts
+
+Two linear scans for a maximum. Nothing is ordered, compared pairwise, or
+partitioned — the label names a sort the code does not contain. Honest bound
+O(n+m).
+
+Its sibling `685_777` computes the same answer, carries `O(n+m)`, and is proved
+right in this table. So the two rows of problem 685 disagree with each other,
+and the disagreement is in the labels, not the code. That is a cheap check to run
+on any problem with two rows: siblings computing the same thing should carry
+the same label.
 
 ## `1855_50`: an O(n**2) label on straight-line code
 

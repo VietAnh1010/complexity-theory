@@ -31,7 +31,7 @@ memory or from an earlier message.
 | `solutions-unverified/` | valid; safety obligations not discharged |
 | `solutions-inexact/` | complexity label suspect (sibling reuse or `set<T>`) |
 | `solutions-untranslated/` | will not be translated; each file states why |
-| `solutions-verified/` | complexity **proved** via ghost step counter (22 rows) |
+| `solutions-verified/` | complexity **proved** via ghost step counter (31 rows) |
 | `solutions-nlogn/` | two sort rows at the tight O(n log n) bound |
 
 ## The one structural fact

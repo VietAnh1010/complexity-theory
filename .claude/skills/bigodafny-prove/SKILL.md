@@ -145,17 +145,24 @@ statement. Record the disagreement; never adjust the proof to match the label.**
 
 ## Results so far
 
-22 rows in `solutions-verified/`, 2 in `solutions-nlogn/`. 24/24 verify, zero
-`assume`. Behavioural equivalence is established by **emitted-Python identity**,
+31 rows in `solutions-verified/`, 2 in `solutions-nlogn/`. 33/33 verify, zero
+`assume`. **`bigodafny/summaries/proof_obstructions.md` lists what is NOT
+provable and why — read it before picking a row.** 164 rows are blocked on
+`Join` alone; 19 on `decreases *`; 44 on unmeasured `set`/`map` costs. Behavioural equivalence is established by **emitted-Python identity**,
 not by re-running tests — see the gate note below.
 
-**`O(n*m)`: read the loop body, not the input shape.** Eight examined, six
+**`O(n*m)`: read the loop body, not the input shape.** Nine examined, seven
 wrong, two right, and the split is mechanical. `3046_65` and `3091_384` walk
 every token of every row, so a wider row costs more and the second dimension is
 real. The six wrong ones touch a fixed number of positions per row (`row[0]`,
 `row[1]`, up to `row[4]`) and never scan one — a row of width 1000 costs what a
-row of width 2 costs, so there is no `m`. 40 rows still carry the label.
+row of width 2 costs, so there is no `m`. 39 rows still carry the label.
 `1138_83` fails a third way: its `m` is a scalar modulus, not a size.
+
+**`685_583` is an O(nlogn+mlogm) label on a row that never sorts** — two linear
+max scans. Its sibling `685_777` carries O(n+m) for the same computation and is
+right. Siblings computing the same thing should carry the same label; where they
+do not, one is wrong and the pair is cheap to check.
 
 **`1855_50` is an O(n**2) label on straight-line code** — no loop, no recursion
 over a collection. First label proved wrong outside the O(n*m) family. The

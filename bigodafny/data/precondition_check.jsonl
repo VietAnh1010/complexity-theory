@@ -1,16 +1,12 @@
-{"clause": "|rectangles| >= 1", "error": 0, "expr": "len(I.rectangles) >= 1", "holds": 124, "root": "solutions", "solution_id": "396_361", "status": "ok", "violated": 0}
-{"clause": "forall k :: 0 <= k < |rectangles| ==> |rectangles[k]| >= 2", "error": 0, "expr": "all((len(I.rectangles[k]) >= 2) for k in range(len(I.rectangles)))", "holds": 124, "root": "solutions", "solution_id": "396_361", "status": "ok", "violated": 0}
-{"clause": "|rectangles| >= 1", "error": 0, "expr": "len(I.rectangles) >= 1", "holds": 124, "root": "solutions-verified", "solution_id": "396_361", "status": "ok", "violated": 0}
-{"clause": "forall k :: 0 <= k < |rectangles| ==> |rectangles[k]| >= 2", "error": 0, "expr": "all((len(I.rectangles[k]) >= 2) for k in range(len(I.rectangles)))", "holds": 124, "root": "solutions-verified", "solution_id": "396_361", "status": "ok", "violated": 0}
-{"clause": "n >= 1", "error": 0, "expr": "I.n >= 1", "holds": 135, "root": "solutions", "solution_id": "525_273", "status": "ok", "violated": 0}
-{"clause": "|points| == n", "error": 0, "expr": "len(I.points) == I.n", "holds": 135, "root": "solutions", "solution_id": "525_273", "status": "ok", "violated": 0}
-{"clause": "forall k :: 0 <= k < |points| ==> |points[k]| >= 2", "error": 0, "expr": "all((len(I.points[k]) >= 2) for k in range(len(I.points)))", "holds": 135, "root": "solutions", "solution_id": "525_273", "status": "ok", "violated": 0}
-{"clause": "n >= 1", "error": 0, "expr": "I.n >= 1", "holds": 135, "root": "solutions-verified", "solution_id": "525_273", "status": "ok", "violated": 0}
-{"clause": "|points| == n", "error": 0, "expr": "len(I.points) == I.n", "holds": 135, "root": "solutions-verified", "solution_id": "525_273", "status": "ok", "violated": 0}
-{"clause": "forall k :: 0 <= k < |points| ==> |points[k]| >= 2", "error": 0, "expr": "all((len(I.points[k]) >= 2) for k in range(len(I.points)))", "holds": 135, "root": "solutions-verified", "solution_id": "525_273", "status": "ok", "violated": 0}
-{"clause": "n >= 1", "error": 0, "expr": "I.n >= 1", "holds": 136, "root": "solutions", "solution_id": "945_255", "status": "ok", "violated": 0}
-{"clause": "n >= 1", "error": 0, "expr": "I.n >= 1", "holds": 136, "root": "solutions-verified", "solution_id": "945_255", "status": "ok", "violated": 0}
-{"clause": "n == |a_list|", "error": 0, "expr": "I.n == len(I.a_list)", "holds": 110, "root": "solutions", "solution_id": "187_193", "status": "ok", "violated": 0}
-{"clause": "n >= 1", "error": 0, "expr": "I.n >= 1", "holds": 110, "root": "solutions", "solution_id": "187_193", "status": "ok", "violated": 0}
-{"clause": "n == |a_list|", "error": 0, "expr": "I.n == len(I.a_list)", "holds": 110, "root": "solutions-verified", "solution_id": "187_193", "status": "ok", "violated": 0}
-{"clause": "n >= 1", "error": 0, "expr": "I.n >= 1", "holds": 110, "root": "solutions-verified", "solution_id": "187_193", "status": "ok", "violated": 0}
+{"clause": "n <= |numbers|", "error": 0, "expr": "I.n <= len(I.numbers)", "holds": 99, "root": "solutions", "solution_id": "1756_577", "status": "ok", "violated": 0}
+{"clause": "n <= |numbers|", "error": 0, "expr": "I.n <= len(I.numbers)", "holds": 99, "root": "solutions-verified", "solution_id": "1756_577", "status": "ok", "violated": 0}
+{"clause": "n <= |pairs|", "error": 0, "expr": "I.n <= len(I.pairs)", "holds": 81, "root": "solutions", "solution_id": "2012_399", "status": "ok", "violated": 0}
+{"clause": "forall idx :: 0 <= idx < |pairs| ==> |pairs[idx]| == 2", "error": 0, "expr": "all((len(I.pairs[idx]) == 2) for idx in range(len(I.pairs)))", "holds": 81, "root": "solutions", "solution_id": "2012_399", "status": "ok", "violated": 0}
+{"clause": "n <= |pairs|", "error": 0, "expr": "I.n <= len(I.pairs)", "holds": 81, "root": "solutions-verified", "solution_id": "2012_399", "status": "ok", "violated": 0}
+{"clause": "forall idx :: 0 <= idx < |pairs| ==> |pairs[idx]| == 2", "error": 0, "expr": "all((len(I.pairs[idx]) == 2) for idx in range(len(I.pairs)))", "holds": 81, "root": "solutions-verified", "solution_id": "2012_399", "status": "ok", "violated": 0}
+{"clause": "|list1| > 0 && |list2| > 0", "error": 0, "expr": "len(I.list1) > 0  and  len(I.list2) > 0", "holds": 123, "root": "solutions", "solution_id": "685_583", "status": "ok", "violated": 0}
+{"clause": "|list1| > 0 && |list2| > 0", "error": 0, "expr": "len(I.list1) > 0  and  len(I.list2) > 0", "holds": 123, "root": "solutions-verified", "solution_id": "685_583", "status": "ok", "violated": 0}
+{"clause": "|numbers| == n", "error": 0, "expr": "len(I.numbers) == I.n", "holds": 111, "root": "solutions", "solution_id": "1540_206", "status": "ok", "violated": 0}
+{"clause": "0 <= a <= n", "error": 0, "expr": "0 <= I.a <= I.n", "holds": 111, "root": "solutions", "solution_id": "1540_206", "status": "ok", "violated": 0}
+{"clause": "|numbers| == n", "error": 0, "expr": "len(I.numbers) == I.n", "holds": 111, "root": "solutions-verified", "solution_id": "1540_206", "status": "ok", "violated": 0}
+{"clause": "0 <= a <= n", "error": 0, "expr": "0 <= I.a <= I.n", "holds": 111, "root": "solutions-verified", "solution_id": "1540_206", "status": "ok", "violated": 0}

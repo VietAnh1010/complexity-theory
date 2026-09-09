@@ -1,5 +1,5 @@
 {
-  "complexity_proved": 22,
+  "complexity_proved": 31,
   "dafny_status": {
     "fail": 3,
     "untranslated": 108,
