@@ -26,6 +26,19 @@ repository, which would break unrelated work.
 - 5-example paired plan: `794_794` done (both arms). Remaining: `1180_626`,
   `1039_15`, `1047_641`, `3029_114` — in `experiments/runs/pilot1/pairs5.json`.
 
+## Pass the prompt INLINE, never a path to it
+
+`harvest.py` identifies an experiment transcript by finding `cx-run/<run-id>/`
+and `result.json` **in the launch prompt**. Launching an agent with "read this
+file and follow it" puts neither string there, so the whole trajectory is
+skipped: no tool counts, no dafny calls, no leak audit, and the example looks
+un-run even after the agent finishes. Paste the output of `prompts.py` into the
+agent call.
+
+This also keeps the arms symmetric. An agent told to fetch its own instructions
+spends a call doing it and reads them in a different frame from one handed them
+directly; "everything else is identical" has to include that.
+
 ## The shape that works
 
 One example per agent, the labeled and blind agent for the SAME example
