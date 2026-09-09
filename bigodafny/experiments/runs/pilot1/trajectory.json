@@ -155,6 +155,41 @@
   "wall_s": 1484.8
  },
  {
+  "agent_id": "agent-a471e3d1443fa71a6",
+  "arm": "blind",
+  "description": "Pair2 blind 1180_626",
+  "model": "sonnet",
+  "output_tokens": 913,
+  "per_example": {
+   "1180_626": {
+    "dafny_calls": 0,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 6,
+    "tools": {
+     "Bash": 1,
+     "Read": 5
+    },
+    "wall_s": 4.2
+   },
+   "shared": {
+    "dafny_calls": 0,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 1,
+    "tools": {
+     "Skill": 1
+    },
+    "wall_s": 0
+   }
+  },
+  "sids": [
+   "1180_626"
+  ],
+  "tool_calls": 7,
+  "wall_s": 7.2
+ },
+ {
   "agent_id": "agent-a47a9f2f8dec8e435",
   "arm": "labeled",
   "description": "W3 labeled batch3",
@@ -327,6 +362,43 @@
   ],
   "tool_calls": 26,
   "wall_s": 1113.0
+ },
+ {
+  "agent_id": "agent-a71acc925405f9c5f",
+  "arm": "blind",
+  "description": "Pair1 blind 794_794",
+  "model": "sonnet",
+  "output_tokens": 5907,
+  "per_example": {
+   "794_794": {
+    "dafny_calls": 4,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 19,
+    "tools": {
+     "Bash": 12,
+     "Edit": 4,
+     "Read": 1,
+     "Write": 2
+    },
+    "wall_s": 718.5
+   },
+   "shared": {
+    "dafny_calls": 0,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 1,
+    "tools": {
+     "Skill": 1
+    },
+    "wall_s": 0
+   }
+  },
+  "sids": [
+   "794_794"
+  ],
+  "tool_calls": 20,
+  "wall_s": 721.1
  },
  {
   "agent_id": "agent-a73866142f47a0588",
@@ -550,6 +622,41 @@
   "wall_s": 1731.3
  },
  {
+  "agent_id": "agent-ab3814dcd2df5c2a6",
+  "arm": "labeled",
+  "description": "Pair2 labeled 1180_626",
+  "model": "sonnet",
+  "output_tokens": 1917,
+  "per_example": {
+   "1180_626": {
+    "dafny_calls": 0,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 8,
+    "tools": {
+     "Bash": 1,
+     "Read": 7
+    },
+    "wall_s": 22.4
+   },
+   "shared": {
+    "dafny_calls": 0,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 1,
+    "tools": {
+     "Skill": 1
+    },
+    "wall_s": 0
+   }
+  },
+  "sids": [
+   "1180_626"
+  ],
+  "tool_calls": 9,
+  "wall_s": 24.9
+ },
+ {
   "agent_id": "agent-ac4d522ea829c4c7a",
   "arm": "labeled",
   "description": "W2 labeled b0 remainder",
@@ -612,6 +719,43 @@
   ],
   "tool_calls": 46,
   "wall_s": 1698.0
+ },
+ {
+  "agent_id": "agent-ad2a923684f03154c",
+  "arm": "labeled",
+  "description": "Pair1 labeled 794_794",
+  "model": "sonnet",
+  "output_tokens": 48153,
+  "per_example": {
+   "794_794": {
+    "dafny_calls": 4,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 22,
+    "tools": {
+     "Bash": 8,
+     "Edit": 7,
+     "Read": 6,
+     "Write": 1
+    },
+    "wall_s": 1639.7
+   },
+   "shared": {
+    "dafny_calls": 0,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 1,
+    "tools": {
+     "Skill": 1
+    },
+    "wall_s": 0
+   }
+  },
+  "sids": [
+   "794_794"
+  ],
+  "tool_calls": 23,
+  "wall_s": 1642.9
  },
  {
   "agent_id": "agent-aeacbd650b64b2912",

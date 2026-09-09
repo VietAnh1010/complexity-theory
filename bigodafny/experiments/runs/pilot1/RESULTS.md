@@ -1,16 +1,16 @@
 # Complexity-proving experiment
 
-37 runs scored: 17 labeled, 14 blind.
+37 runs scored: 18 labeled, 14 blind.
 
-6 further example(s) hold only a `gave_up` stub with an
+5 further example(s) hold only a `gave_up` stub with an
 untouched file -- an agent cut off by a rate limit, or still running.
-Not a give-up, and not counted in any rate below: blind/`1733_64`, blind/`2465_212`, blind/`2704_92`, labeled/`1332_16`, labeled/`2269_21`, labeled/`794_794`
+Not a give-up, and not counted in any rate below: blind/`1733_64`, blind/`2465_212`, blind/`2704_92`, labeled/`1332_16`, labeled/`2269_21`
 
 ## Proof rate
 
 | arm | attempted | proved | verified but gate-failed | no bound |
 |---|---|---|---|---|
-| labeled | 17 | 14 | 1 | 1 |
+| labeled | 18 | 15 | 1 | 1 |
 | blind | 14 | 12 | 0 | 0 |
 
 ## Blind arm: did it name the class
@@ -51,6 +51,33 @@ At this sample size that is not evidence of a lean, whatever the
 matrix looks like. Recorded so the question can be re-asked when
 the run is larger.
 
+## Claimed refutations, and which of them the proof carries
+
+A ghost step counter proves an UPPER bound. It can refute a label only
+by proving something strictly TIGHTER -- the program is faster than
+claimed. It can never show a program is SLOWER than claimed: that needs
+a lower bound, and this method cannot produce one. An agent that charges
+a string concat honestly, lands on n^2 against an O(n) label, and writes
+`refutes` has proved a bound the label already satisfies.
+
+The agent's own verdict is recorded as its belief. The direction of the
+bound decides what was established.
+
+- claimed `refutes`, proof is tighter -- **established**: 2
+  - labeled `1243_0` `O(nlogn+mlogm)` -> `O(n+m)`
+  - labeled `2281_358` `O(n+mlogm)` -> `O(n)`
+- claimed `refutes`, proof is only an upper bound -- **not established**: 6
+  - blind `1718_1166` `O(n*m)` -> `O(n**2+m**2)` (same-rank)
+  - labeled `1563_497` `O(nlogn)` -> `O(n**2)` (looser)
+  - labeled `1718_1166` `O(n*m)` -> `O(n**2+m**2)` (same-rank)
+  - labeled `2650_140` `O(nlogn)` -> `O(n**2)` (looser)
+  - labeled `378_20` `O(n*m)` -> `O(n**2)` (same-rank)
+  - labeled `794_794` `O(n)` -> `O(n**2)` (looser)
+
+The mechanism those agents describe -- a string or seq concat inside a
+loop, genuinely linear in Dafny where CPython amortises it away -- may
+well be right. It is not what their artifact proves.
+
 ## Where a passing proof disagrees with the label
 
 A proof gives an UPPER bound, so the direction of a disagreement decides
@@ -82,7 +109,7 @@ numeric cap into the constant. True, verifiable, and vacuous.
 | labeled | `1718_1166` | `O(n*m)` | `O(n**2+m**2)` | - | `2 * N1 * N1 + 2 * N2 * N2 + 4 * N1 + 2 * N2 + 4` |
 | labeled | `378_20` | `O(n*m)` | `O(n**2)` | append-in-loop | `|pairs| * |pairs| + 20 * |pairs| + 20` |
 
-### looser: 6 -- consistent with the label; the proof is loose, not news
+### looser: 7 -- consistent with the label; the proof is loose, not news
 
 | arm | sid | label | proved | drift | ensures |
 |---|---|---|---|---|---|
@@ -92,6 +119,7 @@ numeric cap into the constant. True, verifiable, and vacuous.
 | blind | `794_794` | `O(n)` | `O(n**2)` | append-in-loop | `20000 * |data| * |data| + 8100000 * |data| + 10` |
 | labeled | `1563_497` | `O(nlogn)` | `O(n**2)` | - | `|values| * |values| + |values| + 10` |
 | labeled | `2650_140` | `O(nlogn)` | `O(n**2)` | append-in-loop | `4 * n * n + 15 * n + 16` |
+| labeled | `794_794` | `O(n)` | `O(n**2)` | append-in-loop | `2000 * |data| * |data| + 6000 * |data| + 1` |
 
 ## Gate failures
 
@@ -107,7 +135,7 @@ numeric cap into the constant. True, verifiable, and vacuous.
 
 | difficulty_static | n | proved | mean dafny calls | mean difficulty_measured |
 |---|---|---|---|---|
-| 1 | 4 | 3 | 1.5 | 1.2 |
+| 1 | 4 | 4 | 2.8 | 2.0 |
 | 2 | 16 | 13 | 2.1 | 1.6 |
 | 3 | 9 | 7 | 2.7 | 1.8 |
 | 4 | 8 | 3 | 5.0 | 2.6 |

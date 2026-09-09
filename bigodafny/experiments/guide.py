@@ -105,6 +105,18 @@ values, add the cap as a `requires` on `Solve` and fold it into the constant.
 Say in your result that you did, and which cap. That is a real finding, not a
 failure.
 
+## What "refutes" can and cannot mean
+
+A step counter proves an upper bound, so it can only refute a claimed class by
+proving a strictly SMALLER one -- the program is faster than claimed. You
+cannot show a program is slower than claimed this way; that needs a lower
+bound, and nothing here produces one.
+
+So if you charge a concat honestly, land on n^2, and the claim was O(n): you
+have proved a bound the claim already satisfies. Set `verdict` to `proves`,
+record the bound, and put "I believe the true cost is quadratic because ..." in
+`notes`. Reserve `refutes` for a bound strictly tighter than the claim.
+
 ## What a proof claims
 
 **Claims**: the instrumented `steps` is bounded by that function of the input,

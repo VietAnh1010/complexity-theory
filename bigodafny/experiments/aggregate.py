@@ -271,6 +271,32 @@ def report(rs):
             w("the run is larger." if pv > 0.05 else "")
         w("")
 
+    w("## Claimed refutations, and which of them the proof carries\n")
+    w("A ghost step counter proves an UPPER bound. It can refute a label only")
+    w("by proving something strictly TIGHTER -- the program is faster than")
+    w("claimed. It can never show a program is SLOWER than claimed: that needs")
+    w("a lower bound, and this method cannot produce one. An agent that charges")
+    w("a string concat honestly, lands on n^2 against an O(n) label, and writes")
+    w("`refutes` has proved a bound the label already satisfies.\n")
+    w("The agent's own verdict is recorded as its belief. The direction of the")
+    w("bound decides what was established.\n")
+    good = [r for r in scorable if r["verdict"] == "refutes"
+            and r["direction"] == "tighter"]
+    weak = [r for r in scorable if r["verdict"] == "refutes"
+            and r["direction"] in ("looser", "same-rank")]
+    w(f"- claimed `refutes`, proof is tighter -- **established**: {len(good)}")
+    for r in good:
+        w(f"  - {r['arm']} `{r['sid']}` `{r['label']}` -> `{r['bound_class']}`")
+    w(f"- claimed `refutes`, proof is only an upper bound -- **not established**: "
+      f"{len(weak)}")
+    for r in weak:
+        w(f"  - {r['arm']} `{r['sid']}` `{r['label']}` -> `{r['bound_class']}` "
+          f"({r['direction']})")
+    w("")
+    w("The mechanism those agents describe -- a string or seq concat inside a")
+    w("loop, genuinely linear in Dafny where CPython amortises it away -- may")
+    w("well be right. It is not what their artifact proves.\n")
+
     w("## Where a passing proof disagrees with the label\n")
     w("A proof gives an UPPER bound, so the direction of a disagreement decides")
     w("what it means. Only a bound strictly tighter than the label contradicts")
