@@ -1,23 +1,23 @@
 # Complexity-proving experiment
 
-41 runs scored: 20 labeled, 18 blind.
+43 runs scored: 21 labeled, 18 blind.
 
-3 further example(s) hold only a `gave_up` stub with an
+4 further example(s) hold only a `gave_up` stub with an
 untouched file -- an agent cut off by a rate limit, or still running.
-Not a give-up, and not counted in any rate below: blind/`2465_212`, labeled/`1332_16`, labeled/`2269_21`
+Not a give-up, and not counted in any rate below: blind/`1047_641`, blind/`2465_212`, labeled/`1332_16`, labeled/`2269_21`
 
 ## Proof rate
 
 | arm | attempted | proved | verified but gate-failed | no bound |
 |---|---|---|---|---|
-| labeled | 20 | 16 | 2 | 2 |
+| labeled | 21 | 16 | 3 | 3 |
 | blind | 18 | 13 | 3 | 3 |
 
 ## Blind arm: did it name the class
 
-- guessed on 19 of 19 blind examples (0 excluded for a leak attempt); 1 of these come from an agent cut off before it could finish the proof, whose guess is still valid
-- correct: **7/19** = 37%
-- on rows the translation cannot have re-classed: **5/12** = 42%
+- guessed on 20 of 20 blind examples (0 excluded for a leak attempt); 2 of these come from an agent cut off before it could finish the proof, whose guess is still valid
+- correct: **7/20** = 35%
+- on rows the translation cannot have re-classed: **5/13** = 38%
 - on rows containing a class-changing construct: **2/7** = 29%
 
 The blind agent reads the **Dafny**; the label was measured on the **Python**. A seq functional update in a loop is O(1) in CPython and a full copy in Dafny, and a `set` built in a loop is quadratic in Dafny -- both measured. On a row containing one, the two programs can sit in different classes, and an agent that reads its input correctly is then scored wrong against the label.
@@ -42,7 +42,7 @@ The split above is reported, not corrected: the pooled number is still the hones
 | `O(n+m)` | 1 | 1 |
 | `O(nlogn)` | 2 | 6 |
 | `O(n*m)` | 2 | 3 |
-| `O(n**2)` | 2 | 3 |
+| `O(n**2)` | 2 | 4 |
 | `O(nlogn+mlogm)` | 0 | 1 |
 | `O(n+m)log(n+m)` | 0 | 1 |
 | `O(n**2+m**2)` | 0 | 1 |
@@ -55,7 +55,7 @@ The split above is reported, not corrected: the pooled number is still the hones
 | `O(n+m)` |  |  | 1 |  |  |  |  |  |
 | `O(nlogn)` |  |  |  | 2 |  | 4 |  |  |
 | `O(n*m)` |  |  |  |  | 2 | 1 |  |  |
-| `O(n**2)` |  |  |  |  |  | 2 |  | 1 |
+| `O(n**2)` |  | 1 |  |  |  | 2 |  | 1 |
 | `O(nlogn+mlogm)` |  | 1 |  |  |  |  |  |  |
 | `O(n+m)log(n+m)` |  |  |  |  |  |  | 1 |  |
 | `O(n**2+m**2)` |  |  |  |  |  | 1 |  |  |
@@ -63,9 +63,9 @@ The split above is reported, not corrected: the pooled number is still the hones
 ### Do the wrong guesses lean one way?
 
 - overestimated (guessed a slower class): 6
-- underestimated: 2
+- underestimated: 3
 - wrong but same growth rank: 4
-- one-sided sign test on the 8 directional errors: p = 0.145
+- one-sided sign test on the 9 directional errors: p = 0.254
 
 At this sample size that is not evidence of a lean, whatever the
 matrix looks like. Recorded so the question can be re-asked when
@@ -147,6 +147,7 @@ numeric cap into the constant. True, verifiable, and vacuous.
 
 The file is untouched and `notes` says why. These are NOT stubs: the agent read the method, priced the parts it could, and refused the one term the charging convention does not yet cover. They count as not-proved in the rate above, which is right -- no bound was produced -- but the reason is an obstruction in the convention, not a limit of the agent.
 
+- labeled `1047_641` (label `O(n**2)`, guide `v2`)
 - blind `1180_626` (label `O(n+m)log(n+m)`, guide `v2`)
 - labeled `1180_626` (label `O(n+m)log(n+m)`, guide `v2`)
 - blind `1733_64` (label `O(n**2)`, guide `v1`)
@@ -170,7 +171,7 @@ An overcharge does not produce a false proof -- the bound still holds. It produc
 | blind | `794_794` | `O(n)` | `O(n**2)` | looser | proves |
 | labeled | `794_794` | `O(n)` | `O(n**2)` | looser | refutes |
 
-7 of 38 graded runs. The manifest keeps the flag it was registered with; this table is computed from the current rule.
+7 of 39 graded runs. The manifest keeps the flag it was registered with; this table is computed from the current rule.
 
 ## Gate failures
 
@@ -188,7 +189,7 @@ An overcharge does not produce a false proof -- the bound still holds. It produc
 |---|---|---|---|---|
 | 1 | 4 | 4 | 2.8 | 2.0 |
 | 2 | 18 | 13 | 2.0 | 1.6 |
-| 3 | 11 | 9 | 2.7 | 1.6 |
+| 3 | 13 | 9 | 2.8 | 1.9 |
 | 4 | 8 | 3 | 5.0 | 2.6 |
 
 ## Anti-cheat

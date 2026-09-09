@@ -18,13 +18,18 @@ repository, which would break unrelated work.
 
 ## Where the run stopped
 
-- 38 example-runs have a `result.json`: 20 labeled, 18 blind.
-- 37 rows graded; `results.csv` and `RESULTS.md` are current for those.
-- Two agents on `1180_626` were stopped mid-proof. Both arms hold a stub there;
-  `task.dfy` may carry partial work. **Reset both before re-running it:**
-  `cp .original.dfy task.dfy` in each of the two example directories.
-- 5-example paired plan: `794_794` done (both arms). Remaining: `1180_626`,
-  `1039_15`, `1047_641`, `3029_114` — in `experiments/runs/pilot1/pairs5.json`.
+Session quota, mid re-run of `1047_641`. Both v4 agents died before doing any
+work and left bare stubs (`notes: "Not started yet."` on labeled, a guess and
+nothing else on blind). `task.dfy` is pristine in both arms.
+
+- 43 rows graded. `results.csv` and `RESULTS.md` are current.
+- Paired plan: `794_794`, `1180_626`, `1039_15` done. **`1047_641` needs a
+  clean re-run under v4** -- delete both stub `result.json`s first. Then
+  `3029_114` remains.
+- **Four runs are invalidated by apparatus error**, archived under
+  `invalidated_v2v3/` and listed in `guide_v2_sids.json`: `1180_626` and
+  `1047_641`, both arms, all of which declined on a `Join` charge that guides
+  v2 and v3 wrongly forbade. Re-run before the decline rate is quoted.
 
 ## Pass the prompt INLINE, never a path to it
 
