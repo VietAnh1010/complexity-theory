@@ -1,5 +1,84 @@
 [
  {
+  "agent_id": "agent-a141195108e598f76",
+  "arm": "blind",
+  "description": "W2 blind batch2",
+  "model": "sonnet",
+  "output_tokens": 94675,
+  "per_example": {
+   "1827_44": {
+    "dafny_calls": 2,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 11,
+    "tools": {
+     "Bash": 2,
+     "Edit": 4,
+     "Read": 3,
+     "Write": 2
+    },
+    "wall_s": 510.2
+   },
+   "1915_158": {
+    "dafny_calls": 1,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 13,
+    "tools": {
+     "Bash": 2,
+     "Edit": 3,
+     "Read": 6,
+     "Write": 2
+    },
+    "wall_s": 360.7
+   },
+   "2496_30": {
+    "dafny_calls": 3,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 16,
+    "tools": {
+     "Bash": 3,
+     "Edit": 6,
+     "Read": 6,
+     "Write": 1
+    },
+    "wall_s": 487.5
+   },
+   "378_20": {
+    "dafny_calls": 1,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 8,
+    "tools": {
+     "Bash": 1,
+     "Edit": 1,
+     "Read": 4,
+     "Write": 2
+    },
+    "wall_s": 283.2
+   },
+   "shared": {
+    "dafny_calls": 0,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 1,
+    "tools": {
+     "Skill": 1
+    },
+    "wall_s": 0
+   }
+  },
+  "sids": [
+   "1915_158",
+   "378_20",
+   "1827_44",
+   "2496_30"
+  ],
+  "tool_calls": 49,
+  "wall_s": 1656.5
+ },
+ {
   "agent_id": "agent-a42cc4d627d84a5f7",
   "arm": "labeled",
   "description": "Pilot labeled arm rerun",
@@ -74,6 +153,69 @@
   ],
   "tool_calls": 40,
   "wall_s": 1484.8
+ },
+ {
+  "agent_id": "agent-a47a9f2f8dec8e435",
+  "arm": "labeled",
+  "description": "W3 labeled batch3",
+  "model": "sonnet",
+  "output_tokens": 23993,
+  "per_example": {
+   "1029_92": {
+    "dafny_calls": 1,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 10,
+    "tools": {
+     "Bash": 4,
+     "Edit": 2,
+     "Read": 2,
+     "Write": 2
+    },
+    "wall_s": 131.4
+   },
+   "2269_21": {
+    "dafny_calls": 0,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 2,
+    "tools": {
+     "Bash": 1,
+     "Write": 1
+    },
+    "wall_s": 147.5
+   },
+   "2281_358": {
+    "dafny_calls": 2,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 8,
+    "tools": {
+     "Bash": 4,
+     "Edit": 2,
+     "Write": 2
+    },
+    "wall_s": 63.8
+   },
+   "shared": {
+    "dafny_calls": 0,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 1,
+    "tools": {
+     "Skill": 1
+    },
+    "wall_s": 0
+   }
+  },
+  "sids": [
+   "1029_92",
+   "2281_358",
+   "2269_21",
+   "2005_137"
+  ],
+  "tool_calls": 21,
+  "wall_s": 363.1
  },
  {
   "agent_id": "agent-a4ed616b01af4870b",
@@ -356,6 +498,197 @@
   ],
   "tool_calls": 59,
   "wall_s": 1155.4
+ },
+ {
+  "agent_id": "agent-aaf14105e3d0eff24",
+  "arm": "blind",
+  "description": "W2 blind b1 remainder",
+  "model": "sonnet",
+  "output_tokens": 14442,
+  "per_example": {
+   "1332_16": {
+    "dafny_calls": 3,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 15,
+    "tools": {
+     "Bash": 5,
+     "Edit": 5,
+     "Read": 3,
+     "Write": 2
+    },
+    "wall_s": 1260.6
+   },
+   "1563_497": {
+    "dafny_calls": 2,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 17,
+    "tools": {
+     "Bash": 10,
+     "Edit": 5,
+     "Write": 2
+    },
+    "wall_s": 463.0
+   },
+   "shared": {
+    "dafny_calls": 0,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 1,
+    "tools": {
+     "Skill": 1
+    },
+    "wall_s": 0
+   }
+  },
+  "sids": [
+   "1563_497",
+   "1332_16"
+  ],
+  "tool_calls": 33,
+  "wall_s": 1731.3
+ },
+ {
+  "agent_id": "agent-ac4d522ea829c4c7a",
+  "arm": "labeled",
+  "description": "W2 labeled b0 remainder",
+  "model": "sonnet",
+  "output_tokens": 39454,
+  "per_example": {
+   "2465_212": {
+    "dafny_calls": 3,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 15,
+    "tools": {
+     "Bash": 5,
+     "Edit": 5,
+     "Read": 3,
+     "Write": 2
+    },
+    "wall_s": 686.4
+   },
+   "2704_92": {
+    "dafny_calls": 6,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 22,
+    "tools": {
+     "Bash": 8,
+     "Edit": 9,
+     "Read": 2,
+     "Write": 3
+    },
+    "wall_s": 804.6
+   },
+   "354_95": {
+    "dafny_calls": 1,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 8,
+    "tools": {
+     "Bash": 5,
+     "Edit": 1,
+     "Write": 2
+    },
+    "wall_s": 183.8
+   },
+   "shared": {
+    "dafny_calls": 0,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 1,
+    "tools": {
+     "Skill": 1
+    },
+    "wall_s": 0
+   }
+  },
+  "sids": [
+   "354_95",
+   "2704_92",
+   "2465_212"
+  ],
+  "tool_calls": 46,
+  "wall_s": 1698.0
+ },
+ {
+  "agent_id": "agent-aeacbd650b64b2912",
+  "arm": "labeled",
+  "description": "W2 labeled batch2",
+  "model": "sonnet",
+  "output_tokens": 24703,
+  "per_example": {
+   "1827_44": {
+    "dafny_calls": 3,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 13,
+    "tools": {
+     "Bash": 5,
+     "Edit": 4,
+     "Read": 2,
+     "Write": 2
+    },
+    "wall_s": 549.0
+   },
+   "1915_158": {
+    "dafny_calls": 1,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 8,
+    "tools": {
+     "Bash": 5,
+     "Edit": 1,
+     "Write": 2
+    },
+    "wall_s": 192.9
+   },
+   "2496_30": {
+    "dafny_calls": 5,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 17,
+    "tools": {
+     "Bash": 8,
+     "Edit": 6,
+     "Read": 1,
+     "Write": 2
+    },
+    "wall_s": 592.7
+   },
+   "378_20": {
+    "dafny_calls": 1,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 6,
+    "tools": {
+     "Bash": 3,
+     "Edit": 1,
+     "Write": 2
+    },
+    "wall_s": 99.7
+   },
+   "shared": {
+    "dafny_calls": 0,
+    "leak_attempts": 0,
+    "leaks": [],
+    "tool_calls": 1,
+    "tools": {
+     "Skill": 1
+    },
+    "wall_s": 0
+   }
+  },
+  "sids": [
+   "1915_158",
+   "378_20",
+   "1827_44",
+   "2496_30"
+  ],
+  "tool_calls": 45,
+  "wall_s": 1448.6
  },
  {
   "agent_id": "agent-af676393e2a9d96f4",
