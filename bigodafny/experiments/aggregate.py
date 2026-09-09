@@ -55,7 +55,8 @@ FIELDS = ["run_id", "arm", "sid", "problem_id", "label", "split", "model",
           "drift_stale",
           "guess", "guess_correct", "verdict",
           "proved", "bound_class", "bound_shape", "bound_ensures",
-          "label_match", "direction", "degenerate", "stub", "added_requires",
+          "label_match", "direction", "degenerate", "stub", "declined",
+          "added_requires",
           "gate_verify", "gate_no_assume", "gate_skeleton", "gate_behaviour",
           "gate_requires", "requires_detail",
           "code_identical", "added_exec_lines", "assumes",
@@ -185,7 +186,19 @@ def rows(run_id):
             # the file was never touched. Counted apart, or the proof-rate
             # denominator silently absorbs every rate-limit casualty as a
             # failure.
-            "stub": not g.get("touched") and not g.get("bound_ensures"),
+            #
+            # "untouched" alone stopped being the discriminator when the guide
+            # started telling agents to give up rather than invent a charge for
+            # `Join`. That produces a REASONED give-up whose file is also
+            # untouched -- the agent read the method, priced every other part,
+            # and declined the one term it could not price. Excluding it as a
+            # rate-limit casualty would hide the obstruction the run exists to
+            # find. `notes` is what separates them: a casualty dies before
+            # writing any, a reasoned give-up says which obligation stopped it.
+            "stub": (not g.get("touched") and not g.get("bound_ensures")
+                     and not (res.get("notes") or "").strip()),
+            "declined": bool(not g.get("touched") and not g.get("bound_ensures")
+                             and (res.get("notes") or "").strip()),
             "added_requires": "; ".join(res.get("added_requires") or []),
             "gate_verify": (g.get("gate_verify") or {}).get("ok"),
             "gate_no_assume": g.get("gate_no_assume"),
@@ -370,6 +383,19 @@ def report(rs):
 
     # A `gave_up` stub with an untouched file is a rate-limit casualty, not a
     # verdict -- the same exclusion the proof rate uses. Nothing to re-cite.
+    declined = [r for r in (L + B) if r.get("declined")]
+    if declined:
+        w("## Declined rather than guessed at a cost\n")
+        w("The file is untouched and `notes` says why. These are NOT stubs: "
+          "the agent read the method, priced the parts it could, and refused "
+          "the one term the charging convention does not yet cover. They count "
+          "as not-proved in the rate above, which is right -- no bound was "
+          "produced -- but the reason is an obstruction in the convention, not "
+          "a limit of the agent.\n")
+        for r in sorted(declined, key=lambda r: (r["sid"], r["arm"])):
+            w(f"- {r['arm']} `{r['sid']}` (label `{r['label']}`)")
+        w("")
+
     stale = [r for r in (L + B)
              if r.get("drift_stale") and r.get("bound_class")
              and r.get("bound_class") != "unclassified"]
