@@ -1,0 +1,12 @@
+{
+  "sid": "1180_626",
+  "guess": "O(n**2+m**2)",
+  "guess_basis": "dorms[d_left := ...] (seq functional update, cost |dorms|=a) runs up to a-1 times -> O(a^2); lst and lines each grow via seq-append (cost = current length) up to b times -> O(b^2). n=a (dorms), m=b (letters).",
+  "bound_ensures": null,
+  "proved_class": null,
+  "size_mapping": null,
+  "verdict": "gave_up",
+  "added_requires": null,
+  "verified": null,
+  "notes": null
+}

@@ -1,13 +1,4 @@
-"""The proving methodology both arms receive, scrubbed.
-
-Distilled from `bigodafny/COMPLEXITY.md`. Everything that could name an answer
-is removed: row ids, complexity labels of specific rows, and the names of the
-repository directories that hold finished proofs. Both arms get the identical
-file, so methodology cannot be a confound between them.
-
-    python3 experiments/guide.py > /tmp/GUIDE.md
-"""
-GUIDE = r"""# Proving a time-complexity bound in Dafny
+# Proving a time-complexity bound in Dafny
 
 You are given a Dafny method `Solve` that reproduces a Python program's stdout.
 Your job is to prove an upper bound on how much work it does.
@@ -45,34 +36,15 @@ Anything else is charged its real cost:
 
 | operation | real cost |
 |---|---|
-| `s + [x]` where the loop never reads `s[i]` | `1` -- measured |
-| `s + [x]` where the loop also reads `s[i]` | `\|s\|` -- the read forces a flatten |
-| `s + t` (concat) | `\|t\|` if append-only, else `\|s\| + \|t\|` |
+| `s + [x]` (seq append) | `\|s\|` |
+| `s + t` (concat) | `\|s\| + \|t\|` |
 | `s + {x}` (set insert) | `\|s\|` -- measured, not assumed |
-| a recursive helper over a seq or string | one level per element: its length |
 | a call to a helper | that helper's own `steps` |
 
-**Sequence append is lazy.** Measured in this Dafny's Python backend:
-`s := s + [x]` builds a deferred concatenation node, so appending in a loop is
-O(1) amortised. The cost lands on whoever forces the node -- an element read
-`s[i]` flattens it, and only a read INSIDE the appending loop makes the pattern
-quadratic. Taking `\|s\|` does not flatten. A read after the loop is one
-flatten, cost `\|s\|` once, not once per append.
-
-    append only     n=8k .053s  16k .067s  32k .095s  64k .149s
-    append + s[i]   n=8k .126s  16k .365s  32k 1.725s 64k 7.876s
-
-**Miscounting is the entire risk, and it runs both ways.** Undercharging turns
-a real quadratic into a proved linear bound and Dafny still reports verified.
-Overcharging is just as bad here: it puts a linear program in a quadratic class
-and makes it read as contradicting its claim, which is a finding that is not
-there. Charge what the table says. A reviewer checks the charges before the
-invariants.
-
-**`Join` has no honest charge yet.** It is measured superlinear (about L^1.2 in
-the output length), so any linear charge for it undercharges. If your method's
-cost is dominated by a `Join` over one line per input item, say so in `notes`
-and set `verdict` to `gave_up` rather than inventing a charge.
+**Miscounting here is the entire risk.** An uncharged seq append inside a loop
+turns a proved linear bound into a real quadratic one, and Dafny still reports
+verified. Charge the append, or restructure to an array with one `Join` at the
+end. A reviewer checks the charges before the invariants.
 
 ## Constants are free
 
@@ -169,7 +141,3 @@ not vary with input size.
 - `dafny verify` prints `verifier finished with N verified, M errors`. Only
   `0 errors` is a pass. Note that a lemma which times out proves nothing, while
   its callers may still report verified -- check for timeout lines too.
-"""
-
-if __name__ == "__main__":
-    print(GUIDE)
