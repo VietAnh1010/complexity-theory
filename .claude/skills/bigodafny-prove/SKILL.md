@@ -49,15 +49,23 @@ Anything else is charged its real cost:
 
 | operation | real cost |
 |---|---|
-| `s + [x]`, `s + t` | `\|s\|`, `\|s\| + \|t\|` |
+| `s + [x]`, appends only | `1` — **measured**: the backend defers the concat |
+| `s + [x]`, with `s[i]` read between appends | `\|s\|` — the read forces a flatten |
 | `s + {x}` set insert | `\|s\|` — **measured**, not assumed |
+| `Join(parts, sep)` | **superlinear (~L^1.2)** — do not charge it; see below |
+| a recursive prelude function over a seq or string | its length |
 | a helper call | the helper's own `steps` |
 
-**Miscounting here is the entire risk.** An uncharged seq append inside a loop
-turns a proved "O(n)" into a real O(n²) and Dafny still says verified. Prefer
-array-backed accumulation with one `Join` at the end — which is what the
-translations already do. A reviewer should check the charges before checking the
-invariants.
+**Miscounting here is the entire risk, and it runs both ways.** Undercharging
+turns a real O(n²) into a proved "O(n)" and Dafny still says verified.
+Overcharging puts a correct label out of reach and invents a disagreement — the
+old unconditional `|s|` append charge did exactly that. A reviewer should check
+the charges before checking the invariants.
+
+`Join` is the live undercharging hazard: `SumLen(parts) + |parts|` is *less*
+than its measured cost, so a row whose output is one line per input item does
+not get a proof yet. `171_82`, `89_463`, `2602_57` and `378_20` are each
+provable except for this term. Every proof so far prints a single value.
 
 Constants are free: the label is asymptotic, so `steps <= 7*n + 12` proves O(n).
 Do not tune constants to look tight — take whatever the invariant supports.
@@ -67,17 +75,25 @@ Do not tune constants to look tight — take whatever the invariant supports.
 Dafny has no `log`. `solutions-nlogn/` proves the true O(n log n) for merge sort.
 Two things make it work.
 
-**Use a ceiling log, not a floor log.**
+**Match the log's rounding to the code's rounding.** This is the general rule;
+"use a ceiling log" is the merge-sort case of it.
 
 ```dafny
-ghost function CeilLog2(n: nat): nat
+ghost function CeilLog2(n: nat): nat            // for a split on ceil(k/2)
   decreases n
 { if n <= 1 then 0 else 1 + CeilLog2((n + 1) / 2) }
+
+ghost function Log2(x: nat): nat                // for a loop doing m := m / 2
+  decreases x
+{ if x <= 1 then 0 else 1 + Log2(x / 2) }
 ```
 
-The recursive step is `ceil(n/2)`; both halves of a split of size `k` are at most
-`ceil(k/2)`, so `CeilLog2(ceil(k/2)) == CeilLog2(k) - 1` holds *by definition*.
-With floor-log that step is false at `k = 3` and the induction cannot close.
+Merge sort recurses on `ceil(n/2)`; both halves of a split of size `k` are at
+most `ceil(k/2)`, so `CeilLog2(ceil(k/2)) == CeilLog2(k) - 1` holds *by
+definition*, and with floor-log that step is false at `k = 3`. A halving loop
+rounds the other way, and there `Log2(m/2) == Log2(m) - 1` for `m >= 2` holds by
+definition instead — `945_255` closes with no lemma at all. Pick the mismatched
+one and the induction cannot close.
 
 **Isolate every multiplication.** Z3 does not do nonlinear arithmetic. The whole
 argument in one `calc` timed out at 30s. Splitting the two multiplication facts
@@ -91,8 +107,11 @@ lemma MulDistrib(a: nat, b: nat, k: nat, L: nat) requires a + b == k
 lemma SortCostNLogN(k: nat) ensures SortCost(k) <= 2 * k * (CeilLog2(k) + 1) + 1
 ```
 
-Keep the weaker proof. `solutions-verified/` retains the honest `O(n²)` fallback
-for the two sort rows; `solutions-nlogn/` carries the tight bound on a copy.
+`solutions-verified/` retains the honest `O(n²)` fallback for the two original
+sort rows and `solutions-nlogn/` carries their tight bound on a copy — an
+artifact of the tight proof arriving second. A new sort row does not need that
+split: `187_193` was written straight to the tight bound by reusing these
+lemmas.
 
 ## Procedure
 
@@ -103,7 +122,11 @@ for the two sort rows; `solutions-nlogn/` carries the tight bound on a copy.
 3. Charge every operation per the table. Loop invariants relate `steps` to the
    counter.
 4. `dafny verify --solver-path /usr/local/bin/z3 --verification-time-limit 30`.
-5. `python3 validate.py --only <SID>` — the compiled output must be unchanged.
+5. `python3 validate.py --solutions-dir solutions-verified --out-prefix ver_` —
+   a bare `--only <SID>` resolves to `solutions/` and tests the ORIGINAL, and it
+   overwrites the corpus-wide `data/validation.jsonl`. Then diff the emitted
+   Python of the proof against its original: identical bytes is the real
+   equivalence claim, and it is the only one available for a `loose` row.
 6. `python3 precheck.py <SID>` — every `requires` against every stored input.
 7. `python3 proofs.py` — re-verifies everything and **exits non-zero on any
    `assume`**.
@@ -122,13 +145,29 @@ statement. Record the disagreement; never adjust the proof to match the label.**
 
 ## Results so far
 
-10 rows in `solutions-verified/`, 2 in `solutions-nlogn/`. 12/12 verify, zero
-`assume`, 12/12 still pass their tests.
+22 rows in `solutions-verified/`, 2 in `solutions-nlogn/`. 24/24 verify, zero
+`assume`. Behavioural equivalence is established by **emitted-Python identity**,
+not by re-running tests — see the gate note below.
 
-Two labels **proved wrong**, same cause both times: the `m` in `O(n*m)` names
-nothing that varies. `1138_83`'s `m` is a scalar modulus; `1650_428`'s rows are
-each exactly two tokens. True cost O(n) in both. 48 rows carry `O(n*m)`
-dataset-wide; two of two examined were wrong — a reason for suspicion, not a rate.
+**`O(n*m)`: read the loop body, not the input shape.** Eight examined, six
+wrong, two right, and the split is mechanical. `3046_65` and `3091_384` walk
+every token of every row, so a wider row costs more and the second dimension is
+real. The six wrong ones touch a fixed number of positions per row (`row[0]`,
+`row[1]`, up to `row[4]`) and never scan one — a row of width 1000 costs what a
+row of width 2 costs, so there is no `m`. 40 rows still carry the label.
+`1138_83` fails a third way: its `m` is a scalar modulus, not a size.
+
+**`1855_50` is an O(n**2) label on straight-line code** — no loop, no recursion
+over a collection. First label proved wrong outside the O(n*m) family. The
+O(n*m) cases name a dimension that does not vary; this one names a growth rate
+nothing in the code has.
+
+**Match the log's rounding to the code's rounding.** `945_255` halves by
+rounding down and so wants a FLOOR log; merge sort splits on `ceil(k/2)` and
+wants a ceiling one. With the matching log the key step holds by definition and
+no lemma is needed. The old rule "use a ceiling log" was the special case.
+`187_193` got the tight n log n bound on the first pass by reusing the
+recursion-tree argument — the machinery is now cheap.
 
 `827_148` has no polynomial bound at all until values are capped: its inner
 catch-up loop is data-dependent. The proof takes the problem's stated
@@ -137,3 +176,38 @@ label assumes the same thing silently.
 
 `1484_82`'s trailing comparison loop is bounded by total string length, not `n`,
 so it is charged against `SumLen(numbers)`. That term is real work, not slack.
+
+## The gates resolve to the wrong file
+
+`validate.py` and `difftest.py` both scan `SOLUTIONS, INEXACT, UNVERIFIED,
+VERIFIED` and take the **first** hit. A proved row exists in two places and
+`solutions/` is scanned first, so a plain `validate.py --only <sid>` on a proved
+row tests the **uninstrumented original**. `precheck.py` had this bug, was fixed
+with `find_all()`, and the fix never reached the other two. Do not fix it here —
+an agent may not edit a gate it is judged by. Instead:
+
+- `python3 validate.py --solutions-dir solutions-verified --out-prefix ver_`
+  points the existing flag at the instrumented copies.
+- For `loose` rows, and as the stronger check generally, compare the **emitted
+  Python** of the proof against its original. Byte-identical compiled code
+  cannot differ on any input, and it re-confirms ghost erasure in the same step.
+  A `loose` row will FAIL `validate.py` either way — that is the wrong gate for
+  it, and its own Python fails the same comparison.
+
+**`validate.py --only <ids>` overwrites `data/validation.jsonl`** with just
+those rows, and `dataset.py` then reports 4 valid translations instead of 529.
+Always pass `--out-prefix` on a partial run; it redirects the output file.
+Restore from git if it happens.
+
+## Charging: two measured corrections
+
+`s := s + [x]` is **O(1)**, not O(|s|) — the Python backend builds a lazy
+concat node. Reading `s[i]` between appends forces a flatten and *is* quadratic;
+taking `|s|` is free. So charge 1 per append, and state the side condition that
+the accumulator is not indexed inside the loop.
+
+`Join` is **superlinear** (~L^1.2), so `SumLen + |parts|` undercharges it.
+Rows whose output is one line per input item are therefore **deferred**, not
+attempted: `171_82`, `89_463`, `2602_57`, `378_20`. Every proof so far prints a
+single value. Fixing this — a linear-time join in the prelude, or a pinned-down
+cost — unlocks that whole shape.

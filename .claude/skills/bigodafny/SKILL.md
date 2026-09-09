@@ -31,7 +31,7 @@ memory or from an earlier message.
 | `solutions-unverified/` | valid; safety obligations not discharged |
 | `solutions-inexact/` | complexity label suspect (sibling reuse or `set<T>`) |
 | `solutions-untranslated/` | will not be translated; each file states why |
-| `solutions-verified/` | complexity **proved** via ghost step counter |
+| `solutions-verified/` | complexity **proved** via ghost step counter (22 rows) |
 | `solutions-nlogn/` | two sort rows at the tight O(n log n) bound |
 
 ## The one structural fact
@@ -83,6 +83,9 @@ original Python fails a byte-diff against it. Use `difftest.py` there.
 - **Never let an agent edit a gate it is judged by.** One cut difftest's
   reference-Python budget from 30s to 10s inside an otherwise-real fix; slow rows
   would have dropped out of the comparison, passing more rows by checking fewer.
+- **`validate.py --only <ids>` overwrites `data/validation.jsonl`** with only
+  those rows. `dataset.py` then reports 4 valid translations instead of 529.
+  Pass `--out-prefix` on any partial run; restore from git if it happens.
 - **A row's file is its status.** Move it; do not annotate and leave it.
 
 ## Running work
@@ -117,3 +120,23 @@ Sub-skills: `bigodafny-translate`, `bigodafny-verify`, `bigodafny-prove`.
 - `Sort` now carries permutation lemmas (`SortKeepsElems` and friends). Before
   that, every fact about a sequence's contents was lost across a sort and rows
   hand-wrote the same lemma over and over.
+- **Both remaining gates resolve a row to the wrong file.** `validate.py` and
+  `difftest.py` scan `SOLUTIONS, INEXACT, UNVERIFIED, VERIFIED` and take the
+  first hit, so for a row that also sits in `solutions-verified/` they test the
+  uninstrumented original. `precheck.py` had the identical bug and was fixed
+  with `find_all()`; the fix never reached the other two. Use
+  `validate.py --solutions-dir solutions-verified`, and for `loose` rows compare
+  the emitted Python instead — identical compiled bytes beats a test sample.
+- **`seq` append is O(1), not O(\|s\|)** — measured. The Python backend defers
+  the concat; reading `s[i]` between appends forces a flatten and *that* is the
+  quadratic pattern (n=64k: 0.149s append-only vs 7.876s append-and-read).
+  Taking `\|s\|` is free. The old blanket `\|s\|` charge was sound but made
+  every accumulate-then-emit row look quadratic.
+- **`Join` is superlinear (~L^1.2)**, so charging it `SumLen + \|parts\|`
+  undercharges. Rows printing one line per input item cannot be proved until
+  that is fixed — a linear-time join in the prelude would unlock the shape.
+- **BigOBench's `O(n*m)` is wrong when the loop body does not scan a row.**
+  Eight examined, six wrong. The wrong ones read `row[0]`, `row[1]`, up to
+  `row[4]` and never walk a row, so width does not enter the cost. 40 rows still
+  carry the label. `1855_50` shows the failure is not confined to that label: it
+  is marked `O(n**2)` and is straight-line code.

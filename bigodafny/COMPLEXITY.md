@@ -49,15 +49,56 @@ Operations that are **not** constant time must be charged their real cost:
 
 | operation | real cost | charge |
 |---|---|---|
-| `s + [x]` (seq append) | O(\|s\|) | `\|s\|`, or avoid it |
-| `s + t` (concat) | O(\|s\|+\|t\|) | `\|s\| + \|t\|` |
+| `s + [x]`, appends only | **O(1)** — measured | `1` |
+| `s + [x]`, with `s[i]` read between appends | **O(\|s\|)** — measured | `\|s\|` |
+| `s + t` (concat) | O(\|t\|) if append-only, else O(\|s\|+\|t\|) | as above |
 | `s + {x}` (set insert) | **O(\|s\|)** — measured | `\|s\|`, or avoid it |
+| `Join(parts, sep)` | **superlinear** — measured, see below | do not charge; avoid |
+| a recursive prelude function over a seq or string | one level per element | its length |
 | a call to a helper | its own bound | the helper's `steps` |
 
-Miscounting here is the whole risk: an uncharged `seq` append inside a loop
-turns a proved "O(n)" into a real O(n**2), and Dafny will still say verified.
-So prefer array-backed accumulation and `Join` once at the end, which is what
-the translations already do.
+### Sequence append is lazy, and reading is what flattens it
+
+Measured in Dafny 4.11.0's Python backend. `s := s + [x]` builds a deferred
+concatenation node; the cost lands on whoever forces it. Appending in a loop
+that never indexes the accumulator is therefore linear overall, and one later
+traversal pays `|s|` once:
+
+    append only        n=8k .053s   16k .067s   32k .095s   64k .149s
+    append + |s|       n=8k .062s   16k .070s   32k .101s
+    append + s[i]      n=8k .126s   16k .365s   32k 1.725s  64k 7.876s
+
+Taking `|s|` does not flatten — the length is tracked. Reading an element does,
+on every append, and that is the quadratic column. So charging `1` per append is
+sound **only** under the side condition that no element of the accumulator is
+read inside the loop; state it in the file. `3091_384` charges `|row|` per
+append instead, which comes to the same total and pays for the one flatten its
+second loop forces.
+
+The old table charged `|s|` unconditionally. That was sound — it is an upper
+bound on both columns — but it made every accumulate-then-emit row look
+quadratic and put its own label out of reach.
+
+### `Join` is superlinear, so per-line output is deferred
+
+Same backend, `Join` over k five-character parts, pre-flattened, interpreter
+startup subtracted:
+
+    n=8k .068s   16k .142s   32k .355s   64k .817s   128k 1.99s
+
+The ratio per doubling settles near 2.3, so the exponent is about 1.2 — above
+linear, below quadratic. `SumLen(parts) + |parts|` therefore **undercharges**
+it, and undercharging is the one error that voids a proof. Until that cost is
+pinned down or the prelude gains a linear-time join, a row whose output is one
+line per input item does not get a proof: `171_82`, `89_463`, `2602_57` and
+`378_20` are each provable except for this term. Rows printing a single value
+are unaffected, which is every proof in `solutions-verified/` so far.
+
+Miscounting here is the whole risk, and it runs both ways. An undercharged
+operation turns a real O(n**2) into a proved "O(n)" and Dafny still says
+verified; an overcharged one puts a correct label out of reach and invents a
+disagreement that is not there. Both were live in this file: the `Join` row is
+the first hazard, the old unconditional `|s|` append charge was the second.
 
 ## What a proof does and does not claim
 
@@ -79,7 +120,21 @@ match the label.
 Dafny has no `log`. `solutions-nlogn/` proves the true O(n log n) for merge sort
 with a recursion-tree argument. Two things make it work.
 
-**Use a ceiling log, not a floor log.**
+**Match the log's rounding to the code's rounding.** Merge sort splits into
+halves of size `ceil(k/2)`, so it wants a CEILING log; a loop that does
+`m := m / 2` rounds down, so it wants a FLOOR log —
+
+```dafny
+ghost function Log2(x: nat): nat
+  decreases x
+{ if x <= 1 then 0 else 1 + Log2(x / 2) }
+```
+
+— and then `m >= 2 ==> Log2(m / 2) == Log2(m) - 1` holds by definition and the
+invariant closes with no lemma at all (`945_255`). Pick the wrong one and the
+step is false at some small k and the induction cannot close.
+
+**For a recursive split, that means the ceiling log.**
 
 ```dafny
 ghost function CeilLog2(n: nat): nat
