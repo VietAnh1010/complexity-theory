@@ -192,6 +192,29 @@ def _loop_blocks(body):
     return out
 
 
+def class_risk(body):
+    """Does the translation contain a construct that can MOVE the class?
+
+    The label was measured on the Python; a blind agent reads the Dafny. Where
+    the two differ in class, an agent that reads its input correctly is scored
+    wrong against the label. That is a property of the corpus, not of the
+    agent, and pooling those rows with the rest understates blind accuracy.
+
+    Both constructs here are measured, not suspected:
+      * `s := s[i := v]` -- a full copy in Dafny, in place in CPython.
+      * `s := s + {x}`   -- an incremental union per insert.
+    Each turns a Python O(n) loop into a Dafny O(n**2) one.
+
+    This is a RISK flag, not a verdict: it says the row could be mis-scored,
+    not that it was. 1039_15 is the established case -- blind proved O(n**2)
+    against an O(nlogn) label and diagnosed the cause unaided.
+    """
+    seq_update = bool(re.search(r"(\w+)\s*:=\s*\1\s*\[\s*[^\]]+:=", body))
+    set_build = bool(re.search(r"(\w+)\s*:=\s*\1\s*\+\s*\{", body))
+    return {"seq_update_in_loop": seq_update, "set_build_in_loop": set_build,
+            "class_risk": seq_update or set_build}
+
+
 def drift(body, python_src):
     """Does the translation's asymptotic shape differ from its Python's?
 

@@ -1,6 +1,6 @@
 # Complexity-proving experiment
 
-39 runs scored: 19 labeled, 17 blind.
+41 runs scored: 20 labeled, 18 blind.
 
 3 further example(s) hold only a `gave_up` stub with an
 untouched file -- an agent cut off by a rate limit, or still running.
@@ -10,19 +10,37 @@ Not a give-up, and not counted in any rate below: blind/`2465_212`, labeled/`133
 
 | arm | attempted | proved | verified but gate-failed | no bound |
 |---|---|---|---|---|
-| labeled | 19 | 15 | 2 | 2 |
-| blind | 17 | 12 | 3 | 3 |
+| labeled | 20 | 16 | 2 | 2 |
+| blind | 18 | 13 | 3 | 3 |
 
 ## Blind arm: did it name the class
 
-- guessed on 18 of 18 blind examples (0 excluded for a leak attempt); 1 of these come from an agent cut off before it could finish the proof, whose guess is still valid
-- correct: **7/18** = 39%
+- guessed on 19 of 19 blind examples (0 excluded for a leak attempt); 1 of these come from an agent cut off before it could finish the proof, whose guess is still valid
+- correct: **7/19** = 37%
+- on rows the translation cannot have re-classed: **5/12** = 42%
+- on rows containing a class-changing construct: **2/7** = 29%
+
+The blind agent reads the **Dafny**; the label was measured on the **Python**. A seq functional update in a loop is O(1) in CPython and a full copy in Dafny, and a `set` built in a loop is quadratic in Dafny -- both measured. On a row containing one, the two programs can sit in different classes, and an agent that reads its input correctly is then scored wrong against the label.
+
+`1039_15` is the established case, not a hypothesis: the blind agent guessed `O(n**2)` before proving, PROVED `O(n**2)`, and wrote that the Python is O(n log n) because array assignment is O(1) there. It is scored incorrect against an `O(nlogn)` label. Its labeled twin reached the same quadratic independently.
+
+The split above is reported, not corrected: the pooled number is still the honest answer to "did it name the label". It is the wrong denominator for "can it read a program".
+
+| sid | label | guess | scored |
+|---|---|---|---|
+| `1039_15` | `O(nlogn)` | `O(n**2)` | incorrect |
+| `1180_626` | `O(n+m)log(n+m)` | `O(n+mlogm)` | incorrect |
+| `1332_16` | `O(nlogn)` | `O(n**2)` | incorrect |
+| `1718_1166` | `O(n*m)` | `O(n*m)` | correct |
+| `2465_212` | `O(nlogn)` | `O(nlogn)` | correct |
+| `2650_140` | `O(nlogn)` | `O(n**2)` | incorrect |
+| `378_20` | `O(n*m)` | `O(n**2)` | incorrect |
 
 | true class | guessed right | n |
 |---|---|---|
 | `O(n)` | 0 | 3 |
 | `O(n+m)` | 1 | 1 |
-| `O(nlogn)` | 2 | 5 |
+| `O(nlogn)` | 2 | 6 |
 | `O(n*m)` | 2 | 3 |
 | `O(n**2)` | 2 | 3 |
 | `O(nlogn+mlogm)` | 0 | 1 |
@@ -35,7 +53,7 @@ Not a give-up, and not counted in any rate below: blind/`2465_212`, labeled/`133
 |---|---|---|---|---|---|---|---|---|
 | `O(n)` | 1 |  |  | 1 |  | 1 |  |  |
 | `O(n+m)` |  |  | 1 |  |  |  |  |  |
-| `O(nlogn)` |  |  |  | 2 |  | 3 |  |  |
+| `O(nlogn)` |  |  |  | 2 |  | 4 |  |  |
 | `O(n*m)` |  |  |  |  | 2 | 1 |  |  |
 | `O(n**2)` |  |  |  |  |  | 2 |  | 1 |
 | `O(nlogn+mlogm)` |  | 1 |  |  |  |  |  |  |
@@ -44,10 +62,10 @@ Not a give-up, and not counted in any rate below: blind/`2465_212`, labeled/`133
 
 ### Do the wrong guesses lean one way?
 
-- overestimated (guessed a slower class): 5
+- overestimated (guessed a slower class): 6
 - underestimated: 2
 - wrong but same growth rank: 4
-- one-sided sign test on the 7 directional errors: p = 0.227
+- one-sided sign test on the 8 directional errors: p = 0.145
 
 At this sample size that is not evidence of a lean, whatever the
 matrix looks like. Recorded so the question can be re-asked when
@@ -111,14 +129,16 @@ numeric cap into the constant. True, verifiable, and vacuous.
 | labeled | `1718_1166` | `O(n*m)` | `O(n**2+m**2)` | - | `2 * N1 * N1 + 2 * N2 * N2 + 4 * N1 + 2 * N2 + 4` |
 | labeled | `378_20` | `O(n*m)` | `O(n**2)` | - | `|pairs| * |pairs| + 20 * |pairs| + 20` |
 
-### looser: 7 -- consistent with the label; the proof is loose, not news
+### looser: 9 -- consistent with the label; the proof is loose, not news
 
 | arm | sid | label | proved | drift | ensures |
 |---|---|---|---|---|---|
+| blind | `1039_15` | `O(nlogn)` | `O(n**2)` | - | `10 * (ParseInt(n_str)) * (ParseInt(n_str)) + 100 * (ParseInt(n_str)) + |a_list_str| + |n_str| + 100` |
 | blind | `1915_158` | `O(n+m)` | `O(n*m)` | - | `A * n + 2 * A * m + 2 * A + 20` |
 | blind | `2650_140` | `O(nlogn)` | `O(n**2)` | - | `50 * n * n + 50 * n + 50` |
 | blind | `354_95` | `O(n)` | `O(nlogn)` | - | `a * (2 * CeilLog2(a) + 5) + 10` |
 | blind | `794_794` | `O(n)` | `O(n**2)` | - | `20000 * |data| * |data| + 8100000 * |data| + 10` |
+| labeled | `1039_15` | `O(nlogn)` | `O(n**2)` | - | `10 * ((ParseInt(n_str)) + 1) * ((ParseInt(n_str)) + 1) + 40 * ((ParseInt(n_str)) + 1) + 40` |
 | labeled | `1563_497` | `O(nlogn)` | `O(n**2)` | - | `|values| * |values| + |values| + 10` |
 | labeled | `2650_140` | `O(nlogn)` | `O(n**2)` | - | `4 * n * n + 15 * n + 16` |
 | labeled | `794_794` | `O(n)` | `O(n**2)` | - | `2000 * |data| * |data| + 6000 * |data| + 1` |
@@ -150,7 +170,7 @@ An overcharge does not produce a false proof -- the bound still holds. It produc
 | blind | `794_794` | `O(n)` | `O(n**2)` | looser | proves |
 | labeled | `794_794` | `O(n)` | `O(n**2)` | looser | refutes |
 
-7 of 36 graded runs. The manifest keeps the flag it was registered with; this table is computed from the current rule.
+7 of 38 graded runs. The manifest keeps the flag it was registered with; this table is computed from the current rule.
 
 ## Gate failures
 
@@ -168,7 +188,7 @@ An overcharge does not produce a false proof -- the bound still holds. It produc
 |---|---|---|---|---|
 | 1 | 4 | 4 | 2.8 | 2.0 |
 | 2 | 18 | 13 | 2.0 | 1.6 |
-| 3 | 9 | 7 | 2.7 | 1.8 |
+| 3 | 11 | 9 | 2.7 | 1.6 |
 | 4 | 8 | 3 | 5.0 | 2.6 |
 
 ## Anti-cheat

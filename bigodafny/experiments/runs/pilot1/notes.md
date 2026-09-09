@@ -97,3 +97,57 @@ reasoning.
 
 Two of the three remaining rows -- `1039_15` and `3029_114` -- are dominated by
 this pattern, which is why the rule went in before they ran rather than after.
+
+## 1039_15 pair (v3): both arms proved a quadratic, and the label is not at fault
+
+Both arms proved `O(n**2)` on a row labelled `O(nlogn)`, independently, and
+both named the same cause: `firstPos[x := i]` / `lastPos[x := i]` are seq
+functional updates inside per-element loops, each a full copy.
+
+The blind arm wrote it plainly -- *"the Python solution is O(n log n) (array
+assigns are O(1) there) ... a translation-induced regression, not a property of
+the original algorithm"* -- having guessed `O(n**2)` before proving anything.
+So the disagreement is with the TRANSLATION. BigOBench's label is right about
+the program it was measured on.
+
+The labeled arm applied the refutation rule correctly, which is the rule six of
+eight earlier agents got wrong: it landed above the claim and set `proves`, not
+`refutes`, because an upper bound cannot refute from below. v2's rewording of
+that section is doing work.
+
+### This row breaks the blind arm's scoring, and it is not the only one
+
+The blind agent reads the Dafny; the label was measured on the Python. Where a
+translation artifact moves the class, a correct reading is scored wrong.
+**7 of 19 graded blind rows contain a class-changing construct, and 5 of those
+are scored incorrect** -- three of them guessing `O(n**2)` against `O(nlogn)`,
+the signature of exactly this defect.
+
+`RESULTS.md` now splits guess accuracy by that flag: 42% where the translation
+cannot have re-classed the row, 29% where it can. Reported, not corrected --
+the pooled 37% is still the honest answer to "did it name the label"; it is the
+wrong denominator for "can it read a program".
+
+### Grader gap this row exposed
+
+The proof's `ensures` uses a Dafny let-binding:
+
+    ensures var n := ParseInt(n_str); steps <= 10*(n+1)*(n+1) + ...
+
+`extract_ensures` looked for `ensures steps <=`, so it returned nothing and a
+verified, correct proof scored `bound=None`, hence not proved. Now let-bindings
+are inlined before classifying.
+
+Fixing it surfaced a second, older bug: the extractor matched to end-of-LINE,
+so a multi-line `ensures` was graded on its first line only. `2962_1209` has
+been graded on a truncated bound in both arms this whole time. It classified
+the same by luck -- its dominant term is on the first line. Whitespace is now
+normalised and the whole clause read. Re-checked all 41 graded rows: exactly
+one class changes, the one being fixed.
+
+### The `unchecked` precondition is resolved
+
+`n >= 0 && |nums| == n && forall k :: 1 <= nums[k] <= n`, reported `unchecked`
+because the clause binds `var`s precheck cannot translate. Evaluated directly:
+**81 of 81** stored inputs hold, all tiers. It is the original's precondition;
+neither agent added one.

@@ -26,7 +26,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from bound import CLASSES, RANK, canon, direction, same_class     # noqa: E402
 from common import SOLUTIONS                                      # noqa: E402
-from features import drift as drift_now, split_file, strip_comments  # noqa: E402
+from features import (class_risk, drift as drift_now, split_file,  # noqa: E402
+                      strip_comments)
 
 
 def live_drift(sid, tasks_src):
@@ -52,7 +53,7 @@ RUNS = HERE / "runs"
 
 FIELDS = ["run_id", "arm", "sid", "problem_id", "label", "split", "model",
           "difficulty_static", "difficulty_measured", "drift", "drift_kind",
-          "drift_stale", "guide",
+          "drift_stale", "guide", "class_risk",
           "guess", "guess_correct", "verdict",
           "proved", "bound_class", "bound_shape", "bound_ensures",
           "label_match", "direction", "degenerate", "stub", "declined",
@@ -160,6 +161,13 @@ def guide_v2_sids(run_id):
     return set(json.loads(f.read_text(encoding="utf-8")).get("sids") or [])
 
 
+def row_class_risk(sid):
+    f = next(Path(SOLUTIONS).rglob(f"{sid}.dfy"), None)
+    if f is None:
+        return {}
+    return class_risk(strip_comments(split_file(f.read_text(encoding="utf-8"))[1]))
+
+
 def rows(run_id):
     graded, traj = load(run_id)
     v2 = guide_v2_sids(run_id)
@@ -182,6 +190,7 @@ def rows(run_id):
             "drift": bool(dr.get("drift_slower") or dr.get("drift_sort")),
             "drift_stale": stale,
             "guide": "v2" if g["sid"] in v2 else "v1",
+            "class_risk": bool(row_class_risk(g["sid"]).get("class_risk")),
             "drift_kind": ("append-in-loop" if dr.get("drift_slower") else "")
                           + ("|" if dr.get("drift_slower") and dr.get("drift_sort") else "")
                           + ("sort-mismatch" if dr.get("drift_sort") else ""),
@@ -282,7 +291,39 @@ def report(rs):
       f"off before it could finish the proof, whose guess is still valid")
     if scored:
         w(f"- correct: **{ok}/{len(scored)}** = {100*ok/len(scored):.0f}%")
+    safe = [r for r in scored if not r["class_risk"]]
+    risky = [r for r in scored if r["class_risk"]]
+    if risky:
+        ok_s = sum(1 for r in safe if r["guess_correct"])
+        ok_r = sum(1 for r in risky if r["guess_correct"])
+        w(f"- on rows the translation cannot have re-classed: "
+          f"**{ok_s}/{len(safe)}**"
+          + (f" = {100*ok_s/len(safe):.0f}%" if safe else ""))
+        w(f"- on rows containing a class-changing construct: "
+          f"**{ok_r}/{len(risky)}**"
+          + (f" = {100*ok_r/len(risky):.0f}%" if risky else ""))
     w("")
+    if risky:
+        w("The blind agent reads the **Dafny**; the label was measured on the "
+          "**Python**. A seq functional update in a loop is O(1) in CPython and "
+          "a full copy in Dafny, and a `set` built in a loop is quadratic in "
+          "Dafny -- both measured. On a row containing one, the two programs "
+          "can sit in different classes, and an agent that reads its input "
+          "correctly is then scored wrong against the label.\n")
+        w("`1039_15` is the established case, not a hypothesis: the blind agent "
+          "guessed `O(n**2)` before proving, PROVED `O(n**2)`, and wrote that "
+          "the Python is O(n log n) because array assignment is O(1) there. It "
+          "is scored incorrect against an `O(nlogn)` label. Its labeled twin "
+          "reached the same quadratic independently.\n")
+        w("The split above is reported, not corrected: the pooled number is "
+          "still the honest answer to \"did it name the label\". It is the "
+          "wrong denominator for \"can it read a program\".\n")
+        w("| sid | label | guess | scored |")
+        w("|---|---|---|---|")
+        for r in sorted(risky, key=lambda r: r["sid"]):
+            w(f"| `{r['sid']}` | `{r['label']}` | `{r['guess']}` | "
+              f"{'correct' if r['guess_correct'] else 'incorrect'} |")
+        w("")
     per = defaultdict(lambda: [0, 0])
     for r in scored:
         per[r["label"]][1] += 1

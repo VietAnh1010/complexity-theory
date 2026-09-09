@@ -121,8 +121,46 @@ def _lg(x):
     return max(1.0, math.ceil(math.log2(max(2.0, x))))
 
 
+LET = re.compile(r"\bvar\s+([A-Za-z_]\w*)\s*:=\s*(.+?)\s*;", re.S)
+
+
+def resolve_lets(clause):
+    """Inline Dafny let-bindings so the RHS stands on its own.
+
+    `ensures var n := ParseInt(n_str); steps <= 10 * (n+1) * (n+1) + ...` is
+    ordinary Dafny, and the grader used to return None for it: the pattern it
+    looked for was `ensures steps <=`, so a correct, verified proof scored as
+    unclassified and therefore as not proved. labeled/1039_15 is the case that
+    exposed it.
+
+    Bindings are substituted in reverse so a later one may refer to an earlier.
+    Substitution is textual and parenthesised; it cannot introduce an atom the
+    classifier would not otherwise see, so this widens what can be READ, not
+    what can pass.
+    """
+    binds = []
+    while True:
+        m = LET.match(clause.strip())
+        if not m:
+            break
+        binds.append((m.group(1), m.group(2)))
+        clause = clause.strip()[m.end():]
+    if "steps" not in clause:
+        return None
+    rhs = clause.split("steps", 1)[1]
+    rhs = rhs.split("<=", 1)[1] if "<=" in rhs else rhs
+    for name, val in reversed(binds):
+        rhs = re.sub(r"\b%s\b" % re.escape(name), f"({val})", rhs)
+    # A multi-line `ensures` keeps its newlines, and `classify` fails on them.
+    # The old extractor matched to end-of-LINE, so it never saw a newline --
+    # and never saw the rest of the bound either: 2962_1209's clause continues
+    # `+ 3 * (...) + 6` on the next line and was being graded truncated. It
+    # classified the same by luck, the dominant term being on the first line.
+    return re.sub(r"\s+", " ", rhs).strip()
+
+
 def extract_ensures(text):
-    """The `ensures steps <= ...` on Solve. Returns the RHS, or None.
+    """The `ensures ... steps <= ...` on Solve. Returns the RHS, or None.
 
     Takes the LAST such clause on `Solve` specifically -- helper methods carry
     their own `steps` bounds and those are not the claim being graded.
@@ -132,8 +170,19 @@ def extract_ensures(text):
         return None
     tail = text[m.end():]
     body = tail.split("\n{", 1)[0]
-    hits = re.findall(r"ensures\s+steps\s*<=\s*(.+)", body)
-    return hits[-1].split("//")[0].strip() if hits else None
+    body = "\n".join(ln.split("//")[0] for ln in body.splitlines())
+    # split the signature into its clauses, then keep the ones bounding `steps`
+    parts = re.split(r"\b(?=ensures\b|requires\b|decreases\b|modifies\b|reads\b)",
+                     body)
+    hits = []
+    for part in parts:
+        s = part.strip()
+        if not s.startswith("ensures"):
+            continue
+        rhs = resolve_lets(s[len("ensures"):])
+        if rhs:
+            hits.append(rhs)
+    return hits[-1].strip() if hits else None
 
 
 def to_python(expr):
