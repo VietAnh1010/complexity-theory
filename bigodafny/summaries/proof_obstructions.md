@@ -16,22 +16,28 @@ Two kinds of entry:
 
 ## Blocked: the cost of a primitive is unknown or undercharged
 
-### `Join` / `JoinInts` — 164 rows
+### `Join` / `JoinInts` — 164 rows — **NOT blocked; this entry was wrong**
 
-Measured superlinear (~L^1.2) in Dafny 4.11.0's Python backend; see
-`COMPLEXITY.md`. Charging `SumLen(parts) + |parts|` **undercharges** it, and an
-undercharged operation is the one error that makes a proof claim something
-false. Charging it quadratically is sound but yields a bound so loose the label
-is unreachable.
+This said `Join` was measured superlinear and that 164 rows could not be proved
+because of it. That was an error in the measurement, corrected the same day.
 
-Every row whose output is one line per input item hits this. It is the single
-largest blocker in the corpus — 27% of unproved rows — and it is a property of
-the prelude, not of any row. `171_82`, `89_463`, `2602_57` and `378_20` are each
-provable but for this term.
+A known-linear control run in the same harness shows *higher* implied exponents
+than `Join` does (1.27/1.21/1.16 against 1.19/1.12/1.01), and the join÷control
+ratio falls as n grows. Ratios near 2.2 per doubling are this harness's linear,
+not superlinearity. `COMPLEXITY.md` § *`Join` is linear* has the table.
 
-**Unblocks it:** a linear-time join in `prelude.dfy` (accumulate into an
-`array<char>`, one pass), or a measurement pinning the exponent well enough to
-charge it honestly. This is the highest-value single change available.
+So `Join(parts, sep)` is charged `SumLen(parts) + |parts|`, and the rows listed
+here as blocked — `171_82`, `89_463`, `2602_57`, `378_20` among them — are
+provable. They are the first place a next wave should go.
+
+The cost of the error is recorded rather than tidied away: four agent runs in
+`pilot1` declined on this ground and need re-running, and this document spent a
+session telling readers the largest class in the corpus was out of reach.
+
+**The lesson is the one this file already gave in the opposite direction.**
+Undercharging proves a false bound; overcharging invents a false obstruction.
+Refusing to charge an operation is not the conservative option — it is just the
+other error, and it is harder to notice because nothing fails.
 
 ### Not an obstruction, but worse: `s[i := v]` — 93 rows
 

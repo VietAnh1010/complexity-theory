@@ -10,6 +10,15 @@
     "1180_626": "v2",
     "1039_15": "v3",
     "1047_641": "v3",
-    "3029_114": "v3"
+    "3029_114": "v4"
+  },
+  "invalidated_by_apparatus_error": {
+    "reason": "v2 and v3 told agents Join had no honest charge and to decline rather than invent one. Join is linear; the claim came from ratios read without a control. These four runs declined on that ground and would very likely have produced a bound under v4.",
+    "runs": [
+      "labeled/1180_626",
+      "blind/1180_626",
+      "labeled/1047_641",
+      "blind/1047_641"
+    ]
   }
 }

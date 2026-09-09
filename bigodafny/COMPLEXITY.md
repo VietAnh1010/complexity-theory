@@ -55,7 +55,7 @@ Operations that are **not** constant time must be charged their real cost:
 | `s + [x]`, with `s[i]` read between appends | **O(\|s\|)** — measured | `\|s\|` |
 | `s + t` (concat) | O(\|t\|) if append-only, else O(\|s\|+\|t\|) | as above |
 | `s + {x}` (set insert) | **O(\|s\|)** — measured | `\|s\|`, or avoid it |
-| `Join(parts, sep)` | **superlinear** — measured, see below | do not charge; avoid |
+| `Join(parts, sep)` | **O(SumLen + \|parts\|)** — measured against a control | `SumLen(parts) + \|parts\|` |
 | a recursive prelude function over a seq or string | one level per element | its length |
 | a call to a helper | its own bound | the helper's `steps` |
 
@@ -104,20 +104,34 @@ provable; what it obstructs is the row AGREEING with its label. Charge `|s|`,
 prove the quadratic, and record the disagreement as a defect in the
 translation, not in the label.
 
-### `Join` is superlinear, so per-line output is deferred
+### `Join` is linear — and how the opposite got recorded first
 
-Same backend, `Join` over k five-character parts, pre-flattened, interpreter
-startup subtracted:
+`Join` costs `SumLen(parts) + |parts|`. Charge it; per-line output is not
+blocked.
 
-    n=8k .068s   16k .142s   32k .355s   64k .817s   128k 1.99s
+This entry replaces the opposite claim, which stood in this file for part of one
+session and cost four agent runs. The error is worth keeping because it is the
+one the rest of this document warns about, committed by the person warning:
 
-The ratio per doubling settles near 2.3, so the exponent is about 1.2 — above
-linear, below quadratic. `SumLen(parts) + |parts|` therefore **undercharges**
-it, and undercharging is the one error that voids a proof. Until that cost is
-pinned down or the prelude gains a linear-time join, a row whose output is one
-line per input item does not get a proof: `171_82`, `89_463`, `2602_57` and
-`378_20` are each provable except for this term. Rows printing a single value
-are unaffected, which is every proof in `solutions-verified/` so far.
+    Join           n=32k .343s  64k .783s  128k 1.706s  256k 3.442s
+    linear control n=32k .128s  64k .308s  128k  .714s  256k 1.597s
+
+The first reading took Join's ratios of ~2.2 per doubling as an exponent of
+about 1.2 and called it superlinear. But the **control** — one pass summing
+`|parts[i]|`, indisputably linear — shows ratios of 2.40, 2.32, 2.24 in the
+same harness. A ratio near 2.2 is what linear looks like here; the excess is
+constant overhead, not growth. Join's ratios are *lower* than the control's at
+every size, and the join÷control ratio falls from 2.68 to 2.16 as n grows.
+
+Two rules follow, and they are the point of the entry:
+
+- **Measure against a control, not against 2.0.** An exponent read off raw
+  ratios in a noisy harness is not a measurement. Nothing here should be called
+  superlinear again without a known-linear baseline beside it in the same table.
+- **Overcharging is not the safe direction.** Refusing to charge Join looked
+  conservative. It blocked 164 rows, sent four agent runs to a decline they did
+  not need, and manufactured an obstruction that was never there. This document
+  says an overcharge invents a false disagreement; that is what happened.
 
 Miscounting here is the whole risk, and it runs both ways. An undercharged
 operation turns a real O(n**2) into a proved "O(n)" and Dafny still says

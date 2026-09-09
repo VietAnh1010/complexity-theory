@@ -52,7 +52,7 @@ Anything else is charged its real cost:
 | `s + [x]`, appends only | `1` — **measured**: the backend defers the concat |
 | `s + [x]`, with `s[i]` read between appends | `\|s\|` — the read forces a flatten |
 | `s + {x}` set insert | `\|s\|` — **measured**, not assumed |
-| `Join(parts, sep)` | **superlinear (~L^1.2)** — do not charge it; see below |
+| `Join(parts, sep)` | `SumLen(parts) + \|parts\|` — measured against a control |
 | a recursive prelude function over a seq or string | its length |
 | a helper call | the helper's own `steps` |
 
@@ -62,10 +62,14 @@ Overcharging puts a correct label out of reach and invents a disagreement — th
 old unconditional `|s|` append charge did exactly that. A reviewer should check
 the charges before checking the invariants.
 
-`Join` is the live undercharging hazard: `SumLen(parts) + |parts|` is *less*
-than its measured cost, so a row whose output is one line per input item does
-not get a proof yet. `171_82`, `89_463`, `2602_57` and `378_20` are each
-provable except for this term. Every proof so far prints a single value.
+**Measure against a control, never against a ratio of 2.0.** `Join` was called
+superlinear here on ratios of ~2.2 per doubling. A known-linear control in the
+same harness gives 2.40/2.32/2.24 — higher. The excess was constant overhead.
+That call blocked 164 rows and sent four agent runs to a decline they did not
+need, and refusing to charge an operation felt like the safe choice while it was
+happening. It is not: an overcharge invents a false obstruction exactly as an
+undercharge invents a false bound. `171_82`, `89_463`, `2602_57` and `378_20`
+are provable and are where a next wave should start.
 
 Constants are free: the label is asymptotic, so `steps <= 7*n + 12` proves O(n).
 Do not tune constants to look tight — take whatever the invariant supports.
@@ -148,7 +152,7 @@ statement. Record the disagreement; never adjust the proof to match the label.**
 31 rows in `solutions-verified/`, 2 in `solutions-nlogn/`. 33/33 verify, zero
 `assume`. **`bigodafny/summaries/proof_obstructions.md` lists what is NOT
 provable and why — read it before picking a row.** 164 rows are blocked on
-`Join` alone; 19 on `decreases *`; 44 on unmeasured `set`/`map` costs. Behavioural equivalence is established by **emitted-Python identity**,
+`decreases *` (19 rows) and unmeasured `set`/`map` costs (44). Behavioural equivalence is established by **emitted-Python identity**,
 not by re-running tests — see the gate note below.
 
 **`O(n*m)`: read the loop body, not the input shape.** Nine examined, seven
@@ -213,8 +217,7 @@ concat node. Reading `s[i]` between appends forces a flatten and *is* quadratic;
 taking `|s|` is free. So charge 1 per append, and state the side condition that
 the accumulator is not indexed inside the loop.
 
-`Join` is **superlinear** (~L^1.2), so `SumLen + |parts|` undercharges it.
-Rows whose output is one line per input item are therefore **deferred**, not
-attempted: `171_82`, `89_463`, `2602_57`, `378_20`. Every proof so far prints a
-single value. Fixing this — a linear-time join in the prelude, or a pinned-down
-cost — unlocks that whole shape.
+`Join` is **linear**, `SumLen(parts) + |parts|`. The opposite was recorded
+first, from ratios read without a control, and it blocked 164 rows for a
+session. Per-line output is not blocked; `171_82`, `89_463`, `2602_57` and
+`378_20` are the best next targets.

@@ -138,9 +138,11 @@ Sub-skills: `bigodafny-translate`, `bigodafny-verify`, `bigodafny-prove`.
   class here, same shape as the `set<T>` trap, and the remedy is the same —
   an `array<T>` assigned in place. The label is not at fault; the translation
   is.
-- **`Join` is superlinear (~L^1.2)**, so charging it `SumLen + \|parts\|`
-  undercharges. Rows printing one line per input item cannot be proved until
-  that is fixed — a linear-time join in the prelude would unlock the shape.
+- **`Join` is linear**, charged `SumLen(parts) + \|parts\|`. An earlier note
+  here called it superlinear; that was measurement overhead read as an
+  exponent, and a known-linear control shows a *higher* implied exponent than
+  `Join` does. **Always measure against a control**, never against a ratio of
+  2.0. The bad call blocked 164 rows and cost four agent runs.
 - **BigOBench's `O(n*m)` is wrong when the loop body does not scan a row.**
   Eight examined, six wrong. The wrong ones read `row[0]`, `row[1]`, up to
   `row[4]` and never walk a row, so width does not enter the cost. 40 rows still

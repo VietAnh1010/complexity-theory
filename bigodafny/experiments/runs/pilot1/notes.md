@@ -151,3 +151,39 @@ one class changes, the one being fixed.
 because the clause binds `var`s precheck cannot translate. Evaluated directly:
 **81 of 81** stored inputs hold, all tiers. It is the original's precondition;
 neither agent added one.
+
+## Guide v4: `Join` is linear, and v2/v3 were wrong about it
+
+`Join` costs `SumLen(parts) + |parts|`. v2 introduced the opposite claim -- that
+it was superlinear (~L^1.2) and had no honest charge -- and told agents to
+decline rather than invent one. That was a measurement error.
+
+    Join           n=32k .343s  64k .783s  128k 1.706s  256k 3.442s
+    linear control n=32k .128s  64k .308s  128k  .714s  256k 1.597s
+
+The control is one pass summing `|parts[i]|`, indisputably linear. Its implied
+exponents are 1.27 / 1.21 / 1.16; `Join`'s are 1.19 / 1.12 / 1.01, *lower* at
+every size, and the join÷control ratio falls from 2.68 to 2.16 as n grows.
+Ratios near 2.2 per doubling are this harness's linear. The first reading had no
+control and took the excess for growth.
+
+### What it cost
+
+**Four runs**: `1180_626` and `1047_641`, both arms. Every one declined on the
+`Join` term. They are marked in `guide_v2_sids.json` as invalidated by
+apparatus error and should be re-run under v4 before the decline rate is
+quoted. `1047_641` labeled is the pointed loss -- it wrote that everything
+before the `Join` looks linear against a claimed `O(n**2)`, so a refutation may
+have been sitting behind the term the guide forbade it to charge.
+
+Also 164 rows of the main corpus, recorded as blocked for a session.
+
+### The lesson, which this project had already written down
+
+`COMPLEXITY.md` says an undercharge proves a false bound and an overcharge
+invents a false disagreement. Refusing to charge `Join` felt like the cautious
+choice at the time -- declining is not claiming. It was the second error, and
+it is harder to catch, because an obstruction that is not real produces no
+failure. Nothing verifies wrongly; the work simply does not get done.
+
+Rule going in: **measure against a control, never against a ratio of 2.0.**

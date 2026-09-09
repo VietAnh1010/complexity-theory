@@ -1,13 +1,4 @@
-"""The proving methodology both arms receive, scrubbed.
-
-Distilled from `bigodafny/COMPLEXITY.md`. Everything that could name an answer
-is removed: row ids, complexity labels of specific rows, and the names of the
-repository directories that hold finished proofs. Both arms get the identical
-file, so methodology cannot be a confound between them.
-
-    python3 experiments/guide.py > /tmp/GUIDE.md
-"""
-GUIDE = r"""# Proving a time-complexity bound in Dafny
+# Proving a time-complexity bound in Dafny
 
 You are given a Dafny method `Solve` that reproduces a Python program's stdout.
 Your job is to prove an upper bound on how much work it does.
@@ -184,7 +175,4 @@ not vary with input size.
 - `dafny verify` prints `verifier finished with N verified, M errors`. Only
   `0 errors` is a pass. Note that a lemma which times out proves nothing, while
   its callers may still report verified -- check for timeout lines too.
-"""
 
-if __name__ == "__main__":
-    print(GUIDE)
