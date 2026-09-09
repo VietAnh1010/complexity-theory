@@ -1,6 +1,2 @@
-{"agree": 10, "comparable": 12, "detail": {"error": 2, "pass": 10}, "problem_id": "1196", "python_failed": 0, "solution_id": "1196_100", "status": "differs"}
-{"agree": 10, "comparable": 12, "detail": {"error": 2, "pass": 10}, "problem_id": "1196", "python_failed": 0, "solution_id": "1196_51", "status": "differs"}
-{"agree": 1, "comparable": 8, "detail": {"error": 7, "pass": 1}, "problem_id": "1578", "python_failed": 0, "solution_id": "1578_481", "status": "differs"}
-{"agree": 1, "comparable": 8, "detail": {"error": 7, "pass": 1}, "problem_id": "1578", "python_failed": 0, "solution_id": "1578_724", "status": "differs"}
-{"agree": 7, "comparable": 42, "detail": {"fail": 35, "pass": 7}, "problem_id": "1950", "python_failed": 0, "solution_id": "1950_45", "status": "differs"}
-{"agree": 19, "comparable": 42, "detail": {"fail": 23, "pass": 19}, "problem_id": "1950", "python_failed": 0, "solution_id": "1950_47", "status": "differs"}
+{"agree": 65, "comparable": 65, "detail": {"pass": 65}, "problem_id": "1855", "python_failed": 0, "solution_id": "1855_50", "status": "agrees"}
+{"agree": 18, "comparable": 18, "detail": {"pass": 18}, "problem_id": "2742", "python_failed": 0, "solution_id": "2742_57", "status": "agrees"}

@@ -1,0 +1,72 @@
+// 80_B. Depression  (problem 1855, solution 1855_50)
+// time complexity: O(n**2)
+// python exact-diff baseline: partial
+//
+// Reproduce the Python program's entire stdout in `output`.
+//
+// --- Python ---------------------------------------------------------
+// import sys
+// import math
+// import itertools
+// import collections
+// 
+// def getdict(n):
+//     d = {}
+//     if type(n) is list or type(n) is str:
+//         for i in n:
+//             if i in d:
+//                 d[i] += 1
+//             else:
+//                 d[i] = 1
+//     else:
+//         for i in range(n):
+//             t = ii()
+//             if t in d:
+//                 d[t] += 1
+//             else:
+//                 d[t] = 1
+//     return d
+// def cdiv(n, k): return n // k + (n % k != 0)
+// def ii(): return int(input())
+// def mi(): return map(int, input().split())
+// def li(): return list(map(int, input().split()))
+// def lcm(a, b): return abs(a*b) // math.gcd(a, b)
+// def wr(arr): return ' '.join(map(str, arr))
+// def revn(n): return int(str(n)[::-1])
+// def prime(n):
+//     if n == 2: return True
+//     if n % 2 == 0 or n <= 1: return False
+//     sqr = int(math.sqrt(n)) + 1
+//     for d in range(3, sqr, 2):
+//         if n % d == 0: return False
+//     return True
+// 
+// h, m = map(int, input().split(':'))
+// print((h % 12) * 30 + m / 2, m * 6)
+// --------------------------------------------------------------------
+
+include "../../prelude.dfy"
+import opened Prelude
+
+// Label O(n**2). The row is STRAIGHT-LINE: no loop, no recursion over a
+// collection. The only input-dependent work is the two `ParseInt` calls, each
+// of which recurses once per character, so the whole cost is
+// |hour| + |minute| + O(1) -- linear in the input text and constant for this
+// problem, whose inputs are a clock hour and minute.
+//
+// This is the first label proved wrong outside the O(n*m) family, and it fails
+// differently: the O(n*m) cases named a dimension that does not vary, this one
+// names a growth rate no part of the code exhibits. Both come from BigOBench
+// fitting a curve to profiling runs of a program with nothing to profile.
+method Solve(hour: string, minute: string) returns (output: string, ghost steps: nat)
+  ensures steps <= |hour| + |minute| + 12
+{
+  var h := ParseInt(hour);
+  var m := ParseInt(minute);
+  var num := 60 * (h % 12) + m;
+  var half := num / 2;
+  var firstStr := if num % 2 == 0 then IntToString(half) + ".0" else IntToString(half) + ".5";
+  var second := m * 6;
+  output := firstStr + " " + IntToString(second);
+  steps := |hour| + |minute| + 12;
+}
