@@ -23,13 +23,36 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from bound import CLASSES, RANK, canon, direction, same_class     # noqa: E402
+from common import SOLUTIONS                                      # noqa: E402
+from features import drift as drift_now, split_file, strip_comments  # noqa: E402
+
+
+def live_drift(sid, tasks_src):
+    """Recompute drift with the CURRENT rule instead of reading the manifest.
+
+    manifest.json is the pre-run record and is left alone -- it is what the
+    selection was registered on. But `drift` is a derived feature, not an
+    outcome, and its append rule was wrong when pilot1 was graded: it called
+    `s := s + [x]` in a loop a class slower than Python's `list.append`, which
+    a measurement then contradicted. Reading the stale value would keep
+    publishing the wrong tag. `drift_stale` marks the rows where the two
+    disagree, because an agent that saw the old flag may have charged the
+    append |s| and reached a bound that is an artifact of the charge.
+    """
+    f = next(Path(SOLUTIONS).rglob(f"{sid}.dfy"), None)
+    if f is None:
+        return None
+    body = strip_comments(split_file(f.read_text(encoding="utf-8"))[1])
+    return drift_now(body, tasks_src.get(sid, ""))
 
 HERE = Path(__file__).resolve().parent
 RUNS = HERE / "runs"
 
 FIELDS = ["run_id", "arm", "sid", "problem_id", "label", "split", "model",
           "difficulty_static", "difficulty_measured", "drift", "drift_kind",
+          "drift_stale",
           "guess", "guess_correct", "verdict",
           "proved", "bound_class", "bound_shape", "bound_ensures",
           "label_match", "direction", "degenerate", "stub", "added_requires",
@@ -108,6 +131,19 @@ def combine(entries):
     return tot, ag
 
 
+_TASKS_CACHE = {}
+
+
+def _tasks_src():
+    if not _TASKS_CACHE:
+        from common import DATA
+        for line in (DATA / "tasks.jsonl").read_text(encoding="utf-8").splitlines():
+            r = json.loads(line)
+            _TASKS_CACHE[r["solution_id"]] = (r.get("python_source")
+                                              or r.get("solution_code") or "")
+    return _TASKS_CACHE
+
+
 def rows(run_id):
     graded, traj = load(run_id)
     man = {e["sid"]: e for e in
@@ -117,7 +153,9 @@ def rows(run_id):
         res = g.get("result") or {}
         t, ag = combine(traj.get((g["arm"], g["sid"]), []))
         proved = bool(g.get("gate_all"))
-        dr = (man.get(g["sid"], {}) or {}).get("drift", {})
+        dr_manifest = (man.get(g["sid"], {}) or {}).get("drift", {})
+        dr = live_drift(g["sid"], _tasks_src()) or dr_manifest
+        stale = bool(dr_manifest.get("drift_slower")) and not bool(dr.get("drift_slower"))
         beh = g.get("gate_behaviour") or {}
         r = {
             "run_id": g["run_id"], "arm": g["arm"], "sid": g["sid"],
@@ -125,6 +163,7 @@ def rows(run_id):
             "split": g["split"], "model": (ag or {}).get("model"),
             "difficulty_static": g["difficulty_static"],
             "drift": bool(dr.get("drift_slower") or dr.get("drift_sort")),
+            "drift_stale": stale,
             "drift_kind": ("append-in-loop" if dr.get("drift_slower") else "")
                           + ("|" if dr.get("drift_slower") and dr.get("drift_sort") else "")
                           + ("sort-mismatch" if dr.get("drift_sort") else ""),
@@ -328,6 +367,36 @@ def report(rs):
                   f"`{r['bound_class']}` | {r['drift_kind'] or '-'} | "
                   f"`{r['bound_ensures']}` |")
         w("")
+
+    # A `gave_up` stub with an untouched file is a rate-limit casualty, not a
+    # verdict -- the same exclusion the proof rate uses. Nothing to re-cite.
+    stale = [r for r in (L + B)
+             if r.get("drift_stale") and r.get("bound_class")
+             and r.get("bound_class") != "unclassified"]
+    if stale:
+        w("## Verdicts computed under a superseded charge\n")
+        w("`s := s + [x]` was charged O(|s|) when these ran. It is O(1) "
+          "amortised -- the Python backend defers the concatenation, and only "
+          "an element read of the accumulator inside the same loop forces the "
+          "flatten that makes the pattern quadratic. Measured; "
+          "`bigodafny/COMPLEXITY.md` carries the numbers.\n")
+        w("An overcharge does not produce a false proof -- the bound still "
+          "holds. It produces a false DISAGREEMENT: a linear row charged this "
+          "way lands on a quadratic bound and reads as contradicting an O(n) "
+          "label. So each bound below is sound and each row needs re-proving, "
+          "not re-reading. The rows to re-prove first are those whose "
+          "`direction` is not `equal`: there the overcharge is what put the "
+          "proof in a different class from the label.\n")
+        w("| arm | sid | label | proved | direction | verdict |")
+        w("|---|---|---|---|---|---|")
+        for r in sorted(stale, key=lambda r: (r["sid"], r["arm"])):
+            w(f"| {r['arm']} | `{r['sid']}` | `{r['label']}` | "
+              f"`{r['bound_class']}` | {r.get('direction') or '-'} | "
+              f"{r.get('verdict') or '-'} |")
+        w("")
+        w(f"{len(stale)} of {len(L) + len(B)} graded runs. The manifest keeps "
+          "the flag it was registered with; this table is computed from the "
+          "current rule.\n")
 
     w("## Gate failures\n")
     w("| gate | labeled | blind |")

@@ -128,6 +128,70 @@ def seq_appends_in_loops(body):
     return n
 
 
+def accumulator_read_in_loop(body):
+    """Is a seq accumulator READ by index inside the loop that appends to it?
+
+    That read is what forces the lazy concatenation node to flatten, and it is
+    the only thing that makes `s := s + [x]` in a loop quadratic. A read AFTER
+    the loop costs one flatten, not one per append, so it does not count.
+
+    Ghost text is stripped first: `invariant forall k :: 0 <= k < |arr| ==>
+    arr[k].1 > 0` reads the accumulator in a proof, never at run time, and
+    counting it would restore the very over-flagging this replaced.
+    """
+    names = set(re.findall(r"(\w+)\s*:=\s*\1\s*\+\s*\[", body))
+    if not names:
+        return False
+    blocks = _loop_blocks(body)
+    for name in names:
+        holding = [b for b in blocks
+                   if re.search(r"\b%s\s*:=\s*%s\s*\+\s*\[" % (name, name), b)]
+        if not holding:
+            continue
+        # The INNERMOST enclosing loop is the one whose iteration count
+        # multiplies the flatten. 794_794 appends in an inner loop and reads the
+        # finished sequence in a sibling loop under the same outer loop: that is
+        # one flatten per outer iteration, not one per append, and taking the
+        # outer block would call it drift.
+        inner = min(holding, key=len)
+        live = _strip_ghost(inner)
+        # `|name|` is free; `name[...]` is what forces the flatten.
+        if re.search(r"\b%s\s*\[" % re.escape(name), live):
+            return True
+    return False
+
+
+def _strip_ghost(block):
+    """Drop invariant/decreases/assert/ghost lines -- erased at compile time."""
+    keep = []
+    for line in block.splitlines():
+        s = line.strip()
+        if s.startswith(("invariant", "decreases", "assert", "ghost", "//")):
+            continue
+        keep.append(line)
+    return "\n".join(keep)
+
+
+def _loop_blocks(body):
+    """Each `while` and the brace-balanced block that follows it."""
+    out = []
+    for m in re.finditer(r"\bwhile\b", body):
+        i = body.find("{", m.end())
+        if i < 0:
+            continue
+        depth, j = 0, i
+        while j < len(body):
+            if body[j] == "{":
+                depth += 1
+            elif body[j] == "}":
+                depth -= 1
+                if depth == 0:
+                    break
+            j += 1
+        out.append(body[m.start():j + 1])
+    return out
+
+
 def drift(body, python_src):
     """Does the translation's asymptotic shape differ from its Python's?
 
@@ -138,18 +202,35 @@ def drift(body, python_src):
     "refuted label" may be nothing of the kind.
 
     Two shapes seen in the pilot, in opposite directions:
-      * `seq2 := seq2 + [x]` in a loop where the Python used `list.append`.
-        Amortised O(1) in Python, O(len) per step in Dafny: a class slower.
+      * `seq2 := seq2 + [x]` in a loop where the Python used `list.append`,
+        AND the loop reads an element of the accumulator. See below.
       * `multiset(a) != multiset(b)` where the Python used `sorted(a) != sorted(b)`.
         A class faster -- linear against n log n, measured, not assumed.
+
+    The append rule was wrong until it was measured. Dafny's Python backend
+    builds a LAZY concatenation node, so `s := s + [x]` is O(1) amortised --
+    the same as `list.append` -- and there is no drift. The cost lands on
+    whoever forces the node: an element read `s[i]` flattens it, and only then
+    is the loop quadratic. Taking `|s|` does not flatten.
+
+        append only     n=8k .053s  16k .067s  32k .095s  64k .149s
+        append + s[i]   n=8k .126s  16k .365s  32k 1.725s 64k 7.876s
+
+    So `drift_slower` now requires a read of the accumulator inside the
+    appending loop. The old unconditional rule flagged six pilot1 runs whose
+    agents then charged the append |s| and landed on a spurious quadratic --
+    an overcharge invents a disagreement exactly as an undercharge invents a
+    proof. `COMPLEXITY.md` carries the full convention.
     """
     py_sorts = bool(re.search(r"\bsorted\s*\(|\.sort\s*\(", python_src))
     dfy_sorts = bool(re.search(r"\bSort(?:Ints|Strings)?\s*\(", body))
     py_append = bool(re.search(r"\.append\s*\(|\+= *\[", python_src))
     appends = seq_appends_in_loops(body)
+    flattened = accumulator_read_in_loop(body)
     return {
         "seq_append_in_loop": appends,
-        "drift_slower": bool(appends and py_append),
+        "accumulator_read_in_loop": flattened,
+        "drift_slower": bool(appends and py_append and flattened),
         "drift_sort": py_sorts != dfy_sorts,
         "py_sorts": py_sorts,
         "dfy_sorts": dfy_sorts,

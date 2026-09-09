@@ -105,21 +105,39 @@ numeric cap into the constant. True, verifiable, and vacuous.
 | arm | sid | label | proved | drift | ensures |
 |---|---|---|---|---|---|
 | blind | `1718_1166` | `O(n*m)` | `O(n**2+m**2)` | - | `20 * N1 * N1 + 20 * N2 * N2 + 20 * N1 * N2 + 20 * N1 + 20 * N2 + 30` |
-| blind | `1827_44` | `O(n**2)` | `O(n**2+m**2)` | append-in-loop | `BIG * (XCAP + 2) + BIG * (XCAP + 2) + (a + BIG) * a + BIG * (a + 1)` |
+| blind | `1827_44` | `O(n**2)` | `O(n**2+m**2)` | - | `BIG * (XCAP + 2) + BIG * (XCAP + 2) + (a + BIG) * a + BIG * (a + 1)` |
 | labeled | `1718_1166` | `O(n*m)` | `O(n**2+m**2)` | - | `2 * N1 * N1 + 2 * N2 * N2 + 4 * N1 + 2 * N2 + 4` |
-| labeled | `378_20` | `O(n*m)` | `O(n**2)` | append-in-loop | `|pairs| * |pairs| + 20 * |pairs| + 20` |
+| labeled | `378_20` | `O(n*m)` | `O(n**2)` | - | `|pairs| * |pairs| + 20 * |pairs| + 20` |
 
 ### looser: 7 -- consistent with the label; the proof is loose, not news
 
 | arm | sid | label | proved | drift | ensures |
 |---|---|---|---|---|---|
 | blind | `1915_158` | `O(n+m)` | `O(n*m)` | - | `A * n + 2 * A * m + 2 * A + 20` |
-| blind | `2650_140` | `O(nlogn)` | `O(n**2)` | append-in-loop | `50 * n * n + 50 * n + 50` |
+| blind | `2650_140` | `O(nlogn)` | `O(n**2)` | - | `50 * n * n + 50 * n + 50` |
 | blind | `354_95` | `O(n)` | `O(nlogn)` | - | `a * (2 * CeilLog2(a) + 5) + 10` |
-| blind | `794_794` | `O(n)` | `O(n**2)` | append-in-loop | `20000 * |data| * |data| + 8100000 * |data| + 10` |
+| blind | `794_794` | `O(n)` | `O(n**2)` | - | `20000 * |data| * |data| + 8100000 * |data| + 10` |
 | labeled | `1563_497` | `O(nlogn)` | `O(n**2)` | - | `|values| * |values| + |values| + 10` |
-| labeled | `2650_140` | `O(nlogn)` | `O(n**2)` | append-in-loop | `4 * n * n + 15 * n + 16` |
-| labeled | `794_794` | `O(n)` | `O(n**2)` | append-in-loop | `2000 * |data| * |data| + 6000 * |data| + 1` |
+| labeled | `2650_140` | `O(nlogn)` | `O(n**2)` | - | `4 * n * n + 15 * n + 16` |
+| labeled | `794_794` | `O(n)` | `O(n**2)` | - | `2000 * |data| * |data| + 6000 * |data| + 1` |
+
+## Verdicts computed under a superseded charge
+
+`s := s + [x]` was charged O(|s|) when these ran. It is O(1) amortised -- the Python backend defers the concatenation, and only an element read of the accumulator inside the same loop forces the flatten that makes the pattern quadratic. Measured; `bigodafny/COMPLEXITY.md` carries the numbers.
+
+An overcharge does not produce a false proof -- the bound still holds. It produces a false DISAGREEMENT: a linear row charged this way lands on a quadratic bound and reads as contradicting an O(n) label. So each bound below is sound and each row needs re-proving, not re-reading. The rows to re-prove first are those whose `direction` is not `equal`: there the overcharge is what put the proof in a different class from the label.
+
+| arm | sid | label | proved | direction | verdict |
+|---|---|---|---|---|---|
+| blind | `1827_44` | `O(n**2)` | `O(n**2+m**2)` | same-rank | proves |
+| labeled | `1827_44` | `O(n**2)` | `O(n**2)` | equal | proves |
+| blind | `2650_140` | `O(nlogn)` | `O(n**2)` | looser | proves |
+| labeled | `2650_140` | `O(nlogn)` | `O(n**2)` | looser | refutes |
+| labeled | `378_20` | `O(n*m)` | `O(n**2)` | same-rank | refutes |
+| blind | `794_794` | `O(n)` | `O(n**2)` | looser | proves |
+| labeled | `794_794` | `O(n)` | `O(n**2)` | looser | refutes |
+
+7 of 32 graded runs. The manifest keeps the flag it was registered with; this table is computed from the current rule.
 
 ## Gate failures
 
