@@ -159,18 +159,18 @@
   "arm": "blind",
   "description": "Pair2 blind 1180_626",
   "model": "sonnet",
-  "output_tokens": 913,
+  "output_tokens": 8534,
   "per_example": {
    "1180_626": {
-    "dafny_calls": 0,
+    "dafny_calls": 1,
     "leak_attempts": 0,
     "leaks": [],
-    "tool_calls": 6,
+    "tool_calls": 9,
     "tools": {
-     "Bash": 1,
+     "Bash": 4,
      "Read": 5
     },
-    "wall_s": 4.2
+    "wall_s": 98.7
    },
    "shared": {
     "dafny_calls": 0,
@@ -186,8 +186,8 @@
   "sids": [
    "1180_626"
   ],
-  "tool_calls": 7,
-  "wall_s": 7.2
+  "tool_calls": 10,
+  "wall_s": 101.7
  },
  {
   "agent_id": "agent-a47a9f2f8dec8e435",
