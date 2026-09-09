@@ -23,7 +23,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from bound import CLASSES, direction, same_class                  # noqa: E402
+from bound import CLASSES, RANK, canon, direction, same_class     # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 RUNS = HERE / "runs"
@@ -214,6 +214,39 @@ def report(rs):
                 continue
             c = Counter(r["guess"] for r in row)
             w(f"| `{k}` | " + " | ".join(str(c.get(s, "")) for s in seen) + " |")
+        w("")
+
+    # Does the blind arm err in a direction? The confusion matrix looks like it
+    # skews toward slower classes, which would have a mechanism -- the Dafny
+    # idioms are costlier than the Python's, so an agent reading the Dafny
+    # correctly can land above a label derived from the Python. Eyeballing a
+    # matrix is not evidence, so it is tested, and at this n it does not hold.
+    if scored:
+        over = under = samer = 0
+        for r in scored:
+            if r["guess_correct"]:
+                continue
+            a, b = RANK.get(canon(r["guess"])), RANK.get(canon(r["label"]))
+            if a is None or b is None:
+                continue
+            over += a > b
+            under += a < b
+            samer += a == b
+        tot = over + under
+        w("### Do the wrong guesses lean one way?\n")
+        w(f"- overestimated (guessed a slower class): {over}")
+        w(f"- underestimated: {under}")
+        w(f"- wrong but same growth rank: {samer}")
+        if tot:
+            from math import comb
+            pv = sum(comb(tot, i) for i in range(max(over, under), tot + 1)) / 2 ** tot
+            w(f"- one-sided sign test on the {tot} directional errors: p = {pv:.3f}")
+            w("")
+            w("At this sample size that is not evidence of a lean, whatever the"
+              if pv > 0.05 else "That is a lean, not noise:")
+            w("matrix looks like. Recorded so the question can be re-asked when"
+              if pv > 0.05 else "recorded with the mechanism above.")
+            w("the run is larger." if pv > 0.05 else "")
         w("")
 
     w("## Where a passing proof disagrees with the label\n")
