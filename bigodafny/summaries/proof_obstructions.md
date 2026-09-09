@@ -33,6 +33,33 @@ provable but for this term.
 `array<char>`, one pass), or a measurement pinning the exponent well enough to
 charge it honestly. This is the highest-value single change available.
 
+### Not an obstruction, but worse: `s[i := v]` — 93 rows
+
+Listed here because it is where the attempts go, but it is not a blocker: the
+cost is known, so the bound is provable. What it breaks is the row's agreement
+with its label.
+
+`s := s[i := v]` copies the whole sequence, measured. Python's `lst[i] = v`
+assigns in place, measured. A loop Python runs in O(n) runs in O(n²) once
+translated this way, so the translation carries a factor of n the algorithm
+does not have.
+
+    Dafny  s := s[i := v]   n=2k .070s  4k .144s   8k .471s   16k 1.735s
+    CPython  lst[i] = v     n=2k .0002s 4k .0002s  8k .0005s  16k .0010s
+
+**93 unproved rows contain the pattern** — the largest defect class found in
+this project, and the same shape as the `set<T>` trap: correct output, wrong
+complexity, green tests. The remedy is the same, an `array<T>` assigned in
+place, and it is a translation fix, not a proof fix.
+
+Consequence for proving: charge `|s|`, prove the quadratic, and record the
+disagreement against the **translation**, not the label. A row failing this way
+is not evidence that BigOBench mislabelled anything.
+
+`1180_626`'s blind agent found this unaided, called a full-copy charge "the
+defensible reading", and concluded O(a^2) independent of `Join`. The
+measurement came afterwards and agreed with it.
+
 ### `map<K,V>` — 22 rows, and `set<T>` — 22 rows
 
 `set<T>` insertion is measured O(|s|) — `CLAUDE.md` has the numbers, and this

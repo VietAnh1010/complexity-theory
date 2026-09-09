@@ -49,6 +49,8 @@ Operations that are **not** constant time must be charged their real cost:
 
 | operation | real cost | charge |
 |---|---|---|
+| `s[i := v]` (seq update) | **O(\|s\|)** — measured, a full copy | `\|s\|` |
+| `a[i] := v` on an `array<T>` | **O(1)** — measured, in place | `1` |
 | `s + [x]`, appends only | **O(1)** — measured | `1` |
 | `s + [x]`, with `s[i]` read between appends | **O(\|s\|)** — measured | `\|s\|` |
 | `s + t` (concat) | O(\|t\|) if append-only, else O(\|s\|+\|t\|) | as above |
@@ -78,6 +80,29 @@ second loop forces.
 The old table charged `|s|` unconditionally. That was sound — it is an upper
 bound on both columns — but it made every accumulate-then-emit row look
 quadratic and put its own label out of reach.
+
+### A seq update is a full copy, and Python's is not
+
+`s := s[i := v]` copies the whole sequence. No laziness, and reading or not
+reading makes no difference — the opposite of append in both respects. The
+Python it translates assigns in place:
+
+    Dafny  s := s[i := v]   n=2k .070s  4k .144s   8k .471s   16k 1.735s
+    Dafny  a[i] := v        n=2k .036s  4k .038s   8k .037s   16k .042s
+    CPython  lst[i] = v     n=2k .0002s 4k .0002s  8k .0005s  16k .0010s
+
+So a loop that Python runs in O(n) runs in O(n²) once translated with a seq
+update. **93 unproved rows contain this pattern.** That is the `set<T>` trap
+again, and bigger: correct output, wrong complexity, green tests, and the
+label — measured on the Python — is now wrong for the translation rather than
+for the algorithm. `CLAUDE.md` § *set<T> is O(n\*\*2)* is the same finding
+about a different container, and its remedy applies here: use an `array<T>`
+and assign in place.
+
+This one is not a proof obstruction. The cost is known, so the bound is
+provable; what it obstructs is the row AGREEING with its label. Charge `|s|`,
+prove the quadratic, and record the disagreement as a defect in the
+translation, not in the label.
 
 ### `Join` is superlinear, so per-line output is deferred
 

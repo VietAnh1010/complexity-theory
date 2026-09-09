@@ -132,6 +132,12 @@ Sub-skills: `bigodafny-translate`, `bigodafny-verify`, `bigodafny-prove`.
   quadratic pattern (n=64k: 0.149s append-only vs 7.876s append-and-read).
   Taking `\|s\|` is free. The old blanket `\|s\|` charge was sound but made
   every accumulate-then-emit row look quadratic.
+- **`s := s[i := v]` is a full copy, O(\|s\|)** — measured, against CPython's
+  in-place `lst[i] = v`. A loop Python runs in O(n) runs in O(n²) once
+  translated this way. **93 unproved rows** contain it: the largest defect
+  class here, same shape as the `set<T>` trap, and the remedy is the same —
+  an `array<T>` assigned in place. The label is not at fault; the translation
+  is.
 - **`Join` is superlinear (~L^1.2)**, so charging it `SumLen + \|parts\|`
   undercharges. Rows printing one line per input item cannot be proved until
   that is fixed — a linear-time join in the prelude would unlock the shape.
