@@ -72,3 +72,28 @@ says each letter names a room between 1 and the total room count.
 
 It is a precondition of the ORIGINAL translation; neither agent added a
 `requires` (`added_requires: []` in both arms).
+
+## Guide v3: the seq functional update
+
+`s := s[i := v]` copies the whole sequence, every time. Measured:
+
+    s := s[i := v]   n=2k .070s  4k .144s  8k .471s  16k 1.735s   quadratic
+    a[i] := v        n=2k .036s  4k .038s  8k .037s  16k .042s    flat
+
+No laziness, and reading or not reading makes no difference -- the opposite of
+append in both respects. The guide priced only append, so an agent meeting a
+seq update had nothing to go on.
+
+This confirms `1180_626` blind, which called a full-copy charge "the defensible
+reading" and concluded it forces O(a^2) on its own. The measurement says it was
+right, so that row's guess is refuted by the seq update independent of `Join`.
+An agent reasoning correctly about an unmeasured primitive is worth more than
+the guess it got wrong.
+
+v3 is an ADDITION, not a withdrawal: v1's append rule told agents something
+false, v3 tells them something they were not told at all. Both are apparatus
+changes and both are recorded, but only the v1 change invalidates prior
+reasoning.
+
+Two of the three remaining rows -- `1039_15` and `3029_114` -- are dominated by
+this pattern, which is why the rule went in before they ran rather than after.

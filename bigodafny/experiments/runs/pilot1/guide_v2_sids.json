@@ -1,4 +1,15 @@
 {
-  "note": "Examples run under GUIDE v2 (corrected seq-append charge, Join carve-out). Everything not listed ran under v1, which charged `s + [x]` a flat |s|. See notes.md for the cohort boundary and guide_archive/ for both texts.",
-  "sids": ["1180_626"]
+  "note": "Examples run under a CORRECTED guide (v2 or later). Everything not listed ran under v1, which charged `s + [x]` a flat |s|. v3 adds the measured seq-update and array-update costs. See notes.md for the boundaries and guide_archive/ for every version.",
+  "sids": [
+    "1180_626",
+    "1039_15",
+    "1047_641",
+    "3029_114"
+  ],
+  "versions": {
+    "1180_626": "v2",
+    "1039_15": "v3",
+    "1047_641": "v3",
+    "3029_114": "v3"
+  }
 }
