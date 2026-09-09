@@ -38,3 +38,37 @@ length)"). The stub is archived at
 `guide_archive/1180_626.blind.stub.result.json` and cleared, so the row is
 re-run from scratch under v2 rather than carrying a guess derived from a rule
 that has since been withdrawn.
+
+## 1180_626 pair (first v2 examples)
+
+Both arms **declined**: they priced the two-pointer merge at O(n+m) and the
+merge sort at O(m log m), then refused `Join(lines, "\n")` over one line per
+letter rather than invent a charge, which is what v2 tells them to do. Neither
+touched `task.dfy`; both wrote the reason.
+
+Two independent agents, one of them blind, hitting by themselves the wall this
+session found by measurement is the strongest evidence yet that `Join` is the
+binding constraint and not an artifact of one person's approach.
+
+The blind arm's guess was `O(n+mlogm)` against a label of `O(n+m)log(n+m)`.
+
+It also found a gap nothing here had recorded: `dorms[d_left := ...]` is a seq
+**functional update**, not an append, and the laziness table covers only
+append. Its cost is unmeasured. The agent took a full-copy charge of `|dorms|`
+per update as the defensible reading, which would force O(a^2) on its own --
+so the guess may be wrong for a reason that has nothing to do with `Join`.
+Measure `s[i := v]` before that is believed either way.
+
+### The `unchecked` precondition is resolved, not assumed
+
+`precheck.py` reports this row's
+
+    forall k :: 0 <= k < b ==> d_list[k] >= 1 && d_list[k] <= PrefixSum1180(c_list, a)
+
+as `unchecked`: the clause calls a ghost helper the translator cannot express.
+`unchecked` is not a pass, so it was evaluated directly against every stored
+input -- **109 of 109 hold**, across public, private and generated. The clause
+says each letter names a room between 1 and the total room count.
+
+It is a precondition of the ORIGINAL translation; neither agent added a
+`requires` (`added_requires: []` in both arms).

@@ -156,18 +156,41 @@ def main():
 
     agents = [harvest_agent(d / n, known, a.run_id) for n in names]
     agents = [x for x in agents if x and x["sids"]]
-    # A full rewrite, not a merge. Matching is deterministic now, so the file
-    # should hold exactly the agents that match -- merging would preserve
-    # entries an earlier, looser match rule let in.
+    # Rewrite what is present, PRESERVE what is gone.
+    #
+    # This was a full rewrite, on the reasoning that matching is deterministic
+    # so the file should hold exactly the agents that match, and a merge would
+    # keep entries an earlier looser rule let in. The reasoning holds only if
+    # every transcript is still on disk. They are not: transcripts live in a
+    # per-session temp directory, so running this in a later session scanned 4
+    # transcripts, matched 2, and silently cut trajectory.json from 16 agents
+    # to 2 -- every earlier wave's tool counts, dafny calls and leak audit,
+    # gone, with `difficulty_measured` quietly falling back to a default.
+    #
+    # So: an agent whose transcript is present is re-derived under the current
+    # rule, exactly as before. An agent whose transcript is absent is kept and
+    # marked, because it cannot be re-derived and dropping it is data loss, not
+    # hygiene. The marker is what keeps that honest -- a preserved entry is a
+    # claim about a run this invocation could not check.
     p = rd / "trajectory.json"
-    byid = {x["agent_id"]: x for x in agents}
+    byid = {}
+    if p.exists():
+        for x in json.loads(p.read_text(encoding="utf-8")):
+            x["transcript_absent"] = True
+            byid[x["agent_id"]] = x
+    preserved = set(byid) - {x["agent_id"] for x in agents}
+    for x in agents:
+        x["transcript_absent"] = False
+        byid[x["agent_id"]] = x
     p.write_text(json.dumps(sorted(byid.values(), key=lambda x: x["agent_id"]),
                             indent=1, sort_keys=True), encoding="utf-8")
 
     leaks = sum(v["leak_attempts"] for x in byid.values()
                 for v in x["per_example"].values())
     print(f"transcripts scanned: {len(names)}, belonging to this run: {len(agents)}")
-    print(f"trajectory -> {p}  ({len(byid)} agents)")
+    print(f"trajectory -> {p}  ({len(byid)} agents: "
+          f"{len(agents)} re-derived, {len(preserved)} preserved from earlier "
+          f"sessions whose transcripts are gone)")
     print(f"leak attempts recorded: {leaks}")
     for x in byid.values():
         for sid, v in x["per_example"].items():

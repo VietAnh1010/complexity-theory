@@ -1,22 +1,22 @@
 # Complexity-proving experiment
 
-37 runs scored: 18 labeled, 14 blind.
+39 runs scored: 19 labeled, 17 blind.
 
-5 further example(s) hold only a `gave_up` stub with an
+3 further example(s) hold only a `gave_up` stub with an
 untouched file -- an agent cut off by a rate limit, or still running.
-Not a give-up, and not counted in any rate below: blind/`1733_64`, blind/`2465_212`, blind/`2704_92`, labeled/`1332_16`, labeled/`2269_21`
+Not a give-up, and not counted in any rate below: blind/`2465_212`, labeled/`1332_16`, labeled/`2269_21`
 
 ## Proof rate
 
 | arm | attempted | proved | verified but gate-failed | no bound |
 |---|---|---|---|---|
-| labeled | 18 | 15 | 1 | 1 |
-| blind | 14 | 12 | 0 | 0 |
+| labeled | 19 | 15 | 2 | 2 |
+| blind | 17 | 12 | 3 | 3 |
 
 ## Blind arm: did it name the class
 
-- guessed on 17 of 17 blind examples (0 excluded for a leak attempt); 3 of these come from an agent cut off before it could finish the proof, whose guess is still valid
-- correct: **7/17** = 41%
+- guessed on 18 of 18 blind examples (0 excluded for a leak attempt); 1 of these come from an agent cut off before it could finish the proof, whose guess is still valid
+- correct: **7/18** = 39%
 
 | true class | guessed right | n |
 |---|---|---|
@@ -26,25 +26,27 @@ Not a give-up, and not counted in any rate below: blind/`1733_64`, blind/`2465_2
 | `O(n*m)` | 2 | 3 |
 | `O(n**2)` | 2 | 3 |
 | `O(nlogn+mlogm)` | 0 | 1 |
+| `O(n+m)log(n+m)` | 0 | 1 |
 | `O(n**2+m**2)` | 0 | 1 |
 
 ### Confusion (rows = true, cols = guessed)
 
-| true \ guess | `O(1)` | `O(n)` | `O(n+m)` | `O(nlogn)` | `O(n*m)` | `O(n**2)` | `O(n**2+m**2)` |
-|---|---|---|---|---|---|---|---|
-| `O(n)` | 1 |  |  | 1 |  | 1 |  |
-| `O(n+m)` |  |  | 1 |  |  |  |  |
-| `O(nlogn)` |  |  |  | 2 |  | 3 |  |
-| `O(n*m)` |  |  |  |  | 2 | 1 |  |
-| `O(n**2)` |  |  |  |  |  | 2 | 1 |
-| `O(nlogn+mlogm)` |  | 1 |  |  |  |  |  |
-| `O(n**2+m**2)` |  |  |  |  |  | 1 |  |
+| true \ guess | `O(1)` | `O(n)` | `O(n+m)` | `O(nlogn)` | `O(n*m)` | `O(n**2)` | `O(n+mlogm)` | `O(n**2+m**2)` |
+|---|---|---|---|---|---|---|---|---|
+| `O(n)` | 1 |  |  | 1 |  | 1 |  |  |
+| `O(n+m)` |  |  | 1 |  |  |  |  |  |
+| `O(nlogn)` |  |  |  | 2 |  | 3 |  |  |
+| `O(n*m)` |  |  |  |  | 2 | 1 |  |  |
+| `O(n**2)` |  |  |  |  |  | 2 |  | 1 |
+| `O(nlogn+mlogm)` |  | 1 |  |  |  |  |  |  |
+| `O(n+m)log(n+m)` |  |  |  |  |  |  | 1 |  |
+| `O(n**2+m**2)` |  |  |  |  |  | 1 |  |  |
 
 ### Do the wrong guesses lean one way?
 
 - overestimated (guessed a slower class): 5
 - underestimated: 2
-- wrong but same growth rank: 3
+- wrong but same growth rank: 4
 - one-sided sign test on the 7 directional errors: p = 0.227
 
 At this sample size that is not evidence of a lean, whatever the
@@ -121,6 +123,17 @@ numeric cap into the constant. True, verifiable, and vacuous.
 | labeled | `2650_140` | `O(nlogn)` | `O(n**2)` | - | `4 * n * n + 15 * n + 16` |
 | labeled | `794_794` | `O(n)` | `O(n**2)` | - | `2000 * |data| * |data| + 6000 * |data| + 1` |
 
+## Declined rather than guessed at a cost
+
+The file is untouched and `notes` says why. These are NOT stubs: the agent read the method, priced the parts it could, and refused the one term the charging convention does not yet cover. They count as not-proved in the rate above, which is right -- no bound was produced -- but the reason is an obstruction in the convention, not a limit of the agent.
+
+- blind `1180_626` (label `O(n+m)log(n+m)`, guide `v2`)
+- labeled `1180_626` (label `O(n+m)log(n+m)`, guide `v2`)
+- blind `1733_64` (label `O(n**2)`, guide `v1`)
+- blind `2704_92` (label `O(n**2)`, guide `v1`)
+
+A `v1` decline states its obstacle in prose written under the superseded append charge, so the REASON it gives may be an artifact even though the decline itself stands. blind `1733_64` is the clear case: it argues a cubic true cost from appends "charged real cost |s| per GUIDE.md". Re-run those under v2 before quoting their analysis.
+
 ## Verdicts computed under a superseded charge
 
 `s := s + [x]` was charged O(|s|) when these ran. It is O(1) amortised -- the Python backend defers the concatenation, and only an element read of the accumulator inside the same loop forces the flatten that makes the pattern quadratic. Measured; `bigodafny/COMPLEXITY.md` carries the numbers.
@@ -137,7 +150,7 @@ An overcharge does not produce a false proof -- the bound still holds. It produc
 | blind | `794_794` | `O(n)` | `O(n**2)` | looser | proves |
 | labeled | `794_794` | `O(n)` | `O(n**2)` | looser | refutes |
 
-7 of 32 graded runs. The manifest keeps the flag it was registered with; this table is computed from the current rule.
+7 of 36 graded runs. The manifest keeps the flag it was registered with; this table is computed from the current rule.
 
 ## Gate failures
 
@@ -154,7 +167,7 @@ An overcharge does not produce a false proof -- the bound still holds. It produc
 | difficulty_static | n | proved | mean dafny calls | mean difficulty_measured |
 |---|---|---|---|---|
 | 1 | 4 | 4 | 2.8 | 2.0 |
-| 2 | 16 | 13 | 2.1 | 1.6 |
+| 2 | 18 | 13 | 2.0 | 1.6 |
 | 3 | 9 | 7 | 2.7 | 1.8 |
 | 4 | 8 | 3 | 5.0 | 2.6 |
 

@@ -1,0 +1,4 @@
+{
+  "note": "Examples run under GUIDE v2 (corrected seq-append charge, Join carve-out). Everything not listed ran under v1, which charged `s + [x]` a flat |s|. See notes.md for the cohort boundary and guide_archive/ for both texts.",
+  "sids": ["1180_626"]
+}

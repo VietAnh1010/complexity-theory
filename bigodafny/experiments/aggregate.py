@@ -52,7 +52,7 @@ RUNS = HERE / "runs"
 
 FIELDS = ["run_id", "arm", "sid", "problem_id", "label", "split", "model",
           "difficulty_static", "difficulty_measured", "drift", "drift_kind",
-          "drift_stale",
+          "drift_stale", "guide",
           "guess", "guess_correct", "verdict",
           "proved", "bound_class", "bound_shape", "bound_ensures",
           "label_match", "direction", "degenerate", "stub", "declined",
@@ -145,8 +145,24 @@ def _tasks_src():
     return _TASKS_CACHE
 
 
+def guide_v2_sids(run_id):
+    """Which examples ran under the corrected guide.
+
+    The append charge changed mid-run, so a row's guide version is part of its
+    provenance. `drift_stale` catches a stale charge that reached the BOUND;
+    this catches one that reached the NOTES, which no structural check can see
+    -- blind/1733_64 argues a cubic true cost "charged real cost |s| per
+    GUIDE.md", reasoning straight from the withdrawn rule.
+    """
+    f = RUNS / run_id / "guide_v2_sids.json"
+    if not f.exists():
+        return set()
+    return set(json.loads(f.read_text(encoding="utf-8")).get("sids") or [])
+
+
 def rows(run_id):
     graded, traj = load(run_id)
+    v2 = guide_v2_sids(run_id)
     man = {e["sid"]: e for e in
            json.loads((HERE / "manifest.json").read_text())["examples"]}
     out = []
@@ -165,6 +181,7 @@ def rows(run_id):
             "difficulty_static": g["difficulty_static"],
             "drift": bool(dr.get("drift_slower") or dr.get("drift_sort")),
             "drift_stale": stale,
+            "guide": "v2" if g["sid"] in v2 else "v1",
             "drift_kind": ("append-in-loop" if dr.get("drift_slower") else "")
                           + ("|" if dr.get("drift_slower") and dr.get("drift_sort") else "")
                           + ("sort-mismatch" if dr.get("drift_sort") else ""),
@@ -393,8 +410,16 @@ def report(rs):
           "produced -- but the reason is an obstruction in the convention, not "
           "a limit of the agent.\n")
         for r in sorted(declined, key=lambda r: (r["sid"], r["arm"])):
-            w(f"- {r['arm']} `{r['sid']}` (label `{r['label']}`)")
+            w(f"- {r['arm']} `{r['sid']}` (label `{r['label']}`, guide "
+              f"`{r['guide']}`)")
         w("")
+        if any(r["guide"] == "v1" for r in declined):
+            w("A `v1` decline states its obstacle in prose written under the "
+              "superseded append charge, so the REASON it gives may be an "
+              "artifact even though the decline itself stands. blind "
+              "`1733_64` is the clear case: it argues a cubic true cost from "
+              "appends \"charged real cost |s| per GUIDE.md\". Re-run those "
+              "under v2 before quoting their analysis.\n")
 
     stale = [r for r in (L + B)
              if r.get("drift_stale") and r.get("bound_class")
