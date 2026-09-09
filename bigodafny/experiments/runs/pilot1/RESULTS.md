@@ -1,17 +1,21 @@
 # Complexity-proving experiment
 
-36 runs: 19 labeled, 17 blind.
+37 runs scored: 17 labeled, 14 blind.
+
+6 further example(s) hold only a `gave_up` stub with an
+untouched file -- an agent cut off by a rate limit, or still running.
+Not a give-up, and not counted in any rate below: blind/`1733_64`, blind/`2465_212`, blind/`2704_92`, labeled/`1332_16`, labeled/`2269_21`, labeled/`794_794`
 
 ## Proof rate
 
 | arm | attempted | proved | verified but gate-failed | no bound |
 |---|---|---|---|---|
-| labeled | 19 | 13 | 4 | 3 |
-| blind | 17 | 10 | 5 | 4 |
+| labeled | 17 | 14 | 1 | 1 |
+| blind | 14 | 12 | 0 | 0 |
 
 ## Blind arm: did it name the class
 
-- guessed on 17 of 17 examples (0 excluded for a leak attempt)
+- guessed on 17 of 17 blind examples (0 excluded for a leak attempt); 3 of these come from an agent cut off before it could finish the proof, whose guess is still valid
 - correct: **7/17** = 41%
 
 | true class | guessed right | n |
@@ -78,13 +82,14 @@ numeric cap into the constant. True, verifiable, and vacuous.
 | labeled | `1718_1166` | `O(n*m)` | `O(n**2+m**2)` | - | `2 * N1 * N1 + 2 * N2 * N2 + 4 * N1 + 2 * N2 + 4` |
 | labeled | `378_20` | `O(n*m)` | `O(n**2)` | append-in-loop | `|pairs| * |pairs| + 20 * |pairs| + 20` |
 
-### looser: 5 -- consistent with the label; the proof is loose, not news
+### looser: 6 -- consistent with the label; the proof is loose, not news
 
 | arm | sid | label | proved | drift | ensures |
 |---|---|---|---|---|---|
 | blind | `1915_158` | `O(n+m)` | `O(n*m)` | - | `A * n + 2 * A * m + 2 * A + 20` |
 | blind | `2650_140` | `O(nlogn)` | `O(n**2)` | append-in-loop | `50 * n * n + 50 * n + 50` |
 | blind | `354_95` | `O(n)` | `O(nlogn)` | - | `a * (2 * CeilLog2(a) + 5) + 10` |
+| blind | `794_794` | `O(n)` | `O(n**2)` | append-in-loop | `20000 * |data| * |data| + 8100000 * |data| + 10` |
 | labeled | `1563_497` | `O(nlogn)` | `O(n**2)` | - | `|values| * |values| + |values| + 10` |
 | labeled | `2650_140` | `O(nlogn)` | `O(n**2)` | append-in-loop | `4 * n * n + 15 * n + 16` |
 
@@ -94,7 +99,7 @@ numeric cap into the constant. True, verifiable, and vacuous.
 |---|---|---|
 | did not verify | 2 | 2 |
 | used `assume` | 0 | 0 |
-| compiled control flow changed | 2 | 1 |
+| compiled control flow changed | 1 | 0 |
 | behaviour changed | 1 | 0 |
 | a `requires` excludes real inputs | 0 | 0 |
 
@@ -102,9 +107,9 @@ numeric cap into the constant. True, verifiable, and vacuous.
 
 | difficulty_static | n | proved | mean dafny calls | mean difficulty_measured |
 |---|---|---|---|---|
-| 1 | 3 | 2 | 1.5 | 1.3 |
-| 2 | 16 | 12 | 2.1 | 1.6 |
-| 3 | 9 | 6 | 2.7 | 1.9 |
+| 1 | 4 | 3 | 1.5 | 1.2 |
+| 2 | 16 | 13 | 2.1 | 1.6 |
+| 3 | 9 | 7 | 2.7 | 1.8 |
 | 4 | 8 | 3 | 5.0 | 2.6 |
 
 ## Anti-cheat

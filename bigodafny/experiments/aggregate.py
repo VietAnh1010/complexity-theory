@@ -32,7 +32,7 @@ FIELDS = ["run_id", "arm", "sid", "problem_id", "label", "split", "model",
           "difficulty_static", "difficulty_measured", "drift", "drift_kind",
           "guess", "guess_correct", "verdict",
           "proved", "bound_class", "bound_shape", "bound_ensures",
-          "label_match", "direction", "degenerate", "added_requires",
+          "label_match", "direction", "degenerate", "stub", "added_requires",
           "gate_verify", "gate_no_assume", "gate_skeleton", "gate_behaviour",
           "gate_requires", "requires_detail",
           "code_identical", "added_exec_lines", "assumes",
@@ -140,6 +140,13 @@ def rows(run_id):
             "label_match": g.get("label_match"),
             "direction": direction(g.get("bound_class"), g["label"]),
             "degenerate": degenerate(g.get("bound_class"), man.get(g["sid"])),
+            # The write-result-first rule means an agent that was cut off, or
+            # is still running, leaves a `gave_up` stub that is
+            # indistinguishable in the CSV from a real give-up. It is not one:
+            # the file was never touched. Counted apart, or the proof-rate
+            # denominator silently absorbs every rate-limit casualty as a
+            # failure.
+            "stub": not g.get("touched") and not g.get("bound_ensures"),
             "added_requires": "; ".join(res.get("added_requires") or []),
             "gate_verify": (g.get("gate_verify") or {}).get("ok"),
             "gate_no_assume": g.get("gate_no_assume"),
@@ -165,13 +172,26 @@ def rows(run_id):
 
 
 def report(rs):
-    L = [r for r in rs if r["arm"] == "labeled"]
-    B = [r for r in rs if r["arm"] == "blind"]
+    stubs = [r for r in rs if r["stub"]]
+    scorable = [r for r in rs if not r["stub"]]
+    L = [r for r in scorable if r["arm"] == "labeled"]
+    # Proof rate excludes stubs; the GUESS does not. The blind arm writes its
+    # guess before attempting any proof, on purpose, so an agent cut off
+    # mid-proof still left a real, committed answer to the question this
+    # experiment is actually asking. Dropping those would throw away the
+    # measurement to tidy up the denominator of a different one.
+    B = [r for r in scorable if r["arm"] == "blind"]
+    B_guess = [r for r in rs if r["arm"] == "blind" and r["guess"]]
     o = []
     w = o.append
 
     w("# Complexity-proving experiment\n")
-    w(f"{len(rs)} runs: {len(L)} labeled, {len(B)} blind.\n")
+    w(f"{len(rs)} runs scored: {len(L)} labeled, {len(B)} blind.\n")
+    if stubs:
+        w(f"{len(stubs)} further example(s) hold only a `gave_up` stub with an")
+        w("untouched file -- an agent cut off by a rate limit, or still running.")
+        w("Not a give-up, and not counted in any rate below: "
+          + ", ".join(f"{r['arm']}/`{r['sid']}`" for r in stubs) + "\n")
 
     w("## Proof rate\n")
     w("| arm | attempted | proved | verified but gate-failed | no bound |")
@@ -184,11 +204,13 @@ def report(rs):
     w("")
 
     w("## Blind arm: did it name the class\n")
-    clean = [r for r in B if not r["leak_attempts"]]
+    clean = [r for r in B_guess if not r["leak_attempts"]]
     scored = [r for r in clean if r["guess"]]
     ok = sum(1 for r in scored if r["guess_correct"])
-    w(f"- guessed on {len(scored)} of {len(B)} examples "
-      f"({len(B) - len(clean)} excluded for a leak attempt)")
+    w(f"- guessed on {len(scored)} of {len(B_guess)} blind examples "
+      f"({len(B_guess) - len(clean)} excluded for a leak attempt); "
+      f"{sum(1 for r in B_guess if r['stub'])} of these come from an agent cut "
+      f"off before it could finish the proof, whose guess is still valid")
     if scored:
         w(f"- correct: **{ok}/{len(scored)}** = {100*ok/len(scored):.0f}%")
     w("")
