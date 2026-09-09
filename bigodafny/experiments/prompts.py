@@ -22,12 +22,11 @@ prose. Dafny and JSON are exempt.
 
 # Task
 
-You have {n} examples. Each is a self-contained directory:
+You have {n} example(s). Each is a self-contained directory:
 
 {dirs}
 
-Work them ONE AT A TIME, in the order listed -- they are ordered easiest
-first. In each directory read TASK.md first, then GUIDE.md, then
+{order}In that directory read TASK.md first, then GUIDE.md, then
 description.md, solution.py and task.dfy.
 
 Start every Bash call that runs dafny with:
@@ -84,20 +83,34 @@ budget on is still recorded; written afterwards, it is lost. Follow
 `RESULT.schema.json` exactly; `verdict` must be one of `proves`, `refutes`,
 `gave_up`.
 
-BUDGET, and it is hard: about 20 tool calls per example, 25 at the very most.
-When you hit it, set `verdict: "gave_up"`, record in `notes` what the obstacle
-was -- which obligation, which invariant you could not find -- and MOVE ON to
-the next example. A precise give-up is data. Four give-ups are a result; one
-polished proof and three untouched examples is not.
-
-The examples are ordered easiest first. If you are still on the first one after
-25 calls, you are over budget for it -- write it off and go.
+{budget}
 
 # Report
 
 One line per example: id, verdict, the bound you proved, and for a give-up the
 obstacle in six words. Then one line on anything you noticed across the batch.
 """
+
+ORDER_MANY = """Work them ONE AT A TIME, in the order listed -- they are ordered easiest
+first. """
+ORDER_ONE = """You have one example and nothing after it, so there is no reason to hold
+budget back. """
+
+BUDGET_MANY = """BUDGET, and it is hard: about 20 tool calls per example, 25 at the very most.
+When you hit it, set `verdict: "gave_up"`, record in `notes` what the obstacle
+was -- which obligation, which invariant you could not find -- and MOVE ON to
+the next example. A precise give-up is data. Four give-ups are a result; one
+polished proof and three untouched examples is not.
+
+The examples are ordered easiest first. If you are still on the first one after
+25 calls, you are over budget for it -- write it off and go."""
+
+BUDGET_ONE = """BUDGET: about 40 tool calls. Spend them on this one example. If the proof will
+not close, set `verdict: "gave_up"` and record in `notes` exactly what stopped
+you -- which obligation, which invariant you could not find, which lemma timed
+out. A precise give-up is a result; this experiment measures difficulty as much
+as success, and "I could not bound the inner loop without knowing X" is data
+that a proof does not give."""
 
 LABELED = """`task.dfy`'s header states the cost claimed for this method. Prove a bound of
 that shape with a ghost step counter.
@@ -123,8 +136,12 @@ different bound, leave `guess` exactly as written, record what you proved in
 def build(arm, run_id, sids):
     root = CX_ROOT / run_id / arm
     dirs = "\n".join(f"    {root / s}" for s in sids)
-    return COMMON.format(n=len(sids), dirs=dirs,
-                         arm_para=LABELED if arm == "labeled" else BLIND)
+    one = len(sids) == 1
+    return COMMON.format(
+        n=len(sids), dirs=dirs,
+        order=ORDER_ONE if one else ORDER_MANY,
+        budget=BUDGET_ONE if one else BUDGET_MANY,
+        arm_para=LABELED if arm == "labeled" else BLIND)
 
 
 def main():
