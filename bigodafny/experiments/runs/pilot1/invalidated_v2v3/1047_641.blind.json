@@ -1,0 +1,12 @@
+{
+  "sid": "1047_641",
+  "guess": "O(n)",
+  "guess_basis": "single pass over strings; per-line work bounded (row/col <= 1e6 caps line length), no nested scan over other lines",
+  "bound_ensures": null,
+  "proved_class": null,
+  "size_mapping": "n = |strings| (coordinate lines); n:int param is unused in body; no second bulk input, no m",
+  "verdict": "gave_up",
+  "added_requires": null,
+  "verified": true,
+  "notes": "output := Join(lines, \"\\n\") with lines built one entry per input string -- exactly the Join-over-one-line-per-item pattern GUIDE.md flags as having no honest charge (measured ~L^1.2, not linear). Everything else in Solve (digit-run scan, alpha scan, ParseInt, ColToLetters, the lazy append lines+[x]) is honestly chargeable and looked linear in per-line length, but the final Join dominates and I can't write a truthful ensures for it without inventing a charge. Did not instrument task.dfy; baseline verifies unmodified (6 verified, 0 errors)."
+}

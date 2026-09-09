@@ -1,0 +1,12 @@
+{
+  "sid": "1047_641",
+  "guess": null,
+  "guess_basis": null,
+  "bound_ensures": null,
+  "proved_class": null,
+  "size_mapping": "n = |strings| (number of coordinate lines); per-line length bounded by the row/col <= 10^6 cap in description.md",
+  "verdict": "gave_up",
+  "added_requires": [],
+  "verified": false,
+  "notes": "output := Join(lines, \"\\n\") at the end, with lines built one entry per input line via lines := lines + [...]. GUIDE.md says this exact pattern (Join over one line per input item) has no honest charge -- measured superlinear (~L^1.2), any linear charge undercharges, and none is given for worse-than-linear. Everything before the Join (DigitRunEnd/ParseInt/ColToLetters/the alpha-run loop) looks boundable per-line by the row/col length cap, so the rest of Solve is plausibly O(n), well under the claimed O(n**2) -- but I cannot write steps := steps + <cost> for the Join call without inventing a charge the guide forbids. Blocked there before finishing instrumentation."
+}
