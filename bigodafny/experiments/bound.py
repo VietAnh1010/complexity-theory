@@ -212,10 +212,31 @@ def classify(expr):
             # 30 on the diagonal) as a mismatch and collapses it to O(n**2);
             # checking within them keeps n and n log n apart, because there
             # the ratio really does climb with scale.
+            #
+            # Within a direction the test is CONVERGENCE, not flatness: does
+            # f/g stop moving between the two largest scales. Flatness over the
+            # whole ladder fails on a true class with a big constant --
+            # `20000*n*n + 8100000*n` is quadratic but its ratio still drifts
+            # 1.40 from n=2^10 to 2^30, so every candidate was rejected and the
+            # bound came back unclassified. Convergence is immune to the
+            # constant and still separates a missing log factor, because
+            # lg(2^30)/lg(2^26) is 1.15, far outside the tolerance.
             groups = {}
             for ns, ms, f in pts:
-                groups.setdefault((ns > BASE, ms > BASE), []).append(f / g(ns, ms))
-            if any(min(v) <= 0 or max(v) / min(v) > 1.35 for v in groups.values()):
+                groups.setdefault((ns > BASE, ms > BASE), []).append(
+                    (max(ns, ms), f / g(ns, ms)))
+            ok = True
+            for v in groups.values():
+                v.sort()
+                rs = [r for _, r in v]
+                if min(rs) <= 0 or len(rs) < 2:
+                    ok = False
+                    break
+                settle = rs[-1] / rs[-2]
+                if not (1 / 1.05 <= settle <= 1.05):
+                    ok = False
+                    break
+            if not ok:
                 continue
             best = (name, assign)
             break

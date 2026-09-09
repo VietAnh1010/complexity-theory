@@ -66,9 +66,39 @@ def dafny_verify(path: Path, seconds=60):
 RENUM = re.compile(r"\b(d|rhs|let|pat|source)_?\d+_")
 
 
+def _empty_block(lines, i):
+    """Is the block opened at line i compiled to nothing but `pass`?
+
+    A ghost-only `else` -- one whose body is just a `steps := steps + k` update
+    -- still emits its branch structure, as `elif True:` over a `pass`. That
+    changes the compiled control flow without changing a single thing the
+    program does, and flagging it as an algorithm swap is a false positive. A
+    branch with an empty compiled body cannot affect behaviour, so it does not
+    belong in the skeleton. Removal of a real loop is still caught: the
+    original's line is missing from the new skeleton either way.
+    """
+    ind = len(lines[i]) - len(lines[i].lstrip())
+    for l in lines[i + 1:]:
+        if not l.strip():
+            continue
+        if len(l) - len(l.lstrip()) <= ind:
+            break
+        if l.strip() != "pass":
+            return False
+    return True
+
+
 def skeleton(py_text):
-    return [RENUM.sub(r"\1_", l.strip()) for l in py_text.splitlines()
-            if any(l.strip().startswith(k) for k in CONTROL)]
+    lines = py_text.splitlines()
+    out = []
+    for i, l in enumerate(lines):
+        s = l.strip()
+        if not any(s.startswith(k) for k in CONTROL):
+            continue
+        if s.endswith(":") and _empty_block(lines, i):
+            continue
+        out.append(RENUM.sub(r"\1_", s))
+    return out
 
 
 def compiled(dfy: Path, work: Path):
