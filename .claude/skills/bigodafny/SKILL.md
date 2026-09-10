@@ -33,6 +33,7 @@ memory or from an earlier message.
 | `solutions-untranslated/` | will not be translated; each file states why |
 | `solutions-verified/` | complexity **proved** via ghost step counter (31 rows) |
 | `solutions-nlogn/` | two sort rows at the tight O(n log n) bound |
+| `solution-guessed-verified/` | blind-arm experiment attempts; label was withheld from the author. NOT dataset rows |
 
 ## The one structural fact
 
