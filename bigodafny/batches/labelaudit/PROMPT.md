@@ -132,6 +132,20 @@ Use a sibling as a prompt to read both sources, never as the argument itself.
 If you cannot settle the cause from the two sources, keep `verdict: "mismatch"`
 and set `confidence: "low"`; say in the evidence which way you lean and why.
 
+## When the label matches the Dafny by accident
+
+A row can be `ok` for the wrong reason. `888_6` is labelled O(n**2) and its
+Dafny is O(n**2) -- but only because `ReverseSeq` slices `s[1..]` and
+concatenates at every level. The Python's `D[::-1]` is O(n) and everything
+around it is O(n), so the Python is linear. The label describes the Dafny, and
+the two agree by coincidence.
+
+Set `"translation_defect": true` on any row where the **Dafny** is in a worse
+class than the **Python**, whatever the verdict. On a `mismatch` it usually
+accompanies `cause: "translation"`. On an `ok` it is the only way the row gets
+seen at all: the verdict stays `ok`, and the flag says the agreement is
+accidental. Omit the field entirely when the translation is faithful.
+
 ## Your output is machine-checked
 
 `checkverdicts.py` validates every line against the schema above and

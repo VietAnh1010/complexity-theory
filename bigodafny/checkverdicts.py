@@ -67,6 +67,8 @@ def check(path, batch_path=None):
                 err("verdict is mismatch but true_class equals the label")
             if not r.get("cause"):
                 err("mismatch with no cause")
+        if "translation_defect" in r and not isinstance(r["translation_defect"], bool):
+            err("translation_defect must be true or false")
         if r.get("verdict") == "ok" and tc != r.get("label"):
             err(f"verdict ok but true_class {tc!r} != label {r.get('label')!r}")
 
