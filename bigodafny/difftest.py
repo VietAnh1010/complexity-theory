@@ -18,7 +18,7 @@ from collections import Counter
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 
-from common import DATA, event, log, read_jsonl, write_json, write_jsonl
+from common import DATA, event, log, read_jsonl, write_json, write_jsonl, TOFIX
 from validate import build_one, conv_expr, HARNESS
 from common import BUILD, INEXACT, SOLUTIONS, UNVERIFIED, VERIFIED
 
@@ -77,7 +77,7 @@ def python_outputs(task, tests):
 
 
 def find(sid, pid):
-    for r in (SOLUTIONS, UNVERIFIED, INEXACT, VERIFIED):
+    for r in (SOLUTIONS, UNVERIFIED, INEXACT, VERIFIED, TOFIX):
         p = r / pid / f"{sid}.dfy"
         if p.exists():
             return p

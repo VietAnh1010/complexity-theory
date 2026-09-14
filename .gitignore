@@ -24,3 +24,9 @@ bigodafny/data/*_validation.jsonl
 bigodafny/data/*_validation_summary.json
 bigodafny/build/
 bigodafny/data/difftest_partial.jsonl
+
+# Label-audit evidence batches: each embeds a full .dfy and its Python, so the
+# payload is 1.4M of content already committed elsewhere. Regenerate with
+# `python3 labelaudit.py evidence`. The prompt and the verdicts ARE committed --
+# they are the inputs and outputs of a judgement, not a copy of the corpus.
+bigodafny/batches/labelaudit/batch_*.json

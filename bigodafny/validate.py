@@ -12,7 +12,7 @@ from pathlib import Path
 
 from common import (BUILD, DAFNY_VERSION, DATA, INEXACT, PRELUDE, SOLUTIONS,
                     UNVERIFIED, VERIFIED, event, log, read_jsonl, write_json,
-                    write_jsonl)
+                    write_jsonl, TOFIX)
 
 DAFNY = shutil.which("dafny") or os.path.expanduser("~/.dotnet/tools/dafny")
 SOLVER = shutil.which("z3") or "/usr/local/bin/z3"
@@ -166,7 +166,7 @@ def validate(only=None, tiers=("public_tests", "private_tests"),
     sigs = {s["problem_id"]: s for s in read_jsonl(DATA / "signatures.jsonl")}
 
     roots = ([Path(solutions_dir)] if solutions_dir
-             else [SOLUTIONS, INEXACT, UNVERIFIED, VERIFIED])
+             else [SOLUTIONS, INEXACT, UNVERIFIED, VERIFIED, TOFIX])
     targets = []
     for sid, t in tasks.items():
         dfy = next((r / t["problem_id"] / f"{sid}.dfy" for r in roots

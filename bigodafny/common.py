@@ -23,6 +23,11 @@ UNTRANSLATED = ROOT / "solutions-untranslated"
 # Same rows, stronger proof: the true n log n via a recursion-tree argument.
 # Kept apart so the simpler quadratic proof survives alongside it.
 NLOGN = ROOT / "solutions-nlogn"
+# Label audit queue. The row's stated complexity does not describe what its
+# Dafny costs; each file's header says which of the label or the translation
+# looks wrong. Awaiting manual review, so the rows are NOT removed from the
+# dataset -- every gate still runs on them and they still carry a label.
+TOFIX = ROOT / "solutions-tofix"
 PRELUDE = ROOT / "prelude.dfy"
 
 # The one upstream file this pipeline reads. Pinned by name, not by "latest".
