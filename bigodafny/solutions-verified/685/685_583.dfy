@@ -25,15 +25,28 @@
 include "../../prelude.dfy"
 import opened Prelude
 
-// Label O(nlogn+mlogm) -- WRONG, and the label names a sort this row does not
-// contain. Both `Max685` calls are single linear scans; nothing is ordered,
-// compared pairwise, or partitioned. Honest bound O(n+m).
+// Label O(nlogn+mlogm) -- the LABEL IS CORRECT and the TRANSLATION is wrong.
 //
-// This is the first label disproved for a log-bearing class. The failure is the
-// O(n*m) failure in a new place: the label names structure the code does not
-// have -- there a dimension that does not vary, here a sort that is absent.
-// Sibling 685_777 carries O(n+m) for the same computation via MaxSeq, so the
-// two rows of this problem disagree with each other and 685_777 is the right one.
+// This comment previously claimed the label named a sort the row does not
+// contain. That was read off the Dafny alone. The Python sorts:
+//
+//     int_array_a = sorted(int_array_a)
+//     int_array_b = sorted(int_array_b)
+//     print(int_array_a[-1], int_array_b[-1])
+//
+// so it is genuinely O(n log n + m log m) and BigOBench measured it correctly.
+// The Dafny below reaches the same answer with two linear `Max685` scans and is
+// O(n+m). The bound proved here is sound -- it bounds this Dafny -- but the row
+// is a defect under CLAUDE.md's "Translate the algorithm, not just the
+// behaviour": replacing sort-then-take-last with a max scan changes the
+// complexity class, and the label is what the dataset exists to carry.
+//
+// Sibling 685_777 is the instructive contrast. Its Python really does scan for
+// a maximum without sorting, so its O(n+m) label is right. The two rows of
+// problem 685 differ because THEIR PYTHONS DIFFER, which is the reason two
+// solutions of one problem are kept. The inference that ran the other way --
+// "the siblings compute the same answer, so one label must be wrong" -- is
+// exactly backwards, and it is what produced the wrong conclusion here.
 method Solve(n1: int, list1: seq<int>, n2: int, list2: seq<int>)
   returns (output: string, ghost steps: nat)
   requires |list1| > 0 && |list2| > 0

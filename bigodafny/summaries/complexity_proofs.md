@@ -52,7 +52,7 @@ proof contains `assume`.
 | `187_193` | O(nlogn) | `2n(CeilLog2(n)+1) + 6` | agrees |
 | `1540_206` | O(nlogn) | `2n(CeilLog2(n)+1) + 3n + 6` | agrees |
 | `2166_288` | O(nlogn) | `2n(CeilLog2(n)+1) + 4n + 7` | agrees |
-| `685_583` | O(nlogn+mlogm) | `3\|list1\| + 3\|list2\| + 8` | **label wrong** |
+| `685_583` | O(nlogn+mlogm) | `3\|list1\| + 3\|list2\| + 8` | **translation wrong** |
 | `603_284` | O(nlogn) | `2n² + 2n + 4` | not established here |
 | `1484_82` | O(nlogn) | `2n² + 2n + 2·SumLen + 6` | not established here |
 
@@ -78,19 +78,31 @@ the ones that do not scan.
 `1138_83` fails differently again: its `m` is a scalar modulus, a number the
 program divides by, not a size at all.
 
-## `685_583`: an O(nlogn+mlogm) label on a row that never sorts
+## `685_583`: the label was right; this entry was wrong
 
-Two linear scans for a maximum. Nothing is ordered, compared pairwise, or
-partitioned — the label names a sort the code does not contain. Honest bound
-O(n+m).
+**Correction.** This section previously read "an O(nlogn+mlogm) label on a row
+that never sorts" and counted the row as a disproved label. The row's Python
+sorts:
 
-Its sibling `685_777` computes the same answer, carries `O(n+m)`, and is proved
-right in this table. So the two rows of problem 685 disagree with each other,
-and the disagreement is in the labels, not the code. That is a cheap check to run
-on any problem with two rows: siblings computing the same thing should carry
-the same label.
+    int_array_a = sorted(int_array_a)
+    int_array_b = sorted(int_array_b)
+    print(int_array_a[-1], int_array_b[-1])
 
-## `1855_50`: an O(n**2) label on straight-line code
+so it is genuinely O(n log n + m log m) and BigOBench measured it correctly. The
+Dafny computes the same answer with two linear `Max685` scans. The proved bound
+stands -- it bounds that Dafny -- but the defect is the **translation**, which
+replaced sort-then-take-last with a max scan and changed the complexity class.
+`CLAUDE.md` § *Translate the algorithm* forbids exactly this.
+
+The error was reading the Dafny and not the Python, then reasoning from the
+sibling: `685_777` computes the same answer without sorting, so its O(n+m) label
+is right, and I concluded that one of the two labels had to be wrong. **That
+inference is backwards.** Two solutions of one problem are kept precisely
+because they differ; here they differ by sorting, and both labels are correct
+for their own source. A sibling disagreement is a prompt to read both Pythons,
+not evidence that a label is wrong.
+
+## `1855_50`: an O(n**2) label on straight-line code## `1855_50`: an O(n**2) label on straight-line code
 
 The first label proved wrong outside the O(n*m) family. The row has no loop and
 no recursion over a collection — it parses two numbers, does six arithmetic

@@ -163,10 +163,19 @@ real. The six wrong ones touch a fixed number of positions per row (`row[0]`,
 row of width 2 costs, so there is no `m`. 39 rows still carry the label.
 `1138_83` fails a third way: its `m` is a scalar modulus, not a size.
 
-**`685_583` is an O(nlogn+mlogm) label on a row that never sorts** — two linear
-max scans. Its sibling `685_777` carries O(n+m) for the same computation and is
-right. Siblings computing the same thing should carry the same label; where they
-do not, one is wrong and the pair is cheap to check.
+**`685_583` was recorded here as a disproved label. It is not one** -- its
+Python sorts both lists, so O(nlogn+mlogm) is correct and the DAFNY dropped the
+sort. The proved bound was sound; the conclusion drawn from it was not, because
+it was read off the Dafny without opening the Python.
+
+**A sibling disagreement means read both Pythons, not that a label is wrong.**
+`685_777` computes the same answer without sorting and is correctly O(n+m).
+Inferring from that that one of the two labels must be wrong is backwards: two
+rows of one problem are kept because they differ, and here they differ by
+sorting. Same trap in reverse on `396_361`, where an auditor called a genuine
+label error a translation error -- the Python's `max(dimensions[i])` runs over a
+rectangle's two numbers, so it is O(1) per row and the O(n*m) label really is
+wrong.
 
 **`1855_50` is an O(n**2) label on straight-line code** — no loop, no recursion
 over a collection. First label proved wrong outside the O(n*m) family. The

@@ -106,6 +106,32 @@ against the **Python**, which is what the label was measured on:
   that CPython does not pay for. A row with no loops cannot have a translation
   fault; neither can one whose Dafny mirrors the Python operation for operation.
 
+## Read the Python before assigning a cause
+
+`cause` is the field auditors get wrong, and both directions have happened:
+
+- `685_583` was called a label error because its Dafny takes a maximum with two
+  linear scans and never sorts. Its **Python** does `sorted(a)` then `a[-1]`, so
+  the O(nlogn+mlogm) label is correct and the translation dropped the sort.
+- `396_361` was called a translation error because its Python calls
+  `max(dimensions[i])` while the Dafny reads `row[0]` and `row[1]`. But a
+  "rectangle" row holds exactly two numbers, so that `max` is O(1) and the
+  Python is O(n): the O(n*m) label really is wrong.
+
+The difference is never visible in the Dafny alone. Before writing `translation`
+you must find the construct in the **Python** that costs more than the Dafny's,
+and check what its data actually contains — a `max()` over a two-element row is
+not an m-dimension. Before writing `label` you must be satisfied the Python does
+not pay that cost either.
+
+**A sibling with a different label is not evidence of an error.** Two solutions
+of one problem are kept precisely because they differ. `685_777` really is
+O(n+m) and `685_583` really is O(nlogn+mlogm) — the Pythons differ by a sort.
+Use a sibling as a prompt to read both sources, never as the argument itself.
+
+If you cannot settle the cause from the two sources, keep `verdict: "mismatch"`
+and set `confidence: "low"`; say in the evidence which way you lean and why.
+
 ## Your output is machine-checked
 
 `checkverdicts.py` validates every line against the schema above and
