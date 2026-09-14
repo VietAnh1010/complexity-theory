@@ -17,9 +17,14 @@ from common import DATA, log, read_jsonl                          # noqa: E402
 
 CLASSES = {"O(1)", "O(logn)", "O(n)", "O(n**2)", "O(n**2+m**2)", "O(n*m)",
            "O(n+m)", "O(n+m)log(n+m)", "O(n+mlogm)", "O(nlogn)",
-           "O(nlogn+mlogm)"}
+           "O(nlogn+mlogm)",
+           # The dataset's vocabulary has no cubic entry and no term for a cost
+           # in a VALUE rather than a size. A row that is genuinely outside the
+           # eleven is a finding, not a formatting problem: "other" keeps it
+           # expressible instead of forcing a wrong class.
+           "other"}
 VERDICTS = {"ok", "mismatch", "unsure"}
-CAUSES = {"label", "translation", "both", ""}
+CAUSES = {"label", "translation", "harness", "both", ""}
 CONFIDENCE = {"high", "medium", "low"}
 MIN_EVIDENCE_WORDS = 12
 
@@ -58,7 +63,7 @@ def check(path, batch_path=None):
             err(f"evidence is {len(ev.split())} words; a reviewer cannot check "
                 f"a claim that short (min {MIN_EVIDENCE_WORDS})")
         if r.get("verdict") == "mismatch":
-            if tc == r.get("label"):
+            if tc == r.get("label") and tc != "other":
                 err("verdict is mismatch but true_class equals the label")
             if not r.get("cause"):
                 err("mismatch with no cause")

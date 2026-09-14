@@ -61,6 +61,14 @@ against the **Python**, which is what the label was measured on:
   does not. The usual case is a seq update or a set build inside a loop: O(1)
   and O(1) amortised in CPython, O(|s|) in Dafny. Here the label is right about
   the program it was measured on, and the translation is the defect.
+- `cause: "harness"` — **the label is right about the Python and the Dafny is
+  right too; the difference is where the dataset drew the boundary.** The Python
+  reads stdin and pays to parse every input; the Dafny's `Solve` receives those
+  inputs already parsed as arguments, so parsing is outside the measured method.
+  A Python that does `b = list(map(int, input().split()))` and then reads only
+  `b[0]` is genuinely O(n+m); the Dafny that takes `b_list` and reads `b_list[0]`
+  is O(n). Nothing is wrong with either. Check for this whenever an input is
+  declared in the signature but barely indexed — it is not a label error.
 - `cause: "both"` — neither matches.
 
 ## Output schema — one line per row, all fields required
@@ -80,10 +88,14 @@ against the **Python**, which is what the label was measured on:
       O(1)   O(logn)   O(n)   O(nlogn)   O(n**2)   O(n*m)
       O(n+m)   O(n+m)log(n+m)   O(n+mlogm)   O(nlogn+mlogm)   O(n**2+m**2)
 
+  plus `other` — use it, with the real class named in `evidence`, when the true
+  cost is outside that vocabulary: cubic, or a cost in a VALUE rather than an
+  input size. Forcing such a row into the nearest listed class loses the finding.
+
   When the verdict is `ok`, `true_class` must equal `label` exactly.
   When the verdict is `unsure`, give your best single candidate from the list
   anyway — never the word "unsure".
-- `cause`: `label` | `translation` | `both`. Use `""` when verdict is `ok`.
+- `cause`: `label` | `translation` | `harness` | `both`. Use `""` for `ok`.
 - `confidence`: `high` | `medium` | `low`.
 - `evidence`: one or two full sentences, **at least 12 words**, naming the
   identifier and the construct. A reviewer must be able to open the file, find
