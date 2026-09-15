@@ -1,3 +1,35 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(nlogn)
+//   audited class  : O(nlogn+mlogm)
+//   cause          : label
+//   confidence     : high
+//   auditor        : labelaudit-batch-07
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     Solve sorts both `rectangles` (size n) and `checks` (size m) via two
+//     separate Sort calls, each O(k log k) per the table, and the Python
+//     mirrors this with c.sort() and p.sort(), so the true cost is
+//     O(nlogn+mlogm), not O(nlogn) alone.
+//
+//   how this label could be wrong, and what to check:
+//     The label O(nlogn) claims cost depends only on n, but
+//     Sort(checks,...) sorts p, the m-sized array, too. Check the second
+//     Sort call on checks/p and confirm the Python's p.sort() likewise
+//     costs O(mlogm); if so the m term must appear.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 31, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 1,
+//     "loops": 2, "recursive_helpers": 0, "seq_append_read_in_same_loop":
+//     false, "seq_args": 1, "seq_update_in_loop": false,
+//     "set_build_in_loop": false, "sorts": ["Sort"], "uses_map": false,
+//     "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 785_B. Anton and Classes  (problem 1177, solution 1177_9)
 // time complexity: O(nlogn)
 // python exact-diff baseline: exact

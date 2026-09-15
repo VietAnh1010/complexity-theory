@@ -1,3 +1,38 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n+m)log(n+m)
+//   audited class  : O(n**2)
+//   cause          : translation
+//   confidence     : high
+//   auditor        : labelaudit-batch-07
+//
+//   The Python matches its label; the DAFNY does not. The label is right
+//   about the program it was measured on and the translation is the
+//   defect.
+//
+//   evidence:
+//     The else branch does `dorms := dorms[d_left := dorms[d_left] +
+//     dorms[d_left-1]]`, a seq update costing O(a) per the cost table,
+//     executed up to a-1 times as d_left advances, giving O(a**2) total
+//     versus the Python's O(1) in-place list assignment.
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes `dorms[d_left] += dorms[d_left-1]` is an O(1)
+//     in-place update as it is in Python. Open the else-branch of the main
+//     while loop and confirm `dorms := dorms[d_left := ...]` is a seq
+//     update rather than an array write; if so it copies the whole
+//     length-a sequence up to a-1 times.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 51, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString", "Join"],
+//     "loop_depth": 1, "loops": 2, "recursive_helpers": 1,
+//     "seq_append_read_in_same_loop": false, "seq_args": 2,
+//     "seq_update_in_loop": true, "set_build_in_loop": false, "sorts":
+//     ["Sort"], "uses_map": false, "uses_multiset": false, "uses_set":
+//     false}
+// --------------------------------------------------------------------
+
 // 978_C. Letters  (problem 1180, solution 1180_626)
 // time complexity: O(n+m)log(n+m)
 // python exact-diff baseline: exact

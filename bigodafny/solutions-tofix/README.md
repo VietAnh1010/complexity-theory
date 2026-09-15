@@ -1,6 +1,6 @@
 # `solutions-tofix/` — label audit review queue
 
-46 rows whose stated complexity label does not describe what the code costs.
+94 rows whose stated complexity label does not describe what the code costs.
 **Queued for manual review; nothing here is a decision.** Each file keeps its
 full original body with a header naming the audited class, the cause, the
 confidence and the evidence, so a reviewer needs nothing else open.
@@ -54,6 +54,39 @@ named in the evidence.
 `precheck.py` and `proofs.py`, so the rows are still validated, still carry
 their labels, and still count in `dataset.py`. Moving a row queues it for
 review; it does not remove it from the dataset.
+
+## A `translation` row can be too FAST, and that is the worse defect
+
+Both directions land in the queue as `cause: translation`, and they need
+opposite repairs. The schema only names one of them — `translation_defect: true`
+marks the Dafny as *slower* — so the other direction has to be read off the
+verdict itself: `cause: translation` where the audited class is **better** than
+the stated label.
+
+    label O(nlogn) -> audited O(n)   the Dafny is faster than the Python
+
+That is not a win. `bigodafny/CLAUDE.md` § "Translate the algorithm, not just
+the behaviour" forbids it, and it is invisible to both gates: the tests pass
+because the output is right. The row then claims a complexity it does not run,
+which is the one thing the dataset exists to get right.
+
+Confirmed by reading both sources:
+
+| row | what the Python does | what the Dafny does |
+|---|---|---|
+| `1368_67` | `t = sorted(s)`, then `s != t` | one adjacent-pair scan, no `Sort` call |
+| `1470_470` | `ar = sorted(ar)` | two linear scans with early break |
+| `1470_325` | `del l[0]` in a loop — the real O(n**2) | a two-pointer `lo`/`hi` scan |
+| `685_583` | `sorted(a)` then `a[-1]` | two linear maxima |
+
+**Repair: restore the Python's algorithm, do not change the label.** The label
+is correct about the program BigOBench measured. Putting the sort back is the
+fix; relabelling the row to match a faster translation would bake the defect in.
+
+Eight rows on record currently read this way. Check the direction before
+starting: `cause: translation` with the audited class *worse* than the label is
+the ordinary case in the table below, and its repair is the opposite one —
+change the data structure, keep the algorithm.
 
 ## Choosing the repair for a `translation` row
 

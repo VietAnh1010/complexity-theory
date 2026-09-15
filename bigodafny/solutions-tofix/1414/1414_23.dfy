@@ -1,3 +1,37 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n**2)
+//   audited class  : O(n)
+//   cause          : label
+//   confidence     : medium
+//   auditor        : labelaudit-batch-09
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     Each test string a has length capped at 50 by the problem statement,
+//     so Helper's two O(|a|) passes cost O(1) per test case; Solve's outer
+//     loop runs once per test case with no nesting, so the method scales
+//     with the number of test cases t, not with t squared.
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes per-string work scales with an unbounded length.
+//     Read the problem statement's constraint "2 <= n <= 50" on each test
+//     string's length and confirm it is a fixed small cap; if so,
+//     HelperPass1/HelperPass2's O(|a|) passes are O(1) each, and both the
+//     Dafny and the Python (which does the same two O(|a|) passes) scale
+//     linearly with the number of test cases t, not quadratically.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 87, "data_dependent_loops": 2, "decreases_star":
+//     false, "linear_prelude_calls": ["Join"], "loop_depth": 1, "loops":
+//     3, "recursive_helpers": 3, "seq_append_read_in_same_loop": false,
+//     "seq_args": 1, "seq_update_in_loop": false, "set_build_in_loop":
+//     false, "sorts": [], "uses_map": false, "uses_multiset": false,
+//     "uses_set": false}
+// --------------------------------------------------------------------
+
 // 1494_A. ABC String  (problem 1414, solution 1414_23)
 // time complexity: O(n**2)
 // python exact-diff baseline: partial

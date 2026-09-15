@@ -1,3 +1,38 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n*m)
+//   audited class  : other
+//   cause          : label
+//   confidence     : medium
+//   auditor        : labelaudit-batch-07
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     `s` is computed as floor(sqrt(n)) via `while (s+1)*(s+1)<=n`, and
+//     `l:=2*s+1` bounds the size of `num0`, `num`, `prevRow` and `row`, so
+//     the DP loop `while i<k` nested with `while j<l` costs O(k*sqrt(n)),
+//     not O(n*m) (real class O(k*sqrt(n))); the Python's `s=int(n**0.5)`
+//     builds the identical sqrt(n)-sized `Num` array, so both share this
+//     sub-linear-in-n shape.
+//
+//   how this label could be wrong, and what to check:
+//     The label O(n*m) assumes the loop count scales with N itself. Check
+//     `while (s+1)*(s+1) <= n`: it sets s to floor(sqrt(n)), and `l :=
+//     2*s+1` sizes every array that follows, so the inner DP loop over j<l
+//     runs O(sqrt(n)) times per k, not O(n) times; compare against the
+//     Python's identical `s=int(n**0.5)`.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 74, "data_dependent_loops": 1, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 2,
+//     "loops": 7, "recursive_helpers": 0, "seq_append_read_in_same_loop":
+//     false, "seq_args": 0, "seq_update_in_loop": false,
+//     "set_build_in_loop": false, "sorts": [], "uses_map": false,
+//     "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // p02992 AtCoder Beginner Contest 132 - Small Products  (problem 1276, solution 1276_39)
 // time complexity: O(n*m)
 // python exact-diff baseline: exact
