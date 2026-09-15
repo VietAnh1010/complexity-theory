@@ -122,6 +122,9 @@ HEADER = """// LABEL AUDIT -- queued for manual review, not a decision.
 //   evidence:
 {evidence}
 //
+//   how this label could be wrong, and what to check:
+{what_to_look_for}
+//
 //   structural facts (deterministic, from labelaudit.py):
 {facts}
 // {rule}
@@ -133,6 +136,10 @@ GLOSS = {
     "translation": "The Python matches its label; the DAFNY does not. The "
                    "label is right about the program it was measured on and "
                    "the translation is the defect.",
+    "harness": "Both artifacts are right. The Python pays to parse stdin and "
+               "BigOBench profiled the whole script; the Dafny's Solve receives "
+               "the inputs already parsed, so that cost is outside the measured "
+               "method. Nothing to repair -- document it.",
     "both": "The Python does not match the label AND the translation diverges "
             "from the Python. Both need attention.",
     "unclear": "Which of the label or the translation is at fault was not "
@@ -179,6 +186,8 @@ def apply(verdicts_path, dry_run=False):
             cause_gloss=_wrap(GLOSS.get(v.get("cause"), GLOSS["unclear"]),
                               pre="//   ").lstrip("/ "),
             evidence=_wrap(v.get("evidence")),
+            what_to_look_for=_wrap(v.get("what_to_look_for")
+                                   or "not recorded by this batch"),
             facts=_wrap(json.dumps(facts(text), sort_keys=True)),
             rule="-" * 68)
         dst = TOFIX / t["problem_id"] / f"{sid}.dfy"

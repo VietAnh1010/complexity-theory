@@ -54,3 +54,33 @@ named in the evidence.
 `precheck.py` and `proofs.py`, so the rows are still validated, still carry
 their labels, and still count in `dataset.py`. Moving a row queues it for
 review; it does not remove it from the dataset.
+
+## Choosing the repair for a `translation` row
+
+Measured in Dafny 4.11.0's Python backend, with a known-quadratic control in the
+same table (min of 3 runs, interpreter startup subtracted):
+
+| n | `s := s[i := v]` | `array<T>` `a[i] := v` | `DynamicArray.Put` | `DynamicArray.Push` |
+|---|---|---|---|---|
+| 4k | 0.059s | 0.004s | 0.002s | 0.011s |
+| 8k | 0.204s | 0.003s | 0.010s | 0.008s |
+| 16k | 0.795s | 0.003s | 0.018s | 0.017s |
+| 32k | **3.374s** | **0.006s** | 0.041s | 0.031s |
+
+The seq update ratios are 3.4 / 3.9 / 4.2 per doubling — quadratic. `array<T>`
+is flat and about 560x faster at n = 32k.
+
+**Use `array<T>` with `a[i] := v`.** It is faithful to CPython's `lst[i] = v`,
+needs no new build flag, and the corpus already uses it.
+
+`Std.DynamicArray` does exist in Dafny 4.11's standard library (`Push`, `Put`,
+`PopFast`, `Ensure`) and both `Push` and `Put` measure linear. It is the right
+tool only where a row appends with no known final length, because `array<T>`
+needs its size up front. The cost of reaching for it: `--standard-libraries` has
+to be added to every build path (`validate.py`, `difftest.py`, the harness) and
+it emits roughly a hundred `Std_*.py` files beside each row.
+
+**Seq append is not the problem.** `s := s + [x]` is O(1) amortised — the
+backend defers the concat. The quadratic patterns are the seq *update* above and
+an append whose loop also reads `s[i]`, which forces a flatten on every
+iteration.

@@ -76,6 +76,7 @@ against the **Python**, which is what the label was measured on:
 ```json
 {"sid": "1039_15", "label": "O(nlogn)", "verdict": "mismatch",
  "true_class": "O(n**2)", "cause": "translation", "confidence": "high",
+ "what_to_look_for": "The label assumes lastPos updates are O(1) as they are in Python. Open the Dafny loop and confirm the update is `lastPos := lastPos[x := i]` rather than an array write; if it is a seq update the Dafny is quadratic and the translation, not the label, needs the fix.",
  "evidence": "lastPos := lastPos[x := i] inside a loop over n elements; each update copies n+1 entries, so the Dafny is quadratic. The Python assigns in place and is O(n log n) as labelled.",
  "auditor": "labelaudit-batch-NN"}
 ```
@@ -97,6 +98,16 @@ against the **Python**, which is what the label was measured on:
   anyway — never the word "unsure".
 - `cause`: `label` | `translation` | `harness` | `both`. Use `""` for `ok`.
 - `confidence`: `high` | `medium` | `low`.
+- `what_to_look_for`: **required on every `mismatch` and `unsure`.** Written for
+  a human who will open the file and decide. Two things, in order: (1) the
+  specific way the current label could be wrong, stated as a claim they can
+  refute; (2) the concrete check that settles it — the identifier to find, the
+  `requires` to read, the line of Python to compare, the input field whose width
+  to measure. Not a restatement of the evidence: the evidence says what you
+  concluded, this says what would confirm or overturn it. Example: "The label
+  assumes row width varies. Open the problem statement and check whether a row
+  is always a fixed-width tuple; if the input format pins it, m is a constant
+  and the label is wrong. If rows can be ragged, the label stands."
 - `evidence`: one or two full sentences, **at least 12 words**, naming the
   identifier and the construct. A reviewer must be able to open the file, find
   what you named, and check the claim. "Nested data loops" and "value-bounded
