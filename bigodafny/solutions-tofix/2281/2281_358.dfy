@@ -1,3 +1,36 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n+mlogm)
+//   audited class  : O(n)
+//   cause          : label
+//   confidence     : high
+//   auditor        : labelaudit-batch-17
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     Both Solve and the Python for-i-in-range(n) loop are a single linear
+//     pass over a_list/a with O(1) work per element (a1/b/c updates, no
+//     sort, no second collection), so the true cost is O(n) with no m
+//     dimension present at all.
+//
+//   how this label could be wrong, and what to check:
+//     The label names a second size dimension m and a log factor, but the
+//     signature only takes n and a_list (a single seq_args=1). Check the
+//     Python: there is no second input array, no .sort() call (a.sort() is
+//     commented out), and power()/math are defined but never invoked, so
+//     nothing produces an mlogm term.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 40, "data_dependent_loops": 1, "decreases_star":
+//     false, "linear_prelude_calls": [], "loop_depth": 1, "loops": 1,
+//     "recursive_helpers": 0, "seq_append_read_in_same_loop": false,
+//     "seq_args": 1, "seq_update_in_loop": false, "set_build_in_loop":
+//     false, "sorts": [], "uses_map": false, "uses_multiset": false,
+//     "uses_set": false}
+// --------------------------------------------------------------------
+
 // 349_A. Cinema Line  (problem 2281, solution 2281_358)
 // time complexity: O(n+mlogm)
 // python exact-diff baseline: exact

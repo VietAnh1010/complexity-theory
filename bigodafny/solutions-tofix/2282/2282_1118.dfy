@@ -1,3 +1,44 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(nlogn)
+//   audited class  : O(n**2)
+//   cause          : translation
+//   confidence     : high
+//   auditor        : labelaudit-batch-17
+//
+//   The Python matches its label; the DAFNY does not. The label is right
+//   about the program it was measured on and the translation is the
+//   defect.
+//
+//   evidence:
+//     BuildMaxDigits1118(m,s) returns "9" + BuildMaxDigits1118(m-1, s-9)
+//     (and BuildMinDigits1118 the analogous [9] + recurse(...)),
+//     concatenating at every one of m recursion levels rather than in an
+//     iterative accumulator loop, costing Theta(m**2); Python's
+//     ismax/ismin instead use an iterative op1=op1+'9' loop, which is
+//     CPython's amortized-O(1) string concat idiom, so the Python stays
+//     O(m) plus the O(m log m) sorted(lis) in ismin.
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes the digit-building cost stays linear as in
+//     Python's for-i-in-range(m) loop with op1=op1+'9'. But
+//     BuildMaxDigits1118/BuildMinDigits1118 are recursive functions that
+//     concatenate a literal onto the recursive call's result at every one
+//     of m levels -- the same 'concatenates at every level' shape flagged
+//     for 888_6 in this prompt, which is O(n**2), not the O(1)-per-append
+//     deferred-concat loop case. Confirm by counting: each level's concat
+//     costs O(remaining recursion depth), summing to O(m**2).
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 51, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString", "JoinInts"],
+//     "loop_depth": 0, "loops": 0, "recursive_helpers": 2,
+//     "seq_append_read_in_same_loop": false, "seq_args": 0,
+//     "seq_update_in_loop": false, "set_build_in_loop": false, "sorts":
+//     ["SortInts"], "uses_map": false, "uses_multiset": false, "uses_set":
+//     false}
+// --------------------------------------------------------------------
+
 // 489_C. Given Length and Sum of Digits...  (problem 2282, solution 2282_1118)
 // time complexity: O(nlogn)
 // python exact-diff baseline: exact

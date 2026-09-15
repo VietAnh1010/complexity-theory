@@ -1,3 +1,36 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(nlogn)
+//   audited class  : O(n)
+//   cause          : label
+//   confidence     : high
+//   auditor        : labelaudit-batch-17
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     Both Python's count_moves and the Dafny Solve run a single linear
+//     scan over name/binary_string with O(1) work per index and no sort or
+//     divide-and-conquer; unused helper functions like is_prime do not
+//     execute.
+//
+//   how this label could be wrong, and what to check:
+//     The label implies a log-factor construct (sort, log-recursion)
+//     somewhere in the solution. Open the Python: only count_moves(n,
+//     name) is invoked from main;
+//     mod_expo/is_prime/find_sum/prin_abc/get_scores are defined but never
+//     called and contribute no cost.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 25, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 1,
+//     "loops": 1, "recursive_helpers": 0, "seq_append_read_in_same_loop":
+//     false, "seq_args": 1, "seq_update_in_loop": false,
+//     "set_build_in_loop": false, "sorts": [], "uses_map": false,
+//     "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 978_B. File Name  (problem 2226, solution 2226_607)
 // time complexity: O(nlogn)
 // python exact-diff baseline: exact
