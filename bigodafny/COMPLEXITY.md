@@ -55,6 +55,9 @@ Operations that are **not** constant time must be charged their real cost:
 | `s + [x]`, with `s[i]` read between appends | **O(\|s\|)** — measured | `\|s\|` |
 | `s + t` (concat) | O(\|t\|) if append-only, else O(\|s\|+\|t\|) | as above |
 | `s + {x}` (set insert) | **O(\|s\|)** — measured | `\|s\|`, or avoid it |
+| `m[k := v]` (map update) | **O(\|m\|)** — measured, a full dict copy | `\|m\|`, or avoid it |
+| `m[k]`, `k in m`, `\|m\|` | **O(1)** — measured | `1` |
+| `m.Keys`, `m.Values`, `m.Items` | **O(\|m\|)** — measured, materialises a `Set` | `\|m\|` |
 | `Join(parts, sep)` | **O(SumLen + \|parts\|)** — measured against a control | `SumLen(parts) + \|parts\|` |
 | a recursive prelude function over a seq or string | one level per element | its length |
 | a call to a helper | its own bound | the helper's `steps` |
@@ -103,6 +106,43 @@ This one is not a proof obstruction. The cost is known, so the bound is
 provable; what it obstructs is the row AGREEING with its label. Charge `|s|`,
 prove the quadratic, and record the disagreement as a defect in the
 translation, not in the label.
+
+### A map is fast to read and quadratic to build
+
+`map<K,V>` was the last unmeasured entry in this table, and it forced `unsure`
+on every audited row whose class depended on it. It is measured now, and it
+splits: reads are free, writes are not.
+
+`m := m[k := v]` compiles to `_dafny.Map.set`, which is
+
+    def set(self, key, value):
+        map = dict(self)        # <- full copy, every insert
+        map[key] = value
+        return Map(map)
+
+so building a map in a loop is quadratic. Doubling n quadruples the time:
+
+    n= 1000   10.8ms      n= 4000  163.0ms      n=16000  3988.2ms
+    n= 2000   42.8ms      n= 8000 1204.6ms
+
+Same shape and same cause as `s + {x}` above — Dafny's collections are values,
+and the Python backend gives a value semantics by copying.
+
+Reads do not copy. `_dafny.Map` subclasses `dict`, so `m[k]`, `k in m` and `|m|`
+go straight to the dict and are O(1): n lookups scale as n, 0.1ms at n=1000 and
+2.0ms at n=16000.
+
+`m.Keys`, `m.Values` and `m.Items` are the exception among reads — each builds a
+fresh `Set`, so each is O(|m|). `|m.Keys|` inside a loop is quadratic where
+`|m|` is constant.
+
+    |m| in a loop, n times:        0.1ms / 0.1ms / 0.3ms  (n = 1000 / 2000 / 4000)
+    |m.Keys| in a loop, n times:  10.8ms / 49.3ms / 172.6ms
+
+For reference on the same machine, an `array<int>` of n elements fills in
+0.3 / 0.5 / 1.0ms — linear, and about 160x faster than the map build at n=4000.
+A row that needs a keyed structure it writes to in a loop wants an array or a
+sorted `seq` with binary search, not a `map`.
 
 ### `Join` is linear — and how the opposite got recorded first
 
