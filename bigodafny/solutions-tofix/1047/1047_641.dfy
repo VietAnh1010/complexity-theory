@@ -1,3 +1,41 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n**2)
+//   audited class  : O(n)
+//   cause          : label
+//   confidence     : high
+//   auditor        : labelaudit-r2-06
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     Each cell string a is bounded to a small constant length because
+//     columns and rows are capped at 10^6 by the problem, so IsRCFormat,
+//     DigitRunEnd, the alpha-scan loops, and ColToLetters all do O(1) work
+//     per cell; the outer loop over |strings| test cases is the only
+//     scaling factor, giving O(n), matching sibling 1047_26's identical
+//     O(n) treatment of the same problem.
+//
+//   how this label could be wrong, and what to check:
+//     The label O(n**2) implies either a nested scan over n test cases or
+//     per-cell work that grows with n. Open the Dafny and check that
+//     DigitRunEnd, ColToLetters and the alpha-scanning while loops only
+//     ever iterate over a single cell string a, whose length is bounded by
+//     the problem's 10^6 column/row cap (at most a handful of characters),
+//     never by |strings|. If so there is no quadratic construct and the
+//     label is wrong; compare against sibling 1047_26, which solves the
+//     identical problem and is labeled O(n).
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 76, "data_dependent_loops": 1, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString", "Join", "ParseInt",
+//     "ParseIntFrom"], "loop_depth": 2, "loops": 3, "recursive_helpers":
+//     3, "seq_append_read_in_same_loop": false, "seq_args": 1,
+//     "seq_update_in_loop": false, "set_build_in_loop": false, "sorts":
+//     [], "uses_map": false, "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 1_B. Spreadsheets  (problem 1047, solution 1047_641)
 // time complexity: O(n**2)
 // python exact-diff baseline: exact
