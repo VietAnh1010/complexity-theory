@@ -1,6 +1,6 @@
 # `solutions-tofix/` — label audit review queue
 
-118 rows whose stated complexity label does not describe what the code costs.
+125 rows whose stated complexity label does not describe what the code costs.
 **Queued for manual review; nothing here is a decision.** Each file keeps its
 full original body with a header naming the audited class, the cause, the
 confidence and the evidence, so a reviewer needs nothing else open.

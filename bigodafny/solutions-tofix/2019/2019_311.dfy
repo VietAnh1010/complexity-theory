@@ -1,3 +1,36 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n**2)
+//   audited class  : O(n)
+//   cause          : label
+//   confidence     : high
+//   auditor        : labelaudit-batch-15
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     The while loop over i from 0 to n does constant work per iteration
+//     (arithmetic on tank, count, k) with no nested loop or per-iteration
+//     scan, and the Python for-loop over range(n) with an early break is
+//     the same shape.
+//
+//   how this label could be wrong, and what to check:
+//     The label implies nested iteration over n, but Solve has one while
+//     loop over i with O(1) work per iteration (tank/count/k updates) and
+//     an early stopped flag. Check for any inner loop or n-sized recompute
+//     inside the body; there is none, and the Python's single for-loop
+//     with break confirms linear, not quadratic, work.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 44, "data_dependent_loops": 1, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString", "ParseInts"],
+//     "loop_depth": 1, "loops": 1, "recursive_helpers": 0,
+//     "seq_append_read_in_same_loop": false, "seq_args": 1,
+//     "seq_update_in_loop": false, "set_build_in_loop": false, "sorts":
+//     [], "uses_map": false, "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 839_A. Arya and Bran  (problem 2019, solution 2019_311)
 // time complexity: O(n**2)
 // python exact-diff baseline: exact

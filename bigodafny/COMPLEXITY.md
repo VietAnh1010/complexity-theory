@@ -110,6 +110,31 @@ provable; what it obstructs is the row AGREEING with its label. Charge `|s|`,
 prove the quadratic, and record the disagreement as a defect in the
 translation, not in the label.
 
+### Slicing is a view, in a loop as well as a recursion
+
+The table's "recursion on `s[1..]`" row was measured for the recursive shape
+only, and two rows turned on whether a **loop** that peels slices costs the
+same. It does. Peeling n elements one at a time, against a control doing the
+same iterations with index arithmetic and no slicing:
+
+    n        a := a[1..]   both ends   index control   recursion on s[1..]
+    2000        5.3ms        5.6ms         0.8ms            8.8ms
+    4000       10.5ms       12.0ms         1.7ms           17.3ms
+    8000       20.5ms       28.3ms         3.3ms           32.8ms
+    16000      41.3ms       44.7ms         6.4ms           65.6ms
+
+All four double with n. Slicing a `seq` is a view, not a copy -- it costs a
+constant, about 6x the bare index scan, and does not scale with `|s|`.
+
+**This is where the Dafny is faster than CPython.** Python's `a = a[1:]` copies,
+so the same loop is O(n**2) there. A row whose Python peels a list or string in
+a loop is genuinely quadratic while its faithful-looking translation is linear:
+that is an algorithm-level divergence, not a speedup. `2087_50` is the case.
+
+What a slice does not excuse is concatenating the result back: `f(s[1..]) + [x]`
+at every level is quadratic because of the concat, which is why `888_6` is
+O(n**2) despite the slice being free.
+
 ### A multiset is linear, unlike the other two
 
 `_dafny.MultiSet` subclasses `collections.Counter`, so `multiset(s)` is `Counter(s)`

@@ -56,8 +56,15 @@ Timings are the emitted Python called directly, CPython default settings.
 
 **`Std.Strings.ToNat` is quadratic and dies at 1000 characters.** It compiles to
 genuine Python recursion on a prefix slice —
-`ToNat(str[:len-1]) * base + charToDigit[c]` — one frame and one slice copy per
-digit. `Prelude.ParseInt` compiles to a tail-call loop.
+`ToNat(str[:len-1]) * base + charToDigit[c]` — one frame per digit.
+`Prelude.ParseInt` compiles to a tail-call loop.
+
+The slice is **not** the cost: slicing a `_dafny.Seq` is a view, measured O(1)
+(`COMPLEXITY.md` § "Slicing is a view"). The superlinear growth is the
+accumulator, which reaches n digits, so each `* base` costs O(n). `ParseInt`
+pays that too — n^1.4 over the same range — but with a far smaller constant and
+no recursion limit. The recursion limit, not the arithmetic, is what makes
+`ToNat` unusable here.
 
 ```
 digits      ParseInt      Std.ToNat

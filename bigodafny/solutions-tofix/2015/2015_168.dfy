@@ -1,3 +1,36 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n+mlogm)
+//   audited class  : O(n)
+//   cause          : label
+//   confidence     : high
+//   auditor        : labelaudit-batch-15
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     Solve has a single while loop over i from 1 to y=n with O(1) body
+//     work per iteration (ParseInts and IntToString each cost O(length)
+//     once, outside the loop), and the Python mirrors this with one for
+//     loop over range(1,y) and no sort call anywhere.
+//
+//   how this label could be wrong, and what to check:
+//     The label posits a second dimension m with a sort, but Solve takes
+//     only n and a_list. Check the Dafny body for any Sort/SortInts call
+//     or a second sequence parameter; there is none, and the Python
+//     for-loop over range(1,y) has no sort either, so a single-dimension
+//     linear label is the correct one.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 30, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString", "ParseInts"],
+//     "loop_depth": 1, "loops": 1, "recursive_helpers": 0,
+//     "seq_append_read_in_same_loop": false, "seq_args": 1,
+//     "seq_update_in_loop": false, "set_build_in_loop": false, "sorts":
+//     [], "uses_map": false, "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 463_B. Caisa and Pylons  (problem 2015, solution 2015_168)
 // time complexity: O(n+mlogm)
 // python exact-diff baseline: exact
