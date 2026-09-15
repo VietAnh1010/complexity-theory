@@ -1,3 +1,39 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n*m)
+//   audited class  : other
+//   cause          : label
+//   confidence     : medium
+//   auditor        : labelaudit-batch-08
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     Each query's inner loop repeatedly finds and removes the minimum of
+//     a shrinking sequence of up to n elements via FindMinIndex/RemoveAt
+//     (Python: min(ai)/ai.remove(...)), costing O(n**2) per query when k
+//     is small, and this happens once per query across m queries, giving
+//     O(m*n**2) in both sources rather than O(n*m).
+//
+//   how this label could be wrong, and what to check:
+//     The label implies cost proportional to n*m. Open the inner `for j in
+//     range(1,n-k+1): ai.remove(min(ai))` loop (Python) and the matching
+//     `while jcount<removeCount { FindMinIndex(ai); RemoveAt(ai,mi); }`
+//     (Dafny): min()/remove() and FindMinIndex/RemoveAt are each
+//     O(len(ai)), and len(ai) shrinks from n to k across n-k iterations,
+//     so a single query already costs O(n**2) in the worst case (small k),
+//     and this repeats for each of the m queries.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 63, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString", "Join"],
+//     "loop_depth": 2, "loops": 2, "recursive_helpers": 4,
+//     "seq_append_read_in_same_loop": false, "seq_args": 2,
+//     "seq_update_in_loop": false, "set_build_in_loop": false, "sorts":
+//     [], "uses_map": false, "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 1261_B1. Optimal Subsequences (Easy Version)  (problem 1338, solution 1338_61)
 // time complexity: O(n*m)
 // python exact-diff baseline: none

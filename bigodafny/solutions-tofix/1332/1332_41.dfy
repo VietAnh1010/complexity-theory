@@ -1,3 +1,39 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n)
+//   audited class  : O(n**2)
+//   cause          : translation
+//   confidence     : high
+//   auditor        : labelaudit-batch-08
+//
+//   The Python matches its label; the DAFNY does not. The label is right
+//   about the program it was measured on and the translation is the
+//   defect.
+//
+//   evidence:
+//     The first while loop over `cur` builds map `s` via `s := s[key :=
+//     s[key]+1]` (or `s[key:=1]`) on every iteration, and each map write
+//     is O(|s|) per the dataset's map-copy rule, giving O(n**2) total
+//     across the O(n)-length loop; Python's dict assignment `s[key]=...`
+//     is O(1) amortised so the Python is genuinely O(n).
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes the map `s` behaves like Python's dict with O(1)
+//     amortised writes. Open the first while loop and check whether `s` is
+//     updated via `s := s[key := s[key]+1]` (or `s[key:=1]`) inside the
+//     loop; a map write copies the whole map per the O(|m|) rule, so if
+//     this executes once per iteration of an O(n)-length loop the total is
+//     O(n**2), not O(n).
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 61, "data_dependent_loops": 1, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 1,
+//     "loops": 3, "recursive_helpers": 0, "seq_append_read_in_same_loop":
+//     false, "seq_args": 1, "seq_update_in_loop": true,
+//     "set_build_in_loop": false, "sorts": [], "uses_map": true,
+//     "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 1005_E1. Median on Segments (Permutations Edition)  (problem 1332, solution 1332_41)
 // time complexity: O(n)
 // python exact-diff baseline: partial

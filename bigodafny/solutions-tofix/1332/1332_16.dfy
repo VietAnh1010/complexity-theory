@@ -1,3 +1,42 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(nlogn)
+//   audited class  : other
+//   cause          : translation
+//   confidence     : high
+//   auditor        : labelaudit-batch-08
+//
+//   The Python matches its label; the DAFNY does not. The label is right
+//   about the program it was measured on and the translation is the
+//   defect.
+//
+//   evidence:
+//     bitArr is a seq<int>, not an array, and `bitArr := bitArr[uidx :=
+//     bitArr[uidx]+1]` inside the update loop is an O(n) seq copy executed
+//     O(n log n) times total (O(log n) BIT steps times n outer iterations
+//     of t), giving roughly O(n**2 log n); the comp map is also built via
+//     `comp := comp[vals[j] := j+1]` in a loop, an independent O(n**2)
+//     map-copy defect. Python's self.BIT is a real list with O(1) index
+//     writes, so Python is genuinely O(n log n).
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes the BIT update is O(log n) as it is in Python's
+//     array-backed self.BIT list. Open SolveX and check whether bitArr is
+//     declared `array<int>` or `seq<int>`; it is `seq<int>`, and the
+//     update loop does `bitArr := bitArr[uidx := bitArr[uidx]+1]`, a full
+//     O(n) copy per write. That runs inside the O(log n) BIT-update loop,
+//     itself inside the O(n) loop over t, so confirm the nesting to settle
+//     whether this is O(n log n) or worse.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 126, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 2,
+//     "loops": 5, "recursive_helpers": 6, "seq_append_read_in_same_loop":
+//     false, "seq_args": 1, "seq_update_in_loop": true,
+//     "set_build_in_loop": false, "sorts": ["Merge", "Sort", "SortInts"],
+//     "uses_map": true, "uses_multiset": true, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 1005_E1. Median on Segments (Permutations Edition)  (problem 1332, solution 1332_16)
 // time complexity: O(nlogn)
 // python exact-diff baseline: partial

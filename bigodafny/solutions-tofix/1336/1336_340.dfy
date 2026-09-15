@@ -1,3 +1,41 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(nlogn)
+//   audited class  : O(n**2)
+//   cause          : translation
+//   confidence     : high
+//   auditor        : labelaudit-batch-08
+//
+//   The Python matches its label; the DAFNY does not. The label is right
+//   about the program it was measured on and the translation is the
+//   defect.
+//
+//   evidence:
+//     The final while loop performs `A := A[i := C[|C|-1]]` or `A := A[i
+//     := C[|C|-2]]`, each an O(N) seq-update on the length-N sequence A,
+//     and this can execute for up to N indices where A[i]==-1, giving
+//     O(N**2) total; Python's `A[i]=...` list assignment is O(1), so
+//     Python is genuinely O(n log n) via C.sort while the Dafny is
+//     quadratic.
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes C.sort(key=...) costs O(n log n) as in Python. The
+//     Dafny replaces that sort with an O(n) stable partition into
+//     firstGroup/secondGroup (cheaper, not the issue). Instead check the
+//     final while loop over i: `A := A[i := C[|C|-1]]` is a seq update on
+//     A (length N) executed on an iteration where A[i]==-1, which can
+//     happen for up to N indices, each update costing O(N); confirm this
+//     by checking whether A is declared seq<int> rather than array<int>.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 76, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": ["JoinInts"], "loop_depth": 1,
+//     "loops": 4, "recursive_helpers": 0, "seq_append_read_in_same_loop":
+//     false, "seq_args": 1, "seq_update_in_loop": true,
+//     "set_build_in_loop": false, "sorts": [], "uses_map": false,
+//     "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 1283_C. Friends and Gifts  (problem 1336, solution 1336_340)
 // time complexity: O(nlogn)
 // python exact-diff baseline: partial

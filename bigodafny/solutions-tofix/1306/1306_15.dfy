@@ -1,3 +1,40 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n**2)
+//   audited class  : O(n)
+//   cause          : label
+//   confidence     : medium
+//   auditor        : labelaudit-batch-08
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     GroupCounts1306b recurses once per distinct value in a_list via
+//     CountOccur1306b and RemoveAll1306b, each O(|remaining|); distinct
+//     values are bounded by the description's 1<=a_i<=100, capping
+//     recursion depth at 100 so total cost is O(m), and the days loop is a
+//     hardcoded range(1,101) contributing only O(1). Python's dict_count
+//     construction has the identical O(distinct*m)=O(m) shape.
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes GroupCounts1306b's recursion is quadratic in the
+//     number of packages m. Check the description's constraint
+//     1<=a_i<=100: distinct food types are capped at 100 regardless of m,
+//     so GroupCounts and Python's `for element in set(type_pack):
+//     dict_count[element]=type_pack.count(element)` both do at most 100
+//     O(m) passes, i.e. O(m). If a_i were unbounded this would be O(m**2);
+//     it is not.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 42, "data_dependent_loops": 1, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 1,
+//     "loops": 1, "recursive_helpers": 4, "seq_append_read_in_same_loop":
+//     false, "seq_args": 1, "seq_update_in_loop": false,
+//     "set_build_in_loop": false, "sorts": [], "uses_map": false,
+//     "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 1011_B. Planning The Expedition  (problem 1306, solution 1306_15)
 // time complexity: O(n**2)
 // python exact-diff baseline: exact
