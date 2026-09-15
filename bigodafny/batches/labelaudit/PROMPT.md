@@ -31,11 +31,27 @@ Everything else costs what the table says:
 | `SumSeq`, `MaxSeq`, `MinSeq`, `ParseInt`, `SplitWs`, `ReplaceAll`, `Repeat`, `IntToString` | O(length of the argument) | recursive over the sequence/string |
 | `SortInts`, `SortStrings`, `Sort` | O(k log k) | merge sort |
 | a hand-written recursion on `s[1..]` | **O(\|s\|)** — measured | slicing a flat seq is cheap; this shape is NOT quadratic |
-| `map<K,V>` insert or lookup | **UNMEASURED** | if the class depends on it, answer `unsure` |
+| `m[k := v]` (map insert/update) | **O(\|m\|)** | full dict copy per write. CPython's `d[k]=v` is O(1) — same divergence as a seq update |
+| `m[k]`, `k in m`, `\|m\|` | O(1) | `_dafny.Map` subclasses `dict`; reads do not copy |
+| `m.Keys`, `m.Values`, `m.Items` | **O(\|m\|)** | each materialises a fresh `Set`. `\|m.Keys\|` in a loop is quadratic; `\|m\|` is not |
+| `multiset(s)`, `multiset(a) == multiset(b)` | O(\|s\|) | linear — `Counter`. It does NOT copy like `set` and `map` do |
 | `int` ops where the value grows with n (factorials, `2**n`) | not O(1) | bignum |
 
 Taking `|s|` never forces a copy. A read *after* a loop costs one flatten, not
 one per iteration.
+
+## A map is the third copying collection
+
+`map<K,V>` is measured now. It splits: **reads are free, writes are not.**
+A Python `dict` that a row writes in a loop is O(n); the Dafny `map` that
+translates it is O(n**2), because every `m := m[k := v]` copies the dict.
+
+That is `cause: "translation"` and `translation_defect: true`, exactly like
+`s := s[i := v]` and `s := s + {x}`. The label is right about the Python.
+
+Do not call a map row quadratic without finding the write. A row that receives a
+map and only reads it — `k in m`, `m[k]` — is O(1) per access and the map costs
+it nothing.
 
 ## What counts as a mismatch
 
