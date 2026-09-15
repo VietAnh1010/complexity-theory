@@ -140,6 +140,12 @@ lemmas.
 **Claims**: instrumented `steps` is bounded by that function of input size for
 every input satisfying the preconditions. Over all inputs, not the stored tests.
 
+**"Agrees with the label" means consistent, not tight.** `5_100` is proved
+`2n+3` against an O(n) label, and its loop is really Θ(√n): `m -= k; k += 1`
+decreases m by 1+2+3+…. `1011_368` is the same story. Both proofs are sound and
+both labels are loose. Before recording agreement, ask whether the bound is
+tight -- a loose upper bound hides a mislabel.
+
 **Does not claim**: that `steps` is wall-clock time. The bound is only as honest
 as the charging convention.
 

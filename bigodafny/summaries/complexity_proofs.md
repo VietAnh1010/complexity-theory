@@ -59,6 +59,26 @@ proof contains `assume`.
 `solutions-nlogn/` carries the tight bound for the last two:
 `2n(CeilLog2(n)+1) + …`, which does establish O(n log n) for both.
 
+## What "agrees" means in this table, and where it is loose
+
+A ghost step counter proves an UPPER bound. "agrees" therefore means *the proved
+bound is consistent with the label* -- never that the label is tight. Two rows
+make the difference concrete, both found by the label audit after these proofs
+were written:
+
+| row | label | proved | tight class | why the proof is loose |
+|---|---|---|---|---|
+| `5_100` | O(n) | `2n + 3` | **Θ(√n)** | `m -= k; k += 1` decreases m by 1+2+3+…, so it ends after ~√(2n) steps |
+| `1011_368` | O(n) | `8n + 5` | **O(√n)** | `a*b` grows past n with a,b ≈ √n |
+
+Both labels are valid upper bounds and neither proof is wrong. But BigOBench's
+labels come from fitting observed growth, so a √n program labelled O(n) is a
+mislabel, and both rows are queued in `solutions-tofix/`.
+
+The lesson for reading the rest of this table: an "agrees" row has been shown
+consistent, not tight. Proving tightness needs a lower bound, which this method
+does not produce.
+
 ## O(n*m): the label is right when the body scans a row, wrong when it does not
 
 Nine rows examined, **seven wrong, two right**, and the split is not subtle.
