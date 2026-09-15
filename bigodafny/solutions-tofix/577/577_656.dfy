@@ -1,3 +1,38 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n**2)
+//   audited class  : O(n)
+//   cause          : label
+//   confidence     : high
+//   auditor        : labelaudit-r2-03
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     Resolved by review with the problem statement: 1345_B gives up to t
+//     <= 1000 test cases each with a value n <= 10^9. Pyramid is
+//     O(sqrt(value)), so a single query costs at most about 31623 steps
+//     regardless of how many queries there are. Total cost is linear in
+//     the query count, not quadratic.
+//
+//   how this label could be wrong, and what to check:
+//     The label reads as quadratic in the query count. Check the Input
+//     section: the per-test value n is capped at 10^9 independently of t,
+//     so the per-query sqrt work is a constant factor and the total is
+//     O(t). If instead the label's n means a single query's magnitude, the
+//     row is O(sqrt(n)) and still not quadratic. Sibling 577_509 carries
+//     O(n) for the same signature convention.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 39, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString", "Join"],
+//     "loop_depth": 1, "loops": 2, "recursive_helpers": 0,
+//     "seq_append_read_in_same_loop": false, "seq_args": 1,
+//     "seq_update_in_loop": false, "set_build_in_loop": false, "sorts":
+//     [], "uses_map": false, "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 1345_B. Card Constructions  (problem 577, solution 577_656)
 // time complexity: O(n**2)
 // python exact-diff baseline: exact

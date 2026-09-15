@@ -1,3 +1,43 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(nlogn)
+//   audited class  : O(n**2)
+//   cause          : translation
+//   confidence     : high
+//   auditor        : labelaudit-r2-05
+//
+//   The Python matches its label; the DAFNY does not. The label is right
+//   about the program it was measured on and the translation is the
+//   defect.
+//
+//   evidence:
+//     firstPos := firstPos[x := i] and lastPos := lastPos[x := i] are seq
+//     updates (`s[i:=v]`) executed inside loops over |nums|=n elements;
+//     each seq update on a length-(n+1) seq copies the whole sequence,
+//     turning two O(n) loops into O(n**2), while the Python performs the
+//     equivalent first_pos[x]=i and last_pos[x]=i as O(1) in-place list
+//     assignments, keeping the Python at the labelled O(n log n) via
+//     last_pos.sort() and n bisect calls.
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes firstPos/lastPos updates are O(1) as Python list
+//     assignment is. Open the two build loops and confirm the update is
+//     `firstPos := firstPos[x := i]` / `lastPos := lastPos[x := i]` on a
+//     seq<int> rather than a mutable array<int>; if it is a functional seq
+//     update, each call copies n+1 entries and the two loops are
+//     quadratic, so the Dafny (not the Python) needs the fix -- switching
+//     firstPos/lastPos to array<int> would restore O(n log n).
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 78, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString", "ParseInt",
+//     "ParseIntFrom", "SplitWs"], "loop_depth": 2, "loops": 4,
+//     "recursive_helpers": 3, "seq_append_read_in_same_loop": false,
+//     "seq_args": 2, "seq_update_in_loop": true, "set_build_in_loop":
+//     false, "sorts": ["SortInts"], "uses_map": false, "uses_multiset":
+//     false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 1004_C. Sonya and Robots  (problem 1039, solution 1039_15)
 // time complexity: O(nlogn)
 // python exact-diff baseline: exact

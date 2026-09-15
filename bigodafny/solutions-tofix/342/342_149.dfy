@@ -1,3 +1,36 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n**2)
+//   audited class  : O(n)
+//   cause          : label
+//   confidence     : high
+//   auditor        : labelaudit-r2-02
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     Resolved by review with the problem statement: 1 <= a_i <= 100, so
+//     the inner loop bounded by x/2 runs at most fifty times regardless of
+//     n. The row is O(n) in both Dafny and Python, not O(n**2).
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes the inner loop grows with n. Read the Input
+//     section of the problem statement: it caps a_i at 100 while n reaches
+//     5*10^4, so the inner bound is a constant. If a later revision of the
+//     problem lets a_i scale with n, the O(n**2) label stands; as written
+//     it does not. Sibling 342_86 carries O(n) for the same shape and is
+//     the correct one.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 39, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 2,
+//     "loops": 3, "recursive_helpers": 0, "seq_append_read_in_same_loop":
+//     false, "seq_args": 1, "seq_update_in_loop": false,
+//     "set_build_in_loop": false, "sorts": [], "uses_map": false,
+//     "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 1113_B. Sasha and Magnetic Machines  (problem 342, solution 342_149)
 // time complexity: O(n**2)
 // python exact-diff baseline: exact

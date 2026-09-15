@@ -1,3 +1,43 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n)
+//   audited class  : O(n**2)
+//   cause          : translation
+//   confidence     : medium
+//   auditor        : labelaudit-r2-05
+//
+//   The Python matches its label; the DAFNY does not. The label is right
+//   about the program it was measured on and the translation is the
+//   defect.
+//
+//   evidence:
+//     ReverseInts(arr) recurses via `ReverseInts(s[1..]) + [s[0]]`, the
+//     identical slice-and-concatenate-at-every-level shape flagged for
+//     ReverseSeq in 888_6, which copies O(current length) per level; since
+//     |arr| can be as large as n (a fully increasing run of a_list), this
+//     call alone is O(n**2), while the Python builds the answer with O(1)
+//     `arr.append` calls and a single O(n) `arr[::-1]` slice.
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes the final reversal costs O(n) the way Python's
+//     arr[::-1] does. Open ReverseInts and confirm it is defined as
+//     `ReverseInts(s[1..]) + [s[0]]`; if the backend does not special-case
+//     that concatenation the way it does a flat loop's `s := s + [x]`,
+//     each level copies the accumulated result and the call is
+//     O(|arr|**2). Also check how large |arr| can get -- if a single test
+//     can make a_list one long increasing run, |arr| ~= n and the
+//     quadratic term dominates, so the label is too low; if |arr| is
+//     provably small for every valid input, the label could still stand.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 57, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString", "JoinInts"],
+//     "loop_depth": 1, "loops": 3, "recursive_helpers": 1,
+//     "seq_append_read_in_same_loop": false, "seq_args": 1,
+//     "seq_update_in_loop": true, "set_build_in_loop": false, "sorts": [],
+//     "uses_map": true, "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 977_F. Consecutive Subsequence  (problem 952, solution 952_116)
 // time complexity: O(n)
 // python exact-diff baseline: exact

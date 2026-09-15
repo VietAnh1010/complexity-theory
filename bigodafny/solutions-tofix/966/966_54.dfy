@@ -1,3 +1,40 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n**2)
+//   audited class  : O(1)
+//   cause          : label
+//   confidence     : high
+//   auditor        : labelaudit-r2-05
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     The problem statement caps n at 4 (`1 <= n <= 4`, the surviving
+//     corners of a rectangle), so the nested loop `while i<n {... while
+//     j<n ...}` in Solve executes at most 4*3/2=6 total inner-body
+//     evaluations for any valid input rather than a quantity that grows
+//     with n; the Python's identical double loop over s is bounded the
+//     same way.
+//
+//   how this label could be wrong, and what to check:
+//     The label O(n**2) implies the double loop's cost grows without bound
+//     as n increases. Reread the problem statement's Input section and
+//     confirm n really is capped at 4 (the vertex count of a rectangle)
+//     rather than being a general array-size n; if the cap is genuine and
+//     fixed across all valid inputs, both loops run a bounded number of
+//     times and the true class is O(1), not O(n**2). If some other reading
+//     of the statement lets n scale further, the label stands.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 54, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString", "ParseInt",
+//     "ParseIntFrom"], "loop_depth": 2, "loops": 3, "recursive_helpers":
+//     2, "seq_append_read_in_same_loop": false, "seq_args": 1,
+//     "seq_update_in_loop": false, "set_build_in_loop": false, "sorts":
+//     [], "uses_map": false, "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 596_A. Wilbur and Swimming Pool  (problem 966, solution 966_54)
 // time complexity: O(n**2)
 // python exact-diff baseline: exact
