@@ -74,7 +74,13 @@ def facts(dfy_text):
     }
 
 
-def evidence(limit=None, only=None, batch_size=20):
+def evidence(limit=None, only=None, batch_size=20, prefix=None):
+    # `--only` used to write batch_01.json like a full run does, which silently
+    # overwrote the real batch 1 with whatever handful of rows was being
+    # re-audited. A re-audit is a different thing from a batch and gets a
+    # different name; the numbered batches are only ever written by a full run.
+    if prefix is None:
+        prefix = "batch" if not only else "reaudit"
     tasks = {t["solution_id"]: t for t in read_jsonl(DATA / "tasks.jsonl")}
     rows = []
     for p in sorted(SOLUTIONS.rglob("*.dfy"),
@@ -106,7 +112,7 @@ def evidence(limit=None, only=None, batch_size=20):
     BATCHES.mkdir(parents=True, exist_ok=True)
     batches = [rows[i:i + batch_size] for i in range(0, len(rows), batch_size)]
     for i, b in enumerate(batches, 1):
-        (BATCHES / f"batch_{i:02d}.json").write_text(
+        (BATCHES / f"{prefix}_{i:02d}.json").write_text(
             json.dumps(b, indent=1), encoding="utf-8")
     log(f"evidence: {len(rows)} rows -> {len(batches)} batches in "
         f"{BATCHES.relative_to(ROOT)}")
@@ -238,11 +244,13 @@ if __name__ == "__main__":
     e.add_argument("--limit", type=int)
     e.add_argument("--only", nargs="*")
     e.add_argument("--batch-size", type=int, default=20)
+    e.add_argument("--prefix", help="output file stem; defaults to 'batch' for "
+                                    "a full run and 'reaudit' with --only")
     a2 = sub.add_parser("apply")
     a2.add_argument("verdicts")
     a2.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
     if a.cmd == "evidence":
-        evidence(a.limit, a.only, a.batch_size)
+        evidence(a.limit, a.only, a.batch_size, a.prefix)
     else:
         apply(a.verdicts, a.dry_run)
