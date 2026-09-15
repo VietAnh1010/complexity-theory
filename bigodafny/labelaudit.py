@@ -95,6 +95,10 @@ def evidence(limit=None, only=None, batch_size=20):
             "facts": facts(text),
             "dafny": text,
             "python": t.get("solution_code") or "",
+            # A loop bounded by a value is only O(1) if the STATEMENT caps that
+            # value. Without this an auditor falls back on contest convention,
+            # which it flagged as a gap on 696_51, 681_105, 704_614 and 704_351.
+            "description": (t.get("description") or "")[:4000],
         })
     if limit:
         rows = rows[:limit]

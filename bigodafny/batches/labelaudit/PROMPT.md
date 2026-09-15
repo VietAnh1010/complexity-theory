@@ -5,7 +5,11 @@ You are auditing whether a row's stated complexity label describes what its
 
 Read `BATCH_FILE`. It is a JSON array of ~20 rows, each with:
 
-    sid, label, path, facts (deterministic), dafny (full source), python (source)
+    sid, label, path, facts (deterministic), dafny (full source),
+    python (source), description (the problem statement)
+
+`description` is the authority for any loop bounded by a VALUE rather than a
+size. Quote the constraint from it rather than assuming a contest convention.
 
 Write one JSON object per row to `OUT_FILE`, one per line (JSONL). Write nothing
 else, anywhere. Do not modify any `.dfy`. Do not run `dafny`.
@@ -26,6 +30,7 @@ Everything else costs what the table says:
 | `Join`, `JoinInts` | O(total output length) | linear |
 | `SumSeq`, `MaxSeq`, `MinSeq`, `ParseInt`, `SplitWs`, `ReplaceAll`, `Repeat`, `IntToString` | O(length of the argument) | recursive over the sequence/string |
 | `SortInts`, `SortStrings`, `Sort` | O(k log k) | merge sort |
+| a hand-written recursion on `s[1..]` | **O(\|s\|)** — measured | slicing a flat seq is cheap; this shape is NOT quadratic |
 | `map<K,V>` insert or lookup | **UNMEASURED** | if the class depends on it, answer `unsure` |
 | `int` ops where the value grows with n (factorials, `2**n`) | not O(1) | bignum |
 
