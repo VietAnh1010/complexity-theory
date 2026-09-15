@@ -1,3 +1,41 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n)
+//   audited class  : O(n**2)
+//   cause          : translation
+//   confidence     : high
+//   auditor        : labelaudit-batch-16
+//
+//   The Python matches its label; the DAFNY does not. The label is right
+//   about the program it was measured on and the translation is the
+//   defect.
+//
+//   evidence:
+//     Each of the n outer iterations over handles runs three linear scans
+//     over keys (the fi, fj, fk while loops, each O(|keys|)) plus, when a
+//     pop is needed, a slice concatenation keys[..popIdx]+keys[popIdx+1..]
+//     and a seq update vals[newIdx := val], all O(n); over n iterations
+//     this is O(n**2), while the Python's d[new]=d.get(old,old) and
+//     d.pop(old) are O(1) average dict operations, giving O(n).
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes handle lookups are O(1) as in Python's dict. Open
+//     the Dafny and check whether 'old'/'new' lookups use a linear scan
+//     over a seq<string> keys (the fi/fj/fk while loops) rather than a
+//     hash-based map; if each of those three O(n) scans plus the
+//     slice-based delete keys[..popIdx]+keys[popIdx+1..] runs once per
+//     outer iteration, the whole method is O(n**2) regardless of the
+//     label.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 63, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString", "Join", "SplitWs"],
+//     "loop_depth": 2, "loops": 5, "recursive_helpers": 0,
+//     "seq_append_read_in_same_loop": true, "seq_args": 1,
+//     "seq_update_in_loop": true, "set_build_in_loop": false, "sorts": [],
+//     "uses_map": false, "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 501_B. Misha and Changing Handles  (problem 2217, solution 2217_419)
 // time complexity: O(n)
 // python exact-diff baseline: partial

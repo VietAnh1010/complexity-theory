@@ -1,3 +1,38 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(nlogn)
+//   audited class  : O(n**2)
+//   cause          : translation
+//   confidence     : high
+//   auditor        : labelaudit-batch-16
+//
+//   The Python matches its label; the DAFNY does not. The label is right
+//   about the program it was measured on and the translation is the
+//   defect.
+//
+//   evidence:
+//     The final loop over dif executes difmax := difmax[s := difmax[s] +
+//     1], a seq functional update inside a loop of n iterations, costing
+//     O(n) per update and O(n**2) total for that loop, which dominates the
+//     two O(n log n) Sort calls; the Python's difmax[s]+=1 is an O(1) list
+//     index write, so the Python is O(n log n) as labelled.
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes difmax updates are O(1) as in Python's list. Check
+//     whether difmax is a Dafny seq with a functional update `difmax :=
+//     difmax[s := difmax[s] + 1]` inside the loop over n elements; if so,
+//     per the cost table each update is O(|difmax|)=O(n), making that loop
+//     alone O(n**2), dominating the two O(n log n) sorts.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 60, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 1,
+//     "loops": 3, "recursive_helpers": 0, "seq_append_read_in_same_loop":
+//     false, "seq_args": 2, "seq_update_in_loop": true,
+//     "set_build_in_loop": false, "sorts": ["Sort"], "uses_map": false,
+//     "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 1365_C. Rotation Matching  (problem 2188, solution 2188_359)
 // time complexity: O(nlogn)
 // python exact-diff baseline: exact

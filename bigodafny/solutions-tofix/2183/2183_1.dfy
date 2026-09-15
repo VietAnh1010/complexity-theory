@@ -1,3 +1,36 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n*m)
+//   audited class  : O(n)
+//   cause          : label
+//   confidence     : high
+//   auditor        : labelaudit-batch-16
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     The inner loop while j < 8 runs exactly 4 times regardless of n,
+//     building px/py of fixed length 4 via concatenation with no same-seq
+//     read, so per-query work is O(1) and the outer loop over n queries
+//     gives O(n), matching the Python's fixed-size p = [complex(...) for i
+//     in range(0,8,2)].
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes row width m grows, but the problem statement fixes
+//     each query to exactly 8 integers 'xp0 yp0 xp1 yp1 xp2 yp2 xp3 yp3'.
+//     Confirm the inner while loop's bound j < 8 is a literal constant,
+//     not tied to |row|; if so m is fixed and O(n*m) collapses to O(n).
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 40, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString", "Join"],
+//     "loop_depth": 2, "loops": 2, "recursive_helpers": 0,
+//     "seq_append_read_in_same_loop": false, "seq_args": 1,
+//     "seq_update_in_loop": false, "set_build_in_loop": false, "sorts":
+//     [], "uses_map": false, "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // p02293 Parallel/Orthogonal  (problem 2183, solution 2183_1)
 // time complexity: O(n*m)
 // python exact-diff baseline: exact
