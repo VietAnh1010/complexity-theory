@@ -1,3 +1,38 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n)
+//   audited class  : O(nlogn)
+//   cause          : translation
+//   confidence     : high
+//   auditor        : labelaudit-batch-14
+//
+//   The Python matches its label; the DAFNY does not. The label is right
+//   about the program it was measured on and the translation is the
+//   defect.
+//
+//   evidence:
+//     SortInts(numbers) costs O(n log n) per the prelude table, and the
+//     loop `while m < |numbers|` runs a binary search over distinct on
+//     every iteration, adding O(n log n) more, whereas the Python's
+//     Counter gives O(1) lookups for an overall O(n) pass.
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes O(1) frequency lookups as Python's Counter gives;
+//     the Dafny instead calls SortInts (O(n log n) per the cost table) and
+//     then runs a binary search over `distinct` inside the final while
+//     loop over m, adding another O(n log n). Confirm SortInts appears and
+//     that the final loop's binary search (`while lo < hi`) executes once
+//     per element of numbers.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 65, "data_dependent_loops": 1, "decreases_star":
+//     false, "linear_prelude_calls": ["Join"], "loop_depth": 2, "loops":
+//     5, "recursive_helpers": 0, "seq_append_read_in_same_loop": false,
+//     "seq_args": 1, "seq_update_in_loop": false, "set_build_in_loop":
+//     false, "sorts": ["SortInts"], "uses_map": false, "uses_multiset":
+//     false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 1051_C. Vasya and Multisets  (problem 2005, solution 2005_137)
 // time complexity: O(n)
 // python exact-diff baseline: partial

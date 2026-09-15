@@ -1,3 +1,38 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n*m)
+//   audited class  : O(n)
+//   cause          : label
+//   confidence     : high
+//   auditor        : labelaudit-batch-14
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     Every access into edges (edges[a-1][0], edges[i-1][1], etc.) indexes
+//     a fixed 2-element row, and both while loops touch each of the n rows
+//     a constant number of times, so the true cost is O(n) in the number
+//     of kids, matching the Python's identical O(n) walk over 2-element
+//     lists.
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes row width varies as a second dimension m. Check
+//     the `requires forall k :: |edges[k]| == 2` clause and the problem
+//     statement's 'a_{i,1} and a_{i,2}' -- each kid remembers exactly two
+//     others, so every row is a fixed-width pair, not an m-wide row. If m
+//     is pinned at 2, the O(n*m) label collapses to O(n) since m never
+//     grows independently of n.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 44, "data_dependent_loops": 1, "decreases_star":
+//     true, "linear_prelude_calls": ["IntToString", "Join"], "loop_depth":
+//     1, "loops": 2, "recursive_helpers": 0,
+//     "seq_append_read_in_same_loop": false, "seq_args": 1,
+//     "seq_update_in_loop": false, "set_build_in_loop": false, "sorts":
+//     [], "uses_map": false, "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 1095_D. Circular Dance  (problem 2007, solution 2007_136)
 // time complexity: O(n*m)
 // python exact-diff baseline: exact

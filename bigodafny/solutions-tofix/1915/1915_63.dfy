@@ -1,3 +1,37 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n*m)
+//   audited class  : O(n+m)
+//   cause          : label
+//   confidence     : high
+//   auditor        : labelaudit-batch-13
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     The Dafny has two sequential while-loops, 'while i<n' computing nd
+//     via Gcd and 'while j<m' scanning p[j], with no nesting between them,
+//     and the Python's two separate 'for' loops over range(2,n) and
+//     range(m) are the same shape, so both are O(n+m) and the O(n*m) label
+//     overstates the true cost.
+//
+//   how this label could be wrong, and what to check:
+//     The label O(n*m) implies the two loops are nested. Open the Dafny
+//     body and confirm the 'while i<n' gcd loop and the 'while j<m' search
+//     loop are sequential, not one inside the other (facts show
+//     loop_depth:1, loops:2); if they never nest, total work is n+m, not
+//     n*m.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 37, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": ["Gcd", "IntToString"], "loop_depth":
+//     1, "loops": 2, "recursive_helpers": 0,
+//     "seq_append_read_in_same_loop": false, "seq_args": 2,
+//     "seq_update_in_loop": false, "set_build_in_loop": false, "sorts":
+//     [], "uses_map": false, "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 1155_C. Alarm Clocks Everywhere  (problem 1915, solution 1915_63)
 // time complexity: O(n*m)
 // python exact-diff baseline: partial

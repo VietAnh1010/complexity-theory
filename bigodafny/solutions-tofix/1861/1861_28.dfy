@@ -1,3 +1,37 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n**2)
+//   audited class  : O(n)
+//   cause          : label
+//   confidence     : medium
+//   auditor        : labelaudit-batch-13
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     The row-loop 'while row<H' does O(W*|pats|) work per row, and since
+//     W<=8 and |pats| is bounded by combinatorics on W (also <=8 per the
+//     constraints), that inner factor is a fixed constant, leaving H as
+//     the only growing dimension; the Python has the identical nested-list
+//     structure, so both are O(H), not O(H^2).
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes cost scales with H*W or a squared term. Check that
+//     W is capped at 8 by the problem statement ('W between 1 and 8'), and
+//     confirm |pats| stays bounded by a small constant across the outer
+//     'while i<W' loop; if so only H drives growth and the true cost is
+//     O(H), not quadratic.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 76, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 3,
+//     "loops": 6, "recursive_helpers": 0, "seq_append_read_in_same_loop":
+//     false, "seq_args": 0, "seq_update_in_loop": false,
+//     "set_build_in_loop": false, "sorts": [], "uses_map": false,
+//     "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // p03222 AtCoder Beginner Contest 113 - Number of Amidakuji  (problem 1861, solution 1861_28)
 // time complexity: O(n**2)
 // python exact-diff baseline: exact

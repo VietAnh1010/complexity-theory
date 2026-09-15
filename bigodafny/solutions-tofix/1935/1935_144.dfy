@@ -1,3 +1,37 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n+m)log(n+m)
+//   audited class  : O(n+mlogm)
+//   cause          : label
+//   confidence     : high
+//   auditor        : labelaudit-batch-13
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     The scan 'while i<|s|' building kiri/tupl is a plain O(n) pass with
+//     O(1) amortised appends, and SortInts is called only on 'ini' whose
+//     length is capped by m via 'tupl[..take]' with take<=m/2, so the true
+//     cost is O(n+m log m), a smaller class than the labelled
+//     O((n+m)log(n+m)).
+//
+//   how this label could be wrong, and what to check:
+//     The label O((n+m)log(n+m)) implies the entire string of length n
+//     gets sorted. Check that SortInts is called only on 'ini', whose size
+//     is bounded by m via 'tupl:=tupl[..take]' with take<=m/2, and that
+//     the earlier scan of s is a single unsorted O(n) pass; if so the sort
+//     contributes m log m, not (n+m) log(n+m).
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 56, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": [], "loop_depth": 1, "loops": 3,
+//     "recursive_helpers": 0, "seq_append_read_in_same_loop": false,
+//     "seq_args": 1, "seq_update_in_loop": false, "set_build_in_loop":
+//     false, "sorts": ["SortInts"], "uses_map": false, "uses_multiset":
+//     false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 1023_C. Bracket Subsequence  (problem 1935, solution 1935_144)
 // time complexity: O(n+m)log(n+m)
 // python exact-diff baseline: partial
