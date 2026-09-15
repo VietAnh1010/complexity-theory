@@ -1,3 +1,38 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n**2)
+//   audited class  : O(1)
+//   cause          : label
+//   confidence     : high
+//   auditor        : labelaudit-batch-12
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     The Python defines unused helper functions `getdict` and `prime`
+//     containing loops, but the executed program is only `h, m = map(int,
+//     input().split(':'))` followed by `print((h % 12) * 30 + m / 2, m *
+//     6)`, so its real complexity is O(1), same as the Dafny's
+//     straight-line ParseInt/arithmetic body.
+//
+//   how this label could be wrong, and what to check:
+//     The label may have been derived from the `prime(n)` function's `for
+//     d in range(3, sqr, 2)` loop or `getdict`'s loops defined earlier in
+//     the Python file. Check whether `prime` or `getdict` is ever called
+//     after their definitions; in this file only `h, m = map(int,
+//     input().split(':'))` and the final `print(...)` execute, so the true
+//     runtime is O(1), matching the Dafny's loop-free body.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 12, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString", "ParseInt"],
+//     "loop_depth": 0, "loops": 0, "recursive_helpers": 0,
+//     "seq_append_read_in_same_loop": false, "seq_args": 2,
+//     "seq_update_in_loop": false, "set_build_in_loop": false, "sorts":
+//     [], "uses_map": false, "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 80_B. Depression  (problem 1855, solution 1855_50)
 // time complexity: O(n**2)
 // python exact-diff baseline: partial

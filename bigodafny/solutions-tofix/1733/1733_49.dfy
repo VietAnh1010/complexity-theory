@@ -1,3 +1,41 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n)
+//   audited class  : other
+//   cause          : both
+//   confidence     : low
+//   auditor        : labelaudit-batch-11
+//
+//   The Python does not match the label AND the translation diverges
+//   from the Python. Both need attention.
+//
+//   evidence:
+//     Python rebuilds the whole list c and calls c.index(i+1) once per
+//     outer iteration of the n-step for loop, each O(n), giving Python
+//     O(n**2) rather than the labelled O(n); the Dafny additionally builds
+//     RepeatInt and ReverseInt via seq-concatenation at every recursive
+//     level, the same shape the audit notes made 888_6's ReverseSeq
+//     quadratic per call, so the true Dafny cost looks worse still,
+//     plausibly cubic.
+//
+//   how this label could be wrong, and what to check:
+//     The label claims O(n) but c.index(i+1) and the list rebuild
+//     c=c[:i]+c[j:i-1:-1]+c[j+1:] each cost O(n) and run once per outer
+//     iteration, so check whether Python is actually O(n**2); separately
+//     confirm whether ReverseInt's `ReverseInt(s[1..]) + [s[0]]` recursion
+//     is the same concatenate-at-every-level shape flagged as quadratic
+//     for 888_6 -- if so, RepeatInt and ReverseInt called on segments up
+//     to size n inside the O(n) outer loop push the Dafny past O(n**2).
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 147, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString", "Join", "JoinInts"],
+//     "loop_depth": 1, "loops": 2, "recursive_helpers": 6,
+//     "seq_append_read_in_same_loop": false, "seq_args": 1,
+//     "seq_update_in_loop": false, "set_build_in_loop": false, "sorts":
+//     [], "uses_map": false, "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 1427_D. Unshuffling a Deck  (problem 1733, solution 1733_49)
 // time complexity: O(n)
 // python exact-diff baseline: partial

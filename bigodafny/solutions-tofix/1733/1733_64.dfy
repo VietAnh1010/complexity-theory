@@ -1,3 +1,42 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n**2)
+//   audited class  : other
+//   cause          : translation
+//   confidence     : low
+//   auditor        : labelaudit-batch-11
+//
+//   The Python matches its label; the DAFNY does not. The label is right
+//   about the program it was measured on and the translation is the
+//   defect.
+//
+//   evidence:
+//     Python's per-iteration list slicing and += reconstruction of c costs
+//     O(n), summing to a genuine O(n**2) that matches the label, but the
+//     Dafny calls ReverseInt(split) and ReverseListOfLists(segs), both
+//     built as `f(s[1..]) + [x]` like the 888_6 ReverseSeq the audit calls
+//     quadratic per call, on structures sized up to n inside the
+//     n-iteration outer loop, so the true Dafny cost looks worse than
+//     O(n**2).
+//
+//   how this label could be wrong, and what to check:
+//     The label O(n**2) matches Python, whose per-iteration c
+//     reconstruction via slicing and += is O(n) over n outer steps. Check
+//     whether ReverseInt and ReverseListOfLists, both defined as
+//     `f(s[1..]) + [x]`, are the same concatenate-at-every-level shape the
+//     audit flags as quadratic per call for 888_6; if so, calling them on
+//     split/segs of size up to n inside the n-step outer loop pushes the
+//     Dafny above O(n**2).
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 186, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString", "Join", "JoinInts"],
+//     "loop_depth": 2, "loops": 6, "recursive_helpers": 9,
+//     "seq_append_read_in_same_loop": false, "seq_args": 1,
+//     "seq_update_in_loop": false, "set_build_in_loop": false, "sorts":
+//     [], "uses_map": false, "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 1427_D. Unshuffling a Deck  (problem 1733, solution 1733_64)
 // time complexity: O(n**2)
 // python exact-diff baseline: partial

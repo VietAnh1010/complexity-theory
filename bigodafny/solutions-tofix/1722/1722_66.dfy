@@ -1,3 +1,37 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n)
+//   audited class  : O(1)
+//   cause          : label
+//   confidence     : high
+//   auditor        : labelaudit-batch-11
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     n (the cube count) is capped at 1<=n<=3 by the description, the
+//     search while loop is bounded by the literal 1000, and
+//     ContainsInt1722_66 scans each lists[k] of fixed 6-face length, so no
+//     dimension here grows with input size and the true cost is O(1), not
+//     O(n).
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes a growing n, but the description caps the cube
+//     count at 1<=n<=3 and the search loop runs while i<1000, a fixed
+//     bound. Check the description's constraint line for n; if it truly
+//     tops out at 3, ContainsInt1722_66 scans only fixed-length face lists
+//     and the whole method, in both languages, is O(1).
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 67, "data_dependent_loops": 1, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 1,
+//     "loops": 1, "recursive_helpers": 1, "seq_append_read_in_same_loop":
+//     false, "seq_args": 1, "seq_update_in_loop": false,
+//     "set_build_in_loop": false, "sorts": [], "uses_map": false,
+//     "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 887_B. Cubes for Masha  (problem 1722, solution 1722_66)
 // time complexity: O(n)
 // python exact-diff baseline: exact

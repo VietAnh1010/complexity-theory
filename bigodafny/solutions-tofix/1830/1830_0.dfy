@@ -1,3 +1,42 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(nlogn)
+//   audited class  : O(n)
+//   cause          : label
+//   confidence     : high
+//   auditor        : labelaudit-batch-12
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     `st` and `ed` are declared `seq(26, _ => 0)` and only ever
+//     indexed/updated at positions 0..25 (one per uppercase letter), so
+//     `SortInts(st)` and `SortInts(ed)` cost O(1) regardless of n; the
+//     sole n-scaling work is the `while idx < n` loop doing O(1) per
+//     character, making the method O(n) rather than the labelled O(nlogn),
+//     and Python's fixed-size `st.sort()`/`ed.sort()` show the same
+//     pattern.
+//
+//   how this label could be wrong, and what to check:
+//     The label likely assumes `SortInts(st)`/`SortInts(ed)` sorts an
+//     n-length array. Check the declarations `var st := seq(26, _ => 0)`
+//     and `var ed := seq(26, _ => 0)`: both stay fixed at length 26 (one
+//     per letter) regardless of the guest count n, so the sort is O(26 log
+//     26)=O(1); the only loop that scales with n is the first `while idx <
+//     n` pass over the guest string, so the true cost is O(n), and
+//     Python's `st.sort()`/`ed.sort()` sort the same fixed 26-element
+//     lists.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 62, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": [], "loop_depth": 1, "loops": 3,
+//     "recursive_helpers": 0, "seq_append_read_in_same_loop": false,
+//     "seq_args": 1, "seq_update_in_loop": true, "set_build_in_loop":
+//     false, "sorts": ["SortInts"], "uses_map": false, "uses_multiset":
+//     false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 834_B. The Festive Evening  (problem 1830, solution 1830_0)
 // time complexity: O(nlogn)
 // python exact-diff baseline: exact
