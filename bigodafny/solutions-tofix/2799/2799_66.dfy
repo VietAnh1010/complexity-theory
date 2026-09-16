@@ -1,3 +1,38 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n**2)
+//   audited class  : O(n)
+//   cause          : label
+//   confidence     : medium
+//   auditor        : labelaudit-batch-21
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     The Python has a single pass 'for i in s' with O(1) work per char
+//     and only bounded string slicing/multiplication afterward (ar[0..2]
+//     capped at 100 by 1<=A,B,C<=100); the Dafny mirrors it with one while
+//     loop plus CountChar and RepStr, both O(length) not quadratic, so no
+//     construct in either source reaches n**2.
+//
+//   how this label could be wrong, and what to check:
+//     The label claims a quadratic pass over the stick string but the code
+//     shows only one top-level scan plus bounded post-processing. Check
+//     whether any branch nests a loop or repeats CountChar/RepStr work
+//     proportional to n inside another n-sized loop; if not, both this row
+//     and its sibling 2799_164 (labelled O(n) for the same problem with
+//     the same CountChar shape) should carry the same class.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 62, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": [], "loop_depth": 1, "loops": 1,
+//     "recursive_helpers": 2, "seq_append_read_in_same_loop": false,
+//     "seq_args": 1, "seq_update_in_loop": false, "set_build_in_loop":
+//     false, "sorts": [], "uses_map": false, "uses_multiset": false,
+//     "uses_set": false}
+// --------------------------------------------------------------------
+
 // 394_A. Counting Sticks  (problem 2799, solution 2799_66)
 // time complexity: O(n**2)
 // python exact-diff baseline: exact

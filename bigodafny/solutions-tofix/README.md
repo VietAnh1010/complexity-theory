@@ -1,12 +1,47 @@
 # `solutions-tofix/` — label audit review queue
 
-174 rows whose stated complexity label does not describe what the code costs.
+178 rows whose stated complexity label does not describe what the code costs.
 **Queued for manual review; nothing here is a decision.** Each file keeps its
 full original body with a header naming the audited class, the cause, the
 confidence and the evidence, so a reviewer needs nothing else open.
 
 Produced by `labelaudit.py` from agent verdicts that passed `checkverdicts.py`,
 with every mismatch re-checked by the orchestrating session before the move.
+
+
+## The audit is complete — all 506 rows screened
+
+Every row in `solutions/` has a verdict. 506 screened, 321 `ok`,
+178 `mismatch`, 7 `unsure`. The mismatches are here.
+
+| cause | rows | what the repair is |
+|---|---|---|
+| `label` | 112 | BigOBench's label is wrong; the translation is faithful. Fix the label. |
+| `translation` | 58 | The label is right about the Python. Fix the Dafny. |
+| `both` | 7 | Neither matches. Both need work. |
+| `harness` | 1 | Nothing is wrong. The dataset drew the measurement boundary elsewhere. Document it. |
+
+Confidence on the mismatches: 129 high, 43 medium, 6 low.
+52 rows carry `translation_defect` — the Dafny is in a worse class than the
+Python — including some whose verdict is `ok`, where the label and the defect
+happen to agree. Those are in `solutions/`, not here.
+
+23 rows land on `other`: their true class is outside the eleven-string
+vocabulary (cubic, or a cost in a value rather than a size). Read `evidence` for
+the real class.
+
+### The one question the audit did not settle
+
+A recurring group of rows takes only scalars the problem statement caps, and
+loops a number of times that grows with the *value* of those scalars but not
+with the input's *size*. This audit followed the prompt's rule — a capped value
+is a constant — and filed them as label errors at O(1) or O(n).
+
+If BigOBench measured by scaling those values, the original labels are right and
+these findings invert. The rows are at least `1306_15`, `1306_197`, `1678_212`,
+`1722_66`, `1738_180`, `2065_128`, `2128_34`, `2482_13`, `2639_73`, `2639_117`
+and `2700_53`. **Decide the convention once, then re-file the group** — it is one
+judgement, not eleven.
 
 ## The three causes, and why they need different repairs
 
