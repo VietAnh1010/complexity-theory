@@ -26,7 +26,22 @@ def git(*args, default=""):
         return default
 
 
-def prove_sample(manifest, traj, ds, depth):
+def relation_of(sid, traj_row, rel):
+    """confirms | looser-slack | looser-structural | contradicts | unresolved.
+
+    Defaults to `confirms` for a proved row with no entry in
+    label_relation.jsonl. That file carries the judgement for every row where
+    the proved bound is not within its label's class; a row absent from it is
+    one where the agent's bound and the label agree and nothing was disputed.
+    """
+    if not traj_row:
+        return "not attempted"
+    if sid in rel:
+        return rel[sid]["relation"]
+    return "confirms" if traj_row.get("outcome") == "proved" else "unresolved"
+
+
+def prove_sample(manifest, traj, rel, depth):
     """The proof campaign: did a bounded agent close the complexity label?
 
     Unlike the verification sample there is no tool that settles this -- a
@@ -45,7 +60,14 @@ def prove_sample(manifest, traj, ds, depth):
             "solution_id": s, "label": m["label"], "split": m["split"],
             "outcome": t.get("outcome", "not attempted"),
             "bound": t.get("bound"),
-            "agrees_with_label": t.get("agrees_with_label"),
+            # Every bound here is an UPPER bound, so a bound above the label
+            # fails to confirm it and cannot contradict it. `relation` is the
+            # normalised reading; `agent_said_agrees` is what the agent wrote,
+            # kept so the normalisation stays auditable.
+            "relation": relation_of(s, t, rel),
+            "relation_reason": (rel.get(s) or {}).get("reason"),
+            "obstacle": (rel.get(s) or {}).get("obstacle"),
+            "agent_said_agrees": t.get("agrees_with_label"),
             "attempts_used": t.get("attempts_used"),
             "seconds": t.get("seconds"),
             "why_failed": t.get("why_failed"),
@@ -54,7 +76,6 @@ def prove_sample(manifest, traj, ds, depth):
         })
     done = [r for r in rows if r["outcome"] in ("proved", "unresolved")]
     proved = [r for r in rows if r["outcome"] == "proved"]
-    disagree = [r for r in proved if r["agrees_with_label"] is False]
     return {
         "question": "can a bounded agent prove the label of a random row?",
         "seed": 20260917, "drawn": len(manifest), "pool": 329,
@@ -64,13 +85,24 @@ def prove_sample(manifest, traj, ds, depth):
         "attempted": len(done),
         "proved": len(proved),
         "unresolved": sum(1 for r in done if r["outcome"] == "unresolved"),
-        "proved_but_disagrees_with_label": [r["solution_id"] for r in disagree],
+        "relations": dict(Counter(r["relation"] for r in rows).most_common()),
+        "contradicts_label": [r["solution_id"] for r in rows
+                              if r["relation"] == "contradicts"],
+        "note_on_contradiction": (
+            "Empty by construction. Every proof in this campaign is an upper "
+            "bound; contradicting a label needs a lower bound, which none of "
+            "them produces. A bound above the label is `looser`, not a "
+            "disagreement."),
+        "value_vs_size_rows": sorted(
+            sid for sid, r in rel.items()
+            if r["relation"] == "looser-structural"
+            or r.get("obstacle") == "structural-unbounded"),
         "by_label": {
             lab: {"drawn": sum(1 for r in rows if r["label"] == lab),
                   "proved": sum(1 for r in proved if r["label"] == lab)}
             for lab in sorted({r["label"] for r in rows})},
         "obstacles": dict(Counter(
-            r["why_failed"] for r in rows if r["why_failed"]).most_common()),
+            r["obstacle"] for r in rows if r["obstacle"]).most_common()),
         "rows": sorted(rows, key=lambda r: (int(r["solution_id"].split("_")[0]),
                                             r["solution_id"])),
     }
@@ -85,6 +117,8 @@ def main():
     pv_manifest = jsonl(HERE / "batches/prove-sample/manifest.jsonl")
     pv_traj = [r for f in sorted((HERE / "batches/prove-sample").glob("traj_*.jsonl"))
                for r in jsonl(f)]
+    pv_rel = {r["solution_id"]: r
+              for r in jsonl(HERE / "batches/prove-sample/label_relation.jsonl")}
 
     dirs = {d.name: sum(1 for _ in d.rglob("*.dfy"))
             for d in sorted(HERE.glob("solutions*")) if d.is_dir()}
@@ -148,7 +182,7 @@ def main():
                                                   r["solution_id"])),
         },
 
-        "prove_sample": prove_sample(pv_manifest, pv_traj, ds, depth),
+        "prove_sample": prove_sample(pv_manifest, pv_traj, pv_rel, depth),
 
         "stale_record_finding": {
             "before": {"rows": 362, "recorded_failing": 12,
