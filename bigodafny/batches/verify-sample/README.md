@@ -3,7 +3,8 @@
 **Question.** 106 rows in `solutions/` had no `dafny verify` record. Were they
 *failing*, or had the verifier simply never been run on them?
 
-**Answer: never run.** All 50 sampled rows verify with no edit at all.
+**Answer: never run.** All 50 sampled rows verify with no edit at all, and so
+does the rest of `solutions/` — the full sweep came back **354 of 354**.
 
 ## How the sample was drawn
 
@@ -22,6 +23,13 @@ and a tail of 9 others.
 
 `baseline.py` runs `dafny verify --verification-time-limit 30` on each row and
 writes `baseline.jsonl`. **50 of 50 verified, zero edits, zero agent attempts.**
+Neither of the two bounds — 3 attempts, 5 minutes per row — was ever reached.
+
+**One of the 50 is verified on weaker terms.** `1675_29` carries `decreases *`,
+which makes Dafny accept its loop without proving it terminates. Every other
+obligation discharges; termination is opted out, not proved. Across
+`solutions/` 10 rows are in that position, so the honest corpus figure is
+**344 fully verified, 10 verified-except-termination**.
 
 `trajectory.jsonl` carries one record per row in the shape the agents would
 have written: attempt 0 is "file unmodified", outcome `verified`.
@@ -32,7 +40,9 @@ have written: attempt 0 is "file unmodified", outcome `verified`.
 
 - Three rows `data/verification.jsonl` recorded as *failing* (`1332_16`,
   `1678_68`, `457_38`) were re-run. All three verified — evidence the **record
-  was stale**, not that the script is blind.
+  was stale**, not that the script is blind. `457_38` is the weak case: it was
+  recorded as a termination failure and it still does not prove termination,
+  it carries `decreases *`.
 - An `x[5]` read on an unconstrained `seq` was injected into a copy of
   `1053_38`. The script reported `verified: false`, `index-out-of-range`. It
   detects failure.
@@ -56,3 +66,15 @@ was never a backlog of hard rows. It was one sweep that had not been re-run.
 | `baseline.jsonl` | its output |
 | `trajectory.jsonl` | per-row attempt record, the deliverable |
 | `AGENT_PROMPT.md` | the brief for repair agents; unused on this sample, kept for the rows that do fail |
+
+## What this closed, and what it did not
+
+The sweep took the recorded failures in `solutions/` from 12 to **0**. Seven of
+the eight rows the last brief listed as failing verify outright; `457_38` is
+the eighth and it opted out of termination rather than proving it.
+
+What remains open is not safety. It is the 10 `decreases *` rows, the label
+audit over `solutions-unscreened/`, and the three decisions in `../../DOCS.md`.
+
+`../../collect.py` reduces all of this to `data/artifact_data.json`, so a later
+artifact renders measured numbers instead of transcribed ones.
