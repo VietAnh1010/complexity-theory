@@ -1,3 +1,40 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n*m)
+//   audited class  : O(n+m)
+//   cause          : label
+//   confidence     : medium
+//   auditor        : labelaudit-batch-20
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     The nested while loops building bArr and cArr run a combined total
+//     of sum(a_list) iterations regardless of n, since the inner while j
+//     bound is data-dependent per i and the outputs bSeq/cSeq have length
+//     lenB/lenC = 1+sum(a_list); the Python mirrors this with 'for j in
+//     range(a[i])' inside 'for i in range(1,n+1)', giving O(n+S) for both,
+//     not O(n*S).
+//
+//   how this label could be wrong, and what to check:
+//     The label claims a product n*m, but the b/c-building loops are an
+//     outer pass over n=|a_list| with an inner data-dependent loop whose
+//     total iterations across all i equal S = sum(a_list), bounded by the
+//     description's 'sum of all ai does not exceed 2*10^5'; check that the
+//     inner loop count is a running total capped by S regardless of how it
+//     distributes across i, which makes the pair O(n+m) rather than
+//     O(n*m).
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 85, "data_dependent_loops": 3, "decreases_star":
+//     false, "linear_prelude_calls": ["JoinInts"], "loop_depth": 2,
+//     "loops": 7, "recursive_helpers": 0, "seq_append_read_in_same_loop":
+//     false, "seq_args": 1, "seq_update_in_loop": false,
+//     "set_build_in_loop": false, "sorts": [], "uses_map": false,
+//     "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 901_A. Hashing Trees  (problem 2723, solution 2723_27)
 // time complexity: O(n*m)
 // python exact-diff baseline: partial

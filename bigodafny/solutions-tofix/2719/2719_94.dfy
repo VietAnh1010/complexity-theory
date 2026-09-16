@@ -1,3 +1,37 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n*m)
+//   audited class  : O(n)
+//   cause          : label
+//   confidence     : high
+//   auditor        : labelaudit-batch-20
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     The while loop over |values_list| reads only row[0] and row[1] of
+//     each fixed-width 3-int row and never scans the row itself, so the
+//     O(n*m) label names a dimension m that the code never walks; the
+//     Python 'for k in alist' loop is likewise O(1) per row and O(n)
+//     overall, so both are O(n).
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes row width m scales, but the loop only ever reads
+//     row[0] and row[1] of each fixed 3-integer row (t,x,y) per the
+//     description; check that no construct reads |row| or iterates over
+//     row contents, which would confirm m never enters the cost and the
+//     label should be O(n).
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 25, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": [], "loop_depth": 1, "loops": 1,
+//     "recursive_helpers": 0, "seq_append_read_in_same_loop": false,
+//     "seq_args": 1, "seq_update_in_loop": false, "set_build_in_loop":
+//     false, "sorts": [], "uses_map": false, "uses_multiset": false,
+//     "uses_set": false}
+// --------------------------------------------------------------------
+
 // 245_A. System Administrator  (problem 2719, solution 2719_94)
 // time complexity: O(n*m)
 // python exact-diff baseline: exact

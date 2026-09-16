@@ -1,3 +1,41 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(nlogn)
+//   audited class  : other
+//   cause          : both
+//   confidence     : medium
+//   auditor        : labelaudit-batch-20
+//
+//   The Python does not match the label AND the translation diverges
+//   from the Python. Both need attention.
+//
+//   evidence:
+//     In the worst case (already-distinct input) the outer pref loop runs
+//     n+1 times and the inner k loop scans close to n elements each time
+//     without breaking, making the Python O(n**2) rather than O(nlogn);
+//     the Dafny inner loop additionally performs dused := dused[ind :=
+//     dused[ind]+1], a seq update costing O(n) per call versus Pythons
+//     O(1) list write, pushing the Dafny to O(n**3).
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes the pref/suf scan is linear or logarithmic, but
+//     the outer while pref <= n and inner while k < n form a nested O(n) x
+//     O(n) scan that only breaks once a duplicate appears; trace the
+//     all-distinct case (e.g. array 1 2 3 ... n) where no duplicate is
+//     ever found, so both loops run to near completion on every outer
+//     step. Separately check that dused := dused[ind := dused[ind] + 1] is
+//     a full seq copy each call, versus the Python dused[ind] += 1 which
+//     is an O(1) in-place list write.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 130, "data_dependent_loops": 2, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 2,
+//     "loops": 5, "recursive_helpers": 3, "seq_append_read_in_same_loop":
+//     false, "seq_args": 1, "seq_update_in_loop": true,
+//     "set_build_in_loop": false, "sorts": ["Merge", "Sort", "SortInts"],
+//     "uses_map": false, "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 1208_B. Uniqueness  (problem 2650, solution 2650_140)
 // time complexity: O(nlogn)
 // python exact-diff baseline: exact

@@ -1,3 +1,39 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(nlogn)
+//   audited class  : O(n**2)
+//   cause          : label
+//   confidence     : high
+//   auditor        : labelaudit-batch-20
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     The while loop over i runs k times, and each iteration calls
+//     FindIndex(l, ...) three times, each an O(|l|) linear scan, plus
+//     three seq updates l := l[idx := -1] costing O(|l|) each; with k up
+//     to n/3 this is O(n**2), and the Python mirrors it with three
+//     l.index() calls per iteration, also O(n**2).
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes the sort dominates, but the main loop calls
+//     FindIndex (a linear scan over l) three times per iteration and runs
+//     up to k = min(t1,t2,t3) <= n/3 iterations. Check that k can be
+//     Theta(n) (e.g. n/3 children in each category) and that
+//     FindIndex/list.index is O(n) per call; that makes both the Dafny and
+//     Python O(n**2), with SortInts/l2.sort() not the bottleneck.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 82, "data_dependent_loops": 1, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString", "Join"],
+//     "loop_depth": 1, "loops": 2, "recursive_helpers": 4,
+//     "seq_append_read_in_same_loop": false, "seq_args": 1,
+//     "seq_update_in_loop": true, "set_build_in_loop": false, "sorts":
+//     ["SortInts"], "uses_map": false, "uses_multiset": false, "uses_set":
+//     false}
+// --------------------------------------------------------------------
+
 // 490_A. Team Olympiad  (problem 2610, solution 2610_1259)
 // time complexity: O(nlogn)
 // python exact-diff baseline: exact
