@@ -37,6 +37,18 @@ Both are statements about the backend, not the cost model. Under the axioms
 their `seq` and `array` forms are charged the same; what the axioms cannot do
 is make the `seq` form finish, and the gates are non-negotiable.
 
+## One row fails its gate on speed, not correctness
+
+`1501/1501_224.dfy` reports `differs` under `difftest.py`: 93 comparable tests,
+77 agree, and **16 disagreements that are all timeouts — zero wrong answers**.
+Its loop runs about n/12 times and its own tests supply n up to 10^12, so the
+emitted Python cannot finish inside 30s where CPython can.
+
+The corpus has no tier for *correct but too slow to gate*, and `differs` reads
+as a behavioural failure, which this is not. Left here pending a decision; see
+`solutions-disputed/README.md` on the value-versus-size convention, which this
+row also turns on.
+
 ## Four rows here cannot be gated, and it is the harness, not the code
 
 `dataset.py`'s `parser_ok` decides whether the harness can feed a row at all.

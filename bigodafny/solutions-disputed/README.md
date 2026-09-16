@@ -95,22 +95,40 @@ these findings invert. The rows are at least `1306_15`, `1306_197`, `1678_212`,
 and `2700_53`. **Decide the convention once, then re-file the group** — it is one
 judgement, not eleven.
 
-**One row settles it empirically, and it is not in this queue.** The first full
-run of `difftest.py --loose` (100 rows, 95 agree, 4 untranslatable) turned up a
-single `error: TimeoutExpired`: `solutions/1501/1501_224.dfy`, labelled O(n).
-Its whole input is one integer n, and its loop runs about n/12 times. Its own
-tests supply n up to **10^12**, so neither the Dafny nor the original Python
-terminates — the row burned a 1800s budget without finishing one test.
+**One row makes the question concrete, and it is not in this queue.**
+`solutions/1501/1501_224.dfy` is labelled `O(n)`, its whole input is one
+integer n, and its loop runs about n/12 times. Its own tests supply n up to
+**10^12**.
 
-Under the size reading the label is wrong: the input is one integer, so the work
-is exponential in the input's length. Under the value reading the label is right
-and the row is simply untestable at its own inputs. Either way the row is in
-`solutions/` claiming to be clean while no gate can run on it, which is the
-same situation `solutions-untranslated/` exists to name.
+An earlier version of this section said neither implementation terminates and
+that no gate can run on the row. Both claims were wrong, and they came from a
+`difftest.py` budget bug rather than from the row. With the budget derived from
+the test count, the row reports:
 
-That makes the convention question concrete rather than academic, and it is
-still the user's call: the rows above move as a group, and `1501_224` either
-joins them or joins the untranslatable tier.
+| | |
+|---|---|
+| comparable tests | 93 of 122 |
+| agree | 77 |
+| Dafny timed out where the Python finished | **16** |
+| Python timed out, nothing to compare | 29 |
+
+So the Python completes 93 of its own tests and the Dafny completes 77. The row
+is `differs`, and every disagreement is a timeout — **zero wrong answers**. The
+translation is correct wherever it finishes and slower than CPython on the same
+input, which is what a bignum loop costs once it goes through the Dafny runtime.
+
+That leaves the convention question intact and adds a second one:
+
+- **Size reading:** the label is wrong. One integer input, work exponential in
+  its length.
+- **Value reading:** the label is right, and the row is a correct translation
+  that the gate cannot certify because the emitted Python is too slow.
+
+The second question is new: the corpus has no tier for *correct but too slow to
+gate*. `differs` reads as a behavioural failure and this is not one.
+
+Still the user's call. The twelve rows move as a group, and `1501_224` needs a
+decision about what `differs`-by-timeout-only should mean.
 
 ## The three causes, and why they need different repairs
 

@@ -1,10 +1,10 @@
 {
   "all_rows": {
     "agrees": 95,
-    "error": 1,
+    "differs": 1,
     "untranslated": 4
   },
   "this_run": {
-    "agrees": 5
+    "differs": 1
   }
 }
