@@ -92,12 +92,15 @@ def build():
         st = b.get("python_status", "unmeasured")
         n = b.get("n_tests") or 0
         pok = parser_ok(t, s)
+        row_split = ("unvalidatable" if not pok
+                     else "strict" if st == "exact" else "loose")
+        gate_name = "validate" if row_split == "strict" else "difftest"
+        gate_rec = v if row_split == "strict" else dt
         rows.append({
             "problem_id": t["problem_id"],
             "solution_id": t["solution_id"],
             "problem_name": t["problem_name"],
-            "split": ("unvalidatable" if not pok
-                      else "strict" if st == "exact" else "loose"),
+            "split": row_split,
             "parser_ok": pok,
             "nondet_hint": t["nondet_hint"],
             "time_complexity_inferred": t["time_complexity_inferred"],
@@ -107,11 +110,14 @@ def build():
             "python_pass_rate": round(b.get("passed", 0) / n, 4) if n else None,
             "dafny_signature": s.get("dafny"),
             "signature_status": s.get("status", "missing"),
-            # Each split reports the status of ITS OWN gate. `agrees` is a
-            # loose row's pass, exactly as `valid` is a strict row's.
-            "dafny_status": v.get("status") or dt.get("status") or "untranslated",
-            "dafny_gate": ("validate" if v.get("status")
-                           else "difftest" if dt.get("status") else None),
+            # Each split reports the status of ITS OWN gate, chosen by the
+            # split and not by whichever record happens to exist. `agrees` is
+            # a loose row's pass, exactly as `valid` is a strict row's. A
+            # stale `fail` left in validation.jsonl by a sweep that should
+            # never have judged a loose row must not win over difftest's
+            # verdict -- that is how the wrong gate's answer gets published.
+            "dafny_status": (gate_rec.get("status") or "untranslated"),
+            "dafny_gate": (gate_name if gate_rec.get("status") else None),
             # Behaviour is validated; the complexity label is not trusted.
             "quarantined": t["solution_id"] in quarantine,
             "quarantine_reasons": quarantine.get(t["solution_id"], []),
@@ -123,8 +129,10 @@ def build():
             # `dafny verify` with no user spec: seq bounds, division, termination.
             "safety_verified": verif.get(t["solution_id"], {}).get("verified"),
             "safety_failure": verif.get(t["solution_id"], {}).get("kind"),
-            "dafny_tests_passed": v.get("tests_passed", dt.get("agree")),
-            "dafny_tests_total": v.get("tests_total", dt.get("comparable")),
+            "dafny_tests_passed": gate_rec.get("tests_passed",
+                                               gate_rec.get("agree")),
+            "dafny_tests_total": gate_rec.get("tests_total",
+                                              gate_rec.get("comparable")),
         })
     rows.sort(key=lambda r: (int(r["problem_id"]), r["solution_id"]))
     write_jsonl(DATA / "dataset.jsonl", rows)

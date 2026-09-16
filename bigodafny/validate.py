@@ -168,13 +168,31 @@ def run_tests(task, sig, pydir, workdir, tiers, per_test, batch_timeout):
 
 def validate(only=None, tiers=("public_tests", "private_tests"),
              per_test=30, batch_timeout=900, limit=None, solutions_dir=None,
-             out_prefix=""):
+             out_prefix="", all_splits=False):
     tasks = {t["solution_id"]: t for t in read_jsonl(DATA / "tasks.jsonl")}
     sigs = {s["problem_id"]: s for s in read_jsonl(DATA / "signatures.jsonl")}
 
+    # This gate judges the `strict` tier and no other. Its whole question is
+    # "does stdout match BigOBench's STORED output", which is the wrong
+    # question for the 100 `loose` rows -- their problems accept several
+    # answers, so even the original Python fails a byte-diff. Running on them
+    # produces `fail` records that measure the checker, not the translation.
+    #
+    # Nothing enforced that. A bare `validate.py` swept all 636 translated rows
+    # and wrote 101 `fail`s, of which 97 were loose rows behaving correctly;
+    # the record it replaced had been built from a hand-filtered list, so the
+    # canonical file was not reproducible from this tool's own CLI. It is now.
+    # `--all-splits` still sweeps everything, for when that is what you want.
+    ds = DATA / "dataset.jsonl"
+    split = ({r["solution_id"]: r["split"] for r in read_jsonl(ds)}
+             if ds.exists() else {})
+    if not split and not all_splits:
+        log("warning: data/dataset.jsonl absent, cannot filter to the strict "
+            "tier; validating every translated row")
+
     roots = ([Path(solutions_dir)] if solutions_dir
              else [SOLUTIONS, UNSCREENED, UNVERIFIED, PROVED, DISPUTED])
-    targets = []
+    targets, skipped = [], Counter()
     for sid, t in tasks.items():
         dfy = next((r / t["problem_id"] / f"{sid}.dfy" for r in roots
                     if (r / t["problem_id"] / f"{sid}.dfy").exists()), None)
@@ -182,7 +200,17 @@ def validate(only=None, tiers=("public_tests", "private_tests"),
             continue
         if only and sid not in only:
             continue
+        # An explicit --only or --solutions-dir is a deliberate request; only
+        # the unfiltered sweep is narrowed to the tier this gate answers for.
+        if (not only and not solutions_dir and not all_splits
+                and split.get(sid, "strict") != "strict"):
+            skipped[split[sid]] += 1
+            continue
         targets.append((t, dfy))
+    if skipped:
+        log(f"skipping {sum(skipped.values())} rows this gate does not judge: "
+            + ", ".join(f"{v} {k}" for k, v in sorted(skipped.items()))
+            + "  (difftest.py --loose is the loose tier's gate)")
     targets.sort(key=lambda x: (int(x[0]["problem_id"]), x[0]["solution_id"]))
     if limit:
         targets = targets[:limit]
@@ -252,8 +280,11 @@ if __name__ == "__main__":
     ap.add_argument("--limit", type=int)
     ap.add_argument("--out-prefix", default="")
     ap.add_argument("--solutions-dir")
+    ap.add_argument("--all-splits", action="store_true",
+                    help="also validate loose/unvalidatable rows, which this "
+                         "gate is the wrong question for")
     a = ap.parse_args()
     tiers = ["public_tests", "private_tests"] + (["generated_tests"] if a.generated else [])
     validate(only=set(a.only) if a.only else None, tiers=tuple(tiers),
              per_test=a.per_test, limit=a.limit, out_prefix=a.out_prefix,
-             solutions_dir=a.solutions_dir)
+             solutions_dir=a.solutions_dir, all_splits=a.all_splits)

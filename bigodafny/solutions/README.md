@@ -37,17 +37,23 @@ Both are statements about the backend, not the cost model. Under the axioms
 their `seq` and `array` forms are charged the same; what the axioms cannot do
 is make the `seq` form finish, and the gates are non-negotiable.
 
-## One row here cannot be gated
+## Four rows here cannot be gated, and it is the harness, not the code
 
-`1501/1501_224.dfy` is labelled O(n) and its whole input is a single integer n;
-its loop runs about n/12 times, and its own tests supply n up to 10^12. Neither
-it nor the original Python finishes — `difftest.py` spent a 1800s budget on it
-without completing one test, the only `error` in the loose tier's 100 rows.
+`dataset.py`'s `parser_ok` decides whether the harness can feed a row at all.
+Four rows in this directory fail it, so neither `validate.py` nor `difftest.py`
+can run on them. Their Python passes every one of its own tests and their Dafny
+signature is fine — what fails is the path between the two.
 
-It is left in place rather than moved, because moving it decides the
-value-versus-size convention that `solutions-disputed/README.md` records as
-open across eleven other rows. Until that is decided, this row is clean by
-every gate that *can* run on it and untested by the one that cannot.
+| rows | why the harness cannot feed them |
+|---|---|
+| `1578/1578_481.dfy`, `1578/1578_724.dfy` | `Input.from_str` asserts a trailing newline the stored input does not have |
+| `1950/1950_45.dfy`, `1950/1950_47.dfy` | a `real` argument carrying ~100 significant digits; Python `float()` truncates it before Dafny is called, so no implementation can pass |
+
+Both causes were measured, and `parser_ok`'s docstring records them. What was
+not recorded is that these four sit here claiming to be clean. The gate is
+**inapplicable**, not failing — the same situation `solutions-untranslated/`
+exists to name, arriving by a different route. Deciding whether they belong here
+is open.
 
 ## Shape
 
