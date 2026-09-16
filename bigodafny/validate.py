@@ -143,11 +143,18 @@ def run_tests(task, sig, pydir, workdir, tiers, per_test, batch_timeout):
                        per_test=per_test, args=args),
         encoding="utf-8")
 
+    # Every test carries its own `per_test` alarm, so a batch of n tests can
+    # legitimately spend per_test*n seconds before any of them is a bug. A fixed
+    # wall budget below that discards the whole row, including the tests that
+    # already passed -- difftest.py lost 91 agreeing comparisons on `1501_224`
+    # exactly this way. Take whichever of the two budgets is larger; the caller's
+    # `batch_timeout` stays a floor, not a ceiling.
+    budget = max(batch_timeout, 60 + per_test * max(1, len(tests)))
     try:
         p = subprocess.run([sys.executable, str(workdir / "harness.py")],
-                           capture_output=True, text=True, timeout=batch_timeout)
+                           capture_output=True, text=True, timeout=budget)
     except subprocess.TimeoutExpired:
-        return None, f"harness exceeded {batch_timeout}s"
+        return None, f"harness exceeded {budget}s"
     if p.returncode != 0:
         return None, (p.stdout + p.stderr).strip()[:1500]
     try:

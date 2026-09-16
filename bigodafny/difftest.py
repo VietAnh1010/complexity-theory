@@ -61,6 +61,17 @@ json.dump(out, sys.stdout)
 '''
 
 
+# Each test carries its own 30s alarm, so a batch of n tests can legitimately
+# spend 30n seconds before any of them is a bug. A fixed wall budget smaller
+# than that is not a safety net: it discards the whole row, including the tests
+# that already finished. `1501_224` lost 91 agreeing comparisons that way -- its
+# Python times out on 31 of its own 122 tests, 31 x 30s exceeded the Dafny
+# side's 900s, and a row that agrees everywhere it can be compared was recorded
+# as `error: TimeoutExpired`. Derive the budget from the work instead.
+def batch_budget(n_tests, per_test=30, overhead=60):
+    return overhead + per_test * max(1, n_tests)
+
+
 def python_outputs(task, tests):
     with tempfile.TemporaryDirectory() as d:
         d = Path(d)
@@ -70,7 +81,8 @@ def python_outputs(task, tests):
         try:
             p = subprocess.run([sys.executable, str(d / "r.py"), str(d / "s.py"),
                                 str(d / "t.json")], capture_output=True,
-                               text=True, timeout=1800, cwd=d)
+                               text=True, timeout=batch_budget(len(tests)),
+                               cwd=d)
             return json.loads(p.stdout)
         except Exception:
             return None
@@ -123,7 +135,8 @@ def one(args):
         encoding="utf-8")
     try:
         p = subprocess.run([sys.executable, str(work / "harness.py")],
-                           capture_output=True, text=True, timeout=900)
+                           capture_output=True, text=True,
+                           timeout=batch_budget(len(tests)))
         res = json.loads(p.stdout)
     except Exception as e:
         return {**rec, "status": "error", "error": f"{type(e).__name__}"}

@@ -24,7 +24,8 @@ from common import (DAFNY_VERSION, DATA, UNSCREENED, UNTRANSLATED, PROVED,
 EXPORT = ("problem_id", "solution_id", "problem_name", "split", "nondet_hint",
           "time_complexity_inferred", "time_curve_coefficient", "n_tests",
           "python_status", "python_pass_rate", "dafny_signature",
-          "dafny_status", "dafny_tests_passed", "dafny_tests_total")
+          "dafny_status", "dafny_gate", "dafny_tests_passed",
+          "dafny_tests_total")
 
 
 def parser_ok(task, sig=None):
@@ -73,12 +74,21 @@ def build():
     vpath = DATA / "validation.jsonl"
     val = ({v["solution_id"]: v for v in read_jsonl(vpath)}
            if vpath.exists() else {})
+    # `validate.py` is the wrong gate for the 100 `loose` rows and never runs on
+    # them, so reading `dafny_status` from its record alone reported every one
+    # of them as `untranslated`. That put 104 translated, passing rows in the
+    # same bucket as the 4 that have no body: stats.json said 108 untranslated
+    # when the true number is 4. `difftest.py` is their gate; read it for them.
+    dpath = DATA / "difftest.jsonl"
+    diff = ({d["solution_id"]: d for d in read_jsonl(dpath)}
+            if dpath.exists() else {})
 
     rows = []
     for t in tasks:
         b = base.get(t["solution_id"], {})
         s = sigs.get(t["problem_id"], {})
         v = val.get(t["solution_id"], {})
+        dt = diff.get(t["solution_id"], {})
         st = b.get("python_status", "unmeasured")
         n = b.get("n_tests") or 0
         pok = parser_ok(t, s)
@@ -97,7 +107,11 @@ def build():
             "python_pass_rate": round(b.get("passed", 0) / n, 4) if n else None,
             "dafny_signature": s.get("dafny"),
             "signature_status": s.get("status", "missing"),
-            "dafny_status": v.get("status", "untranslated"),
+            # Each split reports the status of ITS OWN gate. `agrees` is a
+            # loose row's pass, exactly as `valid` is a strict row's.
+            "dafny_status": v.get("status") or dt.get("status") or "untranslated",
+            "dafny_gate": ("validate" if v.get("status")
+                           else "difftest" if dt.get("status") else None),
             # Behaviour is validated; the complexity label is not trusted.
             "quarantined": t["solution_id"] in quarantine,
             "quarantine_reasons": quarantine.get(t["solution_id"], []),
@@ -109,8 +123,8 @@ def build():
             # `dafny verify` with no user spec: seq bounds, division, termination.
             "safety_verified": verif.get(t["solution_id"], {}).get("verified"),
             "safety_failure": verif.get(t["solution_id"], {}).get("kind"),
-            "dafny_tests_passed": v.get("tests_passed"),
-            "dafny_tests_total": v.get("tests_total"),
+            "dafny_tests_passed": v.get("tests_passed", dt.get("agree")),
+            "dafny_tests_total": v.get("tests_total", dt.get("comparable")),
         })
     rows.sort(key=lambda r: (int(r["problem_id"]), r["solution_id"]))
     write_jsonl(DATA / "dataset.jsonl", rows)
