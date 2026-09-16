@@ -1,9 +1,11 @@
 {
   "complexity_proved": 31,
   "dafny_status": {
-    "fail": 3,
-    "untranslated": 108,
-    "valid": 529
+    "agrees": 95,
+    "differs": 1,
+    "fail": 1,
+    "untranslated": 10,
+    "valid": 533
   },
   "dafny_version": "4.11.0",
   "problems": 311,

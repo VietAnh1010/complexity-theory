@@ -1,6 +1,10 @@
-# `solutions/` — the clean corpus
+# `solutions/` — the screened corpus
 
-354 rows. A row is here when three things hold at once:
+354 rows. **"Clean" is not the same as "every guarantee holds"**; the two
+sections below name 7 rows where it does not, and safety is only partly done.
+Read those before treating this directory as a certified set.
+
+A row is here when all three hold:
 
 - **Behaviour.** `validate.py` matches its stdout against BigOBench's stored
   output (strict rows), or `difftest.py` agrees with its own Python (loose
@@ -11,6 +15,18 @@
 - **Label.** The label audit screened the row and its stated complexity
   describes what the Dafny costs. A row the audit disagreed with is in
   `solutions-disputed/`.
+
+## What actually holds, as measured
+
+| | rows | |
+|---|---|---|
+| passes its own gate | 347 | 298 `valid` (strict) + 49 `agrees` (loose) |
+| **cannot be gated** | 6 | the harness cannot feed them; see below |
+| **fails its gate on speed** | 1 | `1501_224`, timeouts only, zero wrong answers |
+| `dafny verify` clean | 240 | |
+| `dafny verify` fails | 8 | `1332_16`, `1501_177`, `1678_68`, `1717_238`, `1935_61`, `1950_45`, `1950_47`, `457_38` |
+| `dafny verify` never run | 106 | |
+| verdict `unsure`, not `ok` | 7 | `2254_143`, `1243_0`, `1364_161`, `1950_45`, `2282_16`, `2128_34`, `1578_724` |
 
 Nothing here is *proved* to meet its label. That claim needs a ghost step
 counter and lives in `solutions-proved/`, which holds instrumented copies of 18
@@ -49,23 +65,28 @@ as a behavioural failure, which this is not. Left here pending a decision; see
 `solutions-disputed/README.md` on the value-versus-size convention, which this
 row also turns on.
 
-## Four rows here cannot be gated, and it is the harness, not the code
+## Six rows here cannot be gated, and it is the harness, not the code
 
 `dataset.py`'s `parser_ok` decides whether the harness can feed a row at all.
-Four rows in this directory fail it, so neither `validate.py` nor `difftest.py`
-can run on them. Their Python passes every one of its own tests and their Dafny
-signature is fine — what fails is the path between the two.
+All six rows the dataset calls `unvalidatable` live here, so neither
+`validate.py` nor `difftest.py` can run on any of them. Their Python passes
+every one of its own tests and their Dafny signature parses — what fails is the
+path between the two.
 
 | rows | why the harness cannot feed them |
 |---|---|
-| `1578/1578_481.dfy`, `1578/1578_724.dfy` | `Input.from_str` asserts a trailing newline the stored input does not have |
-| `1950/1950_45.dfy`, `1950/1950_47.dfy` | a `real` argument carrying ~100 significant digits; Python `float()` truncates it before Dafny is called, so no implementation can pass |
+| `1196/1196_100`, `1196/1196_51`, `1578/1578_481`, `1578/1578_724` | `Input.from_str` raises `AssertionError` on some stored inputs — it asserts a trailing newline they do not have |
+| `1950/1950_45`, `1950/1950_47` | a `real` argument carrying ~100 significant digits; Python `float()` truncates it before Dafny is called, so no implementation can pass |
 
 Both causes were measured, and `parser_ok`'s docstring records them. What was
-not recorded is that these four sit here claiming to be clean. The gate is
+not recorded is that all six sit here claiming to be clean. The gate is
 **inapplicable**, not failing — the same situation `solutions-untranslated/`
-exists to name, arriving by a different route. Deciding whether they belong here
-is open.
+exists to name, arriving by a different route. Whether they belong there is
+open.
+
+`1196_100` and `1196_51` were worse than ungated: they were recorded as strict
+**failures** until `validate.py` learned which tier it gates. A `fail` there
+measured the harness, not the translation.
 
 ## Shape
 
