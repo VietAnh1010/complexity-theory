@@ -51,7 +51,8 @@ acceptable only if it is stated loudly and in one place, so:
 - `CLAUDE.md`'s `set<T>` section stays factually true but stops being a reason
   to avoid `set<T>` for *labelling* reasons. It becomes a performance note.
 
-**What it does to the 178 queued rows.** Re-file, do not re-audit from scratch.
+**What it does to the 178 queued rows.** *(Done; the outcome is recorded below
+the prediction.)* Re-file, do not re-audit from scratch.
 Every row whose `cause` is `translation` *solely* because of a copying
 collection becomes `ok` under the axioms — the label was right and so is the
 translation. Machine-filterable: `cause == "translation"` and evidence citing a
@@ -161,8 +162,22 @@ not the same assertion as one about `a` over a sequence.
    banner, a § *What this rules out as a verdict*, and a schema example that no
    longer teaches the closed defect class.
 3. Re-file the queued rows mechanically; report how many moved back to `ok`.
-   **Not run.** It changes verdicts already queued for manual review, so it
-   waits on that review. Expect 30–40 of the 58 `translation` rows to return.
+   **Done** — `refile.py`, applied from `refile_decisions.jsonl`, a per-row
+   decision table with the derivation written out for each. 31 of the 58
+   `translation` rows returned to `solutions/`, inside the predicted 30–40.
+   Two things the prediction missed:
+   - **Five rows moved the other way.** `1622_305`, `1748_145`, `1367_88`,
+     `2505_30` and `2854_107` were `ok` only because the old per-write copy
+     charge reproduced their `O(n**2)` label by accident. Charge the write `1`
+     and the Dafny agrees with the Python while both disagree with the label.
+     An accidental agreement is not a pass.
+   - **Three rows reversed direction rather than resolving.** `1336_340` and
+     `1981_62` replace the Python's sort with a linear pass, so dropping the
+     copy charge takes them *below* their `O(nlogn)` labels, not onto them.
+     `2188_371` narrowed from `both` to `label`.
+
+   Net 178 → 152; `translation` 58 → 27; `translation_defect` 52 → 22. Every
+   returned row re-gated: 26 strict `VALID`, 5 loose `agrees`, all files verify.
 4. Rewrite the `array` rows in `solutions/` to `seq`, gated as above.
    **Done** — 14 rewritten, re-verified and re-gated; `2826_42` and `2128_34`
    recorded as measured exceptions.

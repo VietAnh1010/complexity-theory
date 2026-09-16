@@ -36,9 +36,9 @@ memory or from an earlier message.
 
 | directory | rows | meaning |
 |---|---|---|
-| `solutions/` | 328 | valid, `dafny verify` clean, label screened and unsuspected |
+| `solutions/` | 354 | valid, `dafny verify` clean, label screened and unsuspected |
 | `solutions-unscreened/` | 127 | valid; the label was never screened (sibling reuse or `set<T>`) |
-| `solutions-disputed/` | 178 | valid; the audit says the label does not match the code |
+| `solutions-disputed/` | 152 | valid; the audit says the label does not match the code |
 | `solutions-unverified/` | 3 | valid; safety obligations not discharged |
 | `solutions-untranslated/` | 4 | will not be translated; each file states why |
 
@@ -77,9 +77,14 @@ benchmark and load-bearing for this dataset.
 | `siblings.py` | same-problem rows converged despite different labels | everything |
 | `labelaudit.py` | the label describes what the code costs | `solutions/` |
 
+`refile.py` moves rows between `solutions/` and `solutions-disputed/` when the
+cost model changes, from the per-row decision table in
+`batches/cost-axioms/refile_decisions.jsonl`. It is not a re-audit and forms no
+new opinion about any row.
+
 `callgraph.py` is a **measurement, not a gate**: it writes `data/call_depth.jsonl`,
 the longest acyclic chain from `Solve` per row, ghost declarations excluded.
-328 rows, depth 0–4, mean 1.94, 297 of them recursive. Use it to pick rows —
+354 rows, depth 0–4, mean 1.97, 320 of them recursive. Use it to pick rows —
 depth 0–1 are self-contained and cheap to change; a deeper row pushes any
 edit through helper signatures.
 

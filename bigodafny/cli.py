@@ -24,6 +24,7 @@ either takes a judgement as input or produces one as output:
     labelaudit.py evidence|apply    build audit batches; file the verdicts
     checkverdicts.py FILE           the audit's schema and oracle gate
     callgraph.py                    call-depth per row -> data/call_depth.jsonl
+    refile.py                       re-file verdicts after a cost-model change
     siblings.py                     find two rows of one problem that converged
     scaffold.py, extract.py, ...    also importable, as cli.py itself does
 """

@@ -1,7 +1,7 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(nlogn)
-//   audited class  : O(n**2)
+//   audited class  : O(n)
 //   cause          : translation
 //   confidence     : high
 //   auditor        : labelaudit-batch-08

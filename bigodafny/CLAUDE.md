@@ -18,9 +18,9 @@ it means and how a row leaves it. A row is in exactly one.
 
 | directory | rows | why it is not simply clean |
 |---|---|---|
-| `solutions/` | 328 | — it is |
+| `solutions/` | 354 | — it is |
 | `solutions-unscreened/` | 127 | its label was never screened |
-| `solutions-disputed/` | 178 | the audit says its label does not match its code |
+| `solutions-disputed/` | 152 | the audit says its label does not match its code |
 | `solutions-unverified/` | 3 | `dafny verify` cannot discharge its safety obligations |
 | `solutions-untranslated/` | 4 | it will not be translated; the file says why |
 

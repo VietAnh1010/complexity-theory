@@ -50,8 +50,9 @@ Separate deliverable in `bigodafny/`, built from BigOBench's
 `time_complexity_test_set`. Shares nothing with the paper pipeline.
 
 - **Phase:** translated and gated; label audit complete; cost model axiomatised
+  and the queue re-filed under it
 - **Last updated:** 2026-09-16
-- **Next action:** review the 178 disputed rows; screen the 127 unscreened ones
+- **Next action:** review the 152 disputed rows; screen the 127 unscreened ones
 
 | | |
 |---|---|
@@ -61,11 +62,11 @@ Separate deliverable in `bigodafny/`, built from BigOBench's
 | behaviour gated | 529 valid, 3 fail |
 | safety verified | 350 of 636 |
 | complexity proved | 31 rows, 33 files, all verify, zero `assume` |
-| label audit | 506 screened: 321 `ok`, 178 `mismatch`, 7 `unsure` |
+| label audit | 506 screened: 347 `ok`, 152 `mismatch`, 7 `unsure` |
 | Dafny / Z3 | 4.11.0 / 4.12.1 |
 
 **Rows are partitioned by status**, one directory each, each with a `README.md`:
-`solutions/` 328, `solutions-unscreened/` 127, `solutions-disputed/` 178,
+`solutions/` 354, `solutions-unscreened/` 127, `solutions-disputed/` 152,
 `solutions-unverified/` 3, `solutions-untranslated/` 4. `solutions-proved/` is
 an overlay of instrumented copies, not a sixth bucket.
 
@@ -112,12 +113,14 @@ non-commercial. See `bigodafny/LICENSE.md`.
 - `bigodafny`: **resolved** — agents translated all 636 rows behind the
   validator. `CLAUDE.md`'s "no model in this pipeline" was written for the paper
   pipeline; `bigodafny/CLAUDE.md` scopes it to the deterministic stages.
-- `bigodafny`: 178 rows sit in `solutions-disputed/` awaiting manual review.
-  - 112 need the **label** changed, 58 the **translation**, 7 both, 1 neither.
-  - Re-filing under the cost axioms should return 30-40 of the 58 to `solutions/`;
-    that step (`batches/cost-axioms/PLAN.md` § 3) has not been run, because it
-    changes verdicts already queued for review.
-  - One convention is unsettled across 11 rows: whether a loop bounded by the
+- `bigodafny`: 152 rows sit in `solutions-disputed/` awaiting manual review.
+  - 118 need the **label** changed, 27 the **translation**, 6 both, 1 neither.
+  - The re-file under the cost axioms is done (`refile.py`, from a per-row
+    decision table). 31 rows left the queue, 5 joined it, 3 were re-classified.
+  - The five that joined were filed `ok` only because the old copy charge
+    reproduced their label by accident. An accidental agreement is not a pass,
+    and a model change exposes it in both directions.
+  - One convention is unsettled across 12 rows: whether a loop bounded by the
     *value* of a capped scalar counts as constant. See
     `solutions-disputed/README.md`.
 - `bigodafny`: 127 rows in `solutions-unscreened/` have never been through the

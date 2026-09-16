@@ -48,16 +48,16 @@ several of its claims were later reversed. `summaries/README.md` says which.
 | loose tier, `difftest.py` | 95 agree, 4 untranslatable, 1 ungateable |
 | safety verified (`dafny verify`) | 350 of 636 |
 | complexity proved | 31 rows, 33 files, all verify, zero `assume` |
-| label audit | 506 screened: 321 `ok`, 178 `mismatch`, 7 `unsure` |
+| label audit | 506 screened: 347 `ok`, 152 `mismatch`, 7 `unsure` (after the re-file) |
 | Dafny / Z3 | 4.11.0 / 4.12.1 |
 
 **Open, and waiting on a human decision:**
 
-- 178 rows in `solutions-disputed/` await manual review. 112 need the *label*
-  changed, 58 the *translation*, 7 both, 1 neither.
-- Re-filing those under the cost axioms should return 30–40 of the 58 to
-  `solutions/`. That is `batches/cost-axioms/PLAN.md` step 3 and it has **not**
-  been run, because it changes verdicts already queued for review.
+- 152 rows in `solutions-disputed/` await manual review. 118 need the *label*
+  changed, 27 the *translation*, 6 both, 1 neither.
+- The re-file under the cost axioms is **done** (`batches/cost-axioms/PLAN.md`
+  step 3, applied by `refile.py` from a per-row decision table). 31 rows left
+  the queue, 5 joined it, 3 were re-classified in place.
 - One convention is unsettled across 12 rows: whether a loop bounded by the
   *value* of a capped scalar counts as constant. `solutions-disputed/README.md`
   names them.
@@ -73,9 +73,9 @@ leaves it.
 
 | directory | rows | why it is not simply clean |
 |---|---|---|
-| `solutions/` | 328 | — it is |
+| `solutions/` | 354 | — it is |
 | `solutions-unscreened/` | 127 | its label was never screened |
-| `solutions-disputed/` | 178 | the audit says the label does not match the code |
+| `solutions-disputed/` | 152 | the audit says the label does not match the code |
 | `solutions-unverified/` | 3 | `dafny verify` cannot discharge its safety obligations |
 | `solutions-untranslated/` | 4 | it will not be translated; the file says why |
 
@@ -125,6 +125,11 @@ These are the ones that have each been broken at least once, at cost.
 `validate.py` is the **wrong** gate for loose rows — their problems accept
 several correct answers, so even the original Python fails a byte-diff against
 the stored output.
+
+`refile.py` re-files audited rows after a change to the cost model. It is not a
+re-audit: every move is derived from what a recorded verdict already says, and
+the derivation is written per row in `batches/cost-axioms/refile_decisions.jsonl`.
+Re-running it is safe — a row already moved has only its record rewritten.
 
 `callgraph.py` is a measurement, not a gate: longest acyclic chain from `Solve`
 per row, in `data/call_depth.jsonl`. Depth 0–1 rows are self-contained and cheap

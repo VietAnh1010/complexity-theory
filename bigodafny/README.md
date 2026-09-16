@@ -120,9 +120,9 @@ than rows of its own.
 
 | directory | rows | why it is not simply clean |
 |---|---|---|
-| `solutions/` | 328 | -- it is |
+| `solutions/` | 354 | -- it is |
 | `solutions-unscreened/` | 127 | its complexity label was never screened |
-| `solutions-disputed/` | 178 | the label audit says the label does not match the code |
+| `solutions-disputed/` | 152 | the label audit says the label does not match the code |
 | `solutions-unverified/` | 3 | `dafny verify` cannot discharge its safety obligations |
 | `solutions-untranslated/` | 4 | it will not be translated; the file says why |
 | `solutions-proved/` | 33 files | the complexity label, machine-checked (overlay, not a partition) |
@@ -151,7 +151,7 @@ Python float has no finite specification, see
 | behaviour gated | 529 valid, 3 fail |
 | safety verified | 350 of 636 |
 | complexity proved | 31 rows, 33 files, all verifying, zero `assume` |
-| label audit | 506 rows screened: 321 `ok`, 178 `mismatch`, 7 `unsure` |
+| label audit | 506 rows screened: 347 `ok`, 152 `mismatch`, 7 `unsure` |
 
 The cost model is now a **stipulated axiom set**, not a measurement of Dafny's
 Python backend — `COMPLEXITY.md` and `batches/cost-axioms/PLAN.md`. Every label
@@ -161,5 +161,5 @@ label. `validate.py` and `difftest.py` check behaviour, which is the part that
 *is* implementation-independent to check; the complexity claim is checked by
 proof, in `solutions-proved/`.
 
-Open: the 178 disputed rows await manual review, and 127 unscreened rows have
+Open: the 152 disputed rows await manual review, and 127 unscreened rows have
 never been through the audit at all.

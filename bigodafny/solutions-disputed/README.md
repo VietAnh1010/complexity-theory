@@ -1,6 +1,6 @@
 # `solutions-disputed/` — label audit review queue
 
-178 rows whose stated complexity label does not describe what the code costs.
+152 rows whose stated complexity label does not describe what the code costs.
 **Queued for manual review; nothing here is a decision.** Each file keeps its
 full original body with a header naming the audited class, the cause, the
 confidence and the evidence, so a reviewer needs nothing else open.
@@ -8,11 +8,9 @@ confidence and the evidence, so a reviewer needs nothing else open.
 Produced by `labelaudit.py` from agent verdicts that passed `checkverdicts.py`,
 with every mismatch re-checked by the orchestrating session before the move.
 
-> Renamed from `solutions-tofix/`. "To fix" overstated the verdict: 112 of the
-> 178 rows need a **label** changed, not code, and under
-> `batches/cost-axioms/PLAN.md` a large part of the `translation` group needs
-> nothing at all. What is disputed is the label, and that is what the name now
-> says.
+> Renamed from `solutions-tofix/`. "To fix" overstated the verdict: 118 of the
+> 152 rows need a **label** changed, not code. What is disputed is the label,
+> and that is what the name now says.
 
 ## These rows are still in the dataset
 
@@ -22,38 +20,65 @@ machine-checked complexity proof in `solutions-proved/` — the strongest input 
 reviewer can have, and `checkverdicts.py` rejects any verdict that contradicts
 one.
 
-## The cost model changed after most of these were filed
+## The queue was re-filed when the cost model changed
 
-`batches/cost-axioms/PLAN.md` replaced the measured cost model with a
-stipulated one: `s[i := v]`, `m[k := v]` and set insertion are all O(1),
-independent of backend. A verdict of `cause: translation` filed *solely* because
-a Dafny collection copies where CPython assigns in place is no longer a defect —
-the label was right and so is the translation.
+`COMPLEXITY.md` § 1 charges `s[i := v]`, `m[k := v]` and set insertion `1`, by
+stipulation. A verdict filed `cause: translation` *solely* because a Dafny
+collection copies where CPython assigns in place is no longer a defect. `refile.py`
+applied that, from a decision written per row in
+`batches/cost-axioms/refile_decisions.jsonl`:
 
-Re-filing those rows is step 3 of that plan and has **not** been run, because it
-changes verdicts already queued for manual review. Expect roughly 30–40 of the
-58 `translation` rows to return to `solutions/` when it is. The 112 `label` rows
-are untouched by the switch: they were never about backend cost.
+| | |
+|---|---|
+| left the queue | 31 |
+| **joined** the queue | 5 |
+| stayed, re-classified | 3 |
+| net | 178 → 152 |
+
+**Five rows moved the other way, and the plan did not predict it.** `1622_305`,
+`1748_145`, `1367_88`, `2505_30` and `2854_107` were filed `ok` only because the
+old per-write copy charge reproduced their `O(n**2)` label by accident — each
+verdict says so in its own evidence, and says the Python is linear. Charge the
+write `1` and the Dafny agrees with the Python while both disagree with the
+label, so the label is what is wrong. An accidental agreement is not a passing
+grade, and a model change exposes it in both directions.
+
+Two rows that looked like clean returns were not. `1336_340` and `1981_62`
+replace the Python's `sort` with a linear pass, so removing the copy charge does
+not land them on their `O(nlogn)` labels — it drops them *below*, to `O(n)`.
+They keep `cause: translation` in the too-fast direction. `2188_371` narrowed
+from `both` to `label` for the same reason: its translation half dissolved, its
+label half did not.
+
+Every row that left the queue was re-gated: 26 strict rows `VALID`, 5 loose rows
+`agrees`, and every file touched still passes `dafny verify`.
 
 
 ## The audit is complete — all 506 rows screened
 
-Every row in `solutions/` has a verdict. 506 screened, 321 `ok`,
-178 `mismatch`, 7 `unsure`. The mismatches are here.
+Every row in `solutions/` has a verdict. 506 screened; after the re-file above,
+347 `ok`, 152 `mismatch`, 7 `unsure`. The mismatches are here.
 
-| cause | rows | what the repair is |
-|---|---|---|
-| `label` | 112 | BigOBench's label is wrong; the translation is faithful. Fix the label. |
-| `translation` | 58 | The label is right about the Python. Fix the Dafny. |
-| `both` | 7 | Neither matches. Both need work. |
-| `harness` | 1 | Nothing is wrong. The dataset drew the measurement boundary elsewhere. Document it. |
+| cause | rows | before the re-file | what the repair is |
+|---|---|---|---|
+| `label` | 118 | 112 | BigOBench's label is wrong; the translation is faithful. Fix the label. |
+| `translation` | 27 | 58 | The label is right about the Python. Fix the Dafny. |
+| `both` | 6 | 7 | Neither matches. Both need work. |
+| `harness` | 1 | 1 | Nothing is wrong. The dataset drew the measurement boundary elsewhere. Document it. |
 
-Confidence on the mismatches: 129 high, 43 medium, 6 low.
-52 rows carry `translation_defect` — the Dafny is in a worse class than the
-Python — including some whose verdict is `ok`, where the label and the defect
-happen to agree. Those are in `solutions/`, not here.
+`translation` more than halved, which is the whole point of the re-file: most of
+that class was a container difference, not a defect. What is left is the four
+shapes `batches/labelaudit/PROMPT.md` names — a replaced algorithm, a slice that
+is a view in Dafny and a copy in Python, a concat rebuilt at every recursion
+level, and a library call reimplemented as a loop.
 
-23 rows land on `other`: their true class is outside the eleven-string
+Confidence on the mismatches: 108 high, 38 medium, 6 low.
+22 rows carry `translation_defect` — the Dafny is in a worse class than the
+Python — including three whose verdict is `ok`, where the label and the defect
+happen to agree. Those are in `solutions/`, not here. The flag was cleared on
+every row whose only "defect" was a copying collection.
+
+17 rows land on `other`: their true class is outside the eleven-string
 vocabulary (cubic, or a cost in a value rather than a size). Read `evidence` for
 the real class.
 

@@ -1,6 +1,6 @@
 # `solutions/` — the clean corpus
 
-328 rows. A row is here when three things hold at once:
+354 rows. A row is here when three things hold at once:
 
 - **Behaviour.** `validate.py` matches its stdout against BigOBench's stored
   output (strict rows), or `difftest.py` agrees with its own Python (loose

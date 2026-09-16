@@ -1,13 +1,13 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n*m)
-//   audited class  : O(n**2)
-//   cause          : both
+//   audited class  : O(n)
+//   cause          : label
 //   confidence     : high
 //   auditor        : labelaudit-batch-16
 //
-//   The Python does not match the label AND the translation diverges
-//   from the Python. Both need attention.
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
 //
 //   evidence:
 //     Both while loops build ga/gb and counts via ga := ga[a_list[i] := i]
