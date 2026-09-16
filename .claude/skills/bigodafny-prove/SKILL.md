@@ -1,6 +1,6 @@
 ---
 name: bigodafny-prove
-description: Prove a BigOBench row's time-complexity label in Dafny with a ghost step counter. Use when asked to prove, establish, or machine-check a complexity label, when working in solutions-verified/ or solutions-nlogn/, or when a label is suspected wrong. Covers the charging convention and the CeilLog2 recursion-tree argument.
+description: Prove a BigOBench row's time-complexity label in Dafny with a ghost step counter. Use when asked to prove, establish, or machine-check a complexity label, when working in solutions-proved/ or solutions-proved/nlogn/, or when a label is suspected wrong. Covers the charging convention and the CeilLog2 recursion-tree argument.
 ---
 
 # Proving the complexity label
@@ -9,7 +9,7 @@ Read the `bigodafny` skill first, and `bigodafny/COMPLEXITY.md` for the full
 convention — this is the operating procedure, that is the contract.
 
 `solutions/` proves **behaviour**: the Dafny reproduces the Python's stdout.
-It says nothing about the label. `solutions-verified/` proves the **label**.
+It says nothing about the label. `solutions-proved/` proves the **label**.
 
 Testing cannot catch a wrong label. Three defects in this project produced
 correct output, a wrong complexity, and green tests: a doubly-recursive min/max
@@ -76,7 +76,7 @@ Do not tune constants to look tight — take whatever the invariant supports.
 
 ## Logarithmic bounds
 
-Dafny has no `log`. `solutions-nlogn/` proves the true O(n log n) for merge sort.
+Dafny has no `log`. `solutions-proved/nlogn/` proves the true O(n log n) for merge sort.
 Two things make it work.
 
 **Match the log's rounding to the code's rounding.** This is the general rule;
@@ -111,22 +111,22 @@ lemma MulDistrib(a: nat, b: nat, k: nat, L: nat) requires a + b == k
 lemma SortCostNLogN(k: nat) ensures SortCost(k) <= 2 * k * (CeilLog2(k) + 1) + 1
 ```
 
-`solutions-verified/` retains the honest `O(n²)` fallback for the two original
-sort rows and `solutions-nlogn/` carries their tight bound on a copy — an
+`solutions-proved/` retains the honest `O(n²)` fallback for the two original
+sort rows and `solutions-proved/nlogn/` carries their tight bound on a copy — an
 artifact of the tight proof arriving second. A new sort row does not need that
 split: `187_193` was written straight to the tight bound by reusing these
 lemmas.
 
 ## Procedure
 
-1. Copy the row from `solutions/` into `solutions-verified/<PID>/<SID>.dfy`.
+1. Copy the row from `solutions/` into `solutions-proved/<PID>/<SID>.dfy`.
    Never instrument in place — the ghost version is a second artifact.
 2. Add `ghost steps: nat` to the out-params and an `ensures` naming the bound in
    terms of the input, matching the label's shape.
 3. Charge every operation per the table. Loop invariants relate `steps` to the
    counter.
 4. `dafny verify --solver-path /usr/local/bin/z3 --verification-time-limit 30`.
-5. `python3 validate.py --solutions-dir solutions-verified --out-prefix ver_` —
+5. `python3 validate.py --solutions-dir solutions-proved --out-prefix ver_` —
    a bare `--only <SID>` resolves to `solutions/` and tests the ORIGINAL, and it
    overwrites the corpus-wide `data/validation.jsonl`. Then diff the emitted
    Python of the proof against its original: identical bytes is the real
@@ -155,7 +155,7 @@ statement. Record the disagreement; never adjust the proof to match the label.**
 
 ## Results so far
 
-31 rows in `solutions-verified/`, 2 in `solutions-nlogn/`. 33/33 verify, zero
+31 rows in `solutions-proved/`, 2 in `solutions-proved/nlogn/`. 33/33 verify, zero
 `assume`. **`bigodafny/summaries/proof_obstructions.md` lists what is NOT
 provable and why — read it before picking a row.** 164 rows are blocked on
 `decreases *` (19 rows) and unmeasured `set`/`map` costs (44). Behavioural equivalence is established by **emitted-Python identity**,
@@ -212,7 +212,7 @@ row tests the **uninstrumented original**. `precheck.py` had this bug, was fixed
 with `find_all()`, and the fix never reached the other two. Do not fix it here —
 an agent may not edit a gate it is judged by. Instead:
 
-- `python3 validate.py --solutions-dir solutions-verified --out-prefix ver_`
+- `python3 validate.py --solutions-dir solutions-proved --out-prefix ver_`
   points the existing flag at the instrumented copies.
 - For `loose` rows, and as the stronger check generally, compare the **emitted
   Python** of the proof against its original. Byte-identical compiled code

@@ -2,7 +2,7 @@
 
 Companion to `complexity_proofs.md`, which records what was proved. This
 records what was **not**, with the reason, so the next wave does not re-derive
-it. Counts are over the 602 rows in `solutions/` and `solutions-inexact/` that
+it. Counts are over the 602 rows in `solutions/` and `solutions-unscreened/` that
 carry no proof yet.
 
 Two kinds of entry:
@@ -53,14 +53,23 @@ does not have.
     Dafny  s := s[i := v]   n=2k .070s  4k .144s   8k .471s   16k 1.735s
     CPython  lst[i] = v     n=2k .0002s 4k .0002s  8k .0005s  16k .0010s
 
-**93 unproved rows contain the pattern** — the largest defect class found in
-this project, and the same shape as the `set<T>` trap: correct output, wrong
-complexity, green tests. The remedy is the same, an `array<T>` assigned in
-place, and it is a translation fix, not a proof fix.
+**93 unproved rows contain the pattern** — at the time, the largest defect class
+found in this project, and the same shape as the `set<T>` trap: correct output,
+wrong complexity, green tests.
 
-Consequence for proving: charge `|s|`, prove the quadratic, and record the
-disagreement against the **translation**, not the label. A row failing this way
-is not evidence that BigOBench mislabelled anything.
+**Superseded — there is no longer a remedy, because there is no longer a
+defect.** `batches/cost-axioms/PLAN.md` charges `s[i := v]` O(1) by stipulation,
+so a `seq` update no longer puts the translation in a different class from the
+Python. The measurement above is still true of the Python backend and is kept
+for that reason; it is no longer a reason to rewrite a row or to file it as a
+`translation` defect. The `array<T>` this section used to recommend has itself
+been removed from `solutions/` — the corpus is `seq`-only, bar two rows whose
+tables are too large for the backend to copy.
+
+Consequence for proving, under the axioms: charge 1 for `s[i := v]` and prove
+the linear bound. The old instruction — charge `|s|`, prove the quadratic, file
+against the translation — applied only while the cost model was read off the
+backend.
 
 `1180_626`'s blind agent found this unaided, called a full-copy charge "the
 defensible reading", and concluded O(a^2) independent of `Join`. The

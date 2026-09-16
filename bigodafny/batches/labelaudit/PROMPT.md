@@ -26,7 +26,7 @@ else, anywhere. Do not modify any `.dfy`. Do not run `dafny`.
 > an array" remark is no longer a valid repair for a `translation` row.
 
 Charge 1 for: `int` arithmetic and comparison, `s[i]`, `|s|`, one unit of loop
-overhead per iteration, an `array<T>` element assignment `a[i] := v`.
+overhead per iteration.
 
 Everything else costs what the table says:
 
@@ -107,7 +107,7 @@ against the **Python**, which is what the label was measured on:
 ```json
 {"sid": "1039_15", "label": "O(nlogn)", "verdict": "mismatch",
  "true_class": "O(n**2)", "cause": "translation", "confidence": "high",
- "what_to_look_for": "The label assumes lastPos updates are O(1) as they are in Python. Open the Dafny loop and confirm the update is `lastPos := lastPos[x := i]` rather than an array write; if it is a seq update the Dafny is quadratic and the translation, not the label, needs the fix.",
+ "what_to_look_for": "The label assumes lastPos updates are O(1) as they are in Python. Open the Dafny loop and confirm the update is `lastPos := lastPos[x := i]`; under the pre-axiom model that seq update makes the Dafny quadratic and the translation, not the label, needs the fix.",
  "evidence": "lastPos := lastPos[x := i] inside a loop over n elements; each update copies n+1 entries, so the Dafny is quadratic. The Python assigns in place and is O(n log n) as labelled.",
  "auditor": "labelaudit-batch-NN"}
 ```

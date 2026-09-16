@@ -111,7 +111,7 @@ split -l 20 -d -a 2 --additional-suffix=.txt /tmp/pool batches/verifyN/w_
     - NEVER git add/commit/push. `git checkout --` on your own 20 files is
       allowed.
     - NEVER edit prelude.dfy, any *.py, or anything under data/, batches/,
-      summaries/, solutions/, solutions-inexact/, solutions-verified/,
+      summaries/, solutions/, solutions-unscreened/, solutions-proved/,
       solutions-untranslated/.
 
     # Report (concise)
@@ -181,7 +181,7 @@ python3 dataset.py && git add -A && git commit
 ```
 
 Only rows from `solutions-unverified/` move to `solutions/`. A row in
-`solutions-inexact/` stays there and records `safety_verified` in
+`solutions-unscreened/` stays there and records `safety_verified` in
 `dataset.jsonl` instead — a suspect complexity label is the more serious defect.
 
 ## Known-hard

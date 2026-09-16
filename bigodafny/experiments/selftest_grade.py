@@ -3,7 +3,7 @@
 A grader that has only ever seen correct input is untested -- the same rule
 `selftest.py` applies to the validator. Three cases:
 
-  1. the 12 finished proofs in solutions-verified/ and solutions-nlogn/ must
+  1. the 12 finished proofs in solutions-proved/ and solutions-proved/nlogn/ must
      pass every gate -- including the precondition gate, which is how two of
      them were found to carry a `requires` no one had ever checked;
   2. a copy with `assume {:axiom} true;` added must be rejected -- it still

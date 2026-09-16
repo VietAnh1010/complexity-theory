@@ -9,7 +9,7 @@ Two stages, deliberately separated:
               pairs them with the label and the original Python. No model. Two
               runs produce byte-identical batches.
   `apply`     takes agent verdicts and moves mismatching rows to
-              `solutions-tofix/`, one file per row, verdict recorded in the
+              `solutions-disputed/`, one file per row, verdict recorded in the
               header so a human reviewer needs nothing else open.
 
 A mismatch has two very different causes and the audit must say which, because
@@ -36,7 +36,7 @@ from common import DATA, ROOT, SOLUTIONS, log, read_jsonl, write_jsonl  # noqa: 
 from features import (class_risk, extract, split_file,                  # noqa: E402
                       strip_comments, accumulator_read_in_loop)
 
-TOFIX = ROOT / "solutions-tofix"
+DISPUTED = ROOT / "solutions-disputed"
 BATCHES = ROOT / "batches" / "labelaudit"
 
 # Prelude functions whose cost is linear in their argument, not constant. An
@@ -200,7 +200,7 @@ def apply(verdicts_path, dry_run=False):
                                    or "not recorded by this batch"),
             facts=_wrap(json.dumps(facts(text), sort_keys=True)),
             rule="-" * 68)
-        dst = TOFIX / t["problem_id"] / f"{sid}.dfy"
+        dst = DISPUTED / t["problem_id"] / f"{sid}.dfy"
         if not dry_run:
             dst.parent.mkdir(parents=True, exist_ok=True)
             dst.write_text(head + "\n" + text, encoding="utf-8")
@@ -231,7 +231,7 @@ def apply(verdicts_path, dry_run=False):
         n_v = merge(DATA / "label_audit.jsonl", verdicts)
         n_m = merge(DATA / "label_audit_moved.jsonl", moved)
         log(f"audit trail: {n_v} verdicts, {n_m} moves on record")
-    log(f"apply: {len(moved)} moved to solutions-tofix/, {kept} kept"
+    log(f"apply: {len(moved)} moved to solutions-disputed/, {kept} kept"
         + (f", {len(missing)} not found: {missing}" if missing else "")
         + ("  [DRY RUN]" if dry_run else ""))
     return moved

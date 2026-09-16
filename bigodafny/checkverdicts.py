@@ -91,7 +91,7 @@ def check(path, batch_path=None):
 def oracle(path):
     """Cross-check against rows that carry a machine-checked bound.
 
-    `solutions-verified/` holds proofs, not opinions. A verdict that contradicts
+    `solutions-proved/` holds proofs, not opinions. A verdict that contradicts
     one is wrong, and it is the cheapest calibration available.
     """
     proofs = {r["solution_id"]: r for r in read_jsonl(DATA / "complexity_proofs.jsonl")}

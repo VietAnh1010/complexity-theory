@@ -6,7 +6,7 @@ defects found in this project produced correct output, wrong complexity, and
 green tests — a doubly-recursive min/max, sibling reuse, and `set<T>` built in a
 loop. Testing cannot catch any of them.
 
-`solutions-verified/` proves the label.
+`solutions-proved/` proves the label.
 
 ## The technique
 
@@ -50,7 +50,6 @@ Operations that are **not** constant time must be charged their real cost:
 | operation | real cost | charge |
 |---|---|---|
 | `s[i := v]` (seq update) | **O(\|s\|)** — measured, a full copy | `\|s\|` |
-| `a[i] := v` on an `array<T>` | **O(1)** — measured, in place | `1` |
 | `s + [x]`, appends only | **O(1)** — measured | `1` |
 | `s + [x]`, with `s[i]` read between appends | **O(\|s\|)** — measured | `\|s\|` |
 | `s + t` (concat) | O(\|t\|) if append-only, else O(\|s\|+\|t\|) | as above |
@@ -156,7 +155,7 @@ is n comparisons each costing O(n), so one `multiset(a) == multiset(b)` is O(n).
 So `multiset(a) == multiset(b)` is a **linear** permutation test, and a row whose
 Python reaches the same answer with `sorted(a) == sorted(b)` is O(n log n). That
 difference is an algorithm replacement, not a data-structure choice: see
-`solutions-tofix/README.md` on the too-fast direction.
+`solutions-disputed/README.md` on the too-fast direction.
 
 **Updating one is not.** `m := m[k := v]` on a multiset compiles to
 `MultiSet.set`, which is `Counter(self)` -- the same full copy as `Map.set` and
@@ -207,11 +206,11 @@ fresh `Set`, so each is O(|m|). `|m.Keys|` inside a loop is quadratic where
     |m| in a loop, n times:        0.1ms / 0.1ms / 0.3ms  (n = 1000 / 2000 / 4000)
     |m.Keys| in a loop, n times:  10.8ms / 49.3ms / 172.6ms
 
-For reference on the same machine, an `array<int>` of n elements fills in
+For reference on the same machine, a `seq<int>` of n elements fills by index in
 0.3 / 0.5 / 1.0ms — linear, and about 160x faster than the map build at n=4000.
-A row that needs a keyed structure it writes to in a loop wants a sorted `seq`
-with binary search, not a `map` — and not an array: see
-`batches/cost-axioms/PLAN.md` § 2, which removed `array<T>` from the corpus.
+A row that needs a keyed structure it writes to in a loop wants a `seq<T>`
+indexed by a dense integer key, or a sorted `seq` with binary search, not a
+`map`.
 
 ### `Join` is linear — and how the opposite got recorded first
 
@@ -265,7 +264,7 @@ match the label.
 
 ## Logarithmic bounds
 
-Dafny has no `log`. `solutions-nlogn/` proves the true O(n log n) for merge sort
+Dafny has no `log`. `solutions-proved/nlogn/` proves the true O(n log n) for merge sort
 with a recursion-tree argument. Two things make it work.
 
 **Match the log's rounding to the code's rounding.** Merge sort splits into

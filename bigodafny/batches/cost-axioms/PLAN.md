@@ -81,7 +81,7 @@ teaches a reader that the choice matters. Under the axioms it does not.
 
 - `array<T>` is heap state. It drags `modifies`, `reads` and `fresh` clauses
   through every signature that touches it, and loop invariants stop being about
-  values and start being about the heap. `solutions-verified/` pays that twice,
+  values and start being about the heap. `solutions-proved/` pays that twice,
   because a ghost step counter and a heap frame have to be maintained together.
 - `array<T>` needs its length up front, so a row that appends without a bound
   cannot use it. That is not a small exception — it means the rewrite could
@@ -133,8 +133,8 @@ array stays. The honest reading: the corpus is `seq`-only except where the gap
 between the stipulated model and the artifact is load-bearing, and it is
 load-bearing exactly twice.
 
-**Scope.** `solutions/` only, as with every other sweep — `solutions-tofix/`
-rows have disputed labels and `solutions-inexact/` rows are not part of the
+**Scope.** `solutions/` only, as with every other sweep — `solutions-disputed/`
+rows have disputed labels and `solutions-unscreened/` rows are not part of the
 clean corpus. Both get the same treatment when they rejoin `solutions/`, and
 until then their arrays are a known, recorded exception rather than a second
 convention.
@@ -164,7 +164,7 @@ not the same assertion as one about `a` over a sequence.
 Under the axioms every label is a claim about an idealised machine rather than
 about anything runnable here, so `validate.py` and `difftest.py` check
 *behaviour only* and nothing in the pipeline checks the complexity claim except
-the hand-written proofs in `solutions-verified/`.
+the hand-written proofs in `solutions-proved/`.
 
 **That is the intended design, not a gap.** A complexity label that depends on
 which backend compiled the row, on the Dafny version, or on the machine it ran
@@ -180,6 +180,6 @@ have for this corpus want the idealised reading:
 
 So `validate.py` checking behaviour and nothing else is correct: behaviour is
 the part that *is* implementation-independent to check. The complexity claim is
-checked by proof, in `solutions-verified/`, where it belongs — and growing that
+checked by proof, in `solutions-proved/`, where it belongs — and growing that
 tier is the way to increase how much of the corpus is machine-checked, not
 adding a timing gate.

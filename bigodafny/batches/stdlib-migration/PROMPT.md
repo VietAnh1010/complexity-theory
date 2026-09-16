@@ -232,8 +232,8 @@ Do it in batches, commit after each, per `CLAUDE.md` § "Checkpoint constantly".
 4. Delete a prelude function only once **zero** rows call it. `grep -rlE
    "\bName\s*\(" solutions --include='*.dfy'` must come back empty. Keep the
    lemmas: `SortKeepsElems`, `PrefixSum*` and `JoinLen*` are cited by proofs in
-   `solutions-verified/`, and those proofs are checked by `proofs.py`.
-5. Re-run `verify_all.py` and `proofs.py` over `solutions-verified/`. A swap that
+   `solutions-proved/`, and those proofs are checked by `proofs.py`.
+5. Re-run `verify_all.py` and `proofs.py` over `solutions-proved/`. A swap that
    changes a function's postcondition breaks proofs that `validate.py` never
    looks at.
 
@@ -243,7 +243,7 @@ Do it in batches, commit after each, per `CLAUDE.md` § "Checkpoint constantly".
   present or absent is the whole decision.
 - Never swap to close a gap the table marks "keep". Those are measured or
   semantic, not stylistic.
-- `solutions-tofix/` is a review queue with unresolved verdicts in its headers.
+- `solutions-disputed/` is a review queue with unresolved verdicts in its headers.
   Do not migrate rows sitting there; they may be rewritten.
 - Record every swap you rejected and why, in this directory. A rejected swap that
   is not written down gets re-proposed next session.

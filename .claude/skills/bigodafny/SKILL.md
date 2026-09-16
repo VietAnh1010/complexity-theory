@@ -1,6 +1,6 @@
 ---
 name: bigodafny
-description: Orientation and state for the BigOBench Python-to-Dafny dataset in bigodafny/. Use when resuming work on that dataset, when asked about translating rows to Dafny, verifying them, proving complexity labels, or when any of solutions/, solutions-unverified/, solutions-inexact/, solutions-untranslated/, solutions-verified/ are involved. Read this before touching anything in bigodafny/.
+description: Orientation and state for the BigOBench Python-to-Dafny dataset in bigodafny/. Use when resuming work on that dataset, when asked about translating rows to Dafny, verifying them, proving complexity labels, or when any of solutions/, solutions-unscreened/, solutions-disputed/, solutions-unverified/, solutions-untranslated/, solutions-proved/ are involved. Read this before touching anything in bigodafny/.
 ---
 
 # bigodafny — orientation
@@ -16,7 +16,7 @@ file holds the map and the reasons.
 
 ```bash
 cd bigodafny && python3 dataset.py && cat data/stats.json
-for d in solutions solutions-unverified solutions-inexact solutions-untranslated; do
+for d in solutions solutions-unverified solutions-unscreened solutions-untranslated; do
   printf "%-24s %s\n" "$d" "$(find $d -name '*.dfy' 2>/dev/null | wc -l)"
 done
 grep -rl 'TODO: translate' solutions --include='*.dfy' | wc -l   # stubs
@@ -25,15 +25,31 @@ grep -rl 'TODO: translate' solutions --include='*.dfy' | wc -l   # stubs
 The directory a row sits in *is* its classification. Never infer status from
 memory or from an earlier message.
 
-| directory | meaning |
-|---|---|
-| `solutions/` | valid, `dafny verify` clean, complexity label unsuspected |
-| `solutions-unverified/` | valid; safety obligations not discharged |
-| `solutions-inexact/` | complexity label suspect (sibling reuse or `set<T>`) |
-| `solutions-untranslated/` | will not be translated; each file states why |
-| `solutions-verified/` | complexity **proved** via ghost step counter (31 rows) |
-| `solutions-nlogn/` | two sort rows at the tight O(n log n) bound |
-| `solution-guessed-verified/` | blind-arm experiment attempts; label was withheld from the author. NOT dataset rows |
+**A partition.** These five are disjoint and cover all 640 rows; each has a
+`README.md` stating what it means and how a row leaves it.
+
+| directory | rows | meaning |
+|---|---|---|
+| `solutions/` | 328 | valid, `dafny verify` clean, label screened and unsuspected |
+| `solutions-unscreened/` | 127 | valid; the label was never screened (sibling reuse or `set<T>`) |
+| `solutions-disputed/` | 178 | valid; the audit says the label does not match the code |
+| `solutions-unverified/` | 3 | valid; safety obligations not discharged |
+| `solutions-untranslated/` | 4 | will not be translated; each file states why |
+
+**An overlay.** Not part of the partition — instrumented *copies* of rows that
+also live above, so a row can exist twice with different preconditions.
+
+| directory | files | meaning |
+|---|---|---|
+| `solutions-proved/` | 31 | complexity **proved** via ghost step counter |
+| `solutions-proved/nlogn/` | 2 | the same two sort rows at the tight O(n log n) bound |
+| `experiments/proofs-blind/` | 15 | blind-arm experiment attempts; label withheld from the author. NOT dataset rows |
+
+Renames, if you are reading older notes: `solutions-inexact/` →
+`solutions-unscreened/`, `solutions-tofix/` → `solutions-disputed/`,
+`solutions-verified/` → `solutions-proved/` (it collided with `dafny verify`,
+which checks safety), `solutions-nlogn/` → `solutions-proved/nlogn/`,
+`solution-guessed-verified/` → `experiments/proofs-blind/`.
 
 ## The one structural fact
 
@@ -50,7 +66,7 @@ benchmark and load-bearing for this dataset.
 | `validate.py` | matches BigOBench's **stored** output | 534 `strict` rows |
 | `difftest.py` | matches **its own Python** | 100 `loose` rows |
 | `verify_all.py` | memory-safe for all inputs, no spec needed | everything |
-| `proofs.py` | complexity **proved**; fails on any `assume` | `solutions-verified/` |
+| `proofs.py` | complexity **proved**; fails on any `assume` | `solutions-proved/` |
 | `precheck.py` | every added `requires` holds on real inputs | anything with `requires` |
 | `siblings.py` | same-problem rows converged despite different labels | everything |
 
@@ -123,10 +139,10 @@ Sub-skills: `bigodafny-translate`, `bigodafny-verify`, `bigodafny-prove`.
   hand-wrote the same lemma over and over.
 - **Both remaining gates resolve a row to the wrong file.** `validate.py` and
   `difftest.py` scan `SOLUTIONS, INEXACT, UNVERIFIED, VERIFIED` and take the
-  first hit, so for a row that also sits in `solutions-verified/` they test the
+  first hit, so for a row that also sits in `solutions-proved/` they test the
   uninstrumented original. `precheck.py` had the identical bug and was fixed
   with `find_all()`; the fix never reached the other two. Use
-  `validate.py --solutions-dir solutions-verified`, and for `loose` rows compare
+  `validate.py --solutions-dir solutions-proved`, and for `loose` rows compare
   the emitted Python instead — identical compiled bytes beats a test sample.
 - **`seq` append is O(1), not O(\|s\|)** — measured. The Python backend defers
   the concat; reading `s[i]` between appends forces a flatten and *that* is the

@@ -9,7 +9,7 @@ raises on its own.
 | directory | verified | total | rate |
 |---|---|---|---|
 | `solutions/` | 111 | 346 | 32% |
-| `solutions-inexact/` | 32 | 106 | 30% |
+| `solutions-unscreened/` | 32 | 106 | 30% |
 
 The two rates match, so this is independent of the sibling/set quarantine.
 
@@ -42,9 +42,9 @@ answers a narrower question than it appears to.
 
     solutions/             valid AND safety-verified          111
     solutions-unverified/  valid, safety obligations open     235
-    solutions-inexact/     complexity label suspect           106
-    solutions-verified/    complexity proved, not just tested  10
-    solutions-nlogn/       the two sort rows at the tight bound 2
+    solutions-unscreened/     complexity label suspect           106
+    solutions-proved/    complexity proved, not just tested  10
+    solutions-proved/nlogn/       the two sort rows at the tight bound 2
 
 Only rows from `solutions/` were moved. A quarantined row stays quarantined and
 carries `safety_verified` in `dataset.jsonl` instead — its label problem is the

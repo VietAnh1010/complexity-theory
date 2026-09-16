@@ -3,7 +3,7 @@
 The staged corpora live under a per-session scratch path, so every blind
 `task.dfy` -- the actual artifact the experiment produces -- dies with the
 container. `graded.jsonl` survives and records the verdict and the bound, but
-not the proof. This lifts the proofs into `solution-guessed-verified/` so they
+not the proof. This lifts the proofs into `experiments/proofs-blind/` so they
 are committed with everything else.
 
 Why a separate script, and why the agents do not write here themselves.
@@ -16,10 +16,10 @@ repository. So the agent cannot be told to write here, and `grade.py` must keep
 reading `task.dfy` where it is. Archiving is a step AFTER grading, run by the
 main session, which is not confined and is not what is being measured.
 
-The name mirrors `solutions-verified/`, and the distinction is the point:
+The name mirrors `solutions-proved/`, and the distinction is the point:
 
-    solutions-verified/        a bound proved against a KNOWN label
-    solution-guessed-verified/ a bound proved against a class the agent
+    solutions-proved/        a bound proved against a KNOWN label
+    experiments/proofs-blind/ a bound proved against a class the agent
                                committed to in writing, before proving,
                                without ever seeing the label
 
@@ -38,7 +38,7 @@ HERE = Path(__file__).resolve().parent
 RUNS = HERE / "runs"
 CX_ROOT = Path("/tmp/claude-0/-home-user-complexity-theory/"
                "ed2768b2-16e6-58fb-a2f9-5d0137f30fef/scratchpad/cx-run")
-GUESSED = ROOT / "solution-guessed-verified"
+GUESSED = ROOT / "experiments" / "proofs-blind"
 
 
 def header(rec, res, run_id, sid, pid, include_rewritten=0):

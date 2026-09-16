@@ -1,9 +1,9 @@
 # Proving the complexity label
 
-`solutions/` proves behaviour. `solutions-verified/` proves the label.
+`solutions/` proves behaviour. `solutions-proved/` proves the label.
 
 31 rows instrumented with a ghost step counter and a proved bound, plus 2 tight
-copies in `solutions-nlogn/`. **33/33 verify, 0 contain `assume`, 33/33 emit
+copies in `solutions-proved/nlogn/`. **33/33 verify, 0 contain `assume`, 33/33 emit
 byte-identical Python to the row they were copied from.**
 
 What could not be proved, and why, is in `proof_obstructions.md`. It is the
@@ -56,7 +56,7 @@ proof contains `assume`.
 | `603_284` | O(nlogn) | `2n² + 2n + 4` | not established here |
 | `1484_82` | O(nlogn) | `2n² + 2n + 2·SumLen + 6` | not established here |
 
-`solutions-nlogn/` carries the tight bound for the last two:
+`solutions-proved/nlogn/` carries the tight bound for the last two:
 `2n(CeilLog2(n)+1) + …`, which does establish O(n log n) for both.
 
 ## What "agrees" means in this table, and where it is loose
@@ -73,7 +73,7 @@ were written:
 
 Both labels are valid upper bounds and neither proof is wrong. But BigOBench's
 labels come from fitting observed growth, so a √n program labelled O(n) is a
-mislabel, and both rows are queued in `solutions-tofix/`.
+mislabel, and both rows are queued in `solutions-disputed/`.
 
 The lesson for reading the rest of this table: an "agrees" row has been shown
 consistent, not tight. Proving tightness needs a lower bound, which this method
@@ -145,7 +145,7 @@ and it wants the **opposite** log from the merge-sort rows.
 With the matching one, the key step holds by definition — `m >= 2 ==>
 Log2(m/2) == Log2(m) - 1` — and the invariant closes with no lemma at all.
 With the other, it is false at some small k and the induction cannot close.
-The rule generalises the `solutions-nlogn/` finding: it was never "use a
+The rule generalises the `solutions-proved/nlogn/` finding: it was never "use a
 ceiling log", it was "match the code".
 
 `187_193` is the first row to get the tight n log n bound on the first pass,
@@ -173,7 +173,7 @@ provable except for this term. Every proof so far prints a single value.
 `validate.py` and `difftest.py` both resolve a row by scanning
 `SOLUTIONS, INEXACT, UNVERIFIED, VERIFIED` and returning the **first** hit. A
 proved row exists in two places at once, and `solutions/` is scanned first — so
-every "still passes its tests" claim for `solutions-verified/` was measured on
+every "still passes its tests" claim for `solutions-proved/` was measured on
 the uninstrumented original. This is the third instance of one bug:
 `precheck.py` had it, was fixed with `find_all()`, and the fix never reached
 the other two gates.
@@ -181,7 +181,7 @@ the other two gates.
 Neither gate was edited here — an agent may not edit a gate it is judged by.
 Instead:
 
-- `validate.py --solutions-dir solutions-verified` points the existing flag at
+- `validate.py --solutions-dir solutions-proved` points the existing flag at
   the instrumented copies: **20/22 valid**, and the 2 failures are `1855_50`
   and `2742_57`, both `loose` rows where a byte-diff against the stored output
   is the wrong question. Their own Python scores 0.477 and 0.0 on the same

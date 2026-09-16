@@ -94,7 +94,8 @@ reach numbers, calls made under uncertainty, what another eight hours would do.
 
 ## Style
 
-`.claude/skills/my-concise/SKILL.md` governs `STATUS.md` and anything said to
-the user: bullets, one claim each, ~100 characters, no hedges. This repo
+The `my-concise` skill governs `STATUS.md` and anything said to the user:
+bullets, one claim each, ~100 characters, no hedges. It ships with the
+environment now, not with this repo. This repo
 produces no prose deliverable — keep that surface small. A claim written down
 is a claim someone has to check.

@@ -5,7 +5,7 @@ clean. Starting anywhere weaker would spend agents on safety obligations
 instead of on complexity, which is not what this measures.
 
 Excluded:
-  * the 12 rows already in solutions-verified/ and solutions-nlogn/. Their
+  * the 12 rows already in solutions-proved/ and solutions-proved/nlogn/. Their
     finished proof is in the repo, so for the blind arm the answer leaks by
     construction.
   * siblings. One row per problem, highest score kept -- sibling rows are near

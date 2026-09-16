@@ -5,7 +5,7 @@ the problem, and it is the kind of thing that only becomes visible in aggregate:
 a corpus where every row is one flat `Solve` is a different artifact from one
 where half the rows build three levels of helpers.
 
-Scope. Only `solutions/` -- the clean rows. `solutions-tofix/` holds rows whose
+Scope. Only `solutions/` -- the clean rows. `solutions-disputed/` holds rows whose
 labels are disputed and whose bodies may be rewritten, so measuring their shape
 now would measure something about to change.
 

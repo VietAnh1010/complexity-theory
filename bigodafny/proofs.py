@@ -1,6 +1,6 @@
 """Re-verify every complexity proof and record it against BigOBench's label.
 
-A file in solutions-verified/ claims two things: it behaves like its Python
+A file in solutions-proved/ claims two things: it behaves like its Python
 (tests), and its step count obeys a proved bound (dafny verify). This re-checks
 the second from scratch and tabulates the bound against the label.
 
@@ -11,8 +11,8 @@ the proof is the stronger statement.
 from __future__ import annotations
 import re, shutil, subprocess, sys
 
-from common import (DAFNY_VERSION, DATA, INEXACT, NLOGN, SOLUTIONS, UNVERIFIED,
-                    VERIFIED, event, log, read_jsonl, write_jsonl, TOFIX)
+from common import (DAFNY_VERSION, DATA, UNSCREENED, PROVED_NLOGN, SOLUTIONS, UNVERIFIED,
+                    PROVED, event, log, read_jsonl, write_jsonl, DISPUTED)
 
 DAFNY = shutil.which("dafny") or "/root/.dotnet/tools/dafny"
 SOLVER = shutil.which("z3") or "/usr/local/bin/z3"
@@ -32,7 +32,7 @@ def scan_assumes():
     grepped solutions-unverified/.
     """
     hits = []
-    for d in (SOLUTIONS, UNVERIFIED, INEXACT, VERIFIED, NLOGN, TOFIX):
+    for d in (SOLUTIONS, UNVERIFIED, UNSCREENED, PROVED, DISPUTED):
         if not d.exists():
             continue
         for f in sorted(d.rglob("*.dfy")):
@@ -49,9 +49,11 @@ def scan_assumes():
 def run():
     ds = {r["solution_id"]: r for r in read_jsonl(DATA / "dataset.jsonl")}
     rows = []
-    files = [(d.name, f) for d in (VERIFIED, NLOGN) if d.exists()
-             for f in sorted(d.rglob("*.dfy"))]
-    for dirname, p in files:
+    # `solutions-proved/nlogn/` is nested inside `solutions-proved/`, so one
+    # rglob reaches both; listing the two roots separately would double-count.
+    files = sorted(PROVED.rglob("*.dfy")) if PROVED.exists() else []
+    for p in files:
+        variant = "nlogn" if PROVED_NLOGN in p.parents else "base"
         sid = p.stem
         text = p.read_text(encoding="utf-8")
         r = subprocess.run([DAFNY, "verify", str(p), "--solver-path", SOLVER],
@@ -62,7 +64,7 @@ def run():
         assumes = len(re.findall(r"\bassume\b", text))
         rows.append({
             "solution_id": sid,
-            "dir": dirname,
+            "proof_variant": variant,
             "label": ds.get(sid, {}).get("time_complexity_inferred"),
             "proved_bound": bound_of(text),
             "verified": ok,
@@ -70,7 +72,7 @@ def run():
             "dafny_version": DAFNY_VERSION,
             "verifier_output": out.strip().splitlines()[-1] if out.strip() else "",
         })
-        log(f"  [{dirname[10:]:>8}] {sid:>10}  {'VERIFIED' if ok else 'FAILED  '}  "
+        log(f"  [{variant:>5}] {sid:>10}  {'VERIFIED' if ok else 'FAILED  '}  "
             f"label={rows[-1]['label']}  bound={rows[-1]['proved_bound']}"
             + ("  ASSUMES!" if assumes else ""))
     write_jsonl(DATA / "complexity_proofs.jsonl", rows)

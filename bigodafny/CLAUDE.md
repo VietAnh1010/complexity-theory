@@ -10,6 +10,29 @@ Builds a Python -> Dafny translation dataset from BigOBench's
 `time_complexity_test_set`. Independent of the arXiv paper-mining pipeline in
 `../scripts`: no shared sources, cache, or record shape.
 
+## Where a row lives
+
+Five directories partition all 640 rows; each carries a `README.md` saying what
+it means and how a row leaves it. A row is in exactly one.
+
+| directory | rows | why it is not simply clean |
+|---|---|---|
+| `solutions/` | 328 | — it is |
+| `solutions-unscreened/` | 127 | its label was never screened |
+| `solutions-disputed/` | 178 | the audit says its label does not match its code |
+| `solutions-unverified/` | 3 | `dafny verify` cannot discharge its safety obligations |
+| `solutions-untranslated/` | 4 | it will not be translated; the file says why |
+
+`solutions-proved/` is **not** part of that partition — it holds instrumented
+copies (33 files, 2 of them tight-bound variants under `nlogn/`) of rows that
+also live above. A row can exist in two places with different preconditions;
+`precheck.py`'s `find_all` exists for that.
+
+Older notes use the old names: `solutions-inexact/` → `solutions-unscreened/`,
+`solutions-tofix/` → `solutions-disputed/`, `solutions-verified/` →
+`solutions-proved/`, `solutions-nlogn/` → `solutions-proved/nlogn/`,
+`solution-guessed-verified/` → `experiments/proofs-blind/`.
+
 ## The one rule that matters
 
 **A row is valid only if the toolchain says so.** `dafny translate` must accept
@@ -120,9 +143,10 @@ while running O(h*w) -- the label, which is the dataset's whole point, became a
 lie. Reverted.
 
 So: match the source's asymptotic shape. Restructuring within a complexity class
-is fine and often necessary -- an array-backed buffer instead of O(n**2) string
-concatenation, an exact rational instead of a float, a mod-reduced product
-instead of a literal factorial. Replacing the algorithm is not.
+is fine and often necessary -- a `seq<T>` buffer filled by index instead of
+O(n**2) string concatenation, an exact rational instead of a float, a
+mod-reduced product instead of a literal factorial. Replacing the algorithm is
+not.
 
 When two solutions of one problem look like they want the same code, that is the
 signal to check their labels, not to share an implementation.
@@ -164,5 +188,6 @@ recorded in `stats.json`.
 
 ## Style
 
-`../.claude/skills/my-concise/SKILL.md` governs anything said to the user and
-`STATUS.md`: bullets, one claim each, ~100 characters, no hedges.
+The `my-concise` skill governs anything said to the user and `STATUS.md`:
+bullets, one claim each, ~100 characters, no hedges. It ships with the
+environment now, not with this repo.

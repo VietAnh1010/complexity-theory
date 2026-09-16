@@ -10,9 +10,9 @@ import argparse, json, os, shutil, subprocess, sys
 from collections import Counter
 from pathlib import Path
 
-from common import (BUILD, DAFNY_VERSION, DATA, INEXACT, PRELUDE, SOLUTIONS,
-                    UNVERIFIED, VERIFIED, event, log, read_jsonl, write_json,
-                    write_jsonl, TOFIX)
+from common import (BUILD, DAFNY_VERSION, DATA, UNSCREENED, PRELUDE, SOLUTIONS,
+                    UNVERIFIED, PROVED, event, log, read_jsonl, write_json,
+                    write_jsonl, DISPUTED)
 
 DAFNY = shutil.which("dafny") or os.path.expanduser("~/.dotnet/tools/dafny")
 SOLVER = shutil.which("z3") or "/usr/local/bin/z3"
@@ -166,7 +166,7 @@ def validate(only=None, tiers=("public_tests", "private_tests"),
     sigs = {s["problem_id"]: s for s in read_jsonl(DATA / "signatures.jsonl")}
 
     roots = ([Path(solutions_dir)] if solutions_dir
-             else [SOLUTIONS, INEXACT, UNVERIFIED, VERIFIED, TOFIX])
+             else [SOLUTIONS, UNSCREENED, UNVERIFIED, PROVED, DISPUTED])
     targets = []
     for sid, t in tasks.items():
         dfy = next((r / t["problem_id"] / f"{sid}.dfy" for r in roots

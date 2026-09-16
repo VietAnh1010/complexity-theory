@@ -18,7 +18,7 @@ Only `strict` is scored by byte-diff.
 from __future__ import annotations
 from collections import Counter
 
-from common import (DAFNY_VERSION, DATA, INEXACT, UNTRANSLATED, VERIFIED,
+from common import (DAFNY_VERSION, DATA, UNSCREENED, UNTRANSLATED, PROVED,
                     event, log, read_jsonl, write_json, write_jsonl)
 
 EXPORT = ("problem_id", "solution_id", "problem_name", "split", "nondet_hint",
@@ -104,7 +104,7 @@ def build():
             # Deliberately not translated; the file states why.
             "untranslatable": (UNTRANSLATED / t["problem_id"] /
                                f'{t["solution_id"]}.dfy').exists(),
-            "complexity_proved": (VERIFIED / t["problem_id"] /
+            "complexity_proved": (PROVED / t["problem_id"] /
                                   f'{t["solution_id"]}.dfy').exists(),
             # `dafny verify` with no user spec: seq bounds, division, termination.
             "safety_verified": verif.get(t["solution_id"], {}).get("verified"),

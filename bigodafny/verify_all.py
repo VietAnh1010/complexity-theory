@@ -15,7 +15,7 @@ from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
-from common import (DATA, INEXACT, ROOT, SOLUTIONS, event, log, write_json,
+from common import (DATA, UNSCREENED, ROOT, SOLUTIONS, event, log, write_json,
                     write_jsonl)
 
 DAFNY = shutil.which("dafny") or "/root/.dotnet/tools/dafny"
@@ -111,7 +111,7 @@ if __name__ == "__main__":
     ap.add_argument("--move", action="store_true")
     ap.add_argument("--workers", type=int, default=8)
     ap.add_argument("--inexact", action="store_true",
-                    help="also verify solutions-inexact/")
+                    help="also verify solutions-unscreened/")
     a = ap.parse_args()
-    dirs = [SOLUTIONS] + ([INEXACT] if a.inexact else [])
+    dirs = [SOLUTIONS] + ([UNSCREENED] if a.inexact else [])
     run([d for d in dirs if d.exists()], workers=a.workers, move=a.move)

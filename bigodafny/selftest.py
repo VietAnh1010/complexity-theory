@@ -13,17 +13,33 @@ from __future__ import annotations
 import shutil, sys, tempfile
 from pathlib import Path
 
-from common import PRELUDE, SOLUTIONS, log
+from common import (DISPUTED, PRELUDE, SOLUTIONS, UNSCREENED,
+                    UNVERIFIED, log)
 from validate import validate
 
 BASE = ("5", "5_100")
+# The fixture row moves between directories as audits reclassify it -- the
+# label audit put 5_100 in the review queue, and this file went on reading
+# `solutions/` and crashed. The gate's own test must not depend on a verdict
+# about the row it borrows, so look wherever the row currently lives.
+BASE_ROOTS = (SOLUTIONS, DISPUTED, UNSCREENED, UNVERIFIED)
+
+
+def base_path() -> Path:
+    pid, sid = BASE
+    for r in BASE_ROOTS:
+        p = r / pid / f"{sid}.dfy"
+        if p.exists():
+            return p
+    raise SystemExit(f"selftest fixture {BASE[1]} is in none of "
+                     + ", ".join(r.name for r in BASE_ROOTS))
 
 
 def fixture(root: Path, mutate) -> Path:
     """Mirror the real tree layout: the stub's `include "../../prelude.dfy"`
     only resolves if prelude sits two levels above the .dfy."""
     pid, sid = BASE
-    src = (SOLUTIONS / pid / f"{sid}.dfy").read_text(encoding="utf-8")
+    src = base_path().read_text(encoding="utf-8")
     shutil.copy(PRELUDE, root / "prelude.dfy")
     dst = root / "solutions" / pid
     dst.mkdir(parents=True, exist_ok=True)
