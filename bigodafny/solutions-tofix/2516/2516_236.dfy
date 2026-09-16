@@ -1,3 +1,38 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(nlogn)
+//   audited class  : O(n**2)
+//   cause          : label
+//   confidence     : high
+//   auditor        : labelaudit-batch-19
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     The active i loop runs n-1 times and on each hit does arr := arr[i
+//     := target] and arr := arr[i+1 := ...], both O(n) seq updates;
+//     Python's parallel branch does s = s[:i]+'W'+...+s[i+2:], a full O(n)
+//     string rebuild per iteration, so both are O(n**2), not the labeled
+//     O(nlogn).
+//
+//   how this label could be wrong, and what to check:
+//     The label claims nlogn but facts.sorts is empty, meaning no sort
+//     call exists in this solution at all. Check the Python's active
+//     branch (after the commented-out code): the line s = s[:i] + 'W' +
+//     ... + s[i+2:] inside the for loop rebuilds the whole string each
+//     iteration; confirm this executes up to n-1 times, which would make
+//     the Python itself quadratic.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 41, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString", "JoinInts"],
+//     "loop_depth": 1, "loops": 2, "recursive_helpers": 0,
+//     "seq_append_read_in_same_loop": false, "seq_args": 1,
+//     "seq_update_in_loop": true, "set_build_in_loop": false, "sorts": [],
+//     "uses_map": false, "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 1271_B. Blocks  (problem 2516, solution 2516_236)
 // time complexity: O(nlogn)
 // python exact-diff baseline: partial

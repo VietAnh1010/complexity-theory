@@ -1,3 +1,42 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n+m)
+//   audited class  : O(n**2)
+//   cause          : both
+//   confidence     : high
+//   auditor        : labelaudit-batch-23
+//
+//   The Python does not match the label AND the translation diverges
+//   from the Python. Both need attention.
+//
+//   evidence:
+//     The Dafny simulates `heapq.heappush`/`heapq.heappop` with a
+//     from-scratch linear insertion scan (`while j < |heap|`) executed
+//     once per outer iteration over N iterations, giving O(N**2); the
+//     Python uses real `heapq` operations at O(log N) each, so Python is
+//     O(N log N), and O(n+m) matches neither source.
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes near-linear cost, but both `while j < |heap|` and
+//     `while j < |heap2|` rebuild a size-N array by linear scan on every
+//     one of the N outer iterations (invariant `|heap|==N`), which is O(N)
+//     work times N outer steps. Open the inner while loops and confirm
+//     `|heap|` stays fixed at N through the outer loop, so total
+//     inner-loop iterations sum to N*N; separately, compare against the
+//     Python's `heapq.heappush`/`heapq.heappop`, which are true O(log N)
+//     heap operations, giving Python O(N log N) — so the label O(n+m)
+//     matches neither.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 97, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString", "SumSeq"],
+//     "loop_depth": 2, "loops": 5, "recursive_helpers": 0,
+//     "seq_append_read_in_same_loop": false, "seq_args": 1,
+//     "seq_update_in_loop": true, "set_build_in_loop": false, "sorts":
+//     ["SortInts"], "uses_map": false, "uses_multiset": false, "uses_set":
+//     false}
+// --------------------------------------------------------------------
+
 // p03714 AtCoder Beginner Contest 062 - 3N Numbers  (problem 3029, solution 3029_114)
 // time complexity: O(n+m)
 // python exact-diff baseline: exact

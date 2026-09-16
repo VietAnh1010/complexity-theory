@@ -1,3 +1,36 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n**2)
+//   audited class  : other
+//   cause          : label
+//   confidence     : high
+//   auditor        : labelaudit-batch-19
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     The while st loop, for i loop, and for j loop are all nested and
+//     each range over st..idx (up to n elements), giving O(n**3) total;
+//     the Python has the identical triple-nested structure, so the label
+//     is wrong for the Python too, not just the translation.
+//
+//   how this label could be wrong, and what to check:
+//     The label claims quadratic but facts show loop_depth=3: the while st
+//     loop nests a for i loop which nests a for j loop, both ranging over
+//     st..idx. Count the nesting in Solve directly, and sum (idx-st)^2
+//     over st from 0 to idx-2 to confirm the true cost is O(n**3), not
+//     O(n**2).
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 51, "data_dependent_loops": 2, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 3,
+//     "loops": 5, "recursive_helpers": 0, "seq_append_read_in_same_loop":
+//     false, "seq_args": 1, "seq_update_in_loop": false,
+//     "set_build_in_loop": false, "sorts": ["Sort"], "uses_map": false,
+//     "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 442_B. Andrey and Problem  (problem 2496, solution 2496_46)
 // time complexity: O(n**2)
 // python exact-diff baseline: none

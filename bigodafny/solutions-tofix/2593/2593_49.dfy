@@ -1,3 +1,39 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n**2)
+//   audited class  : O(nlogn)
+//   cause          : label
+//   confidence     : high
+//   auditor        : labelaudit-batch-19
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     SortInts(a_list) is the only non-constant cost here; the while loop
+//     runs at most n times doing only O(1) arithmetic (dif, s update) per
+//     iteration with no seq copies, so this is O(nlogn) not O(n**2), and
+//     the Python has the identical sort-then-scan structure and is also
+//     O(nlogn).
+//
+//   how this label could be wrong, and what to check:
+//     The label claims quadratic, but facts show seq_update_in_loop=false
+//     and the only non-constant step is SortInts (facts.sorts confirms a
+//     sort call). Compare directly against sibling 2593_332, which solves
+//     the same problem with the identical sort-then-scan shape and is
+//     labeled O(nlogn); if the loop bodies match, this label is the
+//     outlier.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 53, "data_dependent_loops": 1, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString", "SumSeq"],
+//     "loop_depth": 1, "loops": 1, "recursive_helpers": 2,
+//     "seq_append_read_in_same_loop": false, "seq_args": 1,
+//     "seq_update_in_loop": false, "set_build_in_loop": false, "sorts":
+//     ["Merge", "Sort", "SortInts"], "uses_map": false, "uses_multiset":
+//     false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 991_B. Getting an A  (problem 2593, solution 2593_49)
 // time complexity: O(n**2)
 // python exact-diff baseline: exact

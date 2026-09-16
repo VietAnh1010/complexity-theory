@@ -1,3 +1,42 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(nlogn)
+//   audited class  : O(n**2)
+//   cause          : translation
+//   confidence     : high
+//   auditor        : labelaudit-batch-23
+//
+//   The Python matches its label; the DAFNY does not. The label is right
+//   about the program it was measured on and the translation is the
+//   defect.
+//
+//   evidence:
+//     Both `SUM1` and `SUM2` computation loops rebuild `newR`/`newB` via a
+//     full O(N) linear insertion scan on each of N outer iterations
+//     (`while j < |R|`, invariant `|R| == N`), giving O(N**2), while
+//     Python's real `heapq.heappush`/`heappop` are O(log N) each so the
+//     Python is O(N log N) as labelled.
+//
+//   how this label could be wrong, and what to check:
+//     The label O(nlogn) is right about the Python
+//     (`heapq.heappush`/`heapq.heappop` are O(log N) each, N iterations,
+//     O(N log N) total) but the Dafny replaces the heap with a linear-scan
+//     insertion (`while j < |R|` / `while j < |B|`) rebuilt on every one
+//     of N outer steps. Confirm the invariant `|R| == N` (resp. `|B| ==
+//     N`) holds through the outer loop, so the inner scan is O(N) work
+//     repeated N times, giving O(N**2) — check this is the same shape as
+//     sibling `3029_114`.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 103, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString", "SumSeq"],
+//     "loop_depth": 2, "loops": 5, "recursive_helpers": 0,
+//     "seq_append_read_in_same_loop": false, "seq_args": 1,
+//     "seq_update_in_loop": true, "set_build_in_loop": false, "sorts":
+//     ["SortInts"], "uses_map": false, "uses_multiset": false, "uses_set":
+//     false}
+// --------------------------------------------------------------------
+
 // p03714 AtCoder Beginner Contest 062 - 3N Numbers  (problem 3029, solution 3029_74)
 // time complexity: O(nlogn)
 // python exact-diff baseline: exact
