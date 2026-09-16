@@ -9,19 +9,30 @@ taken on this toolchain (Dafny 4.11.0, CPython, the Python backend) and three of
 them reverse the obvious decision. `Std.Strings.ToNat` — the swap that prompted
 this task — is one of the three that must **not** be made.
 
+> **Written before the cost model was axiomatised (2026-09-16), and not yet
+> run.** `COMPLEXITY.md` § 1 now charges collection operations by stipulation,
+> so a *container* behaving differently in the backend is no longer a defect.
+> That does not weaken this task: the swaps below are judged on the **algorithm**
+> a `Std` helper uses, and the timings are the evidence for it. `Std.Strings.ToNat`
+> is superlinear because it builds an n-digit accumulator, which is a property of
+> the algorithm and would hold on any backend. Read criterion 2 that way.
+
 ## What the gates will do to you
 
 Every row carries a BigOBench complexity label measured on the original Python.
-A swap that changes the emitted Python's cost class breaks the dataset's only
-claim, and **no gate catches it**: `validate.py` and `difftest.py` compare
-stdout, and the tests are small enough that a quadratic parser still passes.
+A swap that puts the helper in a different **algorithmic** class breaks the
+dataset's only claim, and **no gate catches it**: `validate.py` and
+`difftest.py` compare stdout, and the tests are small enough that a quadratic
+parser still passes.
 
 So the acceptance condition for each swap is two things, not one:
 
 1. `validate.py` (strict rows) / `difftest.py` (loose rows) still pass.
-2. The emitted Python for the swapped function is in the **same cost class**,
-   measured, not assumed. The table below is that measurement for every
-   candidate; if you add a candidate, measure it the same way.
+2. The swapped helper is in the **same cost class**, and the timing below is
+   the evidence. Where a timing reflects the backend's container behaviour
+   rather than the helper's algorithm, it is not a reason to reject a swap —
+   see the banner above. If you add a candidate, measure it the same way and
+   say which of the two you are measuring.
 
 Neither gate may be edited. `bigodafny/CLAUDE.md` § "Two gates".
 

@@ -12,6 +12,12 @@ BigOBench's inferred time-complexity label.
 **Read `bigodafny/CLAUDE.md` before making changes.** It holds the rules. This
 file holds the map and the reasons.
 
+## The entry point is `bigodafny/DOCS.md`
+
+It has the reading order, the current counts, the document map, and the cost
+model change that invalidates anything older than 2026-09-16. This skill is the
+working map; that file is the orientation.
+
 ## Check state first, always
 
 ```bash
@@ -151,17 +157,15 @@ Sub-skills: `bigodafny-translate`, `bigodafny-verify`, `bigodafny-prove`.
   with `find_all()`; the fix never reached the other two. Use
   `validate.py --solutions-dir solutions-proved`, and for `loose` rows compare
   the emitted Python instead — identical compiled bytes beats a test sample.
-- **`seq` append is O(1), not O(\|s\|)** — measured. The Python backend defers
-  the concat; reading `s[i]` between appends forces a flatten and *that* is the
-  quadratic pattern (n=64k: 0.149s append-only vs 7.876s append-and-read).
-  Taking `\|s\|` is free. The old blanket `\|s\|` charge was sound but made
-  every accumulate-then-emit row look quadratic.
-- **`s := s[i := v]` is a full copy, O(\|s\|)** — measured, against CPython's
-  in-place `lst[i] = v`. A loop Python runs in O(n) runs in O(n²) once
-  translated this way. **93 unproved rows** contain it: the largest defect
-  class here, same shape as the `set<T>` trap, and the remedy is the same —
-  an `array<T>` assigned in place. The label is not at fault; the translation
-  is.
+- **The cost model is stipulated, not measured** — since 2026-09-16.
+  `s[i := v]`, `m[k := v]`, `s + [x]`, `s[a..b]` and set insertion are all
+  charged `1`, regardless of what the Python backend does with them.
+  `bigodafny/COMPLEXITY.md` § 1 is the authority; its appendix keeps every
+  measurement, because the backend's behaviour is still true and twice
+  load-bearing. **This closed the project's largest defect class** — 93 rows
+  filed as `translation` because a Dafny collection copies where CPython
+  assigns in place. Those rows have no defect. Anything you read that charges
+  `|s|` for a seq update predates the switch.
 - **`Join` is linear**, charged `SumLen(parts) + \|parts\|`. An earlier note
   here called it superlinear; that was measurement overhead read as an
   exponent, and a known-linear control shows a *higher* implied exponent than

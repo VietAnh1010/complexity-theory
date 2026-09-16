@@ -1,14 +1,89 @@
-# Proving the complexity label
+# The cost model, and proving a complexity label
+
+Two things live here, and they are separate:
+
+1. **The cost model** — what a Dafny operation is charged. Stipulated, not
+   measured. This is what an audit verdict and a proof are both written against.
+2. **The proof technique** — a ghost step counter with a proved upper bound,
+   which is how `solutions-proved/` turns a label into a checked claim.
 
 `solutions/` proves behaviour: the Dafny reproduces the Python's stdout on
-stored tests. It says nothing about the complexity label each row carries. Three
-defects found in this project produced correct output, wrong complexity, and
-green tests — a doubly-recursive min/max, sibling reuse, and `set<T>` built in a
-loop. Testing cannot catch any of them.
+stored tests. It says nothing about the label. Three defects found in this
+project produced correct output, wrong complexity, and green tests — a
+doubly-recursive min/max, sibling reuse, and `set<T>` built in a loop. Testing
+cannot catch any of them.
 
-`solutions-proved/` proves the label.
+## 1. The charges are stipulated
 
-## The technique
+Charge **1** for each of:
+
+- arithmetic and comparison on `int`
+- `seq` indexing `s[i]` and length `|s|`
+- one unit of loop overhead per iteration
+
+Charge the collections their **standard asymptotic cost**, as an axiom,
+independent of any backend:
+
+| operation | charge | |
+|---|---|---|
+| `s[i]`, `\|s\|` | `1` | |
+| `s[i := v]` | `1` | as CPython's `lst[i] = v` |
+| `s + [x]` | `1` | amortised |
+| `s + t` | `\|t\|` | |
+| `s[a..b]` | `1` | a view |
+| `m[k]`, `k in m`, `m[k := v]`, `\|m\|` | `1` | hash semantics, as CPython's `dict` |
+| `m.Keys`, `m.Values`, `m.Items` | `\|m\|` | materialises |
+| `x in s`, `s + {x}` on `set<T>` | `1` | as CPython's `set` |
+| iteration over a set | `\|s\|` | |
+| `multiset(s)` | `\|s\|` | |
+| `multiset(a) == multiset(b)` | `\|a\|+\|b\|` | |
+| `Join(parts, sep)` | `SumLen(parts) + \|parts\|` | |
+| a recursive prelude function over a seq or string | its length | one level per element |
+| a call to a helper | the helper's `steps` | |
+
+`array<T>` is absent because the corpus is. Two rows keep one; see the appendix.
+
+### Why stipulated and not measured
+
+Every entry above was once justified by reading
+`DafnyRuntimePython/_dafny/__init__.py` and timing the emitted Python. That made
+the model true of *one backend at one version* and nothing else. Three
+consequences we actually hit:
+
+- The model changed four times in one session — map, multiset, slicing,
+  `Std.Strings.ToNat` — and each change invalidated verdicts already filed.
+- A row's class depended on which backend you compiled for. `m[k := v]` is a
+  `dict(self)` copy in Python and something else in C# or Java.
+- **The labels come from BigOBench measuring CPython.** A model derived from
+  Dafny's Python backend was comparing two unrelated implementations and calling
+  the difference a translation defect.
+
+So the charges above are the model a complexity-theory reader expects, and the
+one the labels were measured against.
+
+### What it costs, stated plainly
+
+**The axioms are false of the artifact we ship.** A row charged O(n) can take
+O(n²) of wall-clock under `dafny translate py`. The appendix records exactly
+where and by how much, because that is not a footnote — twice it decides
+whether a row can run at all.
+
+The consequence for the pipeline: `validate.py` and `difftest.py` check
+**behaviour only**, and nothing checks the complexity claim except the
+hand-written proofs in `solutions-proved/`. That is the intended design. A label
+that moves with the backend, the Dafny version, or the machine is a benchmark
+result, not a label, and it is noise for both testing and training. Behaviour is
+the part that *is* implementation-independent to check.
+
+### Proofs written before the switch
+
+The 33 files in `solutions-proved/` predate this model. Several charge `|s|` for
+a `seq` update where the axioms now charge `1`. Those bounds are still **sound**
+— they charge more than required — but they are no longer tight, and a couple
+prove a quadratic where the axioms permit a linear. Do not treat an old proof's
+bound as evidence about the label's tightness without re-reading its charges.
+
+## 2. The proof technique
 
 A **ghost step counter** with a proved upper bound.
 
@@ -36,34 +111,112 @@ compile time** — verified: the emitted Python is `def Solve(n, a__list)` with
 zero occurrences of `steps`. So one file both runs under the test harness and
 carries a machine-checked complexity proof.
 
-## The counting convention
+## What a proof does and does not claim
 
-`steps` charges **1 per elementary operation**, where elementary means constant
-time in Dafny's compiled Python:
+**Claims.** The instrumented `steps` is bounded by the stated function of the
+input size, for every input satisfying the preconditions. This is a proof over
+all inputs, not a measurement on the stored tests.
 
-- arithmetic and comparison on `int`
-- `seq` indexing `s[i]` and length `|s|`
-- one unit of loop overhead per iteration
+**Does not claim.** That `steps` equals wall-clock time. The bound is only as
+honest as the charging convention above. A reviewer checking one of these files
+should check the charges before checking the invariants.
 
-Operations that are **not** constant time must be charged their real cost:
+**Relation to the label.** BigOBench's label is synthetic — regression over
+profiling runs. A proved bound and the label can disagree, and the proof is the
+stronger statement. Where they disagree, record it; do not adjust the proof to
+match the label.
 
-| operation | real cost | charge |
+## Logarithmic bounds
+
+Dafny has no `log`. `solutions-proved/nlogn/` proves the true O(n log n) for merge sort
+with a recursion-tree argument. Two things make it work.
+
+**Match the log's rounding to the code's rounding.** Merge sort splits into
+halves of size `ceil(k/2)`, so it wants a CEILING log; a loop that does
+`m := m / 2` rounds down, so it wants a FLOOR log —
+
+```dafny
+ghost function Log2(x: nat): nat
+  decreases x
+{ if x <= 1 then 0 else 1 + Log2(x / 2) }
+```
+
+— and then `m >= 2 ==> Log2(m / 2) == Log2(m) - 1` holds by definition and the
+invariant closes with no lemma at all (`945_255`). Pick the wrong one and the
+step is false at some small k and the induction cannot close.
+
+**For a recursive split, that means the ceiling log.**
+
+```dafny
+ghost function CeilLog2(n: nat): nat
+  decreases n
+{ if n <= 1 then 0 else 1 + CeilLog2((n + 1) / 2) }
+```
+
+The recursive step is `ceil(n/2)`. Both halves of a split of size k are at most
+`ceil(k/2)`, and `CeilLog2(ceil(k/2)) == CeilLog2(k) - 1` then holds *by
+definition*. With floor-log that step is false at k = 3: `floor(log2 2) = 1`,
+not `floor(log2 3) - 1 = 0`. The induction cannot close.
+
+**Isolate every multiplication.** Z3 does not do nonlinear arithmetic well. The
+first attempt timed out at 30s with the whole argument in one `calc`. Splitting
+the two multiplication facts into their own lemmas —
+
+```dafny
+lemma MulMonoRight(x: nat, p: nat, q: nat) requires p <= q ensures x * p <= x * q
+lemma MulDistrib(a: nat, b: nat, k: nat, L: nat) requires a + b == k
+  ensures a * L + b * L == k * L
+```
+
+— so the solver never has to discover one, took it to 2.8s. The result:
+
+    SortCost(k) <= 2 * k * (CeilLog2(k) + 1) + 1
+
+## Constants
+
+The label is asymptotic, so any constants are acceptable: `steps <= 7*n + 12`
+proves O(n). Do not tune constants to look tight — pick whatever the invariant
+supports.
+
+---
+
+# Appendix: what the Python backend actually does
+
+Everything below is **measurement, not charge.** It is kept because it is true
+of the artifact, because it is the evidence that made the axioms necessary, and
+because two rows in `solutions/` depend on it. None of it makes a row's label
+wrong and none of it is a reason to rewrite a row.
+
+Dafny 4.11.0's Python backend, min of 3 runs, interpreter startup subtracted.
+
+## Where the divergence bites hardest
+
+| operation | charged | backend | 
 |---|---|---|
-| `s[i := v]` (seq update) | **O(\|s\|)** — measured, a full copy | `\|s\|` |
-| `s + [x]`, appends only | **O(1)** — measured | `1` |
-| `s + [x]`, with `s[i]` read between appends | **O(\|s\|)** — measured | `\|s\|` |
-| `s + t` (concat) | O(\|t\|) if append-only, else O(\|s\|+\|t\|) | as above |
-| `s + {x}` (set insert) | **O(\|s\|)** — measured | `\|s\|`, or avoid it |
-| `m[k := v]` (map update) | **O(\|m\|)** — measured, a full dict copy | `\|m\|`, or avoid it |
-| `m[k]`, `k in m`, `\|m\|` | **O(1)** — measured | `1` |
-| `m.Keys`, `m.Values`, `m.Items` | **O(\|m\|)** — measured, materialises a `Set` | `\|m\|` |
-| `multiset(s)` | **O(\|s\|)** — measured, `Counter(s)` | `\|s\|` |
-| `multiset(a) == multiset(b)` | **O(\|a\|+\|b\|)** — measured | `\|a\|+\|b\|` |
-| `m := m[k := v]` on a multiset | **O(\|m\|)** — measured, a full `Counter` copy | `\|m\|`, or avoid it |
-| `\|m\|` on a multiset | O(distinct elements) — `reduce` over keys | distinct count |
-| `Join(parts, sep)` | **O(SumLen + \|parts\|)** — measured against a control | `SumLen(parts) + \|parts\|` |
-| a recursive prelude function over a seq or string | one level per element | its length |
-| a call to a helper | its own bound | the helper's `steps` |
+| `s[i := v]` | `1` | O(\|s\|) — full copy |
+| `m[k := v]` | `1` | O(\|m\|) — `dict(self)` |
+| `s + {x}` | `1` | O(\|s\|) — full copy |
+| `m := m[k := v]` on a multiset | `1` | O(\|m\|) — `Counter(self)` |
+| `s[a..b]` | `1` | O(1) — agrees |
+| `s + [x]` | `1` | O(1) until something reads the accumulator |
+
+## The two rows where this is load-bearing
+
+`solutions/` is `seq`-only except twice, and both exceptions are measured, not
+assumed:
+
+| row | table | why `seq` cannot run it |
+|---|---|---|
+| `2826_42` | 1_000_004 entries | fills 1_000_002 of them in a loop reading earlier ones — ~10^12 element copies. 16s as an array; over a 60s per-test budget on the first test as a sequence. |
+| `2128_34` | `r + 1`, `r` up to 30000 in its own tests | nested loop writes O(r) times per element — ~10^9 copies per test, across 88 tests. Seconds as an array; no test finished in four minutes as a sequence. |
+
+Appending instead of updating rescues neither: `Seq.__add__` builds an O(1)
+`Concat` rope, but the next indexed read forces it flat, so append/read
+alternation is quadratic too. Under the axioms each row's `seq` and `array`
+forms are charged identically; what the axioms cannot do is make the `seq` form
+finish, and the gates are non-negotiable.
+
+## The measurements
 
 ### Sequence append is lazy, and reading is what flattens it
 
@@ -97,23 +250,12 @@ Python it translates assigns in place:
     Dafny  a[i] := v        n=2k .036s  4k .038s   8k .037s   16k .042s
     CPython  lst[i] = v     n=2k .0002s 4k .0002s  8k .0005s  16k .0010s
 
-So a loop that Python runs in O(n) runs in O(n²) once translated with a seq
-update. **93 unproved rows contain this pattern.** That is the `set<T>` trap
-again, and bigger: correct output, wrong complexity, green tests, and the
-label — measured on the Python — is now wrong for the translation rather than
-for the algorithm. `CLAUDE.md` § *set<T> is O(n\*\*2)* is the same finding
-about a different container.
+So a loop CPython runs in O(n) runs in O(n²) once translated with a seq update
+and then executed by this backend.
 
-**Superseded as a verdict rule.** `batches/cost-axioms/PLAN.md` charges
-`s[i := v]` O(1) by stipulation, so this measurement no longer makes a row's
-label wrong. The remedy it used to carry — "use an `array<T>`" — is reversed:
-`array<T>` has been removed from `solutions/` and the corpus keeps `seq`. What
-follows is what the backend does, not what the model charges.
-
-This one is not a proof obstruction. The cost is known, so the bound is
-provable; what it obstructs is the row AGREEING with its label. Charge `|s|`,
-prove the quadratic, and record the disagreement as a defect in the
-translation, not in the label.
+Under the axioms this changes nothing about a row's class: `s[i := v]` is
+charged `1`. It was once the largest defect class in the project — 93 rows —
+and that class is closed.
 
 ### Slicing is a view, in a loop as well as a recursion
 
@@ -231,85 +373,22 @@ same harness. A ratio near 2.2 is what linear looks like here; the excess is
 constant overhead, not growth. Join's ratios are *lower* than the control's at
 every size, and the join÷control ratio falls from 2.68 to 2.16 as n grows.
 
-Two rules follow, and they are the point of the entry:
+Refusing to charge `Join` looked conservative. It blocked 164 rows, sent four
+agent runs to a decline they did not need, and manufactured an obstruction that
+was never there. The two rules it bought are at the end of this file.
+
+---
+
+# How to measure, if you add an entry
+
+Two rules, both bought with a real error recorded above.
 
 - **Measure against a control, not against 2.0.** An exponent read off raw
   ratios in a noisy harness is not a measurement. Nothing here should be called
   superlinear again without a known-linear baseline beside it in the same table.
-- **Overcharging is not the safe direction.** Refusing to charge Join looked
-  conservative. It blocked 164 rows, sent four agent runs to a decline they did
-  not need, and manufactured an obstruction that was never there. This document
-  says an overcharge invents a false disagreement; that is what happened.
+- **Overcharging is not the safe direction.** An undercharged operation turns a
+  real O(n²) into a proved "O(n)" and Dafny still says verified; an overcharged
+  one puts a correct label out of reach and invents a disagreement that is not
+  there. Both were live in this file: the `Join` row is the first hazard, the
+  old unconditional `|s|` append charge was the second.
 
-Miscounting here is the whole risk, and it runs both ways. An undercharged
-operation turns a real O(n**2) into a proved "O(n)" and Dafny still says
-verified; an overcharged one puts a correct label out of reach and invents a
-disagreement that is not there. Both were live in this file: the `Join` row is
-the first hazard, the old unconditional `|s|` append charge was the second.
-
-## What a proof does and does not claim
-
-**Claims.** The instrumented `steps` is bounded by the stated function of the
-input size, for every input satisfying the preconditions. This is a proof over
-all inputs, not a measurement on the stored tests.
-
-**Does not claim.** That `steps` equals wall-clock time. The bound is only as
-honest as the charging convention above. A reviewer checking one of these files
-should check the charges before checking the invariants.
-
-**Relation to the label.** BigOBench's label is synthetic — regression over
-profiling runs. A proved bound and the label can disagree, and the proof is the
-stronger statement. Where they disagree, record it; do not adjust the proof to
-match the label.
-
-## Logarithmic bounds
-
-Dafny has no `log`. `solutions-proved/nlogn/` proves the true O(n log n) for merge sort
-with a recursion-tree argument. Two things make it work.
-
-**Match the log's rounding to the code's rounding.** Merge sort splits into
-halves of size `ceil(k/2)`, so it wants a CEILING log; a loop that does
-`m := m / 2` rounds down, so it wants a FLOOR log —
-
-```dafny
-ghost function Log2(x: nat): nat
-  decreases x
-{ if x <= 1 then 0 else 1 + Log2(x / 2) }
-```
-
-— and then `m >= 2 ==> Log2(m / 2) == Log2(m) - 1` holds by definition and the
-invariant closes with no lemma at all (`945_255`). Pick the wrong one and the
-step is false at some small k and the induction cannot close.
-
-**For a recursive split, that means the ceiling log.**
-
-```dafny
-ghost function CeilLog2(n: nat): nat
-  decreases n
-{ if n <= 1 then 0 else 1 + CeilLog2((n + 1) / 2) }
-```
-
-The recursive step is `ceil(n/2)`. Both halves of a split of size k are at most
-`ceil(k/2)`, and `CeilLog2(ceil(k/2)) == CeilLog2(k) - 1` then holds *by
-definition*. With floor-log that step is false at k = 3: `floor(log2 2) = 1`,
-not `floor(log2 3) - 1 = 0`. The induction cannot close.
-
-**Isolate every multiplication.** Z3 does not do nonlinear arithmetic well. The
-first attempt timed out at 30s with the whole argument in one `calc`. Splitting
-the two multiplication facts into their own lemmas —
-
-```dafny
-lemma MulMonoRight(x: nat, p: nat, q: nat) requires p <= q ensures x * p <= x * q
-lemma MulDistrib(a: nat, b: nat, k: nat, L: nat) requires a + b == k
-  ensures a * L + b * L == k * L
-```
-
-— so the solver never has to discover one, took it to 2.8s. The result:
-
-    SortCost(k) <= 2 * k * (CeilLog2(k) + 1) + 1
-
-## Constants
-
-The label is asymptotic, so any constants are acceptable: `steps <= 7*n + 12`
-proves O(n). Do not tune constants to look tight — pick whatever the invariant
-supports.

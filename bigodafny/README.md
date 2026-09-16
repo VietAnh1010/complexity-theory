@@ -1,5 +1,9 @@
 # bigodafny
 
+> **Working on this? Read `DOCS.md` first** — reading order, current state, and
+> the document map. This file covers what the dataset *is*; `DOCS.md` covers how
+> to work on it.
+
 A Python -> Dafny translation dataset built from BigO(Bench)'s
 `time_complexity_test_set`, keeping BigOBench's inferred time complexity label
 attached to every row.

@@ -1,10 +1,11 @@
 # bigodafny -- operating rules
 
-**Resuming with a clean context?** Read `.claude/skills/bigodafny/SKILL.md`
-first -- it holds the map, the gates, and the findings. Sub-skills:
-`bigodafny-translate`, `bigodafny-verify`, `bigodafny-prove`. Then run
-`python3 dataset.py` and read `data/stats.json`; the directory a row sits in is
-its status, never an earlier message.
+**New here, or resuming with a clean context? Read `DOCS.md` first.** It is the
+entry point: reading order, current state, the document map, and the one change
+most likely to mislead you. Then `.claude/skills/bigodafny/SKILL.md` for the
+map, gates and findings; sub-skills `bigodafny-translate`, `bigodafny-verify`,
+`bigodafny-prove`. Then run `python3 dataset.py` and read `data/stats.json`;
+the directory a row sits in is its status, never an earlier message.
 
 Builds a Python -> Dafny translation dataset from BigOBench's
 `time_complexity_test_set`. Independent of the arXiv paper-mining pipeline in
@@ -110,21 +111,24 @@ kept; the budget cut was reverted. Slow rows would have been marked
 `python-failed` and dropped out of the comparison, so the gate would have passed
 more rows by checking fewer.
 
-## `set<T>` is O(n**2) to build in the Python backend
+## The cost model is stipulated, not measured
 
-Measured, not assumed. Doubling n quadruples the time:
+`COMPLEXITY.md` § 1 is the authority. `s[i := v]`, `m[k := v]`, `s + [x]`,
+`s[a..b]` and set insertion are each charged **1**, as an axiom, independent of
+any backend. Do not charge a collection operation what Dafny's Python backend
+costs; the labels were measured on CPython, so a backend-derived model compares
+two unrelated implementations.
 
-    n=2000  0.017s     n=4000  0.070s (4.1x)     n=8000  0.278s (4.0x)
+This is a change, and it invalidates older notes. `set<T>` built in a loop is
+O(n**2) in the Python backend -- measured, 0.017 / 0.070 / 0.278s as n doubles
+from 2000, against 0.004 / 0.006 / 0.011s for a `seq` -- and that used to make
+a row disagree with its own label. It no longer does. The measurement lives in
+`COMPLEXITY.md`'s appendix as a performance note, which is what it always was.
 
-against a `seq` built the same way at 0.004 / 0.006 / 0.011s. Dafny's Python
-runtime backs `set<T>` with a frozenset and does an incremental union per
-insert, copying each time.
-
-This matters more here than a normal performance note would. Every row carries a
-complexity label, so a translation that builds a set inside a loop silently
-carries an extra factor of n and stops matching its own label -- and the tests
-still pass, because they are small. Use a sorted `seq` with binary search for
-large lookup structures.
+The two places the divergence still decides something: `solutions/2826_42` and
+`solutions/2128_34` keep an `array<T>` because their tables are too large for
+the backend to copy per update. They are the corpus's only arrays, and each
+says so in a header comment.
 
 Same shape as the doubly-recursive min/max trap: correct output, wrong
 complexity, green tests.

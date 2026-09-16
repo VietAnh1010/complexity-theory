@@ -22,12 +22,11 @@ Two screens ran before the audit existed, and both were coarse:
   other's algorithm. `siblings.py` finds them; it does not say which is at
   fault.
 - **Container use** — 29 rows use `set<T>` or `map<K,V>` (22 and 11, with an
-  overlap). These were
-  pulled when the cost model was read off the Dafny Python backend, where both
-  copy on write and turn a linear loop quadratic.
+  overlap). These were pulled when the cost model was read off the Dafny Python
+  backend, where both copy on write and turn a linear loop quadratic.
 
-**The second screen no longer justifies a quarantine.** `batches/cost-axioms/PLAN.md`
-charges set insertion and map update O(1) by stipulation, so a row is no longer
+**The second screen no longer justifies a quarantine.** `COMPLEXITY.md` § 1
+charges set insertion and map update `1` by stipulation, so a row is no longer
 suspect merely for using them. Those rows are candidates to rejoin `solutions/`
 after a proper screening — they have not been screened, so they have not moved.
 

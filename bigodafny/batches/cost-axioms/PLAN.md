@@ -152,9 +152,17 @@ not the same assertion as one about `a` over a sequence.
 
 1. Write the axiom set into `COMPLEXITY.md`; demote the measurements to a
    backend-divergence appendix.
+   **Done** — `COMPLEXITY.md` now leads with the charges and carries every
+   measurement in an appendix labelled *what the Python backend actually does*.
+   `.claude/skills/bigodafny-prove/SKILL.md` follows it.
 2. Rewrite the audit prompt's cost table to the axioms. Note in it that the
    table changed, so a later reader does not think earlier batches used it.
+   **Done** — `batches/labelaudit/PROMPT.md` carries the new table, a dated
+   banner, a § *What this rules out as a verdict*, and a schema example that no
+   longer teaches the closed defect class.
 3. Re-file the queued rows mechanically; report how many moved back to `ok`.
+   **Not run.** It changes verdicts already queued for manual review, so it
+   waits on that review. Expect 30–40 of the 58 `translation` rows to return.
 4. Rewrite the `array` rows in `solutions/` to `seq`, gated as above.
    **Done** — 14 rewritten, re-verified and re-gated; `2826_42` and `2128_34`
    recorded as measured exceptions.

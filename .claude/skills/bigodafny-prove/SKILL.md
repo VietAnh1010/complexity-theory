@@ -41,20 +41,32 @@ both runs under the test harness and carries a machine-checked proof.
 
 ## The charging convention
 
-`steps` charges 1 per operation that is constant time **in Dafny's compiled
-Python**: `int` arithmetic and comparison, `s[i]`, `|s|`, one unit of loop
-overhead per iteration.
+**`bigodafny/COMPLEXITY.md` § 1 is the authority; this is the summary.** The
+charges are **stipulated**, not read off Dafny's Python backend — the labels
+were measured on CPython, so a backend-derived model compared two unrelated
+implementations.
 
-Anything else is charged its real cost:
+Charge 1 per: `int` arithmetic and comparison, `s[i]`, `|s|`, one unit of loop
+overhead per iteration, and every collection operation CPython does in constant
+time.
 
-| operation | real cost |
+| operation | charge |
 |---|---|
-| `s + [x]`, appends only | `1` — **measured**: the backend defers the concat |
-| `s + [x]`, with `s[i]` read between appends | `\|s\|` — the read forces a flatten |
-| `s + {x}` set insert | `\|s\|` — **measured**, not assumed |
-| `Join(parts, sep)` | `SumLen(parts) + \|parts\|` — measured against a control |
+| `s[i := v]`, `s + [x]`, `s[a..b]` | `1` |
+| `m[k := v]`, `m[k]`, `k in m`, `\|m\|` | `1` |
+| `x in s`, `s + {x}` on a set | `1` |
+| `s + t` (concat) | `\|t\|` |
+| `m.Keys`, `m.Values`, `m.Items` | `\|m\|` |
+| `multiset(s)` | `\|s\|` |
+| `multiset(a) == multiset(b)` | `\|a\|+\|b\|` |
+| `Join(parts, sep)` | `SumLen(parts) + \|parts\|` |
 | a recursive prelude function over a seq or string | its length |
 | a helper call | the helper's own `steps` |
+
+**The 33 existing proofs predate this.** Several charge `|s|` where the table now
+charges `1`, so their bounds are sound but not tight, and a couple prove a
+quadratic the axioms would let you prove linear. Re-read a proof's charges before
+citing its bound as evidence about a label.
 
 **Miscounting here is the entire risk, and it runs both ways.** Undercharging
 turns a real O(n²) into a proved "O(n)" and Dafny still says verified.
@@ -225,14 +237,14 @@ those rows, and `dataset.py` then reports 4 valid translations instead of 529.
 Always pass `--out-prefix` on a partial run; it redirects the output file.
 Restore from git if it happens.
 
-## Charging: two measured corrections
-
-`s := s + [x]` is **O(1)**, not O(|s|) — the Python backend builds a lazy
-concat node. Reading `s[i]` between appends forces a flatten and *is* quadratic;
-taking `|s|` is free. So charge 1 per append, and state the side condition that
-the accumulator is not indexed inside the loop.
+## Charging: the correction that cost the most
 
 `Join` is **linear**, `SumLen(parts) + |parts|`. The opposite was recorded
 first, from ratios read without a control, and it blocked 164 rows for a
 session. Per-line output is not blocked; `171_82`, `89_463`, `2602_57` and
 `378_20` are the best next targets.
+
+The append side condition is gone with the axioms — `s + [x]` is charged `1`
+unconditionally now, so a proof no longer has to state that the accumulator is
+not indexed inside the loop. That condition was about the backend's lazy concat
+node, and the backend is no longer what the charges describe.

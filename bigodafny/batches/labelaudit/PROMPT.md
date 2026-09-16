@@ -14,16 +14,16 @@ size. Quote the constraint from it rather than assuming a contest convention.
 Write one JSON object per row to `OUT_FILE`, one per line (JSONL). Write nothing
 else, anywhere. Do not modify any `.dfy`. Do not run `dafny`.
 
-## The cost model — these are measured, not assumed
+## The cost model — stipulated, not measured
 
-> **Pending replacement.** `batches/cost-axioms/PLAN.md` replaces this whole
-> section with a stipulated axiom set in which `s[i := v]`, `m[k := v]` and set
-> insertion are all O(1), independent of any backend. Batches audited before
-> that switch used the table below; batches after it will not. Check which
-> model your batch was filed under before comparing verdicts across batches.
-> The plan also removed `array<T>` from `solutions/` — 14 of 16 rows rewritten
-> to `seq`, `2826_42` and `2128_34` the two measured exceptions — so an "it should have used
-> an array" remark is no longer a valid repair for a `translation` row.
+> **This table changed on 2026-09-16.** Every `verdicts_*.jsonl` file in this
+> directory — all 25 — was filed against a table read off Dafny's Python
+> backend, in which `s[i := v]`, `m[k := v]` and set insertion were all linear. They are `1` now. Do not compare a verdict
+> from an earlier batch against one filed under this table without checking
+> which model it used. `bigodafny/COMPLEXITY.md` has the full model and the
+> reasoning; the short version is that the labels were measured on CPython, so
+> a model derived from Dafny's Python backend compared two unrelated
+> implementations and called the difference a translation defect.
 
 Charge 1 for: `int` arithmetic and comparison, `s[i]`, `|s|`, one unit of loop
 overhead per iteration.
@@ -32,36 +32,47 @@ Everything else costs what the table says:
 
 | operation | cost | note |
 |---|---|---|
-| `s := s[i := v]` (seq update) | **O(\|s\|)** | full copy. CPython's `lst[i]=v` is O(1) — a classic divergence |
-| `s := s + [x]`, no `s[i]` read in that loop | O(1) | backend defers the concat |
-| `s := s + [x]` **with** an `s[i]` read in the same loop | O(\|s\|) | the read forces a flatten |
-| `s := s + {x}` (set insert) | **O(\|s\|)** | incremental union per insert |
+| `s := s[i := v]` (seq update) | O(1) | as CPython's `lst[i]=v` |
+| `s := s + [x]` | O(1) amortised | |
+| `s + t` (concat) | O(\|t\|) | |
+| `s[a..b]` (slice) | O(1) | a view |
+| `s := s + {x}` (set insert), `x in s` | O(1) | as CPython's `set` |
+| iterating a `set` | O(\|s\|) | |
+| `m[k := v]`, `m[k]`, `k in m`, `\|m\|` | O(1) | as CPython's `dict` |
+| `m.Keys`, `m.Values`, `m.Items` | **O(\|m\|)** | each materialises a fresh collection |
+| `multiset(s)` | O(\|s\|) | one pass |
+| `multiset(a) == multiset(b)` | O(\|a\|+\|b\|) | a **linear** permutation test |
 | `Join`, `JoinInts` | O(total output length) | linear |
 | `SumSeq`, `MaxSeq`, `MinSeq`, `ParseInt`, `SplitWs`, `ReplaceAll`, `Repeat`, `IntToString` | O(length of the argument) | recursive over the sequence/string |
 | `SortInts`, `SortStrings`, `Sort` | O(k log k) | merge sort |
-| a hand-written recursion on `s[1..]` | **O(\|s\|)** — measured | slicing a flat seq is cheap; this shape is NOT quadratic |
-| `m[k := v]` (map insert/update) | **O(\|m\|)** | full dict copy per write. CPython's `d[k]=v` is O(1) — same divergence as a seq update |
-| `m[k]`, `k in m`, `\|m\|` | O(1) | `_dafny.Map` subclasses `dict`; reads do not copy |
-| `m.Keys`, `m.Values`, `m.Items` | **O(\|m\|)** | each materialises a fresh `Set`. `\|m.Keys\|` in a loop is quadratic; `\|m\|` is not |
-| `multiset(s)`, `multiset(a) == multiset(b)` | O(\|s\|) | building one and comparing two are linear — `Counter` |
-| `m := m[k := v]` on a **multiset** | **O(\|m\|)** | copies, exactly like `seq` and `map`. Quadratic in a loop |
+| a hand-written recursion on `s[1..]` | O(\|s\|) | one level per element; the slice itself is free |
 | `int` ops where the value grows with n (factorials, `2**n`) | not O(1) | bignum |
 
-Taking `|s|` never forces a copy. A read *after* a loop costs one flatten, not
-one per iteration.
+`array<T>` is not in this table because it is not in the corpus. Two rows keep
+one for reasons about the backend, not the model; see `COMPLEXITY.md`'s
+appendix.
 
-## A map is the third copying collection
+## What this rules out as a verdict
 
-`map<K,V>` is measured now. It splits: **reads are free, writes are not.**
-A Python `dict` that a row writes in a loop is O(n); the Dafny `map` that
-translates it is O(n**2), because every `m := m[k := v]` copies the dict.
+A row is **not** a `translation` defect because a Dafny collection copies where
+CPython assigns in place. That was the largest class in earlier batches — 93
+rows at its peak — and it no longer exists. If your evidence for `cause:
+"translation"` is "the seq/map/set update copies", the verdict is `ok`.
 
-That is `cause: "translation"` and `translation_defect: true`, exactly like
-`s := s[i := v]` and `s := s + {x}`. The label is right about the Python.
+`cause: "translation"` still applies, and these are the shapes that matter:
 
-Do not call a map row quadratic without finding the write. A row that receives a
-map and only reads it — `k in m`, `m[k]` — is O(1) per access and the map costs
-it nothing.
+- **An algorithm replaced.** The Dafny reaches the answer a different way, so it
+  is in a different class — including a *better* one. `multiset(a) ==
+  multiset(b)` where the Python does `sorted(a) == sorted(b)` is linear against
+  the Python's O(n log n). See `solutions-disputed/README.md` on the too-fast
+  direction.
+- **Slicing.** CPython's `a = a[1:]` copies; Dafny's `s[1..]` is a view. A row
+  whose Python peels a list in a loop is genuinely quadratic while its
+  faithful-looking translation is linear. `2087_50` is the case.
+- **A concat rebuilt at every level.** `f(s[1..]) + [x]` is quadratic because of
+  the concat, not the slice — `888_6`.
+- **A library call reimplemented.** `Log2Floor` looping where Python calls
+  `math.log2` once is real per-call overhead the translation introduced.
 
 ## What counts as a mismatch
 
@@ -89,9 +100,10 @@ against the **Python**, which is what the label was measured on:
 - `cause: "label"` — the Python is not the labelled class either. The label is
   wrong and the translation is faithful.
 - `cause: "translation"` — the Python **does** match the label but the Dafny
-  does not. The usual case is a seq update or a set build inside a loop: O(1)
-  and O(1) amortised in CPython, O(|s|) in Dafny. Here the label is right about
-  the program it was measured on, and the translation is the defect.
+  does not. Under the current table this means the translation changed the
+  algorithm, not the container: see § *What this rules out as a verdict* for
+  the four shapes that qualify. A seq, map or set update in a loop does **not**.
+  Here the label is right about the program it was measured on.
 - `cause: "harness"` — **the label is right about the Python and the Dafny is
   right too; the difference is where the dataset drew the boundary.** The Python
   reads stdin and pays to parse every input; the Dafny's `Solve` receives those
@@ -105,10 +117,10 @@ against the **Python**, which is what the label was measured on:
 ## Output schema — one line per row, all fields required
 
 ```json
-{"sid": "1039_15", "label": "O(nlogn)", "verdict": "mismatch",
- "true_class": "O(n**2)", "cause": "translation", "confidence": "high",
- "what_to_look_for": "The label assumes lastPos updates are O(1) as they are in Python. Open the Dafny loop and confirm the update is `lastPos := lastPos[x := i]`; under the pre-axiom model that seq update makes the Dafny quadratic and the translation, not the label, needs the fix.",
- "evidence": "lastPos := lastPos[x := i] inside a loop over n elements; each update copies n+1 entries, so the Dafny is quadratic. The Python assigns in place and is O(n log n) as labelled.",
+{"sid": "2087_50", "label": "O(n**2)", "verdict": "mismatch",
+ "true_class": "O(n)", "cause": "translation", "confidence": "high",
+ "what_to_look_for": "The label was measured on a Python that does `a = a[1:]` in a loop, which copies, so the Python really is quadratic. Open the Dafny and check whether it peels with `s[1..]`; a Dafny slice is a view, so the same loop is linear and the translation is in a BETTER class than the program the label describes.",
+ "evidence": "The Dafny peels with s := s[1..] inside a loop over n elements. A seq slice is a view and costs O(1), so the loop is O(n) total; the Python's a = a[1:] copies the remaining n-i elements at every step and is O(n**2) as labelled. The translation is faithful line for line and still lands a class faster, which is the algorithm-replacement shape, not a container difference.",
  "auditor": "labelaudit-batch-NN"}
 ```
 

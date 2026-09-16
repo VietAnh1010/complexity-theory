@@ -73,7 +73,8 @@ Give each agent: its manifest path, a unique validation prefix, and this body.
     - Sort over tuples needs explicit lambda parameter types
     - `if MaxOf(xs[1..]) > xs[0] then MaxOf(xs[1..]) else xs[0]` recurses twice
       -> EXPONENTIAL, passes small tests. Use MaxSeq/MinSeq or bind the result
-    - set<T> built in a loop is O(n**2) in Dafny's Python backend (measured)
+    - set/map/seq updates are charged O(1) (COMPLEXITY.md axioms), though the
+      Python backend copies. Slow to RUN, not a label defect. Do not use array<T>
     - Dafny has no floats; use exact integer or rational arithmetic
     - `/` and `%` are EUCLIDEAN; Python floors. Same only when divisor > 0
     - repeated `s := s + t` in a loop is O(n^2): accumulate seq<string>, Join once

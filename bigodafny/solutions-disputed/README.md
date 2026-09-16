@@ -196,7 +196,7 @@ Everywhere else the corpus is `seq`-only.
 harness) and emits roughly a hundred `Std_*.py` files beside each row, in
 exchange for a cost the axioms already grant `seq`.
 
-**Seq append is not the problem.** `s := s + [x]` is O(1) amortised — the
-backend defers the concat. The quadratic patterns are the seq *update* above and
-an append whose loop also reads `s[i]`, which forces a flatten on every
-iteration.
+**Both are backend facts, not charges.** Under the axioms `s + [x]` and
+`s[i := v]` are each charged `1`, with no side condition about reading the
+accumulator. `COMPLEXITY.md` § 1 is the model; its appendix is where these
+timings belong.

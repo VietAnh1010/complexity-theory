@@ -13,7 +13,8 @@ This README describes the **paper-mining pipeline**. `bigodafny/` is a separate
 dataset with its own README, rules and tooling: a Python → Dafny translation of
 BigO(Bench)'s `time_complexity_test_set`, 636 rows translated, each carrying an
 inferred time-complexity label. The two share no sources, cache or record
-shape — the only thing in common is the subject.
+shape — the only thing in common is the subject. Its entry point is
+`bigodafny/DOCS.md`.
 
 ## Deliverables
 
