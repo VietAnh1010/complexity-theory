@@ -1,0 +1,66 @@
+// 155_A. I_love_%username%  (problem 1756, solution 1756_1282)
+// time complexity: O(n)
+// python exact-diff baseline: exact
+//
+// Reproduce the Python program's entire stdout in `output`.
+//
+// --- Python ---------------------------------------------------------
+// m=int(input())
+// x=[int(x) for x in input().split()]
+// if(m==1):
+//   print(0)
+// else:
+//   maximum=x[0]
+//   minimum=x[0]
+//   count=0
+//   for i in x:
+//     if(i<minimum):
+//       count=count+1
+//       minimum=i
+//
+//     if(i>maximum):
+//       count=count+1
+//       maximum=i
+//
+//
+//   print(count)
+// --------------------------------------------------------------------
+
+include "../../prelude.dfy"
+import opened Prelude
+
+// Label O(n). One pass over `numbers`, constant work per element.
+method Solve(n: int, numbers: seq<int>) returns (output: string, ghost steps: nat)
+  requires |numbers| >= 1
+  ensures steps <= 5 * |numbers| + 6
+{
+  steps := 1;
+  if n == 1 {
+    output := "0";
+    steps := steps + 1;
+  } else {
+    var maximum := numbers[0];
+    var minimum := numbers[0];
+    var count := 0;
+    var i := 0;
+    while i < |numbers|
+      invariant 0 <= i <= |numbers|
+      invariant steps <= 5 * i + 2
+      decreases |numbers| - i
+    {
+      var v := numbers[i];
+      if v < minimum {
+        count := count + 1;
+        minimum := v;
+      }
+      if v > maximum {
+        count := count + 1;
+        maximum := v;
+      }
+      i := i + 1;
+      steps := steps + 5;
+    }
+    output := IntToString(count);
+    steps := steps + 1;
+  }
+}
