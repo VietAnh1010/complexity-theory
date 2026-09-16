@@ -60,6 +60,7 @@ Operations that are **not** constant time must be charged their real cost:
 | `m.Keys`, `m.Values`, `m.Items` | **O(\|m\|)** — measured, materialises a `Set` | `\|m\|` |
 | `multiset(s)` | **O(\|s\|)** — measured, `Counter(s)` | `\|s\|` |
 | `multiset(a) == multiset(b)` | **O(\|a\|+\|b\|)** — measured | `\|a\|+\|b\|` |
+| `m := m[k := v]` on a multiset | **O(\|m\|)** — measured, a full `Counter` copy | `\|m\|`, or avoid it |
 | `\|m\|` on a multiset | O(distinct elements) — `reduce` over keys | distinct count |
 | `Join(parts, sep)` | **O(SumLen + \|parts\|)** — measured against a control | `SumLen(parts) + \|parts\|` |
 | a recursive prelude function over a seq or string | one level per element | its length |
@@ -138,8 +139,7 @@ O(n**2) despite the slice being free.
 ### A multiset is linear, unlike the other two
 
 `_dafny.MultiSet` subclasses `collections.Counter`, so `multiset(s)` is `Counter(s)`
-and costs one pass. It does **not** share the copying behaviour of `set<T>` and
-`map<K,V>` above -- building one is linear, not quadratic:
+and costs one pass. **Building** one is linear, not quadratic:
 
     n= 1000  0.28ms    n= 4000  0.96ms    n=16000  3.68ms
     n= 2000  0.45ms    n= 8000  1.80ms
@@ -152,6 +152,18 @@ So `multiset(a) == multiset(b)` is a **linear** permutation test, and a row whos
 Python reaches the same answer with `sorted(a) == sorted(b)` is O(n log n). That
 difference is an algorithm replacement, not a data-structure choice: see
 `solutions-tofix/README.md` on the too-fast direction.
+
+**Updating one is not.** `m := m[k := v]` on a multiset compiles to
+`MultiSet.set`, which is `Counter(self)` -- the same full copy as `Map.set` and
+`Seq.set`. In a loop it is quadratic, measured:
+
+    n= 1000   34.2ms    n= 4000   500.8ms
+    n= 2000  128.5ms    n= 8000  1951.2ms   -- x3.9 per doubling
+
+So the split is per-operation, not per-type: bulk construction and comparison
+are linear, element-at-a-time update copies. An earlier version of this section
+said multiset "does not copy like set and map do", which was drawn from the
+construction measurement and is false for updates.
 
 One caveat on cardinality: `|m|` on a multiset is `reduce` over the *distinct*
 keys, so it is O(distinct), not O(1). The measurement above held the distinct

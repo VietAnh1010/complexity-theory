@@ -34,7 +34,8 @@ Everything else costs what the table says:
 | `m[k := v]` (map insert/update) | **O(\|m\|)** | full dict copy per write. CPython's `d[k]=v` is O(1) — same divergence as a seq update |
 | `m[k]`, `k in m`, `\|m\|` | O(1) | `_dafny.Map` subclasses `dict`; reads do not copy |
 | `m.Keys`, `m.Values`, `m.Items` | **O(\|m\|)** | each materialises a fresh `Set`. `\|m.Keys\|` in a loop is quadratic; `\|m\|` is not |
-| `multiset(s)`, `multiset(a) == multiset(b)` | O(\|s\|) | linear — `Counter`. It does NOT copy like `set` and `map` do |
+| `multiset(s)`, `multiset(a) == multiset(b)` | O(\|s\|) | building one and comparing two are linear — `Counter` |
+| `m := m[k := v]` on a **multiset** | **O(\|m\|)** | copies, exactly like `seq` and `map`. Quadratic in a loop |
 | `int` ops where the value grows with n (factorials, `2**n`) | not O(1) | bignum |
 
 Taking `|s|` never forces a copy. A read *after* a loop costs one flatten, not
