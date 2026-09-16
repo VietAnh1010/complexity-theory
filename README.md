@@ -7,6 +7,14 @@ exported as flat files.
 Not a survey — the deliverable is `dataset/`, not prose. **No model is called
 anywhere.** No API keys; stdlib Python only.
 
+## Two independent projects in one repo
+
+This README describes the **paper-mining pipeline**. `bigodafny/` is a separate
+dataset with its own README, rules and tooling: a Python → Dafny translation of
+BigO(Bench)'s `time_complexity_test_set`, 636 rows translated, each carrying an
+inferred time-complexity label. The two share no sources, cache or record
+shape — the only thing in common is the subject.
+
 ## Deliverables
 
 | `dataset/` | |
@@ -58,6 +66,7 @@ scripts/run.py      the CLI
 papers/library.jsonl  every paper seen, deduped
 dataset/            the deliverable
 .cache/             raw API responses (gitignored)
+bigodafny/          the other project — see bigodafny/README.md
 ```
 
 The subject lives in `SCOPE.md`, `topic.py`, `config/queries.txt`, and the

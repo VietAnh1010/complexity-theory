@@ -110,7 +110,20 @@ python3 cli.py selftest                # prove the validator rejects bad transla
 | `prelude.dfy` | `FloorDiv`, `IntToString`, `Join`, `SplitWs`, merge sort |
 | `solutions/` | one `.dfy` per solution -- the authoring surface |
 
-`data/tasks.jsonl` (79 MB) and `.cache/` are gitignored and regenerable;
+Rows are partitioned across five directories by status, each with its own
+`README.md`; `solutions-proved/` is a sixth, holding instrumented copies rather
+than rows of its own.
+
+| directory | rows | why it is not simply clean |
+|---|---|---|
+| `solutions/` | 328 | -- it is |
+| `solutions-unscreened/` | 127 | its complexity label was never screened |
+| `solutions-disputed/` | 178 | the label audit says the label does not match the code |
+| `solutions-unverified/` | 3 | `dafny verify` cannot discharge its safety obligations |
+| `solutions-untranslated/` | 4 | it will not be translated; the file says why |
+| `solutions-proved/` | 33 files | the complexity label, machine-checked (overlay, not a partition) |
+
+`data/tasks.jsonl` (76 MB) and `.cache/` are gitignored and regenerable;
 `data/index.jsonl` is the committed manifest.
 
 ## prelude.dfy
@@ -125,6 +138,24 @@ CPython:
 
 ## Status
 
-The pipeline is complete and proven end-to-end. Translations are not: 5 are
-hand-written, the rest are stubs. Choosing a translator is deliberately a
-separate decision -- see `../STATUS.md`.
+**636 of 640 rows are translated**; the other 4 cannot be (`print()` of a bare
+Python float has no finite specification, see
+`solutions-untranslated/README.md`).
+
+| | |
+|---|---|
+| behaviour gated | 529 valid, 3 fail |
+| safety verified | 350 of 636 |
+| complexity proved | 31 rows, 33 files, all verifying, zero `assume` |
+| label audit | 506 rows screened: 321 `ok`, 178 `mismatch`, 7 `unsure` |
+
+The cost model is now a **stipulated axiom set**, not a measurement of Dafny's
+Python backend — `COMPLEXITY.md` and `batches/cost-axioms/PLAN.md`. Every label
+is therefore a claim about an idealised machine, which is the intended design:
+a label that moves with the backend or the machine is a benchmark result, not a
+label. `validate.py` and `difftest.py` check behaviour, which is the part that
+*is* implementation-independent to check; the complexity claim is checked by
+proof, in `solutions-proved/`.
+
+Open: the 178 disputed rows await manual review, and 127 unscreened rows have
+never been through the audit at all.

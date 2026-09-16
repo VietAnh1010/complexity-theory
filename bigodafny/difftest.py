@@ -176,13 +176,25 @@ def run(sids, tiers=("public_tests", "private_tests"), workers=6):
             if i % 10 == 0 or i == len(todo):
                 log(f"  {len(done) + i}/{len(sids)}  "
                     f"{sum(1 for x in rows if x['status'] == 'agrees')} agree")
-    rows.sort(key=lambda r: (int(r["problem_id"]), r["solution_id"]))
-    write_jsonl(DATA / "difftest.jsonl", rows)
+    # A `--only` run must not replace the record of every other row. This file
+    # is the loose-tier gate's history; before this merge it held whatever the
+    # last partial run happened to produce -- two rows at one point, and five
+    # at another, for a tier of 100. Same defect `labelaudit.py evidence --only`
+    # had against the numbered batches.
+    out = DATA / "difftest.jsonl"
+    merged = {r["solution_id"]: r for r in read_jsonl(out)} if out.exists() else {}
+    merged.update({r["solution_id"]: r for r in rows})
+    allrows = sorted(merged.values(),
+                     key=lambda r: (int(r["problem_id"]), r["solution_id"]))
+    write_jsonl(out, allrows)
     partial.unlink(missing_ok=True)
+
     st = Counter(r["status"] for r in rows)
-    write_json(DATA / "difftest_summary.json", dict(st))
+    write_json(DATA / "difftest_summary.json",
+               {"this_run": dict(st),
+                "all_rows": dict(Counter(r["status"] for r in allrows))})
     event("difftest", **st)
-    log(f"result: {dict(st)}")
+    log(f"result: {dict(st)}  (file now holds {len(allrows)} rows)")
     return rows
 
 

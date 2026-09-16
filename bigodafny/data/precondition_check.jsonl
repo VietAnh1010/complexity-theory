@@ -1,4 +1,5 @@
-{"clause": "|pairs| >= 1", "error": 0, "expr": "len(I.pairs) >= 1", "holds": 133, "root": "solutions-unscreened", "solution_id": "827_148", "status": "ok", "violated": 0}
-{"clause": "forall k :: 0 <= k < |pairs| ==> pairs[k].1 >= 1", "error": 0, "expr": "all((I.pairs[k][1] >= 1) for k in range(len(I.pairs)))", "holds": 133, "root": "solutions-unscreened", "solution_id": "827_148", "status": "ok", "violated": 0}
-{"clause": "|pairs| >= 1", "error": 0, "expr": "len(I.pairs) >= 1", "holds": 133, "root": "solutions-proved", "solution_id": "827_148", "status": "ok", "violated": 0}
+{"clause": "n >= 1", "error": 0, "expr": "I.n >= 1", "holds": 162, "root": "solutions-proved", "solution_id": "1011_368", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |pairs| ==> 1 <= pairs[k].0 <= 1000 && 1 <= pairs[k].1 <= 1000", "error": 0, "expr": "all((1 <= I.pairs[k][0] <= 1000  and  1 <= I.pairs[k][1] <= 1000) for k in range(len(I.pairs)))", "holds": 94, "root": "solutions-proved", "solution_id": "827_148", "status": "violated-generated-only", "violated": 39, "violated_by_tier": {"generated_tests": 39}, "violated_python_ok": 39}
+{"clause": "|pairs| >= 1", "error": 0, "expr": "len(I.pairs) >= 1", "holds": 133, "root": "solutions-proved", "solution_id": "827_148", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |pairs| ==> pairs[k].1 >= 1", "error": 0, "expr": "all((I.pairs[k][1] >= 1) for k in range(len(I.pairs)))", "holds": 133, "root": "solutions-unscreened", "solution_id": "827_148", "status": "ok", "violated": 0}
+{"clause": "|pairs| >= 1", "error": 0, "expr": "len(I.pairs) >= 1", "holds": 133, "root": "solutions-unscreened", "solution_id": "827_148", "status": "ok", "violated": 0}

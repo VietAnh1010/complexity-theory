@@ -413,7 +413,21 @@ def run(sids):
               else:
                   rec["status"] = "ok" if rec["holds"] else "no-data"
               rows.append(rec)
-    write_jsonl(DATA / "precondition_check.jsonl", rows)
+    # This tool only ever runs on explicit sids -- there is no "check
+    # everything" mode -- so the file must accumulate. Replacing it meant the
+    # record held whichever row was checked last: four clauses of one row, for
+    # a corpus with preconditions in dozens. A re-check of a row replaces that
+    # row's clauses and leaves every other row alone.
+    out = DATA / "precondition_check.jsonl"
+    prior = [r for r in read_jsonl(out)] if out.exists() else []
+    touched = {(r["root"], r["solution_id"]) for r in rows}
+    merged = [r for r in prior
+              if (r.get("root"), r.get("solution_id")) not in touched] + rows
+    merged.sort(key=lambda r: (r.get("solution_id", ""), r.get("root", ""),
+                               r.get("clause", "")))
+    write_jsonl(out, merged)
+    log(f"precondition_check.jsonl now holds {len(merged)} clause(s) over "
+        f"{len({r.get('solution_id') for r in merged})} row(s)")
     bad = [r for r in rows if r["status"] == "violated"]
     unk = [r for r in rows if r["status"] == "unchecked"]
     nod = [r for r in rows if r["status"] == "no-data"]

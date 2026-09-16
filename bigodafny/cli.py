@@ -1,14 +1,31 @@
 #!/usr/bin/env python3
-"""bigodafny -- build a Python->Dafny dataset from BigOBench.
+"""bigodafny -- the deterministic build, end to end.
 
-    python3 cli.py all                 fetch, extract, signatures, scaffold, baseline, dataset
+This covers the pipeline that turns the upstream download into a dataset, and
+nothing else. It is not a front end for every tool in this directory: the rest
+are judgement steps, each run directly and each with its own flags.
+
+    python3 cli.py all                 extract, signatures, scaffold, baseline, dataset
     python3 cli.py extract             download + project into tasks.jsonl
     python3 cli.py signatures          dataclass_code -> Dafny signatures
     python3 cli.py scaffold [--force]  write .dfy stubs (never clobbers a real body)
     python3 cli.py baseline            run the original Python against its own tests
-    python3 cli.py validate [...]      compile .dfy and diff stdout
+    python3 cli.py validate [...]      compile .dfy and diff stdout (strict rows)
     python3 cli.py dataset             join everything -> dataset.jsonl + stats.json
     python3 cli.py selftest            prove the validator rejects bad translations
+
+Run these directly; they are deliberately not subcommands, because each one
+either takes a judgement as input or produces one as output:
+
+    difftest.py --loose             the loose tier's gate: Dafny vs its own Python
+    verify_all.py [--unscreened]    dafny verify over the corpus; files failures
+    proofs.py                       re-check every proof in solutions-proved/
+    precheck.py SID...              a proof's preconditions against real inputs
+    labelaudit.py evidence|apply    build audit batches; file the verdicts
+    checkverdicts.py FILE           the audit's schema and oracle gate
+    callgraph.py                    call-depth per row -> data/call_depth.jsonl
+    siblings.py                     find two rows of one problem that converged
+    scaffold.py, extract.py, ...    also importable, as cli.py itself does
 """
 from __future__ import annotations
 import argparse, sys

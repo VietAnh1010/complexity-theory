@@ -255,7 +255,16 @@ def run(limit=None, only=None, out=None):
         if limit and len(rows) >= limit:
             break
 
-    out = out or (DATA / "call_depth.jsonl")
+    # As in validate.py: a `--only`/`--limit` run writes a scratch file, so the
+    # canonical per-row depth record is never a subset of itself. `--out` still
+    # overrides, for when a subset IS what you want written somewhere.
+    if out is None:
+        partial = bool(only or limit)
+        out = DATA / ("partial_call_depth.jsonl" if partial
+                      else "call_depth.jsonl")
+        if partial:
+            log("partial run: writing data/partial_call_depth.jsonl, not the"
+                " canonical data/call_depth.jsonl")
     write_jsonl(out, rows)
 
     ok = [r for r in rows if r["status"] == "ok"]

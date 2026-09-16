@@ -69,6 +69,13 @@ benchmark and load-bearing for this dataset.
 | `proofs.py` | complexity **proved**; fails on any `assume` | `solutions-proved/` |
 | `precheck.py` | every added `requires` holds on real inputs | anything with `requires` |
 | `siblings.py` | same-problem rows converged despite different labels | everything |
+| `labelaudit.py` | the label describes what the code costs | `solutions/` |
+
+`callgraph.py` is a **measurement, not a gate**: it writes `data/call_depth.jsonl`,
+the longest acyclic chain from `Solve` per row, ghost declarations excluded.
+328 rows, depth 0–4, mean 1.94, 297 of them recursive. Use it to pick rows —
+depth 0–1 are self-contained and cheap to change; a deeper row pushes any
+edit through helper signatures.
 
 **Before an unproven obligation, ask whether the TRANSLATION is wrong.** Python
 wraps a negative subscript; Dafny faults. Three rows read a negative index on

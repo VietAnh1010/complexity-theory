@@ -49,40 +49,50 @@ Report that alongside the edge count.
 Separate deliverable in `bigodafny/`, built from BigOBench's
 `time_complexity_test_set`. Shares nothing with the paper pipeline.
 
-- **Phase:** pipeline complete and proven end-to-end; translations not started
-- **Last updated:** 2026-08-31
-- **Next action:** choose a translator — see Open questions
+- **Phase:** translated and gated; label audit complete; cost model axiomatised
+- **Last updated:** 2026-09-16
+- **Next action:** review the 178 disputed rows; screen the 127 unscreened ones
 
 | | |
 |---|---|
 | rows / problems | 640 / 311 |
-| split `strict` / `loose` | 540 / 100 |
-| signatures synthesized | 636 of 640 rows (309 of 311 problems) |
-| Dafny translations valid | 5 (hand-written) |
+| split `strict` / `loose` / unvalidatable | 534 / 100 / 6 |
+| translated | 636 of 640 (4 cannot be — bare `print(float)`) |
+| behaviour gated | 529 valid, 3 fail |
+| safety verified | 350 of 636 |
+| complexity proved | 31 rows, 33 files, all verify, zero `assume` |
+| label audit | 506 screened: 321 `ok`, 178 `mismatch`, 7 `unsure` |
 | Dafny / Z3 | 4.11.0 / 4.12.1 |
+
+**Rows are partitioned by status**, one directory each, each with a `README.md`:
+`solutions/` 328, `solutions-unscreened/` 127, `solutions-disputed/` 178,
+`solutions-unverified/` 3, `solutions-untranslated/` 4. `solutions-proved/` is
+an overlay of instrumented copies, not a sixth bucket.
 
 **The split is measured, not read.** Running the original Python against its own
 stored tests, only 540 of 640 reproduce the expected output byte-for-byte.
 Codeforces accepted the rest under token-based or special checkers, so the
-stored output is one accepted answer. 540 is the ceiling for any translation.
+stored output is one accepted answer. `difftest.py` gates those against their
+own Python instead. The description regex first planned for the split scores
+precision 0.38, recall 0.45 against the measurement; it survives as
+`nondet_hint` and gates nothing.
 
-The description regex I first planned to split on scores precision 0.38, recall
-0.45 against that measurement. It is kept as `nondet_hint` and gates nothing.
+**The cost model is a stipulated axiom set, not a measurement.** `s[i := v]`,
+`m[k := v]` and set insertion are charged O(1) regardless of backend
+(`bigodafny/COMPLEXITY.md`, `batches/cost-axioms/PLAN.md`). The measured
+alternative made a row's class depend on which backend compiled it, and the
+labels were measured on CPython, so it compared two unrelated implementations.
+Consequence: `validate.py` and `difftest.py` check behaviour only, and the
+complexity claim is checked by proof in `solutions-proved/`. That is intended —
+a label that moves with the runtime is a benchmark result, not a label.
+
+`array<T>` has been removed from the corpus for the same reason; two rows keep
+one because their tables are too large for the backend to copy per update, and
+each says so in a header comment.
 
 **Two problems have no synthesizable signature** (4 rows): `1042_A. Benches` and
 `490_A. Team Olympiad` annotate a field as bare `list` with no element type.
 Recorded, not guessed.
-
-**Scale check:** 120 rows validated, 4,054 tests executed, 9 distinct Dafny
-parameter types including `seq<seq<real>>` and `seq<(string, string)>`. Zero
-build failures, zero marshalling errors. The 118 non-hand-written rows failed on
-output, which is what an untranslated stub should do.
-
-**Proven end-to-end:** 5 hand-written translations spanning scalar, `seq<int>`,
-`string`, `seq<seq<int>>` and `seq<(int,int)>` pass 545/545 tests across all
-three tiers. `cli.py selftest` asserts a wrong answer reports as `fail` and a
-syntax error as `build`; it already caught a fixture bug that made every case
-look like a build failure.
 
 `prelude.dfy` verifies clean and is cross-checked against CPython: `FloorDiv`
 and `FloorMod` agree with Python `//` and `%` on 1458/1458 cases. Dafny's own
@@ -99,12 +109,22 @@ non-commercial. See `bigodafny/LICENSE.md`.
 - Eight queries were dead or near-dead; rewritten and re-run, worth 162 records.
   - arXiv matches each concept as a literal phrase.
   - Three-concept ANDs and LaTeX-written class names return nothing.
-- `bigodafny`: no translator chosen. The validator will judge any candidate.
-  - An LLM behind the validator is the only route that covers 636 varied rows.
-  - `CLAUDE.md`'s "no model in this pipeline" was written for the paper
-    pipeline; `bigodafny/CLAUDE.md` scopes it to the deterministic stages.
-  - A rule-based transpiler must cover: string ops 487 rows, sort-with-key 151,
-    `//` 131, dict/Counter 55, set 52.
+- `bigodafny`: **resolved** — agents translated all 636 rows behind the
+  validator. `CLAUDE.md`'s "no model in this pipeline" was written for the paper
+  pipeline; `bigodafny/CLAUDE.md` scopes it to the deterministic stages.
+- `bigodafny`: 178 rows sit in `solutions-disputed/` awaiting manual review.
+  - 112 need the **label** changed, 58 the **translation**, 7 both, 1 neither.
+  - Re-filing under the cost axioms should return 30-40 of the 58 to `solutions/`;
+    that step (`batches/cost-axioms/PLAN.md` § 3) has not been run, because it
+    changes verdicts already queued for review.
+  - One convention is unsettled across 11 rows: whether a loop bounded by the
+    *value* of a capped scalar counts as constant. See
+    `solutions-disputed/README.md`.
+- `bigodafny`: 127 rows in `solutions-unscreened/` have never been through the
+  label audit at all.
+  - They were quarantined earlier for sibling convergence (12) or for using
+    `set<T>`/`map` (29), and the second reason no longer justifies anything
+    under the axioms.
 - `bigodafny`: whether to widen past `time_complexity_test_set`.
   - The 311 problems hold 249,912 human solutions upstream; the test set keeps 640.
 

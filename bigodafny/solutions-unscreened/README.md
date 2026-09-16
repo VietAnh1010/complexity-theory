@@ -21,7 +21,8 @@ Two screens ran before the audit existed, and both were coarse:
   At least one of the two must be mislabelled, or one translation replaced the
   other's algorithm. `siblings.py` finds them; it does not say which is at
   fault.
-- **Container use** — 22 rows use `set<T>`, 11 use `map<K,V>`. These were
+- **Container use** — 29 rows use `set<T>` or `map<K,V>` (22 and 11, with an
+  overlap). These were
   pulled when the cost model was read off the Dafny Python backend, where both
   copy on write and turn a linear loop quadratic.
 

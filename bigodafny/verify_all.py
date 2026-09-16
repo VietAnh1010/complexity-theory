@@ -110,8 +110,8 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--move", action="store_true")
     ap.add_argument("--workers", type=int, default=8)
-    ap.add_argument("--inexact", action="store_true",
+    ap.add_argument("--unscreened", action="store_true",
                     help="also verify solutions-unscreened/")
     a = ap.parse_args()
-    dirs = [SOLUTIONS] + ([UNSCREENED] if a.inexact else [])
+    dirs = [SOLUTIONS] + ([UNSCREENED] if a.unscreened else [])
     run([d for d in dirs if d.exists()], workers=a.workers, move=a.move)

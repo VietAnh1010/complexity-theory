@@ -24,6 +24,9 @@ bigodafny/data/*_validation.jsonl
 bigodafny/data/*_validation_summary.json
 bigodafny/build/
 bigodafny/data/difftest_partial.jsonl
+# Spot-check output. A --only/--limit run writes here so it can never replace
+# the canonical record; see validate.py's and callgraph.py's guards.
+bigodafny/data/partial_*
 
 # Label-audit evidence batches: each embeds a full .dfy and its Python, so the
 # payload is 1.4M of content already committed elsewhere. Regenerate with

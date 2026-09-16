@@ -216,6 +216,16 @@ def validate(only=None, tiers=("public_tests", "private_tests"),
         rows.append(rec); tally[rec["status"]] += 1
         log(f"  {sid:>10}  {rec['status'].upper():<6} {c['pass']}/{len(res)} tests")
 
+    # A partial run must never replace the canonical record. `--out-prefix` has
+    # always been the way to say "this is a spot check"; nothing enforced it, so
+    # one `validate.py --only X` would leave data/validation.jsonl holding a
+    # single row where 532 had been. Same defect difftest.py had against
+    # data/difftest.jsonl, which held 5 rows for a tier of 100.
+    if not out_prefix and (only or limit):
+        out_prefix = "partial_"
+        log("partial run (--only/--limit): writing data/partial_validation.jsonl,"
+            " not the canonical data/validation.jsonl")
+
     write_jsonl(DATA / f"{out_prefix}validation.jsonl", rows)
     summary = {"dafny_version": DAFNY_VERSION, "tiers": list(tiers),
                "validated": len(rows), **{k: tally[k] for k in
