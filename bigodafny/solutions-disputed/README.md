@@ -70,6 +70,23 @@ these findings invert. The rows are at least `1306_15`, `1306_197`, `1678_212`,
 and `2700_53`. **Decide the convention once, then re-file the group** — it is one
 judgement, not eleven.
 
+**One row settles it empirically, and it is not in this queue.** The first full
+run of `difftest.py --loose` (100 rows, 95 agree, 4 untranslatable) turned up a
+single `error: TimeoutExpired`: `solutions/1501/1501_224.dfy`, labelled O(n).
+Its whole input is one integer n, and its loop runs about n/12 times. Its own
+tests supply n up to **10^12**, so neither the Dafny nor the original Python
+terminates — the row burned a 1800s budget without finishing one test.
+
+Under the size reading the label is wrong: the input is one integer, so the work
+is exponential in the input's length. Under the value reading the label is right
+and the row is simply untestable at its own inputs. Either way the row is in
+`solutions/` claiming to be clean while no gate can run on it, which is the
+same situation `solutions-untranslated/` exists to name.
+
+That makes the convention question concrete rather than academic, and it is
+still the user's call: the rows above move as a group, and `1501_224` either
+joins them or joins the untranslatable tier.
+
 ## The three causes, and why they need different repairs
 
 | cause | count | what is wrong | repair |

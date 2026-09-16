@@ -37,6 +37,18 @@ Both are statements about the backend, not the cost model. Under the axioms
 their `seq` and `array` forms are charged the same; what the axioms cannot do
 is make the `seq` form finish, and the gates are non-negotiable.
 
+## One row here cannot be gated
+
+`1501/1501_224.dfy` is labelled O(n) and its whole input is a single integer n;
+its loop runs about n/12 times, and its own tests supply n up to 10^12. Neither
+it nor the original Python finishes — `difftest.py` spent a 1800s budget on it
+without completing one test, the only `error` in the loose tier's 100 rows.
+
+It is left in place rather than moved, because moving it decides the
+value-versus-size convention that `solutions-disputed/README.md` records as
+open across eleven other rows. Until that is decided, this row is clean by
+every gate that *can* run on it and untested by the one that cannot.
+
 ## Shape
 
     solutions/<problem_id>/<solution_id>.dfy

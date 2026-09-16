@@ -1,3 +1,12 @@
 {
-  "agrees": 5
+  "all_rows": {
+    "agrees": 95,
+    "error": 1,
+    "untranslated": 4
+  },
+  "this_run": {
+    "agrees": 95,
+    "error": 1,
+    "untranslated": 4
+  }
 }
