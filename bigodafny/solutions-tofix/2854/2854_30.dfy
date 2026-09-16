@@ -1,3 +1,39 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n)
+//   audited class  : O(n**2)
+//   cause          : translation
+//   confidence     : high
+//   auditor        : labelaudit-batch-22
+//
+//   The Python matches its label; the DAFNY does not. The label is right
+//   about the program it was measured on and the translation is the
+//   defect.
+//
+//   evidence:
+//     adj := adj[u := adj[u] + [(v,u)]] and adj := adj[v := ...] are seq
+//     updates over the n-length adj sequence executed inside the |edges|
+//     loop, each O(n), giving O(n**2) for adjacency alone; the Python
+//     instead uses G[u].append((v,u)), an O(1) list append, matching its
+//     own O(n) label.
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes adjacency-list construction is O(1) per append as
+//     in Python's G[u].append. Open the edge loop and check that adj :=
+//     adj[u := adj[u] + [(v,u)]] is a top-level update of the whole
+//     n-length adj sequence, repeated twice per edge for n-1 edges; if so
+//     that alone is O(n**2), independent of the DFS-style options loop
+//     that also rewrites visited and colors the same way.
+//
+//   structural facts (deterministic, from labelaudit.py):
+//     {"body_lines": 53, "data_dependent_loops": 1, "decreases_star":
+//     true, "linear_prelude_calls": ["IntToString", "ParseInt", "SplitWs",
+//     "SumSeq"], "loop_depth": 1, "loops": 2, "recursive_helpers": 0,
+//     "seq_append_read_in_same_loop": false, "seq_args": 1,
+//     "seq_update_in_loop": true, "set_build_in_loop": false, "sorts": [],
+//     "uses_map": false, "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 862_B. Mahmoud and Ehab and the bipartiteness  (problem 2854, solution 2854_30)
 // time complexity: O(n)
 // python exact-diff baseline: exact
