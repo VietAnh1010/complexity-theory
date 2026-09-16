@@ -26,12 +26,65 @@ def git(*args, default=""):
         return default
 
 
+def prove_sample(manifest, traj, ds, depth):
+    """The proof campaign: did a bounded agent close the complexity label?
+
+    Unlike the verification sample there is no tool that settles this -- a
+    bound has to be written. So the interesting number is not the success
+    rate but WHY a row did not close, which is why `obstacles` is tabulated
+    from the free-text reason rather than from a status field.
+    """
+    if not manifest:
+        return {"status": "not yet run"}
+    by_sid = {r["solution_id"]: r for r in traj}
+    rows = []
+    for m in manifest:
+        s = m["solution_id"]
+        t, d = by_sid.get(s, {}), depth.get(s, {})
+        rows.append({
+            "solution_id": s, "label": m["label"], "split": m["split"],
+            "outcome": t.get("outcome", "not attempted"),
+            "bound": t.get("bound"),
+            "agrees_with_label": t.get("agrees_with_label"),
+            "attempts_used": t.get("attempts_used"),
+            "seconds": t.get("seconds"),
+            "why_failed": t.get("why_failed"),
+            "call_depth": d.get("longest_chain"),
+            "recursive": d.get("recursive"),
+        })
+    done = [r for r in rows if r["outcome"] in ("proved", "unresolved")]
+    proved = [r for r in rows if r["outcome"] == "proved"]
+    disagree = [r for r in proved if r["agrees_with_label"] is False]
+    return {
+        "question": "can a bounded agent prove the label of a random row?",
+        "seed": 20260917, "drawn": len(manifest), "pool": 329,
+        "frame": "solutions/, no proof in solutions-proved/, non-empty label",
+        "bounds": {"attempts_per_row": 3, "seconds_per_row": 300},
+        "agents": 3, "model": "sonnet",
+        "attempted": len(done),
+        "proved": len(proved),
+        "unresolved": sum(1 for r in done if r["outcome"] == "unresolved"),
+        "proved_but_disagrees_with_label": [r["solution_id"] for r in disagree],
+        "by_label": {
+            lab: {"drawn": sum(1 for r in rows if r["label"] == lab),
+                  "proved": sum(1 for r in proved if r["label"] == lab)}
+            for lab in sorted({r["label"] for r in rows})},
+        "obstacles": dict(Counter(
+            r["why_failed"] for r in rows if r["why_failed"]).most_common()),
+        "rows": sorted(rows, key=lambda r: (int(r["solution_id"].split("_")[0]),
+                                            r["solution_id"])),
+    }
+
+
 def main():
     ds = {r["solution_id"]: r for r in jsonl(DATA / "dataset.jsonl")}
     ver = {r["solution_id"]: r for r in jsonl(DATA / "verification.jsonl")}
     depth = {r["sid"]: r for r in jsonl(DATA / "call_depth.jsonl")}
     stats = json.loads((DATA / "stats.json").read_text())
     manifest = jsonl(HERE / "batches/verify-sample/manifest.jsonl")
+    pv_manifest = jsonl(HERE / "batches/prove-sample/manifest.jsonl")
+    pv_traj = [r for f in sorted((HERE / "batches/prove-sample").glob("traj_*.jsonl"))
+               for r in jsonl(f)]
 
     dirs = {d.name: sum(1 for _ in d.rglob("*.dfy"))
             for d in sorted(HERE.glob("solutions*")) if d.is_dir()}
@@ -95,6 +148,8 @@ def main():
                                                   r["solution_id"])),
         },
 
+        "prove_sample": prove_sample(pv_manifest, pv_traj, ds, depth),
+
         "stale_record_finding": {
             "before": {"rows": 362, "recorded_failing": 12,
                        "paths_no_longer_existing": 114},
@@ -134,6 +189,10 @@ def main():
           f"{v['fully_verified_incl_termination']} incl. termination")
     print(f"  sample: {payload['sample']['drawn']} rows, "
           f"{payload['sample']['attempts_consumed']} attempts consumed")
+    pv = payload["prove_sample"]
+    if "drawn" in pv:
+        print(f"  proofs: {pv['proved']} proved / {pv['attempted']} attempted "
+              f"of {pv['drawn']} drawn")
 
 
 if __name__ == "__main__":

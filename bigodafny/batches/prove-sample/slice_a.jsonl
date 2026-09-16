@@ -1,0 +1,17 @@
+{"solution_id": "61_295", "path": "solutions/61/61_295.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "499_359", "path": "solutions/499/499_359.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "810_131", "path": "solutions/810/810_131.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "1303_56", "path": "solutions/1303/1303_56.dfy", "label": "O(1)", "split": "loose", "gate": "agrees"}
+{"solution_id": "1414_8", "path": "solutions/1414/1414_8.dfy", "label": "O(n)", "split": "loose", "gate": "agrees"}
+{"solution_id": "1484_26", "path": "solutions/1484/1484_26.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "1582_118", "path": "solutions/1582/1582_118.dfy", "label": "O(nlogn)", "split": "strict", "gate": "valid"}
+{"solution_id": "1739_447", "path": "solutions/1739/1739_447.dfy", "label": "O(1)", "split": "strict", "gate": "valid"}
+{"solution_id": "1871_291", "path": "solutions/1871/1871_291.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "1915_158", "path": "solutions/1915/1915_158.dfy", "label": "O(n+m)", "split": "loose", "gate": "agrees"}
+{"solution_id": "2036_120", "path": "solutions/2036/2036_120.dfy", "label": "O(n**2)", "split": "strict", "gate": "valid"}
+{"solution_id": "2071_33", "path": "solutions/2071/2071_33.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "2188_359", "path": "solutions/2188/2188_359.dfy", "label": "O(nlogn)", "split": "strict", "gate": "valid"}
+{"solution_id": "2254_6", "path": "solutions/2254/2254_6.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "2426_4", "path": "solutions/2426/2426_4.dfy", "label": "O(nlogn)", "split": "strict", "gate": "valid"}
+{"solution_id": "2719_289", "path": "solutions/2719/2719_289.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "3033_146", "path": "solutions/3033/3033_146.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}

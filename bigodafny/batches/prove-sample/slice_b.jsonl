@@ -1,0 +1,17 @@
+{"solution_id": "450_276", "path": "solutions/450/450_276.dfy", "label": "O(n)", "split": "loose", "gate": "agrees"}
+{"solution_id": "514_140", "path": "solutions/514/514_140.dfy", "label": "O(nlogn)", "split": "strict", "gate": "valid"}
+{"solution_id": "976_1131", "path": "solutions/976/976_1131.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "1359_189", "path": "solutions/1359/1359_189.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "1421_89", "path": "solutions/1421/1421_89.dfy", "label": "O(nlogn)", "split": "loose", "gate": "agrees"}
+{"solution_id": "1501_177", "path": "solutions/1501/1501_177.dfy", "label": "O(1)", "split": "loose", "gate": "agrees"}
+{"solution_id": "1586_188", "path": "solutions/1586/1586_188.dfy", "label": "O(nlogn)", "split": "strict", "gate": "valid"}
+{"solution_id": "1756_1282", "path": "solutions/1756/1756_1282.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "1878_29", "path": "solutions/1878/1878_29.dfy", "label": "O(n)", "split": "loose", "gate": "agrees"}
+{"solution_id": "1952_22", "path": "solutions/1952/1952_22.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "2036_19", "path": "solutions/2036/2036_19.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "2105_248", "path": "solutions/2105/2105_248.dfy", "label": "O(nlogn)", "split": "strict", "gate": "valid"}
+{"solution_id": "2217_247", "path": "solutions/2217/2217_247.dfy", "label": "O(n**2)", "split": "strict", "gate": "valid"}
+{"solution_id": "2381_156", "path": "solutions/2381/2381_156.dfy", "label": "O(1)", "split": "strict", "gate": "valid"}
+{"solution_id": "2589_115", "path": "solutions/2589/2589_115.dfy", "label": "O(n**2)", "split": "strict", "gate": "valid"}
+{"solution_id": "2742_0", "path": "solutions/2742/2742_0.dfy", "label": "O(nlogn)", "split": "loose", "gate": "agrees"}
+{"solution_id": "3060_1359", "path": "solutions/3060/3060_1359.dfy", "label": "O(n+m)", "split": "strict", "gate": "valid"}
