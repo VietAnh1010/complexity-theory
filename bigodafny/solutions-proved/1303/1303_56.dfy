@@ -1,0 +1,37 @@
+// p03362 AtCoder Beginner Contest 096 - Five  Five Everywhere  (problem 1303, solution 1303_56)
+// time complexity: O(1)
+// python exact-diff baseline: none
+//
+// Reproduce the Python program's entire stdout in `output`.
+//
+// --- Python ---------------------------------------------------------
+//
+// p5_list = [11,31,41,61,71,101,131,151,181,191,211,241,251,271,281,311,331,401,421,431,461,491,521,541,571,601,631,641,661,691,701,751,761,811,821,881,911,941,971,991,1021,1031,1051,1061,1091,1151,1171,1181,1201,1231,1291,1301,1321,1361,1381]
+//
+// N=int(input())
+//
+// print(*p5_list[:N])
+// --------------------------------------------------------------------
+
+include "../../prelude.dfy"
+import opened Prelude
+
+// The fixed literal list has a constant length (55), so the slice p5[..k] and
+// the Join over it are bounded by that constant regardless of n -- true O(1).
+method Solve(n: int) returns (output: string, ghost steps: nat)
+  ensures steps <= 65
+{
+  steps := 1;
+  var p5 := [11,31,41,61,71,101,131,151,181,191,211,241,251,271,281,311,331,401,421,431,461,491,521,541,571,601,631,641,661,691,701,751,761,811,821,881,911,941,971,991,1021,1031,1051,1061,1091,1151,1171,1181,1201,1231,1291,1301,1321,1361,1381];
+  var length := |p5|;
+  var k: int;
+  if n >= 0 {
+    k := if n > length then length else n;
+  } else {
+    var t := length + n;
+    k := if t < 0 then 0 else t;
+  }
+  steps := steps + 3;
+  output := JoinInts(p5[..k], " ") + "\n";
+  steps := steps + length + 2;
+}
