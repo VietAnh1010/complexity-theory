@@ -28,18 +28,19 @@ method Solve(t: int, n_list: seq<int>) returns (output: string)
 {
   var n := t;
   var vals := n_list;
-  var pref := new int[n+1];
-  var suff := new int[n+1];
-  pref[0] := 0;
-  suff[n] := 0;
+  var pref := seq(n+1, _ => 0);
+  var suff := seq(n+1, _ => 0);
+  pref := pref[0 := 0];
+  suff := suff[n := 0];
   var i := 0;
   while i < n
     invariant 0 <= i <= n
+    invariant |pref| == n + 1 && |suff| == n + 1
     invariant forall k :: 0 <= k <= i ==> 0 <= pref[k] < 0x1_0000_0000_0000_0000
     invariant forall k :: n - i <= k <= n ==> 0 <= suff[k] < 0x1_0000_0000_0000_0000
   {
-    pref[i+1] := BitOr(pref[i], vals[i]);
-    suff[n-i-1] := BitOr(suff[n-i], vals[n-i-1]);
+    pref := pref[i+1 := BitOr(pref[i], vals[i])];
+    suff := suff[n-i-1 := BitOr(suff[n-i], vals[n-i-1])];
     i := i + 1;
   }
   var bestScore := -1;
@@ -48,6 +49,7 @@ method Solve(t: int, n_list: seq<int>) returns (output: string)
   while i < n
     invariant 0 <= i <= n
     invariant 0 <= bestIdx < n
+    invariant |pref| == n + 1 && |suff| == n + 1
   {
     var b := BitOr(pref[i], suff[i+1]);
     var score := BitOr(vals[i], b) - b;
@@ -57,19 +59,20 @@ method Solve(t: int, n_list: seq<int>) returns (output: string)
     }
     i := i + 1;
   }
-  var parts := new string[n];
-  parts[0] := IntToString(vals[bestIdx]);
+  var parts := seq(n, _ => "");
+  parts := parts[0 := IntToString(vals[bestIdx])];
   var j := 0;
   var pos := 1;
   while j < n
     invariant 0 <= j <= n
     invariant pos == j + 1 - (if bestIdx < j then 1 else 0)
+    invariant |parts| == n
   {
     if j != bestIdx {
-      parts[pos] := IntToString(vals[j]);
+      parts := parts[pos := IntToString(vals[j])];
       pos := pos + 1;
     }
     j := j + 1;
   }
-  output := Join(parts[..], " ") + "\n";
+  output := Join(parts, " ") + "\n";
 }

@@ -33,8 +33,8 @@
 include "../../prelude.dfy"
 import opened Prelude
 
-method BisectLeft(arr: array<int>, lo0: int, hi0: int, v: int) returns (r: int)
-  requires 0 <= lo0 <= hi0 <= arr.Length
+method BisectLeft(arr: seq<int>, lo0: int, hi0: int, v: int) returns (r: int)
+  requires 0 <= lo0 <= hi0 <= |arr|
 {
   var lo := lo0;
   var hi := hi0;
@@ -56,58 +56,54 @@ method Solve(n: int, pairs: seq<seq<int>>) returns (output: string)
 {
   var nn := if n > 0 then n else 0;
   var m := nn + 1;
-  var pairArr := new (int, int)[nn];
+  var pairArr: seq<(int, int)> := seq(nn, _ => (0, 0));
   var i := 0;
   while i < nn && i < |pairs|
     invariant 0 <= i <= nn
+    invariant |pairArr| == nn
   {
     var row := pairs[i];
     if |row| >= 2 {
-      pairArr[i] := (row[0], row[1]);
+      pairArr := pairArr[i := (row[0], row[1])];
     } else {
-      pairArr[i] := (0, 0);
+      pairArr := pairArr[i := (0, 0)];
     }
     i := i + 1;
   }
-  var raw := pairArr[..];
+  var raw := pairArr;
   var srt := Sort(raw, (x: (int, int), y: (int, int)) => x.0 < y.0 || (x.0 == y.0 && x.1 < y.1));
 
   var BIG := -1000000000000000000;
-  var aArr := new int[m];
-  var bArr := new int[m];
-  aArr[0] := BIG;
-  bArr[0] := 0;
+  var aArr := seq(m, _ => 0);
+  var bArr := seq(m, _ => 0);
+  aArr := aArr[0 := BIG];
+  bArr := bArr[0 := 0];
   var j := 0;
   while j < nn && j < |srt|
     invariant 0 <= j <= nn
     invariant j <= m - 1
+    invariant |aArr| == m && |bArr| == m
   {
-    aArr[j+1] := srt[j].0;
-    bArr[j+1] := srt[j].1;
+    aArr := aArr[j+1 := srt[j].0];
+    bArr := bArr[j+1 := srt[j].1];
     j := j + 1;
   }
 
-  var dptable := new int[m];
-  var fillIdx := 0;
-  while fillIdx < m
-    invariant 0 <= fillIdx <= m
-  {
-    dptable[fillIdx] := 1;
-    fillIdx := fillIdx + 1;
-  }
-  dptable[0] := 0;
+  var dptable := seq(m, _ => 1);
+  dptable := dptable[0 := 0];
   var k := 1;
   while k < m
     invariant 1 <= k <= m
+    invariant |aArr| == m && |bArr| == m && |dptable| == m
   {
     var delupto := aArr[k] - bArr[k];
     var idx := BisectLeft(aArr, 0, m, delupto);
     var prevIdx := idx - 1;
     if prevIdx < 0 { prevIdx := m + prevIdx; }
     if 0 <= prevIdx < m {
-      dptable[k] := dptable[prevIdx] + 1;
+      dptable := dptable[k := dptable[prevIdx] + 1];
     } else {
-      dptable[k] := 1;
+      dptable := dptable[k := 1];
     }
     k := k + 1;
   }
@@ -116,6 +112,7 @@ method Solve(n: int, pairs: seq<seq<int>>) returns (output: string)
   var p := 1;
   while p < m
     invariant 0 <= p <= m
+    invariant |dptable| == m
   {
     if dptable[p] > best { best := dptable[p]; }
     p := p + 1;

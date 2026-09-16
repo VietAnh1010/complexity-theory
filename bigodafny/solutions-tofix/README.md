@@ -138,8 +138,18 @@ same table (min of 3 runs, interpreter startup subtracted):
 The seq update ratios are 3.4 / 3.9 / 4.2 per doubling — quadratic. `array<T>`
 is flat and about 560x faster at n = 32k.
 
-**Use `array<T>` with `a[i] := v`.** It is faithful to CPython's `lst[i] = v`,
-needs no new build flag, and the corpus already uses it.
+**Superseded — do not use `array<T>`.** This recommendation stood while the cost
+model was read off the Python backend. `batches/cost-axioms/PLAN.md` replaced
+that model with a stipulated one in which `s[i := v]` is O(1) by axiom, and its
+§ 2 removed `array<T>` from `solutions/` entirely: 16 rows were rewritten to
+`seq`, all re-verified and re-gated. The table above stays as a record of what
+the backend does — it is no longer a reason to pick a container. A `translation`
+row whose only defect is a seq update is now `ok`, not a row to repair.
+
+The measurements that still matter here: `2826_42` and `2128_34` write large
+tables in loops, so the gap between the axioms and the backend is load-bearing
+for those two rows. Both keep their array and are recorded as exceptions in the
+plan. Everywhere else a seq update is charged O(1) and needs no repair.
 
 `Std.DynamicArray` does exist in Dafny 4.11's standard library (`Push`, `Put`,
 `PopFast`, `Ensure`) and both `Push` and `Put` measure linear. It is the right

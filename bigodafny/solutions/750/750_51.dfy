@@ -28,23 +28,25 @@ import opened Prelude
 
 method Solve(n: int, data_points: seq<(int, int)>) returns (output: string)
 {
-  var aArr := new int[2001];
-  var bArr := new int[2001];
+  var aArr := seq(2001, _ => 0);
+  var bArr := seq(2001, _ => 0);
   var i := 0;
   while i < |data_points|
+    invariant |aArr| == 2001 && |bArr| == 2001
     decreases |data_points| - i
   {
     var x := data_points[i].0;
     var y := data_points[i].1;
     var idxA := FloorMod(x - y, 2001);
     var idxB := FloorMod(x + y, 2001);
-    aArr[idxA] := aArr[idxA] + 1;
-    bArr[idxB] := bArr[idxB] + 1;
+    aArr := aArr[idxA := aArr[idxA] + 1];
+    bArr := bArr[idxB := bArr[idxB] + 1];
     i := i + 1;
   }
   var ans := 0;
   i := 0;
   while i < 2001
+    invariant |aArr| == 2001 && |bArr| == 2001
     decreases 2001 - i
   {
     ans := ans + aArr[i]*(aArr[i]-1)/2;

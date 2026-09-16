@@ -1,2 +1,5 @@
-{"agree": 65, "comparable": 65, "detail": {"pass": 65}, "problem_id": "1855", "python_failed": 0, "solution_id": "1855_50", "status": "agrees"}
-{"agree": 18, "comparable": 18, "detail": {"pass": 18}, "problem_id": "2742", "python_failed": 0, "solution_id": "2742_57", "status": "agrees"}
+{"agree": 9, "comparable": 9, "detail": {"pass": 9}, "problem_id": "952", "python_failed": 0, "solution_id": "952_163", "status": "agrees"}
+{"agree": 88, "comparable": 88, "detail": {"pass": 88}, "problem_id": "2128", "python_failed": 0, "solution_id": "2128_34", "status": "agrees"}
+{"agree": 68, "comparable": 68, "detail": {"pass": 68}, "problem_id": "2394", "python_failed": 0, "solution_id": "2394_227", "status": "agrees"}
+{"agree": 42, "comparable": 42, "detail": {"pass": 42}, "problem_id": "2465", "python_failed": 0, "solution_id": "2465_139", "status": "agrees"}
+{"agree": 42, "comparable": 42, "detail": {"pass": 42}, "problem_id": "2465", "python_failed": 0, "solution_id": "2465_212", "status": "agrees"}

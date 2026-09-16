@@ -104,13 +104,14 @@ method Solve(t: int, n_list: seq<int>) returns (output: string)
   var tmp := a[0];
   assert 0 <= i < |a|;
   a := a[0 := a[i]][i := tmp];
-  var parts := new string[n];
+  var parts := seq(n, _ => "");
   var p := 0;
   while p < n
     invariant 0 <= p <= n
+    invariant |parts| == n
   {
-    parts[p] := IntToString(a[p]);
+    parts := parts[p := IntToString(a[p])];
     p := p + 1;
   }
-  output := Join(parts[..], " ") + "\n";
+  output := Join(parts, " ") + "\n";
 }

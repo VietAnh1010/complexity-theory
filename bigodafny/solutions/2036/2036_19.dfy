@@ -23,29 +23,29 @@ import opened Prelude
 method Solve(numbers: seq<int>) returns (output: string)
   requires forall idx :: 0 <= idx < |numbers| ==> 1 <= numbers[idx] <= 9
 {
-  var ls := new int[9];
+  var ls := seq(9, _ => 0);
   var idx := 0;
   while idx < 9
+    invariant |ls| == 9
     decreases 9 - idx
-    modifies ls
   {
-    ls[idx] := 0;
+    ls := ls[idx := 0];
     idx := idx + 1;
   }
   idx := 0;
   while idx < |numbers|
     invariant 0 <= idx
-    invariant ls.Length == 9
+    invariant |ls| == 9
     decreases |numbers| - idx
-    modifies ls
   {
     var pos := numbers[idx] - 1;
-    ls[pos] := ls[pos] + 1;
+    ls := ls[pos := ls[pos] + 1];
     idx := idx + 1;
   }
   var x: seq<int> := [];
   idx := 0;
   while idx < 9
+    invariant |ls| == 9
     decreases 9 - idx
   {
     if ls[idx] > 0 {

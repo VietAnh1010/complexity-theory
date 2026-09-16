@@ -31,29 +31,24 @@ method Solve(s: string, n: int, a_list: seq<int>) returns (output: string)
   requires forall v :: v in a_list ==> 1 <= v <= |s|
 {
   var strLen := |s|;
-  var l := new int[strLen + 1];
+  var l := seq(strLen + 1, _ => 0);
   var idx := 0;
-  while idx < strLen + 1
-    decreases strLen + 1 - idx
-  {
-    l[idx] := 0;
-    idx := idx + 1;
-  }
-  idx := 0;
   while idx < |a_list|
     invariant 0 <= idx <= |a_list|
+    invariant |l| == strLen + 1
     decreases |a_list| - idx
   {
     var v := a_list[idx];
     assert v in a_list;
-    l[v - 1] := l[v - 1] + 1;
-    l[strLen - v + 1] := l[strLen - v + 1] - 1;
+    l := l[v - 1 := l[v - 1] + 1];
+    l := l[strLen - v + 1 := l[strLen - v + 1] - 1];
     idx := idx + 1;
   }
   var k := 0;
   var result: seq<char> := [];
   idx := 0;
   while idx < strLen
+    invariant |l| == strLen + 1
     decreases strLen - idx
   {
     k := k + l[idx];

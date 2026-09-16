@@ -81,35 +81,26 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
   assert tot >= 1;
   assert tot <= n;
 
-  var whereIs := new int[n];
+  var whereIs := seq(n, _ => 0);
   var wi := 0;
   while wi < n
     invariant 0 <= wi <= n
+    invariant |whereIs| == n
     invariant tot >= 1
     invariant forall key :: key in rankMap ==> 0 <= rankMap[key] < tot
     invariant forall k :: 0 <= k < wi ==> 0 <= whereIs[k] < tot
     decreases n - wi
   {
-    whereIs[wi] := if a_list[wi] in rankMap then rankMap[a_list[wi]] else 0;
+    whereIs := whereIs[wi := if a_list[wi] in rankMap then rankMap[a_list[wi]] else 0];
     wi := wi + 1;
   }
   assert forall k :: 0 <= k < n ==> 0 <= whereIs[k] < tot;
   assert tot <= n;
   assert forall k :: 0 <= k < n ==> 0 <= whereIs[k] < n;
 
-  var dp := new int[n];
-  var preState := new int[n];
-  var lst := new int[n];
-  var li := 0;
-  while li < n
-    invariant 0 <= li <= n
-    invariant forall k :: 0 <= k < li ==> lst[k] == -1
-    invariant forall k :: 0 <= k < n ==> 0 <= whereIs[k] < n
-    decreases n - li
-  {
-    lst[li] := -1;
-    li := li + 1;
-  }
+  var dp := seq(n, _ => 0);
+  var preState := seq(n, _ => 0);
+  var lst := seq(n, _ => -1);
   assert forall k :: 0 <= k < n ==> lst[k] == -1;
   assert forall k :: 0 <= k < n ==> 0 <= whereIs[k] < n;
 
@@ -118,6 +109,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
   var i := 0;
   while i < n
     invariant 0 <= i <= n
+    invariant |whereIs| == n && |dp| == n && |preState| == n && |lst| == n
     invariant -1 <= ptr < n
     invariant forall k :: 0 <= k < n ==> lst[k] == -1 || (0 <= lst[k] < i)
     invariant forall k :: 0 <= k < n ==> 0 <= whereIs[k] < n
@@ -131,22 +123,22 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
   {
     var r := whereIs[i];
     if r == 0 {
-      preState[i] := -1;
-      dp[i] := 1;
+      preState := preState[i := -1];
+      dp := dp[i := 1];
     } else {
       var pv := lst[r - 1];
       var av := if pv == -1 then a_list[n - 1] else a_list[pv];
       if av != a_list[i] - 1 {
         pv := -1;
       }
-      preState[i] := pv;
+      preState := preState[i := pv];
       if pv != -1 {
-        dp[i] := dp[pv] + 1;
+        dp := dp[i := dp[pv] + 1];
       } else {
-        dp[i] := 1;
+        dp := dp[i := 1];
       }
     }
-    lst[whereIs[i]] := i;
+    lst := lst[whereIs[i] := i];
     if dp[i] > res {
       res := dp[i];
     }
@@ -156,10 +148,12 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
     i := i + 1;
   }
 
-  var resArr := new int[res];
+  var resArr := seq(res, _ => 0);
   var rr := res;
   while rr > 0
     invariant 0 <= rr <= res
+    invariant |resArr| == res
+    invariant |dp| == n && |preState| == n
     invariant ptr != -1 ==> 0 <= ptr < n && dp[ptr] == rr
     invariant rr == 0 || ptr != -1
     invariant forall k :: 0 <= k < n ==> -1 <= preState[k] < k
@@ -167,11 +161,11 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
     invariant forall k :: 0 <= k < n && preState[k] == -1 ==> dp[k] == 1
     decreases rr
   {
-    resArr[rr - 1] := ptr + 1;
+    resArr := resArr[rr - 1 := ptr + 1];
     ptr := preState[ptr];
     rr := rr - 1;
   }
 
-  var parts := seq(res, idx requires 0 <= idx < res reads resArr => resArr[idx]);
+  var parts := resArr;
   output := IntToString(res) + "\n" + JoinInts(parts, " ") + "\n";
 }

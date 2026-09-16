@@ -24,22 +24,22 @@ import opened Prelude
 method Solve(s: string) returns (output: string)
 {
   var n := |s|;
-  var d := new char[4];
+  var d := seq(4, _ => ' ');
   var idx := 0;
   while idx < 4
+    invariant |d| == 4
     decreases 4 - idx
-    modifies d
   {
-    d[idx] := '?';
+    d := d[idx := '?'];
     idx := idx + 1;
   }
   idx := 0;
   while idx < n
+    invariant |d| == 4
     decreases n - idx
-    modifies d
   {
     if s[idx] != '!' {
-      d[idx % 4] := s[idx];
+      d := d[idx % 4 := s[idx]];
     }
     idx := idx + 1;
   }
@@ -49,6 +49,7 @@ method Solve(s: string) returns (output: string)
   var countG := 0;
   idx := 0;
   while idx < n
+    invariant |d| == 4
     decreases n - idx
   {
     if s[idx] == '!' {

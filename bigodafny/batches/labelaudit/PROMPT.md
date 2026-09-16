@@ -16,6 +16,15 @@ else, anywhere. Do not modify any `.dfy`. Do not run `dafny`.
 
 ## The cost model — these are measured, not assumed
 
+> **Pending replacement.** `batches/cost-axioms/PLAN.md` replaces this whole
+> section with a stipulated axiom set in which `s[i := v]`, `m[k := v]` and set
+> insertion are all O(1), independent of any backend. Batches audited before
+> that switch used the table below; batches after it will not. Check which
+> model your batch was filed under before comparing verdicts across batches.
+> The plan also removed `array<T>` from `solutions/` — 14 of 16 rows rewritten
+> to `seq`, `2826_42` and `2128_34` the two measured exceptions — so an "it should have used
+> an array" remark is no longer a valid repair for a `translation` row.
+
 Charge 1 for: `int` arithmetic and comparison, `s[i]`, `|s|`, one unit of loop
 overhead per iteration, an `array<T>` element assignment `a[i] := v`.
 

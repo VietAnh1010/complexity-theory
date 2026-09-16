@@ -34,7 +34,7 @@ method Solve(n: int, string_: string) returns (output: string)
 {
   var s := string_;
   var m := |s|;
-  var result := new char[m];
+  var result := seq(m, _ => ' ');
   var haveA := false;
   var aChar := 'a';
   var haveB := false;
@@ -43,23 +43,24 @@ method Solve(n: int, string_: string) returns (output: string)
   var ok := true;
   while i < m && ok
     invariant 0 <= i <= m
+    invariant |result| == m
   {
     var c := s[i];
     if !haveA || c >= aChar {
       aChar := c;
       haveA := true;
-      result[i] := '1';
+      result := result[i := '1'];
     } else if !haveB || c >= bChar {
       bChar := c;
       haveB := true;
-      result[i] := '0';
+      result := result[i := '0'];
     } else {
       ok := false;
     }
     i := i + 1;
   }
   if ok {
-    output := "YES\n" + result[..] + "\n";
+    output := "YES\n" + result + "\n";
   } else {
     output := "NO\n";
   }

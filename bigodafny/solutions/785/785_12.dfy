@@ -19,15 +19,16 @@ import opened Prelude
 method Solve(n: int, numbers: seq<int>) returns (output: string)
   requires n >= 1
 {
-  var tmp := new int[n+1];
+  var tmp := seq(n+1, _ => 0);
   var i := 0;
   while i < |numbers|
     invariant 0 <= i <= |numbers|
+    invariant |tmp| == n + 1
     decreases |numbers| - i
   {
     var p := numbers[i];
     if 0 < p <= n {
-      tmp[p] := tmp[p-1] + 1;
+      tmp := tmp[p := tmp[p-1] + 1];
     }
     i := i + 1;
   }
@@ -35,6 +36,7 @@ method Solve(n: int, numbers: seq<int>) returns (output: string)
   i := 1;
   while i <= n
     invariant 1 <= i <= n + 1
+    invariant |tmp| == n + 1
     decreases n - i
   {
     if tmp[i] > mx { mx := tmp[i]; }

@@ -31,22 +31,15 @@ method Solve(n: int, numbers: seq<int>) returns (output: string)
   var srt := Sort(pairs, (x: (int, int), y: (int, int)) => x.0 < y.0 || (x.0 == y.0 && x.1 < y.1));
   var q := seq(|srt|, i requires 0 <= i < |srt| => srt[i].1);
   assert |q| == n;
-  var dp := new int[n+1];
-  var k := 0;
-  while k <= n
-    invariant 0 <= k <= n + 1
-    decreases n - k
-  {
-    dp[k] := 1;
-    k := k + 1;
-  }
+  var dp := seq(n+1, _ => 1);
   var i := 1;
   while i < n
     invariant 1 <= i <= n
+    invariant |dp| == n + 1
     decreases n - i
   {
     if q[i] > q[i-1] {
-      dp[i] := dp[i-1] + 1;
+      dp := dp[i := dp[i-1] + 1];
     }
     i := i + 1;
   }
@@ -54,6 +47,7 @@ method Solve(n: int, numbers: seq<int>) returns (output: string)
   i := 1;
   while i <= n
     invariant 1 <= i <= n + 1
+    invariant |dp| == n + 1
     decreases n - i
   {
     if dp[i] > mx { mx := dp[i]; }

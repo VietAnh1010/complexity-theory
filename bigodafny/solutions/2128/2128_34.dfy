@@ -35,6 +35,20 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+// The second of two `array<T>` rows left in `solutions/`; see `2826_42.dfy` for
+// the first and `batches/cost-axioms/PLAN.md` § 2 for the rule they except.
+//
+// `arr` is sized `r + 1`, and `r` reaches 30000 in this row's own tests. The
+// inner loop walks `j` from `neg[i].0` to `r` writing `arr[j + neg[i].1]`, so a
+// `seq` rewrite costs O(r) per write and O(r^2 * |neg|) per test -- around 10^9
+// element copies at r = 30000, against 88 tests. Rewritten to `seq` the row had
+// not finished a single differential test after four minutes; as an array all
+// 88 agree in seconds.
+//
+// As with `2826_42`, this says nothing about the cost model: under the axioms
+// the `seq` and `array` versions are charged the same. It says the axioms are
+// false of this backend, and here that falsehood decides whether the row runs.
+
 method Solve(n: int, m: int, data_list: seq<seq<int>>) returns (output: string)
   requires m >= 0
   requires forall k :: 0 <= k < |data_list| ==> |data_list[k]| >= 2

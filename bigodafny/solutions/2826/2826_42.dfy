@@ -24,6 +24,24 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+// The one `array<T>` left in `solutions/`. `batches/cost-axioms/PLAN.md` § 2
+// removed arrays from the corpus in favour of `seq`; this row is its single
+// recorded exception, and the exception is measured, not assumed.
+//
+// The Python allocates a 1_000_004-entry table and fills 1_000_002 of it in a
+// loop, each entry reading an earlier one. Under `seq` that is 10^6 rounds of
+// `Seq.set`, and `Seq.set` is `l = list(self.Elements); l[key] = value` -- a
+// full copy per write, so ~10^12 element copies. Rewritten to `seq` this row
+// went from 16s for all 8 tests to exceeding a 60s per-test budget on the
+// first one. `dp := dp + [v]` does not rescue it either: `__add__` is an O(1)
+// `Concat` rope, but the next `dp[back]` read forces it flat again, so the
+// append/read alternation is quadratic too.
+//
+// Keeping `array` here is a statement about the backend, not about the cost
+// model: under the axioms this row's `seq` version and this `array` version
+// are charged identically. What the axioms cannot do is make the `seq` version
+// finish, and `validate.py` is non-negotiable.
+
 method Solve(n: int, pairs: seq<seq<int>>) returns (output: string)
 {
   var size := 1000004;

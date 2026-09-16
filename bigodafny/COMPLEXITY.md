@@ -103,8 +103,13 @@ update. **93 unproved rows contain this pattern.** That is the `set<T>` trap
 again, and bigger: correct output, wrong complexity, green tests, and the
 label — measured on the Python — is now wrong for the translation rather than
 for the algorithm. `CLAUDE.md` § *set<T> is O(n\*\*2)* is the same finding
-about a different container, and its remedy applies here: use an `array<T>`
-and assign in place.
+about a different container.
+
+**Superseded as a verdict rule.** `batches/cost-axioms/PLAN.md` charges
+`s[i := v]` O(1) by stipulation, so this measurement no longer makes a row's
+label wrong. The remedy it used to carry — "use an `array<T>`" — is reversed:
+`array<T>` has been removed from `solutions/` and the corpus keeps `seq`. What
+follows is what the backend does, not what the model charges.
 
 This one is not a proof obstruction. The cost is known, so the bound is
 provable; what it obstructs is the row AGREEING with its label. Charge `|s|`,
@@ -204,8 +209,9 @@ fresh `Set`, so each is O(|m|). `|m.Keys|` inside a loop is quadratic where
 
 For reference on the same machine, an `array<int>` of n elements fills in
 0.3 / 0.5 / 1.0ms — linear, and about 160x faster than the map build at n=4000.
-A row that needs a keyed structure it writes to in a loop wants an array or a
-sorted `seq` with binary search, not a `map`.
+A row that needs a keyed structure it writes to in a loop wants a sorted `seq`
+with binary search, not a `map` — and not an array: see
+`batches/cost-axioms/PLAN.md` § 2, which removed `array<T>` from the corpus.
 
 ### `Join` is linear — and how the opposite got recorded first
 

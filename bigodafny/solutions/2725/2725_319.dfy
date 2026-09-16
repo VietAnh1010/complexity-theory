@@ -19,43 +19,47 @@ import opened Prelude
 
 method Solve(n: int, k: int, s: string) returns (output: string)
 {
-  var pairArr := new (char, int)[|s|];
+  var pairArr: seq<(char, int)> := seq(|s|, _ => (' ', 0));
   var i := 0;
   while i < |s|
     invariant 0 <= i <= |s|
+    invariant |pairArr| == |s|
   {
-    pairArr[i] := (s[i], i);
+    pairArr := pairArr[i := (s[i], i)];
     i := i + 1;
   }
-  var pairs := pairArr[..];
+  var pairs := pairArr;
   var sorted := Sort(pairs, (x: (char, int), y: (char, int)) => x.0 < y.0 || (x.0 == y.0 && x.1 < y.1));
-  var removed := new bool[|s|];
+  var removed := seq(|s|, _ => false);
   var z := 0;
   while z < |s|
     invariant 0 <= z <= |s|
+    invariant |removed| == |s|
   {
-    removed[z] := false;
+    removed := removed[z := false];
     z := z + 1;
   }
   var j := 0;
   while j < k && j < |sorted|
     invariant 0 <= j <= |sorted|
+    invariant |removed| == |s|
   {
     var target := sorted[j].1;
     if 0 <= target < |s| {
-      removed[target] := true;
+      removed := removed[target := true];
     }
     j := j + 1;
   }
-  var buf := new char[|s|];
+  var buf := seq(|s|, _ => ' ');
   var w := 0;
   var m := 0;
   while m < |s|
     invariant 0 <= m <= |s|
     invariant 0 <= w <= m
+    invariant |buf| == |s| && |removed| == |s|
   {
     if !removed[m] {
-      buf[w] := s[m];
+      buf := buf[w := s[m]];
       w := w + 1;
     }
     m := m + 1;
