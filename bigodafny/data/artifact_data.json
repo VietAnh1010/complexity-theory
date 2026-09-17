@@ -1,6 +1,6 @@
 {
-  "generated": "2026-09-17T05:06:11+00:00",
-  "commit": "475ac75",
+  "generated": "2026-09-17T05:18:20+00:00",
+  "commit": "03b5f5f",
   "branch": "claude/bigobench-python-dafny-dataset-ts4tm5",
   "toolchain": {
     "dafny": "4.11.0",
@@ -45,9 +45,9 @@
   },
   "verification": {
     "scope": "solutions/",
-    "total": 354,
-    "verified": 354,
-    "fully_verified_incl_termination": 344,
+    "total": 350,
+    "verified": 350,
+    "fully_verified_incl_termination": 340,
     "termination_opt_out": [
       "1675_29",
       "1948_388",
@@ -274,7 +274,7 @@
         "label": "O(n)",
         "split": "strict",
         "gate": "valid",
-        "verified": true,
+        "verified": null,
         "termination_opt_out": false,
         "attempts_used": 0,
         "outcome": "verified-unedited",
@@ -2388,7 +2388,7 @@
       "paths_no_longer_existing": 114
     },
     "after": {
-      "rows": 354,
+      "rows": 350,
       "recorded_failing": 0
     },
     "cause": "verify_all.py rewrites the record whole and was not re-run after the label audit moved 114 rows out of solutions/",

@@ -46,7 +46,7 @@ several of its claims were later reversed. `summaries/README.md` says which.
 | translated | 636 (4 cannot be — bare `print(float)`) |
 | strict tier, `validate.py` | 529 valid, 3 fail |
 | loose tier, `difftest.py` | 95 agree, 4 untranslatable, 1 ungateable |
-| safety verified (`dafny verify`) | all 350 of `solutions/`; 344 also prove termination |
+| safety verified (`dafny verify`) | all 350 of `solutions/`; 340 also prove termination |
 | complexity proved | 71 rows, 73 files, all verify, zero `assume` |
 | label audit | 506 screened: 347 `ok`, 152 `mismatch`, 7 `unsure` (after the re-file) |
 | Dafny / Z3 | 4.11.0 / 4.12.1 |
