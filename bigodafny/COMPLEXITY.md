@@ -77,11 +77,26 @@ the part that *is* implementation-independent to check.
 
 ### Proofs written before the switch
 
-The 33 files in `solutions-proved/` predate this model. Several charge `|s|` for
-a `seq` update where the axioms now charge `1`. Those bounds are still **sound**
-— they charge more than required — but they are no longer tight, and a couple
-prove a quadratic where the axioms permit a linear. Do not treat an old proof's
-bound as evidence about the label's tightness without re-reading its charges.
+The 33 files in `solutions-proved/` predate this model. They were re-checked
+against it on 2026-09-17 and **all 33 still verify, and none needed re-proving.**
+
+The earlier text here said several charged `|s|` for a `seq` update where the
+axioms now charge `1`. That was wrong: **no file in `solutions-proved/` performs
+a `seq` update at all.** The only changed-charge operation any of them uses is
+the slice, in four rows, and the one place a slice sits beside a `|s|` charge
+(`1756_577`) that charge is for `MinSeq` and `MaxSeq` — recursive prelude
+functions, which the axioms still charge by length. The quadratic there is real
+work, as that file's own header says.
+
+Two files do prove a quadratic for an `O(nlogn)` label: `1484_82` and `603_284`.
+That is the loose merge-sort scaffold, not the retired charge model, and both
+rows already carry a tight companion proof in `solutions-proved/nlogn/` closing
+at `2 * n * (CeilLog2(n) + 1) + ...`. Every row in `solutions-proved/` has its
+label confirmed by at least one of its proofs.
+
+The general caution stands — read an old proof's charges before citing its bound
+as evidence about tightness — but the specific defect this paragraph alleged does
+not exist.
 
 ## 2. The proof technique
 

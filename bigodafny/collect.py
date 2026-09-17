@@ -5,9 +5,11 @@ disk, so no number in the artifact is ever typed by hand. Re-run it after any
 sweep; it reads and never writes outside data/artifact_data.json.
 """
 from __future__ import annotations
-import json, subprocess
+import json, re, subprocess
 from collections import Counter
 from pathlib import Path
+
+from common import PROVED
 
 HERE = Path(__file__).resolve().parent
 DATA = HERE / "data"
@@ -24,6 +26,116 @@ def git(*args, default=""):
                               capture_output=True, check=True).stdout.strip()
     except Exception:
         return default
+
+
+def callgraph(depth):
+    """Structure of solutions/ as walked by callgraph.py.
+
+    Descriptive only -- no outcome join lives here. The record covers
+    solutions/ and nothing else, and it was current when this was written:
+    354 rows, no dead paths, no truncated search.
+    """
+    if not depth:
+        return {"status": "no record"}
+    rows = list(depth.values())
+    prelude = Counter(f for r in rows for f in (r.get("prelude_calls") or []))
+    # A proof adds ghost helpers, which can lengthen the longest chain. The
+    # gap says how much instrumentation the corpus's proofs actually add.
+    deepened = [r for r in rows
+                if (r.get("longest_chain_with_ghost") or 0) > (r.get("longest_chain") or 0)]
+    return {
+        "scope": "solutions/", "rows": len(rows),
+        "depth_distribution": dict(sorted(Counter(
+            r["longest_chain"] for r in rows).items())),
+        "median_depth": sorted(r["longest_chain"] for r in rows)[len(rows) // 2],
+        "recursive": sum(1 for r in rows if r.get("recursive")),
+        "self_contained_depth_0_1": sum(1 for r in rows if r["longest_chain"] <= 1),
+        "reachable_distribution": dict(sorted(Counter(
+            r.get("reachable", 0) for r in rows).items())),
+        "own_decls_distribution": dict(sorted(Counter(
+            r.get("own_decls", 0) for r in rows).items())),
+        "rows_deepened_by_ghost": len(deepened),
+        "prelude_calls_total": sum(prelude.values()),
+        "prelude_call_frequency": dict(prelude.most_common()),
+        "rows_using_no_prelude": sum(1 for r in rows if not r.get("prelude_calls")),
+        "search_truncated": sum(1 for r in rows if r.get("search_truncated")),
+    }
+
+
+def proofs_all(depth, ds, pv_rows):
+    """Every proved row in the corpus: the 31 that predate the cost axioms
+    and the 40 from the sampled campaign.
+
+    The two groups are tagged by `era` and never summed on a tightness
+    statistic. The pre-axiom set was re-checked on 2026-09-17: all 33 files
+    verify, none needed re-proving, and no proof performs a `seq` update, so
+    the retired charge reaches none of them.
+    """
+    files = sorted(PROVED.rglob("*.dfy"))
+    campaign = {r["solution_id"] for r in pv_rows if r["outcome"] == "proved"}
+    rows = []
+    for f in files:
+        sid = f.stem
+        d, rec = depth.get(sid, {}), ds.get(sid, {})
+        m = re.search(r"ensures\s+steps\s*<=\s*(.+)", f.read_text(encoding="utf-8"))
+        rows.append({
+            "solution_id": sid,
+            "file": str(f.relative_to(HERE)),
+            "era": "campaign" if sid in campaign else "pre-axiom",
+            "tight_variant": "/nlogn/" in str(f),
+            "label": rec.get("time_complexity_inferred"),
+            "bound": (m.group(1).split("//")[0].strip() if m else None),
+            "call_depth": d.get("longest_chain"),
+            "recursive": d.get("recursive"),
+        })
+    sids = {r["solution_id"] for r in rows}
+    return {
+        "files": len(rows), "rows": len(sids),
+        "by_era": dict(Counter(r["era"] for r in rows)),
+        "rows_with_two_proofs": sorted(
+            sid for sid in sids
+            if sum(1 for r in rows if r["solution_id"] == sid) > 1),
+        "pre_axiom_recheck": {
+            "date": "2026-09-17", "files": 33, "verify": 33, "needed_reproof": 0,
+            "seq_updates_found": 0,
+            "note": ("The claim that old proofs charge |s| for a seq update was "
+                     "checked and is false -- no proof performs one. The only "
+                     "changed-charge operation present is the slice, in 4 rows."),
+        },
+        "by_label": dict(Counter(r["label"] for r in rows).most_common()),
+        "entries": rows,
+    }
+
+
+def difficulty(pv_rows):
+    """Does structure predict whether a proof closes?
+
+    Joins the campaign's 50 outcomes against call depth and recursion. The
+    label is already known to matter (O(n) 24/24, O(nlogn) 5/11); this asks
+    whether depth adds anything beyond it.
+    """
+    done = [r for r in pv_rows if r["outcome"] in ("proved", "unresolved")]
+    if not done:
+        return {"status": "not yet run"}
+
+    def rate(key):
+        out = {}
+        for r in done:
+            k = r.get(key)
+            k = "unknown" if k is None else str(k)
+            a, b = out.setdefault(k, [0, 0])
+            out[k] = [a + (r["outcome"] == "proved"), b + 1]
+        return {k: {"proved": v[0], "of": v[1]} for k, v in sorted(out.items())}
+
+    return {
+        "n": len(done),
+        "by_call_depth": rate("call_depth"),
+        "by_recursive": rate("recursive"),
+        "by_label": rate("label"),
+        "note": ("Label dominates. Depth is reported so the claim can be "
+                 "checked rather than asserted; with n=50 split across "
+                 "several depths, treat any depth effect as indicative."),
+    }
 
 
 def relation_of(sid, traj_row, rel):
@@ -143,6 +255,8 @@ def main():
             "recursive": d.get("recursive"),
         })
 
+    pv = prove_sample(pv_manifest, pv_traj, pv_rel, depth)
+
     payload = {
         "generated": git("log", "-1", "--format=%cI", default=""),
         "commit": git("rev-parse", "--short", "HEAD"),
@@ -182,7 +296,9 @@ def main():
                                                   r["solution_id"])),
         },
 
-        "prove_sample": prove_sample(pv_manifest, pv_traj, pv_rel, depth),
+        "prove_sample": pv,
+        "proofs_all": proofs_all(depth, ds, pv.get("rows", [])),
+        "difficulty": difficulty(pv.get("rows", [])),
 
         "stale_record_finding": {
             "before": {"rows": 362, "recorded_failing": 12,
@@ -200,12 +316,7 @@ def main():
             ],
         },
 
-        "call_depth": {
-            "rows": len(depth),
-            "distribution": dict(sorted(Counter(
-                r["longest_chain"] for r in depth.values()).items())),
-            "recursive": sum(1 for r in depth.values() if r.get("recursive")),
-        },
+        "callgraph": callgraph(depth),
 
         "open_decisions": [
             "value-vs-size convention, 12 rows, named in solutions-disputed/README.md",

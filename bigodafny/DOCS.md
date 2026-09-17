@@ -194,8 +194,10 @@ Three consequences you will trip over:
 - **Old verdicts used the old table.** All 25 `batches/labelaudit/verdicts_*.jsonl`
   files, and every header in `solutions-disputed/`, were filed against it. Do not
   compare a verdict across the boundary without checking which model it used.
-- **Old proofs overcharge.** All 33 files in `solutions-proved/` predate the
-  switch and are sound but not tight.
+- **Old proofs were re-checked, and the overcharge claim was wrong.** All 33
+  files in `solutions-proved/` predate the switch; all 33 still verify under
+  it and none needed re-proving. No proof performs a `seq` update, so the
+  retired charge reaches none of them. `COMPLEXITY.md` § 1 records the check.
 - **The axioms are false of the artifact.** A row charged O(n) can take O(n²) of
   wall-clock. `COMPLEXITY.md`'s appendix records where, and two rows in
   `solutions/` keep an `array<T>` because of it — they are the corpus's only

@@ -1,6 +1,6 @@
 {
-  "generated": "2026-09-16T18:31:03+00:00",
-  "commit": "47ec658",
+  "generated": "2026-09-16T18:32:49+00:00",
+  "commit": "65ef4e0",
   "branch": "claude/bigobench-python-dafny-dataset-ts4tm5",
   "toolchain": {
     "dafny": "4.11.0",
@@ -1556,6 +1556,831 @@
       }
     ]
   },
+  "proofs_all": {
+    "files": 73,
+    "rows": 71,
+    "by_era": {
+      "pre-axiom": 33,
+      "campaign": 40
+    },
+    "rows_with_two_proofs": [
+      "1484_82",
+      "603_284"
+    ],
+    "pre_axiom_recheck": {
+      "date": "2026-09-17",
+      "files": 33,
+      "verify": 33,
+      "needed_reproof": 0,
+      "seq_updates_found": 0,
+      "note": "The claim that old proofs charge |s| for a seq update was checked and is false -- no proof performs one. The only changed-charge operation present is the slice, in 4 rows."
+    },
+    "by_label": {
+      "O(n)": 29,
+      "O(nlogn)": 12,
+      "O(n*m)": 9,
+      "O(n**2)": 8,
+      "O(n+m)": 6,
+      "O(1)": 6,
+      "O(n**2+m**2)": 1,
+      "O(nlogn+mlogm)": 1,
+      "O(logn)": 1
+    },
+    "entries": [
+      {
+        "solution_id": "1011_368",
+        "file": "solutions-proved/1011/1011_368.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "8 * n + 5",
+        "call_depth": null,
+        "recursive": null
+      },
+      {
+        "solution_id": "1029_119",
+        "file": "solutions-proved/1029/1029_119.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(n+m)",
+        "bound": "2 * |a_list| + 2 * |b_list| + 3",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1089_174",
+        "file": "solutions-proved/1089/1089_174.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(1)",
+        "bound": "5",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1138_83",
+        "file": "solutions-proved/1138/1138_83.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(n*m)",
+        "bound": "4 * n + 4",
+        "call_depth": null,
+        "recursive": null
+      },
+      {
+        "solution_id": "1243_178",
+        "file": "solutions-proved/1243/1243_178.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n+m)",
+        "bound": "6 * |s1| + 2 * |s2| + 15",
+        "call_depth": 0,
+        "recursive": false
+      },
+      {
+        "solution_id": "1254_187",
+        "file": "solutions-proved/1254/1254_187.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(n**2)",
+        "bound": "n * n + 12 * n + 70",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1303_56",
+        "file": "solutions-proved/1303/1303_56.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(1)",
+        "bound": "65",
+        "call_depth": 3,
+        "recursive": true
+      },
+      {
+        "solution_id": "1359_189",
+        "file": "solutions-proved/1359/1359_189.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "7 * a + 10",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1366_112",
+        "file": "solutions-proved/1366/1366_112.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "8 * |a_list| + 8",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1414_8",
+        "file": "solutions-proved/1414/1414_8.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "4 * |a| + 30",
+        "call_depth": 4,
+        "recursive": true
+      },
+      {
+        "solution_id": "1421_89",
+        "file": "solutions-proved/1421/1421_89.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(nlogn)",
+        "bound": "2 * |a_list| * |a_list| + 6 * |a_list| + 5",
+        "call_depth": 3,
+        "recursive": true
+      },
+      {
+        "solution_id": "1453_483",
+        "file": "solutions-proved/1453/1453_483.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "9 * n + 10",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1484_26",
+        "file": "solutions-proved/1484/1484_26.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "6 * |numbers| * MaxLen(numbers) + 4 * MaxLen(numbers) + 6",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1484_82",
+        "file": "solutions-proved/1484/1484_82.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(nlogn)",
+        "bound": "2 * n * n + 2 * n + 2 * SumLen(numbers) + 6",
+        "call_depth": 3,
+        "recursive": true
+      },
+      {
+        "solution_id": "1501_177",
+        "file": "solutions-proved/1501/1501_177.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(1)",
+        "bound": "3 * 2778 + 3",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1540_206",
+        "file": "solutions-proved/1540/1540_206.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(nlogn)",
+        "bound": "2 * n * (CeilLog2(n) + 1) + 3 * n + 6",
+        "call_depth": 3,
+        "recursive": true
+      },
+      {
+        "solution_id": "1560_164",
+        "file": "solutions-proved/1560/1560_164.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "8 * n + 6",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1586_188",
+        "file": "solutions-proved/1586/1586_188.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(nlogn)",
+        "bound": "2 * |scores| * |scores| + 3 * |scores| + 3",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1650_428",
+        "file": "solutions-proved/1650/1650_428.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(n*m)",
+        "bound": "4 * |pairs| + 10",
+        "call_depth": null,
+        "recursive": null
+      },
+      {
+        "solution_id": "1675_150",
+        "file": "solutions-proved/1675/1675_150.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "60 * |v0| + 60 * |v1| + 200",
+        "call_depth": 1,
+        "recursive": true
+      },
+      {
+        "solution_id": "1739_447",
+        "file": "solutions-proved/1739/1739_447.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(1)",
+        "bound": "6",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1756_1282",
+        "file": "solutions-proved/1756/1756_1282.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "5 * |numbers| + 6",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1756_577",
+        "file": "solutions-proved/1756/1756_577.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(n**2)",
+        "bound": "3 * n * n + 4 * n + 7",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1855_50",
+        "file": "solutions-proved/1855/1855_50.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(n**2)",
+        "bound": "|hour| + |minute| + 12",
+        "call_depth": null,
+        "recursive": null
+      },
+      {
+        "solution_id": "1857_13",
+        "file": "solutions-proved/1857/1857_13.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n**2)",
+        "bound": "5 * |a_list| * |a_list| + 3 * |a_list| + 5",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "187_193",
+        "file": "solutions-proved/187/187_193.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(nlogn)",
+        "bound": "2 * n * (CeilLog2(n) + 1) + 6",
+        "call_depth": 3,
+        "recursive": true
+      },
+      {
+        "solution_id": "1871_291",
+        "file": "solutions-proved/1871/1871_291.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "6 * |a_list| + 10",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1878_29",
+        "file": "solutions-proved/1878/1878_29.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "5 * N + 3",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1915_158",
+        "file": "solutions-proved/1915/1915_158.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n+m)",
+        "bound": "3 * n + 3 * m + 6",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1952_22",
+        "file": "solutions-proved/1952/1952_22.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "5 * |s| + 4",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1952_87",
+        "file": "solutions-proved/1952/1952_87.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n**2)",
+        "bound": "8 * |s| * |s| + 30 * |s| + 20",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "2012_399",
+        "file": "solutions-proved/2012/2012_399.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(n*m)",
+        "bound": "8 * (if n > 0 then n else 0) + 4",
+        "call_depth": null,
+        "recursive": null
+      },
+      {
+        "solution_id": "2036_19",
+        "file": "solutions-proved/2036/2036_19.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "2 * |numbers| + 40",
+        "call_depth": 0,
+        "recursive": false
+      },
+      {
+        "solution_id": "2071_33",
+        "file": "solutions-proved/2071/2071_33.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "3 * |a_list| + 3",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "208_290",
+        "file": "solutions-proved/208/208_290.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(1)",
+        "bound": "6",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "2166_288",
+        "file": "solutions-proved/2166/2166_288.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(nlogn)",
+        "bound": "2 * |numbers| * (CeilLog2(|numbers|) + 1) + 4 * |numbers| + 7",
+        "call_depth": 3,
+        "recursive": true
+      },
+      {
+        "solution_id": "2166_84",
+        "file": "solutions-proved/2166/2166_84.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "5 * |numbers| + 4",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "2188_359",
+        "file": "solutions-proved/2188/2188_359.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(nlogn)",
+        "bound": "4 * n * (CeilLog2(n) + 1) + 10 * n + 8",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "2217_247",
+        "file": "solutions-proved/2217/2217_247.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n**2)",
+        "bound": "4 * n * n + 6 * n + 6",
+        "call_depth": 3,
+        "recursive": true
+      },
+      {
+        "solution_id": "2235_384",
+        "file": "solutions-proved/2235/2235_384.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "5 * TotalLen(s_list, t) + 10 * t + 10",
+        "call_depth": 1,
+        "recursive": true
+      },
+      {
+        "solution_id": "2254_6",
+        "file": "solutions-proved/2254/2254_6.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": null,
+        "call_depth": 1,
+        "recursive": true
+      },
+      {
+        "solution_id": "2381_156",
+        "file": "solutions-proved/2381/2381_156.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(1)",
+        "bound": "2 * |IntToString(n)| + 6",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "2426_4",
+        "file": "solutions-proved/2426/2426_4.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(nlogn)",
+        "bound": "2 * |values| * (CeilLog2(|values|) + 1) + 20 * |values| + 10",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "2589_115",
+        "file": "solutions-proved/2589/2589_115.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n**2)",
+        "bound": "2 * |string_| * |string_| + 6 * |string_| + 5",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "2607_90",
+        "file": "solutions-proved/2607/2607_90.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "6 * n + 400 +",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "2719_289",
+        "file": "solutions-proved/2719/2719_289.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "4 * |values_list| + 4",
+        "call_depth": 0,
+        "recursive": false
+      },
+      {
+        "solution_id": "2719_94",
+        "file": "solutions-proved/2719/2719_94.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(n*m)",
+        "bound": "6 * |values_list| + 7",
+        "call_depth": null,
+        "recursive": null
+      },
+      {
+        "solution_id": "2742_0",
+        "file": "solutions-proved/2742/2742_0.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(nlogn)",
+        "bound": "2 * |values| * |values| + 5 * |values| + 5",
+        "call_depth": 3,
+        "recursive": true
+      },
+      {
+        "solution_id": "2742_57",
+        "file": "solutions-proved/2742/2742_57.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "|values| + 6",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "2914_264",
+        "file": "solutions-proved/2914/2914_264.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(n*m)",
+        "bound": "7 * (if n > 0 then n else 0) + 3",
+        "call_depth": null,
+        "recursive": null
+      },
+      {
+        "solution_id": "2962_1209",
+        "file": "solutions-proved/2962/2962_1209.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(n**2+m**2)",
+        "bound": "(|first_name| + |second_name|) *",
+        "call_depth": 0,
+        "recursive": false
+      },
+      {
+        "solution_id": "3033_146",
+        "file": "solutions-proved/3033/3033_146.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "6 * |edges_list| + 6 * (if n > 0 then n else 0) + 10",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "3046_65",
+        "file": "solutions-proved/3046/3046_65.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(n*m)",
+        "bound": "6 * |v_3| + 2 * TotalLenUpTo(v_3, |v_3|) + 3",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "3060_1359",
+        "file": "solutions-proved/3060/3060_1359.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n+m)",
+        "bound": "4 * (|s1| + |s2|) + 4",
+        "call_depth": 0,
+        "recursive": false
+      },
+      {
+        "solution_id": "3070_20",
+        "file": "solutions-proved/3070/3070_20.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "2 * |a_list| + 6",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "3091_384",
+        "file": "solutions-proved/3091/3091_384.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(n*m)",
+        "bound": "4 * |pairs_list| + 3 * TotalLenUpTo(pairs_list, |pairs_list|) + 4",
+        "call_depth": null,
+        "recursive": null
+      },
+      {
+        "solution_id": "396_361",
+        "file": "solutions-proved/396/396_361.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(n*m)",
+        "bound": "8 * |rectangles| + 6",
+        "call_depth": null,
+        "recursive": null
+      },
+      {
+        "solution_id": "450_276",
+        "file": "solutions-proved/450/450_276.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "4 * |s| + 8",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "457_27",
+        "file": "solutions-proved/457/457_27.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": null,
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "459_199",
+        "file": "solutions-proved/459/459_199.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(n+m)",
+        "bound": "a + b + 2",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "499_359",
+        "file": "solutions-proved/499/499_359.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "4 * |a_list| + 4",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "5_100",
+        "file": "solutions-proved/5/5_100.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "2 * n + 3",
+        "call_depth": null,
+        "recursive": null
+      },
+      {
+        "solution_id": "525_273",
+        "file": "solutions-proved/525/525_273.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(n*m)",
+        "bound": "10 * n + 8",
+        "call_depth": null,
+        "recursive": null
+      },
+      {
+        "solution_id": "603_284",
+        "file": "solutions-proved/603/603_284.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(nlogn)",
+        "bound": "2 * n * n + 2 * n + 4",
+        "call_depth": 3,
+        "recursive": true
+      },
+      {
+        "solution_id": "61_295",
+        "file": "solutions-proved/61/61_295.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "2 * |ignored_lines| + 12",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "685_583",
+        "file": "solutions-proved/685/685_583.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(nlogn+mlogm)",
+        "bound": "3 * |list1| + 3 * |list2| + 8",
+        "call_depth": null,
+        "recursive": null
+      },
+      {
+        "solution_id": "685_777",
+        "file": "solutions-proved/685/685_777.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(n+m)",
+        "bound": "|list1| + |list2| + 8",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "810_131",
+        "file": "solutions-proved/810/810_131.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "2 * CeilLog2(x + 1) + 4",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "827_148",
+        "file": "solutions-proved/827/827_148.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(n**2)",
+        "bound": "10000 * |pairs| * |pairs| + 50000 * |pairs| + 600",
+        "call_depth": null,
+        "recursive": null
+      },
+      {
+        "solution_id": "945_255",
+        "file": "solutions-proved/945/945_255.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(logn)",
+        "bound": "4 * Log2(n) + 8",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "976_1131",
+        "file": "solutions-proved/976/976_1131.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "4 * |a_list| + 3",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1484_82",
+        "file": "solutions-proved/nlogn/1484/1484_82.dfy",
+        "era": "pre-axiom",
+        "tight_variant": true,
+        "label": "O(nlogn)",
+        "bound": "2 * n * (CeilLog2(n) + 1) + 2 * n + 2 * SumLen(numbers) + 6",
+        "call_depth": 3,
+        "recursive": true
+      },
+      {
+        "solution_id": "603_284",
+        "file": "solutions-proved/nlogn/603/603_284.dfy",
+        "era": "pre-axiom",
+        "tight_variant": true,
+        "label": "O(nlogn)",
+        "bound": "2 * n * (CeilLog2(n) + 1) + 2 * n + 4",
+        "call_depth": 3,
+        "recursive": true
+      }
+    ]
+  },
+  "difficulty": {
+    "n": 50,
+    "by_call_depth": {
+      "0": {
+        "proved": 4,
+        "of": 6
+      },
+      "1": {
+        "proved": 3,
+        "of": 3
+      },
+      "2": {
+        "proved": 28,
+        "of": 33
+      },
+      "3": {
+        "proved": 4,
+        "of": 7
+      },
+      "4": {
+        "proved": 1,
+        "of": 1
+      }
+    },
+    "by_recursive": {
+      "False": {
+        "proved": 4,
+        "of": 6
+      },
+      "True": {
+        "proved": 36,
+        "of": 44
+      }
+    },
+    "by_label": {
+      "O(1)": {
+        "proved": 4,
+        "of": 5
+      },
+      "O(n)": {
+        "proved": 24,
+        "of": 24
+      },
+      "O(n**2)": {
+        "proved": 4,
+        "of": 6
+      },
+      "O(n*m)": {
+        "proved": 0,
+        "of": 1
+      },
+      "O(n+m)": {
+        "proved": 3,
+        "of": 3
+      },
+      "O(nlogn)": {
+        "proved": 5,
+        "of": 11
+      }
+    },
+    "note": "Label dominates. Depth is reported so the claim can be checked rather than asserted; with n=50 split across several depths, treat any depth effect as indicative."
+  },
   "stale_record_finding": {
     "before": {
       "rows": 362,
@@ -1572,16 +2397,93 @@
       "re-ran 3 rows the record called failing; all verified"
     ]
   },
-  "call_depth": {
+  "callgraph": {
+    "scope": "solutions/",
     "rows": 354,
-    "distribution": {
+    "depth_distribution": {
       "0": 30,
       "1": 27,
       "2": 227,
       "3": 65,
       "4": 5
     },
-    "recursive": 320
+    "median_depth": 2,
+    "recursive": 320,
+    "self_contained_depth_0_1": 57,
+    "reachable_distribution": {
+      "0": 30,
+      "1": 21,
+      "2": 104,
+      "3": 48,
+      "4": 53,
+      "5": 45,
+      "6": 27,
+      "7": 12,
+      "8": 5,
+      "9": 6,
+      "10": 2,
+      "11": 1
+    },
+    "own_decls_distribution": {
+      "1": 262,
+      "2": 53,
+      "3": 27,
+      "4": 6,
+      "5": 3,
+      "7": 2,
+      "8": 1
+    },
+    "rows_deepened_by_ghost": 15,
+    "prelude_calls_total": 1086,
+    "prelude_call_frequency": {
+      "DigitChar": 273,
+      "IntToString": 273,
+      "Merge": 83,
+      "Sort": 83,
+      "Join": 68,
+      "SortInts": 44,
+      "FloorDiv": 36,
+      "JoinInts": 20,
+      "MaxSeq": 18,
+      "MaxSeqFrom": 18,
+      "SumFrom": 17,
+      "SumSeq": 17,
+      "AbsInt": 17,
+      "FloorMod": 14,
+      "Repeat": 11,
+      "MinSeq": 10,
+      "MinSeqFrom": 10,
+      "ParseInt": 8,
+      "ParseIntFrom": 8,
+      "IsSpace": 5,
+      "SplitWs": 5,
+      "SplitWsFrom": 5,
+      "Gcd": 5,
+      "MergeIsPermutation": 4,
+      "SortIsPermutation": 4,
+      "SortKeepsElems": 4,
+      "StringLess": 3,
+      "ParseInts": 3,
+      "SortIntsKeepsElems": 2,
+      "PyIndex": 2,
+      "SortStrings": 2,
+      "PrefixSum": 1,
+      "PrefixSumDoubledHi": 1,
+      "PrefixSumDoubledLo": 1,
+      "PrefixSumIsSumSeq": 1,
+      "PrefixSumWindowDoubled": 1,
+      "SumFromIsPrefixSum": 1,
+      "IntToStringLen": 1,
+      "JoinLenUniform": 1,
+      "JoinSplitEmptySep": 1,
+      "Closes": 1,
+      "SortStringsKeepsElems": 1,
+      "BitOr": 1,
+      "BitAnd": 1,
+      "ReplaceAll": 1
+    },
+    "rows_using_no_prelude": 38,
+    "search_truncated": 0
   },
   "open_decisions": [
     "value-vs-size convention, 12 rows, named in solutions-disputed/README.md",
