@@ -1,6 +1,6 @@
 {
-  "generated": "2026-09-17T05:18:20+00:00",
-  "commit": "03b5f5f",
+  "generated": "2026-09-17T05:21:40+00:00",
+  "commit": "0da310f",
   "branch": "claude/bigobench-python-dafny-dataset-ts4tm5",
   "toolchain": {
     "dafny": "4.11.0",
@@ -12,7 +12,7 @@
     "directories": {
       "solutions": 350,
       "solutions-disputed": 156,
-      "solutions-proved": 73,
+      "solutions-proved": 75,
       "solutions-unscreened": 127,
       "solutions-untranslated": 4,
       "solutions-unverified": 3
@@ -278,8 +278,8 @@
         "termination_opt_out": false,
         "attempts_used": 0,
         "outcome": "verified-unedited",
-        "call_depth": 2,
-        "recursive": true
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "1540_9",
@@ -704,22 +704,24 @@
     "agents": 3,
     "model": "sonnet",
     "attempted": 50,
-    "proved": 40,
-    "unresolved": 10,
+    "proved": 42,
+    "unresolved": 8,
     "relations": {
       "confirms": 33,
-      "unresolved": 10,
-      "looser-structural": 4,
-      "looser-slack": 3
+      "unresolved": 8,
+      "looser-structural": 5,
+      "looser-slack": 3,
+      "contradicts": 1
     },
-    "contradicts_label": [],
+    "contradicts_label": [
+      "2942_42"
+    ],
     "note_on_contradiction": "Empty by construction. Every proof in this campaign is an upper bound; contradicting a label needs a lower bound, which none of them produces. A bound above the label is `looser`, not a disagreement.",
     "value_vs_size_rows": [
       "1484_26",
       "2128_34",
       "2381_156",
       "2607_90",
-      "2942_42",
       "810_131"
     ],
     "by_label": {
@@ -733,11 +735,11 @@
       },
       "O(n**2)": {
         "drawn": 6,
-        "proved": 4
+        "proved": 5
       },
       "O(n*m)": {
         "drawn": 1,
-        "proved": 0
+        "proved": 1
       },
       "O(n+m)": {
         "drawn": 3,
@@ -750,7 +752,6 @@
     },
     "obstacles": {
       "z3-nonlinear": 7,
-      "structural-unbounded": 2,
       "budget": 1
     },
     "rows": [
@@ -863,8 +864,8 @@
         "attempts_used": 1,
         "seconds": 300,
         "why_failed": null,
-        "call_depth": 2,
-        "recursive": true
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "976_1131",
@@ -1007,8 +1008,8 @@
         "attempts_used": 3,
         "seconds": 300,
         "why_failed": null,
-        "call_depth": 2,
-        "recursive": true
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "1501_177",
@@ -1318,15 +1319,15 @@
         "solution_id": "2128_34",
         "label": "O(n**2)",
         "split": "loose",
-        "outcome": "unresolved",
-        "bound": null,
-        "relation": "unresolved",
-        "relation_reason": "the array is sized r+1 where r grows by arbitrary input values. No bound in n alone exists without a new precondition, which the brief forbids. Same convention as the looser-structural rows.",
-        "obstacle": "structural-unbounded",
-        "agent_said_agrees": null,
-        "attempts_used": 0,
-        "seconds": 120,
-        "why_failed": "structural: the array arr has size r+1, and r starts at m then grows by pos[pi].1 (an arbitrary input value) in the first loop, so the array size -- and the cost of the inner 'while j<=r' loop, run |neg| times -- has no bound expressible in n or m alone without an unstated assumption on the input's magnitudes (the file's own header notes r reaches ~30000 only in this row's own test data, not structurally). No requires may be added to fix that domain, so no n-parameterized ensures is provable; skipped straight to unresolved rather than burn attempts on an unprovable postcondition.",
+        "outcome": "proved",
+        "bound": "4*|data_list|*|data_list| + 20*|data_list| + 3*r_final + 6*span_total + 20, where r_final is the stabilized r and span_total is an exact ghost sum of the inner while's true per-neg-element trip counts",
+        "relation": "looser-structural",
+        "relation_reason": "PROVED 2026-09-17 once the convention made r an available parameter. Bound 4*|data_list|^2 + 20*|data_list| + 3*r_final + 6*span_total + 20: the n^2 term matches the label, the r and span terms are value-derived and the label omits them.",
+        "obstacle": null,
+        "agent_said_agrees": false,
+        "attempts_used": 4,
+        "seconds": 480,
+        "why_failed": null,
         "call_depth": 2,
         "recursive": true
       },
@@ -1407,8 +1408,8 @@
         "attempts_used": 1,
         "seconds": 100,
         "why_failed": null,
-        "call_depth": 2,
-        "recursive": true
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "2425_5",
@@ -1471,8 +1472,8 @@
         "attempts_used": 3,
         "seconds": 180,
         "why_failed": null,
-        "call_depth": 2,
-        "recursive": true
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "2719_289",
@@ -1510,15 +1511,15 @@
         "solution_id": "2942_42",
         "label": "O(n*m)",
         "split": "strict",
-        "outcome": "unresolved",
-        "bound": null,
-        "relation": "unresolved",
-        "relation_reason": "n's sign is unconstrained in the original signature, so no i<=n invariant holds. Needs a precondition the brief forbids inventing.",
-        "obstacle": "structural-unbounded",
-        "agent_said_agrees": null,
-        "attempts_used": 3,
-        "seconds": 150,
-        "why_failed": "n's sign is unconstrained (no requires n>=0 in the original), so a plain i<=n invariant fails at loop entry for negative n; the fix (mirror 457_27's if-n>=0-else-0 defensive invariant plus a matching conditional ensures) was identified but not applied within the attempt budget. Separately: the true bound here is O(n), not O(n*m) -- x is capped at 2008 by the fixed-size table |d|==2009, so the label's 'm' is a hard constant in this row.",
+        "outcome": "proved",
+        "bound": "4050 * (if n > 0 then n else 0) + 5",
+        "relation": "contradicts",
+        "relation_reason": "PROVED 2026-09-17. Bound 4050*(if n>0 then n else 0)+5. m is the LITERAL 2009 in the source, not an input, so it cannot scale and folds into the constant. The row is O(n) and the O(n*m) label overstates it. This is a strictly tighter bound than the label, which is the one way an upper bound can refute one. A literal is not the value-versus-size case: that convention governs quantities that vary with input.",
+        "obstacle": null,
+        "agent_said_agrees": false,
+        "attempts_used": 1,
+        "seconds": 90,
+        "why_failed": null,
         "call_depth": 2,
         "recursive": true
       },
@@ -1557,11 +1558,11 @@
     ]
   },
   "proofs_all": {
-    "files": 73,
-    "rows": 71,
+    "files": 75,
+    "rows": 73,
     "by_era": {
       "pre-axiom": 33,
-      "campaign": 40
+      "campaign": 42
     },
     "rows_with_two_proofs": [
       "1484_82",
@@ -1578,8 +1579,8 @@
     "by_label": {
       "O(n)": 29,
       "O(nlogn)": 12,
-      "O(n*m)": 9,
-      "O(n**2)": 8,
+      "O(n*m)": 10,
+      "O(n**2)": 9,
       "O(n+m)": 6,
       "O(1)": 6,
       "O(n**2+m**2)": 1,
@@ -1714,8 +1715,8 @@
         "tight_variant": false,
         "label": "O(n)",
         "bound": "6 * |numbers| * MaxLen(numbers) + 4 * MaxLen(numbers) + 6",
-        "call_depth": 2,
-        "recursive": true
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "1484_82",
@@ -1938,6 +1939,16 @@
         "recursive": true
       },
       {
+        "solution_id": "2128_34",
+        "file": "solutions-proved/2128/2128_34.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n**2)",
+        "bound": "4 * |data_list| * |data_list| + 20 * |data_list| + 3 * r_final + 6 * span_total + 20",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
         "solution_id": "2166_288",
         "file": "solutions-proved/2166/2166_288.dfy",
         "era": "pre-axiom",
@@ -2004,8 +2015,8 @@
         "tight_variant": false,
         "label": "O(1)",
         "bound": "2 * |IntToString(n)| + 6",
-        "call_depth": 2,
-        "recursive": true
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "2426_4",
@@ -2034,8 +2045,8 @@
         "tight_variant": false,
         "label": "O(n)",
         "bound": "6 * n + 400 +",
-        "call_depth": 2,
-        "recursive": true
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "2719_289",
@@ -2086,6 +2097,16 @@
         "bound": "7 * (if n > 0 then n else 0) + 3",
         "call_depth": null,
         "recursive": null
+      },
+      {
+        "solution_id": "2942_42",
+        "file": "solutions-proved/2942/2942_42.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n*m)",
+        "bound": "4050 * (if n > 0 then n else 0) + 5",
+        "call_depth": 2,
+        "recursive": true
       },
       {
         "solution_id": "2962_1209",
@@ -2264,8 +2285,8 @@
         "tight_variant": false,
         "label": "O(n)",
         "bound": "2 * CeilLog2(x + 1) + 4",
-        "call_depth": 2,
-        "recursive": true
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "827_148",
@@ -2331,8 +2352,8 @@
         "of": 3
       },
       "2": {
-        "proved": 28,
-        "of": 33
+        "proved": 26,
+        "of": 29
       },
       "3": {
         "proved": 4,
@@ -2341,6 +2362,10 @@
       "4": {
         "proved": 1,
         "of": 1
+      },
+      "unknown": {
+        "proved": 4,
+        "of": 4
       }
     },
     "by_recursive": {
@@ -2349,8 +2374,12 @@
         "of": 6
       },
       "True": {
-        "proved": 36,
-        "of": 44
+        "proved": 34,
+        "of": 40
+      },
+      "unknown": {
+        "proved": 4,
+        "of": 4
       }
     },
     "by_label": {
@@ -2363,11 +2392,11 @@
         "of": 24
       },
       "O(n**2)": {
-        "proved": 4,
+        "proved": 5,
         "of": 6
       },
       "O(n*m)": {
-        "proved": 0,
+        "proved": 1,
         "of": 1
       },
       "O(n+m)": {
@@ -2399,23 +2428,23 @@
   },
   "callgraph": {
     "scope": "solutions/",
-    "rows": 354,
+    "rows": 350,
     "depth_distribution": {
       "0": 30,
       "1": 27,
-      "2": 227,
+      "2": 223,
       "3": 65,
       "4": 5
     },
     "median_depth": 2,
-    "recursive": 320,
+    "recursive": 316,
     "self_contained_depth_0_1": 57,
     "reachable_distribution": {
       "0": 30,
       "1": 21,
-      "2": 104,
-      "3": 48,
-      "4": 53,
+      "2": 103,
+      "3": 46,
+      "4": 52,
       "5": 45,
       "6": 27,
       "7": 12,
@@ -2425,19 +2454,19 @@
       "11": 1
     },
     "own_decls_distribution": {
-      "1": 262,
-      "2": 53,
-      "3": 27,
+      "1": 260,
+      "2": 52,
+      "3": 26,
       "4": 6,
       "5": 3,
       "7": 2,
       "8": 1
     },
     "rows_deepened_by_ghost": 15,
-    "prelude_calls_total": 1086,
+    "prelude_calls_total": 1077,
     "prelude_call_frequency": {
-      "DigitChar": 273,
-      "IntToString": 273,
+      "DigitChar": 269,
+      "IntToString": 269,
       "Merge": 83,
       "Sort": 83,
       "Join": 68,
@@ -2462,11 +2491,11 @@
       "MergeIsPermutation": 4,
       "SortIsPermutation": 4,
       "SortKeepsElems": 4,
-      "StringLess": 3,
       "ParseInts": 3,
       "SortIntsKeepsElems": 2,
       "PyIndex": 2,
       "SortStrings": 2,
+      "StringLess": 2,
       "PrefixSum": 1,
       "PrefixSumDoubledHi": 1,
       "PrefixSumDoubledLo": 1,
@@ -2484,6 +2513,6868 @@
     },
     "rows_using_no_prelude": 38,
     "search_truncated": 0
+  },
+  "corpus_stats": {
+    "call_depth": {
+      "distribution": {
+        "0": 30,
+        "1": 27,
+        "2": 223,
+        "3": 65,
+        "4": 5
+      },
+      "mean": 1.97,
+      "median": 2.0
+    },
+    "dafny_loc": {
+      "max": 185,
+      "mean": 35.3,
+      "median": 32.0,
+      "min": 6,
+      "p90": 58,
+      "p99": 109,
+      "total": 12368
+    },
+    "data_dependent_loops": {
+      "distribution": {
+        "0": 250,
+        "1": 81,
+        "2": 14,
+        "3": 3,
+        "4": 1,
+        "6": 1
+      },
+      "rows_with_any": 100
+    },
+    "expansion": {
+      "mean": 2.99,
+      "median_dafny_over_python": 2.33,
+      "rows_smaller_in_dafny": 4
+    },
+    "labels": {
+      "O(1)": 32,
+      "O(logn)": 3,
+      "O(n)": 164,
+      "O(n**2)": 53,
+      "O(n**2+m**2)": 1,
+      "O(n*m)": 3,
+      "O(n+m)": 14,
+      "O(n+m)log(n+m)": 1,
+      "O(nlogn)": 76,
+      "O(nlogn+mlogm)": 3
+    },
+    "loop_depth": {
+      "distribution": {
+        "0": 40,
+        "1": 250,
+        "2": 58,
+        "3": 1,
+        "4": 1
+      },
+      "nested": 60
+    },
+    "loops": {
+      "distribution": {
+        "0": 40,
+        "1": 165,
+        "2": 89,
+        "3": 32,
+        "4": 15,
+        "5": 7,
+        "6": 1,
+        "7": 1
+      },
+      "loopless_rows": 40,
+      "max": 7
+    },
+    "own_decls": {
+      "1": 260,
+      "2": 52,
+      "3": 26,
+      "4": 6,
+      "5": 3,
+      "7": 2,
+      "8": 1
+    },
+    "prelude": {
+      "frequency": {
+        "AbsInt": 17,
+        "BitAnd": 1,
+        "BitOr": 1,
+        "Closes": 1,
+        "DigitChar": 269,
+        "FloorDiv": 36,
+        "FloorMod": 14,
+        "Gcd": 5,
+        "IntToString": 269,
+        "IntToStringLen": 1,
+        "IsSpace": 5,
+        "Join": 68,
+        "JoinInts": 20,
+        "JoinLenUniform": 1,
+        "JoinSplitEmptySep": 1,
+        "MaxSeq": 18,
+        "MaxSeqFrom": 18,
+        "Merge": 83,
+        "MergeIsPermutation": 4,
+        "MinSeq": 10,
+        "MinSeqFrom": 10,
+        "ParseInt": 8,
+        "ParseIntFrom": 8,
+        "ParseInts": 3,
+        "PrefixSum": 1,
+        "PrefixSumDoubledHi": 1,
+        "PrefixSumDoubledLo": 1,
+        "PrefixSumIsSumSeq": 1,
+        "PrefixSumWindowDoubled": 1,
+        "PyIndex": 2,
+        "Repeat": 11,
+        "ReplaceAll": 1,
+        "Sort": 83,
+        "SortInts": 44,
+        "SortIntsKeepsElems": 2,
+        "SortIsPermutation": 4,
+        "SortKeepsElems": 4,
+        "SortStrings": 2,
+        "SortStringsKeepsElems": 1,
+        "SplitWs": 5,
+        "SplitWsFrom": 5,
+        "StringLess": 2,
+        "SumFrom": 17,
+        "SumFromIsPrefixSum": 1,
+        "SumSeq": 17
+      },
+      "median_per_row": 2.0,
+      "rows_using_none": 38
+    },
+    "python_loc": {
+      "max": 44,
+      "mean": 14.3,
+      "median": 13.0,
+      "min": 1,
+      "total": 4995
+    },
+    "recursive_helpers": {
+      "rows_with_own_recursion": 77
+    },
+    "rows": 350,
+    "rows_detail": [
+      {
+        "call_depth": 3,
+        "dafny_loc": 28,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join",
+          "JoinInts"
+        ],
+        "python_loc": 18,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "1015_168"
+      },
+      {
+        "call_depth": 1,
+        "dafny_loc": 23,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "Join"
+        ],
+        "python_loc": 8,
+        "reachable": 1,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1018_254"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 33,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 16,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1027_207"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 37,
+        "data_dependent_loops": 0,
+        "label": "O(n+m)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 5,
+        "reachable": 3,
+        "recursive_helpers": 1,
+        "seq_args": 2,
+        "solution_id": "1029_119"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 41,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 13,
+        "reachable": 3,
+        "recursive_helpers": 1,
+        "seq_args": 2,
+        "solution_id": "1029_92"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 78,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 2,
+        "loops": 4,
+        "own_decls": 4,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "IsSpace",
+          "Merge",
+          "Sort",
+          "SortInts",
+          "SplitWs",
+          "SplitWsFrom"
+        ],
+        "python_loc": 17,
+        "reachable": 11,
+        "recursive_helpers": 3,
+        "seq_args": 2,
+        "solution_id": "1039_15"
+      },
+      {
+        "call_depth": 1,
+        "dafny_loc": 21,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "Join",
+          "Repeat"
+        ],
+        "python_loc": 7,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1043_358"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 85,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 7,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join"
+        ],
+        "python_loc": 9,
+        "reachable": 9,
+        "recursive_helpers": 6,
+        "seq_args": 1,
+        "solution_id": "1047_26"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 38,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 3,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 6,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1053_38"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 27,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort"
+        ],
+        "python_loc": 15,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1053_44"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 17,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "FloorDiv",
+          "IntToString"
+        ],
+        "python_loc": 7,
+        "reachable": 4,
+        "recursive_helpers": 1,
+        "seq_args": 0,
+        "solution_id": "1073_645"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 8,
+        "data_dependent_loops": 0,
+        "label": "O(1)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "FloorDiv",
+          "IntToString"
+        ],
+        "python_loc": 3,
+        "reachable": 3,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "1077_64"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 19,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "FloorDiv",
+          "IntToString"
+        ],
+        "python_loc": 10,
+        "reachable": 4,
+        "recursive_helpers": 1,
+        "seq_args": 0,
+        "solution_id": "1077_84"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 6,
+        "data_dependent_loops": 0,
+        "label": "O(1)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 4,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "1089_174"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 14,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 6,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "1089_96"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 23,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join",
+          "MaxSeq",
+          "MaxSeqFrom",
+          "MinSeq",
+          "MinSeqFrom"
+        ],
+        "python_loc": 17,
+        "reachable": 7,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1134_928"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 26,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "FloorDiv",
+          "FloorMod",
+          "IntToString"
+        ],
+        "python_loc": 10,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1138_66"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 30,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 18,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1168_24"
+      },
+      {
+        "call_depth": 1,
+        "dafny_loc": 32,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "Join"
+        ],
+        "python_loc": 15,
+        "reachable": 1,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1170_62"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 51,
+        "data_dependent_loops": 0,
+        "label": "O(n+m)log(n+m)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 2,
+        "prelude_calls": [
+          "AbsInt",
+          "DigitChar",
+          "IntToString",
+          "Join",
+          "Merge",
+          "Sort"
+        ],
+        "python_loc": 19,
+        "reachable": 6,
+        "recursive_helpers": 1,
+        "seq_args": 2,
+        "solution_id": "1180_626"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 27,
+        "data_dependent_loops": 1,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 2,
+        "prelude_calls": [
+          "Merge",
+          "Sort"
+        ],
+        "python_loc": 13,
+        "reachable": 2,
+        "recursive_helpers": 1,
+        "seq_args": 2,
+        "solution_id": "1196_100"
+      },
+      {
+        "call_depth": 1,
+        "dafny_loc": 33,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 2,
+        "prelude_calls": [],
+        "python_loc": 15,
+        "reachable": 1,
+        "recursive_helpers": 1,
+        "seq_args": 2,
+        "solution_id": "1196_51"
+      },
+      {
+        "call_depth": 1,
+        "dafny_loc": 33,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "Join"
+        ],
+        "python_loc": 19,
+        "reachable": 1,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1235_283"
+      },
+      {
+        "call_depth": 0,
+        "dafny_loc": 22,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn+mlogm)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [],
+        "python_loc": 13,
+        "reachable": 0,
+        "recursive_helpers": 0,
+        "seq_args": 2,
+        "solution_id": "1243_0"
+      },
+      {
+        "call_depth": 0,
+        "dafny_loc": 28,
+        "data_dependent_loops": 0,
+        "label": "O(n+m)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [],
+        "python_loc": 14,
+        "reachable": 0,
+        "recursive_helpers": 0,
+        "seq_args": 2,
+        "solution_id": "1243_178"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 15,
+        "data_dependent_loops": 0,
+        "label": "O(1)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 3,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "1254_182"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 22,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 10,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "1254_187"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 32,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join",
+          "Repeat"
+        ],
+        "python_loc": 8,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1263_2538"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 64,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 4,
+        "own_decls": 3,
+        "prelude_calls": [
+          "Join"
+        ],
+        "python_loc": 24,
+        "reachable": 3,
+        "recursive_helpers": 2,
+        "seq_args": 1,
+        "solution_id": "1272_115"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 40,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 3,
+        "prelude_calls": [
+          "Join",
+          "Merge",
+          "Sort"
+        ],
+        "python_loc": 21,
+        "reachable": 5,
+        "recursive_helpers": 2,
+        "seq_args": 1,
+        "solution_id": "1272_278"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 15,
+        "data_dependent_loops": 0,
+        "label": "O(1)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join",
+          "JoinInts"
+        ],
+        "python_loc": 3,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "1303_56"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 41,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 5,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "MaxSeq",
+          "MaxSeqFrom"
+        ],
+        "python_loc": 7,
+        "reachable": 8,
+        "recursive_helpers": 4,
+        "seq_args": 1,
+        "solution_id": "1306_126"
+      },
+      {
+        "call_depth": 4,
+        "dafny_loc": 126,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 2,
+        "loops": 5,
+        "own_decls": 7,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 37,
+        "reachable": 8,
+        "recursive_helpers": 6,
+        "seq_args": 1,
+        "solution_id": "1332_16"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 61,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 3,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 29,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1332_41"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 35,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 15,
+        "reachable": 5,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1333_127"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 46,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "MaxSeq",
+          "MaxSeqFrom",
+          "MinSeq",
+          "MinSeqFrom"
+        ],
+        "python_loc": 27,
+        "reachable": 6,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1333_58"
+      },
+      {
+        "call_depth": 1,
+        "dafny_loc": 27,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 2,
+        "prelude_calls": [],
+        "python_loc": 20,
+        "reachable": 1,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "1345_113"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 41,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 26,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "1359_189"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 46,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 1,
+        "loops": 4,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 23,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "1359_4"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 47,
+        "data_dependent_loops": 1,
+        "label": "O(logn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 18,
+        "reachable": 3,
+        "recursive_helpers": 1,
+        "seq_args": 0,
+        "solution_id": "1364_161"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 20,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "AbsInt",
+          "DigitChar",
+          "FloorDiv",
+          "FloorMod",
+          "IntToString"
+        ],
+        "python_loc": 12,
+        "reachable": 5,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1366_112"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 23,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 13,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1367_59"
+      },
+      {
+        "call_depth": 0,
+        "dafny_loc": 64,
+        "data_dependent_loops": 3,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 3,
+        "own_decls": 1,
+        "prelude_calls": [],
+        "python_loc": 26,
+        "reachable": 0,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1368_109"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 59,
+        "data_dependent_loops": 2,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 3,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join"
+        ],
+        "python_loc": 25,
+        "reachable": 3,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1369_7"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 51,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 2,
+        "prelude_calls": [
+          "FloorDiv",
+          "FloorMod",
+          "Gcd",
+          "Merge",
+          "MergeIsPermutation",
+          "Sort",
+          "SortInts",
+          "SortIntsKeepsElems",
+          "SortIsPermutation",
+          "SortKeepsElems"
+        ],
+        "python_loc": 9,
+        "reachable": 6,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "1386_19"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 34,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 2,
+        "prelude_calls": [
+          "FloorDiv",
+          "FloorMod",
+          "Gcd",
+          "MaxSeq",
+          "MaxSeqFrom"
+        ],
+        "python_loc": 11,
+        "reachable": 5,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "1386_38"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 44,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 2,
+        "prelude_calls": [
+          "AbsInt",
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 28,
+        "reachable": 7,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "1387_19"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 30,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 2,
+        "prelude_calls": [
+          "AbsInt",
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 14,
+        "reachable": 4,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "1387_34"
+      },
+      {
+        "call_depth": 4,
+        "dafny_loc": 75,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 3,
+        "own_decls": 2,
+        "prelude_calls": [
+          "Join",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 36,
+        "reachable": 5,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "1414_8"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 19,
+        "data_dependent_loops": 0,
+        "label": "O(n+m)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join",
+          "JoinInts",
+          "PyIndex"
+        ],
+        "python_loc": 6,
+        "reachable": 5,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1421_53"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 13,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join",
+          "JoinInts",
+          "Merge",
+          "Sort"
+        ],
+        "python_loc": 4,
+        "reachable": 6,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1421_89"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 21,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 6,
+        "reachable": 3,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "1434_1616"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 37,
+        "data_dependent_loops": 1,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 3,
+        "own_decls": 1,
+        "prelude_calls": [
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 13,
+        "reachable": 3,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1453_211"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 54,
+        "data_dependent_loops": 2,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 3,
+        "prelude_calls": [
+          "MaxSeq",
+          "MaxSeqFrom"
+        ],
+        "python_loc": 28,
+        "reachable": 2,
+        "recursive_helpers": 2,
+        "seq_args": 1,
+        "solution_id": "1453_483"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 43,
+        "data_dependent_loops": 0,
+        "label": "O(1)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 4,
+        "prelude_calls": [
+          "DigitChar",
+          "FloorDiv",
+          "FloorMod",
+          "IntToString"
+        ],
+        "python_loc": 13,
+        "reachable": 4,
+        "recursive_helpers": 3,
+        "seq_args": 0,
+        "solution_id": "1467_532"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 19,
+        "data_dependent_loops": 1,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortStrings",
+          "StringLess"
+        ],
+        "python_loc": 14,
+        "reachable": 6,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1484_82"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 41,
+        "data_dependent_loops": 0,
+        "label": "O(1)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 3,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "IntToStringLen",
+          "Join",
+          "JoinLenUniform",
+          "JoinSplitEmptySep"
+        ],
+        "python_loc": 1,
+        "reachable": 3,
+        "recursive_helpers": 2,
+        "seq_args": 0,
+        "solution_id": "1501_177"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 42,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 3,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 12,
+        "reachable": 3,
+        "recursive_helpers": 2,
+        "seq_args": 0,
+        "solution_id": "1501_224"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 22,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 13,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1511_65"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 30,
+        "data_dependent_loops": 1,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 8,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1511_9"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 19,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 6,
+        "reachable": 5,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1540_206"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 17,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 8,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1540_9"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 25,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 15,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1560_164"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 34,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort"
+        ],
+        "python_loc": 21,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1560_63"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 22,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "FloorDiv",
+          "FloorMod",
+          "IntToString"
+        ],
+        "python_loc": 7,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1563_356"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 46,
+        "data_dependent_loops": 1,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 3,
+        "prelude_calls": [
+          "DigitChar",
+          "FloorDiv",
+          "FloorMod",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 7,
+        "reachable": 7,
+        "recursive_helpers": 2,
+        "seq_args": 1,
+        "solution_id": "1563_497"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 22,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "FloorDiv",
+          "IntToString",
+          "Join"
+        ],
+        "python_loc": 7,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1578_481"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 39,
+        "data_dependent_loops": 1,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join"
+        ],
+        "python_loc": 15,
+        "reachable": 3,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1578_724"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 12,
+        "data_dependent_loops": 0,
+        "label": "O(1)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "FloorDiv",
+          "FloorMod",
+          "IntToString"
+        ],
+        "python_loc": 6,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "1580_118"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 35,
+        "data_dependent_loops": 0,
+        "label": "O(n+m)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 22,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "1580_12"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 51,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "Merge",
+          "Repeat",
+          "Sort"
+        ],
+        "python_loc": 19,
+        "reachable": 3,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1582_118"
+      },
+      {
+        "call_depth": 1,
+        "dafny_loc": 41,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "Repeat"
+        ],
+        "python_loc": 16,
+        "reachable": 1,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1582_315"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 24,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "Merge",
+          "Sort"
+        ],
+        "python_loc": 14,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1586_188"
+      },
+      {
+        "call_depth": 0,
+        "dafny_loc": 23,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [],
+        "python_loc": 9,
+        "reachable": 0,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1586_257"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 25,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 12,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1622_48"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 36,
+        "data_dependent_loops": 1,
+        "label": "O(nlogn)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SumFrom",
+          "SumSeq"
+        ],
+        "python_loc": 21,
+        "reachable": 6,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1626_179"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 22,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "MaxSeq",
+          "MaxSeqFrom",
+          "SumFrom",
+          "SumSeq"
+        ],
+        "python_loc": 22,
+        "reachable": 6,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1626_33"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 22,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 12,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1650_311"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 11,
+        "data_dependent_loops": 0,
+        "label": "O(1)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 7,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "167_191"
+      },
+      {
+        "call_depth": 1,
+        "dafny_loc": 27,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "Join"
+        ],
+        "python_loc": 11,
+        "reachable": 1,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1673_129"
+      },
+      {
+        "call_depth": 1,
+        "dafny_loc": 45,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 2,
+        "prelude_calls": [],
+        "python_loc": 16,
+        "reachable": 1,
+        "recursive_helpers": 1,
+        "seq_args": 2,
+        "solution_id": "1675_150"
+      },
+      {
+        "call_depth": 0,
+        "dafny_loc": 66,
+        "data_dependent_loops": 1,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [],
+        "python_loc": 36,
+        "reachable": 0,
+        "recursive_helpers": 0,
+        "seq_args": 2,
+        "solution_id": "1675_29"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 45,
+        "data_dependent_loops": 0,
+        "label": "O(1)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 4,
+        "prelude_calls": [
+          "AbsInt",
+          "FloorDiv"
+        ],
+        "python_loc": 18,
+        "reachable": 4,
+        "recursive_helpers": 3,
+        "seq_args": 0,
+        "solution_id": "1678_68"
+      },
+      {
+        "call_depth": 1,
+        "dafny_loc": 39,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 3,
+        "own_decls": 1,
+        "prelude_calls": [
+          "Join"
+        ],
+        "python_loc": 11,
+        "reachable": 1,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "1699_98"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 22,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join"
+        ],
+        "python_loc": 6,
+        "reachable": 3,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "171_0"
+      },
+      {
+        "call_depth": 4,
+        "dafny_loc": 23,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join",
+          "JoinInts",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 6,
+        "reachable": 8,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "1717_175"
+      },
+      {
+        "call_depth": 4,
+        "dafny_loc": 41,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join",
+          "JoinInts"
+        ],
+        "python_loc": 19,
+        "reachable": 5,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "1717_238"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 35,
+        "data_dependent_loops": 1,
+        "label": "O(n*m)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "AbsInt",
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 15,
+        "reachable": 6,
+        "recursive_helpers": 0,
+        "seq_args": 2,
+        "solution_id": "1718_1166"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 28,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn+mlogm)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "AbsInt",
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 20,
+        "reachable": 6,
+        "recursive_helpers": 0,
+        "seq_args": 2,
+        "solution_id": "1718_621"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 18,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 6,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "1738_24"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 30,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "FloorDiv",
+          "IntToString"
+        ],
+        "python_loc": 17,
+        "reachable": 3,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "1739_170"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 15,
+        "data_dependent_loops": 0,
+        "label": "O(1)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 10,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "1739_447"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 30,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 16,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1756_1282"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 19,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "MaxSeq",
+          "MaxSeqFrom",
+          "MinSeq",
+          "MinSeqFrom"
+        ],
+        "python_loc": 6,
+        "reachable": 6,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1756_577"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 52,
+        "data_dependent_loops": 1,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 3,
+        "own_decls": 3,
+        "prelude_calls": [
+          "AbsInt",
+          "MaxSeq",
+          "MaxSeqFrom"
+        ],
+        "python_loc": 10,
+        "reachable": 3,
+        "recursive_helpers": 2,
+        "seq_args": 1,
+        "solution_id": "1765_40"
+      },
+      {
+        "call_depth": 1,
+        "dafny_loc": 18,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "AbsInt"
+        ],
+        "python_loc": 14,
+        "reachable": 1,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1765_73"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 37,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "MinSeq",
+          "MinSeqFrom"
+        ],
+        "python_loc": 11,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1820_180"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 45,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join",
+          "JoinInts",
+          "Merge",
+          "Sort"
+        ],
+        "python_loc": 15,
+        "reachable": 7,
+        "recursive_helpers": 1,
+        "seq_args": 0,
+        "solution_id": "1827_66"
+      },
+      {
+        "call_depth": 0,
+        "dafny_loc": 55,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [],
+        "python_loc": 25,
+        "reachable": 0,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1830_16"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 12,
+        "data_dependent_loops": 0,
+        "label": "O(1)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "ParseInt",
+          "ParseIntFrom"
+        ],
+        "python_loc": 7,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 2,
+        "solution_id": "1855_33"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 22,
+        "data_dependent_loops": 1,
+        "label": "O(nlogn)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 9,
+        "reachable": 5,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1857_103"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 22,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 8,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1857_13"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 34,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 3,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "1861_16"
+      },
+      {
+        "call_depth": 1,
+        "dafny_loc": 42,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "Join",
+          "Repeat"
+        ],
+        "python_loc": 12,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1867_16"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 10,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 9,
+        "reachable": 5,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "187_193"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 31,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 17,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "187_762"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 59,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 3,
+        "prelude_calls": [
+          "DigitChar",
+          "Gcd",
+          "IntToString",
+          "Merge",
+          "MergeIsPermutation",
+          "Sort",
+          "SortInts",
+          "SortIntsKeepsElems",
+          "SortIsPermutation",
+          "SortKeepsElems"
+        ],
+        "python_loc": 10,
+        "reachable": 6,
+        "recursive_helpers": 2,
+        "seq_args": 1,
+        "solution_id": "1871_156"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 56,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 3,
+        "prelude_calls": [
+          "DigitChar",
+          "Gcd",
+          "IntToString"
+        ],
+        "python_loc": 16,
+        "reachable": 3,
+        "recursive_helpers": 2,
+        "seq_args": 1,
+        "solution_id": "1871_291"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 29,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 17,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1878_29"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 48,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 36,
+        "reachable": 5,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1878_72"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 40,
+        "data_dependent_loops": 2,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join",
+          "JoinInts",
+          "Merge",
+          "Sort"
+        ],
+        "python_loc": 20,
+        "reachable": 7,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "1892_121"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 29,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join",
+          "JoinInts"
+        ],
+        "python_loc": 14,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1892_347"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 46,
+        "data_dependent_loops": 1,
+        "label": "O(n+m)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 2,
+        "prelude_calls": [
+          "AbsInt",
+          "DigitChar",
+          "Gcd",
+          "IntToString"
+        ],
+        "python_loc": 19,
+        "reachable": 5,
+        "recursive_helpers": 1,
+        "seq_args": 2,
+        "solution_id": "1915_158"
+      },
+      {
+        "call_depth": 0,
+        "dafny_loc": 32,
+        "data_dependent_loops": 0,
+        "label": "O(n+m)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "Closes"
+        ],
+        "python_loc": 15,
+        "reachable": 0,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1935_61"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 19,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 13,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "1937_10"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 13,
+        "data_dependent_loops": 0,
+        "label": "O(1)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 2,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "1937_360"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 37,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 3,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join"
+        ],
+        "python_loc": 4,
+        "reachable": 4,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "1944_50"
+      },
+      {
+        "call_depth": 0,
+        "dafny_loc": 19,
+        "data_dependent_loops": 1,
+        "label": "O(1)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [],
+        "python_loc": 7,
+        "reachable": 0,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "1948_388"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 52,
+        "data_dependent_loops": 3,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 5,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 11,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "1950_45"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 33,
+        "data_dependent_loops": 2,
+        "label": "O(n**2)",
+        "loop_depth": 1,
+        "loops": 4,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 11,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "1950_47"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 23,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 13,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1952_22"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 50,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 3,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 18,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1952_87"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 19,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 9,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "1954_157"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 24,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 9,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "1954_83"
+      },
+      {
+        "call_depth": 1,
+        "dafny_loc": 31,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "Join"
+        ],
+        "python_loc": 11,
+        "reachable": 1,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1966_59"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 21,
+        "data_dependent_loops": 0,
+        "label": "O(1)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join",
+          "JoinInts"
+        ],
+        "python_loc": 6,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "1972_129"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 37,
+        "data_dependent_loops": 0,
+        "label": "O(logn)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join"
+        ],
+        "python_loc": 19,
+        "reachable": 3,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "1972_295"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 20,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join",
+          "JoinInts",
+          "PyIndex"
+        ],
+        "python_loc": 9,
+        "reachable": 5,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "1981_39"
+      },
+      {
+        "call_depth": 1,
+        "dafny_loc": 71,
+        "data_dependent_loops": 1,
+        "label": "O(n**2)",
+        "loop_depth": 1,
+        "loops": 3,
+        "own_decls": 3,
+        "prelude_calls": [
+          "Repeat"
+        ],
+        "python_loc": 25,
+        "reachable": 2,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "2005_187"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 47,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join",
+          "JoinInts"
+        ],
+        "python_loc": 25,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2007_4"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 26,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "Merge",
+          "Sort",
+          "SortInts",
+          "SumFrom",
+          "SumSeq"
+        ],
+        "python_loc": 14,
+        "reachable": 5,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2010_401"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 23,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "SumFrom",
+          "SumSeq"
+        ],
+        "python_loc": 12,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2010_45"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 23,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 9,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2012_342"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 15,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "ParseInt",
+          "ParseIntFrom",
+          "ParseInts"
+        ],
+        "python_loc": 6,
+        "reachable": 5,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2015_175"
+      },
+      {
+        "call_depth": 0,
+        "dafny_loc": 44,
+        "data_dependent_loops": 1,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 3,
+        "own_decls": 1,
+        "prelude_calls": [],
+        "python_loc": 12,
+        "reachable": 0,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2036_120"
+      },
+      {
+        "call_depth": 0,
+        "dafny_loc": 43,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 3,
+        "own_decls": 1,
+        "prelude_calls": [],
+        "python_loc": 10,
+        "reachable": 0,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2036_19"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 44,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 18,
+        "reachable": 3,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2036_33"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 25,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 14,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2051_25"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 29,
+        "data_dependent_loops": 1,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 12,
+        "reachable": 5,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2051_80"
+      },
+      {
+        "call_depth": 0,
+        "dafny_loc": 39,
+        "data_dependent_loops": 2,
+        "label": "O(1)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [],
+        "python_loc": 13,
+        "reachable": 0,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "2065_24"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 22,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 10,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2071_33"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 22,
+        "data_dependent_loops": 1,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SumFrom",
+          "SumSeq"
+        ],
+        "python_loc": 11,
+        "reachable": 6,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2071_39"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 49,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 3,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 11,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2072_257"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 50,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 2,
+        "loops": 3,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort"
+        ],
+        "python_loc": 18,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2072_40"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 6,
+        "data_dependent_loops": 0,
+        "label": "O(1)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 2,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "208_290"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 33,
+        "data_dependent_loops": 1,
+        "label": "O(nlogn)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SumFrom",
+          "SumSeq"
+        ],
+        "python_loc": 16,
+        "reachable": 6,
+        "recursive_helpers": 0,
+        "seq_args": 2,
+        "solution_id": "2083_80"
+      },
+      {
+        "call_depth": 1,
+        "dafny_loc": 43,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "Join"
+        ],
+        "python_loc": 15,
+        "reachable": 1,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2087_119"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 29,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort"
+        ],
+        "python_loc": 5,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "209_103"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 45,
+        "data_dependent_loops": 1,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 3,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 13,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "209_29"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 80,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "IsSpace",
+          "Merge",
+          "ParseInt",
+          "ParseIntFrom",
+          "ParseInts",
+          "Sort",
+          "SplitWs",
+          "SplitWsFrom"
+        ],
+        "python_loc": 35,
+        "reachable": 10,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2105_248"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 54,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "IsSpace",
+          "MaxSeq",
+          "MaxSeqFrom",
+          "ParseInt",
+          "ParseIntFrom",
+          "ParseInts",
+          "SplitWs",
+          "SplitWsFrom"
+        ],
+        "python_loc": 14,
+        "reachable": 10,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2105_521"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 20,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "FloorDiv",
+          "IntToString",
+          "Join"
+        ],
+        "python_loc": 10,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2124_2"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 60,
+        "data_dependent_loops": 2,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 3,
+        "own_decls": 1,
+        "prelude_calls": [
+          "Merge",
+          "Sort"
+        ],
+        "python_loc": 27,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2128_3"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 66,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 5,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort"
+        ],
+        "python_loc": 24,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2128_34"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 20,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "FloorDiv",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 12,
+        "reachable": 6,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2166_288"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 14,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "FloorDiv",
+          "IntToString"
+        ],
+        "python_loc": 8,
+        "reachable": 3,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2166_84"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 28,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join"
+        ],
+        "python_loc": 15,
+        "reachable": 3,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2183_2"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 19,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "FloorDiv",
+          "IntToString"
+        ],
+        "python_loc": 8,
+        "reachable": 3,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2185_274"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 60,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 3,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "MergeIsPermutation",
+          "Sort",
+          "SortIsPermutation",
+          "SortKeepsElems"
+        ],
+        "python_loc": 22,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 2,
+        "solution_id": "2188_359"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 19,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "MaxSeq",
+          "MaxSeqFrom"
+        ],
+        "python_loc": 13,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2193_138"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 25,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "AbsInt",
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 10,
+        "reachable": 3,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2198_50"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 35,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "AbsInt",
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 17,
+        "reachable": 6,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2198_52"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 47,
+        "data_dependent_loops": 1,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 3,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "IsSpace",
+          "Join",
+          "SplitWs",
+          "SplitWsFrom"
+        ],
+        "python_loc": 16,
+        "reachable": 6,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2217_247"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 28,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "SumFrom",
+          "SumSeq"
+        ],
+        "python_loc": 16,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2225_120"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 31,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 18,
+        "reachable": 5,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2225_154"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 20,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 12,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2226_1222"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 43,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 29,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "223_180"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 24,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 13,
+        "reachable": 5,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "223_3085"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 57,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "FloorDiv",
+          "IntToString",
+          "MaxSeq",
+          "MaxSeqFrom",
+          "Merge",
+          "MergeIsPermutation",
+          "Sort",
+          "SortIsPermutation",
+          "SortKeepsElems",
+          "SortStrings",
+          "SortStringsKeepsElems",
+          "StringLess"
+        ],
+        "python_loc": 33,
+        "reachable": 9,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2231_194"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 62,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 2,
+        "loops": 3,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "FloorDiv",
+          "IntToString",
+          "MaxSeq",
+          "MaxSeqFrom"
+        ],
+        "python_loc": 12,
+        "reachable": 5,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2231_77"
+      },
+      {
+        "call_depth": 1,
+        "dafny_loc": 26,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "Join"
+        ],
+        "python_loc": 5,
+        "reachable": 1,
+        "recursive_helpers": 0,
+        "seq_args": 2,
+        "solution_id": "2235_384"
+      },
+      {
+        "call_depth": 1,
+        "dafny_loc": 32,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "Join"
+        ],
+        "python_loc": 9,
+        "reachable": 1,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2254_143"
+      },
+      {
+        "call_depth": 1,
+        "dafny_loc": 33,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "Join",
+          "Repeat"
+        ],
+        "python_loc": 6,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2254_6"
+      },
+      {
+        "call_depth": 0,
+        "dafny_loc": 27,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [],
+        "python_loc": 10,
+        "reachable": 0,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2266_172"
+      },
+      {
+        "call_depth": 0,
+        "dafny_loc": 22,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [],
+        "python_loc": 13,
+        "reachable": 0,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2266_298"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 38,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 5,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 13,
+        "reachable": 6,
+        "recursive_helpers": 2,
+        "seq_args": 1,
+        "solution_id": "2269_59"
+      },
+      {
+        "call_depth": 0,
+        "dafny_loc": 35,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [],
+        "python_loc": 25,
+        "reachable": 0,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2281_112"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 45,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Repeat"
+        ],
+        "python_loc": 24,
+        "reachable": 4,
+        "recursive_helpers": 1,
+        "seq_args": 0,
+        "solution_id": "2282_16"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 51,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 29,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "2282_437"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 9,
+        "data_dependent_loops": 0,
+        "label": "O(1)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 4,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "2286_14"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 30,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 3,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 9,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "2286_319"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 12,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "AbsInt",
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SumFrom",
+          "SumSeq"
+        ],
+        "python_loc": 6,
+        "reachable": 7,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "2313_104"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 23,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "AbsInt",
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 5,
+        "reachable": 3,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "2313_177"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 32,
+        "data_dependent_loops": 1,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 11,
+        "reachable": 6,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2358_103"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 31,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 7,
+        "reachable": 3,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2358_421"
+      },
+      {
+        "call_depth": 1,
+        "dafny_loc": 22,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 2,
+        "prelude_calls": [],
+        "python_loc": 6,
+        "reachable": 1,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "2389_139"
+      },
+      {
+        "call_depth": 0,
+        "dafny_loc": 33,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [],
+        "python_loc": 7,
+        "reachable": 0,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2389_42"
+      },
+      {
+        "call_depth": 0,
+        "dafny_loc": 69,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 5,
+        "own_decls": 1,
+        "prelude_calls": [],
+        "python_loc": 26,
+        "reachable": 0,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2394_125"
+      },
+      {
+        "call_depth": 0,
+        "dafny_loc": 37,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [],
+        "python_loc": 18,
+        "reachable": 0,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2394_227"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 33,
+        "data_dependent_loops": 1,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 15,
+        "reachable": 6,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "241_101"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 51,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 3,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "MaxSeq",
+          "MaxSeqFrom",
+          "MinSeq",
+          "MinSeqFrom"
+        ],
+        "python_loc": 15,
+        "reachable": 8,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "241_47"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 43,
+        "data_dependent_loops": 2,
+        "label": "O(nlogn)",
+        "loop_depth": 2,
+        "loops": 3,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort"
+        ],
+        "python_loc": 30,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2423_48"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 48,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 3,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 17,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2423_56"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 15,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 9,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2425_188"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 22,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort"
+        ],
+        "python_loc": 15,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2425_5"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 49,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "FloorDiv",
+          "FloorMod"
+        ],
+        "python_loc": 31,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2426_17"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 63,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 2,
+        "prelude_calls": [
+          "FloorDiv",
+          "FloorMod",
+          "Merge",
+          "Sort"
+        ],
+        "python_loc": 34,
+        "reachable": 5,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "2426_4"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 35,
+        "data_dependent_loops": 1,
+        "label": "O(n+m)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 3,
+        "prelude_calls": [],
+        "python_loc": 18,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 2,
+        "solution_id": "2436_325"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 57,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 3,
+        "own_decls": 1,
+        "prelude_calls": [
+          "BitOr",
+          "DigitChar",
+          "IntToString",
+          "Join"
+        ],
+        "python_loc": 11,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2465_139"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 91,
+        "data_dependent_loops": 2,
+        "label": "O(nlogn)",
+        "loop_depth": 2,
+        "loops": 4,
+        "own_decls": 3,
+        "prelude_calls": [
+          "BitAnd",
+          "DigitChar",
+          "IntToString",
+          "Join",
+          "Merge",
+          "Sort"
+        ],
+        "python_loc": 11,
+        "reachable": 6,
+        "recursive_helpers": 2,
+        "seq_args": 1,
+        "solution_id": "2465_212"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 10,
+        "data_dependent_loops": 0,
+        "label": "O(1)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "FloorDiv",
+          "IntToString"
+        ],
+        "python_loc": 4,
+        "reachable": 3,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "2482_151"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 111,
+        "data_dependent_loops": 6,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 7,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Repeat",
+          "Sort"
+        ],
+        "python_loc": 14,
+        "reachable": 6,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "2496_30"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 21,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 9,
+        "reachable": 5,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2505_87"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 28,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "FloorDiv",
+          "IntToString",
+          "MinSeq",
+          "MinSeqFrom",
+          "SumFrom",
+          "SumSeq"
+        ],
+        "python_loc": 12,
+        "reachable": 7,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2514_176"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 33,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "FloorDiv",
+          "IntToString",
+          "Merge",
+          "MinSeq",
+          "MinSeqFrom",
+          "Sort",
+          "SumFrom",
+          "SumSeq"
+        ],
+        "python_loc": 21,
+        "reachable": 9,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2514_221"
+      },
+      {
+        "call_depth": 4,
+        "dafny_loc": 47,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join",
+          "JoinInts"
+        ],
+        "python_loc": 17,
+        "reachable": 5,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "2516_238"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 18,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 8,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "2522_11"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 11,
+        "data_dependent_loops": 0,
+        "label": "O(1)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "FloorDiv",
+          "IntToString"
+        ],
+        "python_loc": 5,
+        "reachable": 3,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "2522_15"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 37,
+        "data_dependent_loops": 1,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 13,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2586_20"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 45,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 3,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 8,
+        "reachable": 5,
+        "recursive_helpers": 2,
+        "seq_args": 1,
+        "solution_id": "2586_216"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 43,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 3,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 16,
+        "reachable": 4,
+        "recursive_helpers": 2,
+        "seq_args": 1,
+        "solution_id": "2589_115"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 42,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 27,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2589_26"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 52,
+        "data_dependent_loops": 1,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 3,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts",
+          "SumFrom",
+          "SumSeq"
+        ],
+        "python_loc": 15,
+        "reachable": 7,
+        "recursive_helpers": 2,
+        "seq_args": 1,
+        "solution_id": "2593_332"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 16,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join"
+        ],
+        "python_loc": 4,
+        "reachable": 3,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2602_62"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 34,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join"
+        ],
+        "python_loc": 8,
+        "reachable": 3,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2610_51"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 49,
+        "data_dependent_loops": 1,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 3,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 21,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2650_153"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 29,
+        "data_dependent_loops": 1,
+        "label": "O(n+m)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join",
+          "JoinInts"
+        ],
+        "python_loc": 25,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 2,
+        "solution_id": "2680_221"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 31,
+        "data_dependent_loops": 0,
+        "label": "O(1)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "ParseInt",
+          "ParseIntFrom"
+        ],
+        "python_loc": 19,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2700_137"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 49,
+        "data_dependent_loops": 1,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 3,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "ReplaceAll"
+        ],
+        "python_loc": 24,
+        "reachable": 4,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "2704_92"
+      },
+      {
+        "call_depth": 1,
+        "dafny_loc": 32,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 2,
+        "prelude_calls": [],
+        "python_loc": 22,
+        "reachable": 1,
+        "recursive_helpers": 1,
+        "seq_args": 0,
+        "solution_id": "271_58"
+      },
+      {
+        "call_depth": 0,
+        "dafny_loc": 25,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [],
+        "python_loc": 19,
+        "reachable": 0,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2719_289"
+      },
+      {
+        "call_depth": 0,
+        "dafny_loc": 70,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 4,
+        "own_decls": 1,
+        "prelude_calls": [],
+        "python_loc": 26,
+        "reachable": 0,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2725_140"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 51,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 4,
+        "own_decls": 1,
+        "prelude_calls": [
+          "Merge",
+          "Sort"
+        ],
+        "python_loc": 7,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2725_319"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 22,
+        "data_dependent_loops": 1,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 15,
+        "reachable": 5,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2742_0"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 8,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "FloorDiv",
+          "IntToString",
+          "SumFrom",
+          "SumSeq"
+        ],
+        "python_loc": 6,
+        "reachable": 5,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2742_57"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 33,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join",
+          "MaxSeq",
+          "MaxSeqFrom",
+          "MinSeq",
+          "MinSeqFrom"
+        ],
+        "python_loc": 14,
+        "reachable": 8,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "276_610"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 44,
+        "data_dependent_loops": 1,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 25,
+        "reachable": 5,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2771_23"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 35,
+        "data_dependent_loops": 3,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 3,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 18,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2771_26"
+      },
+      {
+        "call_depth": 0,
+        "dafny_loc": 13,
+        "data_dependent_loops": 0,
+        "label": "O(1)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [],
+        "python_loc": 5,
+        "reachable": 0,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "2773_120"
+      },
+      {
+        "call_depth": 0,
+        "dafny_loc": 25,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [],
+        "python_loc": 18,
+        "reachable": 0,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "2773_68"
+      },
+      {
+        "call_depth": 1,
+        "dafny_loc": 55,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 2,
+        "prelude_calls": [],
+        "python_loc": 25,
+        "reachable": 1,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "2799_164"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 39,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 3,
+        "prelude_calls": [
+          "DigitChar",
+          "FloorDiv",
+          "IntToString"
+        ],
+        "python_loc": 12,
+        "reachable": 5,
+        "recursive_helpers": 2,
+        "seq_args": 0,
+        "solution_id": "2803_133"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 9,
+        "data_dependent_loops": 0,
+        "label": "O(1)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "FloorDiv",
+          "IntToString"
+        ],
+        "python_loc": 3,
+        "reachable": 3,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "2803_59"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 51,
+        "data_dependent_loops": 1,
+        "label": "O(n**2)",
+        "loop_depth": 3,
+        "loops": 4,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 21,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "281_12"
+      },
+      {
+        "call_depth": 1,
+        "dafny_loc": 49,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 3,
+        "prelude_calls": [
+          "FloorDiv",
+          "Join"
+        ],
+        "python_loc": 15,
+        "reachable": 4,
+        "recursive_helpers": 2,
+        "seq_args": 1,
+        "solution_id": "2819_926"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 58,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 4,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 14,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2826_42"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 84,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 5,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort"
+        ],
+        "python_loc": 22,
+        "reachable": 5,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "2826_81"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 55,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 3,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join",
+          "Merge",
+          "Sort"
+        ],
+        "python_loc": 20,
+        "reachable": 5,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2831_61"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 49,
+        "data_dependent_loops": 2,
+        "label": "O(nlogn)",
+        "loop_depth": 2,
+        "loops": 3,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join",
+          "Merge",
+          "Sort"
+        ],
+        "python_loc": 17,
+        "reachable": 5,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2831_71"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 29,
+        "data_dependent_loops": 1,
+        "label": "O(n**2)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 18,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "2847_21"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 38,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 17,
+        "reachable": 3,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "2847_36"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 17,
+        "data_dependent_loops": 0,
+        "label": "O(1)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 23,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "2847_45"
+      },
+      {
+        "call_depth": 0,
+        "dafny_loc": 22,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [],
+        "python_loc": 15,
+        "reachable": 0,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2853_256"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 53,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "IsSpace",
+          "ParseInt",
+          "ParseIntFrom",
+          "SplitWs",
+          "SplitWsFrom",
+          "SumFrom",
+          "SumSeq"
+        ],
+        "python_loc": 20,
+        "reachable": 9,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2854_30"
+      },
+      {
+        "call_depth": 1,
+        "dafny_loc": 24,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "Join"
+        ],
+        "python_loc": 13,
+        "reachable": 1,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "2880_19"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 32,
+        "data_dependent_loops": 2,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 15,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "2913_309"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 24,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 8,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "2913_484"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 10,
+        "data_dependent_loops": 0,
+        "label": "O(1)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 1,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "2913_633"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 21,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 10,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2914_3"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 29,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join"
+        ],
+        "python_loc": 13,
+        "reachable": 3,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "2926_50"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 63,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 5,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join"
+        ],
+        "python_loc": 23,
+        "reachable": 3,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "2926_54"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 36,
+        "data_dependent_loops": 0,
+        "label": "O(n*m)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "ParseInt",
+          "ParseIntFrom"
+        ],
+        "python_loc": 11,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2942_42"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 59,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "ParseInt",
+          "ParseIntFrom"
+        ],
+        "python_loc": 25,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2942_55"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 71,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 6,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 21,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2947_115"
+      },
+      {
+        "call_depth": 0,
+        "dafny_loc": 40,
+        "data_dependent_loops": 1,
+        "label": "O(n**2+m**2)",
+        "loop_depth": 2,
+        "loops": 3,
+        "own_decls": 1,
+        "prelude_calls": [],
+        "python_loc": 12,
+        "reachable": 0,
+        "recursive_helpers": 0,
+        "seq_args": 3,
+        "solution_id": "2962_1209"
+      },
+      {
+        "call_depth": 0,
+        "dafny_loc": 38,
+        "data_dependent_loops": 1,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [],
+        "python_loc": 22,
+        "reachable": 0,
+        "recursive_helpers": 0,
+        "seq_args": 3,
+        "solution_id": "2962_1968"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 23,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 14,
+        "reachable": 5,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2982_103"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 22,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 11,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2982_323"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 23,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort"
+        ],
+        "python_loc": 11,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2992_153"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 21,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 9,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "2992_87"
+      },
+      {
+        "call_depth": 1,
+        "dafny_loc": 31,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "Repeat"
+        ],
+        "python_loc": 8,
+        "reachable": 1,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "3017_340"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 21,
+        "data_dependent_loops": 1,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "Merge",
+          "Sort"
+        ],
+        "python_loc": 12,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "3017_45"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 23,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "FloorDiv",
+          "FloorMod",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 8,
+        "reachable": 7,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "3018_143"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 27,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "FloorDiv",
+          "FloorMod",
+          "IntToString",
+          "MinSeq",
+          "MinSeqFrom"
+        ],
+        "python_loc": 11,
+        "reachable": 6,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "3018_50"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 27,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "AbsInt",
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort"
+        ],
+        "python_loc": 19,
+        "reachable": 5,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "3033_135"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 43,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "AbsInt",
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 11,
+        "reachable": 3,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "3033_146"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 58,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 5,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join",
+          "JoinInts"
+        ],
+        "python_loc": 14,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "3034_1"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 48,
+        "data_dependent_loops": 1,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join",
+          "JoinInts",
+          "Merge",
+          "Sort"
+        ],
+        "python_loc": 21,
+        "reachable": 6,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "3034_57"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 25,
+        "data_dependent_loops": 0,
+        "label": "O(n*m)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 10,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "3046_65"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 12,
+        "data_dependent_loops": 0,
+        "label": "O(n+m)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "MaxSeq",
+          "MaxSeqFrom",
+          "MinSeq",
+          "MinSeqFrom"
+        ],
+        "python_loc": 17,
+        "reachable": 6,
+        "recursive_helpers": 0,
+        "seq_args": 2,
+        "solution_id": "305_284"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 23,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn+mlogm)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 15,
+        "reachable": 5,
+        "recursive_helpers": 0,
+        "seq_args": 2,
+        "solution_id": "305_76"
+      },
+      {
+        "call_depth": 0,
+        "dafny_loc": 28,
+        "data_dependent_loops": 1,
+        "label": "O(n+m)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [],
+        "python_loc": 17,
+        "reachable": 0,
+        "recursive_helpers": 0,
+        "seq_args": 2,
+        "solution_id": "3060_1359"
+      },
+      {
+        "call_depth": 1,
+        "dafny_loc": 27,
+        "data_dependent_loops": 2,
+        "label": "O(n**2)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 2,
+        "prelude_calls": [],
+        "python_loc": 9,
+        "reachable": 1,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "307_116"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 39,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 3,
+        "prelude_calls": [
+          "Join"
+        ],
+        "python_loc": 5,
+        "reachable": 3,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "307_14"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 22,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 10,
+        "reachable": 3,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "3070_180"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 15,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "MaxSeq",
+          "MaxSeqFrom",
+          "SumFrom",
+          "SumSeq"
+        ],
+        "python_loc": 10,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "3070_20"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 22,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 7,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "3091_1574"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 29,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join"
+        ],
+        "python_loc": 16,
+        "reachable": 3,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "310_51"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 41,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 2,
+        "loops": 4,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 5,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "342_86"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 37,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 17,
+        "reachable": 3,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "348_33"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 8,
+        "data_dependent_loops": 0,
+        "label": "O(1)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 4,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "354_35"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 37,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 16,
+        "reachable": 3,
+        "recursive_helpers": 1,
+        "seq_args": 0,
+        "solution_id": "354_95"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 42,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 3,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join"
+        ],
+        "python_loc": 14,
+        "reachable": 5,
+        "recursive_helpers": 2,
+        "seq_args": 1,
+        "solution_id": "378_91"
+      },
+      {
+        "call_depth": 0,
+        "dafny_loc": 36,
+        "data_dependent_loops": 0,
+        "label": "O(n+m)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [],
+        "python_loc": 17,
+        "reachable": 0,
+        "recursive_helpers": 0,
+        "seq_args": 2,
+        "solution_id": "380_19"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 70,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 4,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 19,
+        "reachable": 5,
+        "recursive_helpers": 3,
+        "seq_args": 1,
+        "solution_id": "384_34"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 29,
+        "data_dependent_loops": 1,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 13,
+        "reachable": 6,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "384_38"
+      },
+      {
+        "call_depth": 0,
+        "dafny_loc": 30,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [],
+        "python_loc": 19,
+        "reachable": 0,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "396_58"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 24,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 14,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "410_105"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 46,
+        "data_dependent_loops": 1,
+        "label": "O(n+m)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 14,
+        "reachable": 3,
+        "recursive_helpers": 1,
+        "seq_args": 0,
+        "solution_id": "433_16"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 8,
+        "data_dependent_loops": 0,
+        "label": "O(1)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 4,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "433_57"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 6,
+        "data_dependent_loops": 0,
+        "label": "O(1)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 1,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "450_204"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 23,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 3,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 19,
+        "reachable": 4,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "450_276"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 22,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 10,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "457_27"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 33,
+        "data_dependent_loops": 1,
+        "label": "O(n**2)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 14,
+        "reachable": 3,
+        "recursive_helpers": 1,
+        "seq_args": 0,
+        "solution_id": "457_38"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 8,
+        "data_dependent_loops": 0,
+        "label": "O(1)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 7,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "459_146"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 27,
+        "data_dependent_loops": 1,
+        "label": "O(n+m)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 15,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "459_199"
+      },
+      {
+        "call_depth": 0,
+        "dafny_loc": 20,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [],
+        "python_loc": 8,
+        "reachable": 0,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "493_134"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 39,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 21,
+        "reachable": 3,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "499_359"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 27,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 8,
+        "reachable": 6,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "499_82"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 80,
+        "data_dependent_loops": 1,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 4,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort"
+        ],
+        "python_loc": 18,
+        "reachable": 5,
+        "recursive_helpers": 3,
+        "seq_args": 1,
+        "solution_id": "514_140"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 80,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 8,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 12,
+        "reachable": 9,
+        "recursive_helpers": 5,
+        "seq_args": 1,
+        "solution_id": "514_90"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 32,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 12,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "525_234"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 10,
+        "data_dependent_loops": 0,
+        "label": "O(1)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 2,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "540_100"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 32,
+        "data_dependent_loops": 2,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "FloorDiv",
+          "FloorMod",
+          "IntToString"
+        ],
+        "python_loc": 14,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "540_80"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 185,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join"
+        ],
+        "python_loc": 5,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "554_107"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 46,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 4,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 17,
+        "reachable": 5,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "566_101"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 49,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 5,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort"
+        ],
+        "python_loc": 21,
+        "reachable": 7,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "566_183"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 48,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 3,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join"
+        ],
+        "python_loc": 13,
+        "reachable": 5,
+        "recursive_helpers": 2,
+        "seq_args": 1,
+        "solution_id": "577_509"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 18,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 7,
+        "reachable": 5,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "603_284"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 19,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 14,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "603_489"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 25,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts",
+          "SumFrom",
+          "SumSeq"
+        ],
+        "python_loc": 23,
+        "reachable": 7,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "61_161"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 24,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "MaxSeq",
+          "MaxSeqFrom",
+          "SumFrom",
+          "SumSeq"
+        ],
+        "python_loc": 29,
+        "reachable": 6,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "61_295"
+      },
+      {
+        "call_depth": 1,
+        "dafny_loc": 39,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 2,
+        "prelude_calls": [],
+        "python_loc": 13,
+        "reachable": 1,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "641_31"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 33,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 12,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "647_11"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 18,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 8,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "647_54"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 23,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 11,
+        "reachable": 5,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "659_63"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 61,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 4,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 27,
+        "reachable": 5,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "661_47"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 38,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 16,
+        "reachable": 3,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "661_99"
+      },
+      {
+        "call_depth": 1,
+        "dafny_loc": 28,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 2,
+        "prelude_calls": [
+          "Join",
+          "Repeat"
+        ],
+        "python_loc": 9,
+        "reachable": 3,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "662_527"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 33,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 22,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "669_40"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 24,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 13,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "681_105"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 8,
+        "data_dependent_loops": 0,
+        "label": "O(n+m)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "MaxSeq",
+          "MaxSeqFrom"
+        ],
+        "python_loc": 13,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 2,
+        "solution_id": "685_777"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 33,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "AbsInt",
+          "DigitChar",
+          "FloorDiv",
+          "IntToString"
+        ],
+        "python_loc": 16,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "696_51"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 17,
+        "data_dependent_loops": 1,
+        "label": "O(1)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "FloorDiv",
+          "IntToString"
+        ],
+        "python_loc": 6,
+        "reachable": 3,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "704_351"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 23,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 15,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "704_614"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 31,
+        "data_dependent_loops": 1,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 19,
+        "reachable": 5,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "71_217"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 31,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 14,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "71_257"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 39,
+        "data_dependent_loops": 2,
+        "label": "O(nlogn)",
+        "loop_depth": 2,
+        "loops": 4,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 28,
+        "reachable": 5,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "750_14"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 31,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "FloorDiv",
+          "FloorMod",
+          "IntToString"
+        ],
+        "python_loc": 12,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "750_51"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 30,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 6,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "785_12"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 34,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Merge",
+          "Sort"
+        ],
+        "python_loc": 9,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "785_75"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 60,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 2,
+        "loops": 4,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join",
+          "JoinInts"
+        ],
+        "python_loc": 18,
+        "reachable": 4,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "794_794"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 28,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 19,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "795_580"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 45,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 25,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "804_10"
+      },
+      {
+        "call_depth": 0,
+        "dafny_loc": 26,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [],
+        "python_loc": 15,
+        "reachable": 0,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "831_184"
+      },
+      {
+        "call_depth": 0,
+        "dafny_loc": 39,
+        "data_dependent_loops": 4,
+        "label": "O(1)",
+        "loop_depth": 4,
+        "loops": 4,
+        "own_decls": 1,
+        "prelude_calls": [],
+        "python_loc": 3,
+        "reachable": 0,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "831_74"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 82,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 3,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join",
+          "JoinInts"
+        ],
+        "python_loc": 25,
+        "reachable": 5,
+        "recursive_helpers": 2,
+        "seq_args": 2,
+        "solution_id": "85_141"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 83,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 3,
+        "own_decls": 3,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join",
+          "JoinInts",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 41,
+        "reachable": 9,
+        "recursive_helpers": 1,
+        "seq_args": 2,
+        "solution_id": "85_71"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 48,
+        "data_dependent_loops": 2,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 3,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join"
+        ],
+        "python_loc": 13,
+        "reachable": 4,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "88_200"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 44,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "PrefixSum",
+          "PrefixSumDoubledHi",
+          "PrefixSumDoubledLo",
+          "PrefixSumIsSumSeq",
+          "PrefixSumWindowDoubled",
+          "SumFrom",
+          "SumFromIsPrefixSum",
+          "SumSeq"
+        ],
+        "python_loc": 20,
+        "reachable": 5,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "888_179"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 65,
+        "data_dependent_loops": 1,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 3,
+        "own_decls": 2,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 7,
+        "reachable": 3,
+        "recursive_helpers": 1,
+        "seq_args": 1,
+        "solution_id": "888_6"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 31,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join"
+        ],
+        "python_loc": 22,
+        "reachable": 3,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "89_909"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 32,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 12,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "894_3"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 9,
+        "data_dependent_loops": 0,
+        "label": "O(1)",
+        "loop_depth": 0,
+        "loops": 0,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 6,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "897_1880"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 30,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 19,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "897_2438"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 28,
+        "data_dependent_loops": 0,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 15,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "936_772"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 24,
+        "data_dependent_loops": 1,
+        "label": "O(logn)",
+        "loop_depth": 1,
+        "loops": 1,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 10,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 0,
+        "solution_id": "945_255"
+      },
+      {
+        "call_depth": 3,
+        "dafny_loc": 109,
+        "data_dependent_loops": 0,
+        "label": "O(nlogn)",
+        "loop_depth": 1,
+        "loops": 4,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString",
+          "Join",
+          "JoinInts",
+          "Merge",
+          "Sort",
+          "SortInts"
+        ],
+        "python_loc": 44,
+        "reachable": 7,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "952_163"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 41,
+        "data_dependent_loops": 1,
+        "label": "O(n)",
+        "loop_depth": 1,
+        "loops": 2,
+        "own_decls": 3,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 11,
+        "reachable": 4,
+        "recursive_helpers": 2,
+        "seq_args": 1,
+        "solution_id": "976_1131"
+      },
+      {
+        "call_depth": 2,
+        "dafny_loc": 22,
+        "data_dependent_loops": 0,
+        "label": "O(n**2)",
+        "loop_depth": 2,
+        "loops": 2,
+        "own_decls": 1,
+        "prelude_calls": [
+          "DigitChar",
+          "IntToString"
+        ],
+        "python_loc": 7,
+        "reachable": 2,
+        "recursive_helpers": 0,
+        "seq_args": 1,
+        "solution_id": "976_656"
+      }
+    ],
+    "scope": "solutions/"
+  },
+  "exploration": {
+    "per_row": {
+      "61_295": "top-down",
+      "499_359": "top-down",
+      "1582_118": "own only",
+      "1484_26": "own only",
+      "2188_359": "top-down",
+      "450_276": "own only",
+      "1878_29": "top-down",
+      "2589_115": "top-down",
+      "2105_248": "top-down",
+      "2217_247": "top-down",
+      "514_140": "top-down",
+      "457_27": "top-down",
+      "661_47": "top-down",
+      "1453_483": "own only",
+      "1892_121": "own only",
+      "2235_384": "top-down",
+      "945_255": "own only",
+      "603_284": "top-down",
+      "2128_34": "top-down",
+      "2607_90": "top-down",
+      "2942_42": "top-down"
+    },
+    "tally": {
+      "top-down": 15,
+      "own only": 6
+    },
+    "per_slice_order": {
+      "a": {
+        "tool_calls": 124,
+        "prelude_opens": 25,
+        "verifier_calls": 33,
+        "first_prelude_at": 3,
+        "first_row_touch_at": 2,
+        "prelude_before_any_row": false
+      },
+      "b": {
+        "tool_calls": 103,
+        "prelude_opens": 21,
+        "verifier_calls": 30,
+        "first_prelude_at": 7,
+        "first_row_touch_at": 2,
+        "prelude_before_any_row": false
+      },
+      "c": {
+        "tool_calls": 149,
+        "prelude_opens": 24,
+        "verifier_calls": 32,
+        "first_prelude_at": 4,
+        "first_row_touch_at": 3,
+        "prelude_before_any_row": false
+      }
+    },
+    "by_slice": {
+      "a": {
+        "top-down": 3,
+        "own only": 2
+      },
+      "b": {
+        "own only": 1,
+        "top-down": 5
+      },
+      "c": {
+        "top-down": 7,
+        "own only": 3
+      }
+    },
+    "definition": {
+      "top-down": "opened its own row before prelude or an exemplar",
+      "bottom-up": "opened prelude or an exemplar proof first",
+      "own only": "never opened a shared file for that row"
+    },
+    "coverage_note": "Per-row attribution is recoverable for 21 of 50 rows. The agents worked almost entirely through Bash -- 10 Read calls across all three for 50 rows -- so a row and a shared file often appear in one command and their order within it is not observable. per_slice_order does not depend on that attribution and covers every call."
   },
   "open_decisions": [
     "DECIDED 2026-09-17: value counts as a parameter. COMPLEXITY.md \u00a7 1.",

@@ -1,0 +1,75 @@
+{
+  "per_row": {
+    "61_295": "top-down",
+    "499_359": "top-down",
+    "1582_118": "own only",
+    "1484_26": "own only",
+    "2188_359": "top-down",
+    "450_276": "own only",
+    "1878_29": "top-down",
+    "2589_115": "top-down",
+    "2105_248": "top-down",
+    "2217_247": "top-down",
+    "514_140": "top-down",
+    "457_27": "top-down",
+    "661_47": "top-down",
+    "1453_483": "own only",
+    "1892_121": "own only",
+    "2235_384": "top-down",
+    "945_255": "own only",
+    "603_284": "top-down",
+    "2128_34": "top-down",
+    "2607_90": "top-down",
+    "2942_42": "top-down"
+  },
+  "tally": {
+    "top-down": 15,
+    "own only": 6
+  },
+  "per_slice_order": {
+    "a": {
+      "tool_calls": 124,
+      "prelude_opens": 25,
+      "verifier_calls": 33,
+      "first_prelude_at": 3,
+      "first_row_touch_at": 2,
+      "prelude_before_any_row": false
+    },
+    "b": {
+      "tool_calls": 103,
+      "prelude_opens": 21,
+      "verifier_calls": 30,
+      "first_prelude_at": 7,
+      "first_row_touch_at": 2,
+      "prelude_before_any_row": false
+    },
+    "c": {
+      "tool_calls": 149,
+      "prelude_opens": 24,
+      "verifier_calls": 32,
+      "first_prelude_at": 4,
+      "first_row_touch_at": 3,
+      "prelude_before_any_row": false
+    }
+  },
+  "by_slice": {
+    "a": {
+      "top-down": 3,
+      "own only": 2
+    },
+    "b": {
+      "own only": 1,
+      "top-down": 5
+    },
+    "c": {
+      "top-down": 7,
+      "own only": 3
+    }
+  },
+  "definition": {
+    "top-down": "opened its own row before prelude or an exemplar",
+    "bottom-up": "opened prelude or an exemplar proof first",
+    "own only": "never opened a shared file for that row"
+  },
+  "coverage_note": "Per-row attribution is recoverable for 21 of 50 rows. The agents worked almost entirely through Bash -- 10 Read calls across all three for 50 rows -- so a row and a shared file often appear in one command and their order within it is not observable. per_slice_order does not depend on that attribution and covers every call."
+}

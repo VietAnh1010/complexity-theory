@@ -317,6 +317,11 @@ def main():
         },
 
         "callgraph": callgraph(depth),
+        "corpus_stats": (json.loads((DATA / "corpus_stats.json").read_text())
+                         if (DATA / "corpus_stats.json").exists() else None),
+        "exploration": (json.loads(
+            (HERE / "batches/prove-sample/exploration.json").read_text())
+            if (HERE / "batches/prove-sample/exploration.json").exists() else None),
 
         "open_decisions": [
             "DECIDED 2026-09-17: value counts as a parameter. COMPLEXITY.md § 1.",
