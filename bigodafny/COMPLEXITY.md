@@ -43,6 +43,37 @@ independent of any backend:
 
 `array<T>` is absent because the corpus is. Two rows keep one; see the appendix.
 
+### Value is a parameter, not a constant
+
+**Decided 2026-09-17.** When a loop's trip count comes from the *value* of an
+input rather than the *size* of the input, **the value counts**. It enters the
+bound as its own parameter; it is not absorbed into the constant because the
+problem statement happens to cap it.
+
+    binary search over v        ->  O(log v),      not O(1)
+    IntToString(n)              ->  O(log n),      not O(1)
+    a loop `while i < r`        ->  O(r),          not O(1)
+    comparing strings of length L  ->  O(L) per comparison
+
+**Why.** A competitive-programming statement caps values — `n <= 1e9`,
+`x <= 1e18`. Treating a capped value as constant is formally defensible: the
+cost is bounded, so it is `O(1)`. But the hidden constant is then around 30 for
+a binary search and around 60 for a 64-bit digit loop, and a label whose
+constant is 60 tells a reader nothing about how the program behaves. The point
+of a complexity label is to predict growth. A convention that reports `O(1)`
+for work that visibly scales with the input has stopped predicting anything.
+
+**What this costs.** BigOBench's labels were fitted by profiling, which
+implicitly treats a capped value as constant, so our convention and theirs
+disagree wherever a value-bounded loop appears. That disagreement is a finding
+about the label, recorded per row; it is never a reason to weaken a proof.
+
+**What it buys.** The two rows that previously admitted no bound at all now
+admit one, because the value they are bounded by is now an available parameter.
+
+`batches/prove-sample/value_vs_size_decision.jsonl` records the six rows this
+decision was made on and what changed for each.
+
 ### Why stipulated and not measured
 
 Every entry above was once justified by reading

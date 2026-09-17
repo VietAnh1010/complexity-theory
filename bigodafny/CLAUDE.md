@@ -18,15 +18,15 @@ it means and how a row leaves it. A row is in exactly one.
 
 | directory | rows | why it is not simply clean |
 |---|---|---|
-| `solutions/` | 354 | — it is |
+| `solutions/` | 350 | — it is |
 | `solutions-unscreened/` | 127 | its label was never screened |
-| `solutions-disputed/` | 152 | the audit says its label does not match its code |
+| `solutions-disputed/` | 156 | the audit says its label does not match its code |
 | `solutions-unverified/` | 3 | `dafny verify` cannot discharge its safety obligations |
 | `solutions-untranslated/` | 4 | it will not be translated; the file says why |
 
 `solutions-proved/` is **not** part of that partition — it holds instrumented
-copies (33 files, 2 of them tight-bound variants under `nlogn/`) of rows that
-also live above. A row can exist in two places with different preconditions;
+copies (73 files over 71 rows, 2 of them tight-bound variants under `nlogn/`)
+of rows that also live above. A row can exist in two places with different preconditions;
 `precheck.py`'s `find_all` exists for that.
 
 Older notes use the old names: `solutions-inexact/` → `solutions-unscreened/`,
@@ -110,6 +110,21 @@ while fixing a real `sys.stdin.buffer` defect in the same edit. The fix was
 kept; the budget cut was reverted. Slow rows would have been marked
 `python-failed` and dropped out of the comparison, so the gate would have passed
 more rows by checking fewer.
+
+## Value counts as a parameter
+
+**Decided 2026-09-17.** A loop bounded by an input *value* is not constant. The
+value enters the bound as its own parameter — `O(log v)` for a binary search
+over `v`, `O(r)` for `while i < r`, `O(L)` for a per-character comparison.
+
+Treating a capped value as `O(1)` is formally defensible and practically
+useless: the hidden constant is then 30 to 60, and a label with a constant that
+size predicts nothing about growth. `COMPLEXITY.md` § 1 is the authority.
+
+BigOBench fitted its labels by profiling, which assumes the opposite, so the two
+disagree wherever a value-bounded loop appears. Four rows moved to
+`solutions-disputed/` on that basis; `batches/prove-sample/value_vs_size_decision.jsonl`
+records them and the two rows the decision unblocked.
 
 ## The cost model is stipulated, not measured
 

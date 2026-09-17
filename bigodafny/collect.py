@@ -319,10 +319,10 @@ def main():
         "callgraph": callgraph(depth),
 
         "open_decisions": [
-            "value-vs-size convention, 12 rows, named in solutions-disputed/README.md",
+            "DECIDED 2026-09-17: value counts as a parameter. COMPLEXITY.md § 1.",
             "what `differs`-by-timeout-only should mean (1501_224)",
             "whether the 6 ungateable rows belong in solutions/",
-            "10 rows use `decreases *`; their termination is not proved",
+            "rows using `decreases *` do not prove termination",
         ],
     }
 

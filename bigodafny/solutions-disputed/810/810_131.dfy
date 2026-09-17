@@ -1,3 +1,34 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n)
+//   audited class  : O(n log v)
+//   cause          : label
+//   confidence     : high
+//   auditor        : value-vs-size convention, 2026-09-17
+//
+//   The label disagrees with the code under the value-versus-size
+//   convention. BigOBench fitted its labels by profiling, which treats a
+//   capped input value as constant; COMPLEXITY.md section 1 decides the
+//   opposite. This row is where the two disagree.
+//
+//   evidence:
+//     The label omits a value-derived factor. IntSqrt binary-searches
+//     over the value a*b rather than over the query count, so each query
+//     costs log of that value. Under the convention decided 2026-09-17 a
+//     loop bounded by an input VALUE counts as a parameter, so the true
+//     class carries a log v factor that O(n) does not.
+//
+//   how this label could be wrong, and what to check:
+//     Open the Dafny and confirm IntSqrt's loop bound is derived from
+//     the argument's magnitude, not from |pairs|. If it is, O(n)
+//     understates the cost by exactly that factor. The proof in
+//     solutions-proved/810/810_131.dfy already states the correct bound
+//     and is unaffected by this move.
+//
+//   note: the translation is NOT at fault in any of these four rows. The
+//   proof in solutions-proved/ is correct and stays there.
+// --------------------------------------------------------------------
+
 // p03388 AtCoder Beginner Contest 093 - Worst Case  (problem 810, solution 810_131)
 // time complexity: O(n)
 // python exact-diff baseline: exact

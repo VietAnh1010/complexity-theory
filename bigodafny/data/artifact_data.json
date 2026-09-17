@@ -1,6 +1,6 @@
 {
-  "generated": "2026-09-16T18:32:49+00:00",
-  "commit": "65ef4e0",
+  "generated": "2026-09-17T05:06:11+00:00",
+  "commit": "475ac75",
   "branch": "claude/bigobench-python-dafny-dataset-ts4tm5",
   "toolchain": {
     "dafny": "4.11.0",
@@ -10,8 +10,8 @@
     "rows": 640,
     "problems": 311,
     "directories": {
-      "solutions": 354,
-      "solutions-disputed": 152,
+      "solutions": 350,
+      "solutions-disputed": 156,
       "solutions-proved": 73,
       "solutions-unscreened": 127,
       "solutions-untranslated": 4,
@@ -2486,9 +2486,9 @@
     "search_truncated": 0
   },
   "open_decisions": [
-    "value-vs-size convention, 12 rows, named in solutions-disputed/README.md",
+    "DECIDED 2026-09-17: value counts as a parameter. COMPLEXITY.md \u00a7 1.",
     "what `differs`-by-timeout-only should mean (1501_224)",
     "whether the 6 ungateable rows belong in solutions/",
-    "10 rows use `decreases *`; their termination is not proved"
+    "rows using `decreases *` do not prove termination"
   ]
 }

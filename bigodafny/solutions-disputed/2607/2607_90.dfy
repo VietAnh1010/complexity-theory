@@ -1,3 +1,31 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n)
+//   audited class  : O(n + (hi - lo))
+//   cause          : label
+//   confidence     : high
+//   auditor        : value-vs-size convention, 2026-09-17
+//
+//   The label disagrees with the code under the value-versus-size
+//   convention. BigOBench fitted its labels by profiling, which treats a
+//   capped input value as constant; COMPLEXITY.md section 1 decides the
+//   opposite. This row is where the two disagree.
+//
+//   evidence:
+//     A third loop's range comes straight from input values, with no
+//     requires tying it to n. The proved bound is 6*n + 400 + 4*max(0,
+//     intervals[0][1] - intervals[0][0]); the trailing term is invisible
+//     to the O(n) label.
+//
+//   how this label could be wrong, and what to check:
+//     Confirm the third loop's bounds are read from intervals[0] rather
+//     than derived from |intervals|. If they are, no bound in n alone
+//     covers it.
+//
+//   note: the translation is NOT at fault in any of these four rows. The
+//   proof in solutions-proved/ is correct and stays there.
+// --------------------------------------------------------------------
+
 // 397_A. On Segment's Own Points  (problem 2607, solution 2607_90)
 // time complexity: O(n)
 // python exact-diff baseline: exact

@@ -1,6 +1,6 @@
 # `solutions-disputed/` — label audit review queue
 
-152 rows whose stated complexity label does not describe what the code costs.
+156 rows whose stated complexity label does not describe what the code costs.
 **Queued for manual review; nothing here is a decision.** Each file keeps its
 full original body with a header naming the audited class, the cause, the
 confidence and the evidence, so a reviewer needs nothing else open.
@@ -243,3 +243,32 @@ exchange for a cost the axioms already grant `seq`.
 `s[i := v]` are each charged `1`, with no side condition about reading the
 accumulator. `COMPLEXITY.md` § 1 is the model; its appendix is where these
 timings belong.
+
+## Four rows arrived on 2026-09-17, and they are a different kind of dispute
+
+`810_131`, `1484_26`, `2381_156`, `2607_90`.
+
+Every other row here is disputed because an audit read the code and disagreed
+with the label. These four are disputed because **a convention was decided**
+and the label fell on the other side of it.
+
+A loop bounded by an input *value* now counts: the value is a parameter of the
+bound, not a constant absorbed because the problem statement caps it. The
+reasoning is that a capped value hides a constant of roughly 30 to 60, and a
+label carrying a constant that size has stopped predicting growth, which is the
+only thing a label is for. `COMPLEXITY.md` § 1 states it in full.
+
+| row | label | class under the convention |
+|---|---|---|
+| `810_131` | `O(n)` | `O(n log v)` — binary search over the value `a*b` |
+| `1484_26` | `O(n)` | `O(n * L)` — string comparison costs per character |
+| `2381_156` | `O(1)` | `O(log n)` — `IntToString` costs the digit count |
+| `2607_90` | `O(n)` | `O(n + (hi - lo))` — loop range read from input values |
+
+**The translations are not at fault and their proofs are correct.** Each proof
+stays in `solutions-proved/` and states the bound with the value term in it.
+What is in dispute is only whether BigOBench's label describes that bound.
+
+Resolving these four means changing the label, never the code. That makes them
+the cleanest `cause: label` rows in the directory — the disagreement is fully
+explained and there is nothing to re-measure.

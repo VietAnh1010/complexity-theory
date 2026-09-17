@@ -1,6 +1,6 @@
 # `solutions/` — the screened corpus
 
-354 rows. **"Clean" is not the same as "every guarantee holds"**; the two
+350 rows. **"Clean" is not the same as "every guarantee holds"**; the two
 sections below name 7 rows where it does not, and safety is only partly done.
 Read those before treating this directory as a certified set.
 
@@ -20,12 +20,10 @@ A row is here when all three hold:
 
 | | rows | |
 |---|---|---|
-| passes its own gate | 347 | 298 `valid` (strict) + 49 `agrees` (loose) |
+| passes its own gate | 343 | 298 `valid` (strict) + 49 `agrees` (loose) |
 | **cannot be gated** | 6 | the harness cannot feed them; see below |
 | **fails its gate on speed** | 1 | `1501_224`, timeouts only, zero wrong answers |
-| `dafny verify` clean | 240 | |
-| `dafny verify` fails | 8 | `1332_16`, `1501_177`, `1678_68`, `1717_238`, `1935_61`, `1950_45`, `1950_47`, `457_38` |
-| `dafny verify` never run | 106 | |
+| `dafny verify` clean | **350 — all of them** | 344 also prove termination; 6 carry `decreases *` |
 | verdict `unsure`, not `ok` | 7 | `2254_143`, `1243_0`, `1364_161`, `1950_45`, `2282_16`, `2128_34`, `1578_724` |
 
 Nothing here is *proved* to meet its label. That claim needs a ghost step
@@ -96,3 +94,17 @@ One method `Solve`, whose signature comes from the row's `dataclass_code` via
 `signature.py`. The Python source is in the header comment, verbatim.
 `data/call_depth.jsonl` records how deep each row's call chain runs — the
 median row is two calls from `Solve`.
+
+## Four rows left on 2026-09-17
+
+`810_131`, `1484_26`, `2381_156` and `2607_90` moved to `solutions-disputed/`.
+Not because anything is wrong with them — each passes its gate, verifies, and
+carries a correct proof that stays in `solutions-proved/`.
+
+They moved because the **value-versus-size convention was decided**: a loop
+bounded by an input value counts, and the value is a parameter of the bound.
+`COMPLEXITY.md` § 1 is the authority. Under it, each of those four labels
+omits a term the code actually pays, so the label no longer describes the row.
+
+The translation is faithful in all four. The disagreement is with BigOBench's
+label, which was fitted by profiling and assumes the opposite convention.
