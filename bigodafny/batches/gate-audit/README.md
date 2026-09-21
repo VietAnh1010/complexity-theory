@@ -80,6 +80,22 @@ What `differs`-by-timeout-only should mean was already an open question in
 `collect.py`. It is a question about the gate's status vocabulary, not about
 this row, and it is left open.
 
+## Correction: the pipeline already knew
+
+`dataset.py`'s `parser_ok` runs the problem's own `from_str` over every stored
+test and marks a row **`unvalidatable`** when it raises, or when a `real`
+argument does not survive the float round-trip. It names exactly these six
+rows, with the same two causes, and has done since it was written.
+
+So `control.py` confirmed an existing classification; it did not discover one.
+Its worth is the per-test detail and the independent path to the same answer.
+
+The actual defect was in `sample.py`: it read `validation.jsonl` and
+`difftest.jsonl` directly instead of `dataset.jsonl`'s `split`, so a row the
+pipeline had already called `unvalidatable` came back as "no gate result on
+file" — a fact about the file, not about the row. Fixed: the sampler now reads
+the split.
+
 ## Files
 
 | file | what it is |

@@ -31,6 +31,12 @@ UNTRANSLATED = ROOT / "solutions-untranslated"
 # carry a label. (was solutions-tofix/ -- under the cost axioms most of these
 # need no fix at all, so "tofix" overstated the verdict.)
 DISPUTED = ROOT / "solutions-disputed"
+# The gate cannot reach a verdict. Not "the translation failed" -- the stored
+# test data fails first, so there is no evidence to be had: a test the
+# problem's own Input.from_str rejects, or one where the row's own Python does
+# not finish. Every gate still runs on these rows and they still carry a label;
+# what is missing is the answer, not the row. See solutions-ungateable/README.md.
+UNGATEABLE = ROOT / "solutions-ungateable"
 
 # --- The proof overlay ----------------------------------------------------
 # NOT part of the partition: an instrumented *copy* of a row that also lives in

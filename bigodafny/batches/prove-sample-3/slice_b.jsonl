@@ -1,0 +1,17 @@
+{"solution_id": "1047_26", "path": "solutions/1047/1047_26.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "1168_24", "path": "solutions/1168/1168_24.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "1453_211", "path": "solutions/1453/1453_211.dfy", "label": "O(nlogn)", "split": "strict", "gate": "valid"}
+{"solution_id": "171_0", "path": "solutions/171/171_0.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "1944_50", "path": "solutions/1944/1944_50.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "2282_16", "path": "solutions/2282/2282_16.dfy", "label": "O(n**2)", "split": "strict", "gate": "valid"}
+{"solution_id": "2394_227", "path": "solutions/2394/2394_227.dfy", "label": "O(n)", "split": "loose", "gate": "agrees"}
+{"solution_id": "2436_325", "path": "solutions/2436/2436_325.dfy", "label": "O(n+m)", "split": "loose", "gate": "agrees"}
+{"solution_id": "2725_140", "path": "solutions/2725/2725_140.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "2773_68", "path": "solutions/2773/2773_68.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "2913_309", "path": "solutions/2913/2913_309.dfy", "label": "O(n**2)", "split": "loose", "gate": "agrees"}
+{"solution_id": "2942_55", "path": "solutions/2942/2942_55.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "305_76", "path": "solutions/305/305_76.dfy", "label": "O(nlogn+mlogm)", "split": "strict", "gate": "valid"}
+{"solution_id": "433_16", "path": "solutions/433/433_16.dfy", "label": "O(n+m)", "split": "strict", "gate": "valid"}
+{"solution_id": "459_146", "path": "solutions/459/459_146.dfy", "label": "O(1)", "split": "strict", "gate": "valid"}
+{"solution_id": "662_527", "path": "solutions/662/662_527.dfy", "label": "O(n)", "split": "loose", "gate": "agrees"}
+{"solution_id": "89_909", "path": "solutions/89/89_909.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}

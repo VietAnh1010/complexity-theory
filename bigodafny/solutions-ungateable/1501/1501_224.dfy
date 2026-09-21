@@ -1,3 +1,18 @@
+// GATE INAPPLICABLE -- `difftest.py` cannot reach a verdict on this row.
+//
+//   tests stored    : 122
+//   comparable      : 93    (29 are python-failed: the row's own Python does
+//                            not finish, so there is nothing to compare against)
+//   agree           : 77
+//   disagree        : 0     no test produces a different answer
+//   timeout         : 16
+//   recorded status : `differs`, because difftest.py requires agree ==
+//                     comparable and 16 tests time out
+//   re-measured     : 2026-09-21, 39 minutes, reproduced the stored record
+//                     exactly -- see batches/gate-audit/difftest_1501_224.json
+//   record          : data/gate_ungateable.jsonl
+//   filed           : solutions-ungateable/, 2026-09-21
+//
 // 1177_A. Digits Sequence (Easy Edition)  (problem 1501, solution 1501_224)
 // time complexity: O(n)
 // python exact-diff baseline: partial

@@ -1,4 +1,4 @@
-// GATE EXEMPT -- `validate.py` records `fail`; the translation is not at fault.
+// GATE INAPPLICABLE -- `validate.py` cannot reach a verdict on this row.
 //
 //   tests stored    : 8
 //   runnable        : 1    (Dafny passes it)
@@ -10,7 +10,8 @@
 //   control         : batches/gate-audit/control.py, 2026-09-21 -- the original
 //                     Python through the same dataclass round-trip also passes
 //                     1 and cannot run the other 7
-//   record          : data/gate_exempt.jsonl
+//   record          : data/gate_ungateable.jsonl
+//   filed           : solutions-ungateable/, 2026-09-21
 //
 // 1236_A. Stones  (problem 1578, solution 1578_481)
 // time complexity: O(n)

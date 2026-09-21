@@ -1,6 +1,6 @@
 # `solutions/` — the screened corpus
 
-348 rows. **"Clean" is not the same as "every guarantee holds"**; the two
+343 rows. **"Clean" is not the same as "every guarantee holds"**; the two
 sections below name 7 rows where it does not, and safety is only partly done.
 Read those before treating this directory as a certified set.
 
@@ -23,7 +23,7 @@ A row is here when all three hold:
 | passes its own gate | 343 | 298 `valid` (strict) + 49 `agrees` (loose) |
 | **cannot be gated** | 6 | the harness cannot feed them; see below |
 | **fails its gate on speed** | 1 | `1501_224`, timeouts only, zero wrong answers |
-| `dafny verify` clean | **348 — all of them** | 338 also prove termination; 10 carry `decreases *` |
+| `dafny verify` clean | **343 — all of them** | 333 also prove termination; 10 carry `decreases *` |
 | verdict `unsure`, not `ok` | 7 | `2254_143`, `1243_0`, `1364_161`, `1950_45`, `2282_16`, `2128_34`, `1578_724` |
 
 Nothing here is *proved* to meet its label. That claim needs a ghost step
@@ -109,19 +109,14 @@ omits a term the code actually pays, so the label no longer describes the row.
 The translation is faithful in all four. The disagreement is with BigOBench's
 label, which was fitted by profiling and assumes the opposite convention.
 
-## Four rows fail `validate.py` and belong here anyway
+## Every row here has a gate that said yes
 
-`1196_100`, `1196_51`, `1578_481` and `1578_724` are recorded `fail`. Each
-passes every test that can be **run**; the rest are rejected by the problem's
-own `Input.from_str` before either the Python or the Dafny executes. 1578's
-dataclass asserts every matrix row has length `n` where the problem's rows
-always hold 3 columns; 1196 has two stored tests declaring `n = 4` over three
-text lines.
+That was not true until 2026-09-21. Seven rows sat here with no passing gate
+result on file. Four of them passed every test that could be **run** — the rest
+of their tests are rejected by the problem's own `Input.from_str` before
+anything executes — and for a while they stayed, marked exempt.
 
-Each file says so in a `GATE EXEMPT` header, `data/gate_exempt.jsonl` is the
-record, and `batches/gate-audit/` has the control that established it — the
-original Python run through the same dataclass round-trip, which fails in
-exactly the same places.
-
-`validate.py` was not changed. A gate that is relaxed until the rows pass has
-stopped measuring anything.
+They no longer do. A row whose gate cannot reach a verdict now lives in
+`solutions-ungateable/`, so membership here means one thing with no footnote:
+the gate ran and said yes. `batches/gate-audit/` has the evidence, and
+`validate.py` was never modified to make any row fit.

@@ -12,7 +12,8 @@ from __future__ import annotations
 import re, shutil, subprocess, sys
 
 from common import (DAFNY_VERSION, DATA, UNSCREENED, PROVED_NLOGN, SOLUTIONS, UNVERIFIED,
-                    PROVED, event, log, read_jsonl, write_jsonl, DISPUTED)
+                    PROVED, event, log, read_jsonl, write_jsonl, DISPUTED,
+                    UNGATEABLE)
 
 DAFNY = shutil.which("dafny") or "/root/.dotnet/tools/dafny"
 SOLVER = shutil.which("z3") or "/usr/local/bin/z3"
@@ -32,7 +33,7 @@ def scan_assumes():
     grepped solutions-unverified/.
     """
     hits = []
-    for d in (SOLUTIONS, UNVERIFIED, UNSCREENED, PROVED, DISPUTED):
+    for d in (SOLUTIONS, UNVERIFIED, UNSCREENED, PROVED, DISPUTED, UNGATEABLE):
         if not d.exists():
             continue
         for f in sorted(d.rglob("*.dfy")):

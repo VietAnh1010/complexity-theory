@@ -44,10 +44,10 @@ the count, do not silently drop it. `batches/gate-audit/` is what came of the
 first such report: four of seven rows turned out to pass every test that could
 be run, and their `fail` was produced by the problem's own dataclass.
 
-A row listed in `data/gate_exempt.jsonl` counts as passing, with `gate` set to
-`exempt`. That file carries the per-row reason and the control that
-established it. **Never make a row eligible by editing a gate** — a gate may
-not be relaxed by the work it judges.
+A row whose gate cannot reach a verdict at all now lives in
+`solutions-ungateable/`, outside the pool by construction, with the evidence in
+`data/gate_ungateable.jsonl`. **Never make a row eligible by editing a gate** —
+a gate may not be relaxed by the work it judges.
 
 ### 2. Write the brief
 

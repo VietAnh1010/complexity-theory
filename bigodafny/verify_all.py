@@ -15,7 +15,7 @@ from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
-from common import (DATA, UNSCREENED, ROOT, SOLUTIONS, event, log, write_json,
+from common import (DATA, UNSCREENED, ROOT, SOLUTIONS, UNGATEABLE, event, log, write_json,
                     write_jsonl)
 
 DAFNY = shutil.which("dafny") or "/root/.dotnet/tools/dafny"
@@ -113,5 +113,8 @@ if __name__ == "__main__":
     ap.add_argument("--unscreened", action="store_true",
                     help="also verify solutions-unscreened/")
     a = ap.parse_args()
-    dirs = [SOLUTIONS] + ([UNSCREENED] if a.unscreened else [])
+    # solutions-ungateable/ rows are translated and were verified while they
+    # still sat in solutions/. Leaving them out of the sweep would drop their
+    # safety record silently, which is how a directory becomes a blind spot.
+    dirs = [SOLUTIONS, UNGATEABLE] + ([UNSCREENED] if a.unscreened else [])
     run([d for d in dirs if d.exists()], workers=a.workers, move=a.move)

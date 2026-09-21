@@ -13,7 +13,7 @@ import sys
 from pathlib import Path
 
 from common import (DATA, UNSCREENED, SOLUTIONS, UNTRANSLATED, UNVERIFIED,
-                    PROVED, event, log, read_jsonl)
+                    PROVED, DISPUTED, UNGATEABLE, event, log, read_jsonl)
 
 STUB_BODY = '  output := ""; // TODO: translate the Python above\n'
 
@@ -60,9 +60,15 @@ def scaffold(force=False):
         # A translated row may have been moved out of solutions/ by the
         # discrimination step. Checking only SOLUTIONS once recreated 274 stubs
         # that shadowed real translations living in the other directories.
+        #
+        # This must list EVERY directory of the partition, plus the proof
+        # overlay. DISPUTED was missing, so a run would have shadowed 158 real
+        # translations with fresh stubs -- the same defect as the 274, caught
+        # before it fired. UNGATEABLE was added with the directory.
         name = f"{t['solution_id']}.dfy"
         existing = next((d / t["problem_id"] / name
-                         for d in (SOLUTIONS, UNSCREENED, UNVERIFIED, PROVED, UNTRANSLATED)
+                         for d in (SOLUTIONS, UNSCREENED, UNVERIFIED, PROVED,
+                                   UNTRANSLATED, DISPUTED, UNGATEABLE)
                          if (d / t["problem_id"] / name).exists()), None)
         if existing is not None and not force:
             kept += 1

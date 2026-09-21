@@ -13,14 +13,15 @@ Builds a Python -> Dafny translation dataset from BigOBench's
 
 ## Where a row lives
 
-Five directories partition all 640 rows; each carries a `README.md` saying what
+Six directories partition all 640 rows; each carries a `README.md` saying what
 it means and how a row leaves it. A row is in exactly one.
 
 | directory | rows | why it is not simply clean |
 |---|---|---|
-| `solutions/` | 348 | — it is |
+| `solutions/` | 343 | — it is |
 | `solutions-unscreened/` | 127 | its label was never screened |
 | `solutions-disputed/` | 158 | the audit says its label does not match its code |
+| `solutions-ungateable/` | 5 | its gate cannot reach a verdict; the test data fails first |
 | `solutions-unverified/` | 3 | `dafny verify` cannot discharge its safety obligations |
 | `solutions-untranslated/` | 4 | it will not be translated; the file says why |
 
@@ -115,10 +116,21 @@ cannot tell them apart.
 `batches/gate-audit/control.py` is the missing control: it runs the **original
 Python** through the same round-trip. A test the round-trip cannot parse, or
 one the Python then fails, is evidence about the harness, not the translation.
-Four rows in `solutions/` are recorded `fail` for exactly that reason and pass
-every test that can be run; `data/gate_exempt.jsonl` names them, each file
-carries a `GATE EXEMPT` header, and **`validate.py` was not touched**. A gate
-relaxed until the rows pass has stopped measuring anything.
+
+Five rows turned out that way and now live in `solutions-ungateable/`, with
+`data/gate_ungateable.jsonl` as the record and a `GATE INAPPLICABLE` header in
+each file.
+
+`dataset.py`'s `parser_ok` already marked four of them **`unvalidatable`** —
+it runs `from_str` over every stored test and fails a row when it raises or
+when a `real` argument does not survive the float round-trip. Read that split
+before concluding a row has "no gate result"; a tool that reads
+`validation.jsonl` directly will report the absence as if it were a finding.
+
+**Neither gate was touched.** A gate relaxed until the rows pass has stopped
+measuring anything, so the rows moved instead: `solutions/` keeps
+meaning "the gate says yes", and a row whose gate can say nothing is filed as
+exactly that.
 
 **Neither gate may be edited by an agent whose work it judges.** An agent
 lowered difftest's per-test budget for the reference Python from 30s to 10s

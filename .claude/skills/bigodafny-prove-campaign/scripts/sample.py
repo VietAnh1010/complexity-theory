@@ -11,7 +11,8 @@ A row is eligible when all three hold:
   * its `.dfy` lives in `solutions/` (the clean partition),
   * `data/index.jsonl` gives it a time-complexity label,
   * it passes its own gate -- `validate.py` says `valid` for a strict row,
-    `difftest.py` says `agrees` for a loose row,
+    `difftest.py` says `agrees` for a loose row, and `dataset.py` has not
+    marked it `unvalidatable`,
 
 and it has no proof overlay in `solutions-proved/`.
 
@@ -71,11 +72,12 @@ def main():
     }
     validation = load_jsonl(os.path.join(repo, "data/validation.jsonl"))
     difftest = load_jsonl(os.path.join(repo, "data/difftest.jsonl"))
-    # A row whose gate result is negative for a reason that is not the
-    # translation's fault -- a stored test the problem's own Input.from_str
-    # cannot parse, say. The gate still reports `fail`; this file records why
-    # that reading is wrong, per row, with the control that established it.
-    exempt = load_jsonl(os.path.join(repo, "data/gate_exempt.jsonl"))
+    # dataset.py already decides which gate a row gets, and marks the rows no
+    # gate can judge `unvalidatable` -- its `parser_ok` runs the problem's own
+    # from_str over every stored test. Read that rather than re-deriving it:
+    # reading validation.jsonl alone reports such a row as "gate missing",
+    # which is a fact about the file, not about the row.
+    dataset = load_jsonl(os.path.join(repo, "data/dataset.jsonl"))
 
     solutions = dfy_files(os.path.join(repo, "solutions"))
     # solutions-proved/ is an overlay over the partition, not a member of it.
@@ -93,14 +95,16 @@ def main():
             skipped["no-label"] += 1
             excluded.append({"solution_id": sid, "why": "no-label"})
             continue
-        if sid in difftest:
-            split, gate = "loose", difftest[sid].get("status")
+        split = dataset.get(sid, {}).get("split")
+        if split == "unvalidatable":
+            gate, ok = None, False
+        elif split == "loose":
+            gate = difftest.get(sid, {}).get("status")
             ok = gate == "agrees"
         else:
-            split, gate = "strict", validation.get(sid, {}).get("status")
+            split = split or "strict"
+            gate = validation.get(sid, {}).get("status")
             ok = gate == "valid"
-        if not ok and sid in exempt:
-            gate, ok = "exempt", True
         if not ok:
             # A row in solutions/ whose latest recorded gate result is negative
             # or missing. Not drawn, and not dropped silently either.

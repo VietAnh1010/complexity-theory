@@ -298,11 +298,17 @@ def main():
         },
 
         "verification": {
-            "scope": "solutions/",
+            # The sweep covers solutions-ungateable/ as well, since those rows
+            # are translated and their safety record would otherwise vanish
+            # when they left solutions/. Reported apart, because a safety
+            # result and a behaviour result are different claims.
+            "scope": "solutions/ and solutions-ungateable/",
             "total": len(ver),
             "verified": sum(r["verified"] for r in ver.values()),
             "fully_verified_incl_termination": len(fully),
             "termination_opt_out": optout,
+            "by_directory": dict(Counter(
+                r["path"].split("/")[0] for r in ver.values())),
             "failing": sorted(s for s, r in ver.items() if not r["verified"]),
             "failure_kinds": dict(Counter(
                 r["kind"] for r in ver.values() if not r["verified"])),
