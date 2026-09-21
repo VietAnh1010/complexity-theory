@@ -353,9 +353,12 @@ def main():
 
         "open_decisions": [
             "DECIDED 2026-09-17: value counts as a parameter. COMPLEXITY.md § 1.",
-            "what `differs`-by-timeout-only should mean (1501_224)",
-            "whether the 7 rows in solutions/ with no passing gate result on "
-            "file belong there (prove-sample-2/excluded.jsonl)",
+            "what `differs`-by-timeout-only should mean (1501_224): 77 of 93 "
+            "comparable tests agree, 16 time out, and NO test disagrees",
+            "RESOLVED 2026-09-21: of the 7 rows with no passing gate result, "
+            "4 pass every runnable test and are exempt (data/gate_exempt.jsonl), "
+            "2 moved to solutions-disputed/, 1 remains open. "
+            "batches/gate-audit/README.md",
             "rows using `decreases *` do not prove termination",
         ],
     }

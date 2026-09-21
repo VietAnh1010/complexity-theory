@@ -71,6 +71,11 @@ def main():
     }
     validation = load_jsonl(os.path.join(repo, "data/validation.jsonl"))
     difftest = load_jsonl(os.path.join(repo, "data/difftest.jsonl"))
+    # A row whose gate result is negative for a reason that is not the
+    # translation's fault -- a stored test the problem's own Input.from_str
+    # cannot parse, say. The gate still reports `fail`; this file records why
+    # that reading is wrong, per row, with the control that established it.
+    exempt = load_jsonl(os.path.join(repo, "data/gate_exempt.jsonl"))
 
     solutions = dfy_files(os.path.join(repo, "solutions"))
     # solutions-proved/ is an overlay over the partition, not a member of it.
@@ -94,6 +99,8 @@ def main():
         else:
             split, gate = "strict", validation.get(sid, {}).get("status")
             ok = gate == "valid"
+        if not ok and sid in exempt:
+            gate, ok = "exempt", True
         if not ok:
             # A row in solutions/ whose latest recorded gate result is negative
             # or missing. Not drawn, and not dropped silently either.

@@ -40,7 +40,14 @@ is sorted before sampling, so seed plus corpus state reproduces the draw.
 
 `excluded.jsonl` is not noise. A row sitting in `solutions/` whose latest
 recorded gate result is negative or missing is a real inconsistency — report
-the count, do not silently drop it.
+the count, do not silently drop it. `batches/gate-audit/` is what came of the
+first such report: four of seven rows turned out to pass every test that could
+be run, and their `fail` was produced by the problem's own dataclass.
+
+A row listed in `data/gate_exempt.jsonl` counts as passing, with `gate` set to
+`exempt`. That file carries the per-row reason and the control that
+established it. **Never make a row eligible by editing a gate** — a gate may
+not be relaxed by the work it judges.
 
 ### 2. Write the brief
 

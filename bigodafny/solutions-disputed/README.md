@@ -1,6 +1,6 @@
 # `solutions-disputed/` — label audit review queue
 
-156 rows whose stated complexity label does not describe what the code costs.
+158 rows whose stated complexity label does not describe what the code costs.
 **Queued for manual review; nothing here is a decision.** Each file keeps its
 full original body with a header naming the audited class, the cause, the
 confidence and the evidence, so a reviewer needs nothing else open.
@@ -272,3 +272,19 @@ What is in dispute is only whether BigOBench's label describes that bound.
 Resolving these four means changing the label, never the code. That makes them
 the cleanest `cause: label` rows in the directory — the disagreement is fully
 explained and there is nothing to re-measure.
+
+## Two rows are here for the code, not the label
+
+`1950/1950_45.dfy` and `1950/1950_47.dfy` carry a `TRANSLATION AUDIT` header
+rather than a `LABEL AUDIT` one. What is disputed is the translation.
+
+Their problem's `Input` dataclass types the coefficient as `float` while the
+inputs carry up to 100 significant digits, so 19 of 42 stored tests fail for
+the **original Python** too once routed through it. No translation can exceed
+23/42. The Dafny passes 7 and 19 of those 23, so there are at least 16 and 4
+genuine failures on top of the harness defect: both cap the fractional part at
+12 digits where the Python uses `Decimal`.
+
+To leave, they need 23/23 on the runnable tests and an entry in
+`data/gate_exempt.jsonl` for the other 19. `batches/gate-audit/` has the
+evidence.

@@ -18,9 +18,9 @@ it means and how a row leaves it. A row is in exactly one.
 
 | directory | rows | why it is not simply clean |
 |---|---|---|
-| `solutions/` | 350 | — it is |
+| `solutions/` | 348 | — it is |
 | `solutions-unscreened/` | 127 | its label was never screened |
-| `solutions-disputed/` | 156 | the audit says its label does not match its code |
+| `solutions-disputed/` | 158 | the audit says its label does not match its code |
 | `solutions-unverified/` | 3 | `dafny verify` cannot discharge its safety obligations |
 | `solutions-untranslated/` | 4 | it will not be translated; the file says why |
 
@@ -103,6 +103,22 @@ where the stored output does not.
 Consequence for how loose rows are translated: **be literal**. Where the Python
 picks arbitrarily among valid answers -- which one, what order, which index --
 reproduce that exact choice. A tidier answer is a failure. Reproduce bugs too.
+
+## A gate result can be wrong without the gate being wrong
+
+`validate.py` marshals a test's input through the problem's own
+`Input.from_str` before handing the fields to the Dafny. When it reports `fail`,
+three things could be at fault: the translation, the stored test, or the
+dataclass between them. The gate only ever runs one implementation, so it
+cannot tell them apart.
+
+`batches/gate-audit/control.py` is the missing control: it runs the **original
+Python** through the same round-trip. A test the round-trip cannot parse, or
+one the Python then fails, is evidence about the harness, not the translation.
+Four rows in `solutions/` are recorded `fail` for exactly that reason and pass
+every test that can be run; `data/gate_exempt.jsonl` names them, each file
+carries a `GATE EXEMPT` header, and **`validate.py` was not touched**. A gate
+relaxed until the rows pass has stopped measuring anything.
 
 **Neither gate may be edited by an agent whose work it judges.** An agent
 lowered difftest's per-test budget for the reference Python from 30s to 10s

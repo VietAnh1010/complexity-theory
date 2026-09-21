@@ -46,7 +46,7 @@ several of its claims were later reversed. `summaries/README.md` says which.
 | translated | 636 (4 cannot be — bare `print(float)`) |
 | strict tier, `validate.py` | 529 valid, 3 fail |
 | loose tier, `difftest.py` | 95 agree, 4 untranslatable, 1 ungateable |
-| safety verified (`dafny verify`) | all 350 of `solutions/`; 340 also prove termination |
+| safety verified (`dafny verify`) | all 348 of `solutions/`; 338 also prove termination |
 | complexity proved | 110 rows, 112 files, all verify, zero `assume` |
 | label audit | 506 screened: 347 `ok`, 152 `mismatch`, 7 `unsure` (after the re-file) |
 | Dafny / Z3 | 4.11.0 / 4.12.1 |
@@ -73,9 +73,9 @@ leaves it.
 
 | directory | rows | why it is not simply clean |
 |---|---|---|
-| `solutions/` | 350 | — it is |
+| `solutions/` | 348 | — it is |
 | `solutions-unscreened/` | 127 | its label was never screened |
-| `solutions-disputed/` | 156 | the audit says the label does not match the code |
+| `solutions-disputed/` | 158 | the audit says the label does not match the code |
 | `solutions-unverified/` | 3 | `dafny verify` cannot discharge its safety obligations |
 | `solutions-untranslated/` | 4 | it will not be translated; the file says why |
 
