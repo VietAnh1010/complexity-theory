@@ -105,9 +105,9 @@ lemma SortCostNLogN(k: nat)
 // multisets instead: same answer on every test, one complexity class cheaper,
 // and the O(nlogn+mlogm) label then described nothing in this file.
 method Solve(s1: string, s2: string) returns (output: string, ghost steps: nat)
-  ensures steps <= 2 * |s1| * (CeilLog2(|s1|) + 1)
-                 + 2 * |s2| * (CeilLog2(|s2|) + 1)
-                 + 3 * |s1| + |s2| + 5
+  // One line on purpose: proofs.py's bound_of reads a single line, so a
+  // wrapped `ensures` is recorded truncated in data/complexity_proofs.jsonl.
+  ensures steps <= 2 * |s1| * (CeilLog2(|s1|) + 1) + 2 * |s2| * (CeilLog2(|s2|) + 1) + 3 * |s1| + |s2| + 5
 {
   SortCostNLogN(|s1|);
   SortCostNLogN(|s2|);

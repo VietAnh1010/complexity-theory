@@ -360,6 +360,9 @@ def main():
             "2 moved to solutions-disputed/, 1 remains open. "
             "batches/gate-audit/README.md",
             "rows using `decreases *` do not prove termination",
+            "proofs.py's bound_of reads one line, so a wrapped or two-clause "
+            "`ensures steps <=` is recorded truncated or as null: 1738_24, "
+            "2254_6 and 457_27 have no bound on file though all three verify",
         ],
     }
 

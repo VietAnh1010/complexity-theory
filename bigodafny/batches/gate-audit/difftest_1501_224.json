@@ -1,0 +1,21 @@
+{
+  "open": "What `differs`-by-timeout-only should mean is a question about the gate's status vocabulary, not about this row. Left open.",
+  "reading": "77 of 93 comparable tests agree and NO test disagrees. The 16 non-agreements are all timeouts; the other 29 stored tests are python-failed, so they are not comparable at all. `differs` is the status because difftest.py requires agree == comparable.",
+  "remeasured": "2026-09-21T06:28:14",
+  "reproduces": "Identical to the stored record from the earlier sweep -- same agree, comparable, python_failed and timeout counts. The record was current; it was not stale.",
+  "result": {
+    "agree": 77,
+    "comparable": 93,
+    "detail": {
+      "pass": 77,
+      "python-failed": 29,
+      "timeout": 16
+    },
+    "problem_id": "1501",
+    "python_failed": 29,
+    "solution_id": "1501_224",
+    "status": "differs"
+  },
+  "runtime_minutes": 39,
+  "solution_id": "1501_224"
+}

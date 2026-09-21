@@ -69,9 +69,12 @@ comparable tests agree, 29 are `python-failed`, and **16 are timeouts — not
 disagreements**. Zero tests where the two implementations produce different
 answers.
 
-A re-measurement is running; the numbers above are the stored record, not a
-fresh run. The first attempt was killed by its own 30-minute wrapper before it
-wrote anything, so nothing here has been re-measured yet.
+Re-measured 2026-09-21, 39 minutes for the one row, and it **reproduced the
+stored record exactly** -- same agree, comparable, python-failed and timeout
+counts. The record was current, not stale. `difftest_1501_224.json` has it.
+
+(The first attempt was killed by its own 30-minute wrapper before writing
+anything. That run produced no data and none was reported from it.)
 
 What `differs`-by-timeout-only should mean was already an open question in
 `collect.py`. It is a question about the gate's status vocabulary, not about
@@ -83,4 +86,4 @@ this row, and it is left open.
 |---|---|
 | `control.py` | the Python-through-the-dataclass control; reads only |
 | `control.jsonl` | its per-row tally and per-test detail |
-| `difftest_1501_224.json` | the re-measured loose-tier result, once it lands |
+| `difftest_1501_224.json` | the re-measured loose-tier result |
