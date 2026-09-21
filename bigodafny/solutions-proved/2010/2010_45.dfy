@@ -1,0 +1,53 @@
+// 1201_B. Zero Array  (problem 2010, solution 2010_45)
+// time complexity: O(n)
+// python exact-diff baseline: exact
+//
+// Reproduce the Python program's entire stdout in `output`.
+//
+// --- Python ---------------------------------------------------------
+// def check(l):
+// 	s = sum(l)
+// 	for i in l:
+// 		if s-i < i:
+// 			return "NO"
+// 	if s%2:
+// 		return ("NO")
+// 	else:
+// 		return ("YES")
+//
+// n = int(input())
+// l = list(map(int,input().split()))
+//
+// print(check(l))
+// --------------------------------------------------------------------
+
+include "../../prelude.dfy"
+import opened Prelude
+
+method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
+  ensures steps <= 4 * |a_list| + 4
+{
+  var s := SumSeq(a_list);
+  steps := 1 + |a_list|;
+  var bad := false;
+  var i := 0;
+  while i < |a_list|
+    invariant 0 <= i <= |a_list|
+    invariant steps <= 3 * i + |a_list| + 1
+    decreases |a_list| - i
+  {
+    if s - a_list[i] < a_list[i] {
+      bad := true;
+    }
+    i := i + 1;
+    steps := steps + 3;
+  }
+  if bad {
+    output := "NO";
+  } else if s % 2 != 0 {
+    output := "NO";
+  } else {
+    output := "YES";
+  }
+  steps := steps + 1;
+}
