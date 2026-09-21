@@ -1,0 +1,17 @@
+{"solution_id": "1053_38", "path": "solutions/1053/1053_38.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "1345_113", "path": "solutions/1345/1345_113.dfy", "label": "O(n**2)", "split": "strict", "gate": "valid"}
+{"solution_id": "1626_33", "path": "solutions/1626/1626_33.dfy", "label": "O(n)", "split": "loose", "gate": "agrees"}
+{"solution_id": "1855_33", "path": "solutions/1855/1855_33.dfy", "label": "O(1)", "split": "loose", "gate": "agrees"}
+{"solution_id": "1937_10", "path": "solutions/1937/1937_10.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "2036_120", "path": "solutions/2036/2036_120.dfy", "label": "O(n**2)", "split": "strict", "gate": "valid"}
+{"solution_id": "2198_50", "path": "solutions/2198/2198_50.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "2394_125", "path": "solutions/2394/2394_125.dfy", "label": "O(n**2)", "split": "strict", "gate": "valid"}
+{"solution_id": "2426_17", "path": "solutions/2426/2426_17.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "2586_216", "path": "solutions/2586/2586_216.dfy", "label": "O(nlogn)", "split": "strict", "gate": "valid"}
+{"solution_id": "2819_926", "path": "solutions/2819/2819_926.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "2854_30", "path": "solutions/2854/2854_30.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "3018_143", "path": "solutions/3018/3018_143.dfy", "label": "O(nlogn)", "split": "strict", "gate": "valid"}
+{"solution_id": "384_34", "path": "solutions/384/384_34.dfy", "label": "O(n**2)", "split": "strict", "gate": "valid"}
+{"solution_id": "540_100", "path": "solutions/540/540_100.dfy", "label": "O(1)", "split": "strict", "gate": "valid"}
+{"solution_id": "71_257", "path": "solutions/71/71_257.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "831_184", "path": "solutions/831/831_184.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
