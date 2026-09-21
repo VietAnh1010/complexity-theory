@@ -23,14 +23,19 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+// The equality test sorts, as the Python does. An earlier translation compared
+// multisets instead: same answer on every test, one complexity class cheaper,
+// and the O(nlogn+mlogm) label then described nothing in this file. Neither
+// gate can see that -- both compare stdout -- so it took a proof to find it.
+// Do not "simplify" this back to a multiset comparison.
 method Solve(s1: string, s2: string) returns (output: string)
 {
-  if multiset(s1) != multiset(s2) {
+  var a := Sort(s1, (x: char, y: char) => x < y);
+  var b := Sort(s2, (x: char, y: char) => x < y);
+  if a != b {
     output := "NO";
   } else {
-    assert |s1| == |s2| by {
-      assert |multiset(s1)| == |multiset(s2)|;
-    }
+    assert |s1| == |a| == |b| == |s2|;
     var cntr := 0;
     var i := 0;
     while i < |s1|
