@@ -1,0 +1,16 @@
+{"solution_id": "1235_283", "path": "solutions/1235/1235_283.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "1272_278", "path": "solutions/1272/1272_278.dfy", "label": "O(nlogn)", "split": "strict", "gate": "valid"}
+{"solution_id": "1386_19", "path": "solutions/1386/1386_19.dfy", "label": "O(nlogn)", "split": "strict", "gate": "valid"}
+{"solution_id": "1717_175", "path": "solutions/1717/1717_175.dfy", "label": "O(nlogn)", "split": "loose", "gate": "agrees"}
+{"solution_id": "1765_40", "path": "solutions/1765/1765_40.dfy", "label": "O(n**2)", "split": "strict", "gate": "valid"}
+{"solution_id": "1972_295", "path": "solutions/1972/1972_295.dfy", "label": "O(logn)", "split": "strict", "gate": "valid"}
+{"solution_id": "2010_401", "path": "solutions/2010/2010_401.dfy", "label": "O(nlogn)", "split": "strict", "gate": "valid"}
+{"solution_id": "2036_120", "path": "solutions/2036/2036_120.dfy", "label": "O(n**2)", "split": "strict", "gate": "valid"}
+{"solution_id": "2286_14", "path": "solutions/2286/2286_14.dfy", "label": "O(1)", "split": "strict", "gate": "valid"}
+{"solution_id": "2610_51", "path": "solutions/2610/2610_51.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "2853_256", "path": "solutions/2853/2853_256.dfy", "label": "O(n**2)", "split": "strict", "gate": "valid"}
+{"solution_id": "2982_323", "path": "solutions/2982/2982_323.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "3091_1574", "path": "solutions/3091/3091_1574.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "514_140", "path": "solutions/514/514_140.dfy", "label": "O(nlogn)", "split": "strict", "gate": "valid"}
+{"solution_id": "661_99", "path": "solutions/661/661_99.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "831_74", "path": "solutions/831/831_74.dfy", "label": "O(1)", "split": "strict", "gate": "valid"}
