@@ -1,0 +1,62 @@
+{
+  "batch": "batches/prove-sample-2",
+  "by_label": {
+    "O(1)": {
+      "drawn": 3,
+      "proved": 3
+    },
+    "O(logn)": {
+      "drawn": 2,
+      "proved": 0
+    },
+    "O(n)": {
+      "drawn": 23,
+      "proved": 20
+    },
+    "O(n**2)": {
+      "drawn": 7,
+      "proved": 3
+    },
+    "O(n+m)": {
+      "drawn": 2,
+      "proved": 2
+    },
+    "O(n+m)log(n+m)": {
+      "drawn": 1,
+      "proved": 1
+    },
+    "O(nlogn)": {
+      "drawn": 11,
+      "proved": 7
+    },
+    "O(nlogn+mlogm)": {
+      "drawn": 1,
+      "proved": 1
+    }
+  },
+  "by_relation": {
+    "confirms": 32,
+    "looser-slack": 3,
+    "tighter-costmodel": 1,
+    "tighter-translation": 1
+  },
+  "drawn": 50,
+  "obstacles": {
+    "CeilSqrt's binary search over the VALUE numbers[i] (not the list length) needs its own charged bound; getting the two nested loops' step counts to compose into a single proved formula in x did not close in 3 attempts. Real cost is O(log v) per element, a per-element cost the O(n) label omits (would have been looser-structural).": 1,
+    "Dfs's recursion depth depends on how fast x shrinks against a quadratically-spaced lookup table (FindIdxFrom); bounding that depth is a real number-theoretic argument, not fitting the budget": 1,
+    "Z3 would not connect base1/base3 chained nonlinear bounds to the final n**2 ensures even after isolating each multiplication into its own lemma call": 1,
+    "combining the O(n**2) step accounting with the pre-existing forall-membership invariants pushed verification over the 30s limit": 1,
+    "hit the 5-minute wall while fixing a nat-subtraction typing error (steps-base1 not proved nonnegative) after resolving the earlier Z3 timeout": 1,
+    "post-loop step bound (steps<=base2+4*(n-1)) would not close after the second while loop even though the loop invariant steps<=base2+4*i verified inside the loop": 1,
+    "row keeps `decreases *` on an unbounded stack-based BFS traversal; a real bound needs a potential-function argument (total pushes bounded by sum of vertex degrees over a tree) that the 5-minute budget cannot fit, and the rule against decreases * would also have to be resolved as part of the same proof": 1,
+    "second-loop invariant res>=b0*Pow2Aux(cnt2) would not re-establish after res:=res*k; needed one more isolated associativity lemma than the budget allowed": 1,
+    "substring-scan cost (Contains1272b) adds a SumLen(arr) term whose prefix bookkeeping did not close, and the shared SortCost nlogn lemma timed out once combined with that extra machinery": 1,
+    "the classic sieve inner while (step size i, bound 2000) needs itn*i=j-j0 to cap iterations, which is nonlinear in the two ghost/loop variables and did not close in budget; the n*n tail loop was never reached for instrumentation": 1,
+    "the loop is `decreases *` in the original (unproven termination); a ghost step bound needs a digit-growth convergence argument relating pow=9**i to NumDigits(nn) that was not attempted given the risk/budget tradeoff": 1,
+    "the pos/level-advance loop's per-step increase in n is not bounded by a constant, so the standard decreases-metric-bounds-iteration-count argument gives itnAdv<=initM+overshoot, not itnAdv<=initM; closing it needs a separate bound on the overshoot that was not found in budget": 1,
+    "the scan loop initializes i:=1 before checking n, so an invariant bounding i by n is false on entry whenever n==0; needs a case split or an i<=n+1-style invariant not yet found": 1
+  },
+  "problems": [],
+  "proved": 37,
+  "unresolved": 13
+}

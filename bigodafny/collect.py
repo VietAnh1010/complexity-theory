@@ -63,8 +63,8 @@ def callgraph(depth):
 
 
 def proofs_all(depth, ds, pv_rows):
-    """Every proved row in the corpus: the 31 that predate the cost axioms
-    and the 40 from the sampled campaign.
+    """Every proved row in the corpus: the 33 that predate the cost axioms
+    and the rows closed by the sampled campaigns.
 
     The two groups are tagged by `era` and never summed on a tightness
     statistic. The pre-axiom set was re-checked on 2026-09-17: all 33 files
@@ -110,9 +110,9 @@ def proofs_all(depth, ds, pv_rows):
 def difficulty(pv_rows):
     """Does structure predict whether a proof closes?
 
-    Joins the campaign's 50 outcomes against call depth and recursion. The
-    label is already known to matter (O(n) 24/24, O(nlogn) 5/11); this asks
-    whether depth adds anything beyond it.
+    Joins both campaigns' outcomes against call depth and recursion. The
+    label is already known to matter -- linear rows close far more often than
+    `O(nlogn)` ones -- so this asks whether depth adds anything beyond it.
     """
     done = [r for r in pv_rows if r["outcome"] in ("proved", "unresolved")]
     if not done:
@@ -133,8 +133,9 @@ def difficulty(pv_rows):
         "by_recursive": rate("recursive"),
         "by_label": rate("label"),
         "note": ("Label dominates. Depth is reported so the claim can be "
-                 "checked rather than asserted; with n=50 split across "
-                 "several depths, treat any depth effect as indicative."),
+                 "checked rather than asserted; with the sample split "
+                 "across several depths, treat any depth effect as "
+                 "indicative."),
     }
 
 
@@ -153,7 +154,7 @@ def relation_of(sid, traj_row, rel):
     return "confirms" if traj_row.get("outcome") == "proved" else "unresolved"
 
 
-def prove_sample(manifest, traj, rel, depth):
+def prove_sample(manifest, traj, rel, depth, meta=None, obst=None):
     """The proof campaign: did a bounded agent close the complexity label?
 
     Unlike the verification sample there is no tool that settles this -- a
@@ -163,6 +164,11 @@ def prove_sample(manifest, traj, rel, depth):
     """
     if not manifest:
         return {"status": "not yet run"}
+    meta = meta or {"seed": 20260917, "pool": 329}
+    # The first campaign kept the obstacle code alongside the relation; the
+    # second moved it to its own file, since an obstacle belongs to a row that
+    # did NOT close and a relation to one that did.
+    obst = obst or {}
     by_sid = {r["solution_id"]: r for r in traj}
     rows = []
     for m in manifest:
@@ -178,8 +184,10 @@ def prove_sample(manifest, traj, rel, depth):
             # kept so the normalisation stays auditable.
             "relation": relation_of(s, t, rel),
             "relation_reason": (rel.get(s) or {}).get("reason"),
-            "obstacle": (rel.get(s) or {}).get("obstacle"),
+            "obstacle": (rel.get(s) or {}).get("obstacle")
+                        or (obst.get(s) or {}).get("obstacle"),
             "agent_said_agrees": t.get("agrees_with_label"),
+            "agent_said_relation": (rel.get(s) or {}).get("agent_said_relation"),
             "attempts_used": t.get("attempts_used"),
             "seconds": t.get("seconds"),
             "why_failed": t.get("why_failed"),
@@ -190,7 +198,7 @@ def prove_sample(manifest, traj, rel, depth):
     proved = [r for r in rows if r["outcome"] == "proved"]
     return {
         "question": "can a bounded agent prove the label of a random row?",
-        "seed": 20260917, "drawn": len(manifest), "pool": 329,
+        "seed": meta["seed"], "drawn": len(manifest), "pool": meta["pool"],
         "frame": "solutions/, no proof in solutions-proved/, non-empty label",
         "bounds": {"attempts_per_row": 3, "seconds_per_row": 300},
         "agents": 3, "model": "sonnet",
@@ -201,10 +209,16 @@ def prove_sample(manifest, traj, rel, depth):
         "contradicts_label": [r["solution_id"] for r in rows
                               if r["relation"] == "contradicts"],
         "note_on_contradiction": (
-            "Empty by construction. Every proof in this campaign is an upper "
-            "bound; contradicting a label needs a lower bound, which none of "
-            "them produces. A bound above the label is `looser`, not a "
-            "disagreement."),
+            "Every proof in these campaigns is an upper bound. A bound ABOVE "
+            "the label is `looser` -- it fails to confirm the label and cannot "
+            "disagree with it, since that needs a lower bound. A bound BELOW "
+            "the label does bear on it, but only after the other two "
+            "explanations are ruled out: `tighter-costmodel` (the charge table "
+            "costs something CPython does not) and `tighter-translation` (the "
+            "Dafny runs a cheaper algorithm than the Python)."),
+        "tighter_rows": {
+            sid: r["relation"] for sid, r in sorted(rel.items())
+            if str(r["relation"]).startswith("tighter")},
         "value_vs_size_rows": sorted(
             sid for sid, r in rel.items()
             if r["relation"] == "looser-structural"
@@ -232,6 +246,13 @@ def main():
     pv_rel = {r["solution_id"]: r
               for r in jsonl(HERE / "batches/prove-sample/label_relation.jsonl")}
 
+    p2 = HERE / "batches/prove-sample-2"
+    p2_manifest = jsonl(p2 / "manifest.jsonl")
+    p2_traj = [r for f in sorted(p2.glob("traj_*.jsonl")) for r in jsonl(f)]
+    p2_rel = {r["solution_id"]: r for r in jsonl(p2 / "label_relation.jsonl")}
+    p2_obst = {r["solution_id"]: r for r in jsonl(p2 / "obstacles.jsonl")}
+    p2_excluded = jsonl(p2 / "excluded.jsonl")
+
     dirs = {d.name: sum(1 for _ in d.rglob("*.dfy"))
             for d in sorted(HERE.glob("solutions*")) if d.is_dir()}
 
@@ -256,6 +277,11 @@ def main():
         })
 
     pv = prove_sample(pv_manifest, pv_traj, pv_rel, depth)
+    pv2 = prove_sample(p2_manifest, p2_traj, p2_rel, depth,
+                       meta={"seed": 20260921, "pool": 287}, obst=p2_obst)
+    # A row sitting in solutions/ whose latest recorded gate result is negative
+    # or missing. Excluded from the draw, and reported rather than dropped.
+    pv2["excluded_from_pool"] = p2_excluded
 
     payload = {
         "generated": git("log", "-1", "--format=%cI", default=""),
@@ -297,8 +323,10 @@ def main():
         },
 
         "prove_sample": pv,
-        "proofs_all": proofs_all(depth, ds, pv.get("rows", [])),
-        "difficulty": difficulty(pv.get("rows", [])),
+        "prove_sample_2": pv2,
+        "proofs_all": proofs_all(depth, ds,
+                                 pv.get("rows", []) + pv2.get("rows", [])),
+        "difficulty": difficulty(pv.get("rows", []) + pv2.get("rows", [])),
 
         "stale_record_finding": {
             "before": {"rows": 362, "recorded_failing": 12,
@@ -326,7 +354,8 @@ def main():
         "open_decisions": [
             "DECIDED 2026-09-17: value counts as a parameter. COMPLEXITY.md § 1.",
             "what `differs`-by-timeout-only should mean (1501_224)",
-            "whether the 6 ungateable rows belong in solutions/",
+            "whether the 7 rows in solutions/ with no passing gate result on "
+            "file belong there (prove-sample-2/excluded.jsonl)",
             "rows using `decreases *` do not prove termination",
         ],
     }
@@ -339,6 +368,11 @@ def main():
           f"{v['fully_verified_incl_termination']} incl. termination")
     print(f"  sample: {payload['sample']['drawn']} rows, "
           f"{payload['sample']['attempts_consumed']} attempts consumed")
+    p2 = payload["prove_sample_2"]
+    print(f"  proofs-2: {p2['proved']} proved / {p2['attempted']} attempted "
+          f"of {p2['drawn']} drawn, pool {p2['pool']}")
+    print(f"            relations {p2['relations']}")
+    print(f"            obstacles {p2['obstacles']}")
     pv = payload["prove_sample"]
     if "drawn" in pv:
         print(f"  proofs: {pv['proved']} proved / {pv['attempted']} attempted "

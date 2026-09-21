@@ -47,7 +47,7 @@ also live above, so a row can exist twice with different preconditions.
 
 | directory | files | meaning |
 |---|---|---|
-| `solutions-proved/` | 31 | complexity **proved** via ghost step counter |
+| `solutions-proved/` | 110 | complexity **proved** via ghost step counter |
 | `solutions-proved/nlogn/` | 2 | the same two sort rows at the tight O(n log n) bound |
 | `experiments/proofs-blind/` | 15 | blind-arm experiment attempts; label withheld from the author. NOT dataset rows |
 

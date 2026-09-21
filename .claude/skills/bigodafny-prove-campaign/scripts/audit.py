@@ -18,7 +18,15 @@ import os
 import subprocess
 import sys
 
-RELATIONS = {"confirms", "looser-slack", "looser-structural", "contradicts", None}
+RELATIONS = {
+    "confirms",
+    "looser-slack",
+    "looser-structural",
+    "tighter-costmodel",
+    "tighter-translation",
+    "contradicts",
+    None,
+}
 
 
 def read_jsonl(path):
@@ -46,6 +54,16 @@ def main():
         r["solution_id"]: r
         for r in read_jsonl(os.path.join(args.repo, "data/complexity_proofs.jsonl"))
     }
+    # Once the relations have been normalised by hand, that file is the
+    # authority; the agents' own values survive inside it as agent_said_*.
+    normalised = {
+        r["solution_id"]: r
+        for r in read_jsonl(f"{args.batch}/label_relation.jsonl")
+    }
+    for sid, row in normalised.items():
+        if sid in traj:
+            traj[sid]["relation"] = row.get("relation")
+            traj[sid]["relation_reason"] = row.get("reason", "")
 
     rows, problems = [], []
     for sid, m in sorted(manifest.items()):

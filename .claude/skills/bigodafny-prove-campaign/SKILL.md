@@ -88,7 +88,19 @@ disagreement.
 | `confirms` | the bound is within the label's class |
 | `looser-slack` | a loose scaffold was used; the tight bound was not attempted |
 | `looser-structural` | the proof exposes a real cost the label omits |
+| `tighter-costmodel` | the bound is below the label because the charge table costs something CPython does not |
+| `tighter-translation` | the bound is below the label because the Dafny uses a cheaper algorithm than the Python |
 | `contradicts` | a literal in the source forces more work than the label allows |
+
+A bound **below** the label is the case agents mishandle most. It has three
+possible causes and they are not interchangeable: the label is loose, the
+charge table is cheaper than CPython, or the translation is cheaper than the
+Python. Only the first says anything about the label. Read the Python before
+recording one.
+
+Write the normalised relations to `label_relation.jsonl` in the batch
+directory; `audit.py` prefers that file over the agents' values when it is
+present.
 
 Keep each agent's original claim in the payload as `agent_said_*` so the
 normalisation stays auditable. The judgement belongs in the data file with its

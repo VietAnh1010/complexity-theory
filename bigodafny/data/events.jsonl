@@ -481,3 +481,5 @@
 {"ts": "2026-09-16T17:47:46", "kind": "verify_all", "total": 354, "verified": 354, "unverified": 0, "termination_opt_out": 10, "kinds": {}}
 {"ts": "2026-09-17T05:17:06", "kind": "dataset", "rows": 640, "problems": 311, "splits": {"strict": 534, "loose": 100, "unvalidatable": 6}}
 {"ts": "2026-09-17T05:20:56", "kind": "verify_all", "total": 350, "verified": 350, "unverified": 0, "termination_opt_out": 10, "kinds": {}}
+{"ts": "2026-09-21T04:42:01", "kind": "proofs", "verified": 112, "total": 112, "with_assume": 0}
+{"ts": "2026-09-21T04:42:01", "kind": "assume_scan", "count": 0}

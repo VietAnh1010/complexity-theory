@@ -1,0 +1,37 @@
+{"solution_id": "1138_66", "label": "O(n)", "proved_bound": "8 * n + 3", "relation": "confirms", "reason": "", "agent_said_relation": "confirms"}
+{"solution_id": "1180_626", "label": "O(n+m)log(n+m)", "proved_bound": "2 * b * b + 2 * a + 10 * b + 15", "relation": "looser-slack", "reason": "Sort charged via quadratic SortCost scaffold (Sort/Merge live in prelude.dfy, off limits); did not attempt the CeilLog2 recursion-tree tight bound.", "agent_said_relation": "looser-slack"}
+{"solution_id": "1235_283", "label": "O(n)", "proved_bound": "25 * n + 5", "relation": "confirms", "reason": "", "agent_said_relation": "confirms"}
+{"solution_id": "1243_0", "label": "O(nlogn+mlogm)", "proved_bound": "4 * |s1| + |s2| + 2", "relation": "tighter-translation", "reason": "Python compares sorted(g1) != sorted(g2), which is the source of the nlogn+mlogm label. The Dafny compares multiset(s1) != multiset(s2), charged |s1|+|s2| by the cost table, and the proved bound is linear. Same output, cheaper algorithm: the proof bears on the translation, not on the label.", "agent_said_relation": "confirms"}
+{"solution_id": "1254_182", "label": "O(1)", "proved_bound": "15", "relation": "confirms", "reason": "", "agent_said_relation": "confirms"}
+{"solution_id": "1333_58", "label": "O(n)", "proved_bound": "19 * n + 20", "relation": "confirms", "reason": "", "agent_said_relation": "confirms"}
+{"solution_id": "1386_38", "label": "O(n)", "proved_bound": "5 * |b_list| + 10", "relation": "confirms", "reason": "Gcd charged as O(1) int arithmetic per call, consistent with the stipulated table", "agent_said_relation": "confirms"}
+{"solution_id": "1421_53", "label": "O(n+m)", "proved_bound": "4 * n + 2", "relation": "confirms", "reason": "", "agent_said_relation": "confirms"}
+{"solution_id": "1717_175", "label": "O(nlogn)", "proved_bound": "2 * |a_list| * (CeilLog2(|a_list|) + 1) + 4 * |a_list| + 20", "relation": "confirms", "reason": "", "agent_said_relation": "confirms"}
+{"solution_id": "1717_238", "label": "O(n)", "proved_bound": "9 * |a_list| + 20", "relation": "confirms", "reason": "", "agent_said_relation": "confirms"}
+{"solution_id": "1738_24", "label": "O(n)", "proved_bound": null, "relation": "confirms", "reason": "", "agent_said_relation": "confirms"}
+{"solution_id": "1878_72", "label": "O(nlogn)", "proved_bound": "2 * N * (CeilLog2(N) + 1) + 6 * N + 15", "relation": "confirms", "reason": "two sorts of disjoint sub-lists bounded by N via a combined SortCost lemma", "agent_said_relation": "confirms"}
+{"solution_id": "1981_39", "label": "O(n)", "proved_bound": "8 * n + 3", "relation": "confirms", "reason": "", "agent_said_relation": "confirms"}
+{"solution_id": "2007_4", "label": "O(n)", "proved_bound": "7 * n + 10", "relation": "confirms", "reason": "", "agent_said_relation": "confirms"}
+{"solution_id": "2010_401", "label": "O(nlogn)", "proved_bound": "2 * n * (CeilLog2(n) + 1) + 1 + 4 * n + 10", "relation": "confirms", "reason": "", "agent_said_relation": "confirms"}
+{"solution_id": "2010_45", "label": "O(n)", "proved_bound": "4 * |a_list| + 4", "relation": "confirms", "reason": "", "agent_said_relation": "confirms"}
+{"solution_id": "2012_342", "label": "O(n)", "proved_bound": "4 * |pairs| + 3", "relation": "confirms", "reason": "", "agent_said_relation": "confirms"}
+{"solution_id": "2051_80", "label": "O(nlogn)", "proved_bound": "2 * n * (CeilLog2(n) + 1) + 8 * n + 10", "relation": "confirms", "reason": "", "agent_said_relation": "confirms"}
+{"solution_id": "2225_154", "label": "O(nlogn)", "proved_bound": "2 * n * n + 2 * n + 6", "relation": "looser-slack", "reason": "SortInts charged via quadratic SortCost scaffold (Sort lives in prelude.dfy, off limits); did not attempt the tight CeilLog2 recursion-tree bound.", "agent_said_relation": "looser-slack"}
+{"solution_id": "2286_14", "label": "O(1)", "proved_bound": "20", "relation": "confirms", "reason": "", "agent_said_relation": "confirms"}
+{"solution_id": "241_101", "label": "O(nlogn)", "proved_bound": "2 * n * (CeilLog2(n) + 1) + 4 * n + 10", "relation": "confirms", "reason": "", "agent_said_relation": "confirms"}
+{"solution_id": "2593_332", "label": "O(nlogn)", "proved_bound": "2 * n * n + 2 * n + 4", "relation": "looser-slack", "reason": "SortInts charged via quadratic SortCost scaffold (Sort lives in prelude.dfy, off limits); did not attempt the tight CeilLog2 recursion-tree bound.", "agent_said_relation": "looser-slack"}
+{"solution_id": "2610_51", "label": "O(n)", "proved_bound": "10 * |a_list| + 10", "relation": "confirms", "reason": "", "agent_said_relation": "confirms"}
+{"solution_id": "2803_133", "label": "O(n**2)", "proved_bound": "2 * AbsInt(i) + 4", "relation": "tighter-costmodel", "reason": "fact(n) loops over the input value n, so the proved bound 2*AbsInt(i)+4 is linear in that value. The O(n**2) label comes from CPython's bignum multiplication, whose cost grows with the operands' digit count; COMPLEXITY.md charges every int operation 1. The gap is the stipulated cost model.", "agent_said_relation": "confirms"}
+{"solution_id": "2853_256", "label": "O(n**2)", "proved_bound": "(2 * |s| + 4) * |s| + 3", "relation": "confirms", "reason": "", "agent_said_relation": "confirms"}
+{"solution_id": "2982_323", "label": "O(n)", "proved_bound": "4 * |d_list| + 10", "relation": "confirms", "reason": "", "agent_said_relation": "confirms"}
+{"solution_id": "3017_340", "label": "O(n)", "proved_bound": "7 * |string_| + 3", "relation": "confirms", "reason": "", "agent_said_relation": "confirms"}
+{"solution_id": "305_284", "label": "O(n+m)", "proved_bound": "2 * |c_list| + |d_list| + 4", "relation": "confirms", "reason": "", "agent_said_relation": "confirms"}
+{"solution_id": "3091_1574", "label": "O(n)", "proved_bound": "6 * |pairs_list| + 5", "relation": "confirms", "reason": "", "agent_said_relation": "confirms"}
+{"solution_id": "354_95", "label": "O(n)", "proved_bound": "3 * k + 3", "relation": "confirms", "reason": "amortized: sum of per-iteration Log2Floor costs telescopes because nn decreases by exactly the returned power each outer iteration", "agent_said_relation": "confirms"}
+{"solution_id": "641_31", "label": "O(n)", "proved_bound": "4 * |s| + 6", "relation": "confirms", "reason": "", "agent_said_relation": "confirms"}
+{"solution_id": "661_99", "label": "O(n)", "proved_bound": "8 * |s| + 10", "relation": "confirms", "reason": "", "agent_said_relation": "confirms"}
+{"solution_id": "681_105", "label": "O(n)", "proved_bound": "4 * (if a > 0 then a else 0) + 4 * (if b > 0 then b else 0) + 10", "relation": "confirms", "reason": "", "agent_said_relation": "confirms"}
+{"solution_id": "795_580", "label": "O(n)", "proved_bound": "6 * |numbers| + 1", "relation": "confirms", "reason": "", "agent_said_relation": "confirms"}
+{"solution_id": "831_74", "label": "O(1)", "proved_bound": "400", "relation": "confirms", "reason": "", "agent_said_relation": "confirms"}
+{"solution_id": "894_3", "label": "O(n)", "proved_bound": "6 * |a_list| + 4", "relation": "confirms", "reason": "", "agent_said_relation": "confirms"}
+{"solution_id": "976_656", "label": "O(n**2)", "proved_bound": "2 * |a_list| * |a_list| + 2 * |a_list| + 2", "relation": "confirms", "reason": "", "agent_said_relation": "confirms"}

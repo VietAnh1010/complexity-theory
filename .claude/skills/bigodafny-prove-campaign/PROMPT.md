@@ -124,10 +124,17 @@ So record `relation` from exactly this vocabulary:
 | `confirms` | your bound is within the label's class |
 | `looser-slack` | you used a loose scaffold and did not attempt the tight bound |
 | `looser-structural` | your proof exposes a real cost the label omits |
+| `tighter-costmodel` | your bound is below the label because the charge table costs something CPython does not — most often `int` arithmetic on values that outgrow a machine word |
+| `tighter-translation` | your bound is below the label because the Dafny uses a cheaper algorithm than the Python, not because the label is loose |
 | `contradicts` | the row provably cannot meet the label — a literal in the source forces more work than the label allows |
 
 `contradicts` needs a reason naming the construct in the source. Do not reach
 for it because a bound came out large.
+
+A bound **below** the label is not automatically a tighter reading of the row.
+Before recording one, read the Python: if it sorts and your Dafny compares
+multisets, or if it multiplies numbers that grow past a machine word, the gap
+is the translation or the charge table, not the label. Say which.
 
 ## Value versus size — a settled convention
 
