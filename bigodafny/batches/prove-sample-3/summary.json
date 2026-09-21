@@ -1,0 +1,52 @@
+{
+  "batch": "batches/prove-sample-3",
+  "by_label": {
+    "O(1)": {
+      "drawn": 8,
+      "proved": 8
+    },
+    "O(n)": {
+      "drawn": 18,
+      "proved": 12
+    },
+    "O(n**2)": {
+      "drawn": 9,
+      "proved": 6
+    },
+    "O(n+m)": {
+      "drawn": 2,
+      "proved": 2
+    },
+    "O(nlogn)": {
+      "drawn": 12,
+      "proved": 10
+    },
+    "O(nlogn+mlogm)": {
+      "drawn": 1,
+      "proved": 1
+    }
+  },
+  "by_relation": {
+    "confirms": 30,
+    "looser-slack": 5,
+    "looser-structural": 3,
+    "tighter-costmodel": 1
+  },
+  "drawn": 50,
+  "obstacles": {
+    "CeilSqrt does a value-bounded binary search (doubling to find hi, then bisecting): tying the per-iteration Pow2/Log2 growth invariants together into one closed log(x) step bound across both phases did not close within budget": 1,
+    "NumToLetters's cost is a value-based recursion (int, not seq/string); folding its charge back to O(cell length) needs a digit-count bound colNum<Pow10(|colDigits|) chained through Pow10Mono into the isRC branch's per-iteration invariant step, and that chain did not close for Z3 within budget -- needs an isolated MulMonoRight-style lemma combining the two facts directly rather than relying on automatic transitivity through Pow10.": 1,
+    "Pow10_2282's own O(e) recursion inside the while loop makes the true cost a shrinking series (quadratic in i); isolating the multiplications got the loop invariant to verify but the final postcondition combining it with the branch-constant terms timed out": 1,
+    "Solve computes d, b, y through a chain (d=FloorDiv(s-1,2), b=triangular(d)+1, y=k-b) where RepStr is then called on x-y-1 and y; bounding those arguments back in terms of the row (nn, k) needs 4-5 chained nonlinear inequality lemmas (sqrt bound, FloorDiv bound, triangular-number bound, subtraction bound) to avoid the bound blowing up sign-wise, which does not fit in the per-row budget.": 1,
+    "loop3's entry invariant i3<=a-d1-d2 is unsound when that loop is skipped; needed i3<=a as the safe bound instead, out of attempts": 1,
+    "no decreasing well-founded metric was constructed; termination requires an exponential-sum lemma (nn < 10^i) relating pow=9^i's growth to NumDigits(nn), which is out of scope for the time box": 1,
+    "nonlinear multiplication i*(x+y+4) across a found/not-found branch would not close: Z3 would not derive i*M<=n*M from the loop guard i<n without an isolated monotonicity lemma, and time ran out before adding one": 1,
+    "outer loop is bounded by a derived input value (max first-component of pairs), not n; expressing that in the ensures needs a ghost MaxFirst(pairs) function plus a proof it equals d's last element, on top of the amortized idx argument across both inner loops": 1,
+    "s2 (the running digit remainder in the prepend loop) needed a nonnegativity invariant that was never built, blocking the IntToString digit-length lemma": 1,
+    "the options-queue is popped and conditionally re-pushed in the same iteration; the amortized total-degree argument needs a cleaner potential function (e.g. unvisited-node count) than the budget counter attempted here, and the row already carries decreases * with no termination proof to build on": 1,
+    "whole-method VC too large: nested loops (build/sort/count) plus the SortCost quadratic scaffold in one method overloaded Z3 within the 30s budget": 1
+  },
+  "problems": [],
+  "proved": 39,
+  "unresolved": 11
+}

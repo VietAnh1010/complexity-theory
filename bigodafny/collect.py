@@ -253,6 +253,12 @@ def main():
     p2_obst = {r["solution_id"]: r for r in jsonl(p2 / "obstacles.jsonl")}
     p2_excluded = jsonl(p2 / "excluded.jsonl")
 
+    p3 = HERE / "batches/prove-sample-3"
+    p3_manifest = jsonl(p3 / "manifest.jsonl")
+    p3_traj = [r for f in sorted(p3.glob("traj_*.jsonl")) for r in jsonl(f)]
+    p3_rel = {r["solution_id"]: r for r in jsonl(p3 / "label_relation.jsonl")}
+    p3_obst = {r["solution_id"]: r for r in jsonl(p3 / "obstacles.jsonl")}
+
     dirs = {d.name: sum(1 for _ in d.rglob("*.dfy"))
             for d in sorted(HERE.glob("solutions*")) if d.is_dir()}
 
@@ -279,6 +285,20 @@ def main():
     pv = prove_sample(pv_manifest, pv_traj, pv_rel, depth)
     pv2 = prove_sample(p2_manifest, p2_traj, p2_rel, depth,
                        meta={"seed": 20260921, "pool": 287}, obst=p2_obst)
+    pv3 = prove_sample(p3_manifest, p3_traj, p3_rel, depth,
+                       meta={"seed": 2026092102, "pool": 250}, obst=p3_obst)
+    # All three agents were killed mid-slice by a session rate limit and
+    # resumed on the remaining rows only. Recorded because it affects nothing
+    # about the outcomes and everything about reproducing the run.
+    pv3["interrupted"] = {
+        "cause": "session rate limit, HTTP 429",
+        "rows_recorded_at_interruption": 34,
+        "resumed": "3 agents on the 16 remaining rows, appending to their "
+                   "existing trajectories",
+        "partial_proofs_left_behind": ["2926_54", "2496_30"],
+        "partial_handling": "checked against the verifier; neither verified, "
+                            "both deleted and the rows redone from scratch",
+    }
     # A row sitting in solutions/ whose latest recorded gate result is negative
     # or missing. Excluded from the draw, and reported rather than dropped.
     pv2["excluded_from_pool"] = p2_excluded
@@ -330,9 +350,11 @@ def main():
 
         "prove_sample": pv,
         "prove_sample_2": pv2,
-        "proofs_all": proofs_all(depth, ds,
-                                 pv.get("rows", []) + pv2.get("rows", [])),
-        "difficulty": difficulty(pv.get("rows", []) + pv2.get("rows", [])),
+        "prove_sample_3": pv3,
+        "proofs_all": proofs_all(depth, ds, pv.get("rows", [])
+                                 + pv2.get("rows", []) + pv3.get("rows", [])),
+        "difficulty": difficulty(pv.get("rows", []) + pv2.get("rows", [])
+                                 + pv3.get("rows", [])),
 
         "stale_record_finding": {
             "before": {"rows": 362, "recorded_failing": 12,
@@ -369,6 +391,12 @@ def main():
             "proofs.py's bound_of reads one line, so a wrapped or two-clause "
             "`ensures steps <=` is recorded truncated or as null: 1738_24, "
             "2254_6 and 457_27 have no bound on file though all three verify",
+            "proofs.py's bound_of also takes the FIRST `ensures steps <=` in a "
+            "file, which is a helper's when one is declared before Solve. 7 of "
+            "151 proof files record a helper's bound rather than the row's: "
+            "1414_8, 2128_34, 2496_30, 2803_133, 354_95, 433_16, 810_131. No "
+            "verdict is affected -- `verified` does not use it -- but the bound "
+            "published for those rows understates the row's cost",
         ],
     }
 
@@ -380,6 +408,11 @@ def main():
           f"{v['fully_verified_incl_termination']} incl. termination")
     print(f"  sample: {payload['sample']['drawn']} rows, "
           f"{payload['sample']['attempts_consumed']} attempts consumed")
+    p3 = payload["prove_sample_3"]
+    print(f"  proofs-3: {p3['proved']} proved / {p3['attempted']} attempted "
+          f"of {p3['drawn']} drawn, pool {p3['pool']}")
+    print(f"            relations {p3['relations']}")
+    print(f"            obstacles {p3['obstacles']}")
     p2 = payload["prove_sample_2"]
     print(f"  proofs-2: {p2['proved']} proved / {p2['attempted']} attempted "
           f"of {p2['drawn']} drawn, pool {p2['pool']}")

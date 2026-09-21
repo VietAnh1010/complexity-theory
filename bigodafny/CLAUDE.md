@@ -26,7 +26,7 @@ it means and how a row leaves it. A row is in exactly one.
 | `solutions-untranslated/` | 4 | it will not be translated; the file says why |
 
 `solutions-proved/` is **not** part of that partition — it holds instrumented
-copies (112 files over 110 rows, 2 of them tight-bound variants under `nlogn/`)
+copies (151 files over 149 rows, 2 of them tight-bound variants under `nlogn/`)
 of rows that also live above. A row can exist in two places with different preconditions;
 `precheck.py`'s `find_all` exists for that.
 
@@ -153,6 +153,15 @@ BigOBench fitted its labels by profiling, which assumes the opposite, so the two
 disagree wherever a value-bounded loop appears. Four rows moved to
 `solutions-disputed/` on that basis; `batches/prove-sample/value_vs_size_decision.jsonl`
 records them and the two rows the decision unblocked.
+
+**The convention settled how to count a value; it did not make the proofs
+easy.** Connecting a value-bounded cost back to a bound in the row's size is
+now the single most common reason a proof fails — 4 of 11 in `prove-sample-3`,
+coded `value-to-size`. Each needs its own arithmetic lemma (`Pow10Mono`, a
+doubling-search invariant, a triangular-number bound), and none of it carries
+to the next row. Contrast `O(nlogn)`, whose difficulty was scaffolding: paid
+once, then reused, and its rate climbed 5/11 → 7/11 → 10/12 across the three
+campaigns while `O(n)` fell 24/24 → 20/23 → 12/18.
 
 ## The cost model is stipulated, not measured
 

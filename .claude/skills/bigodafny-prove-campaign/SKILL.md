@@ -141,7 +141,15 @@ the refreshed `data/`. Push to the session's designated branch.
   from `solutions-proved/`, record `unresolved` with the obstacle named, move
   on. Most rows failing is a legitimate result.
 - **`why_failed` names an obstacle**, not "ran out of attempts". Which
-  invariant would not hold; which multiplication the solver refused.
+  invariant would not hold; which multiplication the solver refused. Codes used
+  so far: `value-to-size`, `z3-nonlinear`, `invariant-gap`, `decreases-star`,
+  `recursion-depth`, `budget`.
+- **Compare the per-label rate against earlier campaigns, not just its own.**
+  Across three runs `O(nlogn)` climbed 5/11 → 7/11 → 10/12 while `O(n)` fell
+  24/24 → 20/23 → 12/18. Sort difficulty was scaffolding — paid once, then
+  reused from the corpus. The linear failures are `value-to-size`: each needs
+  its own arithmetic lemma and nothing carries to the next row. A single
+  campaign's table cannot show that.
 - **Never weaken a proof to match a label.**
 - **No `assume`, no `decreases *`**, corpus-wide. `proofs.py` greps for both.
 - **Agents never touch** `solutions/`, `validate.py`, `difftest.py`,

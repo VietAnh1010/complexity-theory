@@ -500,3 +500,5 @@
 {"ts": "2026-09-21T07:03:36", "kind": "verify_all", "total": 348, "verified": 348, "unverified": 0, "termination_opt_out": 10, "kinds": {}}
 {"ts": "2026-09-21T07:03:59", "kind": "dataset", "rows": 640, "problems": 311, "splits": {"strict": 534, "loose": 100, "unvalidatable": 6}}
 {"ts": "2026-09-21T07:04:27", "kind": "dataset", "rows": 640, "problems": 311, "splits": {"strict": 534, "loose": 100, "unvalidatable": 6}}
+{"ts": "2026-09-21T13:54:56", "kind": "proofs", "verified": 151, "total": 151, "with_assume": 0}
+{"ts": "2026-09-21T13:54:58", "kind": "assume_scan", "count": 0}
