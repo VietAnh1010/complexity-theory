@@ -1,3 +1,17 @@
+// GATE EXEMPT -- `validate.py` records `fail`; the translation is not at fault.
+//
+//   tests stored    : 8
+//   runnable        : 1    (Dafny passes it)
+//   unparseable     : 7    the problem's own Input.from_str raises on them
+//   cause           : from_str asserts `all(n == len(line) for line in matrix)`
+//                     while this problem's rows always hold 3 columns, so every
+//                     test with n != 3 is rejected before either implementation
+//                     is run
+//   control         : batches/gate-audit/control.py, 2026-09-21 -- the original
+//                     Python through the same dataclass round-trip also passes
+//                     1 and cannot run the other 7
+//   record          : data/gate_exempt.jsonl
+//
 // 1236_A. Stones  (problem 1578, solution 1578_724)
 // time complexity: O(n**2)
 // python exact-diff baseline: exact

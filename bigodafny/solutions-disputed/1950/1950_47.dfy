@@ -1,3 +1,22 @@
+// TRANSLATION AUDIT -- queued for manual review, not a decision.
+//
+//   gate            : validate.py records `fail`  (19/42 tests)
+//   harness ceiling : 23/42. The problem's Input dataclass types the
+//                     coefficient as `float`, and these inputs carry up to 100
+//                     significant digits. 19 of the 42 stored tests do not
+//                     survive `str(float(c)) + 'e' + str(int(e))`, so the
+//                     ORIGINAL PYTHON fails them too once routed through the
+//                     dataclass. No translation can pass those 19.
+//   genuine failures: at least 4 of the 23 runnable tests. The Dafny
+//                     passes 19; the Python through the same round-trip
+//                     passes 23.
+//   cause           : translation
+//   control         : batches/gate-audit/control.py, 2026-09-21
+//   note            : filed here as the review queue, not as a label dispute.
+//                     What is disputed is the code. Moving it back to
+//                     solutions/ needs 23/23 on the runnable tests plus an
+//                     entry in data/gate_exempt.jsonl for the other 19.
+//
 // 697_B. Barnicle  (problem 1950, solution 1950_47)
 // time complexity: O(n**2)
 // python exact-diff baseline: exact

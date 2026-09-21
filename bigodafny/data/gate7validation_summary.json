@@ -1,0 +1,12 @@
+{
+  "build": 0,
+  "dafny_version": "4.11.0",
+  "error": 0,
+  "fail": 6,
+  "tiers": [
+    "public_tests",
+    "private_tests"
+  ],
+  "valid": 0,
+  "validated": 6
+}

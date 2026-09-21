@@ -1,3 +1,16 @@
+// GATE EXEMPT -- `validate.py` records `fail`; the translation is not at fault.
+//
+//   tests stored    : 12
+//   runnable        : 10   (Dafny passes all 10)
+//   unparseable     : 2    the problem's own Input.from_str raises on them
+//   cause           : 2 stored tests declare n = 4 and supply 3 text lines, so
+//                     `assert len(text_list) == n` fails before either the
+//                     Python or the Dafny is run
+//   control         : batches/gate-audit/control.py, 2026-09-21 -- the original
+//                     Python through the same dataclass round-trip also passes
+//                     10 and cannot run the other 2
+//   record          : data/gate_exempt.jsonl
+//
 // 53_A. Autocomplete  (problem 1196, solution 1196_100)
 // time complexity: O(nlogn)
 // python exact-diff baseline: exact
