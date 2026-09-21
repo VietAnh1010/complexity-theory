@@ -1,4 +1,13 @@
-# `prove-sample-3/` — the label stops predicting difficulty
+# `prove-sample-3/` — 39 of 50, and one claim that did not hold
+
+> **Correction, 2026-09-21.** This file was titled "the label stops predicting
+> difficulty" and argued that `O(nlogn)` had overtaken `O(n)`. **Campaign 4 did
+> not reproduce it.** `O(n)` came back at 21/25 and `O(nlogn)` at 7/10; pooled
+> over four campaigns they are 86% and 66%, which is campaign 1's ordering.
+> The crossover below was read off two swings in cells of 12 to 18 rows. The
+> section is kept as written, with its numbers intact, because the error is
+> worth seeing; the conclusion it draws is withdrawn. What did hold is the
+> `value-to-size` obstacle, which campaign 4's agents named independently.
 
 50 rows from the 250 in `solutions/` that carry a label, pass their gate, and
 had no proof. Seed **2026092102**. Three Sonnet agents, one slice each,

@@ -26,7 +26,7 @@ it means and how a row leaves it. A row is in exactly one.
 | `solutions-untranslated/` | 4 | it will not be translated; the file says why |
 
 `solutions-proved/` is **not** part of that partition — it holds instrumented
-copies (151 files over 149 rows, 2 of them tight-bound variants under `nlogn/`)
+copies (189 files over 187 rows, 2 of them tight-bound variants under `nlogn/`)
 of rows that also live above. A row can exist in two places with different preconditions;
 `precheck.py`'s `find_all` exists for that.
 
@@ -156,12 +156,25 @@ records them and the two rows the decision unblocked.
 
 **The convention settled how to count a value; it did not make the proofs
 easy.** Connecting a value-bounded cost back to a bound in the row's size is
-now the single most common reason a proof fails — 4 of 11 in `prove-sample-3`,
-coded `value-to-size`. Each needs its own arithmetic lemma (`Pow10Mono`, a
-doubling-search invariant, a triangular-number bound), and none of it carries
-to the next row. Contrast `O(nlogn)`, whose difficulty was scaffolding: paid
-once, then reused, and its rate climbed 5/11 → 7/11 → 10/12 across the three
-campaigns while `O(n)` fell 24/24 → 20/23 → 12/18.
+the single most common reason a proof fails: 4 of 11 in `prove-sample-3` and
+5 of 12 in `prove-sample-4`, coded `value-to-size`. Each needs its own
+arithmetic lemma (`Pow10Mono`, a doubling-search invariant, a triangular-number
+bound, a sortedness fact the prelude does not have), and none of it carries to
+the next row.
+
+> **Corrected 2026-09-21.** After campaign 3 this file claimed the label had
+> stopped predicting difficulty, `O(nlogn)` climbing 5/11 → 7/11 → 10/12 while
+> `O(n)` fell 24/24 → 20/23 → 12/18. **Campaign 4 did not reproduce it**:
+> `O(n)` came back at 21/25 and `O(nlogn)` at 7/10. Pooled over four campaigns
+> `O(n)` is 77/90 = 86% and `O(nlogn)` is 29/44 = 66% — campaign 1's ordering,
+> less extreme than it looked. Campaign 3's `O(n)` cell tests at p = 0.036
+> against the pooled rate, which does not survive the eight comparisons the
+> table invites. A class holds 8 to 25 rows per campaign, so two rows move the
+> rate ten points. `collect.py`'s `campaign_series` now reports the pooled rate
+> and a per-cell binomial test; read that, not one campaign's column.
+
+What does survive is the obstacle, not the rate. `value-to-size` was named
+independently by campaign 4's agents, none of which had seen campaign 3.
 
 ## The cost model is stipulated, not measured
 

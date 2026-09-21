@@ -139,6 +139,52 @@ def difficulty(pv_rows):
     }
 
 
+def campaign_series(campaigns):
+    """Per-label rate across every campaign, with a binomial test per cell.
+
+    A single campaign's table is 8 to 25 rows per label class, so a swing of
+    two rows moves the rate by ten points. After campaign 3 this project
+    reported a crossover -- O(nlogn) overtaking O(n) -- from exactly such a
+    swing. Campaign 4 did not reproduce it. The test here is the check that
+    was missing: how surprising is each cell under the pooled rate for its
+    label? Nothing below p = 0.05 on a single cell survives the eight-odd
+    comparisons anyone eyeballing this table is implicitly making.
+    """
+    from math import comb
+
+    def two_sided(k, n, p):
+        if n == 0:
+            return None
+        pk = comb(n, k) * p ** k * (1 - p) ** (n - k)
+        return sum(comb(n, i) * p ** i * (1 - p) ** (n - i)
+                   for i in range(n + 1)
+                   if comb(n, i) * p ** i * (1 - p) ** (n - i) <= pk * 1.0000001)
+
+    labels = sorted({lab for c in campaigns for lab in c.get("by_label", {})})
+    out = {}
+    for lab in labels:
+        cells = [c.get("by_label", {}).get(lab) for c in campaigns]
+        tp = sum(x["proved"] for x in cells if x)
+        td = sum(x["drawn"] for x in cells if x)
+        out[lab] = {
+            "pooled": {"proved": tp, "drawn": td,
+                       "rate": round(tp / td, 4) if td else None},
+            "by_campaign": [
+                None if not x else {
+                    "proved": x["proved"], "drawn": x["drawn"],
+                    "p_vs_pooled": (round(two_sided(x["proved"], x["drawn"], tp / td), 4)
+                                    if td else None)}
+                for x in cells],
+        }
+    return {
+        "campaigns": len(campaigns),
+        "note": ("Per-campaign cells are small. Read the pooled column; treat a "
+                 "single campaign's swing as noise unless p is small AND the "
+                 "next campaign reproduces it."),
+        "by_label": out,
+    }
+
+
 def relation_of(sid, traj_row, rel):
     """confirms | looser-slack | looser-structural | contradicts | unresolved.
 
@@ -259,6 +305,12 @@ def main():
     p3_rel = {r["solution_id"]: r for r in jsonl(p3 / "label_relation.jsonl")}
     p3_obst = {r["solution_id"]: r for r in jsonl(p3 / "obstacles.jsonl")}
 
+    p4 = HERE / "batches/prove-sample-4"
+    p4_manifest = jsonl(p4 / "manifest.jsonl")
+    p4_traj = [r for f in sorted(p4.glob("traj_*.jsonl")) for r in jsonl(f)]
+    p4_rel = {r["solution_id"]: r for r in jsonl(p4 / "label_relation.jsonl")}
+    p4_obst = {r["solution_id"]: r for r in jsonl(p4 / "obstacles.jsonl")}
+
     dirs = {d.name: sum(1 for _ in d.rglob("*.dfy"))
             for d in sorted(HERE.glob("solutions*")) if d.is_dir()}
 
@@ -287,6 +339,8 @@ def main():
                        meta={"seed": 20260921, "pool": 287}, obst=p2_obst)
     pv3 = prove_sample(p3_manifest, p3_traj, p3_rel, depth,
                        meta={"seed": 2026092102, "pool": 250}, obst=p3_obst)
+    pv4 = prove_sample(p4_manifest, p4_traj, p4_rel, depth,
+                       meta={"seed": 2026092103, "pool": 211}, obst=p4_obst)
     # All three agents were killed mid-slice by a session rate limit and
     # resumed on the remaining rows only. Recorded because it affects nothing
     # about the outcomes and everything about reproducing the run.
@@ -351,10 +405,12 @@ def main():
         "prove_sample": pv,
         "prove_sample_2": pv2,
         "prove_sample_3": pv3,
-        "proofs_all": proofs_all(depth, ds, pv.get("rows", [])
-                                 + pv2.get("rows", []) + pv3.get("rows", [])),
+        "prove_sample_4": pv4,
+        "campaign_series": campaign_series([pv, pv2, pv3, pv4]),
+        "proofs_all": proofs_all(depth, ds, pv.get("rows", []) + pv2.get("rows", [])
+                                 + pv3.get("rows", []) + pv4.get("rows", [])),
         "difficulty": difficulty(pv.get("rows", []) + pv2.get("rows", [])
-                                 + pv3.get("rows", [])),
+                                 + pv3.get("rows", []) + pv4.get("rows", [])),
 
         "stale_record_finding": {
             "before": {"rows": 362, "recorded_failing": 12,
@@ -408,6 +464,11 @@ def main():
           f"{v['fully_verified_incl_termination']} incl. termination")
     print(f"  sample: {payload['sample']['drawn']} rows, "
           f"{payload['sample']['attempts_consumed']} attempts consumed")
+    p4 = payload["prove_sample_4"]
+    print(f"  proofs-4: {p4['proved']} proved / {p4['attempted']} attempted "
+          f"of {p4['drawn']} drawn, pool {p4['pool']}")
+    print(f"            relations {p4['relations']}")
+    print(f"            obstacles {p4['obstacles']}")
     p3 = payload["prove_sample_3"]
     print(f"  proofs-3: {p3['proved']} proved / {p3['attempted']} attempted "
           f"of {p3['drawn']} drawn, pool {p3['pool']}")

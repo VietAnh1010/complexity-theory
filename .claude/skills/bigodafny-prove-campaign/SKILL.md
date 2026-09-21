@@ -144,12 +144,17 @@ the refreshed `data/`. Push to the session's designated branch.
   invariant would not hold; which multiplication the solver refused. Codes used
   so far: `value-to-size`, `z3-nonlinear`, `invariant-gap`, `decreases-star`,
   `recursion-depth`, `budget`.
-- **Compare the per-label rate against earlier campaigns, not just its own.**
-  Across three runs `O(nlogn)` climbed 5/11 → 7/11 → 10/12 while `O(n)` fell
-  24/24 → 20/23 → 12/18. Sort difficulty was scaffolding — paid once, then
-  reused from the corpus. The linear failures are `value-to-size`: each needs
-  its own arithmetic lemma and nothing carries to the next row. A single
-  campaign's table cannot show that.
+- **Never read a trend off one campaign's per-label table.** A class holds 8
+  to 25 rows, so two rows move the rate ten points. After campaign 3 this
+  project reported a crossover — `O(nlogn)` overtaking `O(n)` — and campaign 4
+  did not reproduce it. Pooled over four campaigns `O(n)` is 86% and
+  `O(nlogn)` 66%, the ordering campaign 1 found. Read
+  `campaign_series.by_label[...].pooled` in `data/artifact_data.json`, and
+  treat a single cell's `p_vs_pooled` as noise unless the next campaign
+  reproduces it.
+- **Obstacles generalise where rates do not.** `value-to-size` was named
+  independently by campaign 4's agents, none of which had seen campaign 3. A
+  recurring named obstacle is a stronger finding than a moving rate.
 - **Never weaken a proof to match a label.**
 - **No `assume`, no `decreases *`**, corpus-wide. `proofs.py` greps for both.
 - **Agents never touch** `solutions/`, `validate.py`, `difftest.py`,

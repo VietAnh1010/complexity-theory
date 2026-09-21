@@ -1,0 +1,68 @@
+// 621_B. Wet Shark and Bishops  (problem 750, solution 750_51)
+// time complexity: O(n)
+// python exact-diff baseline: exact
+//
+// Reproduce the Python program's entire stdout in `output`.
+//
+// --- Python ---------------------------------------------------------
+// n = int(input())
+//
+//
+// a = [0] * 2001
+// b = [0] * 2001
+// for i in range(n):
+//     x, y = map(int, input().split())
+//     a[x - y] += 1
+//     b[x + y] += 1
+//
+// ans = 0
+// for i in range(2001):
+//     ans += a[i] * (a[i] - 1) // 2
+//     ans += b[i] * (b[i] - 1) // 2
+//
+// print(ans)
+// --------------------------------------------------------------------
+
+include "../../prelude.dfy"
+import opened Prelude
+
+method Solve(n: int, data_points: seq<(int, int)>) returns (output: string, ghost steps: nat)
+  ensures steps <= 8 * |data_points| + 12010
+{
+  steps := 1;
+  var aArr := seq(2001, _ => 0);
+  var bArr := seq(2001, _ => 0);
+  var i := 0;
+  ghost var base1 := steps;
+  while i < |data_points|
+    invariant |aArr| == 2001 && |bArr| == 2001
+    invariant 0 <= i <= |data_points|
+    invariant steps <= base1 + 8 * i
+    decreases |data_points| - i
+  {
+    var x := data_points[i].0;
+    var y := data_points[i].1;
+    var idxA := FloorMod(x - y, 2001);
+    var idxB := FloorMod(x + y, 2001);
+    aArr := aArr[idxA := aArr[idxA] + 1];
+    bArr := bArr[idxB := bArr[idxB] + 1];
+    i := i + 1;
+    steps := steps + 8;
+  }
+  var ans := 0;
+  i := 0;
+  ghost var base2 := steps;
+  while i < 2001
+    invariant |aArr| == 2001 && |bArr| == 2001
+    invariant 0 <= i <= 2001
+    invariant steps <= base2 + 6 * i
+    decreases 2001 - i
+  {
+    ans := ans + aArr[i]*(aArr[i]-1)/2;
+    ans := ans + bArr[i]*(bArr[i]-1)/2;
+    i := i + 1;
+    steps := steps + 6;
+  }
+  output := IntToString(ans);
+  steps := steps + 1;
+}
