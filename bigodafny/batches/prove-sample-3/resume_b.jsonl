@@ -1,0 +1,3 @@
+{"solution_id": "1047_26", "path": "solutions/1047/1047_26.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "1453_211", "path": "solutions/1453/1453_211.dfy", "label": "O(nlogn)", "split": "strict", "gate": "valid"}
+{"solution_id": "305_76", "path": "solutions/305/305_76.dfy", "label": "O(nlogn+mlogm)", "split": "strict", "gate": "valid"}

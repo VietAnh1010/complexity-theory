@@ -1,0 +1,4 @@
+{"solution_id": "2926_54", "path": "solutions/2926/2926_54.dfy", "label": "O(n**2)", "split": "strict", "gate": "valid"}
+{"solution_id": "348_33", "path": "solutions/348/348_33.dfy", "label": "O(n**2)", "split": "strict", "gate": "valid"}
+{"solution_id": "457_38", "path": "solutions/457/457_38.dfy", "label": "O(n**2)", "split": "loose", "gate": "agrees"}
+{"solution_id": "804_10", "path": "solutions/804/804_10.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
