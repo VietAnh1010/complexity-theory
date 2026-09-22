@@ -1,3 +1,13 @@
+// VALUE-BOUNDED -- filed for review; the proof carries a term the label omits.
+//
+//   This proof's bound depends on the MAGNITUDE of an input, not only on how
+//   many inputs there are. BigOBench fitted the label by profiling, which
+//   treats a capped value as constant; COMPLEXITY.md section 1 decides the
+//   opposite, so the two disagree here by construction.
+//
+//   See solutions-proved/value-bounded/README.md for the category and
+//   MANIFEST.jsonl for this row's entry.
+//
 // 1203_F1. Complete the Projects (easy version)  (problem 2128, solution 2128_34)
 // time complexity: O(n**2)
 // python exact-diff baseline: none
@@ -32,7 +42,7 @@
 // print(ans)
 // --------------------------------------------------------------------
 
-include "../../prelude.dfy"
+include "../../../prelude.dfy"
 import opened Prelude
 
 // The second of two `array<T>` rows left in `solutions/`; see `2826_42.dfy` for

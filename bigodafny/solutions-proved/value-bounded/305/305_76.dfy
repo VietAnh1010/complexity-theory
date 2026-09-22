@@ -1,3 +1,13 @@
+// VALUE-BOUNDED -- filed for review; the proof carries a term the label omits.
+//
+//   This proof's bound depends on the MAGNITUDE of an input, not only on how
+//   many inputs there are. BigOBench fitted the label by profiling, which
+//   treats a capped value as constant; COMPLEXITY.md section 1 decides the
+//   opposite, so the two disagree here by construction.
+//
+//   See solutions-proved/value-bounded/README.md for the category and
+//   MANIFEST.jsonl for this row's entry.
+//
 // 350_A. TL  (problem 305, solution 305_76)
 // time complexity: O(nlogn+mlogm)
 // python exact-diff baseline: exact
@@ -22,7 +32,7 @@
 //     print(i)
 // --------------------------------------------------------------------
 
-include "../../prelude.dfy"
+include "../../../prelude.dfy"
 import opened Prelude
 
 lemma MergeLength<T>(a: seq<T>, b: seq<T>, less: (T, T) -> bool)

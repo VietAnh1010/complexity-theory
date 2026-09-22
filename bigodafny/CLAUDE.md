@@ -26,7 +26,8 @@ it means and how a row leaves it. A row is in exactly one.
 | `solutions-untranslated/` | 4 | it will not be translated; the file says why |
 
 `solutions-proved/` is **not** part of that partition — it holds instrumented
-copies (189 files over 187 rows, 2 of them tight-bound variants under `nlogn/`)
+copies (189 files over 187 rows: 2 tight-bound variants under `nlogn/`, 11
+value-bounded rows queued for review under `value-bounded/`)
 of rows that also live above. A row can exist in two places with different preconditions;
 `precheck.py`'s `find_all` exists for that.
 
@@ -176,6 +177,30 @@ the next row.
 
 What does survive is the obstacle, not the rate. `value-to-size` was named
 independently by campaign 4's agents, none of which had seen campaign 3.
+
+### Where these rows go
+
+`solutions-proved/value-bounded/` collects them, 18 so far. It is an **overlay
+subdirectory** like `nlogn/`, not a partition member: the row stays wherever
+the partition puts it, and `MANIFEST.jsonl` records its `row` path.
+
+File a row there whenever a campaign produces either:
+
+| from | condition | what to do |
+|---|---|---|
+| `label_relation.jsonl` | `relation: looser-structural` **and** the reason names an input value | `git mv` its proof from `solutions-proved/<pid>/` into `value-bounded/<pid>/`, fix the `include` path to `../../../prelude.dfy`, add the `VALUE-BOUNDED` header |
+| `obstacles.jsonl` | `obstacle: value-to-size` | no proof exists — add the row to `MANIFEST.jsonl` with `status: unresolved` |
+
+Append to `MANIFEST.jsonl` either way, naming the campaign that found it.
+Nothing leaves that directory except by a reviewer's decision; the three exits
+are in its README. Do not relax the convention for one row.
+
+**`prelude.dfy` has no sortedness lemma**, and that is the one piece of work
+here that would transfer. `Sort` proves only `SortIsPermutation` — its output
+is a rearrangement of its input — never that the output is ordered. So no proof
+can say "the last element is the maximum". `2423_48` fails on exactly that: its
+trip count is `d[|d|-1].0 + 2` and cannot even be named. A `SortIsSorted` lemma
+would unblock it and every row shaped like it.
 
 ## The cost model is stipulated, not measured
 

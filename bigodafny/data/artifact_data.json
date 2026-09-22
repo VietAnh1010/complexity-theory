@@ -1,6 +1,6 @@
 {
-  "generated": "2026-09-21T15:09:40+00:00",
-  "commit": "5bfae89",
+  "generated": "2026-09-22T05:59:32+00:00",
+  "commit": "c210888",
   "branch": "claude/bigobench-python-dafny-dataset-ts4tm5",
   "toolchain": {
     "dafny": "4.11.0",
@@ -4985,16 +4985,6 @@
         "recursive": true
       },
       {
-        "solution_id": "1484_26",
-        "file": "solutions-proved/1484/1484_26.dfy",
-        "era": "campaign",
-        "tight_variant": false,
-        "label": "O(n)",
-        "bound": "6 * |numbers| * MaxLen(numbers) + 4 * MaxLen(numbers) + 6",
-        "call_depth": null,
-        "recursive": null
-      },
-      {
         "solution_id": "1484_82",
         "file": "solutions-proved/1484/1484_82.dfy",
         "era": "pre-axiom",
@@ -5175,16 +5165,6 @@
         "recursive": true
       },
       {
-        "solution_id": "1820_180",
-        "file": "solutions-proved/1820/1820_180.dfy",
-        "era": "campaign",
-        "tight_variant": false,
-        "label": "O(n)",
-        "bound": "2 + (|d_list| + 4) * (|d_list| + 2)",
-        "call_depth": 2,
-        "recursive": true
-      },
-      {
         "solution_id": "1855_33",
         "file": "solutions-proved/1855/1855_33.dfy",
         "era": "campaign",
@@ -5222,16 +5202,6 @@
         "label": "O(n**2)",
         "bound": "5 * |a_list| * |a_list| + 3 * |a_list| + 5",
         "call_depth": 2,
-        "recursive": true
-      },
-      {
-        "solution_id": "1867_16",
-        "file": "solutions-proved/1867/1867_16.dfy",
-        "era": "campaign",
-        "tight_variant": false,
-        "label": "O(n)",
-        "bound": "2 + 2 * n * 500001 + 2 * SumPos(numbers, 0, n)",
-        "call_depth": 1,
         "recursive": true
       },
       {
@@ -5465,16 +5435,6 @@
         "recursive": true
       },
       {
-        "solution_id": "2128_34",
-        "file": "solutions-proved/2128/2128_34.dfy",
-        "era": "campaign",
-        "tight_variant": false,
-        "label": "O(n**2)",
-        "bound": "4 * |data_list| * |data_list| + 20 * |data_list| + 3 * r_final + 6 * span_total + 20",
-        "call_depth": 2,
-        "recursive": true
-      },
-      {
         "solution_id": "2166_288",
         "file": "solutions-proved/2166/2166_288.dfy",
         "era": "pre-axiom",
@@ -5593,26 +5553,6 @@
         "bound": "6 * a + 6",
         "call_depth": 2,
         "recursive": true
-      },
-      {
-        "solution_id": "2358_421",
-        "file": "solutions-proved/2358/2358_421.dfy",
-        "era": "campaign",
-        "tight_variant": false,
-        "label": "O(n)",
-        "bound": "2 + 10 * |a_list| + 2 * SumPos(a_list, |a_list|)",
-        "call_depth": 2,
-        "recursive": true
-      },
-      {
-        "solution_id": "2381_156",
-        "file": "solutions-proved/2381/2381_156.dfy",
-        "era": "campaign",
-        "tight_variant": false,
-        "label": "O(1)",
-        "bound": "2 * |IntToString(n)| + 6",
-        "call_depth": null,
-        "recursive": null
       },
       {
         "solution_id": "2394_227",
@@ -5755,16 +5695,6 @@
         "recursive": true
       },
       {
-        "solution_id": "2607_90",
-        "file": "solutions-proved/2607/2607_90.dfy",
-        "era": "campaign",
-        "tight_variant": false,
-        "label": "O(n)",
-        "bound": "6 * n + 400 +",
-        "call_depth": null,
-        "recursive": null
-      },
-      {
         "solution_id": "2610_51",
         "file": "solutions-proved/2610/2610_51.dfy",
         "era": "campaign",
@@ -5831,16 +5761,6 @@
         "tight_variant": false,
         "label": "O(n)",
         "bound": "|values| + 6",
-        "call_depth": 2,
-        "recursive": true
-      },
-      {
-        "solution_id": "276_610",
-        "file": "solutions-proved/276/276_610.dfy",
-        "era": "campaign",
-        "tight_variant": false,
-        "label": "O(n)",
-        "bound": "13 * n + BoundFor(abc_list[..(if n < |abc_list| then n else |abc_list|)]) + 2",
         "call_depth": 2,
         "recursive": true
       },
@@ -6052,16 +5972,6 @@
         "label": "O(n+m)",
         "bound": "2 * |c_list| + |d_list| + 4",
         "call_depth": 2,
-        "recursive": true
-      },
-      {
-        "solution_id": "305_76",
-        "file": "solutions-proved/305/305_76.dfy",
-        "era": "campaign",
-        "tight_variant": false,
-        "label": "O(nlogn+mlogm)",
-        "bound": "2 * |c_list| * |c_list| + 2 * |d_list| * |d_list| + 4 * |c_list| + 4 * |d_list|",
-        "call_depth": 3,
         "recursive": true
       },
       {
@@ -6395,16 +6305,6 @@
         "recursive": true
       },
       {
-        "solution_id": "704_351",
-        "file": "solutions-proved/704/704_351.dfy",
-        "era": "campaign",
-        "tight_variant": false,
-        "label": "O(1)",
-        "bound": "2 * FuelInit(b) + 10",
-        "call_depth": 2,
-        "recursive": true
-      },
-      {
         "solution_id": "71_257",
         "file": "solutions-proved/71/71_257.dfy",
         "era": "campaign",
@@ -6443,16 +6343,6 @@
         "bound": "10 * n_edges + 10",
         "call_depth": 2,
         "recursive": true
-      },
-      {
-        "solution_id": "810_131",
-        "file": "solutions-proved/810/810_131.dfy",
-        "era": "campaign",
-        "tight_variant": false,
-        "label": "O(n)",
-        "bound": "2 * CeilLog2(x + 1) + 4",
-        "call_depth": null,
-        "recursive": null
       },
       {
         "solution_id": "827_148",
@@ -6553,6 +6443,116 @@
         "bound": "2 * n * (CeilLog2(n) + 1) + 2 * n + 4",
         "call_depth": 3,
         "recursive": true
+      },
+      {
+        "solution_id": "1484_26",
+        "file": "solutions-proved/value-bounded/1484/1484_26.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "6 * |numbers| * MaxLen(numbers) + 4 * MaxLen(numbers) + 6",
+        "call_depth": null,
+        "recursive": null
+      },
+      {
+        "solution_id": "1820_180",
+        "file": "solutions-proved/value-bounded/1820/1820_180.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "2 + (|d_list| + 4) * (|d_list| + 2)",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1867_16",
+        "file": "solutions-proved/value-bounded/1867/1867_16.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "2 + 2 * n * 500001 + 2 * SumPos(numbers, 0, n)",
+        "call_depth": 1,
+        "recursive": true
+      },
+      {
+        "solution_id": "2128_34",
+        "file": "solutions-proved/value-bounded/2128/2128_34.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n**2)",
+        "bound": "4 * |data_list| * |data_list| + 20 * |data_list| + 3 * r_final + 6 * span_total + 20",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "2358_421",
+        "file": "solutions-proved/value-bounded/2358/2358_421.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "2 + 10 * |a_list| + 2 * SumPos(a_list, |a_list|)",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "2381_156",
+        "file": "solutions-proved/value-bounded/2381/2381_156.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(1)",
+        "bound": "2 * |IntToString(n)| + 6",
+        "call_depth": null,
+        "recursive": null
+      },
+      {
+        "solution_id": "2607_90",
+        "file": "solutions-proved/value-bounded/2607/2607_90.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "6 * n + 400 +",
+        "call_depth": null,
+        "recursive": null
+      },
+      {
+        "solution_id": "276_610",
+        "file": "solutions-proved/value-bounded/276/276_610.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "13 * n + BoundFor(abc_list[..(if n < |abc_list| then n else |abc_list|)]) + 2",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "305_76",
+        "file": "solutions-proved/value-bounded/305/305_76.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(nlogn+mlogm)",
+        "bound": "2 * |c_list| * |c_list| + 2 * |d_list| * |d_list| + 4 * |c_list| + 4 * |d_list|",
+        "call_depth": 3,
+        "recursive": true
+      },
+      {
+        "solution_id": "704_351",
+        "file": "solutions-proved/value-bounded/704/704_351.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(1)",
+        "bound": "2 * FuelInit(b) + 10",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "810_131",
+        "file": "solutions-proved/value-bounded/810/810_131.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "2 * CeilLog2(x + 1) + 4",
+        "call_depth": null,
+        "recursive": null
       }
     ]
   },

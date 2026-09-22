@@ -124,8 +124,8 @@ def build():
             # Deliberately not translated; the file states why.
             "untranslatable": (UNTRANSLATED / t["problem_id"] /
                                f'{t["solution_id"]}.dfy').exists(),
-            "complexity_proved": (PROVED / t["problem_id"] /
-                                  f'{t["solution_id"]}.dfy').exists(),
+            "complexity_proved": any(
+                PROVED.rglob(f'{t["solution_id"]}.dfy')),
             # `dafny verify` with no user spec: seq bounds, division, termination.
             "safety_verified": verif.get(t["solution_id"], {}).get("verified"),
             "safety_failure": verif.get(t["solution_id"], {}).get("kind"),

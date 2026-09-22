@@ -49,6 +49,13 @@ PROVED = ROOT / "solutions-proved"
 # proof and not a status of its own. The simpler quadratic proof survives at
 # solutions-proved/<pid>/<sid>.dfy alongside it.
 PROVED_NLOGN = PROVED / "nlogn"
+# Rows whose proved bound depends on the MAGNITUDE of an input, not only on how
+# many inputs there are. Queued for review: BigOBench fitted its labels by
+# profiling, which treats a capped value as constant, and COMPLEXITY.md
+# section 1 decides the opposite, so the two disagree here by construction.
+# A variant subdirectory like nlogn/, not a status of its own -- the row still
+# lives wherever the partition puts it.
+PROVED_VALUE = PROVED / "value-bounded"
 
 PRELUDE = ROOT / "prelude.dfy"
 

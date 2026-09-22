@@ -1,3 +1,13 @@
+// VALUE-BOUNDED -- filed for review; the proof carries a term the label omits.
+//
+//   This proof's bound depends on the MAGNITUDE of an input, not only on how
+//   many inputs there are. BigOBench fitted the label by profiling, which
+//   treats a capped value as constant; COMPLEXITY.md section 1 decides the
+//   opposite, so the two disagree here by construction.
+//
+//   See solutions-proved/value-bounded/README.md for the category and
+//   MANIFEST.jsonl for this row's entry.
+//
 // 1385_A. Three Pairwise Maximums  (problem 276, solution 276_610)
 // time complexity: O(n)
 // python exact-diff baseline: partial
@@ -21,7 +31,7 @@
 // 		print(min({x, y, z}), min({x, y, z}), max({x, y, z}))
 // --------------------------------------------------------------------
 
-include "../../prelude.dfy"
+include "../../../prelude.dfy"
 import opened Prelude
 
 function Min2(a: int, b: int): int { if a < b then a else b }

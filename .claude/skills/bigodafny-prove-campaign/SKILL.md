@@ -155,6 +155,12 @@ the refreshed `data/`. Push to the session's designated branch.
 - **Obstacles generalise where rates do not.** `value-to-size` was named
   independently by campaign 4's agents, none of which had seen campaign 3. A
   recurring named obstacle is a stronger finding than a moving rate.
+- **File value-bounded rows before you write the README.** A proved row whose
+  `looser-structural` reason names an input VALUE, and any row whose obstacle
+  is `value-to-size`, goes into `solutions-proved/value-bounded/` — proof file
+  moved for the first, manifest entry only for the second. That directory's
+  README has the procedure and the three ways a row leaves. Skipping this
+  leaves the finding scattered across batch directories where nobody joins it.
 - **Never weaken a proof to match a label.**
 - **No `assume`, no `decreases *`**, corpus-wide. `proofs.py` greps for both.
 - **Agents never touch** `solutions/`, `validate.py`, `difftest.py`,

@@ -14,7 +14,8 @@ import json, re, subprocess, sys
 from pathlib import Path
 
 from common import (DATA, UNSCREENED, PROVED_NLOGN, SOLUTIONS, UNVERIFIED, PROVED,
-                    log, read_jsonl, write_jsonl, DISPUTED, UNGATEABLE)
+                    log, read_jsonl, write_jsonl, DISPUTED, UNGATEABLE,
+                    PROVED_VALUE)
 from signature import input_fields
 
 # solutions-proved/ and solutions-proved/nlogn/ were missing here, so the twelve
@@ -23,8 +24,8 @@ from signature import input_fields
 # bound provable. Two of the twelve turned out to exclude inputs their own
 # row answers. A gate that skips the files most likely to need it is not a
 # gate.
-ROOTS = [SOLUTIONS, UNVERIFIED, UNSCREENED, PROVED, PROVED_NLOGN, DISPUTED,
-         UNGATEABLE]
+ROOTS = [SOLUTIONS, UNVERIFIED, UNSCREENED, PROVED, PROVED_NLOGN, PROVED_VALUE,
+         DISPUTED, UNGATEABLE]
 
 
 def find(sid, pid):

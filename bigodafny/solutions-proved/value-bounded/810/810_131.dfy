@@ -1,3 +1,13 @@
+// VALUE-BOUNDED -- filed for review; the proof carries a term the label omits.
+//
+//   This proof's bound depends on the MAGNITUDE of an input, not only on how
+//   many inputs there are. BigOBench fitted the label by profiling, which
+//   treats a capped value as constant; COMPLEXITY.md section 1 decides the
+//   opposite, so the two disagree here by construction.
+//
+//   See solutions-proved/value-bounded/README.md for the category and
+//   MANIFEST.jsonl for this row's entry.
+//
 // p03388 AtCoder Beginner Contest 093 - Worst Case  (problem 810, solution 810_131)
 // time complexity: O(n)
 // python exact-diff baseline: exact
@@ -22,7 +32,7 @@
 //     print(2*t-1)
 // --------------------------------------------------------------------
 
-include "../../prelude.dfy"
+include "../../../prelude.dfy"
 import opened Prelude
 
 // IntSqrt is a binary search over the VALUE a*b, not over q = |pairs|. Its

@@ -248,3 +248,15 @@ The append side condition is gone with the axioms — `s + [x]` is charged `1`
 unconditionally now, so a proof no longer has to state that the accumulator is
 not indexed inside the loop. That condition was about the backend's lazy concat
 node, and the backend is no longer what the charges describe.
+
+## When the bound carries an input value
+
+If your proved bound depends on the MAGNITUDE of an input rather than on how
+many inputs there are, the row is `looser-structural`, not `confirms`, and it
+belongs in `solutions-proved/value-bounded/`. Read that directory's README
+before deciding; it has the procedure, the manifest format, and the three ways
+a row leaves.
+
+`prelude.dfy`'s `Sort` proves `SortIsPermutation` and nothing about order, so
+no proof can currently say "the last element after sorting is the maximum". If
+a bound needs that, say so and stop — do not work around it with an `assume`.
