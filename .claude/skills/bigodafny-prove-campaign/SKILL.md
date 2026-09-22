@@ -157,8 +157,10 @@ the refreshed `data/`. Push to the session's designated branch.
   recurring named obstacle is a stronger finding than a moving rate.
 - **File value-bounded rows before you write the README.** A proved row whose
   `looser-structural` reason names an input VALUE, and any row whose obstacle
-  is `value-to-size`, goes into `solutions-proved/value-bounded/` — proof file
-  moved for the first, manifest entry only for the second. That directory's
+  is `value-to-size`, gets filed. The proved row's file moves into
+  `solutions-proved/value-bounded/`; the unproved row goes to
+  `batches/value-bounded-open/`, because a row with no proof does not belong
+  under a directory called `solutions-proved`. That directory's
   README has the procedure and the three ways a row leaves. Skipping this
   leaves the finding scattered across batch directories where nobody joins it.
 - **Never weaken a proof to match a label.**

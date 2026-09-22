@@ -378,6 +378,157 @@ module Prelude {
     SortIsPermutation(xs, (a: string, b: string) => StringLess(a, b));
   }
 
+  // ---- sortedness ---------------------------------------------------------
+  // Added 2026-09-22. Until then the only thing proved about Sort was that it
+  // is a permutation -- the output holds the same elements as the input --
+  // and nothing said the output was in ORDER. So no proof could say "the last
+  // element after sorting is the largest", and a loop whose trip count is
+  // `sorted[-1]` could not even be named, let alone bounded. That is what
+  // stopped solutions/2423/2423_48.dfy; see
+  // batches/value-bounded-open/README.md.
+  //
+  // `less` must be a strict total order for any of this to hold. The
+  // requirement is explicit rather than assumed: Merge picks b[0] when
+  // less(b[0], a[0]) and a[0] otherwise, so without totality a "tie" that is
+  // neither less nor equal breaks sortedness, and without irreflexivity an
+  // element is not <= itself.
+  ghost predicate StrictTotalOrder<T(!new)>(less: (T, T) -> bool)
+  {
+    && (forall x: T :: !less(x, x))
+    && (forall x: T, y: T, z: T :: less(x, y) && less(y, z) ==> less(x, z))
+    && (forall x: T, y: T :: x != y ==> less(x, y) || less(y, x))
+  }
+
+  ghost predicate IsSorted<T>(s: seq<T>, less: (T, T) -> bool)
+  {
+    forall i, j :: 0 <= i < j < |s| ==> !less(s[j], s[i])
+  }
+
+  lemma MergeElems<T>(a: seq<T>, b: seq<T>, less: (T, T) -> bool)
+    ensures forall x :: x in Merge(a, b, less) <==> x in a || x in b
+  {
+    MergeIsPermutation(a, b, less);
+    forall x ensures x in Merge(a, b, less) <==> x in a || x in b {
+      assert multiset(Merge(a, b, less))[x] == multiset(a)[x] + multiset(b)[x];
+    }
+  }
+
+  lemma HeadIsMin<T(!new)>(s: seq<T>, less: (T, T) -> bool)
+    requires StrictTotalOrder(less)   // irreflexivity is what covers x == s[0]
+    requires IsSorted(s, less)
+    requires |s| > 0
+    ensures forall x :: x in s ==> !less(x, s[0])
+  {
+    forall x | x in s ensures !less(x, s[0]) {
+      var i :| 0 <= i < |s| && s[i] == x;
+      if i > 0 { assert !less(s[i], s[0]); }
+    }
+  }
+
+  lemma LastIsMax<T(!new)>(s: seq<T>, less: (T, T) -> bool)
+    requires StrictTotalOrder(less)
+    requires IsSorted(s, less)
+    requires |s| > 0
+    ensures forall x :: x in s ==> !less(s[|s| - 1], x)
+  {
+    forall x | x in s ensures !less(s[|s| - 1], x) {
+      var i :| 0 <= i < |s| && s[i] == x;
+      if i < |s| - 1 { assert !less(s[|s| - 1], s[i]); }
+    }
+  }
+
+  lemma ConsSorted<T>(h: T, t: seq<T>, less: (T, T) -> bool)
+    requires IsSorted(t, less)
+    requires forall x :: x in t ==> !less(x, h)
+    ensures IsSorted([h] + t, less)
+  {
+    var s := [h] + t;
+    forall i, j | 0 <= i < j < |s| ensures !less(s[j], s[i]) {
+      if i == 0 { assert s[j] in t; }
+      else { assert s[i] == t[i-1] && s[j] == t[j-1]; }
+    }
+  }
+
+  lemma MergeIsSorted<T(!new)>(a: seq<T>, b: seq<T>, less: (T, T) -> bool)
+    requires StrictTotalOrder(less)
+    requires IsSorted(a, less) && IsSorted(b, less)
+    ensures IsSorted(Merge(a, b, less), less)
+    decreases |a| + |b|
+  {
+    if |a| == 0 || |b| == 0 { return; }
+    if less(b[0], a[0]) {
+      MergeIsSorted(a, b[1..], less);
+      MergeElems(a, b[1..], less);
+      HeadIsMin(a, less);
+      HeadIsMin(b, less);
+      forall x | x in Merge(a, b[1..], less) ensures !less(x, b[0]) {
+        if x in a {
+          assert !less(x, a[0]);
+          if less(x, b[0]) { assert less(x, a[0]); }   // b[0] < a[0] <= x
+        } else {
+          assert x in b[1..];
+          assert x in b;
+        }
+      }
+      ConsSorted(b[0], Merge(a, b[1..], less), less);
+    } else {
+      MergeIsSorted(a[1..], b, less);
+      MergeElems(a[1..], b, less);
+      HeadIsMin(a, less);
+      HeadIsMin(b, less);
+      forall x | x in Merge(a[1..], b, less) ensures !less(x, a[0]) {
+        if x in a[1..] { assert x in a; }
+        else {
+          assert x in b;
+          assert !less(x, b[0]);
+          if less(x, a[0]) { assert !less(b[0], a[0]); }
+        }
+      }
+      ConsSorted(a[0], Merge(a[1..], b, less), less);
+    }
+  }
+
+  lemma SortIsSorted<T(!new)>(s: seq<T>, less: (T, T) -> bool)
+    requires StrictTotalOrder(less)
+    ensures IsSorted(Sort(s, less), less)
+    decreases |s|
+  {
+    if |s| <= 1 { return; }
+    var k := |s| / 2;
+    SortIsSorted(s[..k], less);
+    SortIsSorted(s[k..], less);
+    MergeIsSorted(Sort(s[..k], less), Sort(s[k..], less), less);
+  }
+
+  // The usable corollary, and the one 2423_48 needs: after sorting, the last
+  // element is >= every element of the original sequence. A loop bounded by
+  // `sorted[|sorted|-1]` can now be tied back to the input.
+  lemma SortLastIsMax<T(!new)>(s: seq<T>, less: (T, T) -> bool)
+    requires StrictTotalOrder(less)
+    requires |s| > 0
+    ensures |Sort(s, less)| == |s|
+    ensures forall x :: x in s ==> !less(Sort(s, less)[|s| - 1], x)
+  {
+    SortIsSorted(s, less);
+    SortKeepsElems(s, less);
+    LastIsMax(Sort(s, less), less);
+  }
+
+  // int is the common case, so the order obligation is discharged once here.
+  lemma IntLessIsTotalOrder()
+    ensures StrictTotalOrder<int>((x, y) => x < y)
+  {}
+
+  lemma SortIntsIsSorted(s: seq<int>)
+    ensures IsSorted(SortInts(s), (x, y) => x < y)
+    ensures |SortInts(s)| == |s|
+    ensures |s| > 0 ==> forall x :: x in s ==> SortInts(s)[|s| - 1] >= x
+  {
+    IntLessIsTotalOrder();
+    SortIsSorted(s, (x, y) => x < y);
+    if |s| > 0 { SortLastIsMax(s, (x, y) => x < y); }
+  }
+
   function SortInts(s: seq<int>): seq<int>
     ensures |SortInts(s)| == |s|
   {

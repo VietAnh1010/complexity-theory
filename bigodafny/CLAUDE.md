@@ -186,21 +186,26 @@ the partition puts it, and `MANIFEST.jsonl` records its `row` path.
 
 File a row there whenever a campaign produces either:
 
-| from | condition | what to do |
+Two destinations, by whether a proof exists. A row with no proof does **not**
+go under a directory called `solutions-proved`:
+
+| from | condition | where it goes |
 |---|---|---|
-| `label_relation.jsonl` | `relation: looser-structural` **and** the reason names an input value | `git mv` its proof from `solutions-proved/<pid>/` into `value-bounded/<pid>/`, fix the `include` path to `../../../prelude.dfy`, add the `VALUE-BOUNDED` header |
-| `obstacles.jsonl` | `obstacle: value-to-size` | no proof exists — add the row to `MANIFEST.jsonl` with `status: unresolved` |
+| `label_relation.jsonl` | `relation: looser-structural` **and** the reason names an input value | `git mv` its proof from `solutions-proved/<pid>/` into `solutions-proved/value-bounded/<pid>/`, fix the `include` to `../../../prelude.dfy`, add the `VALUE-BOUNDED` header, append to that directory's `MANIFEST.jsonl` |
+| `obstacles.jsonl` | `obstacle: value-to-size` | no proof exists — append to `batches/value-bounded-open/MANIFEST.jsonl`, no file to move |
 
-Append to `MANIFEST.jsonl` either way, naming the campaign that found it.
-Nothing leaves that directory except by a reviewer's decision; the three exits
-are in its README. Do not relax the convention for one row.
+Name the campaign that found it either way. Nothing leaves either directory
+except by a reviewer's decision; the three exits are in their READMEs. Do not
+relax the convention for one row.
 
-**`prelude.dfy` has no sortedness lemma**, and that is the one piece of work
-here that would transfer. `Sort` proves only `SortIsPermutation` — its output
-is a rearrangement of its input — never that the output is ordered. So no proof
-can say "the last element is the maximum". `2423_48` fails on exactly that: its
-trip count is `d[|d|-1].0 + 2` and cannot even be named. A `SortIsSorted` lemma
-would unblock it and every row shaped like it.
+**`prelude.dfy` gained `SortIsSorted` and `SortLastIsMax` on 2026-09-22.**
+Until then `Sort` proved only `SortIsPermutation` — its output is a
+rearrangement of its input — and nothing said the output was ordered, so no
+proof could say "the last element is the maximum". `2423_48` failed on exactly
+that: its trip count is `d[|d|-1].0 + 2`, which could not even be named. The
+lemmas require `StrictTotalOrder(less)`; `IntLessIsTotalOrder` discharges that
+once for `int`, and `SortIntsIsSorted` is the ready-made corollary. `2423_48`
+has not been retried.
 
 ## The cost model is stipulated, not measured
 

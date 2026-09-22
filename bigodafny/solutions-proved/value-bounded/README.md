@@ -1,8 +1,8 @@
 # `value-bounded/` — the label counts items, the code follows magnitudes
 
-**18 rows queued for review.** 11 have a machine-checked proof here; 7 have no
-proof yet and are listed in `MANIFEST.jsonl` with the obstacle that stopped
-them.
+**11 rows, each with a machine-checked proof.** Rows in the same category with
+**no** proof do not belong under a directory named `solutions-proved`; they are
+in `batches/value-bounded-open/`, which has its own README and manifest.
 
 A row belongs here when its real cost depends on **how large** an input is,
 while its BigOBench label only counts **how many** inputs there are. The
@@ -44,34 +44,19 @@ followed on 2026-09-22. Being here is not the same as being disputed: this
 directory says *the proof carries a value term*, the disputed queue says
 *somebody should change the label*.
 
-## The failures do not transfer, and that is the finding
+## The failures do not transfer
 
-Six unresolved rows, six different pieces of arithmetic:
-
-| row | what it would need |
-|---|---|
-| `1948_388` | case-split invariants over `s*s` |
-| `1047_26` | `colNum < Pow10(maxlen)` chained through `Pow10Mono` |
-| `1944_50` | a doubling-search invariant over `Pow2` / `Log2` |
-| `2819_926` | `FloorDiv` and triangular-number bounds, four or five chained |
-| `2423_48` | a sortedness lemma, which `prelude.dfy` does not have |
-| `2926_50` | a hoisted constant for a product of 53 primes, plus monotonicity |
+That is the finding, and it lives in `batches/value-bounded-open/`, where the
+seven rows with no proof are listed with what each would need. Six rows, six
+different pieces of arithmetic; nothing carries from one to the next.
 
 Contrast `O(nlogn)`. Sorting was hard once; somebody wrote the `CeilLog2`
 recursion-tree argument, it went into the corpus, and later rows copied it —
 three did exactly that in `prove-sample-4`. One payment, many rows.
 
-Nothing like that exists here. Proving `1948_388` teaches you nothing about
-`2926_50`.
-
-`2423_48` is the sharpest case, because what is missing is not a proof but a
-**fact about the prelude**. Its loop runs to `d[|d|-1].0 + 2`, the largest
-first component after a sort. `prelude.dfy`'s `Sort` proves only that its
-output is a permutation of its input — `SortIsPermutation` — and never that the
-output is ordered. So Dafny cannot be told that the last element is the
-maximum, and the trip count cannot even be *named*, let alone bounded. Adding
-`SortIsSorted` to the prelude would unblock it and any row like it. That is the
-one piece of work here that would transfer.
+The single exception was `2423_48`, which needed a fact about the prelude
+rather than its own lemma. `SortIsSorted` and `SortLastIsMax` were added to
+`prelude.dfy` on 2026-09-22; the row has not been retried.
 
 ## How a row gets in
 
@@ -80,9 +65,9 @@ From a campaign, two ways:
 - `relation: looser-structural` in a batch's `label_relation.jsonl`, where the
   reason names an input **value**. Move its proof file here.
 - `obstacle: value-to-size` in a batch's `obstacles.jsonl`. No proof exists, so
-  add the row to `MANIFEST.jsonl` with `status: unresolved`.
+  the row goes to `batches/value-bounded-open/MANIFEST.jsonl`, **not** here.
 
-Either way, append to `MANIFEST.jsonl` and say which campaign found it.
+Either way, name the campaign that found it.
 
 ## How a row gets out
 

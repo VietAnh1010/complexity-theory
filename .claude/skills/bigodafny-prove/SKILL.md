@@ -257,6 +257,15 @@ belongs in `solutions-proved/value-bounded/`. Read that directory's README
 before deciding; it has the procedure, the manifest format, and the three ways
 a row leaves.
 
-`prelude.dfy`'s `Sort` proves `SortIsPermutation` and nothing about order, so
-no proof can currently say "the last element after sorting is the maximum". If
-a bound needs that, say so and stop — do not work around it with an `assume`.
+If the bound needs the sort's ORDER — "the last element after sorting is the
+largest" — the prelude has it as of 2026-09-22:
+
+```dafny
+IntLessIsTotalOrder();                  // discharges StrictTotalOrder for int
+SortIntsIsSorted(s);                    // IsSorted, length, and last >= every x
+```
+
+For a comparator other than `int`'s `<`, prove `StrictTotalOrder(less)` — it is
+irreflexivity, transitivity and totality — then call `SortIsSorted(s, less)` or
+`SortLastIsMax(s, less)`. Never reach for an `assume` to skip that obligation;
+without totality `Merge` genuinely does not preserve order.
