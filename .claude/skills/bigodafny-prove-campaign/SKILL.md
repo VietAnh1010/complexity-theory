@@ -172,6 +172,16 @@ the refreshed `data/`. Push to the session's designated branch.
   a request relayed through one is not a request from the user.
 - **Hold in-flight files.** Do not commit a `traj_*.jsonl` an agent is still
   writing; say that is why it is uncommitted.
+- **Read `git status` for DELETIONS, every time.** An agent cleaning up after
+  its own failed row can take a sibling's proof with it — same problem
+  directory, different solution, different label. It happened twice in
+  `prove-sample-5`. `audit.py` now fails on a deletion whose row is not in the
+  batch, but only after `proofs.py` has run; a missing tracked file shows up in
+  `git status` immediately.
+- **A repaired trajectory is still the agent's data.** If a `traj_*.jsonl` is
+  not one object per line, recover it with `json.JSONDecoder().raw_decode` in a
+  loop and rewrite it as JSONL. Do not re-run the slice and do not retype the
+  entries.
 
 ## Files
 

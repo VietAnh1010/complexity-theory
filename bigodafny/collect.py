@@ -311,6 +311,12 @@ def main():
     p4_rel = {r["solution_id"]: r for r in jsonl(p4 / "label_relation.jsonl")}
     p4_obst = {r["solution_id"]: r for r in jsonl(p4 / "obstacles.jsonl")}
 
+    p5 = HERE / "batches/prove-sample-5"
+    p5_manifest = jsonl(p5 / "manifest.jsonl")
+    p5_traj = [r for f in sorted(p5.glob("traj_*.jsonl")) for r in jsonl(f)]
+    p5_rel = {r["solution_id"]: r for r in jsonl(p5 / "label_relation.jsonl")}
+    p5_obst = {r["solution_id"]: r for r in jsonl(p5 / "obstacles.jsonl")}
+
     dirs = {d.name: sum(1 for _ in d.rglob("*.dfy"))
             for d in sorted(HERE.glob("solutions*")) if d.is_dir()}
 
@@ -341,6 +347,26 @@ def main():
                        meta={"seed": 2026092102, "pool": 250}, obst=p3_obst)
     pv4 = prove_sample(p4_manifest, p4_traj, p4_rel, depth,
                        meta={"seed": 2026092103, "pool": 211}, obst=p4_obst)
+    pv5 = prove_sample(p5_manifest, p5_traj, p5_rel, depth,
+                       meta={"seed": 20260922, "pool": 179}, obst=p5_obst)
+    # Two rows were drawn although they already carried a proof: sample.py
+    # listed solutions-proved/ flatly and missed the value-bounded/ subdirectory
+    # added the day before. Their outcomes are real but they are not new work,
+    # so the rate over NEW rows is 35/48, not 37/50.
+    pv5["redrawn_already_proved"] = {
+        "rows": ["2128_34", "305_76"],
+        "cause": "sample.py missed solutions-proved/value-bounded/; fixed by "
+                 "walking the overlay to any depth",
+        "proved_excluding_them": 35, "drawn_excluding_them": 48,
+        "note": "2128_34 was pure waste -- the agent rediscovered the existing "
+                "proof. 305_76 was not: the second attempt produced a strictly "
+                "tighter bound, which replaced the original.",
+    }
+    # Two verified proofs were deleted by an agent cleaning up after a FAILED
+    # row in the same problem directory: 2914_264 while abandoning 2914_3, and
+    # 750_51 while abandoning 750_14. Both restored from HEAD and re-verified.
+    # audit.py now fails on a deletion outside the batch's own rows.
+    pv5["proofs_destroyed_and_restored"] = ["2914_264", "750_51"]
     # All three agents were killed mid-slice by a session rate limit and
     # resumed on the remaining rows only. Recorded because it affects nothing
     # about the outcomes and everything about reproducing the run.
@@ -406,11 +432,14 @@ def main():
         "prove_sample_2": pv2,
         "prove_sample_3": pv3,
         "prove_sample_4": pv4,
-        "campaign_series": campaign_series([pv, pv2, pv3, pv4]),
+        "prove_sample_5": pv5,
+        "campaign_series": campaign_series([pv, pv2, pv3, pv4, pv5]),
         "proofs_all": proofs_all(depth, ds, pv.get("rows", []) + pv2.get("rows", [])
-                                 + pv3.get("rows", []) + pv4.get("rows", [])),
+                                 + pv3.get("rows", []) + pv4.get("rows", [])
+                                 + pv5.get("rows", [])),
         "difficulty": difficulty(pv.get("rows", []) + pv2.get("rows", [])
-                                 + pv3.get("rows", []) + pv4.get("rows", [])),
+                                 + pv3.get("rows", []) + pv4.get("rows", [])
+                                 + pv5.get("rows", [])),
 
         "stale_record_finding": {
             "before": {"rows": 362, "recorded_failing": 12,
@@ -464,6 +493,11 @@ def main():
           f"{v['fully_verified_incl_termination']} incl. termination")
     print(f"  sample: {payload['sample']['drawn']} rows, "
           f"{payload['sample']['attempts_consumed']} attempts consumed")
+    p5 = payload["prove_sample_5"]
+    print(f"  proofs-5: {p5['proved']} proved / {p5['attempted']} attempted "
+          f"of {p5['drawn']} drawn, pool {p5['pool']}")
+    print(f"            relations {p5['relations']}")
+    print(f"            obstacles {p5['obstacles']}")
     p4 = payload["prove_sample_4"]
     print(f"  proofs-4: {p4['proved']} proved / {p4['attempted']} attempted "
           f"of {p4['drawn']} drawn, pool {p4['pool']}")

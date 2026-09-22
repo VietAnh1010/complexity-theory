@@ -32,9 +32,22 @@
 //     print(i)
 // --------------------------------------------------------------------
 
+//   Bound replaced 2026-09-22. prove-sample-5 redrew this row (a sampler bug
+//   of mine let value-bounded/ rows back into the pool) and produced a
+//   STRICTLY BETTER proof: the tight CeilLog2 recursion tree for both sorts
+//   instead of the quadratic SortCost scaffold, with the value term isolated
+//   as 4 * AbsInt(SortInts(d_list)[0]). The nlogn+mlogm half of the label is
+//   now confirmed outright and only the value term is left over, which is
+//   exactly what a looser-structural row should look like.
+//
 include "../../../prelude.dfy"
 import opened Prelude
 
+// VALUE-BOUNDED: the while loop's iteration count is bounded by the input
+// VALUE SortInts(d_list)[0] (roughly d_list's minimum), not by n or m. Per
+// the value-vs-size convention that value is charged as its own parameter,
+// via AbsInt(SortInts(d_list)[0]) below -- a real cost the O(nlogn+mlogm)
+// label omits (relation: looser-structural).
 lemma MergeLength<T>(a: seq<T>, b: seq<T>, less: (T, T) -> bool)
   ensures |Merge(a, b, less)| == |a| + |b|
   decreases |a| + |b|
@@ -59,12 +72,6 @@ lemma SortLength<T>(s: seq<T>, less: (T, T) -> bool)
   }
 }
 
-// Same quadratic scaffold as elsewhere in this corpus (e.g.
-// solutions-proved/2593/2593_332.dfy): Sort/Merge live in prelude.dfy and
-// cannot carry a ghost step counter, so their cost is charged through an
-// opaque SortCost whose recursion mirrors the split, bounded quadratically
-// rather than by the tight O(k log k) CeilLog2 argument. relation:
-// looser-slack.
 ghost function SortCost(k: nat): nat
   decreases k
 {
@@ -72,81 +79,90 @@ ghost function SortCost(k: nat): nat
   else SortCost(k / 2) + SortCost(k - k / 2) + k
 }
 
-lemma SquareSplit(k: nat, L: nat)
-  requires 2 * L <= k <= 2 * L + 1
-  ensures 2 * L * L + 2 * (k - L) * (k - L) <= k * k + 1
+ghost function CeilLog2(n: nat): nat
+  decreases n
+{ if n <= 1 then 0 else 1 + CeilLog2((n + 1) / 2) }
+
+lemma CeilLog2Monotone(m: nat, n: nat)
+  requires m <= n
+  ensures CeilLog2(m) <= CeilLog2(n)
+  decreases n
 {
-  var d := k - 2 * L;
-  assert d == 0 || d == 1;
-  assert k - L == L + d;
-  assert 2 * L * L + 2 * (k - L) * (k - L) == 4 * L * L + 4 * L * d + 2 * d * d;
-  assert k == 2 * L + d;
-  assert k * k == 4 * L * L + 4 * L * d + d * d;
-  assert d * d <= 1;
+  if n <= 1 { }
+  else if m <= 1 { }
+  else { CeilLog2Monotone((m + 1) / 2, (n + 1) / 2); }
 }
 
-lemma QuadTail(k: nat)
-  requires k >= 2
-  ensures k * k + k + 3 <= 2 * k * k + 1
-{
-  assert (k - 2) * (k + 1) >= 0;
-}
+lemma MulMonoRight(x: nat, p: nat, q: nat)
+  requires p <= q
+  ensures x * p <= x * q
+{ }
 
-lemma SortCostBound(k: nat)
-  ensures SortCost(k) <= 2 * k * k + 1
+lemma MulDistrib(a: nat, b: nat, k: nat, L: nat)
+  requires a + b == k
+  ensures a * L + b * L == k * L
+{ }
+
+lemma SortCostNLogN(k: nat)
+  ensures SortCost(k) <= 2 * k * (CeilLog2(k) + 1) + 1
   decreases k
 {
-  if k <= 1 {
-  } else {
-    var L := k / 2;
-    var R := k - L;
-    SortCostBound(L);
-    SortCostBound(R);
-    SquareSplit(k, L);
-    assert SortCost(k) == SortCost(L) + SortCost(R) + k;
-    assert SortCost(L) + SortCost(R) + k <= (2 * L * L + 1) + (2 * R * R + 1) + k;
-    assert (2 * L * L + 1) + (2 * R * R + 1) + k == 2 * L * L + 2 * R * R + k + 2;
-    assert 2 * L * L + 2 * R * R + k + 2 <= (k * k + 1) + k + 2;
-    QuadTail(k);
-  }
+  if k <= 1 { return; }
+  var a := k / 2;
+  var b := k - k / 2;
+  var L := CeilLog2(k);
+  assert a + b == k;
+  assert b == (k + 1) / 2;
+  assert a <= b;
+  SortCostNLogN(a);
+  SortCostNLogN(b);
+  CeilLog2Monotone(a, b);
+  assert L == 1 + CeilLog2(b);
+  assert CeilLog2(a) + 1 <= L;
+  assert CeilLog2(b) + 1 == L;
+  MulMonoRight(2 * a, CeilLog2(a) + 1, L);
+  MulMonoRight(2 * b, CeilLog2(b) + 1, L);
+  assert SortCost(a) <= 2 * a * L + 1;
+  assert SortCost(b) <= 2 * b * L + 1;
+  MulDistrib(2 * a, 2 * b, 2 * k, L);
+  assert 2 * a * L + 2 * b * L == 2 * k * L;
+  assert SortCost(k) == SortCost(a) + SortCost(b) + k;
+  assert SortCost(k) <= 2 * k * L + k + 2;
+  assert 2 * k * (L + 1) == 2 * k * L + 2 * k;
+  assert k + 2 <= 2 * k + 1;
 }
 
-// The while loop below decreases from `d_list`'s minimum value down toward
-// `2*am`, one unit at a time. Its iteration count is bounded by that VALUE
-// gap, not by |c_list|/|d_list| -- a cost the O(nlogn+mlogm) label (fit by
-// profiling on bounded test values) omits entirely. Per the value-vs-size
-// convention this value is written into the bound as its own parameter.
-// relation: looser-structural.
 method Solve(a: int, b: int, c_list: seq<int>, d_list: seq<int>) returns (output: string, ghost steps: nat)
   requires |c_list| >= 1 && |d_list| >= 1
-  ensures steps <= 2 * |c_list| * |c_list| + 2 * |d_list| * |d_list| + 4 * |c_list| + 4 * |d_list|
-                   + 2 * (if SortInts(d_list)[0] - 1 > 0 then SortInts(d_list)[0] - 1 else 0) + 20
+  ensures steps <= 2 * |c_list| * (CeilLog2(|c_list|) + 1)
+                  + 2 * |d_list| * (CeilLog2(|d_list|) + 1)
+                  + 4 * AbsInt(SortInts(d_list)[0]) + 20
 {
-  var na := |c_list|;
-  var nb := |d_list|;
-  SortLength(c_list, (x: int, y: int) => x < y);
-  SortLength(d_list, (x: int, y: int) => x < y);
-  SortCostBound(na);
-  SortCostBound(nb);
+  SortCostNLogN(|c_list|);
+  SortCostNLogN(|d_list|);
+  steps := 1 + SortCost(|c_list|) + SortCost(|d_list|);
   var aSorted := SortInts(c_list);
   var bSorted := SortInts(d_list);
-  steps := 1 + SortCost(na) + SortCost(nb);
+  SortLength(c_list, (x: int, y: int) => x < y);
+  SortLength(d_list, (x: int, y: int) => x < y);
   var am := aSorted[0];
   var bm := bSorted[0];
   var amax := aSorted[|aSorted| - 1];
   var i := bSorted[0] - 1;
+  ghost var iInit := i;
+  steps := steps + 4;
   ghost var base1 := steps;
-  ghost var i0 := i;
-  ghost var i0cap := if i0 > 0 then i0 else 0;
   while i >= 2 * am && amax <= i && i > 0
-    invariant i <= i0
-    invariant 0 <= i0 - i <= i0cap
-    invariant steps <= base1 + 2 * (i0 - i)
+    invariant i <= iInit
+    invariant i >= 0 || i == iInit
+    invariant steps == base1 + 4 * (iInit - i)
     decreases i
   {
     i := i - 1;
-    steps := steps + 2;
+    steps := steps + 4;
   }
+  assert iInit - i <= AbsInt(iInit);
+  assert AbsInt(iInit) <= AbsInt(bSorted[0]) + 1;
   i := i + 1;
   steps := steps + 1;
   if i == 0 || !(i >= 2 * am && amax <= i && i > 0) || bm <= i {

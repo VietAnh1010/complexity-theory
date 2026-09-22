@@ -26,7 +26,7 @@ it means and how a row leaves it. A row is in exactly one.
 | `solutions-untranslated/` | 4 | it will not be translated; the file says why |
 
 `solutions-proved/` is **not** part of that partition — it holds instrumented
-copies (190 files over 188 rows: 2 tight-bound variants under `nlogn/`, 12
+copies (225 files over 223 rows: 2 tight-bound variants under `nlogn/`, 12
 value-bounded rows queued for review under `value-bounded/`)
 of rows that also live above. A row can exist in two places with different preconditions;
 `precheck.py`'s `find_all` exists for that.
@@ -158,36 +158,38 @@ decision unblocked, and `276_610` on 2026-09-22, found by `prove-sample-4`.
 
 **The convention settled how to count a value; it did not make the proofs
 easy.** Connecting a value-bounded cost back to a bound in the row's size is
-the single most common reason a proof fails: 4 of 11 in `prove-sample-3` and
-5 of 12 in `prove-sample-4`, coded `value-to-size`. Each needs its own
+the single most common reason a proof fails: 4 of 11 in `prove-sample-3`,
+5 of 12 in `prove-sample-4` and 5 of 13 in `prove-sample-5`, coded
+`value-to-size`. Each needs its own
 arithmetic lemma (`Pow10Mono`, a doubling-search invariant, a triangular-number
 bound, a sortedness fact the prelude does not have), and none of it carries to
 the next row.
 
 > **Corrected 2026-09-21.** After campaign 3 this file claimed the label had
 > stopped predicting difficulty, `O(nlogn)` climbing 5/11 → 7/11 → 10/12 while
-> `O(n)` fell 24/24 → 20/23 → 12/18. **Campaign 4 did not reproduce it**:
-> `O(n)` came back at 21/25 and `O(nlogn)` at 7/10. Pooled over four campaigns
-> `O(n)` is 77/90 = 86% and `O(nlogn)` is 29/44 = 66% — campaign 1's ordering,
-> less extreme than it looked. Campaign 3's `O(n)` cell tests at p = 0.036
-> against the pooled rate, which does not survive the eight comparisons the
-> table invites. A class holds 8 to 25 rows per campaign, so two rows move the
-> rate ten points. `collect.py`'s `campaign_series` now reports the pooled rate
-> and a per-cell binomial test; read that, not one campaign's column.
+> `O(n)` fell 24/24 → 20/23 → 12/18. **Campaigns 4 and 5 did not reproduce
+> it**: `O(n)` came back at 21/25 then 22/27, `O(nlogn)` at 7/10 then 8/13.
+> Pooled over five campaigns `O(n)` is 99/117 = 85% and `O(nlogn)` is
+> 37/57 = 65% — campaign 1's ordering, less extreme than it looked. Campaign
+> 3's `O(n)` cell tests at p = 0.036 against the pooled rate, which does not
+> survive the eight comparisons the table invites. A class holds 1 to 27 rows
+> per campaign, so two rows move the rate ten points. `collect.py`'s
+> `campaign_series` reports the pooled rate and a per-cell binomial test; read
+> that, not one campaign's column.
 
 What does survive is the obstacle, not the rate. `value-to-size` was named
 independently by campaign 4's agents, none of which had seen campaign 3.
 
 ### Where these rows go
 
-`solutions-proved/value-bounded/` collects them, 18 so far. It is an **overlay
-subdirectory** like `nlogn/`, not a partition member: the row stays wherever
-the partition puts it, and `MANIFEST.jsonl` records its `row` path.
-
-File a row there whenever a campaign produces either:
-
 Two destinations, by whether a proof exists. A row with no proof does **not**
-go under a directory called `solutions-proved`:
+go under a directory called `solutions-proved`.
+
+`solutions-proved/value-bounded/` holds the 12 with a proof. It is an
+**overlay subdirectory** like `nlogn/`, not a partition member: the row stays
+wherever the partition puts it, and `MANIFEST.jsonl` records its `row` path.
+`batches/value-bounded-open/` holds the 6 without one — a README and a
+manifest, no `.dfy` files.
 
 | from | condition | where it goes |
 |---|---|---|
@@ -204,8 +206,14 @@ rearrangement of its input — and nothing said the output was ordered, so no
 proof could say "the last element is the maximum". `2423_48` failed on exactly
 that: its trip count is `d[|d|-1].0 + 2`, which could not even be named. The
 lemmas require `StrictTotalOrder(less)`; `IntLessIsTotalOrder` discharges that
-once for `int`, and `SortIntsIsSorted` is the ready-made corollary. `2423_48`
-has not been retried.
+once for `int`, and `SortIntsIsSorted` is the ready-made corollary. **`2423_48`
+was proved the same day**, after failing in two campaigns; its proof is the
+worked example, and the new lemma does the work in four lines.
+
+That is the difference worth carrying: a `prelude-gap` is fixable once for
+every row that hits it, while `value-to-size` needs its own arithmetic per row.
+`prove-sample-5` found another gap of the first kind — `1582_315` wants a
+histogram partition-sum lemma and a `Repeat`-length lemma, and neither exists.
 
 ## The cost model is stipulated, not measured
 

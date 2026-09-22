@@ -13,6 +13,7 @@ said 9 proved where its trajectory said 10, and the files said 10.
 """
 
 import argparse
+import glob
 import json
 import os
 import subprocess
@@ -34,6 +35,29 @@ def read_jsonl(path):
         return []
     with open(path) as fh:
         return [json.loads(l) for l in fh if l.strip()]
+
+
+def jsonl_problems(path):
+    """One JSON object per line, or say which line breaks that.
+
+    prove-sample-5's slice C wrote pretty-printed JSON spanning 59 lines for
+    16 rows. Every consumer of the file raised instead of reporting, so the
+    trajectory looked lost when it was only misformatted.
+    """
+    if not os.path.exists(path):
+        return [f"{os.path.basename(path)}: missing"]
+    out = []
+    with open(path) as fh:
+        for i, line in enumerate(fh, 1):
+            if not line.strip():
+                continue
+            try:
+                json.loads(line)
+            except json.JSONDecodeError as exc:
+                out.append(f"{os.path.basename(path)}:{i}: not one JSON object "
+                           f"per line ({exc.msg})")
+                break
+    return out
 
 
 def main():
@@ -96,6 +120,35 @@ def main():
             problems.append(f"{sid}: contradicts with no reason given")
         if p and p.get("assume_count"):
             problems.append(f"{sid}: proof carries {p['assume_count']} assume(s)")
+
+    # A trajectory that cannot be read line by line is not a missing result.
+    for name in sorted(os.listdir(args.batch)):
+        if name.startswith("traj_") and name.endswith(".jsonl"):
+            problems.extend(jsonl_problems(os.path.join(args.batch, name)))
+
+    # An agent deleting a proof that is not its own. prove-sample-5's slice C
+    # removed solutions-proved/2914/2914_264.dfy -- a verified proof for a
+    # DIFFERENT solution of the problem it was working on -- while cleaning up
+    # its own failed 2914_3. Only `git status` caught it.
+    deleted = subprocess.run(
+        ["git", "diff", "--name-only", "--diff-filter=D", "HEAD",
+         "--", "bigodafny/solutions-proved"],
+        cwd=os.path.join(args.repo, ".."), capture_output=True, text=True,
+    ).stdout.split()
+    for path in deleted:
+        sid = os.path.basename(path)[:-4]
+        if sid not in manifest:
+            problems.append(f"{path}: proof deleted, and {sid} is not in this batch")
+
+    # A row drawn although it already had a proof. The sampler missed
+    # solutions-proved/value-bounded/ for one campaign and 12 rows rejoined the
+    # pool; two were redrawn and one agent spent its budget rediscovering that.
+    for sid in manifest:
+        found = [p for p in glob.glob(
+            os.path.join(args.repo, "solutions-proved", "**", f"{sid}.dfy"),
+            recursive=True)]
+        if len(found) > 1:
+            problems.append(f"{sid}: {len(found)} proof files -- " + ", ".join(found))
 
     # The originals are the control. An agent that edited solutions/ to make a
     # proof close has proved nothing.

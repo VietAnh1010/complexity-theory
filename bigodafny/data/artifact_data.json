@@ -1,6 +1,6 @@
 {
-  "generated": "2026-09-22T06:34:21+00:00",
-  "commit": "767f9ae",
+  "generated": "2026-09-22T07:03:15+00:00",
+  "commit": "be166be",
   "branch": "claude/bigobench-python-dafny-dataset-ts4tm5",
   "toolchain": {
     "dafny": "4.11.0",
@@ -12,7 +12,7 @@
     "directories": {
       "solutions": 342,
       "solutions-disputed": 159,
-      "solutions-proved": 190,
+      "solutions-proved": 225,
       "solutions-ungateable": 5,
       "solutions-unscreened": 127,
       "solutions-untranslated": 4,
@@ -4413,21 +4413,955 @@
       }
     ]
   },
+  "prove_sample_5": {
+    "question": "can a bounded agent prove the label of a random row?",
+    "seed": 20260922,
+    "drawn": 50,
+    "pool": 179,
+    "frame": "solutions/, no proof in solutions-proved/, non-empty label",
+    "bounds": {
+      "attempts_per_row": 3,
+      "seconds_per_row": 300
+    },
+    "agents": 3,
+    "model": "sonnet",
+    "attempted": 50,
+    "proved": 37,
+    "unresolved": 13,
+    "relations": {
+      "confirms": 34,
+      "unresolved": 13,
+      "looser-structural": 2,
+      "tighter-costmodel": 1
+    },
+    "contradicts_label": [],
+    "note_on_contradiction": "Every proof in these campaigns is an upper bound. A bound ABOVE the label is `looser` -- it fails to confirm the label and cannot disagree with it, since that needs a lower bound. A bound BELOW the label does bear on it, but only after the other two explanations are ruled out: `tighter-costmodel` (the charge table costs something CPython does not) and `tighter-translation` (the Dafny runs a cheaper algorithm than the Python).",
+    "tighter_rows": {
+      "1359_4": "tighter-costmodel"
+    },
+    "value_vs_size_rows": [
+      "2128_34",
+      "305_76"
+    ],
+    "by_label": {
+      "O(1)": {
+        "drawn": 1,
+        "proved": 1
+      },
+      "O(logn)": {
+        "drawn": 1,
+        "proved": 0
+      },
+      "O(n)": {
+        "drawn": 27,
+        "proved": 22
+      },
+      "O(n**2)": {
+        "drawn": 6,
+        "proved": 4
+      },
+      "O(n+m)": {
+        "drawn": 1,
+        "proved": 1
+      },
+      "O(nlogn)": {
+        "drawn": 13,
+        "proved": 8
+      },
+      "O(nlogn+mlogm)": {
+        "drawn": 1,
+        "proved": 1
+      }
+    },
+    "obstacles": {
+      "value-to-size": 5,
+      "z3-nonlinear": 4,
+      "invariant-gap": 2,
+      "prelude-gap": 1,
+      "decreases-star": 1
+    },
+    "rows": [
+      {
+        "solution_id": "71_217",
+        "label": "O(nlogn)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "2*n*(CeilLog2(n)+1) + 8*n + |output| + 10",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 2,
+        "seconds": 150,
+        "why_failed": null,
+        "call_depth": 3,
+        "recursive": true
+      },
+      {
+        "solution_id": "167_191",
+        "label": "O(1)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "4",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 1,
+        "seconds": 45,
+        "why_failed": null,
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "305_76",
+        "label": "O(nlogn+mlogm)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "2*|c_list|*(CeilLog2(|c_list|)+1)+2*|d_list|*(CeilLog2(|d_list|)+1)+4*AbsInt(SortInts(d_list)[0])+20",
+        "relation": "looser-structural",
+        "relation_reason": "the shrink-while loop's iteration count is bounded by the input VALUE SortInts(d_list)[0] (~min of d_list), not by n or m; per the value-vs-size convention that is charged as its own parameter and is a real cost the O(nlogn+mlogm) label omits",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "looser-structural",
+        "attempts_used": 1,
+        "seconds": 240,
+        "why_failed": null,
+        "call_depth": 3,
+        "recursive": true
+      },
+      {
+        "solution_id": "342_86",
+        "label": "O(n)",
+        "split": "strict",
+        "outcome": "unresolved",
+        "bound": null,
+        "relation": "unresolved",
+        "relation_reason": null,
+        "obstacle": "value-to-size",
+        "agent_said_agrees": null,
+        "agent_said_relation": null,
+        "attempts_used": 0,
+        "seconds": 30,
+        "why_failed": "inner loop's trip count is floor(sqrt(v))+1 per element, a value-bounded cost the O(n) label omits; not instrumented within budget",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "457_38",
+        "label": "O(n**2)",
+        "split": "loose",
+        "outcome": "unresolved",
+        "bound": null,
+        "relation": "unresolved",
+        "relation_reason": null,
+        "obstacle": "decreases-star",
+        "agent_said_agrees": null,
+        "agent_said_relation": null,
+        "attempts_used": 1,
+        "seconds": 90,
+        "why_failed": "loop terminates only because nn grows via increasing powers of 9 (decreases * in source); replacing it needs a lemma bounding iterations by k via digit-count growth of a geometric sum, not attempted",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "540_80",
+        "label": "O(n)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "3*n+6",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 1,
+        "seconds": 90,
+        "why_failed": null,
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "554_107",
+        "label": "O(n)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "6*|pairs|+2",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 1,
+        "seconds": 50,
+        "why_failed": null,
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "750_14",
+        "label": "O(nlogn)",
+        "split": "strict",
+        "outcome": "unresolved",
+        "bound": null,
+        "relation": "unresolved",
+        "relation_reason": null,
+        "obstacle": "z3-nonlinear",
+        "agent_said_agrees": null,
+        "agent_said_relation": null,
+        "attempts_used": 3,
+        "seconds": 300,
+        "why_failed": "combining the amortized shared-index two-level loop invariant with the tight nlogn Sort scaffold for two arrays overloads a single 30s VC; needed each piece proved and cached as its own lemma before combining, which did not fit the budget",
+        "call_depth": 3,
+        "recursive": true
+      },
+      {
+        "solution_id": "785_12",
+        "label": "O(n)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "10*|numbers|+10*n+10",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 1,
+        "seconds": 60,
+        "why_failed": null,
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "888_179",
+        "label": "O(n)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "7 * n + |output| + 10",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 2,
+        "seconds": 140,
+        "why_failed": null,
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1018_254",
+        "label": "O(n)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "32*n+3",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 1,
+        "seconds": 90,
+        "why_failed": null,
+        "call_depth": 1,
+        "recursive": true
+      },
+      {
+        "solution_id": "1047_26",
+        "label": "O(n)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "41 * SumLen(strings) + 41 * |strings| + 3",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 3,
+        "seconds": 200,
+        "why_failed": null,
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1053_44",
+        "label": "O(nlogn)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "2*N*(CeilLog2(N)+1)+5*N+12",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 2,
+        "seconds": 180,
+        "why_failed": null,
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1263_2538",
+        "label": "O(n)",
+        "split": "strict",
+        "outcome": "unresolved",
+        "bound": null,
+        "relation": "unresolved",
+        "relation_reason": null,
+        "obstacle": "value-to-size",
+        "agent_said_agrees": null,
+        "agent_said_relation": null,
+        "attempts_used": 0,
+        "seconds": 90,
+        "why_failed": "inner loop trip count is |IntToString(a_list[t])|, unbounded without a magnitude precondition; no general digit-length lemma exists in prelude",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1359_4",
+        "label": "O(n**2)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "2 * a + |output| + 20",
+        "relation": "tighter-costmodel",
+        "relation_reason": "Checked against the Python. Three loops do `h *= i` with NO mod inside them -- the reduction is only at the final print -- so h grows to factorial scale and CPython's multiply cost grows with its digit count. The charge table costs every int operation 1, so the proof comes out 2*a + |output| + 20, linear in the value a, where the label says O(n**2). Fourth row in this family after 2803_133, 1073_645 and 2496_30's helper; every one of them builds an unreduced integer product.",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "tighter-costmodel",
+        "attempts_used": 3,
+        "seconds": 260,
+        "why_failed": null,
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1364_161",
+        "label": "O(logn)",
+        "split": "strict",
+        "outcome": "unresolved",
+        "bound": null,
+        "relation": "unresolved",
+        "relation_reason": null,
+        "obstacle": "value-to-size",
+        "agent_said_agrees": null,
+        "agent_said_relation": null,
+        "attempts_used": 1,
+        "seconds": 90,
+        "why_failed": "the outer level counter l advances only when the inner pos counter exhausts a full l-1 length pass, so total iterations telescope to a triangular-number O(l^2) count; bounding l by log2(b) via Pow2 inversion and closing the quadratic invariant is a two-lemma proof that did not fit the 5-minute budget",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1368_109",
+        "label": "O(n)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "12*|s|+20",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 1,
+        "seconds": 100,
+        "why_failed": null,
+        "call_depth": 0,
+        "recursive": false
+      },
+      {
+        "solution_id": "1386_19",
+        "label": "O(nlogn)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "2 * |b_list| * (CeilLog2(|b_list|) + 1) + 6 * |b_list| + 12",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 2,
+        "seconds": 180,
+        "why_failed": null,
+        "call_depth": 3,
+        "recursive": true
+      },
+      {
+        "solution_id": "1540_9",
+        "label": "O(n)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "2*|numbers|+5",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 1,
+        "seconds": 60,
+        "why_failed": null,
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1560_63",
+        "label": "O(nlogn)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "2*n*(CeilLog2(n)+1)+10*n+10",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 2,
+        "seconds": 240,
+        "why_failed": null,
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1563_497",
+        "label": "O(nlogn)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "2*|values|*(CeilLog2(|values|)+1) + 5*|values| + |output| + 10",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 2,
+        "seconds": 170,
+        "why_failed": null,
+        "call_depth": 3,
+        "recursive": true
+      },
+      {
+        "solution_id": "1582_118",
+        "label": "O(nlogn)",
+        "split": "strict",
+        "outcome": "unresolved",
+        "bound": null,
+        "relation": "unresolved",
+        "relation_reason": null,
+        "obstacle": "z3-nonlinear",
+        "agent_said_agrees": null,
+        "agent_said_relation": null,
+        "attempts_used": 3,
+        "seconds": 300,
+        "why_failed": "single verification condition mixes SortCostBound's quadratic recursion with a per-group forall invariant and a final nonlinear |ans|*v_0 bound; Z3 cannot close it in 30s and the row needs the block split into separate lemmas to isolate each nonlinear step, which did not fit the budget",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1582_315",
+        "label": "O(n)",
+        "split": "strict",
+        "outcome": "unresolved",
+        "bound": null,
+        "relation": "unresolved",
+        "relation_reason": null,
+        "obstacle": "prelude-gap",
+        "agent_said_agrees": null,
+        "agent_said_relation": null,
+        "attempts_used": 0,
+        "seconds": 150,
+        "why_failed": "needs a histogram partition-sum lemma (SeqSum over 26 buckets equals |v_1|) plus a Repeat-length lemma, neither in prelude",
+        "call_depth": 1,
+        "recursive": true
+      },
+      {
+        "solution_id": "1650_311",
+        "label": "O(n)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "5 * |pairs| + |output| + 5",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 1,
+        "seconds": 60,
+        "why_failed": null,
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1699_98",
+        "label": "O(n**2)",
+        "split": "strict",
+        "outcome": "unresolved",
+        "bound": null,
+        "relation": "unresolved",
+        "relation_reason": null,
+        "obstacle": "z3-nonlinear",
+        "agent_said_agrees": null,
+        "agent_said_relation": null,
+        "attempts_used": 3,
+        "seconds": 300,
+        "why_failed": "Solve times out at 30s verifying the combined nested-loop invariant with the isolated multiplication lemmas; needs a cleaner split of the proof, not more slack",
+        "call_depth": 1,
+        "recursive": true
+      },
+      {
+        "solution_id": "1765_73",
+        "label": "O(n)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "4 * n + 5",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 2,
+        "seconds": 90,
+        "why_failed": null,
+        "call_depth": 1,
+        "recursive": false
+      },
+      {
+        "solution_id": "1827_66",
+        "label": "O(nlogn)",
+        "split": "loose",
+        "outcome": "unresolved",
+        "bound": null,
+        "relation": "unresolved",
+        "relation_reason": null,
+        "obstacle": "z3-nonlinear",
+        "agent_said_agrees": null,
+        "agent_said_relation": null,
+        "attempts_used": 3,
+        "seconds": 300,
+        "why_failed": "too many independently-nonlinear scaffolds (Lowbit depth-by-value, quadratic SortCost, two loop sums) in a single method body for Z3 to close within 30s; needed to isolate each into its own lemma-proved fact before combining, which did not fit the budget",
+        "call_depth": 3,
+        "recursive": true
+      },
+      {
+        "solution_id": "1830_16",
+        "label": "O(n)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "12*|string_|+12",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 3,
+        "seconds": 200,
+        "why_failed": null,
+        "call_depth": 0,
+        "recursive": false
+      },
+      {
+        "solution_id": "1935_61",
+        "label": "O(n+m)",
+        "split": "loose",
+        "outcome": "proved",
+        "bound": "7 * |s| + 3",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 3,
+        "seconds": 150,
+        "why_failed": null,
+        "call_depth": 0,
+        "recursive": true
+      },
+      {
+        "solution_id": "1954_157",
+        "label": "O(n)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "6*b+5",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 1,
+        "seconds": 60,
+        "why_failed": null,
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "2036_33",
+        "label": "O(nlogn)",
+        "split": "strict",
+        "outcome": "unresolved",
+        "bound": null,
+        "relation": "unresolved",
+        "relation_reason": null,
+        "obstacle": "invariant-gap",
+        "agent_said_agrees": null,
+        "agent_said_relation": null,
+        "attempts_used": 3,
+        "seconds": 270,
+        "why_failed": "Dafny reports 'postcondition could not be proved on this return path' pointing at the method's open brace even with 100x slack; root cause not isolated in budget -- possibly an index-safety side condition (newl[0]/newl[1]) masking as a postcondition failure",
+        "call_depth": 3,
+        "recursive": true
+      },
+      {
+        "solution_id": "2071_39",
+        "label": "O(nlogn)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "2*|a_list|*(CeilLog2(|a_list|)+1) + 6*|a_list| + |output| + 10",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 1,
+        "seconds": 90,
+        "why_failed": null,
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "2105_521",
+        "label": "O(n)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "10*v_0+15",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 1,
+        "seconds": 90,
+        "why_failed": null,
+        "call_depth": 3,
+        "recursive": true
+      },
+      {
+        "solution_id": "2128_34",
+        "label": "O(n**2)",
+        "split": "loose",
+        "outcome": "proved",
+        "bound": "4*|data_list|^2 + 20*|data_list| + 3*r_final + 6*span_total + 20",
+        "relation": "looser-structural",
+        "relation_reason": "proof already exists at solutions-proved/value-bounded/2128/2128_34.dfy from an earlier campaign (2026-09-17); re-ran dafny verify to confirm it still holds (142 verified, 0 errors); did not duplicate it into solutions-proved/2128/ per the value-bounded convention",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "looser-structural",
+        "attempts_used": 1,
+        "seconds": 40,
+        "why_failed": null,
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "2225_120",
+        "label": "O(n)",
+        "split": "loose",
+        "outcome": "proved",
+        "bound": "4 * n + |output| + 8",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 1,
+        "seconds": 60,
+        "why_failed": null,
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "2226_1222",
+        "label": "O(n)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "4*|binary_string|+3",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 1,
+        "seconds": 45,
+        "why_failed": null,
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "2358_103",
+        "label": "O(nlogn)",
+        "split": "strict",
+        "outcome": "unresolved",
+        "bound": null,
+        "relation": "unresolved",
+        "relation_reason": null,
+        "obstacle": "value-to-size",
+        "agent_said_agrees": null,
+        "agent_said_relation": null,
+        "attempts_used": 0,
+        "seconds": 180,
+        "why_failed": "IntSqrt2358's trip count is floor(sqrt(v))+1, value-dependent and unbounded by n; connecting it to a SumCharge-over-the-list invariant needs a slice-sum lemma not built in time",
+        "call_depth": 3,
+        "recursive": true
+      },
+      {
+        "solution_id": "2389_139",
+        "label": "O(n**2)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "(|s|+1) * |s| + 3",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 1,
+        "seconds": 50,
+        "why_failed": null,
+        "call_depth": 1,
+        "recursive": true
+      },
+      {
+        "solution_id": "2423_56",
+        "label": "O(n)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "2*n+28000",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 2,
+        "seconds": 90,
+        "why_failed": null,
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "2465_139",
+        "label": "O(n)",
+        "split": "loose",
+        "outcome": "proved",
+        "bound": "30*t+10",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 1,
+        "seconds": 90,
+        "why_failed": null,
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "2516_238",
+        "label": "O(n)",
+        "split": "loose",
+        "outcome": "proved",
+        "bound": "15 * |is_white_list| + 3 * |output| + 20",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 2,
+        "seconds": 180,
+        "why_failed": null,
+        "call_depth": 4,
+        "recursive": true
+      },
+      {
+        "solution_id": "2522_11",
+        "label": "O(n)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "4*n+4",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 2,
+        "seconds": 60,
+        "why_failed": null,
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "2819_926",
+        "label": "O(n)",
+        "split": "strict",
+        "outcome": "unresolved",
+        "bound": null,
+        "relation": "unresolved",
+        "relation_reason": null,
+        "obstacle": "value-to-size",
+        "agent_said_agrees": null,
+        "agent_said_relation": null,
+        "attempts_used": 0,
+        "seconds": 120,
+        "why_failed": "IntSqrtFloor's trip count and the RepStr split point (x, y) depend on the value k, which the signature does not bound relative to n",
+        "call_depth": 1,
+        "recursive": true
+      },
+      {
+        "solution_id": "2880_19",
+        "label": "O(n)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "2 * n + 15",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 2,
+        "seconds": 100,
+        "why_failed": null,
+        "call_depth": 1,
+        "recursive": true
+      },
+      {
+        "solution_id": "2914_3",
+        "label": "O(n)",
+        "split": "strict",
+        "outcome": "unresolved",
+        "bound": null,
+        "relation": "unresolved",
+        "relation_reason": null,
+        "obstacle": "invariant-gap",
+        "agent_said_agrees": null,
+        "agent_said_relation": null,
+        "attempts_used": 3,
+        "seconds": 220,
+        "why_failed": "final postcondition linking loop-exit state (found vs !found, i<=n, the n==0/!found&&n>0 rewrite of i) to 5*n+6 needed one more bridging assert that did not fit the budget",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "2926_50",
+        "label": "O(n)",
+        "split": "loose",
+        "outcome": "proved",
+        "bound": "8*n+500",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 2,
+        "seconds": 110,
+        "why_failed": null,
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "2947_115",
+        "label": "O(n**2)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "13*|a_list|*|a_list| + 26*|a_list| + |output| + 15",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 2,
+        "seconds": 220,
+        "why_failed": null,
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "2992_153",
+        "label": "O(nlogn)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "2*|a_list|*(CeilLog2(|a_list|)+1)+5*|a_list|+8",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 1,
+        "seconds": 90,
+        "why_failed": null,
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "2992_87",
+        "label": "O(n)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "8*|a_list|+6",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 1,
+        "seconds": 60,
+        "why_failed": null,
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "3033_135",
+        "label": "O(nlogn)",
+        "split": "strict",
+        "outcome": "proved",
+        "bound": "2*|edges_list|*(CeilLog2(|edges_list|)+1) + 8*|edges_list| + |output| + 10",
+        "relation": "confirms",
+        "relation_reason": "",
+        "obstacle": null,
+        "agent_said_agrees": null,
+        "agent_said_relation": "confirms",
+        "attempts_used": 1,
+        "seconds": 90,
+        "why_failed": null,
+        "call_depth": 2,
+        "recursive": true
+      }
+    ],
+    "redrawn_already_proved": {
+      "rows": [
+        "2128_34",
+        "305_76"
+      ],
+      "cause": "sample.py missed solutions-proved/value-bounded/; fixed by walking the overlay to any depth",
+      "proved_excluding_them": 35,
+      "drawn_excluding_them": 48,
+      "note": "2128_34 was pure waste -- the agent rediscovered the existing proof. 305_76 was not: the second attempt produced a strictly tighter bound, which replaced the original."
+    },
+    "proofs_destroyed_and_restored": [
+      "2914_264",
+      "750_51"
+    ]
+  },
   "campaign_series": {
-    "campaigns": 4,
+    "campaigns": 5,
     "note": "Per-campaign cells are small. Read the pooled column; treat a single campaign's swing as noise unless p is small AND the next campaign reproduces it.",
     "by_label": {
       "O(1)": {
         "pooled": {
-          "proved": 18,
-          "drawn": 20,
-          "rate": 0.9
+          "proved": 19,
+          "drawn": 21,
+          "rate": 0.9048
         },
         "by_campaign": [
           {
             "proved": 4,
             "drawn": 5,
-            "p_vs_pooled": 0.4095
+            "p_vs_pooled": 0.3937
           },
           {
             "proved": 3,
@@ -4442,14 +5376,19 @@
           {
             "proved": 3,
             "drawn": 4,
-            "p_vs_pooled": 0.3439
+            "p_vs_pooled": 0.3299
+          },
+          {
+            "proved": 1,
+            "drawn": 1,
+            "p_vs_pooled": 1.0
           }
         ]
       },
       "O(logn)": {
         "pooled": {
           "proved": 0,
-          "drawn": 2,
+          "drawn": 3,
           "rate": 0.0
         },
         "by_campaign": [
@@ -4460,20 +5399,25 @@
             "p_vs_pooled": 1.0
           },
           null,
-          null
+          null,
+          {
+            "proved": 0,
+            "drawn": 1,
+            "p_vs_pooled": 1.0
+          }
         ]
       },
       "O(n)": {
         "pooled": {
-          "proved": 77,
-          "drawn": 90,
-          "rate": 0.8556
+          "proved": 99,
+          "drawn": 117,
+          "rate": 0.8462
         },
         "by_campaign": [
           {
             "proved": 24,
             "drawn": 24,
-            "p_vs_pooled": 0.0397
+            "p_vs_pooled": 0.041
           },
           {
             "proved": 20,
@@ -4483,31 +5427,36 @@
           {
             "proved": 12,
             "drawn": 18,
-            "p_vs_pooled": 0.0356
+            "p_vs_pooled": 0.0467
           },
           {
             "proved": 21,
             "drawn": 25,
-            "p_vs_pooled": 0.776
+            "p_vs_pooled": 1.0
+          },
+          {
+            "proved": 22,
+            "drawn": 27,
+            "p_vs_pooled": 0.5959
           }
         ]
       },
       "O(n**2)": {
         "pooled": {
-          "proved": 21,
-          "drawn": 33,
-          "rate": 0.6364
+          "proved": 25,
+          "drawn": 39,
+          "rate": 0.641
         },
         "by_campaign": [
           {
             "proved": 5,
             "drawn": 6,
-            "p_vs_pooled": 0.4269
+            "p_vs_pooled": 0.4299
           },
           {
             "proved": 3,
             "drawn": 7,
-            "p_vs_pooled": 0.2652
+            "p_vs_pooled": 0.2594
           },
           {
             "proved": 6,
@@ -4517,6 +5466,11 @@
           {
             "proved": 7,
             "drawn": 11,
+            "p_vs_pooled": 1.0
+          },
+          {
+            "proved": 4,
+            "drawn": 6,
             "p_vs_pooled": 1.0
           }
         ]
@@ -4535,13 +5489,14 @@
           },
           null,
           null,
+          null,
           null
         ]
       },
       "O(n+m)": {
         "pooled": {
-          "proved": 7,
-          "drawn": 7,
+          "proved": 8,
+          "drawn": 8,
           "rate": 1.0
         },
         "by_campaign": [
@@ -4560,7 +5515,12 @@
             "drawn": 2,
             "p_vs_pooled": 1.0
           },
-          null
+          null,
+          {
+            "proved": 1,
+            "drawn": 1,
+            "p_vs_pooled": 1.0
+          }
         ]
       },
       "O(n+m)log(n+m)": {
@@ -4577,20 +5537,21 @@
             "p_vs_pooled": 1.0
           },
           null,
+          null,
           null
         ]
       },
       "O(nlogn)": {
         "pooled": {
-          "proved": 29,
-          "drawn": 44,
-          "rate": 0.6591
+          "proved": 37,
+          "drawn": 57,
+          "rate": 0.6491
         },
         "by_campaign": [
           {
             "proved": 5,
             "drawn": 11,
-            "p_vs_pooled": 0.202
+            "p_vs_pooled": 0.2101
           },
           {
             "proved": 7,
@@ -4600,19 +5561,24 @@
           {
             "proved": 10,
             "drawn": 12,
-            "p_vs_pooled": 0.2414
+            "p_vs_pooled": 0.2355
           },
           {
             "proved": 7,
             "drawn": 10,
             "p_vs_pooled": 1.0
+          },
+          {
+            "proved": 8,
+            "drawn": 13,
+            "p_vs_pooled": 0.7782
           }
         ]
       },
       "O(nlogn+mlogm)": {
         "pooled": {
-          "proved": 2,
-          "drawn": 2,
+          "proved": 3,
+          "drawn": 3,
           "rate": 1.0
         },
         "by_campaign": [
@@ -4627,17 +5593,22 @@
             "drawn": 1,
             "p_vs_pooled": 1.0
           },
-          null
+          null,
+          {
+            "proved": 1,
+            "drawn": 1,
+            "p_vs_pooled": 1.0
+          }
         ]
       }
     }
   },
   "proofs_all": {
-    "files": 190,
-    "rows": 188,
+    "files": 225,
+    "rows": 223,
     "by_era": {
       "pre-axiom": 34,
-      "campaign": 156
+      "campaign": 191
     },
     "rows_with_two_proofs": [
       "1484_82",
@@ -4652,11 +5623,11 @@
       "note": "The claim that old proofs charge |s| for a seq update was checked and is false -- no proof performs one. The only changed-charge operation present is the slice, in 4 rows."
     },
     "by_label": {
-      "O(n)": 82,
-      "O(nlogn)": 37,
-      "O(n**2)": 25,
-      "O(1)": 20,
-      "O(n+m)": 10,
+      "O(n)": 104,
+      "O(nlogn)": 45,
+      "O(n**2)": 28,
+      "O(1)": 21,
+      "O(n+m)": 11,
       "O(n*m)": 10,
       "O(nlogn+mlogm)": 3,
       "O(n+m)log(n+m)": 1,
@@ -4673,6 +5644,16 @@
         "bound": "8 * n + 5",
         "call_depth": null,
         "recursive": null
+      },
+      {
+        "solution_id": "1018_254",
+        "file": "solutions-proved/1018/1018_254.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "32 * n + 3",
+        "call_depth": 1,
+        "recursive": true
       },
       {
         "solution_id": "1027_207",
@@ -4705,12 +5686,32 @@
         "recursive": true
       },
       {
+        "solution_id": "1047_26",
+        "file": "solutions-proved/1047/1047_26.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "41 * SumLen(strings) + 41 * |strings| + 3",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
         "solution_id": "1053_38",
         "file": "solutions-proved/1053/1053_38.dfy",
         "era": "campaign",
         "tight_variant": false,
         "label": "O(n)",
         "bound": "5 * N + 4 * |a_list| + 10",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1053_44",
+        "file": "solutions-proved/1053/1053_44.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(nlogn)",
+        "bound": "2 * |a_list| * (CeilLog2(|a_list|) + 1) + 5 * |a_list| + 12",
         "call_depth": 2,
         "recursive": true
       },
@@ -4895,6 +5896,16 @@
         "recursive": true
       },
       {
+        "solution_id": "1359_4",
+        "file": "solutions-proved/1359/1359_4.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n**2)",
+        "bound": "2 * a + |output| + 20",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
         "solution_id": "1366_112",
         "file": "solutions-proved/1366/1366_112.dfy",
         "era": "campaign",
@@ -4912,6 +5923,26 @@
         "label": "O(n)",
         "bound": "6 * |coordinates| + 3",
         "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1368_109",
+        "file": "solutions-proved/1368/1368_109.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "12 * |s| + 20",
+        "call_depth": 0,
+        "recursive": false
+      },
+      {
+        "solution_id": "1386_19",
+        "file": "solutions-proved/1386/1386_19.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(nlogn)",
+        "bound": "2 * |b_list| * (CeilLog2(|b_list|) + 1) + 6 * |b_list| + 12",
+        "call_depth": 3,
         "recursive": true
       },
       {
@@ -5015,12 +6046,32 @@
         "recursive": true
       },
       {
+        "solution_id": "1540_9",
+        "file": "solutions-proved/1540/1540_9.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "2 * |numbers| + 5",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
         "solution_id": "1560_164",
         "file": "solutions-proved/1560/1560_164.dfy",
         "era": "campaign",
         "tight_variant": false,
         "label": "O(n)",
         "bound": "8 * n + 6",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1560_63",
+        "file": "solutions-proved/1560/1560_63.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(nlogn)",
+        "bound": "2 * n * (CeilLog2(n) + 1) + 10 * n + 10",
         "call_depth": 2,
         "recursive": true
       },
@@ -5032,6 +6083,16 @@
         "label": "O(n)",
         "bound": "5 * |values| + 4",
         "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1563_497",
+        "file": "solutions-proved/1563/1563_497.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(nlogn)",
+        "bound": "2 * |values| * (CeilLog2(|values|) + 1) + 5 * |values| + |output| + 10",
+        "call_depth": 3,
         "recursive": true
       },
       {
@@ -5065,6 +6126,16 @@
         "recursive": true
       },
       {
+        "solution_id": "1650_311",
+        "file": "solutions-proved/1650/1650_311.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "5 * |pairs| + |output| + 5",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
         "solution_id": "1650_428",
         "file": "solutions-proved/1650/1650_428.dfy",
         "era": "pre-axiom",
@@ -5073,6 +6144,16 @@
         "bound": "4 * |pairs| + 10",
         "call_depth": null,
         "recursive": null
+      },
+      {
+        "solution_id": "167_191",
+        "file": "solutions-proved/167/167_191.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(1)",
+        "bound": "4",
+        "call_depth": 2,
+        "recursive": true
       },
       {
         "solution_id": "1675_150",
@@ -5163,6 +6244,26 @@
         "bound": "n * (10 * n + 10) + 2",
         "call_depth": 2,
         "recursive": true
+      },
+      {
+        "solution_id": "1765_73",
+        "file": "solutions-proved/1765/1765_73.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "4 * n + 5",
+        "call_depth": 1,
+        "recursive": false
+      },
+      {
+        "solution_id": "1830_16",
+        "file": "solutions-proved/1830/1830_16.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "12 * |string_| + 12",
+        "call_depth": 0,
+        "recursive": false
       },
       {
         "solution_id": "1855_33",
@@ -5265,6 +6366,16 @@
         "recursive": true
       },
       {
+        "solution_id": "1935_61",
+        "file": "solutions-proved/1935/1935_61.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n+m)",
+        "bound": "7 * |s| + 3",
+        "call_depth": 0,
+        "recursive": true
+      },
+      {
         "solution_id": "1937_10",
         "file": "solutions-proved/1937/1937_10.dfy",
         "era": "campaign",
@@ -5301,6 +6412,16 @@
         "tight_variant": false,
         "label": "O(n**2)",
         "bound": "8 * |s| * |s| + 30 * |s| + 20",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1954_157",
+        "file": "solutions-proved/1954/1954_157.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "6 * b + 5",
         "call_depth": 2,
         "recursive": true
       },
@@ -5405,6 +6526,16 @@
         "recursive": true
       },
       {
+        "solution_id": "2071_39",
+        "file": "solutions-proved/2071/2071_39.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(nlogn)",
+        "bound": "2 * |a_list| * (CeilLog2(|a_list|) + 1) + 6 * |a_list| + |output| + 10",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
         "solution_id": "208_290",
         "file": "solutions-proved/208/208_290.dfy",
         "era": "pre-axiom",
@@ -5432,6 +6563,16 @@
         "label": "O(n**2)",
         "bound": "3 + (12 * |numbers| + 6) * (|numbers| + 1)",
         "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "2105_521",
+        "file": "solutions-proved/2105/2105_521.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "10 * v_0 + 15",
+        "call_depth": 3,
         "recursive": true
       },
       {
@@ -5485,6 +6626,16 @@
         "recursive": true
       },
       {
+        "solution_id": "2225_120",
+        "file": "solutions-proved/2225/2225_120.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "4 * n + |output| + 8",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
         "solution_id": "2225_154",
         "file": "solutions-proved/2225/2225_154.dfy",
         "era": "campaign",
@@ -5492,6 +6643,16 @@
         "label": "O(nlogn)",
         "bound": "2 * n * n + 2 * n + 6",
         "call_depth": 3,
+        "recursive": true
+      },
+      {
+        "solution_id": "2226_1222",
+        "file": "solutions-proved/2226/2226_1222.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "4 * |binary_string| + 3",
+        "call_depth": 2,
         "recursive": true
       },
       {
@@ -5555,6 +6716,16 @@
         "recursive": true
       },
       {
+        "solution_id": "2389_139",
+        "file": "solutions-proved/2389/2389_139.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n**2)",
+        "bound": "(|s| + 1) * |s| + 3",
+        "call_depth": 1,
+        "recursive": true
+      },
+      {
         "solution_id": "2394_227",
         "file": "solutions-proved/2394/2394_227.dfy",
         "era": "campaign",
@@ -5572,6 +6743,16 @@
         "label": "O(nlogn)",
         "bound": "2 * n * (CeilLog2(n) + 1) + 4 * n + 10",
         "call_depth": 3,
+        "recursive": true
+      },
+      {
+        "solution_id": "2423_56",
+        "file": "solutions-proved/2423/2423_56.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "2 * n + 28000",
+        "call_depth": 2,
         "recursive": true
       },
       {
@@ -5625,6 +6806,16 @@
         "recursive": false
       },
       {
+        "solution_id": "2465_139",
+        "file": "solutions-proved/2465/2465_139.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "30 * t + 10",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
         "solution_id": "2496_30",
         "file": "solutions-proved/2496/2496_30.dfy",
         "era": "campaign",
@@ -5642,6 +6833,26 @@
         "label": "O(nlogn)",
         "bound": "2 * |coordinates[0]| * (CeilLog2(|coordinates[0]|) + 1) + 3 * n + 4",
         "call_depth": 3,
+        "recursive": true
+      },
+      {
+        "solution_id": "2516_238",
+        "file": "solutions-proved/2516/2516_238.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "5 * |bIn| + |out| + 5",
+        "call_depth": 4,
+        "recursive": true
+      },
+      {
+        "solution_id": "2522_11",
+        "file": "solutions-proved/2522/2522_11.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "4 * n + 4",
+        "call_depth": 2,
         "recursive": true
       },
       {
@@ -5815,6 +7026,16 @@
         "recursive": false
       },
       {
+        "solution_id": "2880_19",
+        "file": "solutions-proved/2880/2880_19.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "2 * n + 15",
+        "call_depth": 1,
+        "recursive": true
+      },
+      {
         "solution_id": "2913_309",
         "file": "solutions-proved/2913/2913_309.dfy",
         "era": "campaign",
@@ -5845,6 +7066,16 @@
         "recursive": null
       },
       {
+        "solution_id": "2926_50",
+        "file": "solutions-proved/2926/2926_50.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "8 * n + 500",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
         "solution_id": "2926_54",
         "file": "solutions-proved/2926/2926_54.dfy",
         "era": "campaign",
@@ -5871,6 +7102,16 @@
         "tight_variant": false,
         "label": "O(n)",
         "bound": "4040 * (if n > 0 then n else 0) + 10",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "2947_115",
+        "file": "solutions-proved/2947/2947_115.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n**2)",
+        "bound": "13 * |a_list| * |a_list| + 26 * |a_list| + |output| + 15",
         "call_depth": 2,
         "recursive": true
       },
@@ -5915,6 +7156,26 @@
         "recursive": true
       },
       {
+        "solution_id": "2992_153",
+        "file": "solutions-proved/2992/2992_153.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(nlogn)",
+        "bound": "2 * |a_list| * (CeilLog2(|a_list|) + 1) + 5 * |a_list| + 8",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "2992_87",
+        "file": "solutions-proved/2992/2992_87.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "8 * |a_list| + 6",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
         "solution_id": "3017_340",
         "file": "solutions-proved/3017/3017_340.dfy",
         "era": "campaign",
@@ -5932,6 +7193,16 @@
         "label": "O(nlogn)",
         "bound": "2 * |a_list| * (CeilLog2(|a_list|) + 1) + 4 * |a_list| + 12",
         "call_depth": 3,
+        "recursive": true
+      },
+      {
+        "solution_id": "3033_135",
+        "file": "solutions-proved/3033/3033_135.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(nlogn)",
+        "bound": "2 * |edges_list| * (CeilLog2(|edges_list|) + 1) + 8 * |edges_list| + |output| + 10",
+        "call_depth": 2,
         "recursive": true
       },
       {
@@ -6195,6 +7466,26 @@
         "recursive": true
       },
       {
+        "solution_id": "540_80",
+        "file": "solutions-proved/540/540_80.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "3 * n + 6",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "554_107",
+        "file": "solutions-proved/554/554_107.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "6 * |pairs| + 2",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
         "solution_id": "603_284",
         "file": "solutions-proved/603/603_284.dfy",
         "era": "pre-axiom",
@@ -6305,6 +7596,16 @@
         "recursive": true
       },
       {
+        "solution_id": "71_217",
+        "file": "solutions-proved/71/71_217.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(nlogn)",
+        "bound": "2 * n * (CeilLog2(n) + 1) + 8 * n + |output| + 10",
+        "call_depth": 3,
+        "recursive": true
+      },
+      {
         "solution_id": "71_257",
         "file": "solutions-proved/71/71_257.dfy",
         "era": "campaign",
@@ -6321,6 +7622,16 @@
         "tight_variant": false,
         "label": "O(n)",
         "bound": "8 * |data_points| + 12010",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "785_12",
+        "file": "solutions-proved/785/785_12.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "10 * |numbers| + 10 * n + 10",
         "call_depth": 2,
         "recursive": true
       },
@@ -6373,6 +7684,16 @@
         "bound": "400",
         "call_depth": 0,
         "recursive": false
+      },
+      {
+        "solution_id": "888_179",
+        "file": "solutions-proved/888/888_179.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "7 * n + |output| + 10",
+        "call_depth": 2,
+        "recursive": true
       },
       {
         "solution_id": "89_909",
@@ -6540,7 +7861,7 @@
         "era": "campaign",
         "tight_variant": false,
         "label": "O(nlogn+mlogm)",
-        "bound": "2 * |c_list| * |c_list| + 2 * |d_list| * |d_list| + 4 * |c_list| + 4 * |d_list|",
+        "bound": "2 * |c_list| * (CeilLog2(|c_list|) + 1)",
         "call_depth": 3,
         "recursive": true
       },
@@ -6567,27 +7888,27 @@
     ]
   },
   "difficulty": {
-    "n": 200,
+    "n": 250,
     "by_call_depth": {
       "0": {
+        "proved": 17,
+        "of": 22
+      },
+      "1": {
         "proved": 14,
         "of": 19
       },
-      "1": {
-        "proved": 10,
-        "of": 12
-      },
       "2": {
-        "proved": 96,
-        "of": 124
+        "proved": 120,
+        "of": 154
       },
       "3": {
-        "proved": 29,
-        "of": 38
+        "proved": 34,
+        "of": 47
       },
       "4": {
-        "proved": 3,
-        "of": 3
+        "proved": 4,
+        "of": 4
       },
       "unknown": {
         "proved": 4,
@@ -6596,12 +7917,12 @@
     },
     "by_recursive": {
       "False": {
-        "proved": 18,
-        "of": 23
+        "proved": 21,
+        "of": 26
       },
       "True": {
-        "proved": 134,
-        "of": 173
+        "proved": 168,
+        "of": 220
       },
       "unknown": {
         "proved": 4,
@@ -6610,40 +7931,40 @@
     },
     "by_label": {
       "O(1)": {
-        "proved": 18,
-        "of": 20
+        "proved": 19,
+        "of": 21
       },
       "O(logn)": {
         "proved": 0,
-        "of": 2
+        "of": 3
       },
       "O(n)": {
-        "proved": 77,
-        "of": 90
+        "proved": 99,
+        "of": 117
       },
       "O(n**2)": {
-        "proved": 21,
-        "of": 33
+        "proved": 25,
+        "of": 39
       },
       "O(n*m)": {
         "proved": 1,
         "of": 1
       },
       "O(n+m)": {
-        "proved": 7,
-        "of": 7
+        "proved": 8,
+        "of": 8
       },
       "O(n+m)log(n+m)": {
         "proved": 1,
         "of": 1
       },
       "O(nlogn)": {
-        "proved": 29,
-        "of": 44
+        "proved": 37,
+        "of": 57
       },
       "O(nlogn+mlogm)": {
-        "proved": 2,
-        "of": 2
+        "proved": 3,
+        "of": 3
       }
     },
     "note": "Label dominates. Depth is reported so the claim can be checked rather than asserted; with the sample split across several depths, treat any depth effect as indicative."
