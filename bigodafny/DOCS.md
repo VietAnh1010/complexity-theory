@@ -47,7 +47,7 @@ several of its claims were later reversed. `summaries/README.md` says which.
 | strict tier, `validate.py` | 529 valid, 3 fail |
 | loose tier, `difftest.py` | 95 agree, 4 untranslatable, 1 ungateable |
 | safety verified (`dafny verify`) | all 342 of `solutions/`; 332 also prove termination |
-| complexity proved | 187 rows, 189 files, all verify, zero `assume` |
+| complexity proved | 188 rows, 190 files, all verify, zero `assume` |
 | label audit | 506 screened: 347 `ok`, 152 `mismatch`, 7 `unsure` (after the re-file) |
 | Dafny / Z3 | 4.11.0 / 4.12.1 |
 
@@ -80,7 +80,7 @@ leaves it.
 | `solutions-unverified/` | 3 | `dafny verify` cannot discharge its safety obligations |
 | `solutions-untranslated/` | 4 | it will not be translated; the file says why |
 
-`solutions-proved/` is **not** part of that partition. It holds 189 instrumented
+`solutions-proved/` is **not** part of that partition. It holds 190 instrumented
 *copies* of rows that also live above, each carrying a machine-checked
 complexity bound. A row can therefore exist in two places with different
 preconditions — `precheck.py`'s `find_all` exists for exactly that, and one row

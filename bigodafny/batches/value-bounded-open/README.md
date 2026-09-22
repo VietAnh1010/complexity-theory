@@ -1,6 +1,6 @@
 # `value-bounded-open/` — value-bounded rows with **no proof yet**
 
-7 rows. Each one's real cost depends on how **large** an input is, while its
+6 rows. Each one's real cost depends on how **large** an input is, while its
 BigOBench label only counts how **many** inputs there are — and unlike the
 eleven in `solutions-proved/value-bounded/`, nobody has managed to prove a
 bound for it.
@@ -21,7 +21,6 @@ behaviour gate; what is missing is a complexity proof, not a translation.
 | `1306_126` | `O(n)` | the loop guard's inline sum hoisted into a ghost trace |
 | `1944_50` | `O(n)` | a doubling-search invariant over `Pow2` / `Log2` |
 | `1948_388` | `O(1)` | case-split invariants over `s*s` |
-| `2423_48` | `O(nlogn)` | **a sortedness lemma** — see below |
 | `2819_926` | `O(n)` | `FloorDiv` and triangular-number bounds, four or five chained |
 | `2926_50` | `O(n)` | a hoisted constant for a product of 53 primes, plus monotonicity |
 
@@ -35,18 +34,22 @@ the translation searches: `while s*s < target { s := s+1; }`, about `sqrt(k)`
 iterations. `k = 100` loops 28 times; `k = 10**18` loops a billion. Same one
 input.
 
-## `2423_48` was the exception, and it is now unblocked
+## `2423_48` left this directory, and it is the proof that the split is real
 
-Its trip count is `d[|d|-1].0 + 2`, the largest first component after a sort.
-Proving anything about it required knowing the sort produces an ordered
-sequence — and `prelude.dfy` proved only `SortIsPermutation`, that the output
-holds the same elements. Nothing said it was in order, so the trip count could
-not even be named.
+It was the one row here blocked by something reusable rather than its own
+arithmetic: its trip count is `d[|d|-1].0 + 2`, the largest first component
+after a sort, and `prelude.dfy` proved only `SortIsPermutation` — the output
+holds the same elements as the input. Nothing said it was ordered, so the trip
+count could not be tied to `pairs` at all.
 
-`SortIsSorted` was added to the prelude on 2026-09-22 for exactly this. The row
-has **not** been retried; it stays here until a campaign draws it again or
-someone proves it by hand. It is the one item on this list that was
-infrastructure rather than a one-off.
+`SortIsSorted` and `SortLastIsMax` went into the prelude on 2026-09-22. The row
+was proved by hand the same day, after failing in two separate campaigns, and
+is now in `solutions-proved/value-bounded/`. The proof's use of the new lemma
+is four lines.
+
+**The other six are unchanged, and that is the point.** Fixing the prelude
+unblocked exactly one row, because the other six need their own arithmetic and
+share nothing — with each other or with anything already in the corpus.
 
 ## How a row leaves
 

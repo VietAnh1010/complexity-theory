@@ -1,6 +1,6 @@
 # `value-bounded/` — the label counts items, the code follows magnitudes
 
-**11 rows, each with a machine-checked proof.** Rows in the same category with
+**12 rows, each with a machine-checked proof.** Rows in the same category with
 **no** proof do not belong under a directory named `solutions-proved`; they are
 in `batches/value-bounded-open/`, which has its own README and manifest.
 
@@ -55,8 +55,19 @@ recursion-tree argument, it went into the corpus, and later rows copied it —
 three did exactly that in `prove-sample-4`. One payment, many rows.
 
 The single exception was `2423_48`, which needed a fact about the prelude
-rather than its own lemma. `SortIsSorted` and `SortLastIsMax` were added to
-`prelude.dfy` on 2026-09-22; the row has not been retried.
+rather than its own lemma. `SortIsSorted` and `SortLastIsMax` went into
+`prelude.dfy` on 2026-09-22 and the row was proved the same day, after failing
+in two campaigns. Its proof uses the new lemma in four lines:
+
+```dafny
+SortLastIsMax(pairs, less);       // last element is >= every element
+SortKeepsElems(pairs, less);      // and is itself one of them
+MaxFirstBounds(pairs);            // so its .0 is the largest first component
+MaxFirstAttained(pairs);
+```
+
+One prelude lemma, one row. The other six in `batches/value-bounded-open/` were
+untouched by it — they need their own arithmetic.
 
 ## How a row gets in
 

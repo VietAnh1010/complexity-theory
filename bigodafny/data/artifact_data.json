@@ -1,6 +1,6 @@
 {
-  "generated": "2026-09-22T06:18:52+00:00",
-  "commit": "35b1ae2",
+  "generated": "2026-09-22T06:34:21+00:00",
+  "commit": "767f9ae",
   "branch": "claude/bigobench-python-dafny-dataset-ts4tm5",
   "toolchain": {
     "dafny": "4.11.0",
@@ -12,7 +12,7 @@
     "directories": {
       "solutions": 342,
       "solutions-disputed": 159,
-      "solutions-proved": 189,
+      "solutions-proved": 190,
       "solutions-ungateable": 5,
       "solutions-unscreened": 127,
       "solutions-untranslated": 4,
@@ -4633,10 +4633,10 @@
     }
   },
   "proofs_all": {
-    "files": 189,
-    "rows": 187,
+    "files": 190,
+    "rows": 188,
     "by_era": {
-      "pre-axiom": 33,
+      "pre-axiom": 34,
       "campaign": 156
     },
     "rows_with_two_proofs": [
@@ -4653,7 +4653,7 @@
     },
     "by_label": {
       "O(n)": 82,
-      "O(nlogn)": 36,
+      "O(nlogn)": 37,
       "O(n**2)": 25,
       "O(1)": 20,
       "O(n+m)": 10,
@@ -6503,6 +6503,16 @@
         "bound": "2 * |IntToString(n)| + 6",
         "call_depth": null,
         "recursive": null
+      },
+      {
+        "solution_id": "2423_48",
+        "file": "solutions-proved/value-bounded/2423/2423_48.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(nlogn)",
+        "bound": "2 * |pairs| * (CeilLog2(|pairs|) + 1)",
+        "call_depth": 2,
+        "recursive": true
       },
       {
         "solution_id": "2607_90",
