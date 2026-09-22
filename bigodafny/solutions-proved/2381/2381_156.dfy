@@ -1,45 +1,13 @@
-// VALUE-BOUNDED -- filed for review; the proof carries a term the label omits.
+// CHARGE SUPERSEDED -- 2026-09-22.
 //
-//   This proof's bound depends on the MAGNITUDE of an input, not only on how
-//   many inputs there are. BigOBench fitted the label by profiling, which
-//   treats a capped value as constant; COMPLEXITY.md section 1 decides the
-//   opposite, so the two disagree here by construction.
+//   This proof charges IntToString by the digit count of the printed value.
+//   COMPLEXITY.md now charges it 1, and |IntToString(x)| 1 as well. The proof
+//   is still SOUND: charging more than the model requires leaves a valid upper
+//   bound. It is simply loose, so the row's relation is `looser-slack`, not
+//   `looser-structural`, and it left solutions-proved/value-bounded/.
 //
-//   See solutions-proved/value-bounded/README.md for the category and
-//   MANIFEST.jsonl for this row's entry.
-//
-// 9_C. Hexadecimal's Numbers  (problem 2381, solution 2381_156)
-// time complexity: O(1)
-// python exact-diff baseline: exact
-//
-// Reproduce the Python program's entire stdout in `output`.
-//
-// --- Python ---------------------------------------------------------
-// def main():
-// 	n = int(input())
-// 	print(calculate(n))
-//
-// def helper(s):
-// 	if len(s) == 0:
-// 		return 1
-// 	num = int(s[0])
-// 	if num == 0:
-// 		return helper(s[1:])
-// 	elif num == 1:
-// 		return 2**(len(s) - 1) + helper(s[1:])
-// 	elif num >= 2:
-// 		return 2**len(s)
-// 	else:
-// 		assert(False)
-//
-// def calculate(n):
-// 	return helper(str(n)) - 1
-//
-// main()
-// #print(calculate(13402))
-// --------------------------------------------------------------------
 
-include "../../../prelude.dfy"
+include "../../prelude.dfy"
 import opened Prelude
 
 function Power(base: int, e: nat): int

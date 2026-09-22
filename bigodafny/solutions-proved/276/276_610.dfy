@@ -1,37 +1,13 @@
-// VALUE-BOUNDED -- filed for review; the proof carries a term the label omits.
+// CHARGE SUPERSEDED -- 2026-09-22.
 //
-//   This proof's bound depends on the MAGNITUDE of an input, not only on how
-//   many inputs there are. BigOBench fitted the label by profiling, which
-//   treats a capped value as constant; COMPLEXITY.md section 1 decides the
-//   opposite, so the two disagree here by construction.
+//   This proof charges IntToString by the digit count of the printed value.
+//   COMPLEXITY.md now charges it 1, and |IntToString(x)| 1 as well. The proof
+//   is still SOUND: charging more than the model requires leaves a valid upper
+//   bound. It is simply loose, so the row's relation is `looser-slack`, not
+//   `looser-structural`, and it left solutions-proved/value-bounded/.
 //
-//   See solutions-proved/value-bounded/README.md for the category and
-//   MANIFEST.jsonl for this row's entry.
-//
-// 1385_A. Three Pairwise Maximums  (problem 276, solution 276_610)
-// time complexity: O(n)
-// python exact-diff baseline: partial
-//
-// Reproduce the Python program's entire stdout in `output`.
-//
-// --- Python ---------------------------------------------------------
-// t = int(input())
-// for _ in range(t):
-// 	x, y, z = map(int, input().split())
-// 	if(x != y and y != z and x!= z):
-// 		print("NO")
-// 	elif(x == y and x != z and x == min(x, z)):
-// 		print("NO")
-// 	elif(y == z and y != x and y == min(y, x)):
-// 		print("NO")
-// 	elif(x == z and x != y and x == min(y, z)):
-// 		print("NO")
-// 	else:
-// 		print("YES")
-// 		print(min({x, y, z}), min({x, y, z}), max({x, y, z}))
-// --------------------------------------------------------------------
 
-include "../../../prelude.dfy"
+include "../../prelude.dfy"
 import opened Prelude
 
 function Min2(a: int, b: int): int { if a < b then a else b }

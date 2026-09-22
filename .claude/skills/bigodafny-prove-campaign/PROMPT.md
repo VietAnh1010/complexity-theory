@@ -66,6 +66,7 @@ unit of loop overhead per iteration.
 | `multiset(s)` | `\|s\|` |
 | `multiset(a) == multiset(b)` | `\|a\|+\|b\|` |
 | `Join(parts, sep)` | `SumLen(parts) + \|parts\|` |
+| `IntToString(x)`, and `\|IntToString(x)\|` | `1` |
 | a recursive prelude function over a seq or string | its length |
 | a call to a helper | the helper's `steps` |
 
@@ -135,6 +136,16 @@ A bound **below** the label is not automatically a tighter reading of the row.
 Before recording one, read the Python: if it sorts and your Dafny compares
 multisets, or if it multiplies numbers that grow past a machine word, the gap
 is the translation or the charge table, not the label. Say which.
+
+## `IntToString` is constant, and so is its result
+
+Charge `1` for `IntToString(x)` and treat `|IntToString(x)|` as `1` too, so a
+`Join` over k digit strings costs k rather than the sum of their digits. A
+digit count is bounded at 19 in practice and the hidden constant stays small.
+`Join` still costs `SumLen(parts) + |parts|` for parts of unbounded length,
+such as input lines.
+
+This is an exception to the next section and it is deliberately narrow.
 
 ## Value versus size — a settled convention
 

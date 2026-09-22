@@ -1,6 +1,6 @@
 # `value-bounded/` — the label counts items, the code follows magnitudes
 
-**12 rows, each with a machine-checked proof.** Rows in the same category with
+**10 rows, each with a machine-checked proof.** Rows in the same category with
 **no** proof do not belong under a directory named `solutions-proved`; they are
 in `batches/value-bounded-open/`, which has its own README and manifest.
 
@@ -100,3 +100,17 @@ Nothing leaves by having the convention relaxed for one row.
 |---|---|
 | `MANIFEST.jsonl` | every row: status, label, bound, where the row lives, why |
 | `<pid>/<sid>.dfy` | the proof, with a `VALUE-BOUNDED` header |
+
+## Two rows left on 2026-09-22
+
+`2381_156` and `276_610` were here because their proofs charged `IntToString`
+by the digit count of the printed value. `COMPLEXITY.md` now charges
+`IntToString(x)` and `|IntToString(x)|` one step each, so neither label omits
+anything and neither row is structural. Both returned to `solutions/` and their
+proofs to `solutions-proved/<pid>/`, recorded `looser-slack`.
+
+The proofs still carry the digit term. That is sound — overcharging leaves a
+valid upper bound — but it is loose, and a tight re-proof is available work.
+
+Nothing else here rests on that charge: the remaining ten turn on loops
+bounded by input values, which the value-versus-size convention still counts.

@@ -523,3 +523,7 @@
 {"ts": "2026-09-22T06:45:47", "kind": "dataset", "rows": 640, "problems": 311, "splits": {"strict": 534, "loose": 100, "unvalidatable": 6}}
 {"ts": "2026-09-22T07:17:08", "kind": "proofs", "verified": 225, "total": 225, "with_assume": 0}
 {"ts": "2026-09-22T07:17:08", "kind": "assume_scan", "count": 0}
+{"ts": "2026-09-22T08:11:56", "kind": "verify_all", "total": 349, "verified": 349, "unverified": 0, "termination_opt_out": 10, "kinds": {}}
+{"ts": "2026-09-22T08:20:15", "kind": "proofs", "verified": 225, "total": 225, "with_assume": 0}
+{"ts": "2026-09-22T08:20:15", "kind": "assume_scan", "count": 0}
+{"ts": "2026-09-22T08:20:38", "kind": "dataset", "rows": 640, "problems": 311, "splits": {"strict": 534, "loose": 100, "unvalidatable": 6}}

@@ -18,15 +18,15 @@ it means and how a row leaves it. A row is in exactly one.
 
 | directory | rows | why it is not simply clean |
 |---|---|---|
-| `solutions/` | 342 | — it is |
+| `solutions/` | 344 | — it is |
 | `solutions-unscreened/` | 127 | its label was never screened |
-| `solutions-disputed/` | 159 | the audit says its label does not match its code |
+| `solutions-disputed/` | 157 | the audit says its label does not match its code |
 | `solutions-ungateable/` | 5 | its gate cannot reach a verdict; the test data fails first |
 | `solutions-unverified/` | 3 | `dafny verify` cannot discharge its safety obligations |
 | `solutions-untranslated/` | 4 | it will not be translated; the file says why |
 
 `solutions-proved/` is **not** part of that partition — it holds instrumented
-copies (225 files over 223 rows: 2 tight-bound variants under `nlogn/`, 12
+copies (225 files over 223 rows: 2 tight-bound variants under `nlogn/`, 10
 value-bounded rows queued for review under `value-bounded/`)
 of rows that also live above. A row can exist in two places with different preconditions;
 `precheck.py`'s `find_all` exists for that.
@@ -185,7 +185,7 @@ independently by campaign 4's agents, none of which had seen campaign 3.
 Two destinations, by whether a proof exists. A row with no proof does **not**
 go under a directory called `solutions-proved`.
 
-`solutions-proved/value-bounded/` holds the 12 with a proof. It is an
+`solutions-proved/value-bounded/` holds the 10 with a proof. It is an
 **overlay subdirectory** like `nlogn/`, not a partition member: the row stays
 wherever the partition puts it, and `MANIFEST.jsonl` records its `row` path.
 `batches/value-bounded-open/` holds the 6 without one — a README and a

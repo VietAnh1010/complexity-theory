@@ -36,9 +36,9 @@ memory or from an earlier message.
 
 | directory | rows | meaning |
 |---|---|---|
-| `solutions/` | 342 | valid, `dafny verify` clean, label screened and unsuspected |
+| `solutions/` | 344 | valid, `dafny verify` clean, label screened and unsuspected |
 | `solutions-unscreened/` | 127 | valid; the label was never screened (sibling reuse or `set<T>`) |
-| `solutions-disputed/` | 159 | valid; the audit says the label does not match the code |
+| `solutions-disputed/` | 157 | valid; the audit says the label does not match the code |
 | `solutions-ungateable/` | 5 | the gate cannot reach a verdict; the stored test data fails first |
 | `solutions-unverified/` | 3 | valid; safety obligations not discharged |
 | `solutions-untranslated/` | 4 | will not be translated; each file states why |

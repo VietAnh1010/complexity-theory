@@ -1,6 +1,6 @@
 # `solutions-disputed/` — label audit review queue
 
-159 rows whose stated complexity label does not describe what the code costs.
+157 rows whose stated complexity label does not describe what the code costs.
 **Queued for manual review; nothing here is a decision.** Each file keeps its
 full original body with a header naming the audited class, the cause, the
 confidence and the evidence, so a reviewer needs nothing else open.
@@ -302,3 +302,24 @@ while the `O(n)` label was fitted against the test-case count alone.
 Same shape as `2381_156`, moved here on 2026-09-17. The difference is the
 evidence: the earlier four moved on an audit verdict, this one on a proof that
 `proofs.py` re-verifies on every run.
+
+## Undone by this decision: `IntToString` charges 1
+
+**2026-09-22.** `COMPLEXITY.md` now charges `IntToString(x)` and
+`|IntToString(x)|` one step each. Two rows had been moved here on the strength
+of the old digit-count charge and nothing else:
+
+| row | moved here | basis |
+|---|---|---|
+| `2381_156` | 2026-09-17 | `IntToString` and `HexHelper` cost the digit count of n |
+| `276_610` | 2026-09-22 | `Join`'s `SumLen` over `IntToString` output |
+
+Under the new charge neither label omits anything, so **both went back to
+`solutions/`** with a `LABEL AUDIT WITHDRAWN` header naming what changed. Their
+proofs still carry the digit term — sound, because overcharging leaves a valid
+upper bound — so they are recorded `looser-slack` rather than
+`looser-structural`, and they left `solutions-proved/value-bounded/`.
+
+No other row here rests on that charge; the four moved under the
+value-versus-size convention turn on loops bounded by input values, which the
+convention still counts.

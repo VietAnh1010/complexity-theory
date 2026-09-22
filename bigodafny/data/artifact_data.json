@@ -1,6 +1,6 @@
 {
-  "generated": "2026-09-22T07:03:15+00:00",
-  "commit": "be166be",
+  "generated": "2026-09-22T07:20:18+00:00",
+  "commit": "14af1e3",
   "branch": "claude/bigobench-python-dafny-dataset-ts4tm5",
   "toolchain": {
     "dafny": "4.11.0",
@@ -10,8 +10,8 @@
     "rows": 640,
     "problems": 311,
     "directories": {
-      "solutions": 342,
-      "solutions-disputed": 159,
+      "solutions": 344,
+      "solutions-disputed": 157,
       "solutions-proved": 225,
       "solutions-ungateable": 5,
       "solutions-unscreened": 127,
@@ -46,9 +46,9 @@
   },
   "verification": {
     "scope": "solutions/ and solutions-ungateable/",
-    "total": 347,
-    "verified": 347,
-    "fully_verified_incl_termination": 337,
+    "total": 349,
+    "verified": 349,
+    "fully_verified_incl_termination": 339,
     "termination_opt_out": [
       "1675_29",
       "1948_388",
@@ -62,7 +62,7 @@
       "457_38"
     ],
     "by_directory": {
-      "solutions": 342,
+      "solutions": 344,
       "solutions-ungateable": 5
     },
     "failing": [],
@@ -714,8 +714,8 @@
     "relations": {
       "confirms": 33,
       "unresolved": 8,
-      "looser-structural": 5,
-      "looser-slack": 3,
+      "looser-structural": 4,
+      "looser-slack": 4,
       "contradicts": 1
     },
     "contradicts_label": [
@@ -726,7 +726,6 @@
     "value_vs_size_rows": [
       "1484_26",
       "2128_34",
-      "2381_156",
       "2607_90",
       "810_131"
     ],
@@ -1447,8 +1446,8 @@
         "split": "strict",
         "outcome": "proved",
         "bound": "2*|IntToString(n)|+6 (i.e. O(log n), not constant)",
-        "relation": "looser-structural",
-        "relation_reason": "IntToString costs the digit count of n, i.e. log of the value. Constant only if the value is treated as capped.",
+        "relation": "looser-slack",
+        "relation_reason": "Was looser-structural on the strength of IntToString's digit-count charge alone. COMPLEXITY.md now charges IntToString 1, and |IntToString(x)| 1 as well, so the label omits nothing. The proof still carries the digit term -- sound, since it overcharges, but loose. Row returned to solutions/ and left value-bounded/.",
         "obstacle": null,
         "agent_said_agrees": false,
         "agent_said_relation": null,
@@ -3525,16 +3524,15 @@
     "relations": {
       "confirms": 34,
       "unresolved": 12,
-      "looser-structural": 3,
-      "looser-slack": 1
+      "looser-structural": 2,
+      "looser-slack": 2
     },
     "contradicts_label": [],
     "note_on_contradiction": "Every proof in these campaigns is an upper bound. A bound ABOVE the label is `looser` -- it fails to confirm the label and cannot disagree with it, since that needs a lower bound. A bound BELOW the label does bear on it, but only after the other two explanations are ruled out: `tighter-costmodel` (the charge table costs something CPython does not) and `tighter-translation` (the Dafny runs a cheaper algorithm than the Python).",
     "tighter_rows": {},
     "value_vs_size_rows": [
       "1820_180",
-      "2358_421",
-      "276_610"
+      "2358_421"
     ],
     "by_label": {
       "O(1)": {
@@ -3618,8 +3616,8 @@
         "split": "loose",
         "outcome": "proved",
         "bound": "13*n + BoundFor(abc_list[..min(n,|abc_list|)]) + 2, where BoundFor sums 3*(|x|+|y|+|z|)+20 per row",
-        "relation": "looser-structural",
-        "relation_reason": "the YES branch prints two numbers via IntToString then Join; Join's SumLen(parts) charge is real string length, which grows with the printed values' magnitude, a cost the O(n) label (fit against test-case count only) omits",
+        "relation": "looser-slack",
+        "relation_reason": "Was looser-structural on the strength of IntToString's digit-count charge alone. COMPLEXITY.md now charges IntToString 1, and |IntToString(x)| 1 as well, so the label omits nothing. The proof still carries the digit term -- sound, since it overcharges, but loose. Row returned to solutions/ and left value-bounded/.",
         "obstacle": null,
         "agent_said_agrees": null,
         "agent_said_relation": "looser-structural",
@@ -6716,6 +6714,16 @@
         "recursive": true
       },
       {
+        "solution_id": "2381_156",
+        "file": "solutions-proved/2381/2381_156.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(1)",
+        "bound": "2 * |IntToString(n)| + 6",
+        "call_depth": null,
+        "recursive": null
+      },
+      {
         "solution_id": "2389_139",
         "file": "solutions-proved/2389/2389_139.dfy",
         "era": "campaign",
@@ -6972,6 +6980,16 @@
         "tight_variant": false,
         "label": "O(n)",
         "bound": "|values| + 6",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "276_610",
+        "file": "solutions-proved/276/276_610.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n)",
+        "bound": "13 * n + BoundFor(abc_list[..(if n < |abc_list| then n else |abc_list|)]) + 2",
         "call_depth": 2,
         "recursive": true
       },
@@ -7816,16 +7834,6 @@
         "recursive": true
       },
       {
-        "solution_id": "2381_156",
-        "file": "solutions-proved/value-bounded/2381/2381_156.dfy",
-        "era": "campaign",
-        "tight_variant": false,
-        "label": "O(1)",
-        "bound": "2 * |IntToString(n)| + 6",
-        "call_depth": null,
-        "recursive": null
-      },
-      {
         "solution_id": "2423_48",
         "file": "solutions-proved/value-bounded/2423/2423_48.dfy",
         "era": "pre-axiom",
@@ -7844,16 +7852,6 @@
         "bound": "6 * n + 400 +",
         "call_depth": null,
         "recursive": null
-      },
-      {
-        "solution_id": "276_610",
-        "file": "solutions-proved/value-bounded/276/276_610.dfy",
-        "era": "campaign",
-        "tight_variant": false,
-        "label": "O(n)",
-        "bound": "13 * n + BoundFor(abc_list[..(if n < |abc_list| then n else |abc_list|)]) + 2",
-        "call_depth": 2,
-        "recursive": true
       },
       {
         "solution_id": "305_76",
@@ -7976,7 +7974,7 @@
       "paths_no_longer_existing": 114
     },
     "after": {
-      "rows": 347,
+      "rows": 349,
       "recorded_failing": 0
     },
     "cause": "verify_all.py rewrites the record whole and was not re-run after the label audit moved 114 rows out of solutions/",

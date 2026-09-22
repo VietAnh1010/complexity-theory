@@ -20,8 +20,47 @@ SOLVER = shutil.which("z3") or "/usr/local/bin/z3"
 
 
 def bound_of(text):
-    m = re.search(r"ensures\s+steps\s*<=\s*(.+?)\s*(?://.*)?$", text, re.M)
-    return m.group(1).strip() if m else None
+    """The bound `Solve` promises, not whichever `ensures` comes first.
+
+    Three defects this replaces, all found on 2026-09-21/22 and none of them
+    affecting a verdict -- `verified` comes from Dafny, never from here -- but
+    all of them publishing a wrong bound:
+
+      * the first `ensures steps <=` in the file is a HELPER's when one is
+        declared before Solve. 7 of 151 proofs recorded a helper's bound;
+        2496_30 published `6100` for a row whose Solve is O(n**2), and
+        2803_133 published Fact's bound rather than Solve's.
+      * a wrapped `ensures` was cut at the first newline. 1243_0 published
+        only its first term until the source was reflowed onto one line.
+      * a two-clause `ensures` (`c >= 1 ==> steps <= ...` guarded, plus the
+        `c < 1` case) matched neither pattern and recorded null. 1738_24,
+        2254_6 and 457_27 had no bound on file although all three verify.
+
+    Returns the clauses joined by " AND " when Solve states more than one.
+    """
+    m = re.search(r"\bmethod\s+Solve\b.*?(?=\n\{)", text, re.S)
+    scope = m.group(0) if m else text
+    out = []
+    for line in scope.splitlines():
+        if not re.search(r"\bensures\b", line):
+            continue
+        # the clause runs to the end of the signature or the next ensures /
+        # requires / decreases / modifies, so pull the continuation lines too
+        start = scope.index(line)
+        rest = scope[start:]
+        clause = []
+        for j, cl in enumerate(rest.splitlines()):
+            if j and re.match(r"\s*(ensures|requires|decreases|modifies|reads)\b", cl):
+                break
+            clause.append(cl.split("//")[0].rstrip())
+        joined = " ".join(x.strip() for x in clause if x.strip())
+        hit = re.search(r"ensures\s+(.*?steps\s*<=\s*.+)$", joined)
+        if hit:
+            clause_text = hit.group(1).strip()
+            # keep the old flat format for an unguarded clause, so existing
+            # records and anything reading them do not shift under this fix
+            out.append(re.sub(r"^steps\s*<=\s*", "", clause_text))
+    return " AND ".join(out) if out else None
 
 
 def scan_assumes():

@@ -1,5 +1,5 @@
 {
-  "complexity_proved": 188,
+  "complexity_proved": 223,
   "dafny_status": {
     "agrees": 95,
     "differs": 1,
@@ -25,7 +25,7 @@
   "quarantined": 12,
   "rows": 640,
   "safety_failure": {},
-  "safety_verified": 347,
+  "safety_verified": 349,
   "signature_status": {
     "ok": 640
   },

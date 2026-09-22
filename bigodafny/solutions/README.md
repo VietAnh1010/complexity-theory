@@ -1,6 +1,6 @@
 # `solutions/` — the screened corpus
 
-342 rows. **"Clean" is not the same as "every guarantee holds"**; the two
+344 rows. **"Clean" is not the same as "every guarantee holds"**; the two
 sections below name 7 rows where it does not, and safety is only partly done.
 Read those before treating this directory as a certified set.
 
@@ -23,7 +23,7 @@ A row is here when all three hold:
 | passes its own gate | 343 | 298 `valid` (strict) + 49 `agrees` (loose) |
 | **cannot be gated** | 6 | the harness cannot feed them; see below |
 | **fails its gate on speed** | 1 | `1501_224`, timeouts only, zero wrong answers |
-| `dafny verify` clean | **342 — all of them** | 332 also prove termination; 10 carry `decreases *` |
+| `dafny verify` clean | **344 — all of them** | 334 also prove termination; 10 carry `decreases *` |
 | verdict `unsure`, not `ok` | 7 | `2254_143`, `1243_0`, `1364_161`, `1950_45`, `2282_16`, `2128_34`, `1578_724` |
 
 Nothing here is *proved* to meet its label. That claim needs a ghost step

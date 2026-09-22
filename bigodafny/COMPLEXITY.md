@@ -37,11 +37,43 @@ independent of any backend:
 | iteration over a set | `\|s\|` | |
 | `multiset(s)` | `\|s\|` | |
 | `multiset(a) == multiset(b)` | `\|a\|+\|b\|` | |
-| `Join(parts, sep)` | `SumLen(parts) + \|parts\|` | |
+| `Join(parts, sep)` | `SumLen(parts) + \|parts\|` | but see `IntToString` below |
+| `IntToString(x)`, and `\|IntToString(x)\|` | `1` | **decided 2026-09-22** |
 | a recursive prelude function over a seq or string | its length | one level per element |
 | a call to a helper | the helper's `steps` | |
 
 `array<T>` is absent because the corpus is. Two rows keep one; see the appendix.
+
+### `IntToString` is constant, and so is the string it returns
+
+**Decided 2026-09-22.** A decimal representation is charged `1`, and the string
+it produces is treated as having constant length. In practice the digit count
+is bounded — a competitive-programming value fits in 19 digits — and unlike a
+value-bounded *loop*, the constant this hides is small enough that the label
+still predicts growth.
+
+Both halves are needed or the model contradicts itself. Charging `1` to produce
+`IntToString(x)` and then `SumLen` to `Join` a sequence of such strings would
+put the digit count straight back into the bound through the other door. So:
+
+    IntToString(x)                  ->  1
+    |IntToString(x)|                ->  1
+    Join(k digit strings, sep)      ->  k,   not the sum of their digits
+
+`Join` still costs `SumLen(parts) + |parts|` for parts whose length is not
+bounded this way — a row joining input lines pays for their real length.
+
+**This is an exception to the value-versus-size convention below, and it is
+narrower than that convention.** A loop whose trip count is an input value
+still counts: the constant there runs to 30 or 60 and the label stops
+predicting anything. A digit string is at most 19 characters. The two cases
+differ in size, and the decision follows the size.
+
+**What it unmade.** Two rows had been filed `looser-structural` and moved to
+`solutions-disputed/` on the strength of the old charge alone — `2381_156` on
+2026-09-17 and `276_610` on 2026-09-22. Under this decision neither label omits
+anything, so both moved back. See the `## Undone by this decision` section of
+`solutions-disputed/README.md`.
 
 ### Value is a parameter, not a constant
 
@@ -51,7 +83,6 @@ bound as its own parameter; it is not absorbed into the constant because the
 problem statement happens to cap it.
 
     binary search over v        ->  O(log v),      not O(1)
-    IntToString(n)              ->  O(log n),      not O(1)
     a loop `while i < r`        ->  O(r),          not O(1)
     comparing strings of length L  ->  O(L) per comparison
 
