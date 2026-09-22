@@ -1,0 +1,17 @@
+{"solution_id": "1047_26", "path": "solutions/1047/1047_26.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "1359_4", "path": "solutions/1359/1359_4.dfy", "label": "O(n**2)", "split": "strict", "gate": "valid"}
+{"solution_id": "1386_19", "path": "solutions/1386/1386_19.dfy", "label": "O(nlogn)", "split": "strict", "gate": "valid"}
+{"solution_id": "1563_497", "path": "solutions/1563/1563_497.dfy", "label": "O(nlogn)", "split": "strict", "gate": "valid"}
+{"solution_id": "1650_311", "path": "solutions/1650/1650_311.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "1765_73", "path": "solutions/1765/1765_73.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "1935_61", "path": "solutions/1935/1935_61.dfy", "label": "O(n+m)", "split": "loose", "gate": "agrees"}
+{"solution_id": "2071_39", "path": "solutions/2071/2071_39.dfy", "label": "O(nlogn)", "split": "strict", "gate": "valid"}
+{"solution_id": "2225_120", "path": "solutions/2225/2225_120.dfy", "label": "O(n)", "split": "loose", "gate": "agrees"}
+{"solution_id": "2389_139", "path": "solutions/2389/2389_139.dfy", "label": "O(n**2)", "split": "strict", "gate": "valid"}
+{"solution_id": "2516_238", "path": "solutions/2516/2516_238.dfy", "label": "O(n)", "split": "loose", "gate": "agrees"}
+{"solution_id": "2880_19", "path": "solutions/2880/2880_19.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "2947_115", "path": "solutions/2947/2947_115.dfy", "label": "O(n**2)", "split": "strict", "gate": "valid"}
+{"solution_id": "3033_135", "path": "solutions/3033/3033_135.dfy", "label": "O(nlogn)", "split": "strict", "gate": "valid"}
+{"solution_id": "457_38", "path": "solutions/457/457_38.dfy", "label": "O(n**2)", "split": "loose", "gate": "agrees"}
+{"solution_id": "71_217", "path": "solutions/71/71_217.dfy", "label": "O(nlogn)", "split": "strict", "gate": "valid"}
+{"solution_id": "888_179", "path": "solutions/888/888_179.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
