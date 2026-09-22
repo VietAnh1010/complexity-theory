@@ -48,6 +48,7 @@ several of its claims were later reversed. `summaries/README.md` says which.
 | loose tier, `difftest.py` | 95 agree, 4 untranslatable, 1 ungateable |
 | safety verified (`dafny verify`) | all 344 of `solutions/`; 334 also prove termination |
 | complexity proved | 223 rows, 225 files, all verify, zero `assume` |
+| campaign pass rate | 191 of 248 drawn rows, 77% — `data/prove_stats.md` |
 | label audit | 506 screened: 347 `ok`, 152 `mismatch`, 7 `unsure` (after the re-file) |
 | Dafny / Z3 | 4.11.0 / 4.12.1 |
 

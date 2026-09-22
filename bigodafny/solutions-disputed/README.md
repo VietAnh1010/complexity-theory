@@ -315,10 +315,10 @@ of the old digit-count charge and nothing else:
 | `276_610` | 2026-09-22 | `Join`'s `SumLen` over `IntToString` output |
 
 Under the new charge neither label omits anything, so **both went back to
-`solutions/`** with a `LABEL AUDIT WITHDRAWN` header naming what changed. Their
-proofs still carry the digit term — sound, because overcharging leaves a valid
-upper bound — so they are recorded `looser-slack` rather than
-`looser-structural`, and they left `solutions-proved/value-bounded/`.
+`solutions/`** with a `LABEL AUDIT WITHDRAWN` header naming what changed, and
+both left `solutions-proved/value-bounded/`. Both were then re-proved tight:
+`2381_156` at `steps <= 6` and `276_610` at `steps <= 24 * n + 2`, each
+confirming its label outright.
 
 No other row here rests on that charge; the four moved under the
 value-versus-size convention turn on loops bounded by input values, which the

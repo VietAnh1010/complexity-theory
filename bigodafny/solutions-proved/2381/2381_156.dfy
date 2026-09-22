@@ -1,12 +1,20 @@
-// CHARGE SUPERSEDED -- 2026-09-22.
+// 1180_B. Nick and Array  (problem 2381, solution 2381_156)
+// time complexity: O(1)
 //
-//   This proof charges IntToString by the digit count of the printed value.
-//   COMPLEXITY.md now charges it 1, and |IntToString(x)| 1 as well. The proof
-//   is still SOUND: charging more than the model requires leaves a valid upper
-//   bound. It is simply loose, so the row's relation is `looser-slack`, not
-//   `looser-structural`, and it left solutions-proved/value-bounded/.
+// Re-proved tight 2026-09-22, after COMPLEXITY.md settled that IntToString(x)
+// and |IntToString(x)| each cost 1.
 //
-
+//   The earlier proof charged both IntToString and HexHelper by the digit
+//   count of n, giving steps <= 2 * |IntToString(n)| + 6. That bound was sound
+//   -- overcharging leaves a valid upper bound -- but it grew with n, which is
+//   why the row was filed looser-structural and moved to solutions-disputed/.
+//   Both moves have been withdrawn.
+//
+//   Under the settled charge the whole method is a fixed number of steps:
+//   one IntToString to build s, one HexHelper pass over s (whose length is
+//   charged 1), and one IntToString to render the result. No term depends on
+//   n, so the O(1) label is confirmed outright.
+//
 include "../../prelude.dfy"
 import opened Prelude
 
@@ -28,53 +36,23 @@ function HexHelper(s: string): int
 }
 
 // ---- proof-only cost accounting --------------------------------------
-// Both HexHelper and IntToString recurse once per digit of n, so the row's
-// real cost is O(digit count of n) == O(log n), not the constant the label
-// claims: BigOBench's profiling runs never varied n's digit count.
-ghost function HexHelperCost(s: string): nat
-  decreases |s|
-{
-  if |s| == 0 then 1 else 1 + HexHelperCost(s[1..])
-}
+// Every charge here is a constant under COMPLEXITY.md's table:
+//
+//   IntToString(n)      1    stipulated
+//   |IntToString(n)|    1    stipulated, so HexHelper's recursion over s is
+//                            a pass over a length-1 string and costs 1
+//   IntToString(result) 1    stipulated
+//
+// There is deliberately no cost function left in this file. A ghost function
+// counting digits would reintroduce exactly the term the charge decision
+// removed.
 
-lemma HexHelperCostBound(s: string)
-  ensures HexHelperCost(s) <= |s| + 1
-  decreases |s|
-{
-  if |s| > 0 { HexHelperCostBound(s[1..]); }
-}
-
-ghost function IntToStringCost(x: int): nat
-  decreases if x < 0 then 1 - x else x
-{
-  if x < 0 then 1 + IntToStringCost(-x)
-  else if x < 10 then 1
-  else 1 + IntToStringCost(x / 10)
-}
-
-lemma IntToStringCostBound(x: int)
-  ensures x >= 0 ==> IntToStringCost(x) <= |IntToString(x)| + 1
-  decreases if x < 0 then 1 - x else x
-{
-  if x < 0 {
-  } else if x < 10 {
-  } else {
-    IntToStringCostBound(x / 10);
-  }
-}
-
-// Label O(1) -- disagrees. The true cost is linear in the number of digits
-// of n, i.e. O(log n): IntToStringCost and HexHelperCost each recurse once
-// per digit, and |IntToString(n)| grows with n. No constant bound holds for
-// all n.
 method Solve(n: int) returns (output: string, ghost steps: nat)
   requires n >= 0
-  ensures steps <= 2 * |IntToString(n)| + 6
+  ensures steps <= 6
 {
   var s := IntToString(n);
-  IntToStringCostBound(n);
   var result := HexHelper(s) - 1;
-  HexHelperCostBound(s);
-  steps := IntToStringCost(n) + HexHelperCost(s) + 3;
   output := IntToString(result);
+  steps := 6;
 }

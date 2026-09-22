@@ -109,8 +109,16 @@ by the digit count of the printed value. `COMPLEXITY.md` now charges
 anything and neither row is structural. Both returned to `solutions/` and their
 proofs to `solutions-proved/<pid>/`, recorded `looser-slack`.
 
-The proofs still carry the digit term. That is sound — overcharging leaves a
-valid upper bound — but it is loose, and a tight re-proof is available work.
+Both were then **re-proved tight** on the same day, so neither carries a digit
+term any more:
+
+    2381_156   steps <= 6              O(1),  confirms
+    276_610    steps <= 24 * n + 2     O(n),  confirms
+
+`276_610`'s proof charges each output part a constant `PART_CHARGE` instead of
+measuring `SumLen`, which is what keeps `Join` from reintroducing the digit
+count. Neither file defines a digit-counting ghost function any more, and that
+is deliberate: one would put back exactly the term the charge decision removed.
 
 Nothing else here rests on that charge: the remaining ten turn on loops
 bounded by input values, which the value-versus-size convention still counts.

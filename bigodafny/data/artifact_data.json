@@ -1,6 +1,6 @@
 {
-  "generated": "2026-09-22T07:20:18+00:00",
-  "commit": "14af1e3",
+  "generated": "2026-09-22T08:20:59+00:00",
+  "commit": "6db5716",
   "branch": "claude/bigobench-python-dafny-dataset-ts4tm5",
   "toolchain": {
     "dafny": "4.11.0",
@@ -712,10 +712,10 @@
     "proved": 42,
     "unresolved": 8,
     "relations": {
-      "confirms": 33,
+      "confirms": 34,
       "unresolved": 8,
       "looser-structural": 4,
-      "looser-slack": 4,
+      "looser-slack": 3,
       "contradicts": 1
     },
     "contradicts_label": [
@@ -1446,8 +1446,8 @@
         "split": "strict",
         "outcome": "proved",
         "bound": "2*|IntToString(n)|+6 (i.e. O(log n), not constant)",
-        "relation": "looser-slack",
-        "relation_reason": "Was looser-structural on the strength of IntToString's digit-count charge alone. COMPLEXITY.md now charges IntToString 1, and |IntToString(x)| 1 as well, so the label omits nothing. The proof still carries the digit term -- sound, since it overcharges, but loose. Row returned to solutions/ and left value-bounded/.",
+        "relation": "confirms",
+        "relation_reason": "Re-proved tight 2026-09-22 under the settled IntToString charge. Was looser-structural on the old digit-count charge, then looser-slack while the loose proof stood; the tight bound carries no value term, so the label is confirmed outright.",
         "obstacle": null,
         "agent_said_agrees": false,
         "agent_said_relation": null,
@@ -3522,10 +3522,10 @@
     "proved": 38,
     "unresolved": 12,
     "relations": {
-      "confirms": 34,
+      "confirms": 35,
       "unresolved": 12,
       "looser-structural": 2,
-      "looser-slack": 2
+      "looser-slack": 1
     },
     "contradicts_label": [],
     "note_on_contradiction": "Every proof in these campaigns is an upper bound. A bound ABOVE the label is `looser` -- it fails to confirm the label and cannot disagree with it, since that needs a lower bound. A bound BELOW the label does bear on it, but only after the other two explanations are ruled out: `tighter-costmodel` (the charge table costs something CPython does not) and `tighter-translation` (the Dafny runs a cheaper algorithm than the Python).",
@@ -3616,8 +3616,8 @@
         "split": "loose",
         "outcome": "proved",
         "bound": "13*n + BoundFor(abc_list[..min(n,|abc_list|)]) + 2, where BoundFor sums 3*(|x|+|y|+|z|)+20 per row",
-        "relation": "looser-slack",
-        "relation_reason": "Was looser-structural on the strength of IntToString's digit-count charge alone. COMPLEXITY.md now charges IntToString 1, and |IntToString(x)| 1 as well, so the label omits nothing. The proof still carries the digit term -- sound, since it overcharges, but loose. Row returned to solutions/ and left value-bounded/.",
+        "relation": "confirms",
+        "relation_reason": "Re-proved tight 2026-09-22 under the settled IntToString charge. Was looser-structural on the old digit-count charge, then looser-slack while the loose proof stood; the tight bound carries no value term, so the label is confirmed outright.",
         "obstacle": null,
         "agent_said_agrees": null,
         "agent_said_relation": "looser-structural",
@@ -6719,7 +6719,7 @@
         "era": "campaign",
         "tight_variant": false,
         "label": "O(1)",
-        "bound": "2 * |IntToString(n)| + 6",
+        "bound": "6",
         "call_depth": null,
         "recursive": null
       },
@@ -6989,7 +6989,7 @@
         "era": "campaign",
         "tight_variant": false,
         "label": "O(n)",
-        "bound": "13 * n + BoundFor(abc_list[..(if n < |abc_list| then n else |abc_list|)]) + 2",
+        "bound": "24 * n + 2",
         "call_depth": 2,
         "recursive": true
       },
