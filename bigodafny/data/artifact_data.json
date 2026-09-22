@@ -1,6 +1,6 @@
 {
-  "generated": "2026-09-21T14:54:00+00:00",
-  "commit": "e1182c2",
+  "generated": "2026-09-21T15:09:40+00:00",
+  "commit": "5bfae89",
   "branch": "claude/bigobench-python-dafny-dataset-ts4tm5",
   "toolchain": {
     "dafny": "4.11.0",
@@ -10,8 +10,8 @@
     "rows": 640,
     "problems": 311,
     "directories": {
-      "solutions": 343,
-      "solutions-disputed": 158,
+      "solutions": 342,
+      "solutions-disputed": 159,
       "solutions-proved": 189,
       "solutions-ungateable": 5,
       "solutions-unscreened": 127,
@@ -46,9 +46,9 @@
   },
   "verification": {
     "scope": "solutions/ and solutions-ungateable/",
-    "total": 348,
-    "verified": 348,
-    "fully_verified_incl_termination": 338,
+    "total": 347,
+    "verified": 347,
+    "fully_verified_incl_termination": 337,
     "termination_opt_out": [
       "1675_29",
       "1948_388",
@@ -62,7 +62,7 @@
       "457_38"
     ],
     "by_directory": {
-      "solutions": 343,
+      "solutions": 342,
       "solutions-ungateable": 5
     },
     "failing": [],
@@ -6645,7 +6645,7 @@
       "paths_no_longer_existing": 114
     },
     "after": {
-      "rows": 348,
+      "rows": 347,
       "recorded_failing": 0
     },
     "cause": "verify_all.py rewrites the record whole and was not re-run after the label audit moved 114 rows out of solutions/",

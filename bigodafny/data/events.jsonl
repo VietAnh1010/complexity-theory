@@ -504,3 +504,5 @@
 {"ts": "2026-09-21T13:54:58", "kind": "assume_scan", "count": 0}
 {"ts": "2026-09-21T15:06:21", "kind": "proofs", "verified": 189, "total": 189, "with_assume": 0}
 {"ts": "2026-09-21T15:06:22", "kind": "assume_scan", "count": 0}
+{"ts": "2026-09-22T05:58:44", "kind": "verify_all", "total": 347, "verified": 347, "unverified": 0, "termination_opt_out": 10, "kinds": {}}
+{"ts": "2026-09-22T05:59:07", "kind": "dataset", "rows": 640, "problems": 311, "splits": {"strict": 534, "loose": 100, "unvalidatable": 6}}

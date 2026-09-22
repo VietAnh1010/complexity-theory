@@ -18,9 +18,9 @@ it means and how a row leaves it. A row is in exactly one.
 
 | directory | rows | why it is not simply clean |
 |---|---|---|
-| `solutions/` | 343 | — it is |
+| `solutions/` | 342 | — it is |
 | `solutions-unscreened/` | 127 | its label was never screened |
-| `solutions-disputed/` | 158 | the audit says its label does not match its code |
+| `solutions-disputed/` | 159 | the audit says its label does not match its code |
 | `solutions-ungateable/` | 5 | its gate cannot reach a verdict; the test data fails first |
 | `solutions-unverified/` | 3 | `dafny verify` cannot discharge its safety obligations |
 | `solutions-untranslated/` | 4 | it will not be translated; the file says why |
@@ -150,9 +150,10 @@ useless: the hidden constant is then 30 to 60, and a label with a constant that
 size predicts nothing about growth. `COMPLEXITY.md` § 1 is the authority.
 
 BigOBench fitted its labels by profiling, which assumes the opposite, so the two
-disagree wherever a value-bounded loop appears. Four rows moved to
-`solutions-disputed/` on that basis; `batches/prove-sample/value_vs_size_decision.jsonl`
-records them and the two rows the decision unblocked.
+disagree wherever a value-bounded loop appears. Five rows have moved to
+`solutions-disputed/` on that basis: four on 2026-09-17, recorded in
+`batches/prove-sample/value_vs_size_decision.jsonl` with the two rows the
+decision unblocked, and `276_610` on 2026-09-22, found by `prove-sample-4`.
 
 **The convention settled how to count a value; it did not make the proofs
 easy.** Connecting a value-bounded cost back to a bound in the row's size is

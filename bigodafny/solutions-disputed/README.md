@@ -1,6 +1,6 @@
 # `solutions-disputed/` — label audit review queue
 
-158 rows whose stated complexity label does not describe what the code costs.
+159 rows whose stated complexity label does not describe what the code costs.
 **Queued for manual review; nothing here is a decision.** Each file keeps its
 full original body with a header naming the audited class, the cause, the
 confidence and the evidence, so a reviewer needs nothing else open.
@@ -288,3 +288,17 @@ genuine failures on top of the harness defect: both cap the fractional part at
 To leave, they need 23/23 on the runnable tests and an entry in
 `data/gate_exempt.jsonl` for the other 19. `batches/gate-audit/` has the
 evidence.
+
+## `276/276_610.dfy` came from a proof, not an audit pass
+
+Added 2026-09-22 by `prove-sample-4`. Its machine-checked bound is
+
+    steps <= 13 * n + BoundFor(abc_list[..min(n, |abc_list|)]) + 2
+
+where the `BoundFor` term is `IntToString`'s digit-length charge on the values
+the YES branch prints. That grows with the **magnitude** of the input numbers,
+while the `O(n)` label was fitted against the test-case count alone.
+
+Same shape as `2381_156`, moved here on 2026-09-17. The difference is the
+evidence: the earlier four moved on an audit verdict, this one on a proof that
+`proofs.py` re-verifies on every run.

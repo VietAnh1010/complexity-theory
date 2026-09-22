@@ -1,3 +1,30 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n)
+//   audited class  : O(n + sum of digit lengths of the printed values)
+//   cause          : label
+//   confidence     : high
+//   auditor        : value-vs-size convention, 2026-09-22
+//
+//   The label disagrees with the code under the value-versus-size
+//   convention. BigOBench fitted its labels by profiling, which treats a
+//   capped input value as constant; COMPLEXITY.md section 1 decides the
+//   opposite. This row is where the two disagree.
+//
+//   evidence:
+//     Machine-checked. The proof in solutions-proved/276/276_610.dfy
+//     verifies the bound
+//
+//       steps <= 13 * n + BoundFor(abc_list[..min(n, |abc_list|)]) + 2
+//
+//     The BoundFor term is IntToString's digit-length charge on the values
+//     printed by the YES branch, so it grows with the MAGNITUDE of the
+//     input numbers -- log of a value -- while the O(n) label was fitted
+//     against the test-case count alone.
+//
+//     Same shape as 2381_156, moved here on 2026-09-17: "IntToString costs
+//     the digit count, i.e. log of the value". Found by prove-sample-4.
+//
 // 1385_A. Three Pairwise Maximums  (problem 276, solution 276_610)
 // time complexity: O(n)
 // python exact-diff baseline: partial
