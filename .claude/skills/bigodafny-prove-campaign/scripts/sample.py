@@ -56,6 +56,24 @@ def dfy_files(root):
     return found
 
 
+def dfy_files_deep(root):
+    """Every .dfy anywhere under root, at any depth.
+
+    The proof overlay grows variant subdirectories -- nlogn/, value-bounded/ --
+    and a flat listing misses them. When value-bounded/ was added this function
+    did not exist, the flat listing named only nlogn/ explicitly, and 12 rows
+    silently rejoined the pool as if unproved. Two of them were redrawn by
+    prove-sample-5. Enumerate the tree; do not maintain a list of subdirectory
+    names.
+    """
+    found = {}
+    for dirpath, _, names in os.walk(root):
+        for name in names:
+            if name.endswith(".dfy"):
+                found[name[:-4]] = os.path.join(dirpath, name)
+    return found
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--batch", required=True, help="batch dir, created if absent")
@@ -81,8 +99,9 @@ def main():
 
     solutions = dfy_files(os.path.join(repo, "solutions"))
     # solutions-proved/ is an overlay over the partition, not a member of it.
-    proved = set(dfy_files(os.path.join(repo, "solutions-proved")))
-    proved |= set(dfy_files(os.path.join(repo, "solutions-proved/nlogn")))
+    # Walked to any depth, so a new variant subdirectory cannot leak proved
+    # rows back into the pool.
+    proved = set(dfy_files_deep(os.path.join(repo, "solutions-proved")))
 
     pool, excluded = [], []
     skipped = {"no-label": 0, "gate": 0, "proved": 0}

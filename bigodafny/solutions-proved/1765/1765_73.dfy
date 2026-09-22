@@ -1,0 +1,49 @@
+// 952_C. Ravioli Sort  (problem 1765, solution 1765_73)
+// time complexity: O(n)
+// python exact-diff baseline: exact
+//
+// Reproduce the Python program's entire stdout in `output`.
+//
+// --- Python ---------------------------------------------------------
+// # ===================================
+// # (c) MidAndFeed aka ASilentVoice
+// # ===================================
+// # import math 
+// # import collections
+// # ===================================
+// n = int(input())
+// q = [int(x) for x in input().split()]
+// for i in range(n-1):
+// 	if abs(q[i]-q[i+1]) > 1:
+// 		print("NO")
+// 		break
+// else:
+// 	print("YES")
+// --------------------------------------------------------------------
+
+include "../../prelude.dfy"
+import opened Prelude
+
+method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
+  requires n <= |a_list|
+  requires n >= 0
+  ensures steps <= 4 * n + 5
+{
+  steps := 1;
+  var ok := true;
+  var i := 0;
+  ghost var base1 := steps;
+  while i < n - 1 && ok
+    invariant 0 <= i <= n
+    invariant steps <= base1 + 4 * i
+    decreases if ok then n - 1 - i else 0
+  {
+    if AbsInt(a_list[i] - a_list[i + 1]) > 1 {
+      ok := false;
+    }
+    i := i + 1;
+    steps := steps + 4;
+  }
+  output := if ok then "YES" else "NO";
+  steps := steps + 2;
+}
