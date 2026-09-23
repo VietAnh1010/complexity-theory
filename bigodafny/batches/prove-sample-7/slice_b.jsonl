@@ -1,0 +1,17 @@
+{"solution_id": "1043_358", "path": "solutions/1043/1043_358.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "1332_41", "path": "solutions/1332/1332_41.dfy", "label": "O(n)", "split": "loose", "gate": "agrees"}
+{"solution_id": "1511_9", "path": "solutions/1511/1511_9.dfy", "label": "O(n**2)", "split": "strict", "gate": "valid"}
+{"solution_id": "1678_68", "path": "solutions/1678/1678_68.dfy", "label": "O(1)", "split": "loose", "gate": "agrees"}
+{"solution_id": "1954_83", "path": "solutions/1954/1954_83.dfy", "label": "O(n**2)", "split": "strict", "gate": "valid"}
+{"solution_id": "2072_257", "path": "solutions/2072/2072_257.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "2185_274", "path": "solutions/2185/2185_274.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "223_3085", "path": "solutions/223/223_3085.dfy", "label": "O(nlogn)", "split": "strict", "gate": "valid"}
+{"solution_id": "2514_221", "path": "solutions/2514/2514_221.dfy", "label": "O(nlogn)", "split": "strict", "gate": "valid"}
+{"solution_id": "2700_137", "path": "solutions/2700/2700_137.dfy", "label": "O(1)", "split": "loose", "gate": "agrees"}
+{"solution_id": "281_12", "path": "solutions/281/281_12.dfy", "label": "O(n**2)", "split": "strict", "gate": "valid"}
+{"solution_id": "2847_36", "path": "solutions/2847/2847_36.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "307_14", "path": "solutions/307/307_14.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "566_101", "path": "solutions/566/566_101.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "669_40", "path": "solutions/669/669_40.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "794_794", "path": "solutions/794/794_794.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "952_163", "path": "solutions/952/952_163.dfy", "label": "O(nlogn)", "split": "loose", "gate": "agrees"}

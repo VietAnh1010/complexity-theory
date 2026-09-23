@@ -1,0 +1,17 @@
+{"solution_id": "1039_15", "path": "solutions/1039/1039_15.dfy", "label": "O(nlogn)", "split": "strict", "gate": "valid"}
+{"solution_id": "1170_62", "path": "solutions/1170/1170_62.dfy", "label": "O(n)", "split": "loose", "gate": "agrees"}
+{"solution_id": "1511_65", "path": "solutions/1511/1511_65.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "1673_129", "path": "solutions/1673/1673_129.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "1739_170", "path": "solutions/1739/1739_170.dfy", "label": "O(n)", "split": "loose", "gate": "agrees"}
+{"solution_id": "2051_25", "path": "solutions/2051/2051_25.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "2128_3", "path": "solutions/2128/2128_3.dfy", "label": "O(nlogn)", "split": "strict", "gate": "valid"}
+{"solution_id": "223_180", "path": "solutions/223/223_180.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "2482_151", "path": "solutions/2482/2482_151.dfy", "label": "O(1)", "split": "strict", "gate": "valid"}
+{"solution_id": "2602_62", "path": "solutions/2602/2602_62.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "2773_120", "path": "solutions/2773/2773_120.dfy", "label": "O(1)", "split": "strict", "gate": "valid"}
+{"solution_id": "2826_81", "path": "solutions/2826/2826_81.dfy", "label": "O(nlogn)", "split": "strict", "gate": "valid"}
+{"solution_id": "3018_50", "path": "solutions/3018/3018_50.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "410_105", "path": "solutions/410/410_105.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "647_54", "path": "solutions/647/647_54.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
+{"solution_id": "785_75", "path": "solutions/785/785_75.dfy", "label": "O(nlogn)", "split": "strict", "gate": "valid"}
+{"solution_id": "936_772", "path": "solutions/936/936_772.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
