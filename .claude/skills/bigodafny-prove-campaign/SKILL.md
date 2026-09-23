@@ -137,7 +137,11 @@ Extend `bigodafny/collect.py` with the batch and re-run it into
   finding;
 - obstacle counts over the unresolved rows;
 - relation counts over the proved rows;
-- attempts and seconds distributions.
+- attempts and seconds distributions;
+- `reads_coverage` — the share of rows carrying a reading trace. A trace names
+  the source row and every helper or prelude declaration whose contract, cost
+  or termination the agent had to open. It is recorded, never reconstructed:
+  a row that finished before the requirement existed stays at no trace.
 
 ### 7. Write `README.md` in the batch directory
 
@@ -192,6 +196,18 @@ the refreshed `data/`. Push to the session's designated branch.
   `prove-sample-5`. `audit.py` now fails on a deletion whose row is not in the
   batch, but only after `proofs.py` has run; a missing tracked file shows up in
   `git status` immediately.
+- **Tell the agents to append each row's line as it finishes.** A run that
+  batches its trajectory writes to the end loses everything when it is cut off
+  mid-slice, and a rate limit can cut off all three at once.
+- **A proof with no trajectory is not campaign data.** When a killed agent
+  leaves `.dfy` files with no record behind them, there is no attempt count,
+  no elapsed time, no relation and no `reads`, and none of it is recoverable.
+  Move those files **out of `solutions-proved/`** before re-running the slice
+  — left in place, the re-run agent opens a finished proof of its own assigned
+  row and measures nothing. `batches/prove-sample-7/orphaned-slice-a/` is the
+  worked example, with the re-verified state of each held file. A held proof
+  restored afterwards was obtained outside the budget and is excluded from
+  the rate.
 - **A repaired trajectory is still the agent's data.** If a `traj_*.jsonl` is
   not one object per line, recover it with `json.JSONDecoder().raw_decode` in a
   loop and rewrite it as JSONL. Do not re-run the slice and do not retype the

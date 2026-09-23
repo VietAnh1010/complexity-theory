@@ -89,7 +89,7 @@ def main():
             traj[sid]["relation"] = row.get("relation")
             traj[sid]["relation_reason"] = row.get("reason", "")
 
-    rows, problems = [], []
+    rows, problems, no_reads = [], [], []
     for sid, m in sorted(manifest.items()):
         t = traj.get(sid)
         p = proofs.get(sid)
@@ -106,6 +106,7 @@ def main():
             "attempts_used": (t or {}).get("attempts_used"),
             "seconds": (t or {}).get("seconds"),
             "slice": (t or {}).get("_slice"),
+            "reads": (t or {}).get("reads"),
         }
         rows.append(rec)
         if t is None:
@@ -120,6 +121,11 @@ def main():
             problems.append(f"{sid}: contradicts with no reason given")
         if p and p.get("assume_count"):
             problems.append(f"{sid}: proof carries {p['assume_count']} assume(s)")
+        # The reading trace. Reported, never repaired: a `reads` array is a
+        # record of what an agent actually opened, so a missing one can only
+        # be counted, not filled in afterwards.
+        if t is not None and not t.get("reads"):
+            no_reads.append(sid)
 
     # A trajectory that cannot be read line by line is not a missing result.
     for name in sorted(os.listdir(args.batch)):
@@ -171,6 +177,9 @@ def main():
         "by_relation": {},
         "obstacles": {},
         "problems": problems,
+        "reads_missing": sorted(no_reads),
+        "reads_coverage": (
+            round(1 - len(no_reads) / len(rows), 4) if rows else None),
     }
     for r in rows:
         lab = summary["by_label"].setdefault(r["label"], {"drawn": 0, "proved": 0})
@@ -190,7 +199,11 @@ def main():
     with open(f"{args.batch}/summary.json", "w") as fh:
         json.dump(summary, fh, indent=2, sort_keys=True)
 
-    print(json.dumps({k: v for k, v in summary.items() if k != "problems"}, indent=2))
+    print(json.dumps({k: v for k, v in summary.items()
+                      if k not in ("problems", "reads_missing")}, indent=2))
+    if no_reads:
+        print(f"\n{len(no_reads)} row(s) carry no reading trace: "
+              + " ".join(sorted(no_reads)), file=sys.stderr)
     if problems:
         print("\nPROBLEMS", file=sys.stderr)
         for p in problems:
