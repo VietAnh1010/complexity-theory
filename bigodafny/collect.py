@@ -323,6 +323,12 @@ def main():
     p6_rel = {r["solution_id"]: r for r in jsonl(p6 / "label_relation.jsonl")}
     p6_obst = {r["solution_id"]: r for r in jsonl(p6 / "obstacles.jsonl")}
 
+    p7 = HERE / "batches/prove-sample-7"
+    p7_manifest = jsonl(p7 / "manifest.jsonl")
+    p7_traj = [r for f in sorted(p7.glob("traj_*.jsonl")) for r in jsonl(f)]
+    p7_rel = {r["solution_id"]: r for r in jsonl(p7 / "label_relation.jsonl")}
+    p7_obst = {r["solution_id"]: r for r in jsonl(p7 / "obstacles.jsonl")}
+
     dirs = {d.name: sum(1 for _ in d.rglob("*.dfy"))
             for d in sorted(HERE.glob("solutions*")) if d.is_dir()}
 
@@ -362,6 +368,16 @@ def main():
     # "a random row of what is left". Campaign 7 uses --exclude-drawn.
     pv6["draw_mode"] = "plain"
     pv6["repeat_share"] = 0.28
+    pv7 = prove_sample(p7_manifest, p7_traj, p7_rel, depth,
+                       meta={"seed": 20260923, "pool": 68}, obst=p7_obst)
+    # The first --exclude-drawn draw: 50 rows from the 68 no earlier campaign
+    # had touched, so it is comparable with campaign 1 and with nothing in
+    # between. It also collects a reading trace, but only for the 20 rows whose
+    # slices ran after that requirement was added mid-campaign.
+    pv7["draw_mode"] = "exclude-drawn"
+    pv7["repeat_share"] = 0.0
+    pv7["reads_coverage"] = round(
+        sum(1 for r in p7_traj if r.get("reads")) / len(p7_traj), 4)
     # Two rows were drawn although they already carried a proof: sample.py
     # listed solutions-proved/ flatly and missed the value-bounded/ subdirectory
     # added the day before. Their outcomes are real but they are not new work,
@@ -447,10 +463,12 @@ def main():
         "prove_sample_4": pv4,
         "prove_sample_5": pv5,
         "prove_sample_6": pv6,
-        "campaign_series": campaign_series([pv, pv2, pv3, pv4, pv5, pv6]),
+        "prove_sample_7": pv7,
+        "campaign_series": campaign_series([pv, pv2, pv3, pv4, pv5, pv6, pv7]),
         "proofs_all": proofs_all(depth, ds, pv.get("rows", []) + pv2.get("rows", [])
                                  + pv3.get("rows", []) + pv4.get("rows", [])
-                                 + pv5.get("rows", []) + pv6.get("rows", [])),
+                                 + pv5.get("rows", []) + pv6.get("rows", [])
+                                 + pv7.get("rows", [])),
         "difficulty": difficulty(pv.get("rows", []) + pv2.get("rows", [])
                                  + pv3.get("rows", []) + pv4.get("rows", [])
                                  + pv5.get("rows", []) + pv6.get("rows", [])),

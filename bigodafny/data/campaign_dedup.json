@@ -5,13 +5,12 @@
     "prove-sample-3",
     "prove-sample-4",
     "prove-sample-5",
-    "prove-sample-6"
-  ],
-  "incomplete_and_excluded": [
+    "prove-sample-6",
     "prove-sample-7"
   ],
-  "draw_records": 300,
-  "distinct_rows": 261,
+  "incomplete_and_excluded": [],
+  "draw_records": 350,
+  "distinct_rows": 311,
   "drawn_more_than_once": 32,
-  "proved": 221
+  "proved": 261
 }

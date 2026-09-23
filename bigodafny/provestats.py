@@ -34,7 +34,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 DATA = HERE / "data"
 BATCHES = ["prove-sample", "prove-sample-2", "prove-sample-3",
-           "prove-sample-4", "prove-sample-5", "prove-sample-6"]
+           "prove-sample-4", "prove-sample-5", "prove-sample-6",
+           "prove-sample-7"]
 # rows a campaign drew although a proof already existed: a sampler bug, not
 # new work, so they are not in the denominator
 REDRAWN = {"prove-sample-5": {"2128_34", "305_76"}}

@@ -19,6 +19,10 @@ not from recollection.
 | `prove-sample-6` | 50 | 2026-09-23 |
 | `prove-sample-7` | 50 | 2026-09-23 |
 
+Campaign 7 is the first drawn with `--exclude-drawn` and the first to collect
+a reading trace, though only for the 20 rows whose slices ran after that
+requirement was added mid-campaign.
+
 ## What each campaign's brief said
 
 Checked by grepping each batch's own `PROMPT*.md` — the brief the agents
@@ -30,7 +34,7 @@ actually ran under, not the current skill template.
 | value-versus-size convention | — | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
 | `tighter-translation` / `tighter-costmodel` relations | — | — | ✔ | ✔ | ✔ | ✔ | ✔ |
 | `IntToString(x)` and `\|IntToString(x)\|` charge 1 | — | — | — | — | — | ✔ | ✔ |
-| `reads` trace required | — | — | — | — | — | — | partial |
+| `reads` trace required | — | — | — | — | — | — | 20/50 |
 
 The seq-update charge is the one thing uniform across all seven. Everything
 else splits the series.
@@ -72,7 +76,7 @@ part-way. Slice B (17 rows) and slice C's first 13 finished before the `reads`
 requirement existed and have no trace; slice A and the 3 remaining C rows were
 re-run under it. Slice A's 14 proofs from the killed run had no trajectory
 behind them and were discarded rather than kept, so the re-run measures a real
-budget. Expect `reads_coverage` near 0.4 for c7 and 0 before it.
+budget. `reads_coverage` is **0.4** for c7 and 0 before it.
 
 ## What a cleanup would have to decide
 
