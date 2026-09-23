@@ -2,61 +2,130 @@
   "batch": "batches/prove-sample-2",
   "by_label": {
     "O(1)": {
+      "campaign_proved": 3,
       "drawn": 3,
       "proved": 3
     },
     "O(logn)": {
+      "campaign_proved": 0,
       "drawn": 2,
-      "proved": 0
+      "proved": 1
     },
     "O(n)": {
+      "campaign_proved": 20,
       "drawn": 23,
       "proved": 20
     },
     "O(n**2)": {
+      "campaign_proved": 3,
       "drawn": 7,
-      "proved": 3
+      "proved": 6
     },
     "O(n+m)": {
+      "campaign_proved": 2,
       "drawn": 2,
       "proved": 2
     },
     "O(n+m)log(n+m)": {
+      "campaign_proved": 1,
       "drawn": 1,
       "proved": 1
     },
     "O(nlogn)": {
+      "campaign_proved": 7,
       "drawn": 11,
-      "proved": 7
+      "proved": 8
     },
     "O(nlogn+mlogm)": {
+      "campaign_proved": 1,
       "drawn": 1,
       "proved": 1
     }
   },
   "by_relation": {
-    "confirms": 32,
-    "looser-slack": 3,
+    "confirms": 40,
     "tighter-costmodel": 1,
     "tighter-translation": 1
+  },
+  "campaign": {
+    "proved": 37,
+    "revised_after": [
+      "1180_626",
+      "1386_19",
+      "1765_40",
+      "1972_295",
+      "2036_120",
+      "2225_154",
+      "2593_332",
+      "2926_54"
+    ],
+    "unresolved": 13
   },
   "drawn": 50,
   "obstacles": {
     "CeilSqrt's binary search over the VALUE numbers[i] (not the list length) needs its own charged bound; getting the two nested loops' step counts to compose into a single proved formula in x did not close in 3 attempts. Real cost is O(log v) per element, a per-element cost the O(n) label omits (would have been looser-structural).": 1,
     "Dfs's recursion depth depends on how fast x shrinks against a quadratically-spaced lookup table (FindIdxFrom); bounding that depth is a real number-theoretic argument, not fitting the budget": 1,
-    "Z3 would not connect base1/base3 chained nonlinear bounds to the final n**2 ensures even after isolating each multiplication into its own lemma call": 1,
     "combining the O(n**2) step accounting with the pre-existing forall-membership invariants pushed verification over the 30s limit": 1,
-    "hit the 5-minute wall while fixing a nat-subtraction typing error (steps-base1 not proved nonnegative) after resolving the earlier Z3 timeout": 1,
-    "post-loop step bound (steps<=base2+4*(n-1)) would not close after the second while loop even though the loop invariant steps<=base2+4*i verified inside the loop": 1,
     "row keeps `decreases *` on an unbounded stack-based BFS traversal; a real bound needs a potential-function argument (total pushes bounded by sum of vertex degrees over a tree) that the 5-minute budget cannot fit, and the rule against decreases * would also have to be resolved as part of the same proof": 1,
-    "second-loop invariant res>=b0*Pow2Aux(cnt2) would not re-establish after res:=res*k; needed one more isolated associativity lemma than the budget allowed": 1,
     "substring-scan cost (Contains1272b) adds a SumLen(arr) term whose prefix bookkeeping did not close, and the shared SortCost nlogn lemma timed out once combined with that extra machinery": 1,
-    "the classic sieve inner while (step size i, bound 2000) needs itn*i=j-j0 to cap iterations, which is nonlinear in the two ghost/loop variables and did not close in budget; the n*n tail loop was never reached for instrumentation": 1,
     "the loop is `decreases *` in the original (unproven termination); a ghost step bound needs a digit-growth convergence argument relating pow=9**i to NumDigits(nn) that was not attempted given the risk/budget tradeoff": 1,
     "the pos/level-advance loop's per-step increase in n is not bounded by a constant, so the standard decreases-metric-bounds-iteration-count argument gives itnAdv<=initM+overshoot, not itnAdv<=initM; closing it needs a separate bound on the overshoot that was not found in budget": 1,
     "the scan loop initializes i:=1 before checking n, so an invariant bounding i by n is false on entry whenever n==0; needs a case split or an i<=n+1-style invariant not yet found": 1
   },
   "problems": [],
-  "proved": 37,
-  "unresolved": 13
+  "proved": 42,
+  "reads_coverage": 0.0,
+  "reads_missing": [
+    "1138_66",
+    "1180_626",
+    "1235_283",
+    "1243_0",
+    "1254_182",
+    "1272_278",
+    "1333_58",
+    "1364_161",
+    "1386_19",
+    "1386_38",
+    "1421_53",
+    "1717_175",
+    "1717_238",
+    "1738_24",
+    "1765_40",
+    "1878_72",
+    "1944_50",
+    "1972_295",
+    "1981_39",
+    "2007_4",
+    "2010_401",
+    "2010_45",
+    "2012_342",
+    "2036_120",
+    "2051_80",
+    "2225_154",
+    "2286_14",
+    "241_101",
+    "2593_332",
+    "2610_51",
+    "2771_23",
+    "2803_133",
+    "2853_256",
+    "2854_30",
+    "2926_54",
+    "2982_323",
+    "3017_340",
+    "305_284",
+    "3091_1574",
+    "354_95",
+    "457_38",
+    "514_140",
+    "577_509",
+    "641_31",
+    "661_99",
+    "681_105",
+    "795_580",
+    "831_74",
+    "894_3",
+    "976_656"
+  ],
+  "unresolved": 8
 }

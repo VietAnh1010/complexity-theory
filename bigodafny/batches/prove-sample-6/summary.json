@@ -2,36 +2,50 @@
   "batch": "batches/prove-sample-6",
   "by_label": {
     "O(1)": {
+      "campaign_proved": 3,
       "drawn": 4,
       "proved": 3
     },
     "O(logn)": {
+      "campaign_proved": 1,
       "drawn": 1,
       "proved": 1
     },
     "O(n)": {
+      "campaign_proved": 11,
       "drawn": 16,
       "proved": 11
     },
     "O(n**2)": {
+      "campaign_proved": 5,
       "drawn": 13,
       "proved": 5
     },
     "O(n+m)": {
+      "campaign_proved": 3,
       "drawn": 3,
       "proved": 3
     },
     "O(nlogn)": {
+      "campaign_proved": 7,
       "drawn": 13,
-      "proved": 7
+      "proved": 8
     }
   },
   "by_relation": {
-    "confirms": 23,
-    "looser-slack": 2,
+    "confirms": 26,
     "looser-structural": 1,
     "tighter-costmodel": 3,
     "tighter-translation": 1
+  },
+  "campaign": {
+    "proved": 30,
+    "revised_after": [
+      "2105_248",
+      "499_82",
+      "85_71"
+    ],
+    "unresolved": 20
   },
   "drawn": 50,
   "obstacles": {
@@ -53,10 +67,62 @@
     "parameter a (h, the outer loop's trip count) has no non-negativity precondition, so 0<=i<=h fails on loop entry": 1,
     "parameter v_2 (n, the loop's trip-count bound) has no non-negativity precondition, so an exit-state upper-bound invariant fails on entry": 1,
     "row's own loop carries decreases *, which our copy may not keep; replacing it needs a spiral-arithmetic termination bound not derived in budget": 1,
-    "square-monotonicity |arregloacomodado|<=n ==> |arregloacomodado|^2<=n^2 needed its own lemma; a bare assert did not close it": 1,
     "the O(n) mask-scan loop's iteration bound was proved via a crude iters+mask<=2^30 argument instead of an actual log2 lemma, producing a ~2^30-scale literal that made the final nonlinear arithmetic check time out; needed a real Log2(0x40000000)=30 bound instead of the brute constant": 1
   },
   "problems": [],
-  "proved": 30,
-  "unresolved": 20
+  "proved": 31,
+  "reads_coverage": 0.0,
+  "reads_missing": [
+    "1015_168",
+    "1077_84",
+    "1263_2538",
+    "1272_115",
+    "1272_278",
+    "1332_16",
+    "1369_7",
+    "1580_12",
+    "1626_179",
+    "1675_29",
+    "1699_98",
+    "1861_16",
+    "1948_388",
+    "1972_295",
+    "2005_187",
+    "2065_24",
+    "2072_40",
+    "2105_248",
+    "2124_2",
+    "2254_143",
+    "2266_172",
+    "2266_298",
+    "2269_59",
+    "2281_112",
+    "2282_16",
+    "2389_42",
+    "2394_125",
+    "2465_212",
+    "2514_176",
+    "2650_153",
+    "2680_221",
+    "271_58",
+    "2803_59",
+    "2819_926",
+    "2831_71",
+    "2847_21",
+    "3034_57",
+    "378_91",
+    "380_19",
+    "384_38",
+    "396_58",
+    "499_82",
+    "514_140",
+    "647_11",
+    "696_51",
+    "750_14",
+    "85_71",
+    "88_200",
+    "897_1880",
+    "897_2438"
+  ],
+  "unresolved": 19
 }

@@ -2,47 +2,63 @@
   "batch": "batches/prove-sample-7",
   "by_label": {
     "O(1)": {
+      "campaign_proved": 6,
       "drawn": 6,
       "proved": 6
     },
     "O(n)": {
+      "campaign_proved": 24,
       "drawn": 26,
       "proved": 24
     },
     "O(n**2)": {
+      "campaign_proved": 3,
       "drawn": 6,
       "proved": 3
     },
     "O(n*m)": {
+      "campaign_proved": 0,
       "drawn": 1,
-      "proved": 0
+      "proved": 1
     },
     "O(nlogn)": {
+      "campaign_proved": 7,
       "drawn": 11,
-      "proved": 7
+      "proved": 11
     }
   },
   "by_relation": {
-    "confirms": 31,
-    "looser-slack": 6,
-    "looser-structural": 2,
+    "confirms": 41,
+    "looser-structural": 3,
     "tighter-costmodel": 1
+  },
+  "campaign": {
+    "proved": 40,
+    "revised_after": [
+      "1039_15",
+      "1387_19",
+      "1718_1166",
+      "209_103",
+      "2128_3",
+      "2198_52",
+      "223_3085",
+      "2514_221",
+      "2826_81",
+      "566_183",
+      "952_163"
+    ],
+    "unresolved": 10
   },
   "drawn": 50,
   "obstacles": {
-    "Solve times out combining two SortCost scaffold terms with the isolated N1*N2 product invariant, even after isolating the multiplication per COMPLEXITY.md guidance": 1,
-    "Solve's postcondition times out combining SortCost(|pos|) with two chained square-monotonicity facts (|pos|<=half<=n); isolating the lemmas fixed them individually but not the surrounding method": 1,
-    "combining two SortCostNLogN instances (one per partition, each enveloped up to n) in one final postcondition overloads Z3 the same way 1039_15 did; a later, over-budget 4th attempt (hoisting CeilLog2(n) into one ghost var L and inserting named intermediate asserts instead of one final combine) did verify, but arrived after the 3-attempt cap, so the proof was discarded and the row is recorded as unresolved per the budget rule rather than folded into the proved count": 1,
-    "combining two independent O(n log n) sources (sort cost and a per-outer-iteration binary-search log bound) in one postcondition overloads Z3, and with 4 recursive ghost functions in scope even a commutative-multiplication assert times out; next step would be {:opaque} on Log2/CeilLog2/SortCost/BSearchSteps with targeted reveal statements, not attempted within budget": 1,
     "decreases * termination bound requires a multi-branch geometric invariant (A,B,U,D vs x,y) not derivable as a quick loop count": 1,
     "ensures bound arithmetic off by the +2 post-loop output charge; ran out of attempts before the 4th edit that would fix it": 1,
     "outer loop's steps<=1+i*(4n+3) invariant needs a nonlinear product i*n the solver would not close within the time budget, even after the inner loop's j<=n-3 bound was fixed": 1,
     "outer while's decreases * has no stated input cap to fold in, and the true termination argument (GCD-like mod-reduction convergence) is a substantial separate proof, not a loop-counting exercise": 1,
-    "same class of failure as 1039_15 and 2128_3: summing an O(n log n) sort cost with a genuine per-iteration binary-search log bound (here via a helper method BisectLeft) over m iterations needs several nonlinear multiplications combined in one postcondition, and the one multiplication left un-isolated (bounding (m-1) by m inside a variable coefficient) was enough to time out even after two rounds of fixes": 1,
     "the Reduce postcondition needs |s0|*iters <= |s0|*|s0| from iters<=|s0|, a monotone-multiplication fact never isolated into its own lemma (per the isolate-every-multiplication rule), and Solve's compounded nonlinear asserts (i*i growth, length-squared folding) push verification over the 30s limit before that gets fixed": 1
   },
   "problems": [],
-  "proved": 40,
+  "proved": 45,
   "reads_coverage": 0.4,
   "reads_missing": [
     "1043_358",
@@ -76,5 +92,5 @@
     "794_794",
     "952_163"
   ],
-  "unresolved": 10
+  "unresolved": 5
 }

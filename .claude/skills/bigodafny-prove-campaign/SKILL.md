@@ -227,7 +227,7 @@ the refreshed `data/`. Push to the session's designated branch.
   "record"}`. Campaign rates are then computed from `agent_outcome`: a row a
   bounded agent missed stays missed in its campaign's rate, however it was
   closed later. `provestats.py`, `collect.py` and `dedupe.py` all read it that
-  way. The 2026-09-23 sort-cost revision is the worked example: 30 rows, 91
+  way. The 2026-09-23 revision is the worked example: 47 rows, 149
   superseded lines, campaign rates unchanged.
 - **Sorts and binary searches use the prelude.** `SortCost`, `NLogN`,
   `SortCostWithin`, `SearchPot`, `BisectStep` and `SearchLoopWithin` live in

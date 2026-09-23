@@ -107,22 +107,24 @@ signature.
 
 ## Revised 2026-09-23
 
-The prelude gained a composable sort-cost bound and a binary-search potential
-(`SortCostNLogN`, `SortCostWithin`, `SearchPot`, `BisectStep`,
-`SearchLoopWithin`). With them these rows were re-proved or newly proved, by
-hand and outside this campaign's budget:
+These rows' records were brought to their latest state after this campaign.
+`hand` means proved or tightened by hand, outside any budget, mostly with the
+prelude's sort-cost and binary-search lemmas; a campaign name means a later
+campaign's bounded agent proved a row this one missed.
 
-| row | label | this campaign | now |
-|---|---|---|---|
-| `1582_118` | O(nlogn) | unresolved | proved, `confirms` |
-| `1827_66` | O(nlogn) | unresolved | proved, `confirms` |
-| `2128_34` | O(n**2) | proved, `looser-structural` | proved, `looser-structural` |
+| row | label | this campaign | now | by |
+|---|---|---|---|---|
+| `1582_118` | O(nlogn) | unresolved | proved, `confirms` | hand |
+| `1699_98` | O(n**2) | unresolved | proved, `confirms` | `prove-sample-6` |
+| `1827_66` | O(nlogn) | unresolved | proved, `confirms` | hand |
+| `2128_34` | O(n**2) | proved, `looser-structural` | proved, `looser-structural` | hand |
+| `750_14` | O(nlogn) | unresolved | proved, `confirms` | `prove-sample-6` |
 
-**The numbers in this README are unchanged**: they are what a bounded agent
-achieved. Each revised trajectory keeps the agent's result as `agent_outcome`,
-`agent_relation` and `agent_bound`, and every superseded line — trajectory,
-relation, obstacle, audit — is in `old_record.jsonl`, with the file it came
-from.
+**The numbers in this README are unchanged**: they are what this campaign's
+bounded agents achieved. Each revised trajectory keeps the agent's result as
+`agent_outcome`, `agent_relation` and `agent_bound`, and every superseded line
+— trajectory, relation, obstacle, audit — is in `old_record.jsonl`, with the
+file it came from.
 
 ## Files
 

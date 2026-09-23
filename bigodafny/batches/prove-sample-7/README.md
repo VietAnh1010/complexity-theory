@@ -183,30 +183,30 @@ actually had to open: `IntToString` 5, `Join` 3, `Sort` 3, `FloorDiv` 2, then
 
 ## Revised 2026-09-23
 
-The prelude gained a composable sort-cost bound and a binary-search potential
-(`SortCostNLogN`, `SortCostWithin`, `SearchPot`, `BisectStep`,
-`SearchLoopWithin`). With them these rows were re-proved or newly proved, by
-hand and outside this campaign's budget:
+These rows' records were brought to their latest state after this campaign.
+`hand` means proved or tightened by hand, outside any budget, mostly with the
+prelude's sort-cost and binary-search lemmas; a campaign name means a later
+campaign's bounded agent proved a row this one missed.
 
-| row | label | this campaign | now |
-|---|---|---|---|
-| `1039_15` | O(nlogn) | unresolved | proved, `confirms` |
-| `1387_19` | O(nlogn) | unresolved | proved, `confirms` |
-| `1718_1166` | O(n*m) | unresolved | proved, `looser-structural` |
-| `209_103` | O(nlogn) | proved, `looser-slack` | proved, `confirms` |
-| `2128_3` | O(nlogn) | unresolved | proved, `confirms` |
-| `2198_52` | O(nlogn) | proved, `looser-slack` | proved, `confirms` |
-| `223_3085` | O(nlogn) | proved, `looser-slack` | proved, `confirms` |
-| `2514_221` | O(nlogn) | proved, `looser-slack` | proved, `confirms` |
-| `2826_81` | O(nlogn) | unresolved | proved, `confirms` |
-| `566_183` | O(nlogn) | proved, `looser-slack` | proved, `confirms` |
-| `952_163` | O(nlogn) | proved, `looser-slack` | proved, `confirms` |
+| row | label | this campaign | now | by |
+|---|---|---|---|---|
+| `1039_15` | O(nlogn) | unresolved | proved, `confirms` | hand |
+| `1387_19` | O(nlogn) | unresolved | proved, `confirms` | hand |
+| `1718_1166` | O(n*m) | unresolved | proved, `looser-structural` | hand |
+| `209_103` | O(nlogn) | proved, `looser-slack` | proved, `confirms` | hand |
+| `2128_3` | O(nlogn) | unresolved | proved, `confirms` | hand |
+| `2198_52` | O(nlogn) | proved, `looser-slack` | proved, `confirms` | hand |
+| `223_3085` | O(nlogn) | proved, `looser-slack` | proved, `confirms` | hand |
+| `2514_221` | O(nlogn) | proved, `looser-slack` | proved, `confirms` | hand |
+| `2826_81` | O(nlogn) | unresolved | proved, `confirms` | hand |
+| `566_183` | O(nlogn) | proved, `looser-slack` | proved, `confirms` | hand |
+| `952_163` | O(nlogn) | proved, `looser-slack` | proved, `confirms` | hand |
 
-**The numbers in this README are unchanged**: they are what a bounded agent
-achieved. Each revised trajectory keeps the agent's result as `agent_outcome`,
-`agent_relation` and `agent_bound`, and every superseded line — trajectory,
-relation, obstacle, audit — is in `old_record.jsonl`, with the file it came
-from.
+**The numbers in this README are unchanged**: they are what this campaign's
+bounded agents achieved. Each revised trajectory keeps the agent's result as
+`agent_outcome`, `agent_relation` and `agent_bound`, and every superseded line
+— trajectory, relation, obstacle, audit — is in `old_record.jsonl`, with the
+file it came from.
 
 ## Files
 

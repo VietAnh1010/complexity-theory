@@ -54,7 +54,7 @@ rows, since a repeat draw selects for failure. `dedupe.py` keeps
 one record per row — the most positive outcome — and writes the
 rest out as `superseded`.
 
-**261 of 311 distinct rows were proved by a bounded agent — 84%.** With the proofs made by hand afterwards, 271 carry one now.
+**261 of 311 distinct rows were proved by a bounded agent — 84%.** With the proofs made by hand afterwards, 272 carry one now.
 
 - 32 rows were drawn more than once.
 - 16 were closed by a later campaign after an earlier one missed them.
@@ -81,14 +81,14 @@ in one pass; use it for the corpus, never for comparing campaigns.
 ### Where the drawn rows stand now
 
 Everything above is what a bounded agent achieved inside its budget.
-29 rows were revised after their campaign, by hand and outside the budget; their records keep the
+31 rows were revised after their campaign, by hand and outside the budget; their records keep the
 agent's result as `agent_outcome`, and the superseded lines sit in
 each batch's `old_record.jsonl`.
 
-**271 of 311 distinct drawn rows carry a proof now — 87%.**
+**272 of 311 distinct drawn rows carry a proof now — 87%.**
 
-- Closed after their campaign: 10 — `1039_15`, `1387_19`, `1582_118`, `1718_1166`, `1827_66`, `1892_121`, `2105_248`, `2128_3`, `2826_81`, `661_47`.
-- Relations of the proofs as they stand: `confirms` 247, `looser-structural` 13, `tighter-costmodel` 7, `tighter-translation` 2, `contradicts` 1, `looser-slack` 1.
+- Closed after their campaign: 11 — `1039_15`, `1387_19`, `1582_118`, `1718_1166`, `1827_66`, `1892_121`, `2105_248`, `2128_3`, `2423_48`, `2826_81`, `661_47`.
+- Relations of the proofs as they stand: `confirms` 248, `looser-structural` 13, `tighter-costmodel` 7, `tighter-translation` 2, `contradicts` 1, `looser-slack` 1.
 
 ## The label is the strongest predictor
 

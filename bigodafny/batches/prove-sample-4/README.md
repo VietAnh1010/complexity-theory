@@ -102,6 +102,28 @@ is rows already known to be hard. That pushes the rate down for reasons that
 have nothing to do with the agents, and it is another argument for reading the
 pooled column.
 
+## Revised 2026-09-23
+
+These rows' records were brought to their latest state after this campaign.
+`hand` means proved or tightened by hand, outside any budget, mostly with the
+prelude's sort-cost and binary-search lemmas; a campaign name means a later
+campaign's bounded agent proved a row this one missed.
+
+| row | label | this campaign | now | by |
+|---|---|---|---|---|
+| `1948_388` | O(1) | unresolved | proved, `looser-structural` | `prove-sample-6` |
+| `2423_48` | O(nlogn) | unresolved | proved, `looser-structural` | hand |
+| `2831_71` | O(nlogn) | unresolved | proved, `confirms` | `prove-sample-6` |
+| `2926_50` | O(n) | unresolved | proved, `confirms` | `prove-sample-5` |
+| `2947_115` | O(n**2) | unresolved | proved, `confirms` | `prove-sample-5` |
+| `750_14` | O(nlogn) | unresolved | proved, `confirms` | `prove-sample-6` |
+
+**The numbers in this README are unchanged**: they are what this campaign's
+bounded agents achieved. Each revised trajectory keeps the agent's result as
+`agent_outcome`, `agent_relation` and `agent_bound`, and every superseded line
+— trajectory, relation, obstacle, audit — is in `old_record.jsonl`, with the
+file it came from.
+
 ## Files
 
 | file | what it is |
@@ -113,6 +135,7 @@ pooled column.
 | `label_relation.jsonl` | normalised relation per proved row, with reasons |
 | `obstacles.jsonl` | coded obstacle per unresolved row |
 | `audit.jsonl`, `summary.json` | the verifier-joined audit and its totals |
+| `old_record.jsonl` | every line superseded by the 2026-09-23 revision, with its source file |
 
 Bounds in `label_relation.jsonl` are read from each file's `Solve` method, not
 from `data/complexity_proofs.jsonl`, whose `bound_of` takes the first

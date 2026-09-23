@@ -12,7 +12,7 @@
   "draw_records": 350,
   "distinct_rows": 311,
   "drawn_more_than_once": 32,
-  "proved": 271,
+  "proved": 272,
   "proved_by_an_agent": 261,
   "proved_after_the_campaigns": [
     "1039_15",
@@ -23,6 +23,7 @@
     "1892_121",
     "2105_248",
     "2128_3",
+    "2423_48",
     "2826_81",
     "661_47"
   ]

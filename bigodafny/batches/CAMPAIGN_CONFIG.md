@@ -98,16 +98,30 @@ outside every campaign's budget, 30 rows' campaign records changed
 
 **How the files hold it.** The current files carry each row's latest state.
 Every superseded line — trajectory, relation, obstacle, audit — is in that
-batch's `old_record.jsonl` as `{"file", "superseded_on", "why", "record"}`,
-91 lines in all. Each revised trajectory keeps `agent_outcome`, `agent_relation`
-and `agent_bound` beside the current values, plus a `revision` block.
+batch's `old_record.jsonl` as `{"file", "superseded_on", "why", "record"}`.
+Each revised trajectory keeps `agent_outcome`, `agent_relation` and
+`agent_bound` beside the current values, plus a `revision` block naming who
+produced the current state.
+
+**The same pass brought older records current.** Re-running every batch's
+audit against the new proofs showed 20 more stale lines: rows an early
+campaign failed and a later one proved (16 rows, e.g. `1972_295`, failed in
+c2 and proved in c6) and `2423_48`, proved by hand on 2026-09-22. Those were
+revised the same way, their `revision.by` naming the proving campaign or
+`hand`. Two lines were deliberately left: `2128_34` and `2942_42` in campaign 1,
+whose own `traj_convention.jsonl` records the proof from that campaign's
+convention re-run.
+
+In all 47 rows were revised and 149 superseded lines kept. All six audits
+(c2–c7) report no disagreement between trajectories and the verifier.
 
 **What it does not change.** Every campaign rate. `provestats.py`,
-`collect.py` and `dedupe.py` compute campaign tables from `agent_outcome`, so a
-row a bounded agent missed stays missed in its campaign; the diff of the
-campaign-era tables in `data/prove_stats.md` is empty. The current state is
-reported beside them: 271 of 311 distinct drawn rows carry a proof now,
-against 261 proved by a bounded agent.
+`collect.py`, `dedupe.py` and `audit.py` compute campaign tables from
+`agent_outcome`, so a row a bounded agent missed stays missed in its campaign;
+the campaign-era tables in `data/prove_stats.md` are unchanged, and each
+campaign's count in `data/artifact_data.json` matches its history. The current
+state is reported beside them: 272 of 311 distinct drawn rows carry a proof
+now, 261 proved by a bounded agent, 11 closed afterwards by hand.
 
 It also settles one of the questions below by construction: pooled relation
 tables now describe proofs of one standard. No proof's bound uses a quadratic
