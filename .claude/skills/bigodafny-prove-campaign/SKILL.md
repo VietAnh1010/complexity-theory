@@ -181,6 +181,13 @@ the refreshed `data/`. Push to the session's designated branch.
   under a directory called `solutions-proved`. That directory's
   README has the procedure and the three ways a row leaves. Skipping this
   leaves the finding scattered across batch directories where nobody joins it.
+- **Filing a proof one directory deeper breaks its `include`.** A proof in
+  `solutions-proved/<pid>/` reaches the prelude by `../../prelude.dfy`; from
+  `solutions-proved/value-bounded/<pid>/` it needs `../../../prelude.dfy`.
+  The file still parses, so nothing complains until the next `proofs.py`, which
+  reports it as a verification failure and looks exactly like a bad proof. Fix
+  the include in the same step as the move, and re-verify the moved file
+  before running anything else.
 - **Never weaken a proof to match a label.**
 - **No `assume`, no `decreases *`**, corpus-wide. `proofs.py` greps for both.
 - **Agents never touch** `solutions/`, `validate.py`, `difftest.py`,

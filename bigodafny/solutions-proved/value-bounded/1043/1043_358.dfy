@@ -15,7 +15,7 @@
 //         print("2" + "3" * (v - 1))
 // --------------------------------------------------------------------
 
-include "../../prelude.dfy"
+include "../../../prelude.dfy"
 import opened Prelude
 
 // Repeat("3", v - 1) costs v - 1, the MAGNITUDE of a_list[i], not the length of

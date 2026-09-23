@@ -28,7 +28,7 @@
 //         solve()
 // --------------------------------------------------------------------
 
-include "../../prelude.dfy"
+include "../../../prelude.dfy"
 import opened Prelude
 
 // Each test's own trip count is the per-test value `nn` (data[t].0), not the
