@@ -29,12 +29,12 @@
     "O(nlogn)": {
       "campaign_proved": 7,
       "drawn": 13,
-      "proved": 8
+      "proved": 9
     }
   },
   "by_relation": {
     "confirms": 26,
-    "looser-structural": 1,
+    "looser-structural": 2,
     "tighter-costmodel": 3,
     "tighter-translation": 1
   },
@@ -43,6 +43,7 @@
     "revised_after": [
       "2105_248",
       "499_82",
+      "514_140",
       "85_71"
     ],
     "unresolved": 20
@@ -57,7 +58,6 @@
     "binary search inner loop's iters+(hi-lo+1)<=K invariant would not maintain across the hitFound-true branch even after widening the slack by 1; needs a cleaner iteration-count argument than was found in budget": 1,
     "binary-search trip count needs a halving-potential log lemma over a value-sized range, not attempted in budget": 1,
     "converting the linear-in-i scaffold i*(4n+4) into the n*n postcondition timed out Z3 even after loosening constants": 1,
-    "final ensures constant/coefficient was one arithmetic tweak short (needed ~9*n not 8*n) when the 3-attempt budget ran out": 1,
     "forbidden decreases * masks a wrap-around termination argument (cyclic nearest-occurrence distance) that needs its own ghost function and lexicographic decreases clause before a step bound is even expressible; not shippable in budget": 1,
     "inner loop bound is a value-derived digit count with no requires bounding a_list's magnitude, so it cannot be tied to n": 1,
     "label's n is test-case count but the real cost scales with per-test string length, which has no stated relation to n": 1,
@@ -70,7 +70,7 @@
     "the O(n) mask-scan loop's iteration bound was proved via a crude iters+mask<=2^30 argument instead of an actual log2 lemma, producing a ~2^30-scale literal that made the final nonlinear arithmetic check time out; needed a real Log2(0x40000000)=30 bound instead of the brute constant": 1
   },
   "problems": [],
-  "proved": 31,
+  "proved": 32,
   "reads_coverage": 0.0,
   "reads_missing": [
     "1015_168",
@@ -124,5 +124,5 @@
     "897_1880",
     "897_2438"
   ],
-  "unresolved": 19
+  "unresolved": 18
 }

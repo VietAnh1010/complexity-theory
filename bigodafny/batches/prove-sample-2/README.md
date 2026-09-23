@@ -124,6 +124,7 @@ campaign's bounded agent proved a row this one missed.
 | `2225_154` | O(nlogn) | proved, `looser-slack` | proved, `confirms` | hand |
 | `2593_332` | O(nlogn) | proved, `looser-slack` | proved, `confirms` | hand |
 | `2926_54` | O(n**2) | unresolved | proved, `confirms` | `prove-sample-3` |
+| `514_140` | O(nlogn) | unresolved | proved, `looser-structural` | hand |
 
 **The numbers in this README are unchanged**: they are what this campaign's
 bounded agents achieved. Each revised trajectory keeps the agent's result as

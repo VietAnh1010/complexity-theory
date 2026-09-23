@@ -99,6 +99,7 @@ campaign's bounded agent proved a row this one missed.
 | `2128_34` | O(n**2) | proved, `looser-structural` | proved, `looser-structural` | hand |
 | `2425_5` | O(nlogn) | unresolved | proved, `confirms` | `prove-sample-3` |
 | `2742_0` | O(nlogn) | proved, `looser-slack` | proved, `confirms` | hand |
+| `514_140` | O(nlogn) | unresolved | proved, `looser-structural` | hand |
 | `661_47` | O(nlogn) | unresolved | proved, `confirms` | hand |
 
 **The numbers in this README are unchanged**: they are what this campaign's

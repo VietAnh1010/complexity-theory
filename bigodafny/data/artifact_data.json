@@ -1,6 +1,6 @@
 {
-  "generated": "2026-09-23T17:56:24+00:00",
-  "commit": "24cabae",
+  "generated": "2026-09-23T20:32:18+00:00",
+  "commit": "0409ecb",
   "branch": "claude/bigobench-python-dafny-dataset-ts4tm5",
   "toolchain": {
     "dafny": "4.11.0",
@@ -12,7 +12,7 @@
     "directories": {
       "solutions": 344,
       "solutions-disputed": 157,
-      "solutions-proved": 305,
+      "solutions-proved": 304,
       "solutions-ungateable": 5,
       "solutions-unscreened": 127,
       "solutions-untranslated": 4,
@@ -858,10 +858,10 @@
         "attempts_used": 2,
         "seconds": 260,
         "why_failed": "Solve mixes real-number tuple-sort quantifiers (forall x in ratios/d) with the new nonlinear Pow2Cost/SortCost step arithmetic in one VC; Z3 does not close it even at 3x the time budget. Note: the real obstacle here is more than proof technique -- Pow2_140 is linear recursion (not squaring), so this row's true charged cost is O(n^2), genuinely disagreeing with its O(nlogn) label, but that disagreement was never machine-checked because the surrounding VC would not close.",
-        "current_outcome": "unresolved",
-        "current_bound": null,
-        "current_relation": null,
-        "revised": false,
+        "current_outcome": "proved",
+        "current_bound": "2 * n * n + 2 * NLogN(n) + 13 * n + 4",
+        "current_relation": "looser-structural",
+        "revised": true,
         "call_depth": 2,
         "recursive": true
       },
@@ -1981,10 +1981,10 @@
         "attempts_used": 2,
         "seconds": 300,
         "why_failed": "combining the O(n**2) step accounting with the pre-existing forall-membership invariants pushed verification over the 30s limit",
-        "current_outcome": "unresolved",
-        "current_bound": null,
-        "current_relation": null,
-        "revised": false,
+        "current_outcome": "proved",
+        "current_bound": "2 * n * n + 2 * NLogN(n) + 13 * n + 4",
+        "current_relation": "looser-structural",
+        "revised": true,
         "call_depth": 2,
         "recursive": true
       },
@@ -6596,10 +6596,10 @@
         "attempts_used": 3,
         "seconds": 280,
         "why_failed": "final ensures constant/coefficient was one arithmetic tweak short (needed ~9*n not 8*n) when the 3-attempt budget ran out",
-        "current_outcome": "unresolved",
-        "current_bound": null,
-        "current_relation": null,
-        "revised": false,
+        "current_outcome": "proved",
+        "current_bound": "2 * n * n + 2 * NLogN(n) + 13 * n + 4",
+        "current_relation": "looser-structural",
+        "revised": true,
         "call_depth": 2,
         "recursive": true
       },
@@ -8901,16 +8901,13 @@
     }
   },
   "proofs_all": {
-    "files": 305,
-    "rows": 303,
+    "files": 304,
+    "rows": 304,
     "by_era": {
-      "pre-axiom": 44,
+      "pre-axiom": 43,
       "campaign": 261
     },
-    "rows_with_two_proofs": [
-      "1484_82",
-      "603_284"
-    ],
+    "rows_with_two_proofs": [],
     "pre_axiom_recheck": {
       "date": "2026-09-17",
       "files": 33,
@@ -8921,7 +8918,7 @@
     },
     "by_label": {
       "O(n)": 139,
-      "O(nlogn)": 68,
+      "O(nlogn)": 67,
       "O(n**2)": 36,
       "O(1)": 30,
       "O(n+m)": 14,
@@ -11373,6 +11370,16 @@
         "recursive": null
       },
       {
+        "solution_id": "514_140",
+        "file": "solutions-proved/514/514_140.dfy",
+        "era": "pre-axiom",
+        "tight_variant": false,
+        "label": "O(nlogn)",
+        "bound": "2 * n * n + 2 * NLogN(n) + 13 * n + 4",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
         "solution_id": "525_234",
         "file": "solutions-proved/525/525_234.dfy",
         "era": "campaign",
@@ -11830,26 +11837,6 @@
         "label": "O(n**2)",
         "bound": "2 * |a_list| * |a_list| + 2 * |a_list| + 2",
         "call_depth": 2,
-        "recursive": true
-      },
-      {
-        "solution_id": "1484_82",
-        "file": "solutions-proved/nlogn/1484/1484_82.dfy",
-        "era": "pre-axiom",
-        "tight_variant": true,
-        "label": "O(nlogn)",
-        "bound": "2 * n * (CeilLog2(n) + 1) + 2 * n + 2 * SumLen(numbers) + 6",
-        "call_depth": 3,
-        "recursive": true
-      },
-      {
-        "solution_id": "603_284",
-        "file": "solutions-proved/nlogn/603/603_284.dfy",
-        "era": "pre-axiom",
-        "tight_variant": true,
-        "label": "O(nlogn)",
-        "bound": "2 * n * (CeilLog2(n) + 1) + 2 * n + 4",
-        "call_depth": 3,
         "recursive": true
       },
       {

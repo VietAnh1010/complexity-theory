@@ -94,7 +94,11 @@ outside every campaign's budget, 30 rows' campaign records changed
   not the sorts as an earlier note said;
 - 10 unresolved rows were proved: `2105_248`, `661_47`, `1039_15`, `2826_81`,
   `2128_3`, `1387_19`, `1892_121`, `1582_118`, `1827_66` confirm their
-  labels, and `1718_1166` is `looser-structural`.
+  labels, and `1718_1166` is `looser-structural`;
+- `514_140` was proved `looser-structural` at O(n**2) once `Pow2_140`, the
+  translation's stand-in for Python's `2**i`, was ruled to cost its recursion
+  depth (COMPLEXITY.md, decided 2026-09-23). The n**2 is that helper, not the
+  algorithm.
 
 **How the files hold it.** The current files carry each row's latest state.
 Every superseded line — trajectory, relation, obstacle, audit — is in that
@@ -112,7 +116,7 @@ revised the same way, their `revision.by` naming the proving campaign or
 whose own `traj_convention.jsonl` records the proof from that campaign's
 convention re-run.
 
-In all 47 rows were revised and 149 superseded lines kept. All six audits
+In all 48 rows were revised and 157 superseded lines kept. All six audits
 (c2–c7) report no disagreement between trajectories and the verifier.
 
 **What it does not change.** Every campaign rate. `provestats.py`,
@@ -120,8 +124,8 @@ In all 47 rows were revised and 149 superseded lines kept. All six audits
 `agent_outcome`, so a row a bounded agent missed stays missed in its campaign;
 the campaign-era tables in `data/prove_stats.md` are unchanged, and each
 campaign's count in `data/artifact_data.json` matches its history. The current
-state is reported beside them: 272 of 311 distinct drawn rows carry a proof
-now, 261 proved by a bounded agent, 11 closed afterwards by hand.
+state is reported beside them: 273 of 311 distinct drawn rows carry a proof
+now, 261 proved by a bounded agent, 12 closed afterwards by hand.
 
 It also settles one of the questions below by construction: pooled relation
 tables now describe proofs of one standard. No proof's bound uses a quadratic

@@ -49,7 +49,7 @@ several of its claims were later reversed. `summaries/README.md` says which.
 | safety verified (`dafny verify`) | all 344 of `solutions/`; 334 also prove termination |
 | complexity proved | 304 rows, 304 files, all verify, zero `assume` |
 | campaign pass rate | 261 of 348 drawn rows, 75%, by a bounded agent — `data/prove_stats.md` |
-| drawn rows proved now | 272 of 311 distinct, 87% — 11 closed by hand after their campaign |
+| drawn rows proved now | 273 of 311 distinct, 88% — 12 closed by hand after their campaign |
 | label audit | 506 screened: 347 `ok`, 152 `mismatch`, 7 `unsure` (after the re-file) |
 | Dafny / Z3 | 4.11.0 / 4.12.1 |
 
