@@ -179,9 +179,24 @@ slice did, and its 16 rows arrived as 59 lines that nothing could parse.
 Never write to another agent's file, and never to any other file in that
 directory.
 
+### Reading trace -- required
+
+Add a `reads` array to every trajectory record. Record the material reading
+path, in order: first the assigned source row, then each direct helper or
+prelude declaration whose implementation, contract, termination, or cost you
+needed to inspect. Use `scope` as `source`, `helper`, or `prelude`; `target`
+names the method/function or source path; `reason` is one of `call-graph`,
+`cost`, `contract`, `termination`, or `bound`.
+
+Do not log routine re-reads, verifier output, or unrelated prelude functions.
+This is a proof-relevance trace, not a terminal transcript. An empty `reads`
+array is invalid: every row must at least record reading its assigned source.
+
 ```json
 {"solution_id":"1053_38","label":"O(n)","outcome":"proved",
  "bound":"3 * |a_list| + 4","relation":"confirms","relation_reason":"",
+ "reads":[{"scope":"source","target":"solutions/1053/1053_38.dfy","reason":"call-graph"},
+          {"scope":"prelude","target":"IntToString","reason":"cost"}],
  "attempts":[{"n":1,"action":"ghost steps + loop invariant steps == 3*i+1","outcome":"failed","note":"invariant not maintained across the inner append"},
              {"n":2,"action":"charged s + [x] as 1, not |s|","outcome":"verified","note":""}],
  "attempts_used":2,"seconds":140,"why_failed":null}
