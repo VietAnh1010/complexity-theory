@@ -1,0 +1,92 @@
+// 432_B. Football Kit  (problem 378, solution 378_91)
+// time complexity: O(n)
+// python exact-diff baseline: exact
+//
+// Reproduce the Python program's entire stdout in `output`.
+//
+// --- Python ---------------------------------------------------------
+// from sys import stdin
+// _data = iter(stdin.read().split('\n'))
+// input = lambda: next(_data)
+//
+// from collections import Counter
+// n = int(input())
+// ct = Counter()
+// a = [tuple(map(int, input().split())) for _ in range(n)]
+// for x, y in a:
+//     ct[x] += 1
+// buf = []
+// for x, y in a:
+//     buf.append('{} {}'.format((n - 1) + ct[y],
+//                               (n - 1) - ct[y]))
+// print('\n'.join(buf))
+// --------------------------------------------------------------------
+
+include "../../prelude.dfy"
+import opened Prelude
+
+function ParseIntFrom(s: string, i: nat, acc: int): int
+  requires 0 <= i <= |s|
+  decreases |s| - i
+{
+  if i == |s| then acc
+  else ParseIntFrom(s, i + 1, acc * 10 + (s[i] as int - '0' as int))
+}
+
+function ParseInt(s: string): int
+{
+  if |s| > 0 && s[0] == '-' then -ParseIntFrom(s, 1, 0)
+  else ParseIntFrom(s, 0, 0)
+}
+
+lemma ParseIntFromCost(s: string, i: nat, acc: int)
+  requires 0 <= i <= |s|
+  ensures true
+  decreases |s| - i
+{
+  if i == |s| {
+  } else {
+    ParseIntFromCost(s, i + 1, acc * 10 + (s[i] as int - '0' as int));
+  }
+}
+
+method Solve(n: int, pairs: seq<seq<string>>) returns (output: string, ghost steps: nat)
+  requires forall k :: 0 <= k < |pairs| ==> |pairs[k]| >= 2
+  ensures steps <= 8 * |pairs| + |output| + 6
+{
+  var ct: map<int, int> := map[];
+  var idx := 0;
+  steps := 1;
+  ghost var base1 := steps;
+  while idx < |pairs|
+    invariant 0 <= idx <= |pairs|
+    invariant steps <= base1 + 4 * idx
+    decreases |pairs| - idx
+  {
+    var x := ParseInt(pairs[idx][0]);
+    if x in ct {
+      ct := ct[x := ct[x] + 1];
+    } else {
+      ct := ct[x := 1];
+    }
+    idx := idx + 1;
+    steps := steps + 4;
+  }
+  var lines: seq<string> := [];
+  idx := 0;
+  ghost var base2 := steps;
+  while idx < |pairs|
+    invariant 0 <= idx <= |pairs|
+    invariant |lines| == idx
+    invariant steps <= base2 + 4 * idx
+    decreases |pairs| - idx
+  {
+    var y := ParseInt(pairs[idx][1]);
+    var c := if y in ct then ct[y] else 0;
+    lines := lines + [IntToString((n - 1) + c) + " " + IntToString((n - 1) - c)];
+    idx := idx + 1;
+    steps := steps + 4;
+  }
+  output := Join(lines, "\n");
+  steps := steps + |output| + 2;
+}
