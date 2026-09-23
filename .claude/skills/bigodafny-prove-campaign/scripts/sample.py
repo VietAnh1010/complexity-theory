@@ -16,11 +16,16 @@ A row is eligible when all three hold:
 
 and it has no proof overlay in `solutions-proved/`.
 
+`--exclude-drawn` additionally skips every row an earlier campaign drew, so
+the sample is over rows no campaign has touched. Use it once the repeat rate
+climbs: by campaign 6 a plain draw was 28% rows that had already failed.
+
 The eligible pool is sorted by solution id before sampling, so the seed alone
 determines the draw.
 """
 
 import argparse
+import glob
 import json
 import os
 import random
@@ -81,6 +86,8 @@ def main():
     ap.add_argument("--seed", type=int, required=True)
     ap.add_argument("--slices", type=int, default=3)
     ap.add_argument("--repo", default=".", help="bigodafny/ root")
+    ap.add_argument("--exclude-drawn", action="store_true",
+                    help="draw only from rows no earlier campaign has drawn")
     args = ap.parse_args()
 
     repo = args.repo
@@ -97,6 +104,24 @@ def main():
     # which is a fact about the file, not about the row.
     dataset = load_jsonl(os.path.join(repo, "data/dataset.jsonl"))
 
+    # Rows an earlier campaign already drew. A row that FAILED stays in the
+    # pool, so by campaign 6 nearly a third of a plain draw was rows already
+    # known to be hard, and the sample had drifted from "a random row of the
+    # corpus" to "a random row of what is left".
+    #
+    # --exclude-drawn restores the first question. Rows never drawn were never
+    # selected on: earlier campaigns removed a RANDOM subset (the ones they
+    # proved) and left a non-random one (the ones they failed), so the
+    # never-drawn remainder is an unbiased sample of the original population
+    # and comparable with campaign 1. The rows it skips are recorded, not
+    # dropped quietly.
+    already_drawn = set()
+    for f in sorted(glob.glob(os.path.join(
+            repo, "batches", "prove-sample*", "manifest.jsonl"))):
+        for line in open(f):
+            if line.strip():
+                already_drawn.add(json.loads(line)["solution_id"])
+
     solutions = dfy_files(os.path.join(repo, "solutions"))
     # solutions-proved/ is an overlay over the partition, not a member of it.
     # Walked to any depth, so a new variant subdirectory cannot leak proved
@@ -104,7 +129,7 @@ def main():
     proved = set(dfy_files_deep(os.path.join(repo, "solutions-proved")))
 
     pool, excluded = [], []
-    skipped = {"no-label": 0, "gate": 0, "proved": 0}
+    skipped = {"no-label": 0, "gate": 0, "proved": 0, "drawn-before": 0}
     for sid in sorted(solutions):
         if sid in proved:
             skipped["proved"] += 1
@@ -131,6 +156,11 @@ def main():
             excluded.append(
                 {"solution_id": sid, "why": "gate", "split": split, "gate": gate}
             )
+            continue
+        if args.exclude_drawn and sid in already_drawn:
+            skipped["drawn-before"] += 1
+            excluded.append({"solution_id": sid, "why": "drawn-before",
+                             "label": label})
             continue
         pool.append(
             {

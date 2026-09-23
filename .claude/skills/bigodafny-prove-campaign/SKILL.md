@@ -49,6 +49,20 @@ A row whose gate cannot reach a verdict at all now lives in
 `data/gate_ungateable.jsonl`. **Never make a row eligible by editing a gate** —
 a gate may not be relaxed by the work it judges.
 
+**Watch the repeat rate, and switch to `--exclude-drawn` when it climbs.** A
+row that fails stays in the pool, so each campaign's draw contains more rows
+already known to be hard: 8%, 12%, 20%, 28% across campaigns 3 to 6. Past
+about a quarter the campaign has stopped measuring "can a bounded agent prove
+a random row" and started measuring "can a second agent close what the first
+could not" — a fair question, but a different one, and the rate falls for
+reasons that have nothing to do with the agents.
+
+`--exclude-drawn` draws only from rows no campaign has touched. That subset is
+**unbiased**: earlier campaigns removed a random part of the pool (what they
+proved) and left a non-random part (what they failed), so what was never drawn
+still looks like the original population and stays comparable with campaign 1.
+Say in the README which mode the draw used; the two are not interchangeable.
+
 ### 2. Write the brief
 
 Copy `PROMPT.md` from this skill into the batch directory and substitute
