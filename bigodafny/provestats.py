@@ -165,6 +165,7 @@ def main():
                         for b in BATCHES},
         "repeat_draws": repeat_draws(rows),
         "first_vs_repeat": first_vs_repeat(rows),
+        "dedup": dedup_view(),
         "corpus": corpus_context(),
         "rows": sorted(rows, key=lambda r: (r["campaign"], r["solution_id"])),
     }
@@ -215,6 +216,51 @@ def first_vs_repeat(rows):
         }
         seen |= {r["solution_id"] for r in here}
     return out
+
+
+def dedup_view():
+    """The deduplicated record, if dedupe.py has been run.
+
+    `drawn` above counts DRAW RECORDS: a row several campaigns drew is in it
+    several times, and those are disproportionately the hard rows, because a
+    repeat draw selects for failure. The deduplicated set is one record per
+    distinct row, keeping the most positive outcome.
+
+    The two rates answer different questions and neither replaces the other:
+
+      raw     -- of the rows a campaign drew, what share did THAT campaign
+                 prove within the budget. The per-campaign question.
+      dedup   -- of the distinct rows any campaign has drawn, what share
+                 carries a proof. The corpus question.
+
+    dedup is the higher number by construction, and it is not a statement
+    about what one bounded agent achieves in one pass.
+    """
+    rows = jsonl(DATA / "campaign_dedup.jsonl")
+    if not rows:
+        return None
+    meta_p = DATA / "campaign_dedup.json"
+    meta = json.loads(meta_p.read_text()) if meta_p.exists() else {}
+    proved = [r for r in rows if r["outcome"] == "proved"]
+    by_label = {}
+    for lab in sorted({r["label"] for r in rows}):
+        d = [r for r in rows if r["label"] == lab]
+        by_label[lab] = {"drawn": len(d),
+                         "proved": sum(1 for r in d if r["outcome"] == "proved")}
+    return {
+        "distinct_rows": len(rows),
+        "proved": len(proved),
+        "rate": round(len(proved) / len(rows), 4),
+        "drawn_more_than_once": sum(1 for r in rows if r["drawn_times"] > 1),
+        "closed_on_a_later_draw": sum(
+            1 for r in proved
+            if any(s["outcome"] == "unresolved" for s in r["superseded"])),
+        "by_label": by_label,
+        "campaigns": meta.get("campaigns"),
+        "incomplete_and_excluded": meta.get("incomplete_and_excluded"),
+        "note": ("one record per distinct row, most positive outcome kept. "
+                 "A corpus-level share, not a per-campaign rate."),
+    }
 
 
 def corpus_context():
@@ -279,6 +325,41 @@ def render(p):
     a("the never-drawn remainder is still an unbiased sample of the original")
     a("population.")
     a("")
+    if p.get("dedup"):
+        d = p["dedup"]
+        a("### Deduplicated: one record per distinct row")
+        a("")
+        a("The headline counts draw records. A row several campaigns drew is")
+        a("in it several times, and those are disproportionately the hard")
+        a("rows, since a repeat draw selects for failure. `dedupe.py` keeps")
+        a("one record per row — the most positive outcome — and writes the")
+        a("rest out as `superseded`.")
+        a("")
+        a(f"**{d['proved']} of {d['distinct_rows']} distinct rows carry a "
+          f"proof — {d['rate']:.0%}.**")
+        a("")
+        a(f"- {d['drawn_more_than_once']} rows were drawn more than once.")
+        a(f"- {d['closed_on_a_later_draw']} were closed by a later campaign "
+          "after an earlier one missed them.")
+        if d.get("incomplete_and_excluded"):
+            a("- Excluded because they have not finished: "
+              + ", ".join(f"`{b}`" for b in d["incomplete_and_excluded"])
+              + ". A running campaign has rows with no record yet, and "
+                "counting those as failures would move every number here.")
+        a("")
+        a("| label | drawn | proved | rate |")
+        a("|---|---|---|---|")
+        for lab, c in sorted(d["by_label"].items(), key=lambda kv: -kv[1]["drawn"]):
+            a(f"| `{lab}` | {c['drawn']} | {c['proved']} | "
+              f"{c['proved'] / c['drawn']:.0%} |")
+        a("")
+        a("**These two rates answer different questions.** The raw rate asks")
+        a("what share of the rows a campaign drew that campaign proved inside")
+        a("its budget. The deduplicated rate asks what share of the distinct")
+        a("rows anyone has drawn now carries a proof. The second is higher by")
+        a("construction and says nothing about what one bounded agent manages")
+        a("in one pass; use it for the corpus, never for comparing campaigns.")
+        a("")
     a("## The label is the strongest predictor")
     a("")
     a("Pooled first, then per campaign. `p` tests that campaign's cell against")

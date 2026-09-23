@@ -85,7 +85,13 @@ Open, not settled here:
    into the original trajectories.
 2. Whether the pooled rate should be quoted over fresh rows only. The
    fresh/repeat split exists per campaign; the headline currently does not use
-   it.
+   it. **Partly settled:** `dedupe.py` now reduces the record to one entry per
+   distinct row, keeping the most positive outcome, so the campaigns
+   partition. 300 draw records become 261 rows, and the rate over them is
+   221/261 = 85% against the raw 221/298 = 74% — the same proofs, a
+   denominator with the duplicate draws taken out. Use it for the corpus;
+   per-campaign comparison still belongs to the raw records, because
+   attributing a row to whichever campaign proved it flatters the later one.
 3. Whether `IntToString`-dominated rows in c1–c5 should be identified and
    marked, so the c6 change is visible rather than silent.
 4. What to do with the c7 rows that carry no `reads`. They cannot be

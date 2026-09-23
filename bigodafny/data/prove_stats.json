@@ -821,10 +821,67 @@
       "repeat_share": 0.28
     }
   },
+  "dedup": {
+    "distinct_rows": 261,
+    "proved": 221,
+    "rate": 0.8467,
+    "drawn_more_than_once": 32,
+    "closed_on_a_later_draw": 16,
+    "by_label": {
+      "O(1)": {
+        "drawn": 23,
+        "proved": 22
+      },
+      "O(logn)": {
+        "drawn": 2,
+        "proved": 1
+      },
+      "O(n)": {
+        "drawn": 123,
+        "proved": 110
+      },
+      "O(n**2)": {
+        "drawn": 40,
+        "proved": 29
+      },
+      "O(n*m)": {
+        "drawn": 1,
+        "proved": 1
+      },
+      "O(n+m)": {
+        "drawn": 11,
+        "proved": 11
+      },
+      "O(n+m)log(n+m)": {
+        "drawn": 1,
+        "proved": 1
+      },
+      "O(nlogn)": {
+        "drawn": 58,
+        "proved": 44
+      },
+      "O(nlogn+mlogm)": {
+        "drawn": 2,
+        "proved": 2
+      }
+    },
+    "campaigns": [
+      "prove-sample",
+      "prove-sample-2",
+      "prove-sample-3",
+      "prove-sample-4",
+      "prove-sample-5",
+      "prove-sample-6"
+    ],
+    "incomplete_and_excluded": [
+      "prove-sample-7"
+    ],
+    "note": "one record per distinct row, most positive outcome kept. A corpus-level share, not a per-campaign rate."
+  },
   "corpus": {
     "solutions_rows": 344,
-    "proof_files": 255,
-    "proved_rows": 253,
+    "proof_files": 296,
+    "proved_rows": 294,
     "note": "proved_rows counts every proof in the corpus, including the 33 that predate the campaigns and the rows proved by hand."
   },
   "rows": [

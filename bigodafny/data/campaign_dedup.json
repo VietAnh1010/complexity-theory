@@ -1,0 +1,17 @@
+{
+  "campaigns": [
+    "prove-sample",
+    "prove-sample-2",
+    "prove-sample-3",
+    "prove-sample-4",
+    "prove-sample-5",
+    "prove-sample-6"
+  ],
+  "incomplete_and_excluded": [
+    "prove-sample-7"
+  ],
+  "draw_records": 300,
+  "distinct_rows": 261,
+  "drawn_more_than_once": 32,
+  "proved": 221
+}

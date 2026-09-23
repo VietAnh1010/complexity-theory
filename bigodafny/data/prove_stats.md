@@ -44,6 +44,39 @@ never-touched rows: earlier campaigns removed a random part of the pool
 the never-drawn remainder is still an unbiased sample of the original
 population.
 
+### Deduplicated: one record per distinct row
+
+The headline counts draw records. A row several campaigns drew is
+in it several times, and those are disproportionately the hard
+rows, since a repeat draw selects for failure. `dedupe.py` keeps
+one record per row — the most positive outcome — and writes the
+rest out as `superseded`.
+
+**221 of 261 distinct rows carry a proof — 85%.**
+
+- 32 rows were drawn more than once.
+- 16 were closed by a later campaign after an earlier one missed them.
+- Excluded because they have not finished: `prove-sample-7`. A running campaign has rows with no record yet, and counting those as failures would move every number here.
+
+| label | drawn | proved | rate |
+|---|---|---|---|
+| `O(n)` | 123 | 110 | 89% |
+| `O(nlogn)` | 58 | 44 | 76% |
+| `O(n**2)` | 40 | 29 | 72% |
+| `O(1)` | 23 | 22 | 96% |
+| `O(n+m)` | 11 | 11 | 100% |
+| `O(logn)` | 2 | 1 | 50% |
+| `O(nlogn+mlogm)` | 2 | 2 | 100% |
+| `O(n*m)` | 1 | 1 | 100% |
+| `O(n+m)log(n+m)` | 1 | 1 | 100% |
+
+**These two rates answer different questions.** The raw rate asks
+what share of the rows a campaign drew that campaign proved inside
+its budget. The deduplicated rate asks what share of the distinct
+rows anyone has drawn now carries a proof. The second is higher by
+construction and says nothing about what one bounded agent manages
+in one pass; use it for the corpus, never for comparing campaigns.
+
 ## The label is the strongest predictor
 
 Pooled first, then per campaign. `p` tests that campaign's cell against
@@ -207,7 +240,7 @@ pushes the rate down for reasons unrelated to the agents.
 ## Corpus context
 
 - `solutions/` holds 344 rows.
-- 253 rows carry a proof, in 255 files.
+- 294 rows carry a proof, in 296 files.
 - proved_rows counts every proof in the corpus, including the 33 that predate the campaigns and the rows proved by hand.
 
 ## What this does not measure
