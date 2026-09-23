@@ -317,6 +317,12 @@ def main():
     p5_rel = {r["solution_id"]: r for r in jsonl(p5 / "label_relation.jsonl")}
     p5_obst = {r["solution_id"]: r for r in jsonl(p5 / "obstacles.jsonl")}
 
+    p6 = HERE / "batches/prove-sample-6"
+    p6_manifest = jsonl(p6 / "manifest.jsonl")
+    p6_traj = [r for f in sorted(p6.glob("traj_*.jsonl")) for r in jsonl(f)]
+    p6_rel = {r["solution_id"]: r for r in jsonl(p6 / "label_relation.jsonl")}
+    p6_obst = {r["solution_id"]: r for r in jsonl(p6 / "obstacles.jsonl")}
+
     dirs = {d.name: sum(1 for _ in d.rglob("*.dfy"))
             for d in sorted(HERE.glob("solutions*")) if d.is_dir()}
 
@@ -349,6 +355,13 @@ def main():
                        meta={"seed": 2026092103, "pool": 211}, obst=p4_obst)
     pv5 = prove_sample(p5_manifest, p5_traj, p5_rel, depth,
                        meta={"seed": 20260922, "pool": 179}, obst=p5_obst)
+    pv6 = prove_sample(p6_manifest, p6_traj, p6_rel, depth,
+                       meta={"seed": 20260923, "pool": 137}, obst=p6_obst)
+    # The last plain draw. 28% of it was rows an earlier campaign had already
+    # failed, so the sample had drifted from "a random row of the corpus" to
+    # "a random row of what is left". Campaign 7 uses --exclude-drawn.
+    pv6["draw_mode"] = "plain"
+    pv6["repeat_share"] = 0.28
     # Two rows were drawn although they already carried a proof: sample.py
     # listed solutions-proved/ flatly and missed the value-bounded/ subdirectory
     # added the day before. Their outcomes are real but they are not new work,
@@ -433,13 +446,14 @@ def main():
         "prove_sample_3": pv3,
         "prove_sample_4": pv4,
         "prove_sample_5": pv5,
-        "campaign_series": campaign_series([pv, pv2, pv3, pv4, pv5]),
+        "prove_sample_6": pv6,
+        "campaign_series": campaign_series([pv, pv2, pv3, pv4, pv5, pv6]),
         "proofs_all": proofs_all(depth, ds, pv.get("rows", []) + pv2.get("rows", [])
                                  + pv3.get("rows", []) + pv4.get("rows", [])
-                                 + pv5.get("rows", [])),
+                                 + pv5.get("rows", []) + pv6.get("rows", [])),
         "difficulty": difficulty(pv.get("rows", []) + pv2.get("rows", [])
                                  + pv3.get("rows", []) + pv4.get("rows", [])
-                                 + pv5.get("rows", [])),
+                                 + pv5.get("rows", []) + pv6.get("rows", [])),
 
         "stale_record_finding": {
             "before": {"rows": 362, "recorded_failing": 12,
@@ -493,6 +507,11 @@ def main():
           f"{v['fully_verified_incl_termination']} incl. termination")
     print(f"  sample: {payload['sample']['drawn']} rows, "
           f"{payload['sample']['attempts_consumed']} attempts consumed")
+    p6 = payload["prove_sample_6"]
+    print(f"  proofs-6: {p6['proved']} proved / {p6['attempted']} attempted "
+          f"of {p6['drawn']} drawn, pool {p6['pool']}")
+    print(f"            relations {p6['relations']}")
+    print(f"            obstacles {p6['obstacles']}")
     p5 = payload["prove_sample_5"]
     print(f"  proofs-5: {p5['proved']} proved / {p5['attempted']} attempted "
           f"of {p5['drawn']} drawn, pool {p5['pool']}")

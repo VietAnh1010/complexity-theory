@@ -34,7 +34,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 DATA = HERE / "data"
 BATCHES = ["prove-sample", "prove-sample-2", "prove-sample-3",
-           "prove-sample-4", "prove-sample-5"]
+           "prove-sample-4", "prove-sample-5", "prove-sample-6"]
 # rows a campaign drew although a proof already existed: a sampler bug, not
 # new work, so they are not in the denominator
 REDRAWN = {"prove-sample-5": {"2128_34", "305_76"}}
@@ -164,6 +164,7 @@ def main():
                                           and r["outcome"] == "proved")}
                         for b in BATCHES},
         "repeat_draws": repeat_draws(rows),
+        "first_vs_repeat": first_vs_repeat(rows),
         "corpus": corpus_context(),
         "rows": sorted(rows, key=lambda r: (r["campaign"], r["solution_id"])),
     }
@@ -188,6 +189,32 @@ def repeat_draws(rows):
             "note": ("A row that fails stays in the pool, so later campaigns "
                      "redraw it. Each attempt is independent -- a different "
                      "agent that has not seen the earlier one.")}
+
+
+def first_vs_repeat(rows):
+    """Split each campaign's draw into rows never drawn before and rows redrawn.
+
+    A row that FAILS stays in the pool, so every plain draw carries more rows
+    already known to be hard: 8%, 12%, 20%, 28% across campaigns 3 to 6. Past
+    about a quarter the campaign has stopped measuring "can a bounded agent
+    prove a random row" and started measuring "can a second agent close what a
+    first could not". Both rates are reported so the pooled headline can be
+    read for what it is.
+    """
+    seen, out = set(), {}
+    for b in BATCHES:
+        here = [r for r in rows if r["campaign"] == b]
+        fresh = [r for r in here if r["solution_id"] not in seen]
+        rep = [r for r in here if r["solution_id"] in seen]
+        out[b] = {
+            "fresh_drawn": len(fresh),
+            "fresh_proved": sum(1 for r in fresh if r["outcome"] == "proved"),
+            "repeat_drawn": len(rep),
+            "repeat_proved": sum(1 for r in rep if r["outcome"] == "proved"),
+            "repeat_share": round(len(rep) / len(here), 4) if here else None,
+        }
+        seen |= {r["solution_id"] for r in here}
+    return out
 
 
 def corpus_context():
@@ -230,6 +257,27 @@ def render(p):
     a("|---|---|---|---|")
     for b, c in p["by_campaign"].items():
         a(f"| `{b}` | {c['drawn']} | {c['proved']} | {c['proved']/c['drawn']:.0%} |")
+    a("")
+    a("### Fresh rows versus redrawn rows")
+    a("")
+    a("A row that fails stays in the pool, so each plain draw carries more")
+    a("rows an earlier campaign already failed. That share is not constant,")
+    a("and the pooled headline above mixes the two populations.")
+    a("")
+    a("| campaign | fresh | repeat | repeat share | fresh rate | repeat rate |")
+    a("|---|---|---|---|---|---|")
+    for b, c in p["first_vs_repeat"].items():
+        fr = f"{c['fresh_proved']}/{c['fresh_drawn']}" if c["fresh_drawn"] else "—"
+        rr = f"{c['repeat_proved']}/{c['repeat_drawn']}" if c["repeat_drawn"] else "—"
+        a(f"| `{b}` | {c['fresh_drawn']} | {c['repeat_drawn']} | "
+          f"{c['repeat_share']:.0%} | {fr} | {rr} |")
+    a("")
+    a("Only a fresh-row rate answers the campaign's own question. From")
+    a("campaign 7 the sampler is run with `--exclude-drawn`, which draws only")
+    a("never-touched rows: earlier campaigns removed a random part of the pool")
+    a("(what they proved) and left a non-random part (what they failed), so")
+    a("the never-drawn remainder is still an unbiased sample of the original")
+    a("population.")
     a("")
     a("## The label is the strongest predictor")
     a("")

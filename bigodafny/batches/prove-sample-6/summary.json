@@ -1,0 +1,62 @@
+{
+  "batch": "batches/prove-sample-6",
+  "by_label": {
+    "O(1)": {
+      "drawn": 4,
+      "proved": 3
+    },
+    "O(logn)": {
+      "drawn": 1,
+      "proved": 1
+    },
+    "O(n)": {
+      "drawn": 16,
+      "proved": 11
+    },
+    "O(n**2)": {
+      "drawn": 13,
+      "proved": 5
+    },
+    "O(n+m)": {
+      "drawn": 3,
+      "proved": 3
+    },
+    "O(nlogn)": {
+      "drawn": 13,
+      "proved": 7
+    }
+  },
+  "by_relation": {
+    "confirms": 23,
+    "looser-slack": 2,
+    "looser-structural": 1,
+    "tighter-costmodel": 3,
+    "tighter-translation": 1
+  },
+  "drawn": 50,
+  "obstacles": {
+    "Fenwick-tree lowbit loop needs a bit-trick log-bound lemma absent from prelude; not derivable in budget": 1,
+    "RepStr(a, x-y-1)'s argument depends on k through y=k-b with no lower bound on k in the signature, so its cost cannot be bounded by any function of n or row[0] alone; would need an added requires narrowing k that changes what the row accepts": 1,
+    "SumLen is not invariant under an index swap without a separate SumLenRemove lemma (SumLen(b)==|b[idx]|+SumLen(b[..idx]+b[idx+1..])) chained into the recursive multiset-permutation argument; that extra lemma did not fit the budget": 1,
+    "The containment check's cost is driven by string length (|hay|), not string count, so the loop's true cost is a sum of lengths over the SORTED array. Expressing the method's ensures in terms of the ORIGINAL (unsorted) `strings` parameter requires proving Sort preserves the total-length sum across a permutation -- a multiset-sum lemma prelude does not provide and that was not feasible to build from scratch in the budget.": 1,
+    "Z3 could not maintain the second loop's steps<=3*n*n+... invariant; the n*n term needed its own isolated lemma, not just an inline assert": 1,
+    "binary search inner loop's iters+(hi-lo+1)<=K invariant would not maintain across the hitFound-true branch even after widening the slack by 1; needs a cleaner iteration-count argument than was found in budget": 1,
+    "binary-search trip count needs a halving-potential log lemma over a value-sized range, not attempted in budget": 1,
+    "converting the linear-in-i scaffold i*(4n+4) into the n*n postcondition timed out Z3 even after loosening constants": 1,
+    "final ensures constant/coefficient was one arithmetic tweak short (needed ~9*n not 8*n) when the 3-attempt budget ran out": 1,
+    "forbidden decreases * masks a wrap-around termination argument (cyclic nearest-occurrence distance) that needs its own ghost function and lexicographic decreases clause before a step bound is even expressible; not shippable in budget": 1,
+    "inner loop bound is a value-derived digit count with no requires bounding a_list's magnitude, so it cannot be tied to n": 1,
+    "label's n is test-case count but the real cost scales with per-test string length, which has no stated relation to n": 1,
+    "n carries no lower bound in the source (bare int(input())); for negative n the n<4 branch gives steps=3 but 5*n+10 goes negative, falsifying the ensures. The fix (requires n>=0) was identified only after the 3rd attempt.": 1,
+    "nonlinear (n0+2)*n0-shaped terms from the O(n) Pow10 recursion inside the O(n) doubling loop need an isolated MulMonoRight/MulDistrib-style lemma to connect to n*n; inlined multiplication would not verify in budget": 1,
+    "nonlinear i*n term in the DP double-loop invariant would not maintain or timed out even with a distributivity assert": 1,
+    "parameter a (h, the outer loop's trip count) has no non-negativity precondition, so 0<=i<=h fails on loop entry": 1,
+    "parameter v_2 (n, the loop's trip-count bound) has no non-negativity precondition, so an exit-state upper-bound invariant fails on entry": 1,
+    "row's own loop carries decreases *, which our copy may not keep; replacing it needs a spiral-arithmetic termination bound not derived in budget": 1,
+    "square-monotonicity |arregloacomodado|<=n ==> |arregloacomodado|^2<=n^2 needed its own lemma; a bare assert did not close it": 1,
+    "the O(n) mask-scan loop's iteration bound was proved via a crude iters+mask<=2^30 argument instead of an actual log2 lemma, producing a ~2^30-scale literal that made the final nonlinear arithmetic check time out; needed a real Log2(0x40000000)=30 bound instead of the brute constant": 1
+  },
+  "problems": [],
+  "proved": 30,
+  "unresolved": 20
+}
