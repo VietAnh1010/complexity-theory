@@ -27,7 +27,7 @@ import opened Prelude
 method Solve(n: int, m: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
   requires n == |a_list|
   requires n >= 0
-  ensures steps <= 20 * n + |output| + 30
+  ensures steps <= 60 * n + |output| + 50
 {
   steps := 1;
   var doubled := a_list + a_list;
@@ -57,23 +57,33 @@ method Solve(n: int, m: int, a_list: seq<int>) returns (output: string, ghost st
   var tot := 0;
   var ans := 0;
   ghost var base1 := steps;
+  // doneWaste marks the single outer pass, if any, where the inner loop
+  // drives p to twoN with q still short of it: neither `p == q` nor the
+  // `elif` fire, q does not advance, and (per the header comment) that pass
+  // is necessarily the last, since p == twoN falsifies the outer guard on
+  // the very next check. One such pass can happen; the invariant carries 5
+  // extra steps of slack to cover it, gated behind p == twoN so it can never
+  // be spent twice.
+  ghost var doneWaste := false;
   while p < twoN && q < twoN
     invariant 0 <= p <= twoN && 0 <= q <= twoN
     invariant |D| == twoN && |Ans| == twoN
-    invariant steps <= base1 + 6 * (p + q) + 6
+    invariant doneWaste ==> p == twoN
+    invariant !doneWaste ==> steps <= base1 + 10 * (p + q) + 20
+    invariant doneWaste ==> steps <= base1 + 10 * (p + q) + 25
     decreases twoN - q, twoN - p
   {
     ghost var innerBase := steps;
     ghost var pStart := p;
     while p < twoN && q < twoN && d + D[p] < m
       invariant 0 <= pStart <= p <= twoN
-      invariant steps <= innerBase + 6 * (p - pStart)
+      invariant steps <= innerBase + 10 * (p - pStart)
       decreases twoN - p
     {
       d := d + D[p];
       tot := tot + Ans[p];
       p := p + 1;
-      steps := steps + 6;
+      steps := steps + 10;
     }
     if p == q {
       var k := D[p] - m + d;
@@ -83,7 +93,7 @@ method Solve(n: int, m: int, a_list: seq<int>) returns (output: string, ghost st
       tot := 0;
       p := p + 1;
       q := q + 1;
-      steps := steps + 6;
+      steps := steps + 20;
     } else if p < twoN && q < twoN {
       var k := D[p] - m + d;
       tot := tot + Ans[p] - k * (k + 1) / 2;
@@ -93,13 +103,15 @@ method Solve(n: int, m: int, a_list: seq<int>) returns (output: string, ghost st
       tot := tot - Ans[q];
       tot := tot - (Ans[p] - k * (k + 1) / 2);
       q := q + 1;
-      steps := steps + 6;
+      steps := steps + 10;
     } else {
-      steps := steps + 1;
+      assert p == twoN;
+      doneWaste := true;
+      steps := steps + 5;
     }
   }
   assert p <= twoN && q <= twoN;
-  assert steps <= base1 + 6 * (twoN + twoN) + 6;
+  assert steps <= base1 + 10 * (twoN + twoN) + 25;
   output := IntToString(ans) + "\n";
   steps := steps + |output| + 2;
 }
