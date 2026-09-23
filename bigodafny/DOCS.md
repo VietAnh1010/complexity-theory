@@ -63,6 +63,11 @@ several of its claims were later reversed. `summaries/README.md` says which.
   *value* of a capped scalar counts as constant. `solutions-disputed/README.md`
   names them.
 - 127 rows in `solutions-unscreened/` have never been through the audit at all.
+- The seven proof campaigns were **not run under one configuration** — the
+  charge table, the relation vocabulary, the sampler and the recorded schema
+  each moved mid-series. `batches/CAMPAIGN_CONFIG.md` is the map of what
+  differed when, and which pooled numbers it touches. A cleanup pass is owed;
+  it may not be done by editing trajectories.
 
 ---
 

@@ -25,7 +25,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(string_: string) returns (output: string, ghost steps: nat)
-  ensures steps <= 4 * |string_| + 4
+  ensures steps <= 10 * |string_| + 5
 {
   var s := string_;
   var n := |s|;
@@ -35,7 +35,7 @@ method Solve(string_: string) returns (output: string, ghost steps: nat)
   steps := 1;
   while i < n - 3
     invariant 0 <= i <= n
-    invariant steps <= 1 + 3 * i
+    invariant steps <= 10 * i + 1
     decreases n - 3 - i
   {
     if s[i..i+4] == "bear" {
@@ -43,9 +43,10 @@ method Solve(string_: string) returns (output: string, ghost steps: nat)
       var r := n - i - 3;
       c := c + l * r;
       ll := i + 1;
+      steps := steps + 8;
     }
     i := i + 1;
-    steps := steps + 3;
+    steps := steps + 2;
   }
   output := IntToString(c);
   steps := steps + 1;

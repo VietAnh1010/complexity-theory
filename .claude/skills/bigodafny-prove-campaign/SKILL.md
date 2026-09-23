@@ -202,12 +202,13 @@ the refreshed `data/`. Push to the session's designated branch.
 - **A proof with no trajectory is not campaign data.** When a killed agent
   leaves `.dfy` files with no record behind them, there is no attempt count,
   no elapsed time, no relation and no `reads`, and none of it is recoverable.
-  Move those files **out of `solutions-proved/`** before re-running the slice
-  — left in place, the re-run agent opens a finished proof of its own assigned
-  row and measures nothing. `batches/prove-sample-7/orphaned-slice-a/` is the
-  worked example, with the re-verified state of each held file. A held proof
-  restored afterwards was obtained outside the budget and is excluded from
-  the rate.
+  Delete those files before re-running the slice — left in `solutions-proved/`
+  the re-run agent opens a finished proof of its own assigned row and measures
+  nothing. Campaign 7's slice A was killed after one trajectory line and 14
+  such files; they were discarded and the slice re-run from scratch. Keeping
+  them costs more than it buys: a proof restored afterwards was obtained
+  outside the budget, so it cannot enter the rate, and the campaign's own
+  re-run supplies the row anyway.
 - **A repaired trajectory is still the agent's data.** If a `traj_*.jsonl` is
   not one object per line, recover it with `json.JSONDecoder().raw_decode` in a
   loop and rewrite it as JSONL. Do not re-run the slice and do not retype the

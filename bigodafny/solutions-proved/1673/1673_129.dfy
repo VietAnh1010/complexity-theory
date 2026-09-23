@@ -21,27 +21,28 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+// Each emitted piece is a single-character string ("A" or "G"), so
+// SumLen(pieces) == |pieces|, which is what Join's charge needs.
 ghost function SumLen(xs: seq<string>): nat
 {
   if |xs| == 0 then 0 else |xs[0]| + SumLen(xs[1..])
 }
 
-lemma SumLenSnocOne(xs: seq<string>, extra: string)
-  requires |extra| == 1
-  ensures SumLen(xs + [extra]) == SumLen(xs) + 1
+lemma SumLenSnoc(xs: seq<string>, extra: string)
+  ensures SumLen(xs + [extra]) == SumLen(xs) + |extra|
   decreases |xs|
 {
   if |xs| == 0 {
   } else {
     assert (xs + [extra])[1..] == xs[1..] + [extra];
-    SumLenSnocOne(xs[1..], extra);
+    SumLenSnoc(xs[1..], extra);
   }
 }
 
 method Solve(n: int, pairs: seq<seq<int>>) returns (output: string, ghost steps: nat)
   requires 0 <= n <= |pairs|
   requires forall k :: 0 <= k < |pairs| ==> |pairs[k]| >= 2
-  ensures steps <= 8 * n + 3
+  ensures steps <= 10 * n + 5
 {
   var sa := 0;
   var sg := 0;
@@ -50,24 +51,25 @@ method Solve(n: int, pairs: seq<seq<int>>) returns (output: string, ghost steps:
   steps := 1;
   while i < n
     invariant 0 <= i <= n
+    invariant steps <= 8 * i + 1
     invariant |pieces| == i
     invariant SumLen(pieces) == i
-    invariant steps <= 1 + 5 * i
     decreases n - i
   {
     var a := pairs[i][0];
     var g := pairs[i][1];
     steps := steps + 2;
     if sa - sg + a <= 500 {
-      SumLenSnocOne(pieces, "A");
+      SumLenSnoc(pieces, "A");
       pieces := pieces + ["A"];
       sa := sa + a;
+      steps := steps + 4;
     } else {
-      SumLenSnocOne(pieces, "G");
+      SumLenSnoc(pieces, "G");
       pieces := pieces + ["G"];
       sg := sg + g;
+      steps := steps + 4;
     }
-    steps := steps + 2;
     i := i + 1;
     steps := steps + 1;
   }

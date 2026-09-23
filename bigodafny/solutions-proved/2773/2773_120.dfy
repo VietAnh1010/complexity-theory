@@ -16,16 +16,17 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(a: int, b: int, c: int, d: int) returns (output: string, ghost steps: nat)
-  ensures steps <= 5
+  ensures steps <= 6
 {
   var n := a; var t := b; var k := c;
-  steps := 3;
+  steps := 1;
   if k > 0 {
     var ceilVal := (n + k - 1) / k;
     var c1 := ceilVal * t;
     output := if c1 - t > d then "YES" else "NO";
+    steps := steps + 3;
   } else {
     output := "NO";
+    steps := steps + 1;
   }
-  steps := steps + 1;
 }

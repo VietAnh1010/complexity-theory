@@ -22,17 +22,25 @@
 //         a=a-1
 //         b=b+1
 //     print(f"{a}  {b}")
+//
+//
+//
+//
 // --------------------------------------------------------------------
 
 include "../../prelude.dfy"
 import opened Prelude
 
-// The loop counts up to floor(n/2) (or one less), a quantity bounded by the
-// input VALUE n, not by any sequence length. Per the value-counts-as-a-
-// parameter convention, that bound is charged as n itself, giving O(n).
+// `a` climbs by 1 from 1 up to `half`, a value derived from the single input
+// `number`; this is the value-vs-size case where the value IS the size (there
+// is no separate sequence length here), so the trip count is O(|number|).
+lemma HalfBound(n: int)
+  ensures AbsInt(FloorDiv(n, 2)) <= AbsInt(n) + 1
+{
+}
+
 method Solve(number: int) returns (output: string, ghost steps: nat)
-  requires number >= 0
-  ensures steps <= 2 * number + 6
+  ensures steps <= 2 * AbsInt(number) + 30
 {
   var n := number;
   var a := 1;
@@ -40,12 +48,10 @@ method Solve(number: int) returns (output: string, ghost steps: nat)
   steps := 1;
   if n % 2 != 0 {
     var half := FloorDiv(n, 2);
+    steps := steps + 2;
     while a < half
-      invariant 1 <= a
-      invariant half > 0 ==> a <= half + 1
-      invariant half <= 0 ==> a == 1
-      invariant half <= n
-      invariant steps <= 1 + 2 * (a - 1)
+      invariant a <= half || a == 1
+      invariant steps <= 2 * a + 3
       decreases half - a
     {
       a := a + 1;
@@ -53,14 +59,16 @@ method Solve(number: int) returns (output: string, ghost steps: nat)
     }
     b := n - a;
     steps := steps + 1;
+    HalfBound(n);
+    assert a <= AbsInt(half) + 1;
+    assert AbsInt(half) <= AbsInt(n) + 1;
+    assert steps <= 2 * AbsInt(n) + 10;
   } else {
     var half := FloorDiv(n, 2) - 1;
+    steps := steps + 3;
     while a < half
-      invariant 1 <= a
-      invariant half > 0 ==> a <= half + 1
-      invariant half <= 0 ==> a == 1
-      invariant half <= n
-      invariant steps <= 1 + 2 * (a - 1)
+      invariant a <= half || a == 1
+      invariant steps <= 2 * a + 4
       decreases half - a
     {
       a := a + 1;
@@ -73,6 +81,11 @@ method Solve(number: int) returns (output: string, ghost steps: nat)
       b := b + 1;
       steps := steps + 2;
     }
+    steps := steps + 2;
+    HalfBound(n);
+    assert a <= AbsInt(half) + 1;
+    assert AbsInt(half) <= AbsInt(n) + 1;
+    assert steps <= 2 * AbsInt(n) + 20;
   }
   output := IntToString(a) + "  " + IntToString(b);
   steps := steps + 3;
