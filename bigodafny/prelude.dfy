@@ -727,6 +727,61 @@ module Prelude {
     NLogNMonotone(k, n);
   }
 
+  // ---- the cost of a binary search ---------------------------------------
+  // A binary search's remaining work. A halving step takes a range of size
+  // k >= 1 to one of size at most k / 2, and BisectStep says that lowers the
+  // potential by at least 1, so a search loop can carry
+  //
+  //   invariant it + SearchPot(hi - lo) <= SearchPot(N)
+  //
+  // calling BisectStep(hi - lo, new size) each iteration, and exits with
+  // it <= SearchPot(N) <= CeilLog2(N) + 1. Both branches of the usual
+  // `mid := (lo + hi) / 2` loop satisfy `new size <= k / 2`.
+  ghost function SearchPot(k: nat): nat
+  {
+    if k == 0 then 0 else CeilLog2(k) + 1
+  }
+
+  lemma BisectStep(k: nat, k2: nat)
+    requires 1 <= k
+    requires k2 <= k / 2
+    ensures SearchPot(k2) + 1 <= SearchPot(k)
+  {
+    if k2 == 0 { return; }
+    // k >= 2, so CeilLog2(k) == 1 + CeilLog2((k + 1) / 2), and k2 <= (k + 1) / 2
+    CeilLog2Monotone(k2, (k + 1) / 2);
+  }
+
+  lemma SearchPotMonotone(j: nat, k: nat)
+    requires j <= k
+    ensures SearchPot(j) <= SearchPot(k)
+  {
+    if j > 0 { CeilLog2Monotone(j, k); }
+  }
+
+  // The composition step every sort-then-search row needs: m iterations, each
+  // a search over at most k elements costing `a` per halving plus `b` of fixed
+  // work, fold into a * NLogN(n) + b * n. The caller's invariant is
+  //
+  //   invariant steps <= base + i * (a * SearchPot(k) + b)
+  //
+  // stepped with CostMulDistrib(i, 1, i + 1, a * SearchPot(k) + b).
+  lemma SearchLoopWithin(m: nat, k: nat, n: nat, a: nat, b: nat)
+    requires m <= n
+    requires k <= n
+    ensures m * (a * SearchPot(k) + b) <= a * NLogN(n) + b * n
+  {
+    var P := SearchPot(k);
+    assert P <= CeilLog2(k) + 1;
+    CostMulMono(m, P, CeilLog2(k) + 1);
+    SearchesWithin(m, k, n);
+    assert m * P <= NLogN(n);
+    CostMulMono(a, m * P, NLogN(n));
+    CostMulMono(b, m, n);
+    CostMulAssoc(a, m, P);
+    assert m * (a * P + b) == a * (m * P) + b * m;
+  }
+
   // A binary search over a range of size k takes at most CeilLog2(k) + 1
   // halvings. Stated here so a row summing a sort with per-iteration searches
   // can charge each search this, and fold m of them into NLogN(n) with
