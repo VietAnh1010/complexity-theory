@@ -69,22 +69,37 @@ def load():
                 traj[r["solution_id"]] = r
         rel = {r["solution_id"]: r for r in jsonl(d / "label_relation.jsonl")}
         obst = {r["solution_id"]: r for r in jsonl(d / "obstacles.jsonl")}
+        # A record revised after the campaign keeps the agent's result beside
+        # the current one, and its superseded lines live in old_record.jsonl.
+        # This file measures the CAMPAIGNS, so it reads the agent's result:
+        # a row proved later by hand, outside the budget, is still a row the
+        # bounded agent did not close.
+        old = {}
+        for o in jsonl(d / "old_record.jsonl"):
+            old.setdefault(o["record"]["solution_id"], {})[o["file"]] = o["record"]
         for sid, m in man.items():
             t = traj.get(sid, {})
-            outcome = t.get("outcome", "not attempted")
+            then = old.get(sid, {})
+            outcome = t.get("agent_outcome", t.get("outcome", "not attempted"))
+            rel_then = then.get("label_relation.jsonl") or rel.get(sid) or {}
+            obst_then = then.get("obstacles.jsonl") or obst.get(sid) or {}
             rows.append({
                 "campaign": b,
                 "solution_id": sid,
                 "label": m["label"],
                 "split": m.get("split"),
                 "outcome": outcome,
+                "current_outcome": t.get("outcome", "not attempted"),
+                "current_relation": (rel.get(sid) or {}).get("relation")
+                                    if t.get("outcome") == "proved" else None,
+                "revised": bool(t.get("revision")),
                 "redrawn": sid in REDRAWN.get(b, set()),
-                "relation": (rel.get(sid) or {}).get("relation"),
+                "relation": (rel_then.get("relation") if "revision" not in rel_then
+                             else None) if outcome == "proved" else None,
                 # campaign 1 kept the obstacle beside the relation; later ones
                 # moved it to its own file
-                "obstacle": ((obst.get(sid) or {}).get("obstacle")
-                             or (rel.get(sid) or {}).get("obstacle")),
-                "resolved": (rel.get(sid) or {}).get("resolved"),
+                "obstacle": (obst_then.get("obstacle") or rel_then.get("obstacle")),
+                "resolved": rel_then.get("resolved"),
                 "attempts_used": t.get("attempts_used"),
                 "seconds": t.get("seconds"),
                 "slice": t.get("_slice"),
@@ -167,6 +182,7 @@ def main():
         "repeat_draws": repeat_draws(rows),
         "first_vs_repeat": first_vs_repeat(rows),
         "dedup": dedup_view(),
+        "current": current_state(rows),
         "corpus": corpus_context(),
         "rows": sorted(rows, key=lambda r: (r["campaign"], r["solution_id"])),
     }
@@ -219,6 +235,37 @@ def first_vs_repeat(rows):
     return out
 
 
+def current_state(rows):
+    """Where the drawn rows stand now, as opposed to what the campaigns did.
+
+    Some rows were proved, or their proofs tightened, after their campaign, by
+    hand and outside the budget -- most on 2026-09-23 when the prelude gained a
+    composable sort-cost bound. Their campaign records keep the agent's result
+    as `agent_outcome` and the superseded lines in old_record.jsonl, so every
+    rate above is still what a bounded agent achieved. This is the other view.
+    """
+    latest = {}
+    for r in rows:
+        if r["redrawn"]:
+            continue
+        latest[r["solution_id"]] = r   # later campaigns overwrite earlier ones
+    distinct = list(latest.values())
+    proved = [r for r in distinct if r["current_outcome"] == "proved"]
+    revised = sorted(r["solution_id"] for r in distinct if r["revised"])
+    closed_after = sorted(r["solution_id"] for r in distinct
+                          if r["revised"] and r["outcome"] != "proved"
+                          and r["current_outcome"] == "proved")
+    return {
+        "distinct_rows": len(distinct),
+        "proved_now": len(proved),
+        "rate_now": round(len(proved) / len(distinct), 4) if distinct else None,
+        "relations_now": dict(Counter(r["current_relation"] or "confirms"
+                                      for r in proved).most_common()),
+        "revised_after_campaign": revised,
+        "closed_after_campaign": closed_after,
+    }
+
+
 def dedup_view():
     """The deduplicated record, if dedupe.py has been run.
 
@@ -242,20 +289,26 @@ def dedup_view():
         return None
     meta_p = DATA / "campaign_dedup.json"
     meta = json.loads(meta_p.read_text()) if meta_p.exists() else {}
-    proved = [r for r in rows if r["outcome"] == "proved"]
+    # what the bounded agents achieved across all of a row's draws; the row's
+    # current state -- which counts hand proofs made after the campaigns -- is
+    # reported beside it, never in its place
+    agent = lambda r: r.get("best_agent_outcome", r["outcome"])
+    proved = [r for r in rows if agent(r) == "proved"]
     by_label = {}
     for lab in sorted({r["label"] for r in rows}):
         d = [r for r in rows if r["label"] == lab]
         by_label[lab] = {"drawn": len(d),
-                         "proved": sum(1 for r in d if r["outcome"] == "proved")}
+                         "proved": sum(1 for r in d if agent(r) == "proved")}
     return {
         "distinct_rows": len(rows),
         "proved": len(proved),
+        "proved_now": sum(1 for r in rows if r["outcome"] == "proved"),
         "rate": round(len(proved) / len(rows), 4),
         "drawn_more_than_once": sum(1 for r in rows if r["drawn_times"] > 1),
         "closed_on_a_later_draw": sum(
             1 for r in proved
-            if any(s["outcome"] == "unresolved" for s in r["superseded"])),
+            if any(s.get("agent_outcome", s["outcome"]) == "unresolved"
+                   for s in r["superseded"])),
         "by_label": by_label,
         "campaigns": meta.get("campaigns"),
         "incomplete_and_excluded": meta.get("incomplete_and_excluded"),
@@ -336,8 +389,9 @@ def render(p):
         a("one record per row — the most positive outcome — and writes the")
         a("rest out as `superseded`.")
         a("")
-        a(f"**{d['proved']} of {d['distinct_rows']} distinct rows carry a "
-          f"proof — {d['rate']:.0%}.**")
+        a(f"**{d['proved']} of {d['distinct_rows']} distinct rows were proved by a "
+          f"bounded agent — {d['rate']:.0%}.** With the proofs made by hand "
+          f"afterwards, {d['proved_now']} carry one now.")
         a("")
         a(f"- {d['drawn_more_than_once']} rows were drawn more than once.")
         a(f"- {d['closed_on_a_later_draw']} were closed by a later campaign "
@@ -360,6 +414,24 @@ def render(p):
         a("rows anyone has drawn now carries a proof. The second is higher by")
         a("construction and says nothing about what one bounded agent manages")
         a("in one pass; use it for the corpus, never for comparing campaigns.")
+        a("")
+    c = p.get("current")
+    if c:
+        a("### Where the drawn rows stand now")
+        a("")
+        a("Everything above is what a bounded agent achieved inside its budget.")
+        a(f"{len(c['revised_after_campaign'])} rows were revised after their "
+          "campaign, by hand and outside the budget; their records keep the")
+        a("agent's result as `agent_outcome`, and the superseded lines sit in")
+        a("each batch's `old_record.jsonl`.")
+        a("")
+        a(f"**{c['proved_now']} of {c['distinct_rows']} distinct drawn rows carry a "
+          f"proof now — {c['rate_now']:.0%}.**")
+        a("")
+        a(f"- Closed after their campaign: {len(c['closed_after_campaign'])} — "
+          + ", ".join(f"`{x}`" for x in c["closed_after_campaign"]) + ".")
+        a("- Relations of the proofs as they stand: "
+          + ", ".join(f"`{k}` {v}" for k, v in c["relations_now"].items()) + ".")
         a("")
     a("## The label is the strongest predictor")
     a("")

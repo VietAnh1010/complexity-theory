@@ -78,6 +78,43 @@ re-run under it. Slice A's 14 proofs from the killed run had no trajectory
 behind them and were discarded rather than kept, so the re-run measures a real
 budget. `reads_coverage` is **0.4** for c7 and 0 before it.
 
+## The 2026-09-23 revision: records brought to the latest version
+
+The prelude gained a composable sort-cost bound (`SortCost`, opaque `NLogN`,
+`SortCostNLogN`, `SortCostWithin`) and a binary-search potential
+(`SearchPot`, `BisectStep`, `SearchLoopWithin`). With them, by hand and
+outside every campaign's budget, 30 rows' campaign records changed
+(two more, `1484_82` and `603_284`, predate the campaigns and have none):
+
+- 19 proved rows went from `looser-slack` to `confirms` — the quadratic
+  `SortCost` scaffold, or `85_71`'s linear-scan binary-search bound, replaced
+  by the tight one;
+- `2128_34` kept `looser-structural` but lost its quadratic sort term: its
+  label's n**2 is the DP's |neg| x r, a value term the proof already carried,
+  not the sorts as an earlier note said;
+- 10 unresolved rows were proved: `2105_248`, `661_47`, `1039_15`, `2826_81`,
+  `2128_3`, `1387_19`, `1892_121`, `1582_118`, `1827_66` confirm their
+  labels, and `1718_1166` is `looser-structural`.
+
+**How the files hold it.** The current files carry each row's latest state.
+Every superseded line — trajectory, relation, obstacle, audit — is in that
+batch's `old_record.jsonl` as `{"file", "superseded_on", "why", "record"}`,
+91 lines in all. Each revised trajectory keeps `agent_outcome`, `agent_relation`
+and `agent_bound` beside the current values, plus a `revision` block.
+
+**What it does not change.** Every campaign rate. `provestats.py`,
+`collect.py` and `dedupe.py` compute campaign tables from `agent_outcome`, so a
+row a bounded agent missed stays missed in its campaign; the diff of the
+campaign-era tables in `data/prove_stats.md` is empty. The current state is
+reported beside them: 271 of 311 distinct drawn rows carry a proof now,
+against 261 proved by a bounded agent.
+
+It also settles one of the questions below by construction: pooled relation
+tables now describe proofs of one standard. No proof's bound uses a quadratic
+sort scaffold or charges a sort linearly; the only files still defining the
+old quadratic lemma are the two duplicates under `solutions-proved/nlogn/`,
+where it is unused beside their tight bound.
+
 ## What a cleanup would have to decide
 
 Open, not settled here:

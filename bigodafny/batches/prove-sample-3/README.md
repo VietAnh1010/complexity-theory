@@ -123,6 +123,28 @@ here. `457_38`, also drawn twice, failed both times for the same reason.
 260. As in both earlier campaigns, rows that close, close quickly. Not one of
 the eleven failures was a budget failure — every one names a specific obstacle.
 
+
+## Revised 2026-09-23
+
+The prelude gained a composable sort-cost bound and a binary-search potential
+(`SortCostNLogN`, `SortCostWithin`, `SearchPot`, `BisectStep`,
+`SearchLoopWithin`). With them these rows were re-proved or newly proved, by
+hand and outside this campaign's budget:
+
+| row | label | this campaign | now |
+|---|---|---|---|
+| `1333_127` | O(nlogn) | proved, `looser-slack` | proved, `confirms` |
+| `1453_211` | O(nlogn) | proved, `looser-slack` | proved, `confirms` |
+| `2496_30` | O(nlogn) | proved, `looser-slack` | proved, `confirms` |
+| `2725_319` | O(nlogn) | proved, `looser-slack` | proved, `confirms` |
+| `3070_180` | O(nlogn) | proved, `looser-slack` | proved, `confirms` |
+
+**The numbers in this README are unchanged**: they are what a bounded agent
+achieved. Each revised trajectory keeps the agent's result as `agent_outcome`,
+`agent_relation` and `agent_bound`, and every superseded line — trajectory,
+relation, obstacle, audit — is in `old_record.jsonl`, with the file it came
+from.
+
 ## Files
 
 | file | what it is |
@@ -135,6 +157,7 @@ the eleven failures was a budget failure — every one names a specific obstacle
 | `label_relation.jsonl` | normalised relation per proved row, with reasons |
 | `obstacles.jsonl` | coded obstacle per unresolved row |
 | `audit.jsonl`, `summary.json` | the verifier-joined audit and its totals |
+| `old_record.jsonl` | every line superseded by the 2026-09-23 revision, with its source file |
 
 Bounds in `label_relation.jsonl` are read from each file's `Solve` method, not
 from `data/complexity_proofs.jsonl`: `proofs.py`'s `bound_of` takes the first

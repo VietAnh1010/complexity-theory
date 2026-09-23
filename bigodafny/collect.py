@@ -200,6 +200,37 @@ def relation_of(sid, traj_row, rel):
     return "confirms" if traj_row.get("outcome") == "proved" else "unresolved"
 
 
+def agent_view(d, traj, rel, obst=None):
+    """A batch's records as its agents left them, plus where each row stands now.
+
+    Rows revised after their campaign -- proved, or their proofs tightened, by
+    hand and outside the budget -- carry their latest state in the current
+    files, and their superseded lines in old_record.jsonl. The campaign tables
+    measure what a BOUNDED agent achieved, so they are built from the
+    superseded lines; each revised row also carries `current_*` fields.
+    """
+    old = {}
+    for o in jsonl(d / "old_record.jsonl"):
+        old.setdefault(o["file"], {})[o["record"]["solution_id"]] = o["record"]
+    old_traj = {}
+    for fn, recs in old.items():
+        if fn.startswith("traj_"):
+            old_traj.update(recs)
+    traj2 = []
+    for r in traj:
+        a = dict(old_traj.get(r["solution_id"], r))
+        a["current_outcome"] = r.get("outcome")
+        a["current_bound"] = r.get("bound")
+        a["current_relation"] = r.get("relation")
+        a["revised"] = bool(r.get("revision"))
+        traj2.append(a)
+    rel2 = {sid: rec for sid, rec in rel.items() if not rec.get("revision")}
+    rel2.update(old.get("label_relation.jsonl", {}))
+    obst2 = dict(obst or {})
+    obst2.update(old.get("obstacles.jsonl", {}))
+    return traj2, rel2, obst2
+
+
 def prove_sample(manifest, traj, rel, depth, meta=None, obst=None):
     """The proof campaign: did a bounded agent close the complexity label?
 
@@ -237,6 +268,10 @@ def prove_sample(manifest, traj, rel, depth, meta=None, obst=None):
             "attempts_used": t.get("attempts_used"),
             "seconds": t.get("seconds"),
             "why_failed": t.get("why_failed"),
+            "current_outcome": t.get("current_outcome", t.get("outcome")),
+            "current_bound": t.get("current_bound", t.get("bound")),
+            "current_relation": t.get("current_relation"),
+            "revised": t.get("revised", False),
             "call_depth": d.get("longest_chain"),
             "recursive": d.get("recursive"),
         })
@@ -291,12 +326,14 @@ def main():
                for r in jsonl(f)]
     pv_rel = {r["solution_id"]: r
               for r in jsonl(HERE / "batches/prove-sample/label_relation.jsonl")}
+    pv_traj, pv_rel, _ = agent_view(HERE / "batches/prove-sample", pv_traj, pv_rel)
 
     p2 = HERE / "batches/prove-sample-2"
     p2_manifest = jsonl(p2 / "manifest.jsonl")
     p2_traj = [r for f in sorted(p2.glob("traj_*.jsonl")) for r in jsonl(f)]
     p2_rel = {r["solution_id"]: r for r in jsonl(p2 / "label_relation.jsonl")}
     p2_obst = {r["solution_id"]: r for r in jsonl(p2 / "obstacles.jsonl")}
+    p2_traj, p2_rel, p2_obst = agent_view(p2, p2_traj, p2_rel, p2_obst)
     p2_excluded = jsonl(p2 / "excluded.jsonl")
 
     p3 = HERE / "batches/prove-sample-3"
@@ -304,30 +341,35 @@ def main():
     p3_traj = [r for f in sorted(p3.glob("traj_*.jsonl")) for r in jsonl(f)]
     p3_rel = {r["solution_id"]: r for r in jsonl(p3 / "label_relation.jsonl")}
     p3_obst = {r["solution_id"]: r for r in jsonl(p3 / "obstacles.jsonl")}
+    p3_traj, p3_rel, p3_obst = agent_view(p3, p3_traj, p3_rel, p3_obst)
 
     p4 = HERE / "batches/prove-sample-4"
     p4_manifest = jsonl(p4 / "manifest.jsonl")
     p4_traj = [r for f in sorted(p4.glob("traj_*.jsonl")) for r in jsonl(f)]
     p4_rel = {r["solution_id"]: r for r in jsonl(p4 / "label_relation.jsonl")}
     p4_obst = {r["solution_id"]: r for r in jsonl(p4 / "obstacles.jsonl")}
+    p4_traj, p4_rel, p4_obst = agent_view(p4, p4_traj, p4_rel, p4_obst)
 
     p5 = HERE / "batches/prove-sample-5"
     p5_manifest = jsonl(p5 / "manifest.jsonl")
     p5_traj = [r for f in sorted(p5.glob("traj_*.jsonl")) for r in jsonl(f)]
     p5_rel = {r["solution_id"]: r for r in jsonl(p5 / "label_relation.jsonl")}
     p5_obst = {r["solution_id"]: r for r in jsonl(p5 / "obstacles.jsonl")}
+    p5_traj, p5_rel, p5_obst = agent_view(p5, p5_traj, p5_rel, p5_obst)
 
     p6 = HERE / "batches/prove-sample-6"
     p6_manifest = jsonl(p6 / "manifest.jsonl")
     p6_traj = [r for f in sorted(p6.glob("traj_*.jsonl")) for r in jsonl(f)]
     p6_rel = {r["solution_id"]: r for r in jsonl(p6 / "label_relation.jsonl")}
     p6_obst = {r["solution_id"]: r for r in jsonl(p6 / "obstacles.jsonl")}
+    p6_traj, p6_rel, p6_obst = agent_view(p6, p6_traj, p6_rel, p6_obst)
 
     p7 = HERE / "batches/prove-sample-7"
     p7_manifest = jsonl(p7 / "manifest.jsonl")
     p7_traj = [r for f in sorted(p7.glob("traj_*.jsonl")) for r in jsonl(f)]
     p7_rel = {r["solution_id"]: r for r in jsonl(p7 / "label_relation.jsonl")}
     p7_obst = {r["solution_id"]: r for r in jsonl(p7 / "obstacles.jsonl")}
+    p7_traj, p7_rel, p7_obst = agent_view(p7, p7_traj, p7_rel, p7_obst)
 
     dirs = {d.name: sum(1 for _ in d.rglob("*.dfy"))
             for d in sorted(HERE.glob("solutions*")) if d.is_dir()}

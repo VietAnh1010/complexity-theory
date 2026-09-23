@@ -80,6 +80,31 @@ random draw of 50 hitting it six more times says it is a property of the
 corpus, not of the rows that happened to be audited first. **It is the single
 decision that would most change the dataset**, and it is not ours to make.
 
+
+## Revised 2026-09-23
+
+The prelude gained a composable sort-cost bound and a binary-search potential
+(`SortCostNLogN`, `SortCostWithin`, `SearchPot`, `BisectStep`,
+`SearchLoopWithin`). With them these rows were re-proved or newly proved, by
+hand and outside this campaign's budget:
+
+| row | label | this campaign | now |
+|---|---|---|---|
+| `1421_89` | O(nlogn) | proved, `looser-slack` | proved, `confirms` |
+| `1582_118` | O(nlogn) | unresolved | proved, `confirms` |
+| `1586_188` | O(nlogn) | proved, `looser-slack` | proved, `confirms` |
+| `1892_121` | O(nlogn) | unresolved | proved, `confirms` |
+| `2105_248` | O(nlogn) | unresolved | proved, `confirms` |
+| `2128_34` | O(n**2) | proved, `looser-structural` | proved, `looser-structural` |
+| `2742_0` | O(nlogn) | proved, `looser-slack` | proved, `confirms` |
+| `661_47` | O(nlogn) | unresolved | proved, `confirms` |
+
+**The numbers in this README are unchanged**: they are what a bounded agent
+achieved. Each revised trajectory keeps the agent's result as `agent_outcome`,
+`agent_relation` and `agent_bound`, and every superseded line — trajectory,
+relation, obstacle, audit — is in `old_record.jsonl`, with the file it came
+from.
+
 ## Files
 
 | file | what it is |
@@ -89,6 +114,7 @@ decision that would most change the dataset**, and it is not ours to make.
 | `PROMPT.md` | the agent brief; self-contained, charge table inline |
 | `traj_{a,b,c}.jsonl` | per-row attempts, bound, timing, failure reason |
 | `label_relation.jsonl` | the normalised label relation, with reasons |
+| `old_record.jsonl` | every line superseded by the 2026-09-23 revision, with its source file |
 
 Proofs themselves are overlay copies in `../../solutions-proved/<pid>/`. The
 originals in `solutions/` were not modified; that was checked, not assumed.

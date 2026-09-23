@@ -137,6 +137,26 @@ much, since the 20 three-attempt failures name structural obstacles, not
 near-misses. `514_140` is the one exception, and says so: its final
 coefficient was one arithmetic tweak short.
 
+
+## Revised 2026-09-23
+
+The prelude gained a composable sort-cost bound and a binary-search potential
+(`SortCostNLogN`, `SortCostWithin`, `SearchPot`, `BisectStep`,
+`SearchLoopWithin`). With them these rows were re-proved or newly proved, by
+hand and outside this campaign's budget:
+
+| row | label | this campaign | now |
+|---|---|---|---|
+| `2105_248` | O(nlogn) | unresolved | proved, `confirms` |
+| `499_82` | O(nlogn) | proved, `looser-slack` | proved, `confirms` |
+| `85_71` | O(nlogn) | proved, `looser-slack` | proved, `confirms` |
+
+**The numbers in this README are unchanged**: they are what a bounded agent
+achieved. Each revised trajectory keeps the agent's result as `agent_outcome`,
+`agent_relation` and `agent_bound`, and every superseded line — trajectory,
+relation, obstacle, audit — is in `old_record.jsonl`, with the file it came
+from.
+
 ## Files
 
 | file | what it is |
@@ -150,3 +170,4 @@ coefficient was one arithmetic tweak short.
 | `obstacles.jsonl` | the 20 unresolved rows with their obstacle codes |
 | `audit.jsonl` | verifier output joined to the trajectories |
 | `summary.json` | the counts every number above is drawn from |
+| `old_record.jsonl` | every line superseded by the 2026-09-23 revision, with its source file |

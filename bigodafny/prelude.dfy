@@ -587,7 +587,7 @@ module Prelude {
   // not compose. `2 * k * (CeilLog2(k) + 1) + 1` puts a product of a variable
   // and a recursive function into the caller's verification condition, and a
   // row that adds a second log term -- a binary search per iteration, a second
-  // sort -- asks Z3 to combine two such products. Six rows in prove-sample-7
+  // sort -- asks Z3 to combine two such products. Five rows in prove-sample-7
   // timed out exactly there.
   //
   // So the bound is stated over NLogN, which is OPAQUE: a caller sees an atom,
@@ -729,14 +729,17 @@ module Prelude {
 
   // ---- the cost of a binary search ---------------------------------------
   // A binary search's remaining work. A halving step takes a range of size
-  // k >= 1 to one of size at most k / 2, and BisectStep says that lowers the
-  // potential by at least 1, so a search loop can carry
+  // k >= 1 to one of size at most ceil(k/2) that is strictly smaller, and
+  // BisectStep says that lowers the potential by at least 1, so a search loop
+  // can carry
   //
   //   invariant it + SearchPot(hi - lo) <= SearchPot(N)
   //
   // calling BisectStep(hi - lo, new size) each iteration, and exits with
   // it <= SearchPot(N) <= CeilLog2(N) + 1. Both branches of the usual
-  // `mid := (lo + hi) / 2` loop satisfy `new size <= k / 2`.
+  // `mid := (lo + hi) / 2` loop shrink to at most k / 2; a loop that keeps
+  // `lower := mid` shrinks to ceil(k/2), which is why the bound is stated
+  // for the ceiling and needs the strict decrease besides.
   ghost function SearchPot(k: nat): nat
   {
     if k == 0 then 0 else CeilLog2(k) + 1
@@ -744,11 +747,12 @@ module Prelude {
 
   lemma BisectStep(k: nat, k2: nat)
     requires 1 <= k
-    requires k2 <= k / 2
+    requires k2 <= (k + 1) / 2
+    requires k2 < k
     ensures SearchPot(k2) + 1 <= SearchPot(k)
   {
     if k2 == 0 { return; }
-    // k >= 2, so CeilLog2(k) == 1 + CeilLog2((k + 1) / 2), and k2 <= (k + 1) / 2
+    // k2 >= 1 and k2 < k, so k >= 2 and CeilLog2(k) == 1 + CeilLog2((k + 1) / 2)
     CeilLog2Monotone(k2, (k + 1) / 2);
   }
 

@@ -104,6 +104,26 @@ one of them builds an **unreduced integer product**: `2803_133`, `1073_645`,
 `2496_30`'s helper, and now `1359_4`. The divergence is not scattered; it has a
 signature.
 
+
+## Revised 2026-09-23
+
+The prelude gained a composable sort-cost bound and a binary-search potential
+(`SortCostNLogN`, `SortCostWithin`, `SearchPot`, `BisectStep`,
+`SearchLoopWithin`). With them these rows were re-proved or newly proved, by
+hand and outside this campaign's budget:
+
+| row | label | this campaign | now |
+|---|---|---|---|
+| `1582_118` | O(nlogn) | unresolved | proved, `confirms` |
+| `1827_66` | O(nlogn) | unresolved | proved, `confirms` |
+| `2128_34` | O(n**2) | proved, `looser-structural` | proved, `looser-structural` |
+
+**The numbers in this README are unchanged**: they are what a bounded agent
+achieved. Each revised trajectory keeps the agent's result as `agent_outcome`,
+`agent_relation` and `agent_bound`, and every superseded line — trajectory,
+relation, obstacle, audit — is in `old_record.jsonl`, with the file it came
+from.
+
 ## Files
 
 | file | what it is |
@@ -115,3 +135,4 @@ signature.
 | `label_relation.jsonl` | normalised relation per proved row, with reasons |
 | `obstacles.jsonl` | coded obstacle per unresolved row |
 | `audit.jsonl`, `summary.json` | the verifier-joined audit and its totals |
+| `old_record.jsonl` | every line superseded by the 2026-09-23 revision, with its source file |

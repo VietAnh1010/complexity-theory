@@ -59,55 +59,6 @@ import opened Prelude
 // the `seq` and `array` versions are charged the same. It says the axioms are
 // false of this backend, and here that falsehood decides whether the row runs.
 
-// ---- proof-only scaffolding for Sort's cost (batches/prove-sample/PROMPT.md,
-// same SortCost/SquareSplit/QuadTail/SortCostBound block as 1421_89.dfy) ----
-ghost function {:opaque} SortCost(k: nat): nat
-  decreases k
-{
-  if k <= 1 then 1
-  else SortCost(k / 2) + SortCost(k - k / 2) + k
-}
-
-lemma SquareSplit(k: nat, L: nat)
-  requires 2 * L <= k <= 2 * L + 1
-  ensures 2 * L * L + 2 * (k - L) * (k - L) <= k * k + 1
-{
-  var d := k - 2 * L;
-  assert d == 0 || d == 1;
-  assert k - L == L + d;
-  assert 2 * L * L + 2 * (k - L) * (k - L) == 4 * L * L + 4 * L * d + 2 * d * d;
-  assert k == 2 * L + d;
-  assert k * k == 4 * L * L + 4 * L * d + d * d;
-  assert d * d <= 1;
-}
-
-lemma QuadTail(k: nat)
-  requires k >= 2
-  ensures k * k + k + 3 <= 2 * k * k + 1
-{
-  assert (k - 2) * (k + 1) >= 0;
-}
-
-lemma SortCostBound(k: nat)
-  ensures SortCost(k) <= 2 * k * k + 1
-  decreases k
-{
-  reveal SortCost();
-  if k <= 1 {
-  } else {
-    var L := k / 2;
-    var R := k - L;
-    SortCostBound(L);
-    SortCostBound(R);
-    SquareSplit(k, L);
-    assert SortCost(k) == SortCost(L) + SortCost(R) + k;
-    assert SortCost(L) + SortCost(R) + k <= (2 * L * L + 1) + (2 * R * R + 1) + k;
-    assert (2 * L * L + 1) + (2 * R * R + 1) + k == 2 * L * L + 2 * R * R + k + 2;
-    assert 2 * L * L + 2 * R * R + k + 2 <= (k * k + 1) + k + 2;
-    QuadTail(k);
-  }
-}
-
 lemma MergeLength<T>(a: seq<T>, b: seq<T>, less: (T, T) -> bool)
   ensures |Merge(a, b, less)| == |a| + |b|
   decreases |a| + |b|
@@ -137,14 +88,6 @@ lemma MulMonoRight(x: nat, p: nat, q: nat)
   ensures x * p <= x * q
 { }
 
-lemma SquareMono(k: nat, N: nat)
-  requires k <= N
-  ensures k * k <= N * N
-{
-  MulMonoRight(k, k, N);
-  MulMonoRight(N, k, N);
-}
-
 // Isolated so the final numeric combination is a small, self-contained
 // query: no opaque SortCost calls, no array/loop state in scope, just plain
 // nat arithmetic. Folding this into an inline `assert` at the end of Solve
@@ -152,10 +95,10 @@ lemma SquareMono(k: nat, N: nat)
 lemma FinalBound(N: nat, P: nat, Q: nat, sp: nat, sn: nat, r: nat, spanTotal: nat)
   requires P <= N
   requires Q <= N
-  requires sp <= 2 * N * N + 1
-  requires sn <= 2 * N * N + 1
+  requires sp <= 2 * NLogN(N) + 1
+  requires sn <= 2 * NLogN(N) + 1
   ensures sp + sn + 5 * N + 3 * P + 3 * Q + 2 * r + 6 * spanTotal + 5
-       <= 4 * N * N + 20 * N + 3 * r + 6 * spanTotal + 20
+       <= 4 * NLogN(N) + 20 * N + 3 * r + 6 * spanTotal + 20
 { }
 
 // Label O(n**2). Convention (batches/prove-sample/PROMPT_convention.md § "What
@@ -163,9 +106,11 @@ lemma FinalBound(N: nat, P: nat, Q: nat, sp: nat, sn: nat, r: nat, spanTotal: na
 // -- exposed here as ghost out-param `r_final` since `r` is a local whose final
 // value depends on which `pos` elements get admitted, not a formal parameter.
 //
-// The two `Sort` calls are each charged the honest O(k^2) `SortCost` bound
-// (not merge sort's true n log n), with `|pos|, |neg| <= |data_list|` via
-// `SquareMono`.
+// The two `Sort` calls are each charged the prelude's `SortCost`, bounded by
+// `SortCostWithin` in terms of |data_list| since |pos|, |neg| <= |data_list| --
+// the tight merge-sort bound, O(n log n) for the two together. The label's n**2
+// is not the sorts: it is the DP's |neg| x (r+1) fill below, which the proof
+// carries as the value term `span_total`.
 //
 // The `arr`-fill double loop is NOT bounded as `|neg| * (r+1)`: the row's
 // preconditions put no lower bound on `neg[i].0` (a raw input value), so the
@@ -178,7 +123,7 @@ lemma FinalBound(N: nat, P: nat, Q: nat, sp: nat, sn: nat, r: nat, spanTotal: na
 method {:vcs_split_on_every_assert} Solve(n: int, m: int, data_list: seq<seq<int>>) returns (output: string, ghost steps: nat, ghost r_final: nat, ghost span_total: nat)
   requires m >= 0
   requires forall k :: 0 <= k < |data_list| ==> |data_list[k]| >= 2
-  ensures steps <= 4 * |data_list| * |data_list| + 20 * |data_list| + 3 * r_final + 6 * span_total + 20
+  ensures steps <= 4 * NLogN(|data_list|) + 20 * |data_list| + 3 * r_final + 6 * span_total + 20
 {
   var pos: seq<(int,int)> := [];
   var neg: seq<(int,int)> := [];
@@ -200,10 +145,9 @@ method {:vcs_split_on_every_assert} Solve(n: int, m: int, data_list: seq<seq<int
     idx := idx + 1;
     steps := steps + 5;
   }
-  SortCostBound(|pos|);
-  SquareMono(|pos|, |data_list|);
+  SortCostWithin(|pos|, |data_list|);
   SortLen(pos, (p: (int,int), q: (int,int)) => p.0 < q.0);
-  assert SortCost(|pos|) <= 2 * |data_list| * |data_list| + 1;
+  assert SortCost(|pos|) <= 2 * NLogN(|data_list|) + 1;
   steps := steps + SortCost(|pos|);
   pos := Sort(pos, (p: (int,int), q: (int,int)) => p.0 < q.0);
   var r := m;
@@ -223,10 +167,9 @@ method {:vcs_split_on_every_assert} Solve(n: int, m: int, data_list: seq<seq<int
     steps := steps + 3;
   }
   r_final := r;
-  SortCostBound(|neg|);
-  SquareMono(|neg|, |data_list|);
+  SortCostWithin(|neg|, |data_list|);
   SortLen(neg, (p: (int,int), q: (int,int)) => p.0 + p.1 > q.0 + q.1);
-  assert SortCost(|neg|) <= 2 * |data_list| * |data_list| + 1;
+  assert SortCost(|neg|) <= 2 * NLogN(|data_list|) + 1;
   steps := steps + SortCost(|neg|);
   neg := Sort(neg, (p: (int,int), q: (int,int)) => p.0 + p.1 > q.0 + q.1);
   var arr := new int[r + 1](kk => 0);
@@ -283,5 +226,5 @@ method {:vcs_split_on_every_assert} Solve(n: int, m: int, data_list: seq<seq<int
   output := IntToString(ans) + "\n";
   steps := steps + 2;
   FinalBound(|data_list|, |pos|, |neg|, SortCost(|pos|), SortCost(|neg|), r, spanTotal);
-  assert steps <= 4 * |data_list| * |data_list| + 20 * |data_list| + 3 * r_final + 6 * span_total + 20;
+  assert steps <= 4 * NLogN(|data_list|) + 20 * |data_list| + 3 * r_final + 6 * span_total + 20;
 }

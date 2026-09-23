@@ -1,6 +1,6 @@
 ---
 name: bigodafny-prove
-description: Prove a BigOBench row's time-complexity label in Dafny with a ghost step counter. Use when asked to prove, establish, or machine-check a complexity label, when working in solutions-proved/ or solutions-proved/nlogn/, or when a label is suspected wrong. Covers the charging convention and the CeilLog2 recursion-tree argument.
+description: Prove a BigOBench row's time-complexity label in Dafny with a ghost step counter. Use when asked to prove, establish, or machine-check a complexity label, when working in solutions-proved/, or when a label is suspected wrong. Covers the charging convention and the prelude's sort-cost and binary-search lemmas.
 ---
 
 # Proving the complexity label
@@ -88,17 +88,41 @@ Do not tune constants to look tight — take whatever the invariant supports.
 
 ## Logarithmic bounds
 
-Dafny has no `log`. `solutions-proved/nlogn/` proves the true O(n log n) for merge sort.
-Two things make it work.
+**Sorts and binary searches: call the prelude.** Since 2026-09-23 `prelude.dfy`
+carries the sort charge, its tight bound, and a binary-search potential, in a
+form that composes. Do not copy a `SortCost` or `CeilLog2` into a proof.
 
-**Match the log's rounding to the code's rounding.** This is the general rule;
-"use a ceiling log" is the merge-sort case of it.
+| lemma | gives |
+|---|---|
+| `SortCostNLogN(k)` | `SortCost(k) <= 2 * NLogN(k) + 1` |
+| `SortCostWithin(k, n)` | the same bounded in `n`, any `k <= n` |
+| `BisectStep(k, k2)` | a halving step (`k2 <= (k+1)/2`, `k2 < k`) lowers `SearchPot` by 1 |
+| `SearchLoopWithin(m, k, n, a, b)` | `m * (a * SearchPot(k) + b) <= a * NLogN(n) + b * n` |
+| `SortCostTreeBound(k)` | the raw product form, for proofs written against it |
+
+`NLogN(n) = n * (CeilLog2(n) + 1)` is **opaque**, so `Solve`'s verification
+condition sees an atom and a sort plus searches combine by linear arithmetic.
+Never `reveal NLogN()` in `Solve`. The raw product is what timed out every
+row that summed a sort with a second log term before this existed.
 
 ```dafny
-ghost function CeilLog2(n: nat): nat            // for a split on ceil(k/2)
-  decreases n
-{ if n <= 1 then 0 else 1 + CeilLog2((n + 1) / 2) }
+steps := steps + SortCost(|s|);
+SortCostWithin(|s|, n);
+...
+ghost var it: nat := 0;
+while lo < hi
+  invariant it + SearchPot(hi - lo) <= SearchPot(N)
+{ ghost var k := hi - lo; ...; BisectStep(k, hi - lo); it := it + 1; }
+```
 
+For an outer loop of searches carry `steps <= base + i * K` and step it with
+`CostMulDistrib(i, 1, i + 1, K)`; `1039_15` and `2826_81` are worked examples.
+
+**For any other log, match its rounding to the code's.** `CeilLog2` (in the
+prelude) is for a recursion that splits into `ceil(k/2)`; a loop doing
+`m := m / 2` wants a floor log, defined locally:
+
+```dafny
 ghost function Log2(x: nat): nat                // for a loop doing m := m / 2
   decreases x
 { if x <= 1 then 0 else 1 + Log2(x / 2) }
@@ -112,22 +136,13 @@ definition instead — `945_255` closes with no lemma at all. Pick the mismatche
 one and the induction cannot close.
 
 **Isolate every multiplication.** Z3 does not do nonlinear arithmetic. The whole
-argument in one `calc` timed out at 30s. Splitting the two multiplication facts
-into their own lemmas, so the solver never has to discover one, took it to 2.8s.
+argument in one `calc` timed out at 30s; splitting each multiplication fact into
+its own lemma took it to 2.8s. The prelude's `CostMulMono`, `CostMulMonoLeft`,
+`CostMulDistrib` and `CostMulAssoc` are those lemmas.
 
-```dafny
-lemma MulMonoRight(x: nat, p: nat, q: nat) requires p <= q ensures x * p <= x * q {}
-lemma MulDistrib(a: nat, b: nat, k: nat, L: nat) requires a + b == k
-  ensures a * L + b * L == k * L {}
-
-lemma SortCostNLogN(k: nat) ensures SortCost(k) <= 2 * k * (CeilLog2(k) + 1) + 1
-```
-
-`solutions-proved/` retains the honest `O(n²)` fallback for the two original
-sort rows and `solutions-proved/nlogn/` carries their tight bound on a copy — an
-artifact of the tight proof arriving second. A new sort row does not need that
-split: `187_193` was written straight to the tight bound by reusing these
-lemmas.
+`solutions-proved/nlogn/` held tight companions for two rows whose base proofs
+were quadratic. Both base proofs are tight now, so those companions duplicate
+them.
 
 ## Procedure
 

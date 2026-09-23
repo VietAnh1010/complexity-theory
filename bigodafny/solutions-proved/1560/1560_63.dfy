@@ -39,41 +39,6 @@ import opened Prelude
 // counter of its own, so its cost is charged as an opaque-but-defined
 // SortCost mirroring Sort's own split.
 
-lemma SquareSplit(k: nat, L: nat)
-  requires 2 * L <= k <= 2 * L + 1
-  ensures 2 * L * L + 2 * (k - L) * (k - L) <= k * k + 1
-{
-  var d := k - 2 * L;
-  assert d == 0 || d == 1;
-  assert k - L == L + d;
-  assert 2 * L * L + 2 * (k - L) * (k - L) == 4 * L * L + 4 * L * d + 2 * d * d;
-  assert k == 2 * L + d;
-  assert k * k == 4 * L * L + 4 * L * d + d * d;
-  assert d * d <= 1;
-}
-
-lemma QuadTail(k: nat)
-  requires k >= 2
-  ensures k * k + k + 3 <= 2 * k * k + 1
-{
-  assert (k - 2) * (k + 1) >= 0;
-}
-
-lemma SortCostBound(k: nat)
-  ensures SortCost(k) <= 2 * k * k + 1
-  decreases k
-{
-  if k <= 1 {
-  } else {
-    var L := k / 2;
-    var R := k - L;
-    SortCostBound(L);
-    SortCostBound(R);
-    SquareSplit(k, L);
-    QuadTail(k);
-  }
-}
-
 method Solve(n: int, pairs: seq<(int, int)>) returns (output: string, ghost steps: nat)
   requires |pairs| == n
   requires n >= 1

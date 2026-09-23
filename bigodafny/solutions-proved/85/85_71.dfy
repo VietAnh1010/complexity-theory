@@ -69,21 +69,12 @@ function CountOnesUpTo(s: seq<int>, k: nat): nat
   if k == 0 then 0 else CountOnesUpTo(s, k - 1) + (if s[k - 1] == 1 then 1 else 0)
 }
 
-lemma MulMonoRight(x: nat, p: nat, q: nat)
-  requires p <= q
-  ensures x * p <= x * q
-{ }
-
-lemma MulDistrib(a: nat, b: nat, k: nat, L: nat)
-  requires a + b == k
-  ensures a * L + b * L == k * L
-{ }
-
 method Solve(a: int, b: int, c_list: seq<int>, d_list: seq<int>) returns (output: string, ghost steps: nat)
   requires |d_list| == |c_list|
   requires CountOnesUpTo(d_list, |d_list|) >= 1
-  ensures steps <= 6 * |c_list| + (3 * |c_list| + 7) * |c_list| + |output| + 5
+  ensures steps <= 7 * NLogN(|c_list|) + 12 * |c_list| + 10
 {
+  ghost var n := |c_list|;
   var passengers: seq<int> := [];
   var taxis: seq<int> := [];
   var i := 0;
@@ -107,46 +98,41 @@ method Solve(a: int, b: int, c_list: seq<int>, d_list: seq<int>) returns (output
   }
   var passengersSorted := SortInts(passengers);
   var taxisSorted := SortInts(taxis);
-  steps := steps + |passengers| + |taxis|;
+  steps := steps + SortCost(|passengers|) + SortCost(|taxis|);
+  SortCostWithin(|passengers|, n);
+  SortCostWithin(|taxis|, n);
   var answer: seq<int> := seq(|taxisSorted|, k => 0);
+  steps := steps + |taxisSorted|;
   var pIdx := 0;
   ghost var base2 := steps;
-  // BinarySearch does at most 3 * |taxisSorted| + 5 steps under the
-  // loose (not tight, O(|arr|) rather than O(log |arr|)) scaffold below.
-  ghost var C := 3 * |taxisSorted| + 7;
+  // one BinarySearch per passenger, each bounded by the halving potential
+  ghost var C: nat := 3 * SearchPot(|taxisSorted|) + 7;
   while pIdx < |passengersSorted|
     invariant 0 <= pIdx <= |passengersSorted|
     invariant |answer| == |taxisSorted|
-    invariant steps <= base2 + C * pIdx
+    invariant steps <= base2 + pIdx * C
     decreases |passengersSorted| - pIdx
   {
     ghost var bsteps;
     var idx;
     bsteps, idx := BinarySearch(taxisSorted, passengersSorted[pIdx]);
     answer := answer[idx := answer[idx] + 1];
-    assert bsteps + 2 <= C;
     steps := steps + bsteps + 2;
-    assert steps <= base2 + C * pIdx + C;
-    MulDistrib(pIdx, 1, pIdx + 1, C);
-    assert pIdx * C + C == (pIdx + 1) * C;
+    CostMulDistrib(pIdx, 1, pIdx + 1, C);
     pIdx := pIdx + 1;
-    assert steps <= base2 + C * pIdx;
   }
-  assert |taxisSorted| <= |c_list|;
-  assert |passengersSorted| <= |c_list|;
-  MulMonoRight(3, |taxisSorted|, |c_list|);
-  assert C <= 3 * |c_list| + 7;
-  MulMonoRight(|passengersSorted|, C, 3 * |c_list| + 7);
-  MulMonoRight(3 * |c_list| + 7, |passengersSorted|, |c_list|);
-  assert C * |passengersSorted| <= (3 * |c_list| + 7) * |c_list|;
+  assert |taxisSorted| <= n;
+  assert |passengersSorted| <= n;
+  SearchLoopWithin(|passengersSorted|, |taxisSorted|, n, 3, 7);
+  // JoinInts over |answer| numbers: IntToString and its length are charged 1
   output := JoinInts(answer, " ");
-  steps := steps + |output| + 3;
+  steps := steps + |answer| + 3;
 }
 
 method BinarySearch(arr: seq<int>, target: int) returns (ghost steps: nat, idx: int)
   requires |arr| >= 1
   ensures 0 <= idx < |arr|
-  ensures steps <= 3 * |arr| + 5
+  ensures steps <= 3 * SearchPot(|arr|) + 5
 {
   var lower := 0;
   var upper := |arr| - 1;
@@ -156,14 +142,16 @@ method BinarySearch(arr: seq<int>, target: int) returns (ghost steps: nat, idx: 
     return;
   }
   ghost var base1 := steps;
-  ghost var cnt := 0;
+  ghost var cnt: nat := 0;
+  SearchPotMonotone(|arr| - 1, |arr|);
   while lower < upper
     invariant 0 <= lower <= upper < |arr|
-    invariant cnt <= (|arr| - 1) - (upper - lower)
+    invariant cnt + SearchPot(upper - lower) <= SearchPot(|arr| - 1)
     invariant steps <= base1 + 3 * cnt
     decreases upper - lower
   {
     var x := lower + (upper - lower) / 2;
+    ghost var k := upper - lower;
     var val := arr[x];
     if target == val {
       idx := x;
@@ -190,6 +178,8 @@ method BinarySearch(arr: seq<int>, target: int) returns (ghost steps: nat, idx: 
         return;
       }
     }
+    // lower := x leaves ceil(k/2), upper := x leaves floor(k/2); both < k
+    BisectStep(k, upper - lower);
     cnt := cnt + 1;
     steps := steps + 3;
   }

@@ -39,7 +39,8 @@ independent of any backend:
 | `multiset(a) == multiset(b)` | `\|a\|+\|b\|` | |
 | `Join(parts, sep)` | `SumLen(parts) + \|parts\|` | but see `IntToString` below |
 | `IntToString(x)`, and `\|IntToString(x)\|` | `1` | **decided 2026-09-22** |
-| a recursive prelude function over a seq or string | its length | one level per element |
+| `Sort`, `SortInts`, `SortStrings` on k elements | `SortCost(k)` | the prelude's; bound it with `SortCostNLogN` |
+| a recursive prelude function over a seq or string | its length | one level per element; sorts excepted, above |
 | a call to a helper | the helper's `steps` | |
 
 `array<T>` is absent because the corpus is. Two rows keep one; see the appendix.
@@ -150,11 +151,10 @@ the slice, in four rows, and the one place a slice sits beside a `|s|` charge
 functions, which the axioms still charge by length. The quadratic there is real
 work, as that file's own header says.
 
-Two files do prove a quadratic for an `O(nlogn)` label: `1484_82` and `603_284`.
-That is the loose merge-sort scaffold, not the retired charge model, and both
-rows already carry a tight companion proof in `solutions-proved/nlogn/` closing
-at `2 * n * (CeilLog2(n) + 1) + ...`. Every row in `solutions-proved/` has its
-label confirmed by at least one of its proofs.
+Two files did prove a quadratic for an `O(nlogn)` label: `1484_82` and
+`603_284`. That was the loose merge-sort scaffold, not the retired charge model.
+Since 2026-09-23 both prove the tight bound directly, so the companion proofs
+in `solutions-proved/nlogn/` duplicate them.
 
 The general caution stands — read an old proof's charges before citing its bound
 as evidence about tightness — but the specific defect this paragraph alleged does
@@ -205,8 +205,34 @@ match the label.
 
 ## Logarithmic bounds
 
-Dafny has no `log`. `solutions-proved/nlogn/` proves the true O(n log n) for merge sort
-with a recursion-tree argument. Two things make it work.
+**Use the prelude.** Since 2026-09-23 `prelude.dfy` carries the sort charge and
+its tight bound, and the binary-search potential, in a form that composes:
+
+| lemma | gives |
+|---|---|
+| `SortCostNLogN(k)` | `SortCost(k) <= 2 * NLogN(k) + 1` |
+| `SortCostWithin(k, n)` | the same, bounded in `n` for any `k <= n` |
+| `BisectStep(k, k2)` | a halving step lowers `SearchPot` by 1 |
+| `SearchLoopWithin(m, k, n, a, b)` | m searches plus `b` fixed work each `<= a * NLogN(n) + b * n` |
+| `NLogNMonotone`, `LinearLeNLogN`, `SearchPotMonotone` | moving between them |
+
+`NLogN(n) = n * (CeilLog2(n) + 1)` is **opaque**. A caller's verification
+condition sees an atom and combines `NLogN` terms with linear arithmetic only.
+Before this, the tight bound was a lemma copied into each proof over the raw
+product `2 * k * (CeilLog2(k) + 1)`. It did not compose: a row that added a
+second log term asked Z3 to combine two such products and timed out, and 59
+proofs settled for a quadratic scaffold instead. `SortCostTreeBound` keeps the
+raw product form for the proofs written against it.
+
+A search loop carries
+
+```dafny
+invariant it + SearchPot(hi - lo) <= SearchPot(N)
+```
+
+and calls `BisectStep(old size, new size)` once per iteration. The rest of this
+section is how the argument works, kept because it is why the lemmas are shaped
+as they are. Two things make it work.
 
 **Match the log's rounding to the code's rounding.** Merge sort splits into
 halves of size `ceil(k/2)`, so it wants a CEILING log; a loop that does

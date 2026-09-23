@@ -95,7 +95,11 @@ def draws(batches):
                 "label": m["label"],
                 "campaign": b,
                 "slice": t.get("_slice"),
+                # the row's latest state -- this pass answers a corpus question
                 "outcome": t.get("outcome", "not attempted"),
+                # what the campaign's bounded agent achieved, kept beside it
+                "agent_outcome": t.get("agent_outcome", t.get("outcome", "not attempted")),
+                "revised": bool(t.get("revision")),
                 "bound": t.get("bound"),
                 # the hand-normalised relation where one exists; the agent's
                 # otherwise. Never the other way round.
@@ -113,7 +117,7 @@ def check(by_row):
     """Fail loudly if the two keep rules could disagree."""
     bad = []
     for sid, rs in by_row.items():
-        outs = [r["outcome"] for r in rs]
+        outs = [r["agent_outcome"] for r in rs]
         if "proved" in outs and outs[outs.index("proved") + 1:].count("unresolved"):
             bad.append((sid, outs))
     if bad:
@@ -140,6 +144,7 @@ def main():
         rec["drawn_times"] = len(rs)
         rec["superseded"] = [
             {"campaign": o["campaign"], "outcome": o["outcome"],
+             "agent_outcome": o["agent_outcome"],
              "attempts_used": o["attempts_used"], "seconds": o["seconds"]}
             for i, o in enumerate(rs) if i != best
         ]
@@ -147,10 +152,22 @@ def main():
             dup_rows += 1
         kept.append(rec)
 
+    # the best any bounded agent did on each row, across all its draws
+    best_agent = {}
+    for sid, rs in by_row.items():
+        best_agent[sid] = max((r["agent_outcome"] for r in rs),
+                              key=lambda o: RANK.get(o, 0))
+    for r in kept:
+        r["best_agent_outcome"] = best_agent[r["solution_id"]]
     meta = {"campaigns": covered, "incomplete_and_excluded": skipped,
             "draw_records": len(rows), "distinct_rows": len(kept),
             "drawn_more_than_once": dup_rows,
-            "proved": sum(1 for r in kept if r["outcome"] == "proved")}
+            "proved": sum(1 for r in kept if r["outcome"] == "proved"),
+            "proved_by_an_agent": sum(1 for r in kept
+                                      if r["best_agent_outcome"] == "proved"),
+            "proved_after_the_campaigns": sorted(
+                r["solution_id"] for r in kept
+                if r["outcome"] == "proved" and r["best_agent_outcome"] != "proved")}
     (HERE / "data" / "campaign_dedup.json").write_text(
         json.dumps(meta, indent=2) + "\n")
 
@@ -163,9 +180,14 @@ def main():
     print(f"wrote {out.relative_to(HERE)}")
     print(f"  {len(rows)} draw records -> {len(kept)} distinct rows "
           f"({dup_rows} were drawn more than once)")
-    print(f"  {proved}/{len(kept)} proved ({proved / len(kept):.0%}) over distinct rows")
-    rescued = sum(1 for r in kept if r["outcome"] == "proved"
-                  and any(s["outcome"] == "unresolved" for s in r["superseded"]))
+    print(f"  {proved}/{len(kept)} proved now ({proved / len(kept):.0%}) over distinct rows")
+    print(f"  {meta['proved_by_an_agent']}/{len(kept)} proved by a bounded agent "
+          f"({meta['proved_by_an_agent'] / len(kept):.0%}); "
+          f"{len(meta['proved_after_the_campaigns'])} closed afterwards by hand")
+    # a CAMPAIGN closing what an earlier campaign missed: agent outcomes only,
+    # so a later hand proof cannot count as a campaign's success
+    rescued = sum(1 for r in kept if r["agent_outcome"] == "proved"
+                  and any(s["agent_outcome"] == "unresolved" for s in r["superseded"]))
     print(f"  {rescued} rows a later campaign closed after an earlier one missed them")
     per = Counter(r["campaign"] for r in kept)
     print("  kept records by campaign: "

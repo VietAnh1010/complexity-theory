@@ -60,7 +60,7 @@ kept: `O(1)` and `O(n)` close easily, `O(nlogn)` and `O(n**2)` do not. Read
 `data/prove_stats.md` for the pooled column; a single campaign's cell moves
 ten points on two rows.
 
-## One gap accounts for twelve of the fifty rows
+## One gap accounts for eleven of the fifty rows
 
 This is the campaign's finding, and it is not a fact about the agents.
 
@@ -70,16 +70,29 @@ scaffold, which bounds merge sort by O(k²), instead of the tight `CeilLog2`
 recursion tree. Each proved O(n²) on an `O(nlogn)` row. The label is not in
 question; the proof did not reach it.
 
-**Six of the seven `z3-nonlinear` failures are the same shape**: a sort's cost
-summed with a second, independent logarithmic term — a per-iteration binary
-search, or a second sort — in one postcondition. `1039_15`, `2128_3`,
-`2826_81`, `1387_19`, `1718_1166` and `2704_92` all died there.
+**Five of the seven `z3-nonlinear` failures are the same shape**: a sort's cost
+summed with a second, independent term — a per-iteration binary search, a
+second sort, or a size fold — in one postcondition. `1039_15`, `2128_3`,
+`2826_81`, `1387_19` and `1718_1166` all died there. (An earlier version of
+this file also counted `2704_92`; its obstacle is a string-length product
+`|s0| * iters`, not a sort, so the count was twelve and is eleven.)
 
-So **12 of 50 rows were limited by one missing prelude lemma**: a reusable
-tight merge-sort cost bound that composes. The tight argument exists in this
-corpus — `2423_48` and `305_76` carry it — but as bespoke proofs, not as
-something a row can call. Lifting it is the single highest-value change
-available to the next campaign.
+So **11 of 50 rows were limited by one missing prelude lemma**: a reusable
+tight merge-sort cost bound that composes.
+
+**Resolved on 2026-09-23.** The prelude now carries it: `SortCost`, an opaque
+`NLogN`, `SortCostNLogN`, `SortCostWithin`, and a binary-search potential
+(`SearchPot`, `BisectStep`, `SearchLoopWithin`). With them, by hand and
+outside the budget:
+
+- the six `looser-slack` rows now prove O(n log n), `confirms`;
+- the five sort-shaped failures are proved — four `confirms`, and `1718_1166`
+  `looser-structural`, since its O(n*m) label omits the two full-list sorts
+  the Python really does.
+
+The campaign's own numbers above are unchanged: they are what a bounded agent
+achieved. Each revised row keeps the agent's result as `agent_outcome`, and
+every superseded line is in `old_record.jsonl`.
 
 `2128_3` is the sharpest version. Its agent **found a working proof on a 4th
 edit** — hoisting the repeated `CeilLog2(n)` into one ghost variable and
@@ -167,6 +180,34 @@ and 1 a helper. Median depth 2, maximum 3. The prelude functions agents
 actually had to open: `IntToString` 5, `Join` 3, `Sort` 3, `FloorDiv` 2, then
 `AbsInt`, `MinSeq`, `FloorMod` and `SortInts` once each.
 
+
+## Revised 2026-09-23
+
+The prelude gained a composable sort-cost bound and a binary-search potential
+(`SortCostNLogN`, `SortCostWithin`, `SearchPot`, `BisectStep`,
+`SearchLoopWithin`). With them these rows were re-proved or newly proved, by
+hand and outside this campaign's budget:
+
+| row | label | this campaign | now |
+|---|---|---|---|
+| `1039_15` | O(nlogn) | unresolved | proved, `confirms` |
+| `1387_19` | O(nlogn) | unresolved | proved, `confirms` |
+| `1718_1166` | O(n*m) | unresolved | proved, `looser-structural` |
+| `209_103` | O(nlogn) | proved, `looser-slack` | proved, `confirms` |
+| `2128_3` | O(nlogn) | unresolved | proved, `confirms` |
+| `2198_52` | O(nlogn) | proved, `looser-slack` | proved, `confirms` |
+| `223_3085` | O(nlogn) | proved, `looser-slack` | proved, `confirms` |
+| `2514_221` | O(nlogn) | proved, `looser-slack` | proved, `confirms` |
+| `2826_81` | O(nlogn) | unresolved | proved, `confirms` |
+| `566_183` | O(nlogn) | proved, `looser-slack` | proved, `confirms` |
+| `952_163` | O(nlogn) | proved, `looser-slack` | proved, `confirms` |
+
+**The numbers in this README are unchanged**: they are what a bounded agent
+achieved. Each revised trajectory keeps the agent's result as `agent_outcome`,
+`agent_relation` and `agent_bound`, and every superseded line — trajectory,
+relation, obstacle, audit — is in `old_record.jsonl`, with the file it came
+from.
+
 ## Files
 
 | file | what it is |
@@ -180,3 +221,4 @@ actually had to open: `IntToString` 5, `Join` 3, `Sort` 3, `FloorDiv` 2, then
 | `obstacles.jsonl` | the 10 unresolved rows with their obstacle codes |
 | `audit.jsonl` | verifier output joined to the trajectories |
 | `summary.json` | the counts every number above is drawn from |
+| `old_record.jsonl` | every line superseded by the 2026-09-23 revision, with its source file |

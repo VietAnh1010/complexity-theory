@@ -67,6 +67,7 @@ unit of loop overhead per iteration.
 | `multiset(a) == multiset(b)` | `\|a\|+\|b\|` |
 | `Join(parts, sep)` | `SumLen(parts) + \|parts\|` |
 | `IntToString(x)`, and `\|IntToString(x)\|` | `1` |
+| `Sort`, `SortInts`, `SortStrings` on k elements | `SortCost(k)` |
 | a recursive prelude function over a seq or string | its length |
 | a call to a helper | the helper's `steps` |
 
@@ -78,16 +79,50 @@ and it was retired; old files in `solutions-proved/` still use it.
 The label is asymptotic. `steps <= 7*n + 12` proves O(n). Take whatever
 constant the invariant supports; never tune one to look tight.
 
-## Logarithmic bounds
+## Sorts and binary searches — use the prelude, do not re-derive
 
-Dafny has no `log`. Define one, and **match its rounding to the code's**:
+`prelude.dfy` already has the sort charge, its tight bound, and a binary-search
+potential. Call them; do not copy a `SortCost` or `CeilLog2` into your file.
+
+```dafny
+steps := steps + SortCost(|s|);
+SortCostWithin(|s|, n);          // SortCost(|s|) <= 2 * NLogN(n) + 1, any |s| <= n
+ensures steps <= 2 * NLogN(n) + 5 * n + 3
+```
+
+A search loop over N elements:
+
+```dafny
+ghost var it: nat := 0;
+while lo < hi
+  invariant it + SearchPot(hi - lo) <= SearchPot(N)
+{
+  ghost var k := hi - lo;
+  ...                              // lo := mid + 1 or hi := mid
+  BisectStep(k, hi - lo);
+  it := it + 1;
+}
+```
+
+m searches, each costing `a` per halving plus `b`, fold with
+`SearchLoopWithin(m, N, n, a, b)` into `a * NLogN(n) + b * n`. Carry the outer
+invariant as `steps <= base + i * K` and step it with
+`CostMulDistrib(i, 1, i + 1, K)`.
+
+`NLogN` is opaque on purpose: your verification condition sees an atom, not a
+product, so a sort plus searches combine by linear arithmetic. Never
+`reveal NLogN()` in `Solve`. Writing the bound as `2 * n * (CeilLog2(n) + 1)`
+brings back the product that timed out five rows in `prove-sample-7`.
+
+## Other logarithmic bounds
+
+For a log that is not a sort or a search, **match its rounding to the code's**.
+`CeilLog2` is in the prelude (a recursion that splits into ceil(k/2)); for a
+loop that does `m := m / 2`, define a floor log yourself:
 
 ```dafny
 ghost function Log2(x: nat): nat  decreases x     // loop does m := m / 2
 { if x <= 1 then 0 else 1 + Log2(x / 2) }
-
-ghost function CeilLog2(n: nat): nat  decreases n // recursion splits into ceil(k/2)
-{ if n <= 1 then 0 else 1 + CeilLog2((n + 1) / 2) }
 ```
 
 Pick the wrong one and the inductive step is false at some small `k` — floor-log
@@ -95,8 +130,9 @@ fails at `k = 3` for a split — and nothing you add will close it.
 
 **Isolate every multiplication into its own lemma.** Z3 is bad at nonlinear
 arithmetic; an argument with the multiplications inline times out where the same
-argument with `MulMonoRight` and `MulDistrib` as separate lemmas finishes in
-seconds.
+argument with each product fact as a separate lemma finishes in seconds. The
+prelude has `CostMulMono`, `CostMulMonoLeft`, `CostMulDistrib` and
+`CostMulAssoc` for exactly this.
 
 ## Rules you may not break
 

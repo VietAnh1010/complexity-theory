@@ -161,7 +161,7 @@ the refreshed `data/`. Push to the session's designated branch.
 - **`why_failed` names an obstacle**, not "ran out of attempts". Which
   invariant would not hold; which multiplication the solver refused. Codes used
   so far: `value-to-size`, `z3-nonlinear`, `invariant-gap`, `decreases-star`,
-  `recursion-depth`, `budget`.
+  `recursion-depth`, `budget`, `prelude-gap`, `label-mismatch`.
 - **Never read a trend off one campaign's per-label table.** A class holds 8
   to 25 rows, so two rows move the rate ten points. After campaign 3 this
   project reported a crossover — `O(nlogn)` overtaking `O(n)` — and campaign 4
@@ -216,6 +216,24 @@ the refreshed `data/`. Push to the session's designated branch.
   them costs more than it buys: a proof restored afterwards was obtained
   outside the budget, so it cannot enter the rate, and the campaign's own
   re-run supplies the row anyway.
+- **Revising a row after its campaign: latest state in the file, the old line
+  in `old_record.jsonl`, the agent's result kept beside.** When a row is
+  proved or its proof tightened later — by hand, outside the budget — rewrite
+  its trajectory line to the current state and add `agent_outcome`,
+  `agent_relation`, `agent_bound` (and `agent_why_failed`) plus a `revision`
+  block saying what changed and that it was done by hand. Move every
+  superseded line — trajectory, `label_relation`, `obstacles`, `audit` — into
+  the batch's `old_record.jsonl` as `{"file", "superseded_on", "why",
+  "record"}`. Campaign rates are then computed from `agent_outcome`: a row a
+  bounded agent missed stays missed in its campaign's rate, however it was
+  closed later. `provestats.py`, `collect.py` and `dedupe.py` all read it that
+  way. The 2026-09-23 sort-cost revision is the worked example: 30 rows, 91
+  superseded lines, campaign rates unchanged.
+- **Sorts and binary searches use the prelude.** `SortCost`, `NLogN`,
+  `SortCostWithin`, `SearchPot`, `BisectStep` and `SearchLoopWithin` live in
+  `prelude.dfy` and `PROMPT.md` tells agents to call them. A trajectory whose
+  proof copies its own `SortCost` or bounds a sort by `2 * k * k` is a brief
+  the agent did not follow; check for it in the audit.
 - **A repaired trajectory is still the agent's data.** If a `traj_*.jsonl` is
   not one object per line, recover it with `json.JSONDecoder().raw_decode` in a
   loop and rewrite it as JSONL. Do not re-run the slice and do not retype the

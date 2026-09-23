@@ -106,6 +106,26 @@ Either they were repaired and `validate.py` was never re-run over them, or they
 do not belong in the clean partition. **Not investigated here** — it is a
 dataset-integrity question, not a proof question.
 
+
+## Revised 2026-09-23
+
+The prelude gained a composable sort-cost bound and a binary-search potential
+(`SortCostNLogN`, `SortCostWithin`, `SearchPot`, `BisectStep`,
+`SearchLoopWithin`). With them these rows were re-proved or newly proved, by
+hand and outside this campaign's budget:
+
+| row | label | this campaign | now |
+|---|---|---|---|
+| `1180_626` | O(n+m)log(n+m) | proved, `looser-slack` | proved, `confirms` |
+| `2225_154` | O(nlogn) | proved, `looser-slack` | proved, `confirms` |
+| `2593_332` | O(nlogn) | proved, `looser-slack` | proved, `confirms` |
+
+**The numbers in this README are unchanged**: they are what a bounded agent
+achieved. Each revised trajectory keeps the agent's result as `agent_outcome`,
+`agent_relation` and `agent_bound`, and every superseded line — trajectory,
+relation, obstacle, audit — is in `old_record.jsonl`, with the file it came
+from.
+
 ## Files
 
 | file | what it is |
@@ -118,6 +138,7 @@ dataset-integrity question, not a proof question.
 | `label_relation.jsonl` | normalised relation per proved row, with reasons |
 | `obstacles.jsonl` | coded obstacle per unresolved row |
 | `audit.jsonl`, `summary.json` | the verifier-joined audit and its totals |
+| `old_record.jsonl` | every line superseded by the 2026-09-23 revision, with its source file |
 
 Proofs are overlay copies in `../../solutions-proved/<pid>/`. The originals in
 `solutions/` were not modified; `audit.py` checks that with `git status` rather
