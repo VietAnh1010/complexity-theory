@@ -47,7 +47,7 @@ several of its claims were later reversed. `summaries/README.md` says which.
 | strict tier, `validate.py` | 529 valid, 3 fail |
 | loose tier, `difftest.py` | 95 agree, 4 untranslatable, 1 ungateable |
 | safety verified (`dafny verify`) | all 344 of `solutions/`; 334 also prove termination |
-| complexity proved | 303 rows, 305 files, all verify, zero `assume` |
+| complexity proved | 304 rows, 304 files, all verify, zero `assume` |
 | campaign pass rate | 261 of 348 drawn rows, 75%, by a bounded agent — `data/prove_stats.md` |
 | drawn rows proved now | 272 of 311 distinct, 87% — 11 closed by hand after their campaign |
 | label audit | 506 screened: 347 `ok`, 152 `mismatch`, 7 `unsure` (after the re-file) |
@@ -64,13 +64,6 @@ several of its claims were later reversed. `summaries/README.md` says which.
   *value* of a capped scalar counts as constant. `solutions-disputed/README.md`
   names them.
 - 127 rows in `solutions-unscreened/` have never been through the audit at all.
-- `solutions-proved/nlogn/` holds two proofs, `1484_82` and `603_284`, that
-  duplicate their base proofs since those were made tight on 2026-09-23.
-  Deleting them was refused by the session's permission check; they still
-  verify, and removing them is a one-line `git rm` for whoever decides to.
-- `514_140` is blocked on a charge-table question: Python's `2**i` is
-  translated as a recursive helper. Charged its depth the proof is O(n**2);
-  charged 1, as the int operation it translates, O(n log n).
 - The seven proof campaigns were **not run under one configuration** — the
   charge table, the relation vocabulary, the sampler and the recorded schema
   each moved mid-series. `batches/CAMPAIGN_CONFIG.md` is the map of what
@@ -94,7 +87,7 @@ leaves it.
 | `solutions-unverified/` | 3 | `dafny verify` cannot discharge its safety obligations |
 | `solutions-untranslated/` | 4 | it will not be translated; the file says why |
 
-`solutions-proved/` is **not** part of that partition. It holds 305 instrumented
+`solutions-proved/` is **not** part of that partition. It holds 304 instrumented
 *copies* of rows that also live above, each carrying a machine-checked
 complexity bound. A row can therefore exist in two places with different
 preconditions — `precheck.py`'s `find_all` exists for exactly that, and one row

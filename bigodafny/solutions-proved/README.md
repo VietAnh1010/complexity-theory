@@ -1,6 +1,6 @@
 # `solutions-proved/` — the complexity label, machine-checked
 
-305 files over 303 rows. All verify, none contains an `assume`;
+304 files, one per row. All verify, none contains an `assume`;
 `proofs.py` re-checks every one from scratch and records the result in
 `data/complexity_proofs.jsonl`.
 
@@ -35,17 +35,6 @@ at once, with **different preconditions**, because a proof is where a new
 `requires` gets added to make a bound go through. `precheck.py`'s `find_all`
 returns every copy for exactly this reason — `827_148` had two precondition
 sets and only the weaker one was ever checked.
-
-## `nlogn/`
-
-    solutions-proved/nlogn/<problem_id>/<solution_id>.dfy
-
-Two rows, `1484_82` and `603_284`. Their base proofs used to prove only a
-quadratic bound, and these held the tight O(n log n) one beside them. Since
-2026-09-23 the prelude carries a composable sort-cost bound and both base
-proofs are tight, so **these two files duplicate them**: same preconditions,
-same bound. They still verify. Removing the directory is pending a decision;
-an automated delete was refused.
 
 ## `value-bounded/`
 

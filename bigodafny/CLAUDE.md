@@ -26,15 +26,15 @@ it means and how a row leaves it. A row is in exactly one.
 | `solutions-untranslated/` | 4 | it will not be translated; the file says why |
 
 `solutions-proved/` is **not** part of that partition — it holds instrumented
-copies (305 files over 303 rows: 13 value-bounded rows queued for review
-under `value-bounded/`, and 2 files under `nlogn/` that now duplicate their
-base proofs -- see DOCS.md)
+copies (304 files, one per row; 13 value-bounded rows are queued for review
+under `value-bounded/`)
 of rows that also live above. A row can exist in two places with different preconditions;
 `precheck.py`'s `find_all` exists for that.
 
 Older notes use the old names: `solutions-inexact/` → `solutions-unscreened/`,
 `solutions-tofix/` → `solutions-disputed/`, `solutions-verified/` →
-`solutions-proved/`, `solutions-nlogn/` → `solutions-proved/nlogn/`,
+`solutions-proved/`, `solutions-nlogn/` → `solutions-proved/nlogn/` (removed
+2026-09-23: its two proofs duplicated their base proofs once those were tight),
 `solution-guessed-verified/` → `experiments/proofs-blind/`.
 
 ## The one rule that matters
@@ -187,7 +187,7 @@ Two destinations, by whether a proof exists. A row with no proof does **not**
 go under a directory called `solutions-proved`.
 
 `solutions-proved/value-bounded/` holds the 10 with a proof. It is an
-**overlay subdirectory** like `nlogn/`, not a partition member: the row stays
+**overlay subdirectory**, not a partition member: the row stays
 wherever the partition puts it, and `MANIFEST.jsonl` records its `row` path.
 `batches/value-bounded-open/` holds the 6 without one — a README and a
 manifest, no `.dfy` files.

@@ -33,7 +33,7 @@ construction, and this directory is where that disagreement is collected.
 
 ## This is an overlay, not a partition member
 
-Same status as `solutions-proved/` itself and `solutions-proved/nlogn/`. The
+Same status as `solutions-proved/` itself. The
 rows still live in `solutions/`, `solutions-disputed/` or wherever the
 partition puts them; `MANIFEST.jsonl` gives each one's `row` path. Nothing was
 taken out of the dataset.

@@ -140,9 +140,9 @@ argument in one `calc` timed out at 30s; splitting each multiplication fact into
 its own lemma took it to 2.8s. The prelude's `CostMulMono`, `CostMulMonoLeft`,
 `CostMulDistrib` and `CostMulAssoc` are those lemmas.
 
-`solutions-proved/nlogn/` held tight companions for two rows whose base proofs
-were quadratic. Both base proofs are tight now, so those companions duplicate
-them.
+`solutions-proved/nlogn/` once held tight companions for two rows whose base
+proofs were quadratic. Both base proofs are tight since 2026-09-23 and the
+directory was removed.
 
 ## Procedure
 
@@ -182,8 +182,8 @@ statement. Record the disagreement; never adjust the proof to match the label.**
 
 ## Results so far
 
-31 rows in `solutions-proved/`, 2 in `solutions-proved/nlogn/`. 33/33 verify, zero
-`assume`. **`bigodafny/summaries/proof_obstructions.md` lists what is NOT
+304 rows in `solutions-proved/`, one file each; all verify, zero `assume`
+(`data/complexity_proofs.jsonl`). **`bigodafny/summaries/proof_obstructions.md` lists what is NOT
 provable and why — read it before picking a row.** 164 rows are blocked on
 `decreases *` (19 rows) and unmeasured `set`/`map` costs (44). Behavioural equivalence is established by **emitted-Python identity**,
 not by re-running tests — see the gate note below.

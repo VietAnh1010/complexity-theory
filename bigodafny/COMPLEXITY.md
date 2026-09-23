@@ -42,8 +42,23 @@ independent of any backend:
 | `Sort`, `SortInts`, `SortStrings` on k elements | `SortCost(k)` | the prelude's; bound it with `SortCostNLogN` |
 | a recursive prelude function over a seq or string | its length | one level per element; sorts excepted, above |
 | a call to a helper | the helper's `steps` | |
+| a recursive helper standing in for Python `**` | its recursion depth | **decided 2026-09-23** |
 
 `array<T>` is absent because the corpus is. Two rows keep one; see the appendix.
+
+### A helper standing in for `**` is charged its depth
+
+**Decided 2026-09-23.** Dafny has no `**`, so a row computing Python's `2**i`
+does it with a recursive helper, `Pow2_140(e)` in `514_140`, which recurses `e`
+times. That helper is charged its recursion depth, like any other helper, and
+not the `1` the Python integer operation would cost.
+
+The consequence is deliberate and visible: `514_140`'s label is `O(nlogn)`, and
+its proof is `O(n**2)`, because the helper is called once per element with
+exponents up to `n`. The row is recorded `looser-structural`, and its proof
+note says the quadratic is the translation's helper, not the algorithm. Unlike
+`IntToString`, there is no exception here: the charge follows the code as
+translated.
 
 ### `IntToString` is constant, and so is the string it returns
 
@@ -153,8 +168,8 @@ work, as that file's own header says.
 
 Two files did prove a quadratic for an `O(nlogn)` label: `1484_82` and
 `603_284`. That was the loose merge-sort scaffold, not the retired charge model.
-Since 2026-09-23 both prove the tight bound directly, so the companion proofs
-in `solutions-proved/nlogn/` duplicate them.
+Since 2026-09-23 both prove the tight bound directly, and the companion proofs
+that used to live in `solutions-proved/nlogn/` were removed as duplicates.
 
 The general caution stands — read an old proof's charges before citing its bound
 as evidence about tightness — but the specific defect this paragraph alleged does

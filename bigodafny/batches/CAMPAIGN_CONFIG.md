@@ -125,9 +125,9 @@ now, 261 proved by a bounded agent, 11 closed afterwards by hand.
 
 It also settles one of the questions below by construction: pooled relation
 tables now describe proofs of one standard. No proof's bound uses a quadratic
-sort scaffold or charges a sort linearly; the only files still defining the
-old quadratic lemma are the two duplicates under `solutions-proved/nlogn/`,
-where it is unused beside their tight bound.
+sort scaffold or charges a sort linearly, and no file still defines the old
+quadratic lemma. The two duplicates that did, under `solutions-proved/nlogn/`,
+were removed.
 
 ## What a cleanup would have to decide
 
