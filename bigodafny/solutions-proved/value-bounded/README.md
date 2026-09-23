@@ -38,11 +38,10 @@ rows still live in `solutions/`, `solutions-disputed/` or wherever the
 partition puts them; `MANIFEST.jsonl` gives each one's `row` path. Nothing was
 taken out of the dataset.
 
-Four of the eleven proved rows also sit in `solutions-disputed/` — `810_131`,
-`1484_26`, `2381_156`, `2607_90` moved there on 2026-09-17 — and `276_610`
-followed on 2026-09-22. Being here is not the same as being disputed: this
-directory says *the proof carries a value term*, the disputed queue says
-*somebody should change the label*.
+Three of the thirteen proved rows also sit in `solutions-disputed/` —
+`810_131`, `1484_26` and `2607_90`, moved there on 2026-09-17. Being here is
+not the same as being disputed: this directory says *the proof carries a value
+term*, the disputed queue says *somebody should change the label*.
 
 ## The failures do not transfer
 
@@ -120,5 +119,20 @@ measuring `SumLen`, which is what keeps `Join` from reintroducing the digit
 count. Neither file defines a digit-counting ghost function any more, and that
 is deliberate: one would put back exactly the term the charge decision removed.
 
-Nothing else here rests on that charge: the remaining ten turn on loops
-bounded by input values, which the value-versus-size convention still counts.
+Nothing else here rests on that charge: the other twelve turn on loops bounded
+by input values, which the value-versus-size convention still counts.
+
+## Two rows arrived on 2026-09-23
+
+`prove-sample-7` filed `1043_358` and `794_794`, taking the directory to
+thirteen.
+
+    1043_358   8*|a_list| + 2*SumPos(a_list,|a_list|) + 3      O(n)
+    794_794    30*|data| + 30*SumNN(data,|data|) + 3           O(n)
+
+Both are the plainest form of the pattern. `1043_358` prints
+`"2" + "3" * (v - 1)` once per test case, so the work per test is the input
+value `v`. `794_794` loops `range(1, n)` and then prints `n` numbers, where `n`
+is a per-test value read by `int(input())` — while the label's `n` counts test
+cases. The two `n`s are different quantities, and only one of them is in the
+label.
