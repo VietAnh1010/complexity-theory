@@ -45,66 +45,6 @@ lemma SortElems<T>(s: seq<T>, less: (T, T) -> bool)
 // bounded O(k log k) -- precedent solutions-proved/1871/1871_156.dfy. The
 // scan loop is linear and dominated, so the whole method is O(k log k).
 
-ghost function SortCost(k: nat): nat
-  decreases k
-{
-  if k <= 1 then 1
-  else SortCost(k / 2) + SortCost(k - k / 2) + k
-}
-
-ghost function CeilLog2(n: nat): nat
-  decreases n
-{ if n <= 1 then 0 else 1 + CeilLog2((n + 1) / 2) }
-
-lemma CeilLog2Monotone(m: nat, n: nat)
-  requires m <= n
-  ensures CeilLog2(m) <= CeilLog2(n)
-  decreases n
-{
-  if n <= 1 { }
-  else if m <= 1 { }
-  else { CeilLog2Monotone((m + 1) / 2, (n + 1) / 2); }
-}
-
-lemma MulMonoRight(x: nat, p: nat, q: nat)
-  requires p <= q
-  ensures x * p <= x * q
-{ }
-
-lemma MulDistrib(a: nat, b: nat, k: nat, L: nat)
-  requires a + b == k
-  ensures a * L + b * L == k * L
-{ }
-
-lemma SortCostNLogN(k: nat)
-  ensures SortCost(k) <= 2 * k * (CeilLog2(k) + 1) + 1
-  decreases k
-{
-  if k <= 1 { return; }
-  var a := k / 2;
-  var b := k - k / 2;
-  var L := CeilLog2(k);
-  assert a + b == k;
-  assert b == (k + 1) / 2;
-  assert a <= b;
-  SortCostNLogN(a);
-  SortCostNLogN(b);
-  CeilLog2Monotone(a, b);
-  assert L == 1 + CeilLog2(b);
-  assert CeilLog2(a) + 1 <= L;
-  assert CeilLog2(b) + 1 == L;
-  MulMonoRight(2 * a, CeilLog2(a) + 1, L);
-  MulMonoRight(2 * b, CeilLog2(b) + 1, L);
-  assert SortCost(a) <= 2 * a * L + 1;
-  assert SortCost(b) <= 2 * b * L + 1;
-  MulDistrib(2 * a, 2 * b, 2 * k, L);
-  assert 2 * a * L + 2 * b * L == 2 * k * L;
-  assert SortCost(k) == SortCost(a) + SortCost(b) + k;
-  assert SortCost(k) <= 2 * k * L + k + 2;
-  assert 2 * k * (L + 1) == 2 * k * L + 2 * k;
-  assert k + 2 <= 2 * k + 1;
-}
-
 method Solve(n: int, m: int, values: seq<int>) returns (output: string, ghost steps: nat)
   // Python evaluates m % v for the same v; a zero raises ZeroDivisionError.
   requires forall k :: 0 <= k < |values| ==> values[k] != 0
@@ -112,7 +52,7 @@ method Solve(n: int, m: int, values: seq<int>) returns (output: string, ghost st
 {
   var asc := SortInts(values);
   SortElems(values, (x, y) => x < y);
-  SortCostNLogN(|values|);
+  SortCostTreeBound(|values|);
   steps := 1 + SortCost(|values|);
   assert forall x :: x in asc ==> x in values;
   assert |asc| == |values|;

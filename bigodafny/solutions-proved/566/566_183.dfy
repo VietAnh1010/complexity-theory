@@ -30,79 +30,14 @@
 // print(total)
 // --------------------------------------------------------------------
 //
-// PROOF NOTE (relation: looser-slack). Sort(lens, LessInt) costs
-// SortCost(|pieces|), bounded here by the corpus's standard O(k^2) scaffold
-// rather than the tight O(k log k) merge-sort argument, so the proved bound
-// is O(n^2), not the tight O(n log n). SplitChar is charged flat at |s|,
+// PROOF NOTE (relation: confirms). Sort(lens, LessInt) costs
+// SortCost(|pieces|), bounded by the prelude's SortCostWithin in terms of
+// |s| + 1, the tight recursion-tree argument, so the proved bound is
+// O(n log n). SplitChar is charged flat at |s|,
 // matching COMPLEXITY.md's rule for a recursive helper over a string.
 
 include "../../prelude.dfy"
 import opened Prelude
-
-// ---- proof-only scaffolding for the complexity bound ----------------
-ghost function SortCost(k: nat): nat
-  decreases k
-{
-  if k <= 1 then 1
-  else SortCost(k / 2) + SortCost(k - k / 2) + k
-}
-
-lemma SquareSplit(k: nat, L: nat)
-  requires 2 * L <= k <= 2 * L + 1
-  ensures 2 * L * L + 2 * (k - L) * (k - L) <= k * k + 1
-{
-  var d := k - 2 * L;
-  assert d == 0 || d == 1;
-  assert k - L == L + d;
-  assert 2 * L * L + 2 * (k - L) * (k - L) == 4 * L * L + 4 * L * d + 2 * d * d;
-  assert k == 2 * L + d;
-  assert k * k == 4 * L * L + 4 * L * d + d * d;
-  assert d * d <= 1;
-}
-
-lemma QuadTail(k: nat)
-  requires k >= 2
-  ensures k * k + k + 3 <= 2 * k * k + 1
-{
-  assert (k - 2) * (k + 1) >= 0;
-}
-
-lemma SortCostBound(k: nat)
-  ensures SortCost(k) <= 2 * k * k + 1
-  decreases k
-{
-  if k <= 1 {
-  } else {
-    var L := k / 2;
-    var R := k - L;
-    SortCostBound(L);
-    SortCostBound(R);
-    SquareSplit(k, L);
-    assert SortCost(k) == SortCost(L) + SortCost(R) + k;
-    assert SortCost(L) + SortCost(R) + k <= (2 * L * L + 1) + (2 * R * R + 1) + k;
-    assert (2 * L * L + 1) + (2 * R * R + 1) + k == 2 * L * L + 2 * R * R + k + 2;
-    assert 2 * L * L + 2 * R * R + k + 2 <= (k * k + 1) + k + 2;
-    QuadTail(k);
-  }
-}
-
-lemma MulMonoRight(x: nat, p: nat, q: nat)
-  requires p <= q
-  ensures x * p <= x * q
-{ }
-
-lemma MulMonoLeft(x: nat, p: nat, q: nat)
-  requires p <= q
-  ensures p * x <= q * x
-{ }
-
-lemma SquareMono(a: nat, b: nat)
-  requires a <= b
-  ensures a * a <= b * b
-{
-  MulMonoRight(a, a, b);
-  MulMonoLeft(b, a, b);
-}
 
 lemma MergeLength<T>(a: seq<T>, b: seq<T>, less: (T, T) -> bool)
   ensures |Merge(a, b, less)| == |a| + |b|
@@ -142,7 +77,7 @@ lemma SplitCharFromLen(s: string, sep: char, i: int, cur: string, acc: seq<strin
 }
 
 method Solve(n: int, k: int, m: int, s: string) returns (output: string, ghost steps: nat)
-  ensures steps <= 2 * (|s| + 1) * (|s| + 1) + 1 + 10 * (|s| + 1) + 20
+  ensures steps <= 2 * NLogN(|s| + 1) + 1 + 10 * (|s| + 1) + 20
 {
 
   var a := k;
@@ -153,8 +88,7 @@ method Solve(n: int, k: int, m: int, s: string) returns (output: string, ghost s
   ghost var steps1: nat := |s| + 1;   // SplitChar: recursive helper over a string, charged its length
   var lens := seq(|pieces|, idx requires 0 <= idx < |pieces| => |pieces[idx]|);
   steps1 := steps1 + |pieces|;
-  SortCostBound(|pieces|);
-  SquareMono(|pieces|, |s| + 1);
+  SortCostWithin(|pieces|, |s| + 1);
   var row := Sort(lens, LessInt);
   SortLength(lens, LessInt);
   assert |row| <= |s| + 1;

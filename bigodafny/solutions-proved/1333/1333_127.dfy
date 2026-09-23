@@ -28,58 +28,6 @@
 include "../../prelude.dfy"
 import opened Prelude
 
-// ---- proof-only scaffolding for the complexity bound ----------------
-// Prelude.Sort is a plain recursive function (merge sort); it carries no
-// ghost step counter (prelude.dfy is off limits), so its cost is charged as
-// an opaque-but-defined SortCost mirroring Sort's own split. The bound proved
-// here is an honest O(k^2) -- weaker than merge sort's true O(k log k) --
-// so relation = looser-slack.
-ghost function SortCost(k: nat): nat
-  decreases k
-{
-  if k <= 1 then 1
-  else SortCost(k / 2) + SortCost(k - k / 2) + k
-}
-
-lemma SquareSplit(k: nat, L: nat)
-  requires 2 * L <= k <= 2 * L + 1
-  ensures 2 * L * L + 2 * (k - L) * (k - L) <= k * k + 1
-{
-  var d := k - 2 * L;
-  assert d == 0 || d == 1;
-  assert k - L == L + d;
-  assert 2 * L * L + 2 * (k - L) * (k - L) == 4 * L * L + 4 * L * d + 2 * d * d;
-  assert k == 2 * L + d;
-  assert k * k == 4 * L * L + 4 * L * d + d * d;
-  assert d * d <= 1;
-}
-
-lemma QuadTail(k: nat)
-  requires k >= 2
-  ensures k * k + k + 3 <= 2 * k * k + 1
-{
-  assert (k - 2) * (k + 1) >= 0;
-}
-
-lemma SortCostBound(k: nat)
-  ensures SortCost(k) <= 2 * k * k + 1
-  decreases k
-{
-  if k <= 1 {
-  } else {
-    var L := k / 2;
-    var R := k - L;
-    SortCostBound(L);
-    SortCostBound(R);
-    SquareSplit(k, L);
-    assert SortCost(k) == SortCost(L) + SortCost(R) + k;
-    assert SortCost(L) + SortCost(R) + k <= (2 * L * L + 1) + (2 * R * R + 1) + k;
-    assert (2 * L * L + 1) + (2 * R * R + 1) + k == 2 * L * L + 2 * R * R + k + 2;
-    assert 2 * L * L + 2 * R * R + k + 2 <= (k * k + 1) + k + 2;
-    QuadTail(k);
-  }
-}
-
 lemma MergeLength<T>(a: seq<T>, b: seq<T>, less: (T, T) -> bool)
   ensures |Merge(a, b, less)| == |a| + |b|
   decreases |a| + |b|
@@ -108,7 +56,7 @@ method Solve(n: int, intervals: seq<seq<int>>) returns (output: string, ghost st
   requires n >= 2
   requires n == |intervals|
   requires forall k :: 0 <= k < n ==> |intervals[k]| >= 2
-  ensures steps <= 2 * SortCost(n) + 5 * n + 10
+  ensures steps <= 4 * NLogN(n) + 2 + 5 * n + 10
 {
 {
 
@@ -116,7 +64,7 @@ method Solve(n: int, intervals: seq<seq<int>>) returns (output: string, ghost st
   var L := seq(n, idx requires 0 <= idx < n => intervals[idx][0]);
   var R := seq(n, idx requires 0 <= idx < n => intervals[idx][1]);
   steps := steps + 2 * n;
-  SortCostBound(n);
+  SortCostNLogN(n);
   var Ldesc := Sort(L, (x: int, y: int) => x > y);
   SortLength(L, (x, y) => x > y);
   steps := steps + SortCost(n);

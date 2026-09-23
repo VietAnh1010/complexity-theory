@@ -577,6 +577,171 @@ module Prelude {
     Sort(xs, (a: string, b: string) => StringLess(a, b))
   }
 
+  // ---- the cost of a sort ------------------------------------------------
+  // The charge for `Sort`, `SortInts` or `SortStrings` on k elements, and the
+  // tight bound on it. Before this lived here, 59 proofs each carried their
+  // own copy of SortCost, and most bounded it only by 2*k*k + 1: a proof of an
+  // O(n log n) row then came out O(n**2), recorded looser-slack.
+  //
+  // The tight bound existed too, but as a bespoke lemma per file, and it did
+  // not compose. `2 * k * (CeilLog2(k) + 1) + 1` puts a product of a variable
+  // and a recursive function into the caller's verification condition, and a
+  // row that adds a second log term -- a binary search per iteration, a second
+  // sort -- asks Z3 to combine two such products. Six rows in prove-sample-7
+  // timed out exactly there.
+  //
+  // So the bound is stated over NLogN, which is OPAQUE: a caller sees an atom,
+  // not a product, and combines NLogN terms by linear arithmetic alone. The
+  // lemmas below are everything a caller needs to move between them, and each
+  // reveals the product only inside its own body.
+  //
+  // Use:
+  //   steps := steps + SortCost(|s|);   // charge the sort
+  //   SortCostWithin(|s|, n);           // SortCost(|s|) <= 2 * NLogN(n) + 1
+  //   ensures steps <= 2 * NLogN(n) + 5 * n + 3
+
+  ghost function SortCost(k: nat): nat
+    decreases k
+  {
+    if k <= 1 then 1
+    else SortCost(k / 2) + SortCost(k - k / 2) + k
+  }
+
+  // Ceiling log. The recursive step is ceil(n/2), not floor(n/2), which is what
+  // makes the induction close: both halves of a split of size k are at most
+  // ceil(k/2), and CeilLog2(ceil(k/2)) = CeilLog2(k) - 1 holds by definition.
+  // With floor-log that step is false at k = 3.
+  ghost function CeilLog2(n: nat): nat
+    decreases n
+  {
+    if n <= 1 then 0 else 1 + CeilLog2((n + 1) / 2)
+  }
+
+  lemma CeilLog2Monotone(m: nat, n: nat)
+    requires m <= n
+    ensures CeilLog2(m) <= CeilLog2(n)
+    decreases n
+  {
+    if n <= 1 {
+    } else if m <= 1 {
+    } else {
+      CeilLog2Monotone((m + 1) / 2, (n + 1) / 2);
+    }
+  }
+
+  opaque ghost function NLogN(n: nat): nat
+  {
+    n * (CeilLog2(n) + 1)
+  }
+
+  // Every multiplication the proofs below need, isolated, so the solver never
+  // has to discover one.
+  lemma CostMulMono(x: nat, p: nat, q: nat)
+    requires p <= q
+    ensures x * p <= x * q
+  {
+  }
+
+  lemma CostMulMonoLeft(p: nat, q: nat, x: nat)
+    requires p <= q
+    ensures p * x <= q * x
+  {
+  }
+
+  lemma CostMulAssoc(a: nat, b: nat, c: nat)
+    ensures a * b * c == a * (b * c)
+  {
+  }
+
+  lemma CostMulDistrib(a: nat, b: nat, k: nat, L: nat)
+    requires a + b == k
+    ensures a * L + b * L == k * L
+  {
+  }
+
+  lemma NLogNMonotone(m: nat, n: nat)
+    requires m <= n
+    ensures NLogN(m) <= NLogN(n)
+  {
+    reveal NLogN();
+    CeilLog2Monotone(m, n);
+    CostMulMonoLeft(m, n, CeilLog2(m) + 1);
+    CostMulMono(n, CeilLog2(m) + 1, CeilLog2(n) + 1);
+  }
+
+  lemma LinearLeNLogN(n: nat)
+    ensures n <= NLogN(n)
+  {
+    reveal NLogN();
+    CostMulMono(n, 1, CeilLog2(n) + 1);
+  }
+
+  // The recursion-tree argument, over the raw product. Kept separate from the
+  // NLogN form: with the reveal in scope as well, the same proof times out.
+  lemma SortCostTreeBound(k: nat)
+    ensures SortCost(k) <= 2 * k * (CeilLog2(k) + 1) + 1
+    decreases k
+  {
+    if k <= 1 { return; }
+    var a := k / 2;
+    var b := k - k / 2;
+    var L := CeilLog2(k);
+    assert a + b == k;
+    assert b == (k + 1) / 2;
+    assert a <= b;
+    SortCostTreeBound(a);
+    SortCostTreeBound(b);
+    CeilLog2Monotone(a, b);
+    assert L == 1 + CeilLog2(b);
+    assert CeilLog2(a) + 1 <= L;
+    assert CeilLog2(b) + 1 == L;
+    CostMulMono(2 * a, CeilLog2(a) + 1, L);
+    CostMulMono(2 * b, CeilLog2(b) + 1, L);
+    assert SortCost(a) <= 2 * a * L + 1;
+    assert SortCost(b) <= 2 * b * L + 1;
+    CostMulDistrib(2 * a, 2 * b, 2 * k, L);
+    assert 2 * a * L + 2 * b * L == 2 * k * L;
+    assert SortCost(k) == SortCost(a) + SortCost(b) + k;
+    assert SortCost(k) <= 2 * k * L + k + 2;
+    assert 2 * k * (L + 1) == 2 * k * L + 2 * k;
+    assert k + 2 <= 2 * k + 1;
+  }
+
+  lemma SortCostNLogN(k: nat)
+    ensures SortCost(k) <= 2 * NLogN(k) + 1
+  {
+    SortCostTreeBound(k);
+    var c := CeilLog2(k) + 1;
+    CostMulAssoc(2, k, c);
+    reveal NLogN();
+    assert NLogN(k) == k * c;
+  }
+
+  // The form a caller wants: a sort of k <= n elements, bounded in n. This is
+  // the step that folds a sub-list's sort into the row's size parameter.
+  lemma SortCostWithin(k: nat, n: nat)
+    requires k <= n
+    ensures SortCost(k) <= 2 * NLogN(n) + 1
+  {
+    SortCostNLogN(k);
+    NLogNMonotone(k, n);
+  }
+
+  // A binary search over a range of size k takes at most CeilLog2(k) + 1
+  // halvings. Stated here so a row summing a sort with per-iteration searches
+  // can charge each search this, and fold m of them into NLogN(n) with
+  // SearchesWithin, never touching the product.
+  lemma SearchesWithin(m: nat, k: nat, n: nat)
+    requires m <= n
+    requires k <= n
+    ensures m * (CeilLog2(k) + 1) <= NLogN(n)
+  {
+    reveal NLogN();
+    CeilLog2Monotone(k, n);
+    CostMulMono(m, CeilLog2(k) + 1, CeilLog2(n) + 1);
+    CostMulMonoLeft(m, n, CeilLog2(n) + 1);
+  }
+
   // ---- bitwise on int --------------------------------------------------
   // Dafny's `int` has no bitwise operators. Translations were casting through
   // bv64 inline; these wrap that so the width lives in one place.

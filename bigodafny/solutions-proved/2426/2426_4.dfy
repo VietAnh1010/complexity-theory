@@ -56,81 +56,6 @@ import opened Prelude
 // (calls to the local Sit function, itself O(1)), so it is charged O(1) per
 // iteration. Total: O(n log n) from the sort, plus O(n) from the loop.
 
-ghost function {:opaque} SortCost(k: nat): nat
-  decreases k
-{
-  if k <= 1 then 1
-  else SortCost(k / 2) + SortCost(k - k / 2) + k
-}
-
-lemma SquareSplit(k: nat, L: nat)
-  requires 2 * L <= k <= 2 * L + 1
-  ensures 2 * L * L + 2 * (k - L) * (k - L) <= k * k + 1
-{
-  var d := k - 2 * L;
-  assert d == 0 || d == 1;
-  assert k - L == L + d;
-  assert 2 * L * L + 2 * (k - L) * (k - L) == 4 * L * L + 4 * L * d + 2 * d * d;
-  assert k * k == 4 * L * L + 4 * L * d + d * d;
-  assert d * d <= 1;
-}
-
-ghost function {:opaque} CeilLog2(n: nat): nat
-  decreases n
-{ if n <= 1 then 0 else 1 + CeilLog2((n + 1) / 2) }
-
-lemma CeilLog2Monotone(m: nat, n: nat)
-  requires m <= n
-  ensures CeilLog2(m) <= CeilLog2(n)
-  decreases n
-{
-  reveal CeilLog2();
-  if n <= 1 { }
-  else if m <= 1 { }
-  else { CeilLog2Monotone((m + 1) / 2, (n + 1) / 2); }
-}
-
-lemma MulMonoRight(x: nat, p: nat, q: nat)
-  requires p <= q
-  ensures x * p <= x * q
-{ }
-
-lemma MulDistrib(a: nat, b: nat, k: nat, L: nat)
-  requires a + b == k
-  ensures a * L + b * L == k * L
-{ }
-
-lemma SortCostNLogN(k: nat)
-  ensures SortCost(k) <= 2 * k * (CeilLog2(k) + 1) + 1
-  decreases k
-{
-  reveal SortCost();
-  reveal CeilLog2();
-  if k <= 1 { return; }
-  var a := k / 2;
-  var b := k - k / 2;
-  var L := CeilLog2(k);
-  assert a + b == k;
-  assert b == (k + 1) / 2;
-  assert a <= b;
-  SortCostNLogN(a);
-  SortCostNLogN(b);
-  CeilLog2Monotone(a, b);
-  assert L == 1 + CeilLog2(b);
-  assert CeilLog2(a) + 1 <= L;
-  assert CeilLog2(b) + 1 == L;
-  MulMonoRight(2 * a, CeilLog2(a) + 1, L);
-  MulMonoRight(2 * b, CeilLog2(b) + 1, L);
-  assert SortCost(a) <= 2 * a * L + 1;
-  assert SortCost(b) <= 2 * b * L + 1;
-  MulDistrib(2 * a, 2 * b, 2 * k, L);
-  assert 2 * a * L + 2 * b * L == 2 * k * L;
-  assert SortCost(k) == SortCost(a) + SortCost(b) + k;
-  assert SortCost(k) <= 2 * k * L + k + 2;
-  assert 2 * k * (L + 1) == 2 * k * L + 2 * k;
-  assert k + 2 <= 2 * k + 1;
-}
-
 function Sit(cap: int, req: int): (int, int)
 {
   var num := if cap < req then cap else req;
@@ -141,7 +66,7 @@ method Solve(n: int, m: int, values: seq<int>) returns (output: string, ghost st
   ensures steps <= 2 * |values| * (CeilLog2(|values|) + 1) + 20 * |values| + 10
 {
   steps := 1;
-  SortCostNLogN(|values|);
+  SortCostTreeBound(|values|);
   var sortedVals := Sort(values, (x: int, y: int) => x > y);
   steps := steps + SortCost(|values|);
   var seat4 := n;

@@ -48,67 +48,13 @@ lemma SortLength<T>(s: seq<T>, less: (T, T) -> bool)
   }
 }
 
-// Sort/Merge are plain recursive functions in prelude.dfy (off limits, so no
-// ghost step counter can be attached there). Their cost is charged as an
-// opaque-but-defined function SortCost, whose recursion mirrors Sort's own
-// split. SortCostBound proves a quadratic bound on it -- looser than the
-// true O(k log k), which is the tight bound proved elsewhere in this corpus
-// (solutions-proved/nlogn/) via a CeilLog2 recursion-tree argument. Given the
-// per-row attempt/time budget, this copy keeps the simpler quadratic
-// scaffold: relation looser-slack.
-ghost function SortCost(k: nat): nat
-  decreases k
-{
-  if k <= 1 then 1
-  else SortCost(k / 2) + SortCost(k - k / 2) + k
-}
-
-lemma SquareSplit(k: nat, L: nat)
-  requires 2 * L <= k <= 2 * L + 1
-  ensures 2 * L * L + 2 * (k - L) * (k - L) <= k * k + 1
-{
-  var d := k - 2 * L;
-  assert d == 0 || d == 1;
-  assert k - L == L + d;
-  assert 2 * L * L + 2 * (k - L) * (k - L) == 4 * L * L + 4 * L * d + 2 * d * d;
-  assert k == 2 * L + d;
-  assert k * k == 4 * L * L + 4 * L * d + d * d;
-  assert d * d <= 1;
-}
-
-lemma QuadTail(k: nat)
-  requires k >= 2
-  ensures k * k + k + 3 <= 2 * k * k + 1
-{
-  assert (k - 2) * (k + 1) >= 0;
-}
-
-lemma SortCostBound(k: nat)
-  ensures SortCost(k) <= 2 * k * k + 1
-  decreases k
-{
-  if k <= 1 {
-  } else {
-    var L := k / 2;
-    var R := k - L;
-    SortCostBound(L);
-    SortCostBound(R);
-    SquareSplit(k, L);
-    assert SortCost(k) == SortCost(L) + SortCost(R) + k;
-    assert SortCost(L) + SortCost(R) + k <= (2 * L * L + 1) + (2 * R * R + 1) + k;
-    assert (2 * L * L + 1) + (2 * R * R + 1) + k == 2 * L * L + 2 * R * R + k + 2;
-    assert 2 * L * L + 2 * R * R + k + 2 <= (k * k + 1) + k + 2;
-    QuadTail(k);
-  }
-}
-
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
   requires n == |a_list|
-  ensures steps <= 2 * n * n + 10 * n + 10
+  ensures steps <= 2 * NLogN(n) + 10 * n + 10
 {
   var nn := if n >= 0 then n else 0;
   SortLength(a_list, (x: int, y: int) => x < y);
-  SortCostBound(nn);
+  SortCostWithin(nn, n);
   var sortedL := SortInts(a_list);
   steps := 1 + SortCost(nn);
   var hasDup := false;

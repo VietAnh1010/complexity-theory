@@ -1,0 +1,145 @@
+// 1138_A. Sushi for Two  (problem 2105, solution 2105_248)
+// time complexity: O(nlogn)
+// python exact-diff baseline: exact
+//
+// Reproduce the Python program's entire stdout in `output`.
+//
+// --- Python ---------------------------------------------------------
+// PZS= list(map(int, input().split()))
+// ARREGLODETIPOS= list(map(int, input().split()))
+// if ARREGLODETIPOS[PZS[0]-1]==1:
+//     ARREGLODETIPOS.append(2)
+// elif ARREGLODETIPOS[PZS[0]-1]==2:
+//     ARREGLODETIPOS.append(1)
+// cont1=0
+// cont2=0
+// arreglorepetidos=[]
+// arregloacomodado=[]
+// cont1=1
+// cont2=1
+// for i in range(PZS[0]):
+//     if ARREGLODETIPOS[i]==1:
+//         if ARREGLODETIPOS[i+1]==1:
+//             cont1+=1
+//         elif ARREGLODETIPOS[i+1]==2:
+//             arreglorepetidos.append(cont1)
+//             #arregloacomodado.append(cont1)
+//             cont1=1
+//             cont2=1
+//     elif ARREGLODETIPOS[i]==2:
+//         if ARREGLODETIPOS[i+1]==2:
+//             cont2+=1
+//         elif ARREGLODETIPOS[i+1]==1:
+//             arreglorepetidos.append(cont2)
+//             cont1=1
+//             cont2=1
+// for m in range (len(arreglorepetidos)-1):
+//     if arreglorepetidos[m]<=arreglorepetidos[m+1]:
+//         arregloacomodado.append(arreglorepetidos[m]*2)
+//     else:
+//         arregloacomodado.append(arreglorepetidos[m+1]*2)
+// arregloacomodado.sort(reverse=True)
+// print(arregloacomodado[0])
+//  			   	 	   		 	 		 	     	  	
+// --------------------------------------------------------------------
+
+// PROOF NOTE (relation: confirms).
+// The run-length scan and the pairwise-min pass are each O(n); the sort is
+// charged SortCost on at most n elements and folded into NLogN(n) by the
+// prelude's SortCostWithin. The input parse is charged a flat 3, as in the
+// sibling proof 2105_521.
+
+include "../../prelude.dfy"
+import opened Prelude
+
+method Solve(v_0: int, v_1: string) returns (output: string, ghost steps: nat)
+  requires v_0 >= 1
+  requires |ParseInts(SplitWs(v_1))| == v_0
+  requires forall k :: 0 <= k < v_0 ==> ParseInts(SplitWs(v_1))[k] == 1 || ParseInts(SplitWs(v_1))[k] == 2
+  requires exists k :: 0 <= k < v_0 && ParseInts(SplitWs(v_1))[k] == 1
+  requires exists k :: 0 <= k < v_0 && ParseInts(SplitWs(v_1))[k] == 2
+  ensures steps <= 2 * NLogN(v_0) + 8 * v_0 + 12
+{
+  var n := v_0;
+  steps := 1;
+  var tipos := ParseInts(SplitWs(v_1));
+  steps := steps + 3;
+  if tipos[n - 1] == 1 {
+    tipos := tipos + [2];
+  } else if tipos[n - 1] == 2 {
+    tipos := tipos + [1];
+  }
+  steps := steps + 2;
+  var cont1 := 1;
+  var cont2 := 1;
+  var arreglorepetidos: seq<int> := [];
+  var i := 0;
+  assert exists p :: 0 <= p < n && tipos[p] != tipos[0] by {
+    if tipos[0] == 1 {
+      var k2 :| 0 <= k2 < n && ParseInts(SplitWs(v_1))[k2] == 2;
+      assert tipos[k2] == ParseInts(SplitWs(v_1))[k2];
+      assert tipos[k2] != tipos[0];
+    } else {
+      var k1 :| 0 <= k1 < n && ParseInts(SplitWs(v_1))[k1] == 1;
+      assert tipos[k1] == ParseInts(SplitWs(v_1))[k1];
+      assert tipos[k1] != tipos[0];
+    }
+  }
+  while i < n
+    invariant 0 <= i <= n
+    invariant exists p :: 0 <= p < n && tipos[p] != tipos[0]
+    invariant |tipos| == n + 1
+    invariant forall k :: 0 <= k < n ==> tipos[k] == 1 || tipos[k] == 2
+    invariant tipos[n] == 1 || tipos[n] == 2
+    invariant tipos[n] != tipos[n - 1]
+    invariant |arreglorepetidos| >= 1 || (forall j :: 0 <= j < n && j <= i ==> tipos[j] == tipos[0])
+    invariant i == n ==> |arreglorepetidos| >= 2
+    invariant |arreglorepetidos| <= i
+    invariant steps == 6 + 4 * i
+    decreases n - i
+  {
+    if tipos[i] == 1 {
+      if tipos[i + 1] == 1 {
+        cont1 := cont1 + 1;
+      } else if tipos[i + 1] == 2 {
+        arreglorepetidos := arreglorepetidos + [cont1];
+        cont1 := 1;
+        cont2 := 1;
+      }
+    } else if tipos[i] == 2 {
+      if tipos[i + 1] == 2 {
+        cont2 := cont2 + 1;
+      } else if tipos[i + 1] == 1 {
+        arreglorepetidos := arreglorepetidos + [cont2];
+        cont1 := 1;
+        cont2 := 1;
+      }
+    }
+    i := i + 1;
+    steps := steps + 4;
+  }
+  var arregloacomodado: seq<int> := [];
+  var m := 0;
+  while m < |arreglorepetidos| - 1
+    invariant 0 <= m <= |arreglorepetidos| - 1
+    invariant |arregloacomodado| == m
+    invariant steps == 6 + 4 * n + 3 * m
+    decreases |arreglorepetidos| - 1 - m
+  {
+    if arreglorepetidos[m] <= arreglorepetidos[m + 1] {
+      arregloacomodado := arregloacomodado + [arreglorepetidos[m] * 2];
+    } else {
+      arregloacomodado := arregloacomodado + [arreglorepetidos[m + 1] * 2];
+    }
+    m := m + 1;
+    steps := steps + 3;
+  }
+  assert |arregloacomodado| >= 1;
+  assert |arregloacomodado| <= n;
+  var sorted := Sort(arregloacomodado, (x: int, y: int) => x > y);
+  steps := steps + SortCost(|arregloacomodado|);
+  SortCostWithin(|arregloacomodado|, n);
+  assert |sorted| >= 1;
+  output := IntToString(sorted[0]);
+  steps := steps + 2;
+}
