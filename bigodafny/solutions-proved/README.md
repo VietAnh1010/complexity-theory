@@ -1,7 +1,8 @@
 # `solutions-proved/` — the complexity label, machine-checked
 
-33 files: 31 base proofs plus 2 tight-bound variants under `nlogn/`. All 33
-verify, none contains an `assume`.
+305 files over 303 rows. All verify, none contains an `assume`;
+`proofs.py` re-checks every one from scratch and records the result in
+`data/complexity_proofs.jsonl`.
 
 > Renamed from `solutions-verified/`. "Verified" is what `dafny verify` does,
 > and that checks **safety** — indices, division, termination. These files
@@ -19,13 +20,13 @@ and each row is in exactly one.
 This directory is different. Each file is an **instrumented copy** of a row
 that also lives in one of those five:
 
-| the row also lives in | proofs |
+| the row also lives in | rows |
 |---|---|
-| `solutions/` | 18 |
-| `solutions-disputed/` | 12 |
+| `solutions/` | 287 |
+| `solutions-disputed/` | 15 |
 | `solutions-unscreened/` | 1 |
 
-Twelve proofs sit against disputed rows, which is the point: a proved bound is
+15 proved rows sit against disputed rows, which is the point: a proved bound is
 the strongest possible input to that review. `checkverdicts.py` enforces it —
 an audit verdict that contradicts a machine-checked bound is rejected.
 
@@ -39,16 +40,26 @@ sets and only the weaker one was ever checked.
 
     solutions-proved/nlogn/<problem_id>/<solution_id>.dfy
 
-Two rows, `1484_82` and `603_284`, whose merge sort is genuinely O(n log n).
-Dafny has no `log`, so the tight bound needs a `CeilLog2` recursion-tree
-argument; the simpler quadratic fallback survives at
-`solutions-proved/<pid>/<sid>.dfy` alongside it. This is a **variant of a
-proof**, not a status of its own, which is why it nests here instead of sitting
-beside the partition.
+Two rows, `1484_82` and `603_284`. Their base proofs used to prove only a
+quadratic bound, and these held the tight O(n log n) one beside them. Since
+2026-09-23 the prelude carries a composable sort-cost bound and both base
+proofs are tight, so **these two files duplicate them**: same preconditions,
+same bound. They still verify. Removing the directory is pending a decision;
+an automated delete was refused.
 
-> Merged in from a top-level `solutions-nlogn/`. One `rglob` over
-> `solutions-proved/` reaches both, and `proofs.py` records which is which in
-> `proof_variant` (`base` or `nlogn`) in `data/complexity_proofs.jsonl`.
+## `value-bounded/`
+
+Proved rows whose bound names the MAGNITUDE of an input, not only how many
+inputs there are. Its own README and MANIFEST.jsonl say what that means and
+how a row leaves.
+
+## Sorts and binary searches
+
+The charge for a sort, `SortCost`, and its tight bound live in `prelude.dfy`
+with a binary-search potential beside them (`SortCostNLogN`, `SortCostWithin`,
+`SearchPot`, `BisectStep`, `SearchLoopWithin`). No proof here copies them any
+more except `2188_359`, which keeps local opaque copies because its `Solve`
+times out against the prelude's non-opaque `SortCost`.
 
 ## How a proof is written
 

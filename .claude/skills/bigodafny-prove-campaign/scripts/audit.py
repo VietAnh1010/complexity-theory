@@ -107,6 +107,9 @@ def main():
             "seconds": (t or {}).get("seconds"),
             "slice": (t or {}).get("_slice"),
             "reads": (t or {}).get("reads"),
+            # a row revised after the campaign keeps what the agent achieved
+            "agent_outcome": (t or {}).get("agent_outcome", claimed or "not attempted"),
+            "revised": bool((t or {}).get("revision")),
         }
         rows.append(rec)
         if t is None:
@@ -177,14 +180,24 @@ def main():
         "by_relation": {},
         "obstacles": {},
         "problems": problems,
+        # `proved` above is the verifier's view of the rows as they stand now.
+        # A row proved by hand after the campaign counts there, not here: this
+        # block is what the campaign's bounded agents achieved.
+        "campaign": {
+            "proved": sum(1 for r in rows if r["agent_outcome"] == "proved"),
+            "unresolved": sum(1 for r in rows if r["agent_outcome"] != "proved"),
+            "revised_after": sorted(r["solution_id"] for r in rows if r["revised"]),
+        },
         "reads_missing": sorted(no_reads),
         "reads_coverage": (
             round(1 - len(no_reads) / len(rows), 4) if rows else None),
     }
     for r in rows:
-        lab = summary["by_label"].setdefault(r["label"], {"drawn": 0, "proved": 0})
+        lab = summary["by_label"].setdefault(r["label"], {"drawn": 0, "proved": 0,
+                                                          "campaign_proved": 0})
         lab["drawn"] += 1
         lab["proved"] += 1 if r["verified"] else 0
+        lab["campaign_proved"] += 1 if r["agent_outcome"] == "proved" else 0
         if r["verified"]:
             key = r["relation"] or "unrecorded"
             summary["by_relation"][key] = summary["by_relation"].get(key, 0) + 1

@@ -48,8 +48,8 @@ also live above, so a row can exist twice with different preconditions.
 
 | directory | files | meaning |
 |---|---|---|
-| `solutions-proved/` | 293 | complexity **proved** via ghost step counter |
-| `solutions-proved/nlogn/` | 2 | the same two sort rows at the tight O(n log n) bound |
+| `solutions-proved/` | 303 | complexity **proved** via ghost step counter |
+| `solutions-proved/nlogn/` | 2 | duplicates of `1484_82` and `603_284`, whose base proofs are tight since 2026-09-23 |
 | `solutions-proved/value-bounded/` | 13 | proved, but the bound names an input VALUE; queued for review |
 | `experiments/proofs-blind/` | 15 | blind-arm experiment attempts; label withheld from the author. NOT dataset rows |
 

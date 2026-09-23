@@ -26,8 +26,9 @@ it means and how a row leaves it. A row is in exactly one.
 | `solutions-untranslated/` | 4 | it will not be translated; the file says why |
 
 `solutions-proved/` is **not** part of that partition — it holds instrumented
-copies (295 files over 293 rows: 2 tight-bound variants under `nlogn/`, 13
-value-bounded rows queued for review under `value-bounded/`)
+copies (305 files over 303 rows: 13 value-bounded rows queued for review
+under `value-bounded/`, and 2 files under `nlogn/` that now duplicate their
+base proofs -- see DOCS.md)
 of rows that also live above. A row can exist in two places with different preconditions;
 `precheck.py`'s `find_all` exists for that.
 
