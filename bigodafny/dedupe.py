@@ -46,7 +46,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 BATCHES = ["prove-sample", "prove-sample-2", "prove-sample-3", "prove-sample-4",
-           "prove-sample-5", "prove-sample-6", "prove-sample-7"]
+           "prove-sample-5", "prove-sample-6", "prove-sample-7", "prove-sample-8"]
 RANK = {"proved": 2, "unresolved": 1, "not attempted": 0}
 
 

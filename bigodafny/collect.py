@@ -371,6 +371,13 @@ def main():
     p7_obst = {r["solution_id"]: r for r in jsonl(p7 / "obstacles.jsonl")}
     p7_traj, p7_rel, p7_obst = agent_view(p7, p7_traj, p7_rel, p7_obst)
 
+    p8 = HERE / "batches/prove-sample-8"
+    p8_manifest = jsonl(p8 / "manifest.jsonl")
+    p8_traj = [r for f in sorted(p8.glob("traj_*.jsonl")) for r in jsonl(f)]
+    p8_rel = {r["solution_id"]: r for r in jsonl(p8 / "label_relation.jsonl")}
+    p8_obst = {r["solution_id"]: r for r in jsonl(p8 / "obstacles.jsonl")}
+    p8_traj, p8_rel, p8_obst = agent_view(p8, p8_traj, p8_rel, p8_obst)
+
     dirs = {d.name: sum(1 for _ in d.rglob("*.dfy"))
             for d in sorted(HERE.glob("solutions*")) if d.is_dir()}
 
@@ -420,6 +427,15 @@ def main():
     pv7["repeat_share"] = 0.0
     pv7["reads_coverage"] = round(
         sum(1 for r in p7_traj if r.get("reads")) / len(p7_traj), 4)
+    pv8 = prove_sample(p8_manifest, p8_traj, p8_rel, depth,
+                       meta={"seed": 20260924, "pool": 18}, obst=p8_obst)
+    # The last 18 never-drawn rows: a census of the remainder, not a sample.
+    # Its brief carried the reading trace and the prelude's sort and search
+    # lemmas from the start.
+    pv8["draw_mode"] = "exclude-drawn, whole remaining pool"
+    pv8["repeat_share"] = 0.0
+    pv8["reads_coverage"] = round(
+        sum(1 for r in p8_traj if r.get("reads")) / len(p8_traj), 4)
     # Two rows were drawn although they already carried a proof: sample.py
     # listed solutions-proved/ flatly and missed the value-bounded/ subdirectory
     # added the day before. Their outcomes are real but they are not new work,
@@ -506,14 +522,16 @@ def main():
         "prove_sample_5": pv5,
         "prove_sample_6": pv6,
         "prove_sample_7": pv7,
-        "campaign_series": campaign_series([pv, pv2, pv3, pv4, pv5, pv6, pv7]),
+        "prove_sample_8": pv8,
+        "campaign_series": campaign_series([pv, pv2, pv3, pv4, pv5, pv6, pv7, pv8]),
         "proofs_all": proofs_all(depth, ds, pv.get("rows", []) + pv2.get("rows", [])
                                  + pv3.get("rows", []) + pv4.get("rows", [])
                                  + pv5.get("rows", []) + pv6.get("rows", [])
-                                 + pv7.get("rows", [])),
+                                 + pv7.get("rows", []) + pv8.get("rows", [])),
         "difficulty": difficulty(pv.get("rows", []) + pv2.get("rows", [])
                                  + pv3.get("rows", []) + pv4.get("rows", [])
-                                 + pv5.get("rows", []) + pv6.get("rows", [])),
+                                 + pv5.get("rows", []) + pv6.get("rows", [])
+                                 + pv7.get("rows", []) + pv8.get("rows", [])),
 
         "stale_record_finding": {
             "before": {"rows": 362, "recorded_failing": 12,
