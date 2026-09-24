@@ -103,6 +103,12 @@ def main():
     not_used = []
 
     rows, problems, no_reads = [], [], []
+    # Every attempt's .dfy is kept under attempts/ once the brief says so.
+    # Enforced only for campaigns whose brief carries the rule: campaigns 1-8
+    # predate it and deleted their failed attempts.
+    import glob as _glob
+    keeps_attempts = any("/attempts/<pid>/<sid>.<n>.dfy" in open(f).read()
+                         for f in _glob.glob(os.path.join(args.batch, "PROMPT_*.md")))
     for sid, m in sorted(manifest.items()):
         t = traj.get(sid)
         p = proofs.get(sid)
@@ -151,6 +157,15 @@ def main():
             problems.append(f"{sid}: contradicts with no reason given")
         if p and p.get("assume_count"):
             problems.append(f"{sid}: proof carries {p['assume_count']} assume(s)")
+        if keeps_attempts and t is not None:
+            pid = sid.split("_")[0]
+            kept = _glob.glob(os.path.join(args.batch, "attempts", pid, f"{sid}.*.dfy"))
+            if not kept:
+                problems.append(f"{sid}: no attempt kept under attempts/{pid}/ -- "
+                                "every attempt's .dfy must be saved")
+            elif len(kept) < (t.get("attempts_used") or 0):
+                problems.append(f"{sid}: {t.get('attempts_used')} attempts recorded, "
+                                f"{len(kept)} kept under attempts/{pid}/")
         # The reading trace. Reported, never repaired: a `reads` array is a
         # record of what an agent actually opened, so a missing one can only
         # be counted, not filled in afterwards.

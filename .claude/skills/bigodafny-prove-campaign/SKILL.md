@@ -155,9 +155,16 @@ the refreshed `data/`. Push to the session's designated branch.
 
 ## Rules
 
-- **The budget is hard.** Out of attempts or time → delete the partial copy
+- **The budget is hard.** Out of attempts or time → remove the row's copy
   from `solutions-proved/`, record `unresolved` with the obstacle named, move
   on. Most rows failing is a legitimate result.
+- **Keep every proof attempt. Never delete one.** After every `dafny verify`
+  the agent copies the file to `batches/<name>/attempts/<pid>/<sid>.<n>.dfy`
+  and names it in the attempt's `"file"` field. Failed attempts are the only
+  record of what was tried and where it broke; campaigns 1–8 deleted them, and
+  every failed row from those campaigns has a description of its attempts but
+  not the Dafny. `audit.py` fails a campaign whose brief requires this if an
+  unresolved row has no saved attempt.
 - **`why_failed` names an obstacle**, not "ran out of attempts". Which
   invariant would not hold; which multiplication the solver refused. Codes used
   so far: `value-to-size`, `z3-nonlinear`, `invariant-gap`, `decreases-star`,
@@ -209,13 +216,12 @@ the refreshed `data/`. Push to the session's designated branch.
 - **A proof with no trajectory is not campaign data.** When a killed agent
   leaves `.dfy` files with no record behind them, there is no attempt count,
   no elapsed time, no relation and no `reads`, and none of it is recoverable.
-  Delete those files before re-running the slice — left in `solutions-proved/`
-  the re-run agent opens a finished proof of its own assigned row and measures
-  nothing. Campaign 7's slice A was killed after one trajectory line and 14
-  such files; they were discarded and the slice re-run from scratch. Keeping
-  them costs more than it buys: a proof restored afterwards was obtained
-  outside the budget, so it cannot enter the rate, and the campaign's own
-  re-run supplies the row anyway.
+  Move those files out of `solutions-proved/` before re-running the slice —
+  left there, the re-run agent opens a finished proof of its own assigned row
+  and measures nothing — into `batches/<name>/attempts/<pid>/<sid>.orphan.dfy`.
+  Do not delete them: they are attempts, and attempts are kept. They stay out
+  of the rate, because nothing records the budget they were made under.
+  (Campaign 7's slice A lost 14 such files to deletion before this rule.)
 - **Revising a row after its campaign: latest state in the file, the old line
   in `old_record.jsonl`, the agent's result kept beside.** When a row is
   proved or its proof tightened later — by hand, outside the budget — rewrite

@@ -58,6 +58,10 @@ For proof campaigns, trajectory records are append-only evidence. Do not edit
 old attempts to make the history look cleaner. Use the current campaign schema,
 including `reads` where required.
 
+**Keep every proof attempt, including failed ones.** Each attempt's `.dfy` is
+saved to `batches/<campaign>/attempts/<pid>/<sid>.<n>.dfy` and never deleted.
+Only `solutions-proved/` is limited to verified proofs.
+
 ## Shared outputs
 
 Subset commands can overwrite shared JSONL. Use their dedicated partial-output

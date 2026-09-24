@@ -194,9 +194,19 @@ nothing. A quantity **fixed in the source** is a constant however large.
 
 - **3 attempts.** One attempt = one edit followed by one `dafny verify`.
 - **5 minutes** wall clock, including verifier time.
-- Out of either → delete **your own row's** partial copy from
-  `solutions-proved/`, record `unresolved` with the reason, move on.
-- **Delete `solutions-proved/<pid>/<sid>.dfy` for YOUR `<sid>` and nothing
+- **Keep every attempt.** After EVERY `dafny verify`, pass or fail, copy the
+  file you just verified to
+
+      {{BATCH}}/attempts/<pid>/<sid>.<n>.dfy
+
+  where `<n>` is the attempt number, and name that path in the attempt's
+  `"file"` field in your trajectory. Never delete, overwrite or edit a file
+  under `attempts/`. A failed attempt is data: it is how anyone learns what
+  was tried and where it broke.
+- Out of attempts or time → your attempts are already saved under
+  `attempts/`. Remove only your own row's copy from `solutions-proved/`, which
+  holds verified proofs only, record `unresolved` with the reason, move on.
+- **Remove `solutions-proved/<pid>/<sid>.dfy` for YOUR `<sid>` and nothing
   else.** Never remove the directory. Two verified proofs were destroyed this
   way in one campaign: an agent abandoning `2914_3` took `2914_264` with it,
   and one abandoning `750_14` took `750_51`. Those are different solutions of
@@ -233,8 +243,8 @@ array is invalid: every row must at least record reading its assigned source.
  "bound":"3 * |a_list| + 4","relation":"confirms","relation_reason":"",
  "reads":[{"scope":"source","target":"solutions/1053/1053_38.dfy","reason":"call-graph"},
           {"scope":"prelude","target":"IntToString","reason":"cost"}],
- "attempts":[{"n":1,"action":"ghost steps + loop invariant steps == 3*i+1","outcome":"failed","note":"invariant not maintained across the inner append"},
-             {"n":2,"action":"charged s + [x] as 1, not |s|","outcome":"verified","note":""}],
+ "attempts":[{"n":1,"action":"ghost steps + loop invariant steps == 3*i+1","outcome":"failed","note":"invariant not maintained across the inner append","file":"attempts/1053/1053_38.1.dfy"},
+             {"n":2,"action":"charged s + [x] as 1, not |s|","outcome":"verified","note":"","file":"attempts/1053/1053_38.2.dfy"}],
  "attempts_used":2,"seconds":140,"why_failed":null}
 ```
 
