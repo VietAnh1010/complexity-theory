@@ -24,8 +24,9 @@ numbers need context.
   campaign 3.
 - `IntToString` became a one-unit operation in campaigns 6 and 7.
 - Campaign 7 is the first fresh-only draw (`--exclude-drawn`) and the first to
-  request `reads` traces. Only 20 of its 50 rows have traces because the rule
-  was added during the run.
+  request `reads` traces. The rule was added during the run; the 30 rows that
+  finished without one were rerun on 2026-09-24 with the newer prelude, so all
+  50 have traces but two configurations are mixed. Its README separates them.
 
 ## How to compare campaigns
 

@@ -260,8 +260,13 @@ def current_state(rows):
     distinct = list(latest.values())
     proved = [r for r in distinct if r["current_outcome"] == "proved"]
     revised = sorted(r["solution_id"] for r in distinct if r["revised"])
+    # no bounded agent proved it in any draw, and it is proved now: closed by
+    # hand. Keyed on outcomes, not on a record's shape -- a rerun record carries
+    # no `revision` flag but can still be an agent's miss on a row proved later.
+    agent_proved = {r["solution_id"] for r in rows
+                    if not r["redrawn"] and r["outcome"] == "proved"}
     closed_after = sorted(r["solution_id"] for r in distinct
-                          if r["revised"] and r["outcome"] != "proved"
+                          if r["solution_id"] not in agent_proved
                           and r["current_outcome"] == "proved")
     return {
         "distinct_rows": len(distinct),

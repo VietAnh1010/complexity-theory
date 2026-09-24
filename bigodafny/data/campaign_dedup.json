@@ -6,17 +6,17 @@
     "prove-sample-4",
     "prove-sample-5",
     "prove-sample-6",
-    "prove-sample-7"
+    "prove-sample-7",
+    "prove-sample-8"
   ],
   "incomplete_and_excluded": [],
-  "draw_records": 350,
-  "distinct_rows": 311,
+  "draw_records": 368,
+  "distinct_rows": 329,
   "drawn_more_than_once": 32,
-  "proved": 273,
-  "proved_by_an_agent": 261,
+  "proved": 292,
+  "proved_by_an_agent": 281,
   "proved_after_the_campaigns": [
     "1039_15",
-    "1387_19",
     "1582_118",
     "1718_1166",
     "1827_66",

@@ -1,224 +1,114 @@
-# `prove-sample-7/` — 40 of 50, the first fresh-only draw
+# `prove-sample-7`
 
-50 rows drawn with `--exclude-drawn` from the **68 rows no earlier campaign
-had touched**. Seed **20260923**. Three Sonnet agents, one slice each,
-**3 attempts and 5 minutes per row**.
+The first fresh-only draw: 50 rows from the 68 that no earlier campaign had
+drawn (`--exclude-drawn`, seed `20260923`). Three Sonnet agents per run, 3
+attempts and 5 minutes per row.
 
-**Result: 40 proved, 10 unresolved.**
+**Result: 44 proved, 6 unresolved.** Every row has a `reads` trace.
 
-`proofs.py` re-verified the whole overlay from scratch — **295/295 files
-verify, 0 contain `assume`** — and `audit.py` reports no disagreement between
-the trajectories and the verifier.
+## How the record was assembled
 
-## This is the campaign that is comparable with campaign 1
+A session rate limit interrupted the first run. The 50 records come from two
+runs:
 
-Campaigns 2–6 drew plainly, so each carried more rows an earlier campaign had
-already failed: 4%, 10%, 12%, 24%, 28%. This draw carries none. Rows never
-drawn were never selected on — earlier campaigns removed a random part of the
-pool (what they proved) and left a non-random part (what they failed), so the
-never-drawn remainder still looks like the original population.
+| slice | rows | proved | run |
+|---|---:|---:|---|
+| `traj_a` | 17 | 14 | original, 2026-09-23 |
+| `traj_c2` | 3 | 2 | original, 2026-09-23 |
+| `traj_b` | 17 | 16 | rerun, 2026-09-24 |
+| `traj_c` | 13 | 12 | rerun, 2026-09-24 |
 
-| all-fresh campaign | drawn | proved | rate |
-|---|---|---|---|
-| `prove-sample` (c1) | 50 | 42 | 84% |
-| `prove-sample-7` (c7) | 50 | 40 | 80% |
+Slices B and C finished before the `reads` requirement existed. On 2026-09-24
+each of their 30 rows was retried from scratch under the same budget
+(`rerun/PROMPT_rerun.md`). The agents could not read the row's existing proof,
+other solutions of the same problem, or any earlier record. Rerun proofs are in
+`rerun/<pid>/<sid>.dfy` and their verifier results in `rerun/verify.jsonl`. The
+replaced records, 24 of 30 proved, are in `old_record.jsonl`.
 
-Four points apart on 50 rows each is not a finding. What it does establish is
-that **the decline across campaigns 2–6 was the draw, not the agents**: the
-plain-draw rates fell to 60% by c6 while the fresh-row rate held.
+**The two runs used different configurations.** The rerun used the prelude's
+sort-cost and binary-search lemmas and the documentation that describes them.
+The original run did not. Compare the original configuration using its 50 rows:
+40 proved.
 
-## Slices, and a run that had to be restarted
+## Comparison
 
-| slice | drawn | proved |
-|---|---|---|
-| a | 17 | 14 |
-| b | 17 | 14 |
-| c | 13 | 10 |
-| c2 | 3 | 2 |
+Campaigns 1 and 7 are the only draws with no repeated rows:
 
-A session rate limit killed all three agents mid-run. Slice B finished; slice
-C stopped at 13 of 16 and its last 3 rows ran later as `c2`; slice A had
-written one trajectory line and left 14 `.dfy` files with no record behind
-them. Those 14 were **discarded, not kept**, and slice A was re-run from
-scratch — a proof with no trajectory has no attempt count, no elapsed time and
-no reading trace, and none of that can be recovered afterwards. Left in place
-they would also have handed the re-run agent a finished proof of its own
-assigned row.
+| campaign | proved |
+|---|---:|
+| `prove-sample` | 42 / 50 |
+| `prove-sample-7`, original run | 40 / 50 |
+| `prove-sample-7`, as recorded | 44 / 50 |
+
+Use the original-run figure for a like-for-like comparison.
 
 ## Rates by label
 
-| label | drawn | proved | rate |
-|---|---|---|---|
-| `O(n)` | 26 | 24 | 92% |
-| `O(nlogn)` | 11 | 7 | 64% |
-| `O(n**2)` | 6 | 3 | 50% |
-| `O(1)` | 6 | 6 | 100% |
-| `O(n*m)` | 1 | 0 | — |
+| label | proved |
+|---|---:|
+| `O(n)` | 26 / 26 |
+| `O(nlogn)` | 8 / 11 |
+| `O(n**2)` | 4 / 6 |
+| `O(1)` | 6 / 6 |
+| `O(n*m)` | 0 / 1 |
 
-The ordering is the one campaign 1 found and every pooled table since has
-kept: `O(1)` and `O(n)` close easily, `O(nlogn)` and `O(n**2)` do not. Read
-`data/prove_stats.md` for the pooled column; a single campaign's cell moves
-ten points on two rows.
+## Unresolved rows
 
-## One gap accounts for eleven of the fifty rows
+| row | obstacle | run |
+|---|---|---|
+| `1039_15` | `z3-nonlinear` | original |
+| `2128_3` | `z3-nonlinear` | original |
+| `2826_81` | `z3-nonlinear` | original |
+| `2704_92` | `z3-nonlinear` | original |
+| `1718_1166` | `z3-nonlinear` | rerun |
+| `281_12` | `decreases-star` | rerun |
 
-This is the campaign's finding, and it is not a fact about the agents.
+Four of the five `z3-nonlinear` rows combine a sort cost with a second
+logarithmic or product term. `1039_15`, `2128_3`, `2826_81` and `1718_1166`
+were later proved by hand with the prelude lemmas, outside the budget.
+`2704_92` fails on a string-length product instead.
 
-**Six proved rows are `looser-slack` for one reason**: `223_3085`, `2514_221`,
-`952_163`, `209_103`, `2198_52`, `566_183` all reused the opaque `SortCost`
-scaffold, which bounds merge sort by O(k²), instead of the tight `CeilLog2`
-recursion tree. Each proved O(n²) on an `O(nlogn)` row. The label is not in
-question; the proof did not reach it.
+`2704_92` recorded 1,500 seconds against the 5-minute limit. It remained
+unresolved, so the overrun did not inflate the result.
 
-**Five of the seven `z3-nonlinear` failures are the same shape**: a sort's cost
-summed with a second, independent term — a per-iteration binary search, a
-second sort, or a size fold — in one postcondition. `1039_15`, `2128_3`,
-`2826_81`, `1387_19` and `1718_1166` all died there. (An earlier version of
-this file also counted `2704_92`; its obstacle is a string-length product
-`|s0| * iters`, not a sort, so the count was twelve and is eleven.)
+## Relations of the 44 proofs
 
-So **11 of 50 rows were limited by one missing prelude lemma**: a reusable
-tight merge-sort cost bound that composes.
+| relation | rows |
+|---|---:|
+| `confirms` | 40 |
+| `looser-structural` | 3: `1043_358`, `794_794`, `1678_68` |
+| `tighter-costmodel` | 1: `2286_319` |
 
-**Resolved on 2026-09-23.** The prelude now carries it: `SortCost`, an opaque
-`NLogN`, `SortCostNLogN`, `SortCostWithin`, and a binary-search potential
-(`SearchPot`, `BisectStep`, `SearchLoopWithin`). With them, by hand and
-outside the budget:
+`1043_358` and `794_794` have loop counts set by input values. They are filed in
+`solutions-proved/value-bounded/`. `2286_319` multiplies without a modulus;
+the charge table costs each integer operation as one unit.
 
-- the six `looser-slack` rows now prove O(n log n), `confirms`;
-- the five sort-shaped failures are proved — four `confirms`, and `1718_1166`
-  `looser-structural`, since its O(n*m) label omits the two full-list sorts
-  the Python really does.
+`1678_68` has two conflicting proofs. The overlay proof charges the recursive
+`GcdEx` as one step and proves a constant bound. The rerun charges its
+recursion depth, which grows with the input value `rows`. The charge table and
+the Python recursion support the rerun, but the overlay proof was not changed.
 
-The campaign's own numbers above are unchanged: they are what a bounded agent
-achieved. Each revised row keeps the agent's result as `agent_outcome`, and
-every superseded line is in `old_record.jsonl`.
-
-`2128_3` is the sharpest version. Its agent **found a working proof on a 4th
-edit** — hoisting the repeated `CeilLog2(n)` into one ghost variable and
-inserting named intermediate asserts instead of one final combine — and
-discarded it, recording `unresolved`, because the budget is 3 attempts. That
-is the rule working: the measurement is what a bounded agent achieves, not
-what one could achieve given more.
-
-## Obstacles on the 10 unresolved rows
-
-| obstacle | n |
-|---|---|
-| `z3-nonlinear` | 7 |
-| `decreases-star` | 2 |
-| `budget` | 1 |
-
-Only one row ran out of budget on arithmetic rather than structure:
-`2913_484`, whose `ensures` was off by the `+2` post-loop output charge.
-
-## Relations on the 40 proved rows
-
-| relation | n |
-|---|---|
-| `confirms` | 31 |
-| `looser-slack` | 6 |
-| `looser-structural` | 2 |
-| `tighter-costmodel` | 1 |
-
-Every non-`confirms` row was re-read against the Python;
-`label_relation.jsonl` carries the reason and the agent's original claim.
-
-**`1043_358` and `794_794` are value-bounded** and were filed into
-`solutions-proved/value-bounded/`, which is now thirteen rows. Both are the
-plainest form: `1043_358` prints `"2" + "3" * (v - 1)` per test case, so the
-work per test is the input value; `794_794` loops `range(1, n)` where `n` is a
-per-test value, while the label's `n` counts test cases.
-
-**`2286_319` is the sixth unreduced-integer-product row**, after `2803_133`,
-`1073_645`, `2496_30`'s helper, `1359_4` and `1077_84`. `fac(x)` runs `p *= i`
-with no modulus, so the value reaches factorial scale while the charge table
-costs every `int` operation 1.
-
-## A row the vocabulary has no word for
-
-`888_6` proved at `60*n + |output| + 50` — **O(n) against an `O(n**2)`
-label**. A bound below the label has three recognised causes, and this is none
-of them:
-
-- not `tighter-translation`: the Python is a two-pointer sweep whose `p` and
-  `q` advance monotonically over `2n` elements and never reset, and the Dafny
-  mirrors it statement for statement;
-- not `tighter-costmodel`: no integer here grows past a machine word.
-
-The label is simply loose. An O(n) upper bound sits inside O(n²), so
-`confirms` is correct by the vocabulary's own definition — but it records
-nothing about a label that overstates by a full class. **The vocabulary has no
-value for that**, and the same silence would fall on any row whose profiled
-label is a class too high. Worth adding before it recurs.
+`2847_36` was a `decreases-star` failure in the original run. The rerun proved
+termination without changing the executable code.
 
 ## Effort
 
-| attempts used | rows | of which proved |
-|---|---|---|
-| 1 | 29 | 27 |
-| 2 | 10 | 10 |
-| 3 | 11 | 3 |
+| attempts used | rows | proved |
+|---|---:|---:|
+| 1 | 30 | 30 |
+| 2 | 11 | 10 |
+| 3 | 9 | 4 |
 
-Median 100 s per row; 7700 s of agent wall clock over the 50.
-
-Two-thirds of the proofs closed on the first attempt, and **every row that
-reached a second attempt closed on it**. The third attempt returned 3 of 11.
-The budget is spent in the right place: a row that does not fall out quickly
-usually does not fall out at all.
-
-## Reading traces
-
-New this campaign, and only partly collected: **20 of 50 rows** carry one —
-slice A's 17 and C2's 3, the slices that ran after the requirement was added.
-Slice B's 17 and slice C's first 13 finished before it existed and were **not
-backfilled**, because a trace is a record of what an agent opened and cannot
-be reconstructed after the fact.
-
-Of the 42 entries recorded, 21 name the source row, 20 a prelude declaration
-and 1 a helper. Median depth 2, maximum 3. The prelude functions agents
-actually had to open: `IntToString` 5, `Join` 3, `Sort` 3, `FloorDiv` 2, then
-`AbsInt`, `MinSeq`, `FloorMod` and `SortInts` once each.
-
-
-## Revised 2026-09-23
-
-These rows' records were brought to their latest state after this campaign.
-`hand` means proved or tightened by hand, outside any budget, mostly with the
-prelude's sort-cost and binary-search lemmas; a campaign name means a later
-campaign's bounded agent proved a row this one missed.
-
-| row | label | this campaign | now | by |
-|---|---|---|---|---|
-| `1039_15` | O(nlogn) | unresolved | proved, `confirms` | hand |
-| `1387_19` | O(nlogn) | unresolved | proved, `confirms` | hand |
-| `1718_1166` | O(n*m) | unresolved | proved, `looser-structural` | hand |
-| `209_103` | O(nlogn) | proved, `looser-slack` | proved, `confirms` | hand |
-| `2128_3` | O(nlogn) | unresolved | proved, `confirms` | hand |
-| `2198_52` | O(nlogn) | proved, `looser-slack` | proved, `confirms` | hand |
-| `223_3085` | O(nlogn) | proved, `looser-slack` | proved, `confirms` | hand |
-| `2514_221` | O(nlogn) | proved, `looser-slack` | proved, `confirms` | hand |
-| `2826_81` | O(nlogn) | unresolved | proved, `confirms` | hand |
-| `566_183` | O(nlogn) | proved, `looser-slack` | proved, `confirms` | hand |
-| `952_163` | O(nlogn) | proved, `looser-slack` | proved, `confirms` | hand |
-
-**The numbers in this README are unchanged**: they are what this campaign's
-bounded agents achieved. Each revised trajectory keeps the agent's result as
-`agent_outcome`, `agent_relation` and `agent_bound`, and every superseded line
-— trajectory, relation, obstacle, audit — is in `old_record.jsonl`, with the
-file it came from.
+Median time was 110 seconds per row.
 
 ## Files
 
-| file | what it is |
+| file | contents |
 |---|---|
-| `manifest.jsonl` | the 50 drawn rows |
-| `excluded.jsonl` | rows skipped at draw time: 237 already proved, 39 drawn before |
-| `slice_{a,b,c}.jsonl`, `slice_c2.jsonl` | the split handed to each agent |
-| `PROMPT_{a,b,c,c2}.md` | the brief each agent was given |
-| `traj_{a,b,c,c2}.jsonl` | one line per row: outcome, bound, attempts, obstacle, reads |
-| `label_relation.jsonl` | hand-checked relations for the 10 rows needing one |
-| `obstacles.jsonl` | the 10 unresolved rows with their obstacle codes |
-| `audit.jsonl` | verifier output joined to the trajectories |
-| `summary.json` | the counts every number above is drawn from |
-| `old_record.jsonl` | every line superseded by the 2026-09-23 revision, with its source file |
+| `manifest.jsonl`, `excluded.jsonl` | the draw |
+| `slice_*.jsonl`, `PROMPT_*.md` | original-run slices and prompts |
+| `traj_{a,b,c,c2}.jsonl` | one record per row; B and C are rerun records |
+| `rerun/` | rerun slices, prompt, staging records, proofs, and verifier results |
+| `label_relation.jsonl`, `obstacles.jsonl` | reviewed relations and obstacle codes |
+| `audit.jsonl`, `summary.json` | verifier results joined to records |
+| `old_record.jsonl` | superseded records |

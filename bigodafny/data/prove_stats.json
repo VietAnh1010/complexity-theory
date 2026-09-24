@@ -1,25 +1,25 @@
 {
   "generated_from": "batches/prove-sample*/ and data/complexity_proofs.jsonl",
-  "campaigns": 7,
-  "drawn_including_redrawn": 350,
+  "campaigns": 8,
+  "drawn_including_redrawn": 368,
   "redrawn_already_proved": [
     "2128_34",
     "305_76"
   ],
-  "drawn": 348,
-  "proved": 261,
-  "unresolved": 87,
-  "rate": 0.75,
+  "drawn": 366,
+  "proved": 281,
+  "unresolved": 85,
+  "rate": 0.7678,
   "by_label": {
     "O(1)": {
-      "pooled_proved": 28,
-      "pooled_drawn": 31,
-      "rate": 0.9032,
+      "pooled_proved": 30,
+      "pooled_drawn": 33,
+      "rate": 0.9091,
       "by_campaign": [
         {
           "drawn": 5,
           "proved": 4,
-          "p_vs_pooled": 0.3989
+          "p_vs_pooled": 0.3791
         },
         {
           "drawn": 3,
@@ -34,7 +34,7 @@
         {
           "drawn": 4,
           "proved": 3,
-          "p_vs_pooled": 0.3344
+          "p_vs_pooled": 0.317
         },
         {
           "drawn": 1,
@@ -44,11 +44,16 @@
         {
           "drawn": 4,
           "proved": 3,
-          "p_vs_pooled": 0.3344
+          "p_vs_pooled": 0.317
         },
         {
           "drawn": 6,
           "proved": 6,
+          "p_vs_pooled": 1.0
+        },
+        {
+          "drawn": 2,
+          "proved": 2,
           "p_vs_pooled": 1.0
         }
       ]
@@ -76,18 +81,19 @@
           "proved": 1,
           "p_vs_pooled": 0.25
         },
+        null,
         null
       ]
     },
     "O(n)": {
-      "pooled_proved": 134,
-      "pooled_drawn": 159,
-      "rate": 0.8428,
+      "pooled_proved": 145,
+      "pooled_drawn": 170,
+      "rate": 0.8529,
       "by_campaign": [
         {
           "drawn": 24,
           "proved": 24,
-          "p_vs_pooled": 0.0245
+          "p_vs_pooled": 0.0397
         },
         {
           "drawn": 23,
@@ -97,54 +103,59 @@
         {
           "drawn": 18,
           "proved": 12,
-          "p_vs_pooled": 0.0512
+          "p_vs_pooled": 0.0385
         },
         {
           "drawn": 25,
           "proved": 21,
-          "p_vs_pooled": 1.0
+          "p_vs_pooled": 0.779
         },
         {
           "drawn": 27,
           "proved": 22,
-          "p_vs_pooled": 0.6029
+          "p_vs_pooled": 0.584
         },
         {
           "drawn": 16,
           "proved": 11,
-          "p_vs_pooled": 0.0931
+          "p_vs_pooled": 0.0737
         },
         {
           "drawn": 26,
-          "proved": 24,
-          "p_vs_pooled": 0.4163
+          "proved": 26,
+          "p_vs_pooled": 0.0253
+        },
+        {
+          "drawn": 11,
+          "proved": 9,
+          "p_vs_pooled": 0.6703
         }
       ]
     },
     "O(n**2)": {
-      "pooled_proved": 32,
-      "pooled_drawn": 57,
-      "rate": 0.5614,
+      "pooled_proved": 36,
+      "pooled_drawn": 60,
+      "rate": 0.6,
       "by_campaign": [
         {
           "drawn": 6,
           "proved": 5,
-          "p_vs_pooled": 0.2399
+          "p_vs_pooled": 0.4125
         },
         {
           "drawn": 7,
           "proved": 3,
-          "p_vs_pooled": 0.7067
+          "p_vs_pooled": 0.4484
         },
         {
           "drawn": 9,
           "proved": 6,
-          "p_vs_pooled": 0.74
+          "p_vs_pooled": 1.0
         },
         {
           "drawn": 11,
           "proved": 7,
-          "p_vs_pooled": 0.7652
+          "p_vs_pooled": 1.0
         },
         {
           "drawn": 5,
@@ -154,12 +165,17 @@
         {
           "drawn": 13,
           "proved": 5,
-          "p_vs_pooled": 0.2649
+          "p_vs_pooled": 0.1556
         },
         {
           "drawn": 6,
-          "proved": 3,
+          "proved": 4,
           "p_vs_pooled": 1.0
+        },
+        {
+          "drawn": 3,
+          "proved": 3,
+          "p_vs_pooled": 0.28
         }
       ]
     },
@@ -182,7 +198,8 @@
           "drawn": 1,
           "proved": 0,
           "p_vs_pooled": 1.0
-        }
+        },
+        null
       ]
     },
     "O(n+m)": {
@@ -216,6 +233,7 @@
           "proved": 3,
           "p_vs_pooled": null
         },
+        null,
         null
       ]
     },
@@ -234,18 +252,19 @@
         null,
         null,
         null,
+        null,
         null
       ]
     },
     "O(nlogn)": {
-      "pooled_proved": 51,
-      "pooled_drawn": 81,
-      "rate": 0.6296,
+      "pooled_proved": 53,
+      "pooled_drawn": 82,
+      "rate": 0.6463,
       "by_campaign": [
         {
           "drawn": 11,
           "proved": 5,
-          "p_vs_pooled": 0.3488
+          "p_vs_pooled": 0.2127
         },
         {
           "drawn": 11,
@@ -255,33 +274,38 @@
         {
           "drawn": 12,
           "proved": 10,
-          "p_vs_pooled": 0.231
+          "p_vs_pooled": 0.2343
         },
         {
           "drawn": 10,
           "proved": 7,
-          "p_vs_pooled": 0.7538
-        },
-        {
-          "drawn": 13,
-          "proved": 8,
           "p_vs_pooled": 1.0
         },
         {
           "drawn": 13,
+          "proved": 8,
+          "p_vs_pooled": 0.7798
+        },
+        {
+          "drawn": 13,
           "proved": 7,
-          "p_vs_pooled": 0.5692
+          "p_vs_pooled": 0.402
         },
         {
           "drawn": 11,
-          "proved": 7,
+          "proved": 8,
+          "p_vs_pooled": 0.7567
+        },
+        {
+          "drawn": 1,
+          "proved": 1,
           "p_vs_pooled": 1.0
         }
       ]
     },
     "O(nlogn+mlogm)": {
-      "pooled_proved": 2,
-      "pooled_drawn": 2,
+      "pooled_proved": 3,
+      "pooled_drawn": 3,
       "rate": 1.0,
       "by_campaign": [
         null,
@@ -298,24 +322,29 @@
         null,
         null,
         null,
-        null
+        null,
+        {
+          "drawn": 1,
+          "proved": 1,
+          "p_vs_pooled": null
+        }
       ]
     }
   },
   "obstacles": {
-    "z3-nonlinear": 39,
+    "z3-nonlinear": 37,
     "value-to-size": 19,
-    "invariant-gap": 12,
-    "decreases-star": 10,
-    "budget": 3,
-    "prelude-gap": 2,
+    "invariant-gap": 13,
+    "decreases-star": 9,
+    "prelude-gap": 3,
+    "budget": 2,
     "recursion-depth": 1,
     "label-mismatch": 1
   },
   "relations": {
-    "confirms": 219,
-    "looser-slack": 20,
-    "looser-structural": 12,
+    "confirms": 244,
+    "looser-slack": 14,
+    "looser-structural": 13,
     "tighter-costmodel": 7,
     "tighter-translation": 2,
     "contradicts": 1
@@ -325,13 +354,13 @@
   },
   "obstacle_by_label": {
     "O(nlogn)": {
-      "z3-nonlinear": 20,
+      "z3-nonlinear": 19,
       "value-to-size": 6,
       "invariant-gap": 3,
       "prelude-gap": 1
     },
     "O(n**2)": {
-      "z3-nonlinear": 14,
+      "z3-nonlinear": 13,
       "decreases-star": 6,
       "invariant-gap": 3,
       "budget": 1,
@@ -349,12 +378,11 @@
     },
     "O(n)": {
       "value-to-size": 11,
-      "invariant-gap": 5,
-      "decreases-star": 4,
+      "invariant-gap": 6,
+      "decreases-star": 3,
       "z3-nonlinear": 2,
-      "recursion-depth": 1,
-      "prelude-gap": 1,
-      "budget": 1
+      "prelude-gap": 2,
+      "recursion-depth": 1
     },
     "O(n*m)": {
       "z3-nonlinear": 1
@@ -362,7 +390,7 @@
   },
   "relation_by_label": {
     "O(n)": {
-      "confirms": 126,
+      "confirms": 137,
       "looser-structural": 8
     },
     "O(n+m)": {
@@ -370,15 +398,15 @@
       "tighter-costmodel": 1
     },
     "O(1)": {
-      "confirms": 26,
-      "looser-structural": 2
+      "confirms": 27,
+      "looser-structural": 3
     },
     "O(nlogn)": {
-      "confirms": 33,
-      "looser-slack": 18
+      "confirms": 41,
+      "looser-slack": 12
     },
     "O(n**2)": {
-      "confirms": 23,
+      "confirms": 27,
       "tighter-costmodel": 6,
       "looser-structural": 1,
       "looser-slack": 1,
@@ -392,16 +420,17 @@
     },
     "O(nlogn+mlogm)": {
       "tighter-translation": 1,
-      "looser-structural": 1
+      "looser-structural": 1,
+      "confirms": 1
     },
     "O(logn)": {
       "confirms": 1
     }
   },
   "attempts_when_proved": {
-    "1": 153,
-    "2": 68,
-    "3": 38,
+    "1": 168,
+    "2": 71,
+    "3": 40,
     "4": 2
   },
   "seconds_when_proved": {
@@ -439,7 +468,11 @@
     },
     "prove-sample-7": {
       "drawn": 50,
-      "proved": 40
+      "proved": 44
+    },
+    "prove-sample-8": {
+      "drawn": 18,
+      "proved": 16
     }
   },
   "repeat_draws": {
@@ -859,35 +892,42 @@
     },
     "prove-sample-7": {
       "fresh_drawn": 50,
-      "fresh_proved": 40,
+      "fresh_proved": 44,
+      "repeat_drawn": 0,
+      "repeat_proved": 0,
+      "repeat_share": 0.0
+    },
+    "prove-sample-8": {
+      "fresh_drawn": 18,
+      "fresh_proved": 16,
       "repeat_drawn": 0,
       "repeat_proved": 0,
       "repeat_share": 0.0
     }
   },
   "dedup": {
-    "distinct_rows": 311,
-    "proved": 261,
-    "proved_now": 273,
-    "rate": 0.8392,
+    "distinct_rows": 329,
+    "proved": 281,
+    "proved_now": 292,
+    "rate": 0.8541,
     "drawn_more_than_once": 32,
     "closed_on_a_later_draw": 16,
     "by_label": {
       "O(1)": {
-        "drawn": 29,
-        "proved": 28
+        "drawn": 31,
+        "proved": 30
       },
       "O(logn)": {
         "drawn": 2,
         "proved": 1
       },
       "O(n)": {
-        "drawn": 149,
-        "proved": 134
+        "drawn": 160,
+        "proved": 145
       },
       "O(n**2)": {
-        "drawn": 46,
-        "proved": 32
+        "drawn": 49,
+        "proved": 36
       },
       "O(n*m)": {
         "drawn": 2,
@@ -902,12 +942,12 @@
         "proved": 1
       },
       "O(nlogn)": {
-        "drawn": 69,
-        "proved": 51
+        "drawn": 70,
+        "proved": 53
       },
       "O(nlogn+mlogm)": {
-        "drawn": 2,
-        "proved": 2
+        "drawn": 3,
+        "proved": 3
       }
     },
     "campaigns": [
@@ -917,18 +957,19 @@
       "prove-sample-4",
       "prove-sample-5",
       "prove-sample-6",
-      "prove-sample-7"
+      "prove-sample-7",
+      "prove-sample-8"
     ],
     "incomplete_and_excluded": [],
     "note": "one record per distinct row, most positive outcome kept. A corpus-level share, not a per-campaign rate."
   },
   "current": {
-    "distinct_rows": 311,
-    "proved_now": 273,
-    "rate_now": 0.8778,
+    "distinct_rows": 329,
+    "proved_now": 292,
+    "rate_now": 0.8875,
     "relations_now": {
-      "confirms": 248,
-      "looser-structural": 14,
+      "confirms": 268,
+      "looser-structural": 13,
       "tighter-costmodel": 7,
       "tighter-translation": 2,
       "contradicts": 1,
@@ -938,24 +979,18 @@
       "1039_15",
       "1180_626",
       "1333_127",
-      "1387_19",
       "1421_89",
       "1453_211",
       "1582_118",
       "1586_188",
-      "1718_1166",
       "1827_66",
       "1892_121",
-      "209_103",
       "2105_248",
       "2128_3",
       "2128_34",
-      "2198_52",
       "2225_154",
-      "223_3085",
       "2423_48",
       "2496_30",
-      "2514_221",
       "2593_332",
       "2725_319",
       "2742_0",
@@ -963,14 +998,11 @@
       "3070_180",
       "499_82",
       "514_140",
-      "566_183",
       "661_47",
-      "85_71",
-      "952_163"
+      "85_71"
     ],
     "closed_after_campaign": [
       "1039_15",
-      "1387_19",
       "1582_118",
       "1718_1166",
       "1827_66",
@@ -985,8 +1017,8 @@
   },
   "corpus": {
     "solutions_rows": 344,
-    "proof_files": 304,
-    "proved_rows": 304,
+    "proof_files": 320,
+    "proved_rows": 320,
     "note": "proved_rows counts every proof in the corpus, including the 33 that predate the campaigns and the rows proved by hand."
   },
   "rows": [
@@ -6121,7 +6153,7 @@
       "obstacle": null,
       "resolved": null,
       "attempts_used": 1,
-      "seconds": 100,
+      "seconds": 280,
       "slice": "b"
     },
     {
@@ -6134,10 +6166,10 @@
       "current_relation": null,
       "revised": false,
       "redrawn": false,
-      "relation": null,
+      "relation": "confirms",
       "obstacle": null,
       "resolved": null,
-      "attempts_used": 2,
+      "attempts_used": 1,
       "seconds": 90,
       "slice": "c"
     },
@@ -6168,11 +6200,11 @@
       "current_relation": null,
       "revised": false,
       "redrawn": false,
-      "relation": null,
+      "relation": "confirms",
       "obstacle": null,
       "resolved": null,
       "attempts_used": 1,
-      "seconds": 100,
+      "seconds": 90,
       "slice": "b"
     },
     {
@@ -6180,16 +6212,16 @@
       "solution_id": "1387_19",
       "label": "O(nlogn)",
       "split": "strict",
-      "outcome": "unresolved",
+      "outcome": "proved",
       "current_outcome": "proved",
       "current_relation": null,
-      "revised": true,
+      "revised": false,
       "redrawn": false,
-      "relation": null,
-      "obstacle": "z3-nonlinear",
+      "relation": "confirms",
+      "obstacle": null,
       "resolved": null,
-      "attempts_used": 3,
-      "seconds": 280,
+      "attempts_used": 1,
+      "seconds": 120,
       "slice": "c"
     },
     {
@@ -6214,16 +6246,16 @@
       "solution_id": "1511_9",
       "label": "O(n**2)",
       "split": "strict",
-      "outcome": "unresolved",
-      "current_outcome": "unresolved",
+      "outcome": "proved",
+      "current_outcome": "proved",
       "current_relation": null,
       "revised": false,
       "redrawn": false,
-      "relation": null,
-      "obstacle": "z3-nonlinear",
+      "relation": "confirms",
+      "obstacle": null,
       "resolved": null,
-      "attempts_used": 3,
-      "seconds": 300,
+      "attempts_used": 2,
+      "seconds": 220,
       "slice": "b"
     },
     {
@@ -6236,11 +6268,11 @@
       "current_relation": null,
       "revised": false,
       "redrawn": false,
-      "relation": null,
+      "relation": "confirms",
       "obstacle": null,
       "resolved": null,
       "attempts_used": 1,
-      "seconds": 30,
+      "seconds": 40,
       "slice": "c"
     },
     {
@@ -6270,11 +6302,11 @@
       "current_relation": null,
       "revised": false,
       "redrawn": false,
-      "relation": null,
+      "relation": "looser-structural",
       "obstacle": null,
       "resolved": null,
       "attempts_used": 1,
-      "seconds": 50,
+      "seconds": 180,
       "slice": "b"
     },
     {
@@ -6284,14 +6316,14 @@
       "split": "strict",
       "outcome": "unresolved",
       "current_outcome": "proved",
-      "current_relation": "looser-structural",
-      "revised": true,
+      "current_relation": null,
+      "revised": false,
       "redrawn": false,
       "relation": null,
       "obstacle": "z3-nonlinear",
       "resolved": null,
       "attempts_used": 3,
-      "seconds": 280,
+      "seconds": 300,
       "slice": "c"
     },
     {
@@ -6321,11 +6353,11 @@
       "current_relation": null,
       "revised": false,
       "redrawn": false,
-      "relation": null,
+      "relation": "confirms",
       "obstacle": null,
       "resolved": null,
       "attempts_used": 1,
-      "seconds": 90,
+      "seconds": 100,
       "slice": "b"
     },
     {
@@ -6338,11 +6370,11 @@
       "current_relation": null,
       "revised": false,
       "redrawn": false,
-      "relation": null,
+      "relation": "confirms",
       "obstacle": null,
       "resolved": null,
-      "attempts_used": 1,
-      "seconds": 60,
+      "attempts_used": 2,
+      "seconds": 45,
       "slice": "c"
     },
     {
@@ -6372,11 +6404,11 @@
       "current_relation": null,
       "revised": false,
       "redrawn": false,
-      "relation": null,
+      "relation": "confirms",
       "obstacle": null,
       "resolved": null,
-      "attempts_used": 2,
-      "seconds": 150,
+      "attempts_used": 1,
+      "seconds": 100,
       "slice": "b"
     },
     {
@@ -6387,13 +6419,13 @@
       "outcome": "proved",
       "current_outcome": "proved",
       "current_relation": "confirms",
-      "revised": true,
+      "revised": false,
       "redrawn": false,
-      "relation": "looser-slack",
+      "relation": "confirms",
       "obstacle": null,
       "resolved": null,
       "attempts_used": 1,
-      "seconds": 90,
+      "seconds": 110,
       "slice": "c"
     },
     {
@@ -6423,11 +6455,11 @@
       "current_relation": null,
       "revised": false,
       "redrawn": false,
-      "relation": null,
+      "relation": "confirms",
       "obstacle": null,
       "resolved": null,
       "attempts_used": 1,
-      "seconds": 50,
+      "seconds": 30,
       "slice": "b"
     },
     {
@@ -6438,12 +6470,12 @@
       "outcome": "proved",
       "current_outcome": "proved",
       "current_relation": "confirms",
-      "revised": true,
+      "revised": false,
       "redrawn": false,
-      "relation": "looser-slack",
+      "relation": "confirms",
       "obstacle": null,
       "resolved": null,
-      "attempts_used": 3,
+      "attempts_used": 2,
       "seconds": 150,
       "slice": "c"
     },
@@ -6472,13 +6504,13 @@
       "outcome": "proved",
       "current_outcome": "proved",
       "current_relation": "confirms",
-      "revised": true,
+      "revised": false,
       "redrawn": false,
-      "relation": "looser-slack",
+      "relation": "confirms",
       "obstacle": null,
       "resolved": null,
-      "attempts_used": 2,
-      "seconds": 220,
+      "attempts_used": 3,
+      "seconds": 280,
       "slice": "b"
     },
     {
@@ -6495,7 +6527,7 @@
       "obstacle": null,
       "resolved": null,
       "attempts_used": 3,
-      "seconds": 180,
+      "seconds": 260,
       "slice": "c"
     },
     {
@@ -6523,13 +6555,13 @@
       "outcome": "proved",
       "current_outcome": "proved",
       "current_relation": "confirms",
-      "revised": true,
+      "revised": false,
       "redrawn": false,
-      "relation": "looser-slack",
+      "relation": "confirms",
       "obstacle": null,
       "resolved": null,
       "attempts_used": 1,
-      "seconds": 120,
+      "seconds": 110,
       "slice": "b"
     },
     {
@@ -6542,7 +6574,7 @@
       "current_relation": null,
       "revised": false,
       "redrawn": false,
-      "relation": null,
+      "relation": "confirms",
       "obstacle": null,
       "resolved": null,
       "attempts_used": 1,
@@ -6576,11 +6608,11 @@
       "current_relation": null,
       "revised": false,
       "redrawn": false,
-      "relation": null,
+      "relation": "confirms",
       "obstacle": null,
       "resolved": null,
       "attempts_used": 1,
-      "seconds": 40,
+      "seconds": 30,
       "slice": "b"
     },
     {
@@ -6630,8 +6662,8 @@
       "relation": null,
       "obstacle": "decreases-star",
       "resolved": null,
-      "attempts_used": 1,
-      "seconds": 60,
+      "attempts_used": 2,
+      "seconds": 240,
       "slice": "b"
     },
     {
@@ -6673,16 +6705,16 @@
       "solution_id": "2847_36",
       "label": "O(n)",
       "split": "strict",
-      "outcome": "unresolved",
-      "current_outcome": "unresolved",
+      "outcome": "proved",
+      "current_outcome": "proved",
       "current_relation": null,
       "revised": false,
       "redrawn": false,
-      "relation": null,
-      "obstacle": "decreases-star",
+      "relation": "confirms",
+      "obstacle": null,
       "resolved": null,
-      "attempts_used": 1,
-      "seconds": 60,
+      "attempts_used": 3,
+      "seconds": 280,
       "slice": "b"
     },
     {
@@ -6690,16 +6722,16 @@
       "solution_id": "2913_484",
       "label": "O(n)",
       "split": "loose",
-      "outcome": "unresolved",
-      "current_outcome": "unresolved",
+      "outcome": "proved",
+      "current_outcome": "proved",
       "current_relation": null,
       "revised": false,
       "redrawn": false,
-      "relation": null,
-      "obstacle": "budget",
+      "relation": "confirms",
+      "obstacle": null,
       "resolved": null,
-      "attempts_used": 3,
-      "seconds": 240,
+      "attempts_used": 2,
+      "seconds": 150,
       "slice": "c"
     },
     {
@@ -6729,11 +6761,11 @@
       "current_relation": null,
       "revised": false,
       "redrawn": false,
-      "relation": null,
+      "relation": "confirms",
       "obstacle": null,
       "resolved": null,
-      "attempts_used": 2,
-      "seconds": 220,
+      "attempts_used": 1,
+      "seconds": 280,
       "slice": "b"
     },
     {
@@ -6746,11 +6778,11 @@
       "current_relation": null,
       "revised": false,
       "redrawn": false,
-      "relation": null,
+      "relation": "confirms",
       "obstacle": null,
       "resolved": null,
       "attempts_used": 1,
-      "seconds": 30,
+      "seconds": 20,
       "slice": "c"
     },
     {
@@ -6780,11 +6812,11 @@
       "current_relation": null,
       "revised": false,
       "redrawn": false,
-      "relation": null,
+      "relation": "confirms",
       "obstacle": null,
       "resolved": null,
-      "attempts_used": 1,
-      "seconds": 100,
+      "attempts_used": 2,
+      "seconds": 150,
       "slice": "b"
     },
     {
@@ -6795,13 +6827,13 @@
       "outcome": "proved",
       "current_outcome": "proved",
       "current_relation": "confirms",
-      "revised": true,
+      "revised": false,
       "redrawn": false,
-      "relation": "looser-slack",
+      "relation": "confirms",
       "obstacle": null,
       "resolved": null,
-      "attempts_used": 2,
-      "seconds": 150,
+      "attempts_used": 3,
+      "seconds": 260,
       "slice": "c"
     },
     {
@@ -6831,11 +6863,11 @@
       "current_relation": null,
       "revised": false,
       "redrawn": false,
-      "relation": null,
+      "relation": "confirms",
       "obstacle": null,
       "resolved": null,
       "attempts_used": 1,
-      "seconds": 50,
+      "seconds": 40,
       "slice": "b"
     },
     {
@@ -6848,11 +6880,11 @@
       "current_relation": null,
       "revised": false,
       "redrawn": false,
-      "relation": null,
+      "relation": "confirms",
       "obstacle": null,
       "resolved": null,
-      "attempts_used": 1,
-      "seconds": 40,
+      "attempts_used": 2,
+      "seconds": 90,
       "slice": "c"
     },
     {
@@ -6885,8 +6917,8 @@
       "relation": "looser-structural",
       "obstacle": null,
       "resolved": null,
-      "attempts_used": 3,
-      "seconds": 280,
+      "attempts_used": 1,
+      "seconds": 260,
       "slice": "b"
     },
     {
@@ -6931,14 +6963,320 @@
       "outcome": "proved",
       "current_outcome": "proved",
       "current_relation": "confirms",
-      "revised": true,
+      "revised": false,
       "redrawn": false,
-      "relation": "looser-slack",
+      "relation": "confirms",
+      "obstacle": null,
+      "resolved": null,
+      "attempts_used": 1,
+      "seconds": 220,
+      "slice": "b"
+    },
+    {
+      "campaign": "prove-sample-8",
+      "solution_id": "1387_34",
+      "label": "O(n)",
+      "split": "strict",
+      "outcome": "proved",
+      "current_outcome": "proved",
+      "current_relation": null,
+      "revised": false,
+      "redrawn": false,
+      "relation": null,
+      "obstacle": null,
+      "resolved": null,
+      "attempts_used": 1,
+      "seconds": 30,
+      "slice": "a"
+    },
+    {
+      "campaign": "prove-sample-8",
+      "solution_id": "1434_1616",
+      "label": "O(n**2)",
+      "split": "strict",
+      "outcome": "proved",
+      "current_outcome": "proved",
+      "current_relation": null,
+      "revised": false,
+      "redrawn": false,
+      "relation": null,
+      "obstacle": null,
+      "resolved": null,
+      "attempts_used": 1,
+      "seconds": 150,
+      "slice": "b"
+    },
+    {
+      "campaign": "prove-sample-8",
+      "solution_id": "1622_48",
+      "label": "O(n)",
+      "split": "strict",
+      "outcome": "proved",
+      "current_outcome": "proved",
+      "current_relation": null,
+      "revised": false,
+      "redrawn": false,
+      "relation": null,
+      "obstacle": null,
+      "resolved": null,
+      "attempts_used": 3,
+      "seconds": 90,
+      "slice": "c"
+    },
+    {
+      "campaign": "prove-sample-8",
+      "solution_id": "1718_621",
+      "label": "O(nlogn+mlogm)",
+      "split": "strict",
+      "outcome": "proved",
+      "current_outcome": "proved",
+      "current_relation": null,
+      "revised": false,
+      "redrawn": false,
+      "relation": null,
       "obstacle": null,
       "resolved": null,
       "attempts_used": 2,
-      "seconds": 260,
+      "seconds": 60,
+      "slice": "a"
+    },
+    {
+      "campaign": "prove-sample-8",
+      "solution_id": "187_762",
+      "label": "O(n**2)",
+      "split": "strict",
+      "outcome": "proved",
+      "current_outcome": "proved",
+      "current_relation": null,
+      "revised": false,
+      "redrawn": false,
+      "relation": null,
+      "obstacle": null,
+      "resolved": null,
+      "attempts_used": 1,
+      "seconds": 140,
       "slice": "b"
+    },
+    {
+      "campaign": "prove-sample-8",
+      "solution_id": "1892_347",
+      "label": "O(n)",
+      "split": "strict",
+      "outcome": "proved",
+      "current_outcome": "proved",
+      "current_relation": null,
+      "revised": false,
+      "redrawn": false,
+      "relation": null,
+      "obstacle": null,
+      "resolved": null,
+      "attempts_used": 2,
+      "seconds": 80,
+      "slice": "c"
+    },
+    {
+      "campaign": "prove-sample-8",
+      "solution_id": "1966_59",
+      "label": "O(n)",
+      "split": "strict",
+      "outcome": "proved",
+      "current_outcome": "proved",
+      "current_relation": null,
+      "revised": false,
+      "redrawn": false,
+      "relation": null,
+      "obstacle": null,
+      "resolved": null,
+      "attempts_used": 1,
+      "seconds": 45,
+      "slice": "a"
+    },
+    {
+      "campaign": "prove-sample-8",
+      "solution_id": "2015_175",
+      "label": "O(n)",
+      "split": "strict",
+      "outcome": "proved",
+      "current_outcome": "proved",
+      "current_relation": null,
+      "revised": false,
+      "redrawn": false,
+      "relation": null,
+      "obstacle": null,
+      "resolved": null,
+      "attempts_used": 1,
+      "seconds": 90,
+      "slice": "b"
+    },
+    {
+      "campaign": "prove-sample-8",
+      "solution_id": "2087_119",
+      "label": "O(n)",
+      "split": "strict",
+      "outcome": "unresolved",
+      "current_outcome": "unresolved",
+      "current_relation": null,
+      "revised": false,
+      "redrawn": false,
+      "relation": null,
+      "obstacle": "invariant-gap",
+      "resolved": null,
+      "attempts_used": 3,
+      "seconds": 280,
+      "slice": "c"
+    },
+    {
+      "campaign": "prove-sample-8",
+      "solution_id": "2183_2",
+      "label": "O(n)",
+      "split": "strict",
+      "outcome": "proved",
+      "current_outcome": "proved",
+      "current_relation": null,
+      "revised": false,
+      "redrawn": false,
+      "relation": null,
+      "obstacle": null,
+      "resolved": null,
+      "attempts_used": 1,
+      "seconds": 40,
+      "slice": "a"
+    },
+    {
+      "campaign": "prove-sample-8",
+      "solution_id": "2193_138",
+      "label": "O(n)",
+      "split": "strict",
+      "outcome": "proved",
+      "current_outcome": "proved",
+      "current_relation": null,
+      "revised": false,
+      "redrawn": false,
+      "relation": null,
+      "obstacle": null,
+      "resolved": null,
+      "attempts_used": 1,
+      "seconds": 80,
+      "slice": "b"
+    },
+    {
+      "campaign": "prove-sample-8",
+      "solution_id": "2231_77",
+      "label": "O(n)",
+      "split": "strict",
+      "outcome": "unresolved",
+      "current_outcome": "unresolved",
+      "current_relation": null,
+      "revised": false,
+      "redrawn": false,
+      "relation": null,
+      "obstacle": "prelude-gap",
+      "resolved": null,
+      "attempts_used": 3,
+      "seconds": 420,
+      "slice": "c"
+    },
+    {
+      "campaign": "prove-sample-8",
+      "solution_id": "241_47",
+      "label": "O(n)",
+      "split": "strict",
+      "outcome": "proved",
+      "current_outcome": "proved",
+      "current_relation": null,
+      "revised": false,
+      "redrawn": false,
+      "relation": null,
+      "obstacle": null,
+      "resolved": null,
+      "attempts_used": 1,
+      "seconds": 40,
+      "slice": "a"
+    },
+    {
+      "campaign": "prove-sample-8",
+      "solution_id": "2847_45",
+      "label": "O(1)",
+      "split": "strict",
+      "outcome": "proved",
+      "current_outcome": "proved",
+      "current_relation": null,
+      "revised": false,
+      "redrawn": false,
+      "relation": null,
+      "obstacle": null,
+      "resolved": null,
+      "attempts_used": 1,
+      "seconds": 40,
+      "slice": "b"
+    },
+    {
+      "campaign": "prove-sample-8",
+      "solution_id": "3017_45",
+      "label": "O(nlogn)",
+      "split": "strict",
+      "outcome": "proved",
+      "current_outcome": "proved",
+      "current_relation": null,
+      "revised": false,
+      "redrawn": false,
+      "relation": null,
+      "obstacle": null,
+      "resolved": null,
+      "attempts_used": 1,
+      "seconds": 90,
+      "slice": "c"
+    },
+    {
+      "campaign": "prove-sample-8",
+      "solution_id": "307_116",
+      "label": "O(n**2)",
+      "split": "strict",
+      "outcome": "proved",
+      "current_outcome": "proved",
+      "current_relation": null,
+      "revised": false,
+      "redrawn": false,
+      "relation": null,
+      "obstacle": null,
+      "resolved": null,
+      "attempts_used": 1,
+      "seconds": 90,
+      "slice": "a"
+    },
+    {
+      "campaign": "prove-sample-8",
+      "solution_id": "450_204",
+      "label": "O(1)",
+      "split": "loose",
+      "outcome": "proved",
+      "current_outcome": "proved",
+      "current_relation": null,
+      "revised": false,
+      "redrawn": false,
+      "relation": null,
+      "obstacle": null,
+      "resolved": null,
+      "attempts_used": 1,
+      "seconds": 50,
+      "slice": "b"
+    },
+    {
+      "campaign": "prove-sample-8",
+      "solution_id": "85_141",
+      "label": "O(n)",
+      "split": "strict",
+      "outcome": "proved",
+      "current_outcome": "proved",
+      "current_relation": null,
+      "revised": false,
+      "redrawn": false,
+      "relation": null,
+      "obstacle": null,
+      "resolved": null,
+      "attempts_used": 2,
+      "seconds": 110,
+      "slice": "c"
     }
   ]
 }
