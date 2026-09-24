@@ -65,4 +65,8 @@ still sound, just no longer tight.
 ## Labels proved
 
     O(n*m) 9 · O(nlogn) 7 · O(n) 5 · O(n**2) 4 · O(n+m) 3
-    O(1) 2 · O(n**2+m**2) 1 · O(nlogn+mlogm) 1 · O(logn) 1
+## Current scope
+
+The overlay has 304 proof files. The relation to the label is recorded beside
+each row in the campaign records; a proof may confirm the label, expose a
+structural cost the label omits, or be tighter for a documented model reason.

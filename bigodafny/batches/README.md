@@ -15,7 +15,7 @@ against what wave 5 actually contained.
 
 ## `labelaudit/` is the one that is not just manifests
 
-- `PROMPT.md` — the agent prompt. Its cost table is **pre-axiom**; a banner at
+- `PROMPT.md` — the agent prompt. Its prompt records the current stipulated cost model; a banner at
   the top says so, and `batches/cost-axioms/PLAN.md` step 2 replaces it.
 - `verdicts_NN.jsonl` — the audit's output, one verdict per row. Committed:
   these are judgements, not a copy of the corpus.

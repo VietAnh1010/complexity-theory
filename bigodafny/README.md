@@ -1,165 +1,88 @@
-# bigodafny
+# BigODafny
 
-> **Working on this? Read `DOCS.md` first** — reading order, current state, and
-> the document map. This file covers what the dataset *is*; `DOCS.md` covers how
-> to work on it.
+BigODafny is a Python-to-Dafny translation corpus built from BigO(Bench)'s
+`time_complexity_test_set`. It contains 640 competitive-programming solutions.
+Each row keeps the complexity label inferred by BigO(Bench) for the original
+Python program.
 
-A Python -> Dafny translation dataset built from BigO(Bench)'s
-`time_complexity_test_set`, keeping BigOBench's inferred time complexity label
-attached to every row.
+Read [DOCS.md](DOCS.md) before working on the corpus. It explains the current
+state, the status directories, the gates, and which documents are authoritative.
 
-## Why the dataclass matters
+## What a row contains
 
-639 of the 640 BigOBench solutions are stdin scripts:
-
-```python
-n = int(input())
-a = list(map(int, input().split()))
-...
-print(ans)
-```
-
-There is no function, so there is no signature to translate. The one typed
-argument list in the data is `dataclass_code` -- an `Input` dataclass that
-BigOBench generated so its profiler could scale inputs:
-
-```python
-@dataclass
-class Input:
-    n: int
-    a_list: List[int]
-```
-
-That is dead weight if you are only consuming the benchmark, and it is the
-whole foundation here. `signature.py` turns it into:
+Most source solutions are stdin scripts, not functions. BigO(Bench) supplies an
+`Input` dataclass for each problem; BigODafny turns that dataclass into the
+Dafny entry point:
 
 ```dafny
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 ```
 
-309 of 311 problems map. The 2 that do not are recorded with the reason (a bare
-`list` annotation with no element type), never guessed.
+`signature.py` performs that conversion. It maps 309 of 311 problems. The two
+unmappable dataclasses use an untyped `list`, so the project records them as
+unmappable instead of guessing an element type.
 
-## How a row is judged
+## Behaviour checking
 
-Compile, then diff. No specs and no `dafny verify` gate.
+The normal harness compiles a Dafny row to Python, calls `Solve` with values
+created by BigO(Bench)'s own `Input.from_str`, and compares stdout.
 
-```
-solutions/<pid>/<sid>.dfy
-   |  dafny translate py --include-runtime
-   v
-out-py/module_.py  ->  Solve(...)
-                            ^
-                            |  Input.from_str(stdin)   <- BigOBench's own parser
-                       stored test input
-                            |
-                     stdout  ==  stored expected output
+```text
+stored input -> Input.from_str -> Solve(...) -> translated Python stdout
+                                         |
+                                   compare with stored output
 ```
 
-Reusing `Input.from_str` rather than writing a Dafny stdin parser is what keeps
-the typed method boundary. The Dafny side is pure computation.
+There are two behaviour tiers:
 
-## The split is measured, not read
+| Tier | Rows | Check |
+|---|---:|---|
+| `strict` | 540 | Compare against the stored output. |
+| `loose` | 100 | Compare the Dafny translation with the original Python. |
 
-Running the **original Python** against its own stored tests, only **540 of 640**
-reproduce the expected output byte-for-byte. Codeforces accepted many of these
-under a token-based or special checker, so the stored output is one accepted
-answer, not the only one.
+The split is empirical: only 540 original Python programs reproduce the stored
+output byte-for-byte. The other 100 often have multiple accepted outputs, so a
+byte comparison would reject the original program itself.
 
-That 540 is the ceiling for any translation, so it defines the split:
+## Current corpus shape
 
-| split | rows | meaning |
-|---|---|---|
-| `strict` | 540 | the Python matches exactly; a translation can be held to it |
-| `loose` | 100 | it does not -- kept and labelled, never scored by byte-diff |
+The six status directories partition the 640 rows:
 
-A regex over the problem statement ("if there are several solutions, print any
-of them") predicts this badly: precision 0.38, recall 0.45. It is retained as
-`nondet_hint` and gates nothing.
+| Directory | Rows | Meaning |
+|---|---:|---|
+| `solutions/` | 344 | Behaviour-gated, safety-verified, and label-screened. |
+| `solutions-unscreened/` | 127 | Behaviour-gated but not label-audited. |
+| `solutions-disputed/` | 157 | The audit found a label or translation concern. |
+| `solutions-ungateable/` | 5 | The normal behaviour gate cannot reach a reliable verdict. |
+| `solutions-unverified/` | 3 | Behaviour-gated, but Dafny cannot prove safety or termination. |
+| `solutions-untranslated/` | 4 | Bare-float output has no practical exact Dafny specification. |
 
-## The dataclass can disagree with the Python
+`solutions-proved/` is an overlay, not a seventh status. It contains 304
+instrumented copies with machine-checked complexity bounds.
 
-Four problems so far parse into an `Input` whose fields are not what the Python
-reads: an off-by-one `n` (problem 1073), an unaggregated list (1306), a single
-line wrapped as a row (2505), and a `[0]`-prefix present for one problem and
-absent everywhere else (2771). Signature correct, translation correct, answers
-wrong. Nothing detects this in general -- `from_str` is LLM-generated per
-problem and may transform values, not merely split them. Read
-`.build/<prefix>_<SID>/dataclass.py` before assuming your logic is at fault.
+## Repository map
 
-## Usage
+| Path | Purpose |
+|---|---|
+| `solutions*/` | Dafny corpus, grouped by current status. |
+| `prelude.dfy` | Shared helpers used by translations and proofs. |
+| `data/` | Generated corpus state, gate results, and analysis records. |
+| `batches/` | Campaign manifests, prompts, trajectories, and audit evidence. |
+| `COMPLEXITY.md` | The stipulated cost model and proof approach. |
+| `cli.py` | Deterministic extract, signature, scaffold, baseline, validate, and dataset workflow. |
+
+## Toolchain
+
+The repository uses Dafny 4.11.0 and Z3 4.12.1. Typical commands are:
 
 ```bash
-dotnet tool install -g dafny --version 4.11.0
-pip install z3-solver==4.12.1.0 numpy
-
-python3 cli.py all                     # extract, signatures, scaffold, baseline, dataset
-python3 cli.py validate --only 5_100   # one solution
-python3 cli.py validate --generated    # all of them, largest test tier
-python3 cli.py selftest                # prove the validator rejects bad translations
+export PATH="$PATH:$HOME/.dotnet/tools"
+python3 cli.py all
+python3 validate.py --only 1053_38
+python3 difftest.py --loose
+python3 proofs.py
 ```
 
-## Layout
-
-| Path | What |
-|---|---|
-| `cli.py` | subcommands |
-| `extract.py` | download + project into `data/tasks.jsonl` |
-| `signature.py` | `dataclass_code` -> Dafny signature, via `ast` |
-| `scaffold.py` | `.dfy` stubs; never clobbers a real body |
-| `baseline.py` | runs the original Python; defines the split |
-| `validate.py` | `dafny translate` + stdout diff |
-| `dataset.py` | joins everything into `data/dataset.jsonl` + `stats.json` |
-| `selftest.py` | asserts wrong answers are `fail` and syntax errors are `build` |
-| `prelude.dfy` | `FloorDiv`, `IntToString`, `Join`, `SplitWs`, merge sort |
-| `solutions/` | one `.dfy` per solution -- the authoring surface |
-
-Rows are partitioned across five directories by status, each with its own
-`README.md`; `solutions-proved/` is a sixth, holding instrumented copies rather
-than rows of its own.
-
-| directory | rows | why it is not simply clean |
-|---|---|---|
-| `solutions/` | 354 | -- it is |
-| `solutions-unscreened/` | 127 | its complexity label was never screened |
-| `solutions-disputed/` | 152 | the label audit says the label does not match the code |
-| `solutions-unverified/` | 3 | `dafny verify` cannot discharge its safety obligations |
-| `solutions-untranslated/` | 4 | it will not be translated; the file says why |
-| `solutions-proved/` | 33 files | the complexity label, machine-checked (overlay, not a partition) |
-
-`data/tasks.jsonl` (76 MB) and `.cache/` are gitignored and regenerable;
-`data/index.jsonl` is the committed manifest.
-
-## prelude.dfy
-
-Verifies clean (10 verified, 0 errors) and every helper is cross-checked against
-CPython:
-
-- `FloorDiv`/`FloorMod` -- 1458/1458 cases agree with Python `//` and `%`.
-  Dafny's own `/` is Euclidean and disagrees whenever the divisor is negative.
-- `IntToString` matches `str()`, `SortInts` matches `sorted()` on 200 random
-  cases, `SplitWs` matches `str.split()`.
-
-## Status
-
-**636 of 640 rows are translated**; the other 4 cannot be (`print()` of a bare
-Python float has no finite specification, see
-`solutions-untranslated/README.md`).
-
-| | |
-|---|---|
-| behaviour gated | 529 valid, 3 fail |
-| safety verified | 350 of 636 |
-| complexity proved | 31 rows, 33 files, all verifying, zero `assume` |
-| label audit | 506 rows screened: 347 `ok`, 152 `mismatch`, 7 `unsure` |
-
-The cost model is now a **stipulated axiom set**, not a measurement of Dafny's
-Python backend — `COMPLEXITY.md` and `batches/cost-axioms/PLAN.md`. Every label
-is therefore a claim about an idealised machine, which is the intended design:
-a label that moves with the backend or the machine is a benchmark result, not a
-label. `validate.py` and `difftest.py` check behaviour, which is the part that
-*is* implementation-independent to check; the complexity claim is checked by
-proof, in `solutions-proved/`.
-
-Open: the 152 disputed rows await manual review, and 127 unscreened rows have
-never been through the audit at all.
+The complexity model is intentionally not a measurement of Dafny's Python
+backend. It is a stipulated, implementation-independent model described in
+[COMPLEXITY.md](COMPLEXITY.md).
