@@ -85,9 +85,22 @@ def main():
         for r in read_jsonl(f"{args.batch}/label_relation.jsonl")
     }
     for sid, row in normalised.items():
-        if sid in traj:
+        # a rerun record's relation is about the rerun's own proof, not the
+        # proof label_relation.jsonl describes
+        if sid in traj and not traj[sid].get("rerun"):
             traj[sid]["relation"] = row.get("relation")
             traj[sid]["relation_reason"] = row.get("reason", "")
+
+    # A rerun proves each row afresh in rerun/<pid>/<sid>.dfy, away from the
+    # overlay, and rerun/verify.jsonl is the verifier's result on those files.
+    # An existing overlay proof is deliberately NOT consulted for a rerun row:
+    # the retry must not use it, so "unresolved while a proof exists" is the
+    # expected case there, listed rather than failed.
+    rerun_verify = {
+        r["solution_id"]: r
+        for r in read_jsonl(f"{args.batch}/rerun/verify.jsonl")
+    } if os.path.exists(f"{args.batch}/rerun/verify.jsonl") else {}
+    not_used = []
 
     rows, problems, no_reads = [], [], []
     for sid, m in sorted(manifest.items()):
@@ -111,9 +124,23 @@ def main():
             "agent_outcome": (t or {}).get("agent_outcome", claimed or "not attempted"),
             "revised": bool((t or {}).get("revision")),
         }
+        rerun = (t or {}).get("rerun")
+        if rerun:
+            rv = rerun_verify.get(sid, {})
+            rec["rerun"] = True
+            rec["rerun_proof"] = rerun.get("proof")
+            rec["rerun_proof_verified"] = rv.get("verified") if claimed == "proved" else None
         rows.append(rec)
         if t is None:
             problems.append(f"{sid}: no trajectory entry")
+        elif rerun:
+            rv = rerun_verify.get(sid, {})
+            if claimed == "proved" and not rv.get("verified"):
+                problems.append(f"{sid}: rerun claims proved, its own proof does not verify")
+            if rv.get("assume_count"):
+                problems.append(f"{sid}: rerun proof carries {rv['assume_count']} assume(s)")
+            if claimed != "proved" and verified:
+                not_used.append(sid)
         elif claimed == "proved" and not verified:
             problems.append(f"{sid}: claimed proved, verifier disagrees")
         elif claimed == "unresolved" and verified:
@@ -187,6 +214,12 @@ def main():
             "proved": sum(1 for r in rows if r["agent_outcome"] == "proved"),
             "unresolved": sum(1 for r in rows if r["agent_outcome"] != "proved"),
             "revised_after": sorted(r["solution_id"] for r in rows if r["revised"]),
+        },
+        "rerun": {
+            "rows": sum(1 for r in rows if r.get("rerun")),
+            "proved": sum(1 for r in rows if r.get("rerun") and r["claimed"] == "proved"),
+            "unresolved": sum(1 for r in rows if r.get("rerun") and r["claimed"] != "proved"),
+            "existing_proof_not_used": sorted(not_used),
         },
         "reads_missing": sorted(no_reads),
         "reads_coverage": (

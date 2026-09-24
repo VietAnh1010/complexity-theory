@@ -39,6 +39,10 @@ BATCHES = ["prove-sample", "prove-sample-2", "prove-sample-3",
 # rows a campaign drew although a proof already existed: a sampler bug, not
 # new work, so they are not in the denominator
 REDRAWN = {"prove-sample-5": {"2128_34", "305_76"}}
+# rows with a verified proof in the overlay now, whoever wrote it
+VERIFIED = {r["solution_id"] for r in
+            (json.loads(l) for l in (DATA / "complexity_proofs.jsonl").open() if l.strip())
+            if r.get("verified")} if (DATA / "complexity_proofs.jsonl").exists() else set()
 
 
 def jsonl(p):
@@ -79,7 +83,8 @@ def load():
             old.setdefault(o["record"]["solution_id"], {})[o["file"]] = o["record"]
         for sid, m in man.items():
             t = traj.get(sid, {})
-            then = old.get(sid, {})
+            # a rerun record is the campaign's record; old lines are history
+            then = {} if t.get("rerun") else old.get(sid, {})
             outcome = t.get("agent_outcome", t.get("outcome", "not attempted"))
             rel_then = then.get("label_relation.jsonl") or rel.get(sid) or {}
             obst_then = then.get("obstacles.jsonl") or obst.get(sid) or {}
@@ -89,16 +94,19 @@ def load():
                 "label": m["label"],
                 "split": m.get("split"),
                 "outcome": outcome,
-                "current_outcome": t.get("outcome", "not attempted"),
+                # the row's state now is the verifier's, not any record's
+                "current_outcome": "proved" if sid in VERIFIED else t.get("outcome", "not attempted"),
                 "current_relation": (rel.get(sid) or {}).get("relation")
                                     if t.get("outcome") == "proved" else None,
                 "revised": bool(t.get("revision")),
                 "redrawn": sid in REDRAWN.get(b, set()),
-                "relation": (rel_then.get("relation") if "revision" not in rel_then
-                             else None) if outcome == "proved" else None,
+                "relation": (t.get("relation") if t.get("rerun") else
+                             (rel_then.get("relation") if "revision" not in rel_then
+                              else None)) if outcome == "proved" else None,
                 # campaign 1 kept the obstacle beside the relation; later ones
                 # moved it to its own file
-                "obstacle": (obst_then.get("obstacle") or rel_then.get("obstacle")),
+                "obstacle": ((t.get("rerun") or {}).get("obstacle") if t.get("rerun")
+                             else (obst_then.get("obstacle") or rel_then.get("obstacle"))),
                 "resolved": rel_then.get("resolved"),
                 "attempts_used": t.get("attempts_used"),
                 "seconds": t.get("seconds"),

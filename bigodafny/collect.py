@@ -195,6 +195,11 @@ def relation_of(sid, traj_row, rel):
     """
     if not traj_row:
         return "not attempted"
+    # a rerun's relation is about its own proof, not the one label_relation
+    # describes
+    if traj_row.get("rerun"):
+        return traj_row.get("relation") or (
+            "confirms" if traj_row.get("outcome") == "proved" else "unresolved")
     if sid in rel:
         return rel[sid]["relation"]
     return "confirms" if traj_row.get("outcome") == "proved" else "unresolved"
@@ -218,7 +223,9 @@ def agent_view(d, traj, rel, obst=None):
             old_traj.update(recs)
     traj2 = []
     for r in traj:
-        a = dict(old_traj.get(r["solution_id"], r))
+        # only a REVISED record is swapped for its agent-era line; a rerun
+        # record is itself the campaign's record for that row
+        a = dict(old_traj.get(r["solution_id"], r)) if r.get("revision") else dict(r)
         a["current_outcome"] = r.get("outcome")
         a["current_bound"] = r.get("bound")
         a["current_relation"] = r.get("relation")
@@ -261,8 +268,9 @@ def prove_sample(manifest, traj, rel, depth, meta=None, obst=None):
             # kept so the normalisation stays auditable.
             "relation": relation_of(s, t, rel),
             "relation_reason": (rel.get(s) or {}).get("reason"),
-            "obstacle": (rel.get(s) or {}).get("obstacle")
-                        or (obst.get(s) or {}).get("obstacle"),
+            "obstacle": ((t.get("rerun") or {}).get("obstacle") if t.get("rerun") else
+                         (rel.get(s) or {}).get("obstacle")
+                         or (obst.get(s) or {}).get("obstacle")),
             "agent_said_agrees": t.get("agrees_with_label"),
             "agent_said_relation": (rel.get(s) or {}).get("agent_said_relation"),
             "attempts_used": t.get("attempts_used"),

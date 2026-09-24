@@ -48,6 +48,9 @@ HERE = Path(__file__).resolve().parent
 BATCHES = ["prove-sample", "prove-sample-2", "prove-sample-3", "prove-sample-4",
            "prove-sample-5", "prove-sample-6", "prove-sample-7", "prove-sample-8"]
 RANK = {"proved": 2, "unresolved": 1, "not attempted": 0}
+VERIFIED = {r["solution_id"] for r in
+            (json.loads(l) for l in (HERE / "data" / "complexity_proofs.jsonl").open()
+             if l.strip()) if r.get("verified")}
 
 
 def short(b):
@@ -95,8 +98,9 @@ def draws(batches):
                 "label": m["label"],
                 "campaign": b,
                 "slice": t.get("_slice"),
-                # the row's latest state -- this pass answers a corpus question
-                "outcome": t.get("outcome", "not attempted"),
+                # the row's latest state -- this pass answers a corpus question,
+                # so it is the verifier's word, not a record's
+                "outcome": "proved" if sid in VERIFIED else t.get("outcome", "not attempted"),
                 # what the campaign's bounded agent achieved, kept beside it
                 "agent_outcome": t.get("agent_outcome", t.get("outcome", "not attempted")),
                 "revised": bool(t.get("revision")),
