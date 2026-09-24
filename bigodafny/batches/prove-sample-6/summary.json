@@ -69,9 +69,7 @@
     "row's own loop carries decreases *, which our copy may not keep; replacing it needs a spiral-arithmetic termination bound not derived in budget": 1,
     "the O(n) mask-scan loop's iteration bound was proved via a crude iters+mask<=2^30 argument instead of an actual log2 lemma, producing a ~2^30-scale literal that made the final nonlinear arithmetic check time out; needed a real Log2(0x40000000)=30 bound instead of the brute constant": 1
   },
-  "problems": [
-    "bigodafny/solutions-proved/1678/1678_68.dfy: proof deleted, and 1678_68 is not in this batch"
-  ],
+  "problems": [],
   "proved": 32,
   "reads_coverage": 0.0,
   "reads_missing": [

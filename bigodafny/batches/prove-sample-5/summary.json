@@ -65,9 +65,7 @@
     "needs a histogram partition-sum lemma (SeqSum over 26 buckets equals |v_1|) plus a Repeat-length lemma, neither in prelude": 1,
     "the outer level counter l advances only when the inner pos counter exhausts a full l-1 length pass, so total iterations telescope to a triangular-number O(l^2) count; bounding l by log2(b) via Pow2 inversion and closing the quadratic invariant is a two-lemma proof that did not fit the 5-minute budget": 1
   },
-  "problems": [
-    "bigodafny/solutions-proved/1678/1678_68.dfy: proof deleted, and 1678_68 is not in this batch"
-  ],
+  "problems": [],
   "proved": 41,
   "reads_coverage": 0.0,
   "reads_missing": [
