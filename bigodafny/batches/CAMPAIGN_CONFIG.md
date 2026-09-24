@@ -1,8 +1,8 @@
 # Campaign configuration: what the pooled numbers mean
 
-Seven proof campaigns ran between 2026-09-16 and 2026-09-23. Each drew 50 rows
+Eight proof campaigns ran between 2026-09-16 and 2026-09-24. Each drew 50 rows
 except campaign 5, which has 48 counted rows after two already-proved rows were
-removed. The campaigns did not use one fixed configuration, so their pooled
+removed, and campaign 8, which took the last 18 never-drawn rows. The campaigns did not use one fixed configuration, so their pooled
 numbers need context.
 
 | campaign | date | draw |
@@ -14,6 +14,7 @@ numbers need context.
 | `prove-sample-5` | 2026-09-22 | 48 counted |
 | `prove-sample-6` | 2026-09-23 | 50 |
 | `prove-sample-7` | 2026-09-23 | 50 |
+| `prove-sample-8` | 2026-09-24 | 18 |
 
 ## Differences that matter
 
@@ -27,6 +28,9 @@ numbers need context.
   request `reads` traces. The rule was added during the run; the 30 rows that
   finished without one were rerun on 2026-09-24 with the newer prelude, so all
   50 have traces but two configurations are mixed. Its README separates them.
+- Campaign 8 drew the whole remaining fresh pool, 18 rows, so it is a census
+  rather than a sample. It is the first campaign whose brief included the
+  prelude's sort-cost and binary-search lemmas from the start.
 
 ## How to compare campaigns
 

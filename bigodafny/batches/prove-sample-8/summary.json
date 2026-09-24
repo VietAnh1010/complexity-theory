@@ -1,0 +1,54 @@
+{
+  "batch": "batches/prove-sample-8",
+  "by_label": {
+    "O(1)": {
+      "campaign_proved": 2,
+      "drawn": 2,
+      "proved": 2
+    },
+    "O(n)": {
+      "campaign_proved": 9,
+      "drawn": 11,
+      "proved": 9
+    },
+    "O(n**2)": {
+      "campaign_proved": 3,
+      "drawn": 3,
+      "proved": 3
+    },
+    "O(nlogn)": {
+      "campaign_proved": 1,
+      "drawn": 1,
+      "proved": 1
+    },
+    "O(nlogn+mlogm)": {
+      "campaign_proved": 1,
+      "drawn": 1,
+      "proved": 1
+    }
+  },
+  "by_relation": {
+    "confirms": 16
+  },
+  "campaign": {
+    "proved": 16,
+    "revised_after": [],
+    "unresolved": 2
+  },
+  "drawn": 18,
+  "obstacles": {
+    "bounding the run-length map's size by the 27-symbol alphabet needs a pigeonhole/distinct-keys cardinality argument threaded through a value that transiently takes the '$' sentinel; the required invariant chain did not close in budget": 1,
+    "the inner while's potential-style invariant relating the ghost iteration counter to the shrinking |r| does not close for the terminal (done=true, |r| unchanged) branch within budget": 1
+  },
+  "problems": [],
+  "proved": 16,
+  "reads_coverage": 1.0,
+  "reads_missing": [],
+  "rerun": {
+    "existing_proof_not_used": [],
+    "proved": 0,
+    "rows": 0,
+    "unresolved": 0
+  },
+  "unresolved": 2
+}
