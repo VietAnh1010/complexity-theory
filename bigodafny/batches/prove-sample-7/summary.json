@@ -7,12 +7,12 @@
       "proved": 6
     },
     "O(n)": {
-      "campaign_proved": 24,
+      "campaign_proved": 26,
       "drawn": 26,
       "proved": 24
     },
     "O(n**2)": {
-      "campaign_proved": 3,
+      "campaign_proved": 4,
       "drawn": 6,
       "proved": 3
     },
@@ -22,75 +22,42 @@
       "proved": 1
     },
     "O(nlogn)": {
-      "campaign_proved": 7,
+      "campaign_proved": 8,
       "drawn": 11,
       "proved": 11
     }
   },
   "by_relation": {
-    "confirms": 41,
+    "confirms": 40,
     "looser-structural": 3,
-    "tighter-costmodel": 1
+    "tighter-costmodel": 1,
+    "unrecorded": 1
   },
   "campaign": {
-    "proved": 40,
+    "proved": 44,
     "revised_after": [
       "1039_15",
-      "1387_19",
-      "1718_1166",
-      "209_103",
       "2128_3",
-      "2198_52",
-      "223_3085",
-      "2514_221",
-      "2826_81",
-      "566_183",
-      "952_163"
+      "2826_81"
     ],
-    "unresolved": 10
+    "unresolved": 6
   },
   "drawn": 50,
   "obstacles": {
-    "decreases * termination bound requires a multi-branch geometric invariant (A,B,U,D vs x,y) not derivable as a quick loop count": 1,
-    "ensures bound arithmetic off by the +2 post-loop output charge; ran out of attempts before the 4th edit that would fix it": 1,
-    "outer loop's steps<=1+i*(4n+3) invariant needs a nonlinear product i*n the solver would not close within the time budget, even after the inner loop's j<=n-3 bound was fixed": 1,
-    "outer while's decreases * has no stated input cap to fold in, and the true termination argument (GCD-like mod-reduction convergence) is a substantial separate proof, not a loop-counting exercise": 1,
-    "the Reduce postcondition needs |s0|*iters <= |s0|*|s0| from iters<=|s0|, a monotone-multiplication fact never isolated into its own lemma (per the isolate-every-multiplication rule), and Solve's compounded nonlinear asserts (i*i growth, length-squared folding) push verification over the 30s limit before that gets fixed": 1
+    "the Reduce postcondition needs |s0|*iters <= |s0|*|s0| from iters<=|s0|, a monotone-multiplication fact never isolated into its own lemma (per the isolate-every-multiplication rule), and Solve's compounded nonlinear asserts (i*i growth, length-squared folding) push verification over the 30s limit before that gets fixed": 1,
+    "the outer while's own termination is only justified in the source by decreases *; a real bound needs a potential-function argument (this is CF 389A's fixed-point mod-reduction) tying the number of full n^2 sweeps to how fast values shrink under repeated modulo, which is a quantitative number-theoretic argument, not a size-based invariant, and out of reach of the budget": 1
   },
   "problems": [],
   "proved": 45,
-  "reads_coverage": 0.4,
-  "reads_missing": [
-    "1043_358",
-    "1134_928",
-    "1332_41",
-    "1387_19",
-    "1511_9",
-    "1586_257",
-    "1678_68",
-    "1718_1166",
-    "1954_83",
-    "1972_129",
-    "2072_257",
-    "209_103",
-    "2185_274",
-    "2198_52",
-    "223_3085",
-    "2286_319",
-    "2514_221",
-    "2589_26",
-    "2700_137",
-    "281_12",
-    "2847_36",
-    "2913_484",
-    "307_14",
-    "354_35",
-    "566_101",
-    "566_183",
-    "669_40",
-    "704_614",
-    "794_794",
-    "952_163"
-  ],
+  "reads_coverage": 1.0,
+  "reads_missing": [],
+  "rerun": {
+    "existing_proof_not_used": [
+      "1718_1166"
+    ],
+    "proved": 28,
+    "rows": 30,
+    "unresolved": 2
+  },
   "unresolved": 5
 }
