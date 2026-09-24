@@ -40,12 +40,15 @@
     "bounding the run-length map's size by the 27-symbol alphabet needs a pigeonhole/distinct-keys cardinality argument threaded through a value that transiently takes the '$' sentinel; the required invariant chain did not close in budget": 1,
     "the inner while's potential-style invariant relating the ghost iteration counter to the shrinking |r| does not close for the terminal (done=true, |r| unchanged) branch within budget": 1
   },
-  "problems": [],
+  "problems": [
+    "bigodafny/solutions-proved/1678/1678_68.dfy: proof deleted, and 1678_68 is not in this batch"
+  ],
   "proved": 16,
   "reads_coverage": 1.0,
   "reads_missing": [],
   "rerun": {
     "existing_proof_not_used": [],
+    "not_promoted": [],
     "proved": 0,
     "rows": 0,
     "unresolved": 0

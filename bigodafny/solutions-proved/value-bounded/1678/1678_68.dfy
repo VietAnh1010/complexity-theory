@@ -25,7 +25,7 @@
 //     print("Yes" if c>0 else "No")
 // --------------------------------------------------------------------
 
-include "../../prelude.dfy"
+include "../../../prelude.dfy"
 import opened Prelude
 
 function GcdEx(a: int, b: int): (int, int, int)
@@ -46,32 +46,57 @@ lemma GcdExPos(a: int, b: int)
   if a != 0 { GcdExPos(b % a, a); }
 }
 
+// The recursion count of GcdEx, mirroring its own recursive structure. This
+// is not a size- or value-independent quantity: the recursive call is on
+// b % a, which strictly decreases the FIRST argument, so the count is bounded
+// by that argument's magnitude, not by a constant.
+ghost function GcdExSteps(a: int, b: int): nat
+  decreases if a < 0 then -a else a
+{
+  if a == 0 then 1 else 1 + GcdExSteps(b % a, a)
+}
+
+// A loose (non-tight) bound: recursion depth is at most a + 1 for a >= 0,
+// because a strictly decreases (b % a < a for a > 0, by Dafny's Euclidean %)
+// every step until it hits 0. The tight bound is O(log(min(a,b))) via a
+// Fibonacci argument; this weaker linear bound is what a bounded proof
+// reaches, and it is enough to show the recursion is NOT a constant.
+lemma GcdExStepsBound(a: int, b: int)
+  requires a >= 0
+  ensures GcdExSteps(a, b) <= a + 1
+  decreases a
+{
+  if a == 0 {
+  } else {
+    GcdExStepsBound(b % a, a);
+  }
+}
+
 function CeilDiv(p: int, q: int): int
   requires q > 0
 {
   -FloorDiv(-p, q)
 }
 
-// GcdEx is a pure function, not a ghost-step-counted method, and the charge
-// table has no entry for "recursive function over an int" (only over a seq or
-// string). Solve calls it once and does a fixed number of arithmetic ops
-// around it -- no loop -- so it is charged as a single opaque step, the same
-// as any other O(1) helper call the table does not itemise further.
+// Instrumented copy. GcdEx's own recursion is charged its step count,
+// GcdExSteps, bounded by GcdExStepsBound -- linear in `rows`, not constant.
 method Solve(rows: int, columns: int, value: int) returns (output: string, ghost steps: nat)
   requires rows >= 1
   requires columns >= 1
-  ensures steps <= 15
+  ensures steps <= rows + 15
 {
   steps := 1;
   var a := rows;
   var b := columns;
   var c := value;
   var r := GcdEx(a, b);
-  steps := steps + 1;
+  GcdExStepsBound(a, b);
+  steps := steps + GcdExSteps(a, b);
   var x := r.0;
   var y := r.1;
   var g := r.2;
   GcdExPos(a, b);
+  steps := steps + 1;
   if c % g != 0 {
     output := "No";
     steps := steps + 1;
@@ -81,8 +106,7 @@ method Solve(rows: int, columns: int, value: int) returns (output: string, ghost
     var k1 := CeilDiv(-xp * g, b);
     var k2 := FloorDiv(yp * g, a);
     var cc := AbsInt(k2 - k1 + 1);
-    steps := steps + 6;
     output := if cc > 0 then "Yes" else "No";
-    steps := steps + 1;
+    steps := steps + 7;
   }
 }

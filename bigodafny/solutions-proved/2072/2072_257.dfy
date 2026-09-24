@@ -22,15 +22,16 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(s: string) returns (output: string, ghost steps: nat)
-  ensures steps <= 6 * |s| + 12
+  ensures steps <= 12 * |s| + 30
 {
   steps := 1;
   var n := |s|;
   var d := seq(4, _ => ' ');
   var idx := 0;
   while idx < 4
+    invariant 0 <= idx <= 4
     invariant |d| == 4
-    invariant steps <= 2 * idx + 1
+    invariant steps <= 1 + 2 * idx
     decreases 4 - idx
   {
     d := d[idx := '?'];
@@ -39,16 +40,16 @@ method Solve(s: string) returns (output: string, ghost steps: nat)
   }
   idx := 0;
   while idx < n
-    invariant |d| == 4
     invariant 0 <= idx <= n
-    invariant steps <= 9 + 3 * idx
+    invariant |d| == 4
+    invariant steps <= 9 + 4 * idx
     decreases n - idx
   {
     if s[idx] != '!' {
       d := d[idx % 4 := s[idx]];
     }
     idx := idx + 1;
-    steps := steps + 3;
+    steps := steps + 4;
   }
   var countR := 0;
   var countB := 0;
@@ -56,9 +57,9 @@ method Solve(s: string) returns (output: string, ghost steps: nat)
   var countG := 0;
   idx := 0;
   while idx < n
-    invariant |d| == 4
     invariant 0 <= idx <= n
-    invariant steps <= 9 + 3 * n + 3 * idx
+    invariant |d| == 4
+    invariant steps <= 9 + 4 * n + 4 * idx
     decreases n - idx
   {
     if s[idx] == '!' {
@@ -74,8 +75,8 @@ method Solve(s: string) returns (output: string, ghost steps: nat)
       }
     }
     idx := idx + 1;
-    steps := steps + 3;
+    steps := steps + 4;
   }
   output := IntToString(countR) + " " + IntToString(countB) + " " + IntToString(countY) + " " + IntToString(countG);
-  steps := steps + 3;
+  steps := steps + 8;
 }

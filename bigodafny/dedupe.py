@@ -100,7 +100,7 @@ def draws(batches):
                 "slice": t.get("_slice"),
                 # the row's latest state -- this pass answers a corpus question,
                 # so it is the verifier's word, not a record's
-                "outcome": "proved" if sid in VERIFIED else t.get("outcome", "not attempted"),
+                "outcome": "proved" if sid in VERIFIED else ("unresolved" if t else "not attempted"),
                 # what the campaign's bounded agent achieved, kept beside it
                 "agent_outcome": t.get("agent_outcome", t.get("outcome", "not attempted")),
                 "revised": bool(t.get("revision")),

@@ -1,6 +1,6 @@
 # `value-bounded/` — the label counts items, the code follows magnitudes
 
-**10 rows, each with a machine-checked proof.** Rows in the same category with
+**14 rows, each with a machine-checked proof.** Rows in the same category with
 **no** proof do not belong under a directory named `solutions-proved`; they are
 in `batches/value-bounded-open/`, which has its own README and manifest.
 
@@ -38,7 +38,7 @@ rows still live in `solutions/`, `solutions-disputed/` or wherever the
 partition puts them; `MANIFEST.jsonl` gives each one's `row` path. Nothing was
 taken out of the dataset.
 
-Three of the thirteen proved rows also sit in `solutions-disputed/` —
+Three of the fourteen proved rows also sit in `solutions-disputed/` —
 `810_131`, `1484_26` and `2607_90`, moved there on 2026-09-17. Being here is
 not the same as being disputed: this directory says *the proof carries a value
 term*, the disputed queue says *somebody should change the label*.
@@ -136,3 +136,15 @@ value `v`. `794_794` loops `range(1, n)` and then prints `n` numbers, where `n`
 is a per-test value read by `int(input())` — while the label's `n` counts test
 cases. The two `n`s are different quantities, and only one of them is in the
 label.
+
+## One row arrived on 2026-09-24
+
+`1678_68` (label `O(1)`) was filed when campaign 7's rerun proof replaced its
+overlay proof:
+
+    1678_68    rows + 15                                        O(1)
+
+The row's `GcdEx` is recursive in the Python too. The earlier proof charged it
+one step and proved 15. The rerun charges its recursion depth, as the charge
+table does for any helper, and that depth grows with the input value `rows`.
+The bound is loose: Euclid's depth is logarithmic.

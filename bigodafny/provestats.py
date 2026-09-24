@@ -95,7 +95,7 @@ def load():
                 "split": m.get("split"),
                 "outcome": outcome,
                 # the row's state now is the verifier's, not any record's
-                "current_outcome": "proved" if sid in VERIFIED else t.get("outcome", "not attempted"),
+                "current_outcome": "proved" if sid in VERIFIED else ("unresolved" if t else "not attempted"),
                 "current_relation": (rel.get(sid) or {}).get("relation")
                                     if t.get("outcome") == "proved" else None,
                 "revised": bool(t.get("revision")),

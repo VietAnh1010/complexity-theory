@@ -24,7 +24,7 @@
 // print(k-1)
 // --------------------------------------------------------------------
 
-include "../../../../prelude.dfy"
+include "../../prelude.dfy"
 import opened Prelude
 
 predicate InRange(p: int, q: int, v: int)

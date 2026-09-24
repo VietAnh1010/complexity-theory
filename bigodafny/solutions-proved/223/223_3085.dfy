@@ -28,20 +28,21 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
-  ensures steps <= 2 * NLogN(|a_list|) + 5 * |a_list| + 5
+  ensures steps <= 2 * NLogN(|a_list|) + 3 * |a_list| + 4
 {
-  SortCostNLogN(|a_list|);
-  steps := 1 + SortCost(|a_list|);
+  steps := 1;
   var s := SortInts(a_list);
+  assert |s| == |a_list|;
+  steps := steps + SortCost(|a_list|);
   var i := 0;
   var j := |s| - 1;
   var res := 0;
   while i < j
+    invariant |s| == |a_list|
     invariant 0 <= i
     invariant j < |s|
     invariant i <= j + 1
-    invariant |s| == |a_list|
-    invariant steps <= 1 + SortCost(|a_list|) + 2 * (i + (|s| - 1 - j))
+    invariant steps <= 1 + SortCost(|a_list|) + 3 * (i + (|a_list| - 1 - j))
     decreases j - i
   {
     if s[i] + s[j] <= 4 {
@@ -51,12 +52,12 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
       j := j - 1;
       res := res + 1;
     }
-    steps := steps + 2;
+    steps := steps + 3;
   }
-  assert |s| == |a_list|;
-  assert i >= j;
-  assert i + (|s| - 1 - j) <= |a_list|;
-  assert steps <= 1 + SortCost(|a_list|) + 2 * |a_list|;
+  assert i + (|a_list| - 1 - j) <= |a_list|;
+  assert steps <= 1 + SortCost(|a_list|) + 3 * |a_list|;
+  SortCostNLogN(|a_list|);
+  assert steps <= 2 * NLogN(|a_list|) + 3 * |a_list| + 2;
   output := IntToString(res + 1);
   steps := steps + 2;
 }

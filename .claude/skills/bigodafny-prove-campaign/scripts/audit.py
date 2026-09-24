@@ -100,7 +100,7 @@ def main():
         r["solution_id"]: r
         for r in read_jsonl(f"{args.batch}/rerun/verify.jsonl")
     } if os.path.exists(f"{args.batch}/rerun/verify.jsonl") else {}
-    not_used = []
+    not_used, not_promoted = [], []
 
     rows, problems, no_reads = [], [], []
     # Every attempt's .dfy is kept under attempts/ once the brief says so.
@@ -141,6 +141,13 @@ def main():
             problems.append(f"{sid}: no trajectory entry")
         elif rerun:
             rv = rerun_verify.get(sid, {})
+            # a rerun proof promoted into the overlay is judged there, like any
+            # other proof
+            if str(rerun.get("proof") or "").startswith("solutions-proved/"):
+                rv = {"verified": verified, "assume_count": (p or {}).get("assume_count", 0)}
+                rec["rerun_proof_verified"] = verified if claimed == "proved" else None
+            if rerun.get("not_promoted"):
+                not_promoted.append(sid)
             if claimed == "proved" and not rv.get("verified"):
                 problems.append(f"{sid}: rerun claims proved, its own proof does not verify")
             if rv.get("assume_count"):
@@ -235,6 +242,7 @@ def main():
             "proved": sum(1 for r in rows if r.get("rerun") and r["claimed"] == "proved"),
             "unresolved": sum(1 for r in rows if r.get("rerun") and r["claimed"] != "proved"),
             "existing_proof_not_used": sorted(not_used),
+            "not_promoted": sorted(not_promoted),
         },
         "reads_missing": sorted(no_reads),
         "reads_coverage": (

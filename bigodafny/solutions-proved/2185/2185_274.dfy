@@ -21,7 +21,7 @@ import opened Prelude
 method Solve(n: int, coord_list: seq<seq<int>>) returns (output: string, ghost steps: nat)
   requires n != 0
   requires forall k :: 0 <= k < |coord_list| ==> |coord_list[k]| >= 2
-  ensures steps <= 3 * |coord_list| + 4
+  ensures steps <= 6 * |coord_list| + 5
 {
   steps := 1;
   var a := 0;
@@ -29,14 +29,14 @@ method Solve(n: int, coord_list: seq<seq<int>>) returns (output: string, ghost s
   var i := 0;
   while i < |coord_list|
     invariant 0 <= i <= |coord_list|
-    invariant steps <= 3 * i + 1
+    invariant steps <= 6 * i + 1
     decreases |coord_list| - i
   {
     a := a + coord_list[i][0];
     b := b + coord_list[i][1];
     i := i + 1;
-    steps := steps + 3;
+    steps := steps + 6;   // two indexings (2) + two additions (2) + increment (1) + loop overhead (1)
   }
   output := IntToString(FloorDiv(a, n)) + " " + IntToString(FloorDiv(b, n));
-  steps := steps + 3;
+  steps := steps + 4;     // two FloorDiv (arith, 1 each) + two IntToString (1 each)
 }

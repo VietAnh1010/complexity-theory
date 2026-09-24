@@ -1,6 +1,6 @@
 # `solutions-proved/` — the complexity label, machine-checked
 
-304 files, one per row. All verify, none contains an `assume`;
+322 files, one per row. All verify, none contains an `assume`;
 `proofs.py` re-checks every one from scratch and records the result in
 `data/complexity_proofs.jsonl`.
 
@@ -67,6 +67,6 @@ still sound, just no longer tight.
     O(n*m) 9 · O(nlogn) 7 · O(n) 5 · O(n**2) 4 · O(n+m) 3
 ## Current scope
 
-The overlay has 304 proof files. The relation to the label is recorded beside
+The overlay has 322 proof files. The relation to the label is recorded beside
 each row in the campaign records; a proof may confirm the label, expose a
 structural cost the label omits, or be tighter for a documented model reason.

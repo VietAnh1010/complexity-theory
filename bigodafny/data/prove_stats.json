@@ -908,7 +908,7 @@
   "dedup": {
     "distinct_rows": 329,
     "proved": 281,
-    "proved_now": 292,
+    "proved_now": 291,
     "rate": 0.8541,
     "drawn_more_than_once": 32,
     "closed_on_a_later_draw": 16,
@@ -965,11 +965,11 @@
   },
   "current": {
     "distinct_rows": 329,
-    "proved_now": 292,
-    "rate_now": 0.8875,
+    "proved_now": 291,
+    "rate_now": 0.8845,
     "relations_now": {
-      "confirms": 268,
-      "looser-structural": 13,
+      "confirms": 266,
+      "looser-structural": 14,
       "tighter-costmodel": 7,
       "tighter-translation": 2,
       "contradicts": 1,
@@ -1017,8 +1017,8 @@
   },
   "corpus": {
     "solutions_rows": 344,
-    "proof_files": 320,
-    "proved_rows": 320,
+    "proof_files": 322,
+    "proved_rows": 322,
     "note": "proved_rows counts every proof in the corpus, including the 33 that predate the campaigns and the rows proved by hand."
   },
   "rows": [
@@ -6247,7 +6247,7 @@
       "label": "O(n**2)",
       "split": "strict",
       "outcome": "proved",
-      "current_outcome": "proved",
+      "current_outcome": "unresolved",
       "current_relation": null,
       "revised": false,
       "redrawn": false,
@@ -6299,7 +6299,7 @@
       "split": "loose",
       "outcome": "proved",
       "current_outcome": "proved",
-      "current_relation": null,
+      "current_relation": "looser-structural",
       "revised": false,
       "redrawn": false,
       "relation": "looser-structural",

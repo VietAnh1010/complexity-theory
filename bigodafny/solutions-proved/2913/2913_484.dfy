@@ -18,7 +18,7 @@
 // Calculo_Brute_Force(int(input()))
 // --------------------------------------------------------------------
 
-include "../../../../prelude.dfy"
+include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int) returns (output: string, ghost steps: nat)

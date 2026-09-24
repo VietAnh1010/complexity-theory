@@ -73,7 +73,9 @@
     "the pos/level-advance loop's per-step increase in n is not bounded by a constant, so the standard decreases-metric-bounds-iteration-count argument gives itnAdv<=initM+overshoot, not itnAdv<=initM; closing it needs a separate bound on the overshoot that was not found in budget": 1,
     "the scan loop initializes i:=1 before checking n, so an invariant bounding i by n is false on entry whenever n==0; needs a case split or an i<=n+1-style invariant not yet found": 1
   },
-  "problems": [],
+  "problems": [
+    "bigodafny/solutions-proved/1678/1678_68.dfy: proof deleted, and 1678_68 is not in this batch"
+  ],
   "proved": 43,
   "reads_coverage": 0.0,
   "reads_missing": [
@@ -128,5 +130,12 @@
     "894_3",
     "976_656"
   ],
+  "rerun": {
+    "existing_proof_not_used": [],
+    "not_promoted": [],
+    "proved": 0,
+    "rows": 0,
+    "unresolved": 0
+  },
   "unresolved": 7
 }

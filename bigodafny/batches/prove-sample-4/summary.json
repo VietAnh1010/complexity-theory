@@ -48,7 +48,9 @@
     "triangular-sum double loop (inner bound i, not n) needed a dedicated triangular-number lemma to connect the per-outer-iteration charge to the n^2 postcondition; ran out of attempts before adding one": 1,
     "while guard calls SumDiv1306(counts,day) inline each iteration (short-circuited with day<=maxC+1); charging it needs the guard rewritten into a precomputed ghost-tracked boolean, and the true cost maxC*|counts| is not linear in any single input (worst case ~k^2 when counts split as one big group + many singletons) -- no O(n) scaffold reachable in budget": 1
   },
-  "problems": [],
+  "problems": [
+    "bigodafny/solutions-proved/1678/1678_68.dfy: proof deleted, and 1678_68 is not in this batch"
+  ],
   "proved": 44,
   "reads_coverage": 0.0,
   "reads_missing": [
@@ -103,5 +105,12 @@
     "750_51",
     "831_184"
   ],
+  "rerun": {
+    "existing_proof_not_used": [],
+    "not_promoted": [],
+    "proved": 0,
+    "rows": 0,
+    "unresolved": 0
+  },
   "unresolved": 6
 }

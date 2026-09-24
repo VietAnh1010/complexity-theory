@@ -62,7 +62,9 @@
     "s2 (the running digit remainder in the prepend loop) needed a nonnegativity invariant that was never built, blocking the IntToString digit-length lemma": 1,
     "the options-queue is popped and conditionally re-pushed in the same iteration; the amortized total-degree argument needs a cleaner potential function (e.g. unvisited-node count) than the budget counter attempted here, and the row already carries decreases * with no termination proof to build on": 1
   },
-  "problems": [],
+  "problems": [
+    "bigodafny/solutions-proved/1678/1678_68.dfy: proof deleted, and 1678_68 is not in this batch"
+  ],
   "proved": 44,
   "reads_coverage": 0.0,
   "reads_missing": [
@@ -117,5 +119,12 @@
     "804_10",
     "89_909"
   ],
+  "rerun": {
+    "existing_proof_not_used": [],
+    "not_promoted": [],
+    "proved": 0,
+    "rows": 0,
+    "unresolved": 0
+  },
   "unresolved": 6
 }

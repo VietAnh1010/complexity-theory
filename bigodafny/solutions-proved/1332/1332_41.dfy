@@ -44,7 +44,7 @@ method Solve(n: int, k: int, a_list: seq<int>) returns (output: string, ghost st
   // Python does p.index(k), which raises ValueError when k is absent, so this
   // excludes no input Python answers.
   requires exists c :: 0 <= c < n && a_list[c] == k
-  ensures steps <= 12 * |a_list| + 12
+  ensures steps <= 4 * n + 8
 {
   steps := 1;
   var m := k;
@@ -53,21 +53,21 @@ method Solve(n: int, k: int, a_list: seq<int>) returns (output: string, ghost st
   var cur := 0;
   while p[cur] != m
     invariant 0 <= cur <= wIdx
-    invariant steps <= 1 + 2 * cur
+    invariant steps == cur + 1
     decreases wIdx - cur
   {
     cur := cur + 1;
-    steps := steps + 2;
+    steps := steps + 1;
   }
   var pos := cur;
   var s: map<int, int> := map[];
   var cnt := 0;
   var length := 0;
   cur := pos;
-  ghost var loop1start := steps;
+  steps := steps + 1;
   while cur >= 0
     invariant -1 <= cur <= pos
-    invariant steps <= loop1start + 6 * (pos - cur)
+    invariant steps == pos + 2 + 3 * (pos - cur)
     decreases cur + 1
   {
     if p[cur] <= m {
@@ -81,16 +81,16 @@ method Solve(n: int, k: int, a_list: seq<int>) returns (output: string, ghost st
       s := s[key := 1];
     }
     cur := cur - 1;
-    steps := steps + 6;
+    steps := steps + 3;
   }
   cur := pos;
   cnt := 0;
   length := 0;
   var ans := 0;
-  ghost var loop2start := steps;
+  steps := steps + 1;
   while cur < n
     invariant pos <= cur <= n
-    invariant steps <= loop2start + 8 * (cur - pos)
+    invariant steps == 4 * pos + 6 + 4 * (cur - pos)
     decreases n - cur
   {
     if p[cur] <= m {
@@ -106,7 +106,7 @@ method Solve(n: int, k: int, a_list: seq<int>) returns (output: string, ghost st
       ans := ans + s[k2];
     }
     cur := cur + 1;
-    steps := steps + 8;
+    steps := steps + 4;
   }
   output := IntToString(ans) + "\n";
   steps := steps + 2;

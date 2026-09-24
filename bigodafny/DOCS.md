@@ -29,9 +29,9 @@ for provenance, but they are not operational instructions.
 | Strict behaviour gate | 529 valid, 3 failed, 2 parser-blocked |
 | Loose behaviour gate | 95 agree, 1 timeout-only unresolved, 4 untranslatable |
 | Clean `solutions/` rows | 344 |
-| Complexity proof files | 304, all verify without `assume` |
+| Complexity proof files | 322, all verify without `assume` |
 | Bounded campaign results | 281 proved of 366 draws (77%) |
-| Distinct drawn rows with a proof now | 292 of 329 (89%) |
+| Distinct drawn rows with a proof now | 291 of 329 (88%) |
 | Label-audited rows | 506: 347 ok, 152 mismatch, 7 unsure |
 
 The status directories are the source of truth for a row's current state. Do

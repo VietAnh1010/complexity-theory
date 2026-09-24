@@ -35,16 +35,17 @@ import opened Prelude
 method Solve(a: int, b: int, c_list: seq<int>) returns (output: string, ghost steps: nat)
   requires |c_list| >= 1
   requires a >= 1
-  ensures steps <= 2 * NLogN(|c_list|) + 6 * |c_list| + 10
+  ensures steps <= 2 * NLogN(|c_list|) + 8 * |c_list| + 20
 {
+  steps := 1;
   var arr := Sort(c_list, (x: int, y: int) => x > y);
-  SortCostNLogN(|c_list|);
+  steps := steps + SortCost(|c_list|);
+  SortCostWithin(|c_list|, |c_list|);
   var kk := MinSeq(c_list);
+  steps := steps + |c_list|;
   var su := 0;
   var total := SumSeq(c_list);
-  // MinSeq/SumSeq are recursive prelude functions over a seq; the charge
-  // table costs a walk over the whole sequence, so |c_list| each.
-  steps := 1 + SortCost(|c_list|) + 2 * |c_list|;
+  steps := steps + |c_list|;
   if b > total {
     output := "-1";
     steps := steps + 1;
@@ -53,7 +54,7 @@ method Solve(a: int, b: int, c_list: seq<int>) returns (output: string, ghost st
     while i < |arr| && su < b
       invariant 0 <= i <= |arr|
       invariant |arr| == |c_list|
-      invariant steps <= 1 + SortCost(|c_list|) + 2 * |c_list| + 2 * i
+      invariant steps <= 2 * NLogN(|c_list|) + 4 * |c_list| + 3 + 3 * i
       decreases |arr| - i
     {
       if arr[i] > kk {
@@ -61,15 +62,14 @@ method Solve(a: int, b: int, c_list: seq<int>) returns (output: string, ghost st
         arr := arr[i := kk];
       }
       i := i + 1;
-      steps := steps + 2;
+      steps := steps + 3;
     }
     if su < b {
       var res := FloorDiv(a * kk - (b - su), a);
       output := IntToString(res);
-      steps := steps + 2;
     } else {
       output := IntToString(kk);
-      steps := steps + 1;
     }
+    steps := steps + 3;
   }
 }

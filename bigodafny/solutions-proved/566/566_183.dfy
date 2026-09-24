@@ -29,77 +29,53 @@
 //
 // print(total)
 // --------------------------------------------------------------------
-//
-// PROOF NOTE (relation: confirms). Sort(lens, LessInt) costs
-// SortCost(|pieces|), bounded by the prelude's SortCostWithin in terms of
-// |s| + 1, the tight recursion-tree argument, so the proved bound is
-// O(n log n). SplitChar is charged flat at |s|,
-// matching COMPLEXITY.md's rule for a recursive helper over a string.
 
 include "../../prelude.dfy"
 import opened Prelude
 
-lemma MergeLength<T>(a: seq<T>, b: seq<T>, less: (T, T) -> bool)
-  ensures |Merge(a, b, less)| == |a| + |b|
-  decreases |a| + |b|
-{
-  if |a| == 0 || |b| == 0 {
-  } else if less(b[0], a[0]) {
-    MergeLength(a, b[1..], less);
-  } else {
-    MergeLength(a[1..], b, less);
-  }
-}
-
-lemma SortLength<T>(s: seq<T>, less: (T, T) -> bool)
-  ensures |Sort(s, less)| == |s|
-  decreases |s|
-{
-  if |s| <= 1 {
-  } else {
-    SortLength(s[..|s| / 2], less);
-    SortLength(s[|s| / 2..], less);
-    MergeLength(Sort(s[..|s| / 2], less), Sort(s[|s| / 2..], less), less);
-  }
-}
-
-lemma SplitCharFromLen(s: string, sep: char, i: int, cur: string, acc: seq<string>)
+// SplitCharFrom consumes one character of s per recursive call, so the number
+// of pieces it can produce is bounded by the number of characters left plus
+// the one piece already carried in acc.
+lemma SplitCharFromCount(s: string, sep: char, i: int, cur: string, acc: seq<string>)
   requires 0 <= i <= |s|
-  ensures |SplitCharFrom(s, sep, i, cur, acc)| <= |s| - i + 1 + |acc|
+  ensures |SplitCharFrom(s, sep, i, cur, acc)| <= |acc| + (|s| - i) + 1
   decreases |s| - i
 {
-  if i >= |s| {
-  } else if s[i] == sep {
-    SplitCharFromLen(s, sep, i + 1, "", acc + [cur]);
-  } else {
-    SplitCharFromLen(s, sep, i + 1, cur + [s[i]], acc);
+  if i < |s| {
+    if s[i] == sep {
+      SplitCharFromCount(s, sep, i + 1, "", acc + [cur]);
+    } else {
+      SplitCharFromCount(s, sep, i + 1, cur + [s[i]], acc);
+    }
   }
+}
+
+lemma SplitCharCount(s: string, sep: char)
+  ensures |SplitChar(s, sep)| <= |s| + 1
+{
+  SplitCharFromCount(s, sep, 0, "", []);
 }
 
 method Solve(n: int, k: int, m: int, s: string) returns (output: string, ghost steps: nat)
-  ensures steps <= 2 * NLogN(|s| + 1) + 1 + 10 * (|s| + 1) + 20
+  ensures steps <= 2 * NLogN(|s| + 1) + 20 * (|s| + 1) + 40
 {
-
+  steps := 1;
   var a := k;
   var b := m;
   var pieces := SplitChar(s, '*');
-  SplitCharFromLen(s, '*', 0, "", []);
-  assert |pieces| <= |s| + 1;
-  ghost var steps1: nat := |s| + 1;   // SplitChar: recursive helper over a string, charged its length
+  steps := steps + (|s| + 1);
+  SplitCharCount(s, '*');
   var lens := seq(|pieces|, idx requires 0 <= idx < |pieces| => |pieces[idx]|);
-  steps1 := steps1 + |pieces|;
-  SortCostWithin(|pieces|, |s| + 1);
+  steps := steps + |pieces|;
   var row := Sort(lens, LessInt);
-  SortLength(lens, LessInt);
+  steps := steps + SortCost(|lens|);
+  SortCostWithin(|lens|, |s| + 1);
   assert |row| <= |s| + 1;
-  steps1 := steps1 + SortCost(|pieces|);
   var total := 0;
   var i := 0;
-  steps := steps1 + 5;
   while i < |row|
     invariant 0 <= i <= |row|
-    invariant |row| <= |s| + 1
-    invariant steps <= steps1 + 5 + 6 * i
+    invariant steps <= 2 * NLogN(|s| + 1) + 6 * |s| + 10 + 6 * i
     decreases |row| - i
   {
     var l := row[i];

@@ -60,20 +60,21 @@ import opened Prelude
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
   requires n == |a_list|
   requires n >= 1
-  ensures steps <= 2 * NLogN(n) + 20 * n + 20
+  ensures steps <= 2 * NLogN(n) + 20 * n + 15
 {
+  steps := 1;
   var sortedVals := SortInts(a_list);
-  SortCostNLogN(n);
-  steps := 1 + SortCost(n);
+  assert |sortedVals| == n;
+  steps := steps + SortCost(n);
   var rankMap: map<int, int> := map[];
   var tot := 0;
   var si := 0;
   while si < |sortedVals|
     invariant 0 <= si <= |sortedVals|
+    invariant |sortedVals| == n
     invariant 0 <= tot <= si
     invariant si >= 1 ==> tot >= 1
     invariant forall key :: key in rankMap ==> 0 <= rankMap[key] < tot
-    invariant |sortedVals| == n
     invariant steps <= 1 + SortCost(n) + 3 * si
     decreases |sortedVals| - si
   {
@@ -86,7 +87,6 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
   }
   assert tot >= 1;
   assert tot <= n;
-  ghost var base1 := steps;
 
   var whereIs := seq(n, _ => 0);
   var wi := 0;
@@ -96,7 +96,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
     invariant tot >= 1
     invariant forall key :: key in rankMap ==> 0 <= rankMap[key] < tot
     invariant forall k :: 0 <= k < wi ==> 0 <= whereIs[k] < tot
-    invariant steps <= base1 + 2 * wi
+    invariant steps <= 1 + SortCost(n) + 3 * n + 2 * wi
     decreases n - wi
   {
     whereIs := whereIs[wi := if a_list[wi] in rankMap then rankMap[a_list[wi]] else 0];
@@ -106,15 +106,12 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
   assert forall k :: 0 <= k < n ==> 0 <= whereIs[k] < tot;
   assert tot <= n;
   assert forall k :: 0 <= k < n ==> 0 <= whereIs[k] < n;
-  ghost var base2 := steps;
 
   var dp := seq(n, _ => 0);
   var preState := seq(n, _ => 0);
   var lst := seq(n, _ => -1);
   assert forall k :: 0 <= k < n ==> lst[k] == -1;
   assert forall k :: 0 <= k < n ==> 0 <= whereIs[k] < n;
-  steps := steps + 3;
-  ghost var base3 := steps;
 
   var res := 0;
   var ptr := -1;
@@ -132,8 +129,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
     invariant forall k :: 0 <= k < i && preState[k] == -1 ==> dp[k] == 1
     invariant ptr == -1 ==> res == 0
     invariant ptr != -1 ==> 0 <= ptr < i && dp[ptr] == res
-    invariant res <= i
-    invariant steps <= base3 + 6 * i
+    invariant steps <= 1 + SortCost(n) + 3 * n + 2 * n + 8 * i
     decreases n - i
   {
     var r := whereIs[i];
@@ -161,9 +157,10 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
       ptr := i;
     }
     i := i + 1;
-    steps := steps + 6;
+    steps := steps + 8;
   }
-  ghost var base4 := steps;
+  assert res <= n;
+  assert steps <= 1 + SortCost(n) + 5 * n + 8 * n;
 
   var resArr := seq(res, _ => 0);
   var rr := res;
@@ -176,7 +173,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
     invariant forall k :: 0 <= k < n ==> -1 <= preState[k] < k
     invariant forall k :: 0 <= k < n && preState[k] != -1 ==> dp[k] == dp[preState[k]] + 1
     invariant forall k :: 0 <= k < n && preState[k] == -1 ==> dp[k] == 1
-    invariant steps <= base4 + 3 * (res - rr)
+    invariant steps <= 1 + SortCost(n) + 13 * n + 3 * (res - rr)
     decreases rr
   {
     resArr := resArr[rr - 1 := ptr + 1];
@@ -184,12 +181,16 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
     rr := rr - 1;
     steps := steps + 3;
   }
+  assert steps <= 1 + SortCost(n) + 13 * n + 3 * res;
+  assert res <= n;
+  assert steps <= 1 + SortCost(n) + 16 * n;
 
   var parts := resArr;
-  assert res <= n;
-  // IntToString(x) and JoinInts over k digit strings are each charged 1 per
-  // element (COMPLEXITY.md's IntToString exception), not the sum of digit
-  // lengths, so JoinInts(parts, " ") costs |parts|.
+  steps := steps + |parts| + 1;
+  assert |parts| == res;
+  assert steps <= 2 + SortCost(n) + 16 * n + res;
+  SortCostNLogN(n);
+  assert steps <= 2 * NLogN(n) + 17 * n + 3;
   output := IntToString(res) + "\n" + JoinInts(parts, " ") + "\n";
-  steps := steps + |parts| + 3;
+  steps := steps + 4;
 }

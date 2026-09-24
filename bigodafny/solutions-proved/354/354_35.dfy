@@ -17,8 +17,9 @@ import opened Prelude
 method Solve(a: int, b: int, c: int) returns (output: string, ghost steps: nat)
   ensures steps <= 6
 {
+  steps := 1;
   var m := (a - 1) * (2 * b + 1);
-  steps := 2;
+  steps := steps + 1;
   var n := a * c;
   steps := steps + 1;
   output := IntToString(m) + " " + IntToString(n);

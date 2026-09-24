@@ -29,58 +29,21 @@
 include "../../prelude.dfy"
 import opened Prelude
 
-function Min(x: int, y: int): int { if x < y then x else y }
-
-function SplitChar(s: string, sep: char): seq<string>
-{
-  SplitCharFrom(s, sep, 0, "", [])
-}
-
-function SplitCharFrom(s: string, sep: char, i: int, cur: string, acc: seq<string>): seq<string>
-  requires 0 <= i <= |s|
-  decreases |s| - i
-{
-  if i >= |s| then acc + [cur]
-  else if s[i] == sep then SplitCharFrom(s, sep, i + 1, "", acc + [cur])
-  else SplitCharFrom(s, sep, i + 1, cur + [s[i]], acc)
-}
-
-// SplitCharFrom is a recursive helper walking the string one character at a
-// time; the charge table treats a recursive walk over a seq/string as costing
-// its length. This bounds the piece count the outer loop then iterates over.
-lemma SplitCharFromLen(s: string, sep: char, i: int, cur: string, acc: seq<string>)
-  requires 0 <= i <= |s|
-  ensures |SplitCharFrom(s, sep, i, cur, acc)| <= |acc| + (|s| - i) + 1
-  decreases |s| - i
-{
-  if i >= |s| {
-  } else if s[i] == sep {
-    SplitCharFromLen(s, sep, i + 1, "", acc + [cur]);
-  } else {
-    SplitCharFromLen(s, sep, i + 1, cur + [s[i]], acc);
-  }
-}
-
-lemma SplitCharLen(s: string, sep: char)
-  ensures |SplitChar(s, sep)| <= |s| + 1
-{
-  SplitCharFromLen(s, sep, 0, "", []);
-}
-
 method Solve(n: int, k: int, m: int, s: string) returns (output: string, ghost steps: nat)
-  ensures steps <= 12 * |s| + 20
+  ensures steps <= 14 * |s| + 16
 {
-  steps := 1;
+
   var a := k;
   var b := m;
   var tot := a + b;
+  steps := 3;
   var pieces := SplitChar(s, '*');
-  SplitCharLen(s, '*');
-  steps := steps + |s| + 3;
+  steps := steps + (|s| + 1);        // SplitCharFrom recurses |s| times, plus the call
+  SplitCharLen(s, '*');              // |pieces| <= |s| + 1
   var i := 0;
   while i < |pieces|
-    invariant 0 <= i <= |pieces|
-    invariant steps <= |s| + 4 + 10 * i
+    invariant 0 <= i <= |pieces| <= |s| + 1
+    invariant steps <= 3 + (|s| + 1) + 10 * i
     decreases |pieces| - i
   {
     var l := |pieces[i]|;
@@ -100,8 +63,45 @@ method Solve(n: int, k: int, m: int, s: string) returns (output: string, ghost s
       }
     }
     i := i + 1;
-    steps := steps + 10;
+    steps := steps + 10;   // indexing, len, parity/comparisons, two Min calls, two subtractions, increment -- generously bounded
   }
   output := IntToString(tot - a - b);
   steps := steps + 2;
+}
+
+function Min(x: int, y: int): int { if x < y then x else y }
+
+function SplitChar(s: string, sep: char): seq<string>
+{
+  SplitCharFrom(s, sep, 0, "", [])
+}
+
+function SplitCharFrom(s: string, sep: char, i: int, cur: string, acc: seq<string>): seq<string>
+  requires 0 <= i <= |s|
+  decreases |s| - i
+{
+  if i >= |s| then acc + [cur]
+  else if s[i] == sep then SplitCharFrom(s, sep, i + 1, "", acc + [cur])
+  else SplitCharFrom(s, sep, i + 1, cur + [s[i]], acc)
+}
+
+// The piece count is at most one more than the character count -- one piece
+// to start, and one more each time a separator is seen.
+lemma SplitCharFromLen(s: string, sep: char, i: int, cur: string, acc: seq<string>)
+  requires 0 <= i <= |s|
+  ensures |SplitCharFrom(s, sep, i, cur, acc)| <= |acc| + (|s| - i) + 1
+  decreases |s| - i
+{
+  if i >= |s| {
+  } else if s[i] == sep {
+    SplitCharFromLen(s, sep, i + 1, "", acc + [cur]);
+  } else {
+    SplitCharFromLen(s, sep, i + 1, cur + [s[i]], acc);
+  }
+}
+
+lemma SplitCharLen(s: string, sep: char)
+  ensures |SplitChar(s, sep)| <= |s| + 1
+{
+  SplitCharFromLen(s, sep, 0, "", []);
 }

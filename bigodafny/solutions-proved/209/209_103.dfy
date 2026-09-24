@@ -15,44 +15,19 @@
 include "../../prelude.dfy"
 import opened Prelude
 
-lemma MergeLength<T>(a: seq<T>, b: seq<T>, less: (T, T) -> bool)
-  ensures |Merge(a, b, less)| == |a| + |b|
-  decreases |a| + |b|
-{
-  if |a| == 0 || |b| == 0 {
-  } else if less(b[0], a[0]) {
-    MergeLength(a, b[1..], less);
-  } else {
-    MergeLength(a[1..], b, less);
-  }
-}
-
-lemma SortLength<T>(s: seq<T>, less: (T, T) -> bool)
-  ensures |Sort(s, less)| == |s|
-  decreases |s|
-{
-  if |s| <= 1 {
-  } else {
-    SortLength(s[..|s| / 2], less);
-    SortLength(s[|s| / 2..], less);
-    MergeLength(Sort(s[..|s| / 2], less), Sort(s[|s| / 2..], less), less);
-  }
-}
-
 method Solve(N: int, numbers: seq<int>) returns (output: string, ghost steps: nat)
   requires N == |numbers|
-  ensures steps <= 2 * NLogN(N) + 1 + 7 * N + 10
+  ensures steps <= 2 * NLogN(N) + 4 * N + 5
 {
   steps := 1;
-  SortCostNLogN(N);
   var a := Sort(numbers, (x, y) => x > y);
-  SortLength(numbers, (x, y) => x > y);
+  assert |a| == N;
   steps := steps + SortCost(N);
   var i := 0;
   while i < N - 1
     invariant 0 <= i <= N
     invariant |a| == N
-    invariant steps <= 5 * i + SortCost(N) + 1
+    invariant steps <= 1 + SortCost(N) + 2 * i
     decreases N - 1 - i
   {
     var cand := a[i] - 1;
@@ -60,20 +35,23 @@ method Solve(N: int, numbers: seq<int>) returns (output: string, ghost steps: na
     if cand < 0 { cand := 0; }
     a := a[i + 1 := cand];
     i := i + 1;
-    steps := steps + 5;
+    steps := steps + 2;
   }
+  assert steps <= 1 + SortCost(N) + 2 * N;
   var total := 0;
   var j := 0;
-  steps := steps + 1;
   while j < |a|
     invariant 0 <= j <= |a|
-    invariant steps <= 5 * N + SortCost(N) + 2 * j + 2
+    invariant steps <= 1 + SortCost(N) + 2 * N + 2 * j
     decreases |a| - j
   {
     total := total + a[j];
     j := j + 1;
     steps := steps + 2;
   }
+  assert steps <= 1 + SortCost(N) + 4 * N;
+  SortCostNLogN(N);
+  assert steps <= 2 * NLogN(N) + 4 * N + 2;
   output := IntToString(total);
-  steps := steps + 1;
+  steps := steps + 3;
 }

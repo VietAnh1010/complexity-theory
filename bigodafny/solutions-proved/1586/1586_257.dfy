@@ -20,15 +20,15 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, scores: seq<int>) returns (output: string, ghost steps: nat)
-  ensures steps <= 5 * |scores| + 4
+  ensures steps <= 2 * |scores| + 3
 {
+  steps := 1;
   var cnt100 := 0;
   var cnt200 := 0;
   var i := 0;
-  steps := 3;
   while i < |scores|
     invariant 0 <= i <= |scores|
-    invariant steps <= 5 * i + 3
+    invariant steps == 2 * i + 1
     decreases |scores| - i
   {
     if scores[i] == 100 {
@@ -36,7 +36,6 @@ method Solve(n: int, scores: seq<int>) returns (output: string, ghost steps: nat
     } else {
       cnt200 := cnt200 + 1;
     }
-    steps := steps + 3;
     i := i + 1;
     steps := steps + 2;
   }

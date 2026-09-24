@@ -39,8 +39,9 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(string_: string) returns (output: string, ghost steps: nat)
-  ensures steps <= 12 * |string_| + 3
+  ensures steps <= 3 * |string_| + 3
 {
+  steps := 1;
   var s := string_;
   var n := |s|;
   var v := 0;
@@ -49,11 +50,10 @@ method Solve(string_: string) returns (output: string, ghost steps: nat)
   var flag := false;
   var fl := false;
   var i := 0;
-  steps := 2;
   while i < n
     invariant 0 <= i <= n
     invariant |s| == n
-    invariant steps <= 12 * i + 2
+    invariant steps == 3 * i + 1
     decreases n - i
   {
     if s[i] == 'V' && i != n - 1 {
@@ -73,15 +73,13 @@ method Solve(string_: string) returns (output: string, ghost steps: nat)
     } else if fl && s[i] == 'K' {
       fl := false;
     }
-    steps := steps + 8;   // bounded number of s[i]/s[i+1] reads and comparisons
     if (v >= 2 || k >= 2) && !flag {
       count := count + 1;
       flag := true;
     }
-    steps := steps + 2;
     i := i + 1;
-    steps := steps + 2;
+    steps := steps + 3;
   }
   output := IntToString(count);
-  steps := steps + 1;
+  steps := steps + 2;
 }

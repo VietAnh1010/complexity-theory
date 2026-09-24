@@ -9,7 +9,7 @@
     "O(n)": {
       "campaign_proved": 26,
       "drawn": 26,
-      "proved": 24
+      "proved": 26
     },
     "O(n**2)": {
       "campaign_proved": 4,
@@ -28,7 +28,7 @@
     }
   },
   "by_relation": {
-    "confirms": 40,
+    "confirms": 42,
     "looser-structural": 3,
     "tighter-costmodel": 1,
     "unrecorded": 1
@@ -48,16 +48,22 @@
     "the outer while's own termination is only justified in the source by decreases *; a real bound needs a potential-function argument (this is CF 389A's fixed-point mod-reduction) tying the number of full n^2 sweeps to how fast values shrink under repeated modulo, which is a quantitative number-theoretic argument, not a size-based invariant, and out of reach of the budget": 1
   },
   "problems": [],
-  "proved": 45,
+  "proved": 47,
   "reads_coverage": 1.0,
   "reads_missing": [],
   "rerun": {
     "existing_proof_not_used": [
       "1718_1166"
     ],
+    "not_promoted": [
+      "1043_358",
+      "1511_9",
+      "307_14",
+      "794_794"
+    ],
     "proved": 28,
     "rows": 30,
     "unresolved": 2
   },
-  "unresolved": 5
+  "unresolved": 3
 }
