@@ -90,7 +90,10 @@ python3 ../.claude/skills/bigodafny-prove-campaign/scripts/audit.py --batch batc
 `audit.py` joins the verifier's output to the trajectories and fails on any
 disagreement: a row claimed proved that does not verify, a row claimed
 unresolved that does, an `assume` in a proof, a `relation` outside the
-vocabulary, or a modified file under `solutions/`.
+vocabulary, a modified file under `solutions/`, or a proof whose emitted Python
+differs from its row's. The last compiles both with `dafny translate py` and
+compares them after erasing local names, ghost-only `else` branches, default
+initialisers and method order; anything else that differs is a code change.
 
 Fix the data, not the check. In the first campaign an agent's prose said 9
 proved where its trajectory said 10; the files said 10, and the prose was wrong.
@@ -250,5 +253,5 @@ the refreshed `data/`. Push to the session's designated branch.
 | file | what it is |
 |---|---|
 | `scripts/sample.py` | draws the sample, writes manifest and slices |
-| `scripts/audit.py` | joins verifier output to trajectories, fails on disagreement |
+| `scripts/audit.py` | joins verifier output to trajectories, fails on disagreement or changed code |
 | `PROMPT.md` | the agent brief, with `{{BATCH}}` / `{{SLICE}}` placeholders |

@@ -49,6 +49,17 @@
     "unresolved": 20
   },
   "drawn": 50,
+  "emitted_python": {
+    "checked": 32,
+    "differs": [
+      "1015_168",
+      "1077_84",
+      "2269_59",
+      "499_82"
+    ],
+    "error": [],
+    "identical": 28
+  },
   "obstacles": {
     "Fenwick-tree lowbit loop needs a bit-trick log-bound lemma absent from prelude; not derivable in budget": 1,
     "RepStr(a, x-y-1)'s argument depends on k through y=k-b with no lower bound on k in the signature, so its cost cannot be bounded by any function of n or row[0] alone; would need an added requires narrowing k that changes what the row accepts": 1,
@@ -69,7 +80,12 @@
     "row's own loop carries decreases *, which our copy may not keep; replacing it needs a spiral-arithmetic termination bound not derived in budget": 1,
     "the O(n) mask-scan loop's iteration bound was proved via a crude iters+mask<=2^30 argument instead of an actual log2 lemma, producing a ~2^30-scale literal that made the final nonlinear arithmetic check time out; needed a real Log2(0x40000000)=30 bound instead of the brute constant": 1
   },
-  "problems": [],
+  "problems": [
+    "1015_168: solutions-proved/1015/1015_168.dfy changes the row's executable code (emitted Python differs)",
+    "1077_84: solutions-proved/1077/1077_84.dfy changes the row's executable code (emitted Python differs)",
+    "2269_59: solutions-proved/2269/2269_59.dfy changes the row's executable code (emitted Python differs)",
+    "499_82: solutions-proved/499/499_82.dfy changes the row's executable code (emitted Python differs)"
+  ],
   "proved": 32,
   "reads_coverage": 0.0,
   "reads_missing": [

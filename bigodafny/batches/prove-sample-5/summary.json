@@ -54,6 +54,14 @@
     "unresolved": 13
   },
   "drawn": 50,
+  "emitted_python": {
+    "checked": 41,
+    "differs": [
+      "1359_4"
+    ],
+    "error": [],
+    "identical": 40
+  },
   "obstacles": {
     "Dafny reports 'postcondition could not be proved on this return path' pointing at the method's open brace even with 100x slack; root cause not isolated in budget -- possibly an index-safety side condition (newl[0]/newl[1]) masking as a postcondition failure": 1,
     "IntSqrt2358's trip count is floor(sqrt(v))+1, value-dependent and unbounded by n; connecting it to a SumCharge-over-the-list invariant needs a slice-sum lemma not built in time": 1,
@@ -65,7 +73,9 @@
     "needs a histogram partition-sum lemma (SeqSum over 26 buckets equals |v_1|) plus a Repeat-length lemma, neither in prelude": 1,
     "the outer level counter l advances only when the inner pos counter exhausts a full l-1 length pass, so total iterations telescope to a triangular-number O(l^2) count; bounding l by log2(b) via Pow2 inversion and closing the quadratic invariant is a two-lemma proof that did not fit the 5-minute budget": 1
   },
-  "problems": [],
+  "problems": [
+    "1359_4: solutions-proved/1359/1359_4.dfy changes the row's executable code (emitted Python differs)"
+  ],
   "proved": 41,
   "reads_coverage": 0.0,
   "reads_missing": [

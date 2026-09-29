@@ -14,10 +14,15 @@ said 9 proved where its trajectory said 10, and the files said 10.
 
 import argparse
 import glob
+import hashlib
 import json
 import os
+import re
+import shutil
 import subprocess
 import sys
+import tempfile
+from concurrent.futures import ThreadPoolExecutor
 
 RELATIONS = {
     "confirms",
@@ -58,6 +63,88 @@ def jsonl_problems(path):
                            f"per line ({exc.msg})")
                 break
     return out
+
+
+DAFNY = shutil.which("dafny") or "/root/.dotnet/tools/dafny"
+
+
+def emitted_python(repo, path):
+    """The Python `dafny translate py` emits for the file's own module.
+
+    Ghost code is erased, so a proof that only adds annotations emits the same
+    Python as its row; compare through normalise(). Cached under
+    .cache/emitted_py/ by the file's and the prelude's content. Returns
+    (text, None) or (None, error).
+    """
+    with open(path, "rb") as fh:
+        src = fh.read()
+    with open(os.path.join(repo, "prelude.dfy"), "rb") as fh:
+        pre = fh.read()
+    key = hashlib.sha256(src + b"\0" + pre).hexdigest()
+    cache = os.path.join(repo, ".cache", "emitted_py", key + ".py")
+    if os.path.exists(cache):
+        with open(cache) as fh:
+            return fh.read(), None
+    with tempfile.TemporaryDirectory() as tmp:
+        out = os.path.join(tmp, "m")
+        # --no-verify: proofs.py is the verifier; translating under load must
+        # not turn a solver timeout into a failed identity check
+        r = subprocess.run([DAFNY, "translate", "py", path, "--no-verify",
+                            "--output", out],
+                           capture_output=True, text=True, timeout=600)
+        mod = out + "-py/module_.py"
+        if r.returncode != 0 or not os.path.exists(mod):
+            return None, (r.stdout + r.stderr).strip().splitlines()[-1:]
+        with open(mod) as fh:
+            text = fh.read()
+    os.makedirs(os.path.dirname(cache), exist_ok=True)
+    with open(cache, "w") as fh:
+        fh.write(text)
+    return text, None
+
+
+def normalise(py):
+    """Erase what a proof can change in emitted Python without changing code.
+
+    * local names: `d_4_steps_` -> `d_4`. Renaming a local is not a change;
+      renumbering is, since Dafny numbers locals in declaration order.
+    * `elif True: pass`: an `else` branch that held only ghost code.
+    * `d_7: int = int(0)`: the default a declaration gets when Dafny cannot
+      see a definite assignment. Every read still follows a real assignment.
+    * method order: Dafny emits methods in source order.
+    """
+    py = re.sub(r"\bd_(\d+)_\w*", r"d_\1", py)
+    py = re.sub(r"\n([ \t]*)elif True:\n\1[ \t]+pass(?=\n)", "", py)
+    py = re.sub(r"(?m)^([ \t]*d_\d+: [^=\n]+?) = .+$", r"\1", py)
+    head, *methods = py.split("\n    @staticmethod\n")
+    return head + "".join(sorted("\n    @staticmethod\n" + m.rstrip() + "\n"
+                                 for m in methods))
+
+
+def source_row(repo, sid, m):
+    """The row as translated: the manifest's path, or wherever it moved since."""
+    if m.get("path") and os.path.exists(os.path.join(repo, m["path"])):
+        return os.path.join(repo, m["path"])
+    pid = sid.split("_")[0]
+    for root in sorted(glob.glob(os.path.join(repo, "solutions*"))):
+        if os.path.basename(root) == "solutions-proved":
+            continue
+        cand = os.path.join(root, pid, f"{sid}.dfy")
+        if os.path.exists(cand):
+            return cand
+    return None
+
+
+def identity(repo, sid, m, proof):
+    """'identical', 'differs', or 'error: ...' for one row's proof."""
+    src = source_row(repo, sid, m)
+    if src is None:
+        return "error: source row not found"
+    a, ea = emitted_python(repo, src)
+    b, eb = emitted_python(repo, proof)
+    if ea or eb:
+        return f"error: translate failed ({'row' if ea else 'proof'}): {ea or eb}"
+    return "identical" if normalise(a) == normalise(b) else "differs"
 
 
 def main():
@@ -179,6 +266,31 @@ def main():
         if t is not None and not t.get("reads"):
             no_reads.append(sid)
 
+    # A proof must be a proof of the row as written. Output-equivalence is not
+    # enough: campaign 7's rerun had four verified proofs that added non-ghost
+    # counters or restructured an append. Ghost code is erased on compilation,
+    # so the row and an annotation-only proof emit identical Python.
+    jobs = {}
+    for sid, m in manifest.items():
+        found = glob.glob(os.path.join(args.repo, "solutions-proved", "**",
+                                       f"{sid}.dfy"), recursive=True)
+        rp = ((traj.get(sid) or {}).get("rerun") or {}).get("proof")
+        if not found and rp and os.path.exists(os.path.join(args.repo, rp)):
+            found = [os.path.join(args.repo, rp)]
+        if found:
+            jobs[sid] = sorted(found)[0]
+    with ThreadPoolExecutor(max_workers=os.cpu_count() or 2) as ex:
+        ident = dict(zip(jobs, ex.map(
+            lambda sid: identity(args.repo, sid, manifest[sid], jobs[sid]), jobs)))
+    for rec in rows:
+        sid = rec["solution_id"]
+        rec["emitted_python"] = ident.get(sid)
+        if ident.get(sid) == "differs":
+            problems.append(f"{sid}: {os.path.relpath(jobs[sid], args.repo)} changes "
+                            "the row's executable code (emitted Python differs)")
+        elif sid in ident and ident[sid] != "identical":
+            problems.append(f"{sid}: emitted-Python check {ident[sid]}")
+
     # A trajectory that cannot be read line by line is not a missing result.
     for name in sorted(os.listdir(args.batch)):
         if name.startswith("traj_") and name.endswith(".jsonl"):
@@ -243,6 +355,13 @@ def main():
             "unresolved": sum(1 for r in rows if r.get("rerun") and r["claimed"] != "proved"),
             "existing_proof_not_used": sorted(not_used),
             "not_promoted": sorted(not_promoted),
+        },
+        "emitted_python": {
+            "checked": len(ident),
+            "identical": sum(1 for v in ident.values() if v == "identical"),
+            "differs": sorted(s for s, v in ident.items() if v == "differs"),
+            "error": sorted(s for s, v in ident.items()
+                            if v not in ("identical", "differs")),
         },
         "reads_missing": sorted(no_reads),
         "reads_coverage": (
