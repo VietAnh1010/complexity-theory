@@ -13,18 +13,18 @@ from __future__ import annotations
 import json, re, subprocess, sys
 from pathlib import Path
 
-from common import (DATA, UNSCREENED, PROVED_NLOGN, SOLUTIONS, UNVERIFIED, PROVED,
+from common import (DATA, UNSCREENED, SOLUTIONS, UNVERIFIED, PROVED,
                     log, read_jsonl, write_jsonl, DISPUTED, UNGATEABLE,
                     PROVED_VALUE)
 from signature import input_fields
 
-# solutions-proved/ and solutions-proved/nlogn/ were missing here, so the twelve
+# solutions-proved/ was missing here, so the twelve
 # complexity proofs' preconditions were never checked against real inputs --
 # and the proofs are exactly where new preconditions get added, to make a
 # bound provable. Two of the twelve turned out to exclude inputs their own
 # row answers. A gate that skips the files most likely to need it is not a
 # gate.
-ROOTS = [SOLUTIONS, UNVERIFIED, UNSCREENED, PROVED, PROVED_NLOGN, PROVED_VALUE,
+ROOTS = [SOLUTIONS, UNVERIFIED, UNSCREENED, PROVED, PROVED_VALUE,
          DISPUTED, UNGATEABLE]
 
 
@@ -41,7 +41,7 @@ def find_all(sid, pid):
 
     A row can exist in two places at once: the plain translation in
     `solutions/` or `solutions-unscreened/`, and an instrumented copy carrying a
-    complexity proof in `solutions-proved/` or `solutions-proved/nlogn/`.
+    complexity proof in `solutions-proved/`.
     Returning
     only the first meant the proofs -- the copies most likely to have gained a
     new `requires`, since that is often what makes a bound provable -- were

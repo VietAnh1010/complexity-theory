@@ -25,13 +25,17 @@ Open items found while normalising on 2026-09-29. Tick a box when done.
 
 ## Gates (not for an agent whose work they judge)
 
-- [ ] Remove the `solutions-proved/nlogn/` remnants: `PROVED_NLOGN` in
+- [x] Remove the `solutions-proved/nlogn/` remnants: `PROVED_NLOGN` in
       `common.py`, `proofs.py`, `precheck.py`; `tight_variant` in `collect.py`.
+- [ ] `experiments/selftest_grade.py` imports `INEXACT`, `NLOGN`, `VERIFIED`,
+      which `common.py` no longer defines; it fails on import.
 - [ ] `precheck.py` never drops a row's stale clauses when the row loses all its
       `requires` (1077_84's was removed by hand).
 - [ ] `audit.py` does not flag budget overruns. Recorded overruns: `2128_34`
       (4 attempts, 480 s), `1582_118` and `2254_6` (4 attempts), `2704_92`
       (1,500 s), `2231_77` (420 s).
+- [ ] `2254_6` and `2128_34` count as agent-proved in campaign 1 though over
+      budget; decide whether to count them as unresolved.
 
 ## Records and docs
 

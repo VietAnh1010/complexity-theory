@@ -11,7 +11,7 @@ the proof is the stronger statement.
 from __future__ import annotations
 import re, shutil, subprocess, sys
 
-from common import (DAFNY_VERSION, DATA, UNSCREENED, PROVED_NLOGN, SOLUTIONS, UNVERIFIED,
+from common import (DAFNY_VERSION, DATA, UNSCREENED, SOLUTIONS, UNVERIFIED,
                     PROVED, event, log, read_jsonl, write_jsonl, DISPUTED,
                     UNGATEABLE)
 
@@ -89,11 +89,10 @@ def scan_assumes():
 def run():
     ds = {r["solution_id"]: r for r in read_jsonl(DATA / "dataset.jsonl")}
     rows = []
-    # `solutions-proved/nlogn/` is nested inside `solutions-proved/`, so one
-    # rglob reaches both; listing the two roots separately would double-count.
+    # value-bounded/ is nested inside solutions-proved/, so one rglob reaches
+    # both; listing the two roots separately would double-count.
     files = sorted(PROVED.rglob("*.dfy")) if PROVED.exists() else []
     for p in files:
-        variant = "nlogn" if PROVED_NLOGN in p.parents else "base"
         sid = p.stem
         text = p.read_text(encoding="utf-8")
         r = subprocess.run([DAFNY, "verify", str(p), "--solver-path", SOLVER],
@@ -104,7 +103,6 @@ def run():
         assumes = len(re.findall(r"\bassume\b", text))
         rows.append({
             "solution_id": sid,
-            "proof_variant": variant,
             "label": ds.get(sid, {}).get("time_complexity_inferred"),
             "proved_bound": bound_of(text),
             "verified": ok,
@@ -112,7 +110,7 @@ def run():
             "dafny_version": DAFNY_VERSION,
             "verifier_output": out.strip().splitlines()[-1] if out.strip() else "",
         })
-        log(f"  [{variant:>5}] {sid:>10}  {'VERIFIED' if ok else 'FAILED  '}  "
+        log(f"  {sid:>10}  {'VERIFIED' if ok else 'FAILED  '}  "
             f"label={rows[-1]['label']}  bound={rows[-1]['proved_bound']}"
             + ("  ASSUMES!" if assumes else ""))
     write_jsonl(DATA / "complexity_proofs.jsonl", rows)

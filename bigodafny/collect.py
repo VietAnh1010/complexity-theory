@@ -82,7 +82,6 @@ def proofs_all(depth, ds, pv_rows):
             "solution_id": sid,
             "file": str(f.relative_to(HERE)),
             "era": "campaign" if sid in campaign else "pre-axiom",
-            "tight_variant": "/nlogn/" in str(f),
             "label": rec.get("time_complexity_inferred"),
             "bound": (m.group(1).split("//")[0].strip() if m else None),
             "call_depth": d.get("longest_chain"),
