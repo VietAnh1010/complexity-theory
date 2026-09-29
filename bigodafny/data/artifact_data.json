@@ -1,6 +1,6 @@
 {
-  "generated": "2026-09-24T05:45:45+00:00",
-  "commit": "5a01854",
+  "generated": "2026-09-29T08:47:36+00:00",
+  "commit": "faee038",
   "branch": "claude/bigobench-python-dafny-dataset-ts4tm5",
   "toolchain": {
     "dafny": "4.11.0",
@@ -9516,7 +9516,7 @@
         "era": "campaign",
         "tight_variant": false,
         "label": "O(n**2)",
-        "bound": "4 * n + |output| + 40",
+        "bound": "4 * (if n > 0 then n else 0) + |output| + 40",
         "call_depth": 2,
         "recursive": true
       },

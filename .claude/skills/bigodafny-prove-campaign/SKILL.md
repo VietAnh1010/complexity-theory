@@ -238,6 +238,12 @@ the refreshed `data/`. Push to the session's designated branch.
   closed later. `provestats.py`, `collect.py` and `dedupe.py` all read it that
   way. The 2026-09-23 revision is the worked example: 48 rows, 157
   superseded lines, campaign rates unchanged.
+- **A normalised batch has one record per row and nothing else current.** Each
+  record sits in the trajectory of the slice that produced it; slices and
+  briefs whose records were replaced, staging files and every superseded line
+  go into `old-` files (`old-record.jsonl`, `old-slice_*.jsonl`,
+  `old-PROMPT_*.md`). A proof fixed by hand before promotion is not kept as an
+  attempt; its record says what was fixed. `prove-sample-7` is the example.
 - **Sorts and binary searches use the prelude.** `SortCost`, `NLogN`,
   `SortCostWithin`, `SearchPot`, `BisectStep` and `SearchLoopWithin` live in
   `prelude.dfy` and `PROMPT.md` tells agents to call them. A trajectory whose

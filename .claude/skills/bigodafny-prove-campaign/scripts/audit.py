@@ -206,7 +206,8 @@ def main():
             traj[sid]["relation_reason"] = row.get("reason", "")
 
     # A rerun proves each row afresh in rerun/<pid>/<sid>.dfy, away from the
-    # overlay, and rerun/verify.jsonl is the verifier's result on those files.
+    # overlay, and rerun/verify.jsonl is the verifier's result on those files
+    # until they are promoted (a normalised batch has neither).
     # An existing overlay proof is deliberately NOT consulted for a rerun row:
     # the retry must not use it, so "unresolved while a proof exists" is the
     # expected case there, listed rather than failed.

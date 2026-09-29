@@ -79,7 +79,9 @@ def load():
         # a row proved later by hand, outside the budget, is still a row the
         # bounded agent did not close.
         old = {}
-        for o in jsonl(d / "old_record.jsonl"):
+        # superseded lines: old_record.jsonl, or old-record.jsonl once a batch
+        # is normalised
+        for o in jsonl(d / "old_record.jsonl") + jsonl(d / "old-record.jsonl"):
             old.setdefault(o["record"]["solution_id"], {})[o["file"]] = o["record"]
         for sid, m in man.items():
             t = traj.get(sid, {})
@@ -96,7 +98,9 @@ def load():
                 "outcome": outcome,
                 # the row's state now is the verifier's, not any record's
                 "current_outcome": "proved" if sid in VERIFIED else ("unresolved" if t else "not attempted"),
-                "current_relation": (rel.get(sid) or {}).get("relation")
+                # a proved rerun record carries its own relation
+                "current_relation": ((t.get("relation") if t.get("rerun") else None)
+                                     or (rel.get(sid) or {}).get("relation"))
                                     if t.get("outcome") == "proved" else None,
                 "revised": bool(t.get("revision")),
                 "redrawn": sid in REDRAWN.get(b, set()),

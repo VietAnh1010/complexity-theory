@@ -215,7 +215,7 @@ def agent_view(d, traj, rel, obst=None):
     superseded lines; each revised row also carries `current_*` fields.
     """
     old = {}
-    for o in jsonl(d / "old_record.jsonl"):
+    for o in jsonl(d / "old_record.jsonl") + jsonl(d / "old-record.jsonl"):
         old.setdefault(o["file"], {})[o["record"]["solution_id"]] = o["record"]
     old_traj = {}
     for fn, recs in old.items():

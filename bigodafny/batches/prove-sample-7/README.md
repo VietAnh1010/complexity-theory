@@ -8,28 +8,27 @@ attempts and 5 minutes per row.
 
 ## How the record was assembled
 
-A session rate limit interrupted the first run. The 50 records come from two
-runs:
+A session rate limit interrupted the first run, and its slices B and C finished
+before the `reads` requirement existed. On 2026-09-24 those 30 rows were
+retried from scratch under the same budget, in new slices RA, RB and RC
+(`PROMPT_rerun.md`). The rerun agents could not read the row's existing proof,
+other solutions of the same problem, or any earlier record.
+
+Each row has exactly one record, in the trajectory of the slice that produced
+it:
 
 | slice | rows | proved | run |
 |---|---:|---:|---|
-| `traj_a` | 17 | 14 | original, 2026-09-23 |
-| `traj_c2` | 3 | 2 | original, 2026-09-23 |
-| `traj_b` | 17 | 16 | rerun, 2026-09-24 |
-| `traj_c` | 13 | 12 | rerun, 2026-09-24 |
+| `a` | 17 | 14 | original, 2026-09-23 |
+| `c2` | 3 | 2 | original, 2026-09-23 |
+| `ra` | 10 | 10 | rerun, 2026-09-24 |
+| `rb` | 10 | 8 | rerun, 2026-09-24 |
+| `rc` | 10 | 10 | rerun, 2026-09-24 |
 
-Slices B and C finished before the `reads` requirement existed. On 2026-09-24
-each of their 30 rows was retried from scratch under the same budget
-(`rerun/PROMPT_rerun.md`). The agents could not read the row's existing proof,
-other solutions of the same problem, or any earlier record. Verifier results
-are in `rerun/verify.jsonl`. The replaced records, 24 of 30 proved, are in
-`old_record.jsonl`.
-
-All 28 verified rerun proofs are in `solutions-proved/`. 24 were promoted on
-2026-09-24: each compiles to Python identical to its source row. The other 4
-changed the row's executable code and were fixed by hand before promotion on
-2026-09-29. Bounds and proofs are the agents'; the agents' versions are in
-`attempts/`.
+All 28 rerun proofs are in `solutions-proved/`. 24 compiled to their row's
+Python as written. 4 changed the row's code and were fixed by hand on
+2026-09-29 before promotion; each record says what in
+`rerun.fixed_before_promotion`:
 
 | row | agent's change | fix |
 |---|---|---|
@@ -117,13 +116,19 @@ Median time was 110 seconds per row.
 
 ## Files
 
+The current files are the single source of truth. Superseded data is in the
+`old-` files.
+
 | file | contents |
 |---|---|
 | `manifest.jsonl`, `excluded.jsonl` | the draw |
-| `slice_*.jsonl`, `PROMPT_*.md` | original-run slices and prompts |
-| `traj_{a,b,c,c2}.jsonl` | one record per row; B and C are rerun records |
-| `rerun/` | rerun slices, prompt, staging records, and verifier results |
-| `attempts/` | the agents' versions of the 4 proofs fixed before promotion |
-| `label_relation.jsonl`, `obstacles.jsonl` | reviewed relations and obstacle codes |
+| `slice_{a,c2,ra,rb,rc}.jsonl`, `PROMPT_{a,c2,rerun}.md` | slices and briefs of the records kept |
+| `traj_{a,c2,ra,rb,rc}.jsonl` | one record per row, 50 in all |
+| `label_relation.jsonl` | reviewed relation where it is not the record's own: `888_6` (original run) and `1718_1166` (its proof predates the rerun) |
+| `obstacles.jsonl` | obstacle of the one original-run row without a proof now, `2704_92`; rerun records carry theirs in `rerun.obstacle` |
 | `audit.jsonl`, `summary.json` | verifier results joined to records |
-| `old_record.jsonl` | superseded records |
+| `old-record.jsonl` | every superseded line, as `{file, superseded_on, why, record}`: the original B and C records, the rerun's staging records and verifier results, and earlier revisions |
+| `old-slice_{b,c}.jsonl`, `old-PROMPT_{b,c}.md` | the original run's slices B and C and their briefs |
+
+`PROMPT_rerun.md` names paths under `rerun/`, where the rerun worked. That
+directory was folded into this one on 2026-09-29.

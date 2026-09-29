@@ -6154,7 +6154,7 @@
       "resolved": null,
       "attempts_used": 1,
       "seconds": 280,
-      "slice": "b"
+      "slice": "ra"
     },
     {
       "campaign": "prove-sample-7",
@@ -6163,7 +6163,7 @@
       "split": "strict",
       "outcome": "proved",
       "current_outcome": "proved",
-      "current_relation": null,
+      "current_relation": "confirms",
       "revised": false,
       "redrawn": false,
       "relation": "confirms",
@@ -6171,7 +6171,7 @@
       "resolved": null,
       "attempts_used": 1,
       "seconds": 90,
-      "slice": "c"
+      "slice": "rb"
     },
     {
       "campaign": "prove-sample-7",
@@ -6197,7 +6197,7 @@
       "split": "loose",
       "outcome": "proved",
       "current_outcome": "proved",
-      "current_relation": null,
+      "current_relation": "confirms",
       "revised": false,
       "redrawn": false,
       "relation": "confirms",
@@ -6205,7 +6205,7 @@
       "resolved": null,
       "attempts_used": 1,
       "seconds": 90,
-      "slice": "b"
+      "slice": "rc"
     },
     {
       "campaign": "prove-sample-7",
@@ -6214,7 +6214,7 @@
       "split": "strict",
       "outcome": "proved",
       "current_outcome": "proved",
-      "current_relation": null,
+      "current_relation": "confirms",
       "revised": false,
       "redrawn": false,
       "relation": "confirms",
@@ -6222,7 +6222,7 @@
       "resolved": null,
       "attempts_used": 1,
       "seconds": 120,
-      "slice": "c"
+      "slice": "ra"
     },
     {
       "campaign": "prove-sample-7",
@@ -6248,7 +6248,7 @@
       "split": "strict",
       "outcome": "proved",
       "current_outcome": "proved",
-      "current_relation": null,
+      "current_relation": "confirms",
       "revised": false,
       "redrawn": false,
       "relation": "confirms",
@@ -6256,7 +6256,7 @@
       "resolved": null,
       "attempts_used": 2,
       "seconds": 220,
-      "slice": "b"
+      "slice": "rb"
     },
     {
       "campaign": "prove-sample-7",
@@ -6265,7 +6265,7 @@
       "split": "strict",
       "outcome": "proved",
       "current_outcome": "proved",
-      "current_relation": null,
+      "current_relation": "confirms",
       "revised": false,
       "redrawn": false,
       "relation": "confirms",
@@ -6273,7 +6273,7 @@
       "resolved": null,
       "attempts_used": 1,
       "seconds": 40,
-      "slice": "c"
+      "slice": "rc"
     },
     {
       "campaign": "prove-sample-7",
@@ -6307,7 +6307,7 @@
       "resolved": null,
       "attempts_used": 1,
       "seconds": 180,
-      "slice": "b"
+      "slice": "ra"
     },
     {
       "campaign": "prove-sample-7",
@@ -6324,7 +6324,7 @@
       "resolved": null,
       "attempts_used": 3,
       "seconds": 300,
-      "slice": "c"
+      "slice": "rb"
     },
     {
       "campaign": "prove-sample-7",
@@ -6350,7 +6350,7 @@
       "split": "strict",
       "outcome": "proved",
       "current_outcome": "proved",
-      "current_relation": null,
+      "current_relation": "confirms",
       "revised": false,
       "redrawn": false,
       "relation": "confirms",
@@ -6358,7 +6358,7 @@
       "resolved": null,
       "attempts_used": 1,
       "seconds": 100,
-      "slice": "b"
+      "slice": "rc"
     },
     {
       "campaign": "prove-sample-7",
@@ -6367,7 +6367,7 @@
       "split": "loose",
       "outcome": "proved",
       "current_outcome": "proved",
-      "current_relation": null,
+      "current_relation": "confirms",
       "revised": false,
       "redrawn": false,
       "relation": "confirms",
@@ -6375,7 +6375,7 @@
       "resolved": null,
       "attempts_used": 2,
       "seconds": 45,
-      "slice": "c"
+      "slice": "ra"
     },
     {
       "campaign": "prove-sample-7",
@@ -6401,7 +6401,7 @@
       "split": "strict",
       "outcome": "proved",
       "current_outcome": "proved",
-      "current_relation": null,
+      "current_relation": "confirms",
       "revised": false,
       "redrawn": false,
       "relation": "confirms",
@@ -6409,7 +6409,7 @@
       "resolved": null,
       "attempts_used": 1,
       "seconds": 100,
-      "slice": "b"
+      "slice": "rb"
     },
     {
       "campaign": "prove-sample-7",
@@ -6426,7 +6426,7 @@
       "resolved": null,
       "attempts_used": 1,
       "seconds": 110,
-      "slice": "c"
+      "slice": "rc"
     },
     {
       "campaign": "prove-sample-7",
@@ -6452,7 +6452,7 @@
       "split": "strict",
       "outcome": "proved",
       "current_outcome": "proved",
-      "current_relation": null,
+      "current_relation": "confirms",
       "revised": false,
       "redrawn": false,
       "relation": "confirms",
@@ -6460,7 +6460,7 @@
       "resolved": null,
       "attempts_used": 1,
       "seconds": 30,
-      "slice": "b"
+      "slice": "ra"
     },
     {
       "campaign": "prove-sample-7",
@@ -6477,7 +6477,7 @@
       "resolved": null,
       "attempts_used": 2,
       "seconds": 150,
-      "slice": "c"
+      "slice": "rb"
     },
     {
       "campaign": "prove-sample-7",
@@ -6511,7 +6511,7 @@
       "resolved": null,
       "attempts_used": 3,
       "seconds": 280,
-      "slice": "b"
+      "slice": "rc"
     },
     {
       "campaign": "prove-sample-7",
@@ -6528,7 +6528,7 @@
       "resolved": null,
       "attempts_used": 3,
       "seconds": 260,
-      "slice": "c"
+      "slice": "ra"
     },
     {
       "campaign": "prove-sample-7",
@@ -6562,7 +6562,7 @@
       "resolved": null,
       "attempts_used": 1,
       "seconds": 110,
-      "slice": "b"
+      "slice": "rb"
     },
     {
       "campaign": "prove-sample-7",
@@ -6571,7 +6571,7 @@
       "split": "strict",
       "outcome": "proved",
       "current_outcome": "proved",
-      "current_relation": null,
+      "current_relation": "confirms",
       "revised": false,
       "redrawn": false,
       "relation": "confirms",
@@ -6579,7 +6579,7 @@
       "resolved": null,
       "attempts_used": 1,
       "seconds": 40,
-      "slice": "c"
+      "slice": "rc"
     },
     {
       "campaign": "prove-sample-7",
@@ -6605,7 +6605,7 @@
       "split": "loose",
       "outcome": "proved",
       "current_outcome": "proved",
-      "current_relation": null,
+      "current_relation": "confirms",
       "revised": false,
       "redrawn": false,
       "relation": "confirms",
@@ -6613,7 +6613,7 @@
       "resolved": null,
       "attempts_used": 1,
       "seconds": 30,
-      "slice": "b"
+      "slice": "ra"
     },
     {
       "campaign": "prove-sample-7",
@@ -6664,7 +6664,7 @@
       "resolved": null,
       "attempts_used": 2,
       "seconds": 240,
-      "slice": "b"
+      "slice": "rb"
     },
     {
       "campaign": "prove-sample-7",
@@ -6707,7 +6707,7 @@
       "split": "strict",
       "outcome": "proved",
       "current_outcome": "proved",
-      "current_relation": null,
+      "current_relation": "confirms",
       "revised": false,
       "redrawn": false,
       "relation": "confirms",
@@ -6715,7 +6715,7 @@
       "resolved": null,
       "attempts_used": 3,
       "seconds": 280,
-      "slice": "b"
+      "slice": "rc"
     },
     {
       "campaign": "prove-sample-7",
@@ -6724,7 +6724,7 @@
       "split": "loose",
       "outcome": "proved",
       "current_outcome": "proved",
-      "current_relation": null,
+      "current_relation": "confirms",
       "revised": false,
       "redrawn": false,
       "relation": "confirms",
@@ -6732,7 +6732,7 @@
       "resolved": null,
       "attempts_used": 2,
       "seconds": 150,
-      "slice": "c"
+      "slice": "ra"
     },
     {
       "campaign": "prove-sample-7",
@@ -6758,7 +6758,7 @@
       "split": "strict",
       "outcome": "proved",
       "current_outcome": "proved",
-      "current_relation": null,
+      "current_relation": "confirms",
       "revised": false,
       "redrawn": false,
       "relation": "confirms",
@@ -6766,7 +6766,7 @@
       "resolved": null,
       "attempts_used": 1,
       "seconds": 280,
-      "slice": "b"
+      "slice": "rb"
     },
     {
       "campaign": "prove-sample-7",
@@ -6775,7 +6775,7 @@
       "split": "strict",
       "outcome": "proved",
       "current_outcome": "proved",
-      "current_relation": null,
+      "current_relation": "confirms",
       "revised": false,
       "redrawn": false,
       "relation": "confirms",
@@ -6783,7 +6783,7 @@
       "resolved": null,
       "attempts_used": 1,
       "seconds": 20,
-      "slice": "c"
+      "slice": "rc"
     },
     {
       "campaign": "prove-sample-7",
@@ -6809,7 +6809,7 @@
       "split": "strict",
       "outcome": "proved",
       "current_outcome": "proved",
-      "current_relation": null,
+      "current_relation": "confirms",
       "revised": false,
       "redrawn": false,
       "relation": "confirms",
@@ -6817,7 +6817,7 @@
       "resolved": null,
       "attempts_used": 2,
       "seconds": 150,
-      "slice": "b"
+      "slice": "ra"
     },
     {
       "campaign": "prove-sample-7",
@@ -6834,7 +6834,7 @@
       "resolved": null,
       "attempts_used": 3,
       "seconds": 260,
-      "slice": "c"
+      "slice": "rb"
     },
     {
       "campaign": "prove-sample-7",
@@ -6860,7 +6860,7 @@
       "split": "strict",
       "outcome": "proved",
       "current_outcome": "proved",
-      "current_relation": null,
+      "current_relation": "confirms",
       "revised": false,
       "redrawn": false,
       "relation": "confirms",
@@ -6868,7 +6868,7 @@
       "resolved": null,
       "attempts_used": 1,
       "seconds": 40,
-      "slice": "b"
+      "slice": "rc"
     },
     {
       "campaign": "prove-sample-7",
@@ -6877,7 +6877,7 @@
       "split": "strict",
       "outcome": "proved",
       "current_outcome": "proved",
-      "current_relation": null,
+      "current_relation": "confirms",
       "revised": false,
       "redrawn": false,
       "relation": "confirms",
@@ -6885,7 +6885,7 @@
       "resolved": null,
       "attempts_used": 2,
       "seconds": 90,
-      "slice": "c"
+      "slice": "ra"
     },
     {
       "campaign": "prove-sample-7",
@@ -6919,7 +6919,7 @@
       "resolved": null,
       "attempts_used": 1,
       "seconds": 260,
-      "slice": "b"
+      "slice": "rb"
     },
     {
       "campaign": "prove-sample-7",
@@ -6970,7 +6970,7 @@
       "resolved": null,
       "attempts_used": 1,
       "seconds": 220,
-      "slice": "b"
+      "slice": "rc"
     },
     {
       "campaign": "prove-sample-8",

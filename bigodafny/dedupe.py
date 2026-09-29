@@ -108,7 +108,9 @@ def draws(batches):
                 # the hand-normalised relation where one exists; the agent's
                 # otherwise. Never the other way round.
                 "relation": (rel.get(sid) or t).get("relation"),
-                "obstacle": ((obst.get(sid) or {}).get("obstacle")
+                # a rerun record carries its own obstacle
+                "obstacle": ((t.get("rerun") or {}).get("obstacle")
+                             or (obst.get(sid) or {}).get("obstacle")
                              or (rel.get(sid) or {}).get("obstacle")),
                 "attempts_used": t.get("attempts_used"),
                 "seconds": t.get("seconds"),
