@@ -140,7 +140,9 @@ prelude has `CostMulMono`, `CostMulMonoLeft`, `CostMulDistrib` and
    corpus for it and fails.
 2. **No `decreases *`.**
 3. **Do not change what the row computes.** You add ghost state, `ensures`,
-   `invariant`, `decreases`, `assert`, and lemmas. Nothing else.
+   `invariant`, `decreases`, `assert`, and lemmas. Nothing else. Never add or
+   change a `requires` on the row's own methods and functions: if the bound
+   needs one, stop and record the row `unresolved` with the clause you needed.
 4. **Do not touch** `solutions/`, `validate.py`, `difftest.py`, `verify_all.py`,
    `precheck.py`, `proofs.py`, or anything in `data/`.
 5. **If your proved bound exceeds the label, keep the proof and record it.**

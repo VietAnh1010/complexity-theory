@@ -79,7 +79,11 @@
     "the pos/level-advance loop's per-step increase in n is not bounded by a constant, so the standard decreases-metric-bounds-iteration-count argument gives itnAdv<=initM+overshoot, not itnAdv<=initM; closing it needs a separate bound on the overshoot that was not found in budget": 1,
     "the scan loop initializes i:=1 before checking n, so an invariant bounding i by n is false on entry whenever n==0; needs a case split or an i<=n+1-style invariant not yet found": 1
   },
-  "problems": [],
+  "problems": [
+    "1765_40: proof changes `requires` of Solve -- fix the row, not the proof",
+    "1972_295: proof changes `requires` of Solve -- fix the row, not the proof",
+    "2926_54: proof changes `requires` of Solve -- fix the row, not the proof"
+  ],
   "proved": 43,
   "reads_coverage": 0.0,
   "reads_missing": [
@@ -133,6 +137,11 @@
     "831_74",
     "894_3",
     "976_656"
+  ],
+  "requires_changed": [
+    "1765_40",
+    "1972_295",
+    "2926_54"
   ],
   "rerun": {
     "existing_proof_not_used": [],

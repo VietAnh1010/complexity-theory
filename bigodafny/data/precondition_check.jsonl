@@ -23,7 +23,6 @@
 {"clause": "|a_list| == N", "error": 0, "expr": "len(I.a_list) == I.N", "holds": 42, "root": "solutions", "solution_id": "1053_44", "status": "ok", "violated": 0}
 {"clause": "|a_list| == N", "error": 0, "expr": "len(I.a_list) == I.N", "holds": 42, "root": "solutions-proved", "solution_id": "1053_44", "status": "ok", "violated": 0}
 {"clause": "n >= 0", "error": 0, "expr": "I.n >= 0", "holds": 11, "root": "solutions-proved", "solution_id": "1073_645", "status": "ok", "violated": 0}
-{"clause": "n >= 1", "error": 0, "expr": "I.n >= 1", "holds": 106, "root": "solutions-proved", "solution_id": "1077_84", "status": "ok", "violated": 0}
 {"clause": "n >= 0", "error": 0, "expr": "I.n >= 0", "holds": 143, "root": "solutions-proved", "solution_id": "1089_96", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |matrix| ==> |matrix[k]| >= 3", "error": 0, "expr": "all((len(I.matrix[k]) >= 3) for k in range(len(I.matrix)))", "holds": 102, "root": "solutions", "solution_id": "1134_928", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |matrix| ==> |matrix[k]| >= 3", "error": 0, "expr": "all((len(I.matrix[k]) >= 3) for k in range(len(I.matrix)))", "holds": 102, "root": "solutions-proved", "solution_id": "1134_928", "status": "ok", "violated": 0}

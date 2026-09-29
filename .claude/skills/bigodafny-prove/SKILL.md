@@ -225,7 +225,14 @@ recursion-tree argument — the machinery is now cheap.
 `827_148` has no polynomial bound at all until values are capped: its inner
 catch-up loop is data-dependent. The proof takes the problem's stated
 `1 <= d_i <= 1000` as a precondition and folds the cap into the constant. The
-label assumes the same thing silently.
+label assumes the same thing silently. That proof predates the rule below: a
+precondition like this now goes into the row first, not into the proof.
+
+**A proof never adds or changes a `requires` on the row's own methods and
+functions.** The proof and its row must have the same contract. A needed
+precondition goes into the row in its own directory, through that row's gates
+and `precheck.py`, and is then copied into the proof. Ghost helpers the proof
+adds may have their own `requires`.
 
 `1484_82`'s trailing comparison loop is bounded by total string length, not `n`,
 so it is charged against `SumLen(numbers)`. That term is real work, not slack.

@@ -51,11 +51,9 @@
   "drawn": 50,
   "emitted_python": {
     "checked": 32,
-    "differs": [
-      "1077_84"
-    ],
+    "differs": [],
     "error": [],
-    "identical": 31
+    "identical": 32
   },
   "obstacles": {
     "Fenwick-tree lowbit loop needs a bit-trick log-bound lemma absent from prelude; not derivable in budget": 1,
@@ -78,7 +76,13 @@
     "the O(n) mask-scan loop's iteration bound was proved via a crude iters+mask<=2^30 argument instead of an actual log2 lemma, producing a ~2^30-scale literal that made the final nonlinear arithmetic check time out; needed a real Log2(0x40000000)=30 bound instead of the brute constant": 1
   },
   "problems": [
-    "1077_84: solutions-proved/1077/1077_84.dfy changes the row's executable code (emitted Python differs)"
+    "1015_168: proof changes `requires` of Solve -- fix the row, not the proof",
+    "1369_7: proof changes `requires` of Solve -- fix the row, not the proof",
+    "1580_12: proof changes `requires` of Solve -- fix the row, not the proof",
+    "1699_98: proof changes `requires` of Solve -- fix the row, not the proof",
+    "1948_388: proof changes `requires` of Solve -- fix the row, not the proof",
+    "1972_295: proof changes `requires` of Solve -- fix the row, not the proof",
+    "2254_143: proof changes `requires` of Solve -- fix the row, not the proof"
   ],
   "proved": 32,
   "reads_coverage": 0.0,
@@ -133,6 +137,15 @@
     "88_200",
     "897_1880",
     "897_2438"
+  ],
+  "requires_changed": [
+    "1015_168",
+    "1369_7",
+    "1580_12",
+    "1699_98",
+    "1948_388",
+    "1972_295",
+    "2254_143"
   ],
   "rerun": {
     "existing_proof_not_used": [],

@@ -71,7 +71,15 @@
     "the options-queue is popped and conditionally re-pushed in the same iteration; the amortized total-degree argument needs a cleaner potential function (e.g. unvisited-node count) than the budget counter attempted here, and the row already carries decreases * with no termination proof to build on": 1
   },
   "problems": [
-    "2496_30: solutions-proved/2496/2496_30.dfy changes the row's executable code (emitted Python differs)"
+    "1073_645: proof changes `requires` of Solve -- fix the row, not the proof",
+    "1359_4: proof changes `requires` of Solve -- fix the row, not the proof",
+    "2423_48: proof changes `requires` of Solve -- fix the row, not the proof",
+    "2425_5: proof changes `requires` of Solve -- fix the row, not the proof",
+    "2496_30: solutions-proved/2496/2496_30.dfy changes the row's executable code (emitted Python differs)",
+    "2773_68: proof changes `requires` of Solve -- fix the row, not the proof",
+    "2926_54: proof changes `requires` of Solve -- fix the row, not the proof",
+    "2982_103: proof changes `requires` of Solve -- fix the row, not the proof",
+    "3070_180: proof changes `requires` of Solve -- fix the row, not the proof"
   ],
   "proved": 44,
   "reads_coverage": 0.0,
@@ -126,6 +134,16 @@
     "704_351",
     "804_10",
     "89_909"
+  ],
+  "requires_changed": [
+    "1073_645",
+    "1359_4",
+    "2423_48",
+    "2425_5",
+    "2773_68",
+    "2926_54",
+    "2982_103",
+    "3070_180"
   ],
   "rerun": {
     "existing_proof_not_used": [],

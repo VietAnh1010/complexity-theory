@@ -71,7 +71,17 @@
     "needs a histogram partition-sum lemma (SeqSum over 26 buckets equals |v_1|) plus a Repeat-length lemma, neither in prelude": 1,
     "the outer level counter l advances only when the inner pos counter exhausts a full l-1 length pass, so total iterations telescope to a triangular-number O(l^2) count; bounding l by log2(b) via Pow2 inversion and closing the quadratic invariant is a two-lemma proof that did not fit the 5-minute budget": 1
   },
-  "problems": [],
+  "problems": [
+    "1359_4: proof changes `requires` of Solve -- fix the row, not the proof",
+    "1699_98: proof changes `requires` of Solve -- fix the row, not the proof",
+    "1765_73: proof changes `requires` of Solve -- fix the row, not the proof",
+    "1954_157: proof changes `requires` of Solve -- fix the row, not the proof",
+    "2423_56: proof changes `requires` of Solve -- fix the row, not the proof",
+    "2522_11: proof changes `requires` of Solve -- fix the row, not the proof",
+    "2880_19: proof changes `requires` of Solve -- fix the row, not the proof",
+    "2926_50: proof changes `requires` of Solve -- fix the row, not the proof",
+    "71_217: proof changes `requires` of Solve -- fix the row, not the proof"
+  ],
   "proved": 41,
   "reads_coverage": 0.0,
   "reads_missing": [
@@ -125,6 +135,17 @@
     "750_14",
     "785_12",
     "888_179"
+  ],
+  "requires_changed": [
+    "1359_4",
+    "1699_98",
+    "1765_73",
+    "1954_157",
+    "2423_56",
+    "2522_11",
+    "2880_19",
+    "2926_50",
+    "71_217"
   ],
   "rerun": {
     "existing_proof_not_used": [],

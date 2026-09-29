@@ -68,8 +68,11 @@ A proof may add only ghost code: the proof and its row must compile to the same
 Python. The campaign `audit.py` checks this for every drawn row. On 2026-09-29,
 19 proofs that failed it were fixed by hand: non-ghost temporaries and counters
 made ghost, and the row's own statements restored. Bounds did not change.
-`2496_30` (caps added to three loop conditions) and `1077_84` (recursive
-`Factorial` replaced by an iterative method) still differ and are under review.
+`1077_84` was rewritten on the row's recursive `Factorial`. `2496_30` (caps
+added to three loop conditions) still differs and is under review.
+
+A proof never adds or changes a `requires` on the row's own code; a needed
+precondition goes into the row first. `audit.py` checks this too.
 
 ## Labels proved
 

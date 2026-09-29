@@ -54,7 +54,19 @@
     "triangular-sum double loop (inner bound i, not n) needed a dedicated triangular-number lemma to connect the per-outer-iteration charge to the n^2 postcondition; ran out of attempts before adding one": 1,
     "while guard calls SumDiv1306(counts,day) inline each iteration (short-circuited with day<=maxC+1); charging it needs the guard rewritten into a precomputed ghost-tracked boolean, and the true cost maxC*|counts| is not linear in any single input (worst case ~k^2 when counts split as one big group + many singletons) -- no O(n) scaffold reachable in budget": 1
   },
-  "problems": [],
+  "problems": [
+    "1089_96: proof changes `requires` of Solve -- fix the row, not the proof",
+    "1345_113: proof changes `requires` of Solve -- fix the row, not the proof",
+    "1765_40: proof changes `requires` of Solve -- fix the row, not the proof",
+    "1855_33: proof changes `requires` of Solve -- fix the row, not the proof",
+    "1937_10: proof changes `requires` of Solve -- fix the row, not the proof",
+    "1948_388: proof changes `requires` of Solve -- fix the row, not the proof",
+    "2313_177: proof changes `requires` of Solve -- fix the row, not the proof",
+    "2423_48: proof changes `requires` of Solve -- fix the row, not the proof",
+    "2505_87: proof changes `requires` of Solve -- fix the row, not the proof",
+    "276_610: proof changes `requires` of Solve -- fix the row, not the proof",
+    "2926_50: proof changes `requires` of Solve -- fix the row, not the proof"
+  ],
   "proved": 44,
   "reads_coverage": 0.0,
   "reads_missing": [
@@ -108,6 +120,19 @@
     "750_14",
     "750_51",
     "831_184"
+  ],
+  "requires_changed": [
+    "1089_96",
+    "1345_113",
+    "1765_40",
+    "1855_33",
+    "1937_10",
+    "1948_388",
+    "2313_177",
+    "2423_48",
+    "2505_87",
+    "276_610",
+    "2926_50"
   ],
   "rerun": {
     "existing_proof_not_used": [],

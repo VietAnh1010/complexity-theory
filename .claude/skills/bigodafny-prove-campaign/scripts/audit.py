@@ -135,6 +135,33 @@ def source_row(repo, sid, m):
     return None
 
 
+def contracts(text):
+    """{name: sorted requires clauses} for each method/function declared."""
+    text = re.sub(r"//[^\n]*", "", text)
+    out = {}
+    for d in re.finditer(r"\b(?:method|function|predicate)\s+(?:\{[^}]*\}\s*)?(\w+)", text):
+        # the header runs to the body's opening brace (not an attribute's)
+        m = re.search(r"\{(?!:)", text[d.end():])
+        header = text[d.end():d.end() + m.start()] if m else ""
+        parts = re.split(r"\b(requires|ensures|decreases|reads|modifies)\b", header)
+        out[d.group(1)] = sorted(" ".join(parts[i + 1].split())
+                                 for i in range(1, len(parts) - 1, 2)
+                                 if parts[i] == "requires")
+    return out
+
+
+def contract_changes(repo, sid, m, proof):
+    """Row methods/functions whose `requires` the proof changed."""
+    src = source_row(repo, sid, m)
+    if src is None:
+        return []
+    with open(src) as fh:
+        row = contracts(fh.read())
+    with open(proof) as fh:
+        prf = contracts(fh.read())
+    return sorted(n for n in row if n in prf and row[n] != prf[n])
+
+
 def identity(repo, sid, m, proof):
     """'identical', 'differs', or 'error: ...' for one row's proof."""
     src = source_row(repo, sid, m)
@@ -290,6 +317,14 @@ def main():
                             "the row's executable code (emitted Python differs)")
         elif sid in ident and ident[sid] != "identical":
             problems.append(f"{sid}: emitted-Python check {ident[sid]}")
+        # A proof must not narrow the row's contract: a needed precondition
+        # goes into the row, through its gates, and is then copied over.
+        changed = (contract_changes(args.repo, sid, manifest[sid], jobs[sid])
+                   if sid in jobs else [])
+        rec["requires_changed"] = changed
+        if changed:
+            problems.append(f"{sid}: proof changes `requires` of "
+                            + ", ".join(changed) + " -- fix the row, not the proof")
 
     # A trajectory that cannot be read line by line is not a missing result.
     for name in sorted(os.listdir(args.batch)):
@@ -363,6 +398,8 @@ def main():
             "error": sorted(s for s, v in ident.items()
                             if v not in ("identical", "differs")),
         },
+        "requires_changed": sorted(r["solution_id"] for r in rows
+                                   if r.get("requires_changed")),
         "reads_missing": sorted(no_reads),
         "reads_coverage": (
             round(1 - len(no_reads) / len(rows), 4) if rows else None),

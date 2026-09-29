@@ -22,14 +22,19 @@ do not remove its source copy.
 
 - Strict rows use `validate.py`; loose rows use `difftest.py --loose`.
 - A passing test gate is behavioural evidence, not a safety or complexity proof.
-- Use `precheck.py` whenever a proof or verification fix adds `requires`.
+- Use `precheck.py` whenever a verification fix adds `requires`.
 - Use `proofs.py` for instrumented complexity proofs.
 - Never weaken a gate to make the row under review pass.
 
 ## Proof restrictions
 
-Proof changes may add ghost state, lemmas, `ensures`, invariants, decreases
-clauses, and verified preconditions. They must not change executable behaviour.
+Proof changes may add ghost state, lemmas, `ensures`, invariants, and decreases
+clauses. They must not change executable behaviour.
+
+- **A proof never adds or changes a `requires` on the row's own methods and
+  functions.** If a precondition is needed, add it to the row in its own
+  directory, re-run that row's gates and `precheck.py`, then copy it into the
+  proof. Ghost helpers the proof adds may have their own `requires`.
 
 - No `assume` in `solutions-proved/`.
 - No `decreases *` in a complexity proof.
