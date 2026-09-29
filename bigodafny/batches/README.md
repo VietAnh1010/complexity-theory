@@ -12,6 +12,10 @@ against what wave 5 actually contained.
 | `labelaudit/` | the label audit | `PROMPT.md`, `verdicts_NN.jsonl`, and `batch_NN.json` (git-ignored) |
 | `cost-axioms/` | `PLAN.md` — axiomatise collection cost; drop `array<T>` | plan only, no manifest |
 | `stdlib-migration/` | `PROMPT.md` — move `prelude.dfy` call sites to `Std` | prompt only, not yet run |
+| `verify-sample/` | a 50-row probe of the unverified backlog | manifest, trajectory, prompt |
+| `gate-audit/` | the seven `solutions/` rows with no passing gate result | control rows and script |
+| `prove-sample/`, `prove-sample-2/` … `prove-sample-8/` | bounded proof campaigns | see `CAMPAIGN_CONFIG.md` |
+| `value-bounded-open/` | value-bounded rows with no proof yet | `MANIFEST.jsonl` |
 
 ## `labelaudit/` is the one that is not just manifests
 

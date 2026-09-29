@@ -1,8 +1,8 @@
 # `value-bounded-open/` — value-bounded rows with **no proof yet**
 
-6 rows. Each one's real cost depends on how **large** an input is, while its
+10 rows. Each one's real cost depends on how **large** an input is, while its
 BigOBench label only counts how **many** inputs there are — and unlike the
-eleven in `solutions-proved/value-bounded/`, nobody has managed to prove a
+fourteen in `solutions-proved/value-bounded/`, nobody has managed to prove a
 bound for it.
 
 There are no `.dfy` files here, because there is nothing proved to hold.
@@ -14,6 +14,24 @@ behaviour gate; what is missing is a complexity proof, not a translation.
 > rows under a directory whose name says `proved` was wrong.
 
 ## The rows
+
+| row | label | what it would need |
+|---|---|---|
+| `1306_126` | `O(n)` | the loop guard's inline sum hoisted into a ghost trace |
+| `1944_50` | `O(n)` | a doubling-search invariant over `Pow2` / `Log2` |
+| `2819_926` | `O(n)` | `FloorDiv` and triangular-number bounds, four or five chained |
+
+Seven more were filed on 2026-09-29 from campaigns 5 and 6, whose records name
+`value-to-size` but were never filed here: `1263_2538`, `1332_16`, `1364_161`,
+`1626_179`, `2358_103`, `2465_212`, `342_86`. Their `why` is the agent's
+`why_failed`; none has been reviewed yet.
+
+Three rows left since the table below was written. `1948_388` was proved and
+is in `solutions-proved/value-bounded/`. `1047_26` and `2926_50` were proved by
+`prove-sample-5` with bounds in input size, which confirm their labels; they
+are in `solutions-proved/` and their old entries are in `old-record.jsonl`.
+
+The original six:
 
 | row | label | what it would need |
 |---|---|---|

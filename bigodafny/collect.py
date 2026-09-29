@@ -566,8 +566,9 @@ def main():
             "what `differs`-by-timeout-only should mean (1501_224): 77 of 93 "
             "comparable tests agree, 16 time out, and NO test disagrees",
             "RESOLVED 2026-09-21: of the 7 rows with no passing gate result, "
-            "4 pass every runnable test and are exempt (data/gate_exempt.jsonl), "
-            "2 moved to solutions-disputed/, 1 remains open. "
+            "4 pass every runnable test, 2 moved to solutions-disputed/, 1 "
+            "(1501_224) could not conclude; the 4 and 1501_224 are in "
+            "solutions-ungateable/ (data/gate_ungateable.jsonl). "
             "batches/gate-audit/README.md",
             "rows using `decreases *` do not prove termination",
             "proofs.py's bound_of reads one line, so a wrapped or two-clause "

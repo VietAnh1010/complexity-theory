@@ -22,7 +22,7 @@ that also lives in one of those five:
 
 | the row also lives in | rows |
 |---|---|
-| `solutions/` | 287 |
+| `solutions/` | 307 |
 | `solutions-disputed/` | 15 |
 | `solutions-unscreened/` | 1 |
 
@@ -76,7 +76,9 @@ precondition goes into the row first. `audit.py` checks this too.
 
 ## Labels proved
 
-    O(n*m) 9 · O(nlogn) 7 · O(n) 5 · O(n**2) 4 · O(n+m) 3
+    O(n) 150 · O(nlogn) 68 · O(n**2) 40 · O(1) 32 · O(n+m) 14 · O(n*m) 11
+    O(nlogn+mlogm) 4 · O(logn) 2 · O(n+m)log(n+m) 1 · O(n**2+m**2) 1
+
 ## Current scope
 
 The overlay has 323 proof files. The relation to the label is recorded beside

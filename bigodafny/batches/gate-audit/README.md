@@ -43,6 +43,10 @@ edited by the work it judges, and making four rows pass by relaxing the gate is
 the exact shape of that mistake. The gate still reports `fail`; the record says
 why that reading is wrong.
 
+> Superseded 2026-09-21: the four exempt rows and `1501_224` moved to
+> `solutions-ungateable/`, and `data/gate_ungateable.jsonl` replaced
+> `data/gate_exempt.jsonl`.
+
 ## The two `1950` rows are different
 
 Their dataclass types the coefficient as `float`, and the inputs carry up to
