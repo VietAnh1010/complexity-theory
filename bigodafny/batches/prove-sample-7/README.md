@@ -21,9 +21,22 @@ runs:
 Slices B and C finished before the `reads` requirement existed. On 2026-09-24
 each of their 30 rows was retried from scratch under the same budget
 (`rerun/PROMPT_rerun.md`). The agents could not read the row's existing proof,
-other solutions of the same problem, or any earlier record. Rerun proofs are in
-`rerun/<pid>/<sid>.dfy` and their verifier results in `rerun/verify.jsonl`. The
-replaced records, 24 of 30 proved, are in `old_record.jsonl`.
+other solutions of the same problem, or any earlier record. Verifier results
+are in `rerun/verify.jsonl`. The replaced records, 24 of 30 proved, are in
+`old_record.jsonl`.
+
+All 28 verified rerun proofs are in `solutions-proved/`. 24 were promoted on
+2026-09-24: each compiles to Python identical to its source row. The other 4
+changed the row's executable code and were fixed by hand before promotion on
+2026-09-29. Bounds and proofs are the agents'; the agents' versions are in
+`attempts/`.
+
+| row | agent's change | fix |
+|---|---|---|
+| `794_794` | non-ghost counter `cnt3` | made ghost |
+| `1511_9` | unused non-ghost `B` | made ghost |
+| `307_14` | non-ghost `t`, `B`, two temporaries | ghost; source's call restored |
+| `1043_358` | append routed through `oldLines`, `piece` | source's appends restored |
 
 **The two runs used different configurations.** The rerun used the prelude's
 sort-cost and binary-search lemmas and the documentation that describes them.
@@ -86,7 +99,8 @@ the charge table costs each integer operation as one unit.
 `1678_68` has two conflicting proofs. The overlay proof charges the recursive
 `GcdEx` as one step and proves a constant bound. The rerun charges its
 recursion depth, which grows with the input value `rows`. The charge table and
-the Python recursion support the rerun, but the overlay proof was not changed.
+the Python recursion support the rerun. The rerun proof replaced the overlay
+proof on 2026-09-24.
 
 `2847_36` was a `decreases-star` failure in the original run. The rerun proved
 termination without changing the executable code.
@@ -108,7 +122,8 @@ Median time was 110 seconds per row.
 | `manifest.jsonl`, `excluded.jsonl` | the draw |
 | `slice_*.jsonl`, `PROMPT_*.md` | original-run slices and prompts |
 | `traj_{a,b,c,c2}.jsonl` | one record per row; B and C are rerun records |
-| `rerun/` | rerun slices, prompt, staging records, proofs, and verifier results |
+| `rerun/` | rerun slices, prompt, staging records, and verifier results |
+| `attempts/` | the agents' versions of the 4 proofs fixed before promotion |
 | `label_relation.jsonl`, `obstacles.jsonl` | reviewed relations and obstacle codes |
 | `audit.jsonl`, `summary.json` | verifier results joined to records |
 | `old_record.jsonl` | superseded records |

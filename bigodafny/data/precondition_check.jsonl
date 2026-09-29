@@ -282,6 +282,8 @@
 {"clause": "n >= 1 && n == |a_list|", "error": 0, "expr": "I.n >= 1  and  I.n == len(I.a_list)", "holds": 133, "root": "solutions-proved", "solution_id": "71_257", "status": "ok", "violated": 0}
 {"clause": "n >= 1", "error": 0, "expr": "I.n >= 1", "holds": 22, "root": "solutions", "solution_id": "785_12", "status": "ok", "violated": 0}
 {"clause": "n >= 1", "error": 0, "expr": "I.n >= 1", "holds": 22, "root": "solutions-proved", "solution_id": "785_12", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |data| ==> data[k].0 >= 2 && 0 <= data[k].1 < data[k].2", "error": 0, "expr": "all((I.data[k][0] >= 2  and  0 <= I.data[k][1] < I.data[k][2]) for k in range(len(I.data)))", "holds": 103, "root": "solutions", "solution_id": "794_794", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |data| ==> data[k].0 >= 2 && 0 <= data[k].1 < data[k].2", "error": 0, "expr": "all((I.data[k][0] >= 2  and  0 <= I.data[k][1] < I.data[k][2]) for k in range(len(I.data)))", "holds": 103, "root": "value-bounded", "solution_id": "794_794", "status": "ok", "violated": 0}
 {"clause": "forall i :: 0 <= i < n_edges ==> |edges[i]| >= 2 && edges[i][0] >= edges[i][1] >= 1", "error": 0, "expr": "all((len(I.edges[i]) >= 2  and  I.edges[i][0] >= I.edges[i][1] >= 1) for i in range(I.n_edges))", "holds": 139, "root": "solutions", "solution_id": "804_10", "status": "ok", "violated": 0}
 {"clause": "n_edges >= 0", "error": 0, "expr": "I.n_edges >= 0", "holds": 139, "root": "solutions", "solution_id": "804_10", "status": "ok", "violated": 0}
 {"clause": "|edges| == n_edges", "error": 0, "expr": "len(I.edges) == I.n_edges", "holds": 139, "root": "solutions", "solution_id": "804_10", "status": "ok", "violated": 0}

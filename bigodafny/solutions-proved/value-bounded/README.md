@@ -127,8 +127,8 @@ by input values, which the value-versus-size convention still counts.
 `prove-sample-7` filed `1043_358` and `794_794`, taking the directory to
 thirteen.
 
-    1043_358   8*|a_list| + 2*SumPos(a_list,|a_list|) + 3      O(n)
-    794_794    30*|data| + 30*SumNN(data,|data|) + 3           O(n)
+    1043_358   8*|a_list| + 3*SumAbsPrefix(a_list,|a_list|) + 10   O(n)
+    794_794    20*PrefixSum(firsts,|data|) + 20*|data| + 2         O(n)
 
 Both are the plainest form of the pattern. `1043_358` prints
 `"2" + "3" * (v - 1)` once per test case, so the work per test is the input
@@ -136,6 +136,9 @@ value `v`. `794_794` loops `range(1, n)` and then prints `n` numbers, where `n`
 is a per-test value read by `int(input())` — while the label's `n` counts test
 cases. The two `n`s are different quantities, and only one of them is in the
 label.
+
+Both proofs were replaced on 2026-09-29 by campaign 7's rerun proofs, whose
+bounds are shown above (`firsts[k]` is `data[k].0`). The relation is unchanged.
 
 ## One row arrived on 2026-09-24
 

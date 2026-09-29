@@ -1,6 +1,6 @@
 {
-  "generated": "2026-09-24T05:20:35+00:00",
-  "commit": "ad17781",
+  "generated": "2026-09-24T05:45:45+00:00",
+  "commit": "5a01854",
   "branch": "claude/bigobench-python-dafny-dataset-ts4tm5",
   "toolchain": {
     "dafny": "4.11.0",
@@ -12,7 +12,7 @@
     "directories": {
       "solutions": 344,
       "solutions-disputed": 157,
-      "solutions-proved": 322,
+      "solutions-proved": 323,
       "solutions-ungateable": 5,
       "solutions-unscreened": 127,
       "solutions-untranslated": 4,
@@ -9362,11 +9362,11 @@
     }
   },
   "proofs_all": {
-    "files": 322,
-    "rows": 322,
+    "files": 323,
+    "rows": 323,
     "by_era": {
       "pre-axiom": 42,
-      "campaign": 280
+      "campaign": 281
     },
     "rows_with_two_proofs": [],
     "pre_axiom_recheck": {
@@ -9380,7 +9380,7 @@
     "by_label": {
       "O(n)": 150,
       "O(nlogn)": 68,
-      "O(n**2)": 39,
+      "O(n**2)": 40,
       "O(1)": 32,
       "O(n+m)": 14,
       "O(n*m)": 11,
@@ -9897,6 +9897,16 @@
         "tight_variant": false,
         "label": "O(n)",
         "bound": "10 * |string_| + 5",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1511_9",
+        "file": "solutions-proved/1511/1511_9.dfy",
+        "era": "campaign",
+        "tight_variant": false,
+        "label": "O(n**2)",
+        "bound": "1 + |string_| * (4 * |string_| + 8) + 5",
         "call_depth": 2,
         "recursive": true
       },
@@ -11726,7 +11736,7 @@
         "era": "campaign",
         "tight_variant": false,
         "label": "O(n)",
-        "bound": "4 * |s| + 3",
+        "bound": "800 * |s| + 2200",
         "call_depth": 2,
         "recursive": true
       },
@@ -12476,7 +12486,7 @@
         "era": "campaign",
         "tight_variant": false,
         "label": "O(n)",
-        "bound": "8 * |a_list| + 2 * SumPos(a_list, |a_list|) + 3",
+        "bound": "8 * |a_list| + 3 * SumAbsPrefix(a_list, |a_list|) + 10",
         "call_depth": 1,
         "recursive": true
       },
@@ -12596,7 +12606,7 @@
         "era": "campaign",
         "tight_variant": false,
         "label": "O(n)",
-        "bound": "30 * |data| + 30 * SumNN(data, |data|) + 3",
+        "bound": "20 * PrefixSum(seq(|data|, k requires 0 <= k < |data| => data[k].0), |data|) + 20 * |data| + 2",
         "call_depth": 3,
         "recursive": true
       },
