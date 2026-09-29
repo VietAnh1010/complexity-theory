@@ -1,0 +1,2 @@
+{"solution_id": "2128_34", "path": "solutions/2128/2128_34.dfy", "label": "O(n**2)", "split": "loose", "gate": "agrees"}
+{"solution_id": "2942_42", "path": "solutions/2942/2942_42.dfy", "label": "O(n*m)", "split": "strict", "gate": "valid"}

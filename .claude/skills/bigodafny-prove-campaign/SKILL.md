@@ -226,13 +226,13 @@ the refreshed `data/`. Push to the session's designated branch.
   of the rate, because nothing records the budget they were made under.
   (Campaign 7's slice A lost 14 such files to deletion before this rule.)
 - **Revising a row after its campaign: latest state in the file, the old line
-  in `old_record.jsonl`, the agent's result kept beside.** When a row is
+  in `old-record.jsonl`, the agent's result kept beside.** When a row is
   proved or its proof tightened later — by hand, outside the budget — rewrite
   its trajectory line to the current state and add `agent_outcome`,
   `agent_relation`, `agent_bound` (and `agent_why_failed`) plus a `revision`
   block saying what changed and that it was done by hand. Move every
   superseded line — trajectory, `label_relation`, `obstacles`, `audit` — into
-  the batch's `old_record.jsonl` as `{"file", "superseded_on", "why",
+  the batch's `old-record.jsonl` as `{"file", "superseded_on", "why",
   "record"}`. Campaign rates are then computed from `agent_outcome`: a row a
   bounded agent missed stays missed in its campaign's rate, however it was
   closed later. `provestats.py`, `collect.py` and `dedupe.py` all read it that

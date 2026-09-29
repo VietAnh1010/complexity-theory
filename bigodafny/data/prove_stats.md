@@ -85,7 +85,7 @@ in one pass; use it for the corpus, never for comparing campaigns.
 Everything above is what a bounded agent achieved inside its budget.
 24 rows were revised after their campaign, by hand and outside the budget; their records keep the
 agent's result as `agent_outcome`, and the superseded lines sit in
-each batch's `old_record.jsonl`.
+each batch's `old-record.jsonl`.
 
 **292 of 329 distinct drawn rows carry a proof now — 89%.**
 

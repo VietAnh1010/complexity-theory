@@ -74,14 +74,12 @@ def load():
         rel = {r["solution_id"]: r for r in jsonl(d / "label_relation.jsonl")}
         obst = {r["solution_id"]: r for r in jsonl(d / "obstacles.jsonl")}
         # A record revised after the campaign keeps the agent's result beside
-        # the current one, and its superseded lines live in old_record.jsonl.
+        # the current one, and its superseded lines live in old-record.jsonl.
         # This file measures the CAMPAIGNS, so it reads the agent's result:
         # a row proved later by hand, outside the budget, is still a row the
         # bounded agent did not close.
         old = {}
-        # superseded lines: old_record.jsonl, or old-record.jsonl once a batch
-        # is normalised
-        for o in jsonl(d / "old_record.jsonl") + jsonl(d / "old-record.jsonl"):
+        for o in jsonl(d / "old-record.jsonl"):
             old.setdefault(o["record"]["solution_id"], {})[o["file"]] = o["record"]
         for sid, m in man.items():
             t = traj.get(sid, {})
@@ -253,7 +251,7 @@ def current_state(rows):
     Some rows were proved, or their proofs tightened, after their campaign, by
     hand and outside the budget -- most on 2026-09-23 when the prelude gained a
     composable sort-cost bound. Their campaign records keep the agent's result
-    as `agent_outcome` and the superseded lines in old_record.jsonl, so every
+    as `agent_outcome` and the superseded lines in old-record.jsonl, so every
     rate above is still what a bounded agent achieved. This is the other view.
     """
     latest = {}
@@ -440,7 +438,7 @@ def render(p):
         a(f"{len(c['revised_after_campaign'])} rows were revised after their "
           "campaign, by hand and outside the budget; their records keep the")
         a("agent's result as `agent_outcome`, and the superseded lines sit in")
-        a("each batch's `old_record.jsonl`.")
+        a("each batch's `old-record.jsonl`.")
         a("")
         a(f"**{c['proved_now']} of {c['distinct_rows']} distinct drawn rows carry a "
           f"proof now — {c['rate_now']:.0%}.**")

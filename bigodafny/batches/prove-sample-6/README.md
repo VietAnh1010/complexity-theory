@@ -155,7 +155,7 @@ campaign's bounded agent proved a row this one missed.
 **The numbers in this README are unchanged**: they are what this campaign's
 bounded agents achieved. Each revised trajectory keeps the agent's result as
 `agent_outcome`, `agent_relation` and `agent_bound`, and every superseded line
-— trajectory, relation, obstacle, audit — is in `old_record.jsonl`, with the
+— trajectory, relation, obstacle, audit — is in `old-record.jsonl`, with the
 file it came from.
 
 ## Files
@@ -171,4 +171,4 @@ file it came from.
 | `obstacles.jsonl` | the 20 unresolved rows with their obstacle codes |
 | `audit.jsonl` | verifier output joined to the trajectories |
 | `summary.json` | the counts every number above is drawn from |
-| `old_record.jsonl` | every line superseded by the 2026-09-23 revision, with its source file |
+| `old-record.jsonl` | every line superseded by the 2026-09-23 revision, with its source file |

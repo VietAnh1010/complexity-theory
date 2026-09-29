@@ -210,12 +210,12 @@ def agent_view(d, traj, rel, obst=None):
 
     Rows revised after their campaign -- proved, or their proofs tightened, by
     hand and outside the budget -- carry their latest state in the current
-    files, and their superseded lines in old_record.jsonl. The campaign tables
+    files, and their superseded lines in old-record.jsonl. The campaign tables
     measure what a BOUNDED agent achieved, so they are built from the
     superseded lines; each revised row also carries `current_*` fields.
     """
     old = {}
-    for o in jsonl(d / "old_record.jsonl") + jsonl(d / "old-record.jsonl"):
+    for o in jsonl(d / "old-record.jsonl"):
         old.setdefault(o["file"], {})[o["record"]["solution_id"]] = o["record"]
     old_traj = {}
     for fn, recs in old.items():

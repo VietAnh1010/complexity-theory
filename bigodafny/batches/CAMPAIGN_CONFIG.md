@@ -45,7 +45,7 @@ later hand-tightened proof. The two should not be mixed in one rate.
 
 ## Reading campaign records
 
-The campaign README gives the bounded-agent result. `old_record.jsonl` keeps
-superseded versions (`old-record.jsonl` in a normalised batch, now `prove-sample-7`). A later proof or changed relation does not rewrite what the
+The campaign README gives the bounded-agent result. `old-record.jsonl` keeps
+superseded versions. A later proof or changed relation does not rewrite what the
 agent achieved under its budget. `data/prove_stats.md` is the generated summary;
 use it for current totals and the README for experimental caveats.

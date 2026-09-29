@@ -105,7 +105,7 @@ campaign's bounded agent proved a row this one missed.
 **The numbers in this README are unchanged**: they are what this campaign's
 bounded agents achieved. Each revised trajectory keeps the agent's result as
 `agent_outcome`, `agent_relation` and `agent_bound`, and every superseded line
-— trajectory, relation, obstacle, audit — is in `old_record.jsonl`, with the
+— trajectory, relation, obstacle, audit — is in `old-record.jsonl`, with the
 file it came from.
 
 ## Files
@@ -113,11 +113,14 @@ file it came from.
 | file | what it is |
 |---|---|
 | `manifest.jsonl` | the 50 rows: id, path, label, split, gate |
-| `slice_{a,b,c}.jsonl` | the three agent assignments |
-| `PROMPT.md` | the agent brief; self-contained, charge table inline |
-| `traj_{a,b,c}.jsonl` | per-row attempts, bound, timing, failure reason |
+| `slice_{a,b,c}.jsonl`, `PROMPT.md` | the three agent assignments and their brief |
+| `slice_convention.jsonl`, `PROMPT_convention.md` | `2128_34` and `2942_42`, re-run on 2026-09-17 after the value-versus-size decision |
+| `traj_{a,b,c,convention}.jsonl` | one record per row, in the file of the run that produced it |
 | `label_relation.jsonl` | the normalised label relation, with reasons |
-| `old_record.jsonl` | every line superseded by the 2026-09-23 revision, with its source file |
+| `value_vs_size_decision.jsonl` | the 2026-09-17 convention decision |
+| `exploration.json`, `explore.py` | how the agents explored (top-down or bottom-up) |
+| `old-record.jsonl` | every superseded line, with its source file |
+| `old-slice_c.jsonl` | slice C as first assigned, before its two rows moved to the convention run |
 
 Proofs themselves are overlay copies in `../../solutions-proved/<pid>/`. The
 originals in `solutions/` were not modified; that was checked, not assumed.
