@@ -36,7 +36,7 @@ method Solve(n: int, k: int, pairs: seq<(int, int)>) returns (output: string, gh
   steps := 1;
   var arr := pairs + [(0, -1)];
   steps := steps + 1;
-  var m := |arr|;
+  ghost var m := |arr|;
   SortCostTreeBound(m);
   steps := steps + SortCost(m);
   var sortedDesc := Sort(arr, (x: (int, int), y: (int, int)) => x.0 > y.0 || (x.0 == y.0 && x.1 > y.1));

@@ -71,8 +71,8 @@ method Solve(a: int, b: int, c: int, d_list: seq<int>) returns (output: string, 
     if hi > |arr| { hi := |arr|; }
     assert lo <= i;
     assert hi >= i + 1;
-    var window := arr[lo..hi];
-    var m := MinSeq(window);
+    ghost var window := arr[lo..hi];
+    var m := MinSeq(arr[lo..hi]);
     steps := steps + 1 + |window| + 2;
     ghost var cntOld := cnt;
     cnt := cnt + 1;

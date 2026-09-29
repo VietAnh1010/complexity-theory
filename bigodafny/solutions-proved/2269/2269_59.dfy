@@ -30,18 +30,16 @@ method Solve(s: string) returns (output: string, ghost steps: nat)
   ensures steps <= 3 * |s| + |output| + 6
 {
   IsPalindromeFromCost(s, 0, |s| / 2);
+  AllSameFromCost(s, 0);
   if !IsPalindrome269b(s) {
     output := IntToString(|s|);
     steps := (|s| / 2) + |output| + 3;
+  } else if AllSameChar269b(s) {
+    output := IntToString(0);
+    steps := (|s| / 2) + |s| + |output| + 4;
   } else {
-    AllSameFromCost(s, 0);
-    if AllSameChar269b(s) {
-      output := IntToString(0);
-      steps := (|s| / 2) + |s| + |output| + 4;
-    } else {
-      output := IntToString(|s| - 1);
-      steps := (|s| / 2) + |s| + |output| + 4;
-    }
+    output := IntToString(|s| - 1);
+    steps := (|s| / 2) + |s| + |output| + 4;
   }
 }
 

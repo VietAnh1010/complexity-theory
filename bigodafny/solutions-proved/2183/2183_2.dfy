@@ -70,8 +70,8 @@ method Solve(n: int, rows: seq<seq<int>>) returns (output: string, ghost steps: 
     var parallel := a1 * b2 - a2 * b1;
     var orthogonal := a1 * a2 + b1 * b2;
     var res := if parallel == 0 then 2 else if orthogonal == 0 then 1 else 0;
-    var resStr := IntToString(res);
-    lines := lines + [resStr];
+    ghost var resStr := IntToString(res);
+    lines := lines + [IntToString(res)];
     i := i + 1;
     steps := steps + 20;
   }

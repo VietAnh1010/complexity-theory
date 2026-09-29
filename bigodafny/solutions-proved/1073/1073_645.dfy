@@ -48,24 +48,24 @@ method Solve(n: int) returns (output: string, ghost steps: nat)
   var half := FloorDiv(rawN, 2);
   steps := steps + 1;
 
-  var fRawN := Factorial(rawN);
+  ghost var fRawN := Factorial(rawN);
   ghost var sRawN := FactorialSteps(rawN);
   steps := steps + sRawN;
-  var fHalfM1a := Factorial(half - 1);
+  ghost var fHalfM1a := Factorial(half - 1);
   ghost var sHalfM1 := FactorialSteps(half - 1);
   steps := steps + sHalfM1;
-  var fHalfM1b := Factorial(half - 1);
+  ghost var fHalfM1b := Factorial(half - 1);
   steps := steps + sHalfM1;
 
-  var numerator := fRawN * fHalfM1a * fHalfM1b;
+  var numerator := Factorial(rawN) * Factorial(half - 1) * Factorial(half - 1);
   steps := steps + 2;
 
-  var fHalfA := Factorial(half);
+  ghost var fHalfA := Factorial(half);
   ghost var sHalf := FactorialSteps(half);
   steps := steps + sHalf;
-  var fHalfB := Factorial(half);
+  ghost var fHalfB := Factorial(half);
   steps := steps + sHalf;
-  var denom := fHalfA * fHalfB;
+  var denom := Factorial(half) * Factorial(half);
   steps := steps + 1;
 
   var step := FloorDiv(numerator, denom);

@@ -42,16 +42,9 @@
   "drawn": 50,
   "emitted_python": {
     "checked": 44,
-    "differs": [
-      "1626_33",
-      "1820_180",
-      "2083_80",
-      "2358_421",
-      "2423_48",
-      "276_610"
-    ],
+    "differs": [],
     "error": [],
-    "identical": 38
+    "identical": 44
   },
   "obstacles": {
     "BFS options-queue loop needs a bounded-worklist potential argument (total pushes <= sum of degrees) to replace the source's `decreases *`; not attempted in budget": 1,
@@ -61,14 +54,7 @@
     "triangular-sum double loop (inner bound i, not n) needed a dedicated triangular-number lemma to connect the per-outer-iteration charge to the n^2 postcondition; ran out of attempts before adding one": 1,
     "while guard calls SumDiv1306(counts,day) inline each iteration (short-circuited with day<=maxC+1); charging it needs the guard rewritten into a precomputed ghost-tracked boolean, and the true cost maxC*|counts| is not linear in any single input (worst case ~k^2 when counts split as one big group + many singletons) -- no O(n) scaffold reachable in budget": 1
   },
-  "problems": [
-    "1626_33: solutions-proved/1626/1626_33.dfy changes the row's executable code (emitted Python differs)",
-    "1820_180: solutions-proved/value-bounded/1820/1820_180.dfy changes the row's executable code (emitted Python differs)",
-    "2083_80: solutions-proved/2083/2083_80.dfy changes the row's executable code (emitted Python differs)",
-    "2358_421: solutions-proved/value-bounded/2358/2358_421.dfy changes the row's executable code (emitted Python differs)",
-    "2423_48: solutions-proved/value-bounded/2423/2423_48.dfy changes the row's executable code (emitted Python differs)",
-    "276_610: solutions-proved/276/276_610.dfy changes the row's executable code (emitted Python differs)"
-  ],
+  "problems": [],
   "proved": 44,
   "reads_coverage": 0.0,
   "reads_missing": [

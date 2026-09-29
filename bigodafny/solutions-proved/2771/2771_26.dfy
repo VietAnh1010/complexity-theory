@@ -50,7 +50,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
   i := i + 1;
   steps := steps + 2;
   ghost var base2 := steps;
-  var i0 := i;
+  ghost var i0 := i;
   while i < n && arr[i] - 1 == arr[i + 1]
     invariant i0 <= i
     invariant i == i0 || i <= n
@@ -64,7 +64,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
   i := i + 1;
   steps := steps + 2;
   ghost var base3 := steps;
-  var i1 := i;
+  ghost var i1 := i;
   while i < n && arr[i] + 1 == arr[i + 1]
     invariant i1 <= i
     invariant i == i1 || i <= n

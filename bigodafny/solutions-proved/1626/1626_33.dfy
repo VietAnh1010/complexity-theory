@@ -70,7 +70,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
     decreases end - beg
   {
     var mid := (beg + end) / 2;
-    var w := end - beg;
+    ghost var w := end - beg;
     if n * mid - s >= mid && mid >= m {
       assert mid - beg == w / 2;
       end := mid;

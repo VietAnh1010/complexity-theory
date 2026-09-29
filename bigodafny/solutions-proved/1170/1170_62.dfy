@@ -87,11 +87,11 @@ method Solve(n: int, matrices: seq<seq<int>>) returns (output: string, ghost ste
       steps := steps + 2;
     }
     assert |k0| <= 5 && |k1| <= 5 && |k2| <= 5 && |k3| <= 5;
-    var line := k0 + " " + k1 + " " + k2 + " " + k3 + "\n";
+    ghost var line := k0 + " " + k1 + " " + k2 + " " + k3 + "\n";
     steps := steps + 35;
     assert |line| <= 24;
     SumLenSnoc(parts, line);
-    parts := parts + [line];
+    parts := parts + [k0 + " " + k1 + " " + k2 + " " + k3 + "\n"];
     steps := steps + 1;
     idx := idx + 1;
   }

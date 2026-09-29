@@ -65,10 +65,10 @@ method Solve(n: int, v_list: seq<seq<int>>) returns (output: string, ghost steps
     steps := steps + 3;
     ghost var csteps1 := |start|;
     ghost var csteps2 := |end_|;
-    var contains1 := ContainsInt(start, a);
-    var contains2 := ContainsInt(end_, b);
+    ghost var contains1 := ContainsInt(start, a);
+    ghost var contains2 := ContainsInt(end_, b);
     steps := steps + csteps1 + csteps2;
-    if contains1 || contains2 {
+    if ContainsInt(start, a) || ContainsInt(end_, b) {
       ans1 := ans1 + c;
       start := start + [b];
       end_ := end_ + [a];

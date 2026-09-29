@@ -59,9 +59,9 @@ method Solve(n: int) returns (output: string, ghost steps: nat)
       i := i + 1;
       steps := steps + 3;
     }
-    var joined := partA + partB;
+    ghost var joined := partA + partB;
     steps := steps + |partB|;
-    output := "YES\n" + JoinInts(joined, " ");
+    output := "YES\n" + JoinInts(partA + partB, " ");
     steps := steps + |joined| + 1;
   }
 }

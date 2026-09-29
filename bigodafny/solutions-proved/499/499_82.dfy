@@ -58,7 +58,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
 {
   SortCostNLogN(n);
   steps := 1 + SortCost(n);
-  var a := Sort(a_list, (x: int, y: int) => x < y);
+  var a := SortInts(a_list);
   SortLength(a_list, (x, y) => x < y);
   assert |a| == n;
   var ans := 0;

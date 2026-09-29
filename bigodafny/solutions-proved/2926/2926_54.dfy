@@ -67,7 +67,7 @@ method Solve(n: int) returns (output: string, ghost steps: nat)
     steps := steps + 1;
     if isprime[i] {
       var j := i * i;
-      var cnt := 0;
+      ghost var cnt := 0;
       ghost var jbase := steps;
       while j < 2000
         invariant |isprime| == 2003

@@ -52,7 +52,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
   requires n == |a_list|
   ensures steps <= 2 * NLogN(n) + 10 * n + 10
 {
-  var nn := if n >= 0 then n else 0;
+  ghost var nn := if n >= 0 then n else 0;
   SortLength(a_list, (x: int, y: int) => x < y);
   SortCostWithin(nn, n);
   var sortedL := SortInts(a_list);

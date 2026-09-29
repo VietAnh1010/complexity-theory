@@ -27,6 +27,8 @@
 {"clause": "n >= 0", "error": 0, "expr": "I.n >= 0", "holds": 143, "root": "solutions-proved", "solution_id": "1089_96", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |matrix| ==> |matrix[k]| >= 3", "error": 0, "expr": "all((len(I.matrix[k]) >= 3) for k in range(len(I.matrix)))", "holds": 102, "root": "solutions", "solution_id": "1134_928", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |matrix| ==> |matrix[k]| >= 3", "error": 0, "expr": "all((len(I.matrix[k]) >= 3) for k in range(len(I.matrix)))", "holds": 102, "root": "solutions-proved", "solution_id": "1134_928", "status": "ok", "violated": 0}
+{"clause": "forall i :: 0 <= i < |matrices| ==> |matrices[i]| >= 4", "error": 0, "expr": "all((len(I.matrices[i]) >= 4) for i in range(len(I.matrices)))", "holds": 93, "root": "solutions", "solution_id": "1170_62", "status": "ok", "violated": 0}
+{"clause": "forall i :: 0 <= i < |matrices| ==> |matrices[i]| >= 4", "error": 0, "expr": "all((len(I.matrices[i]) >= 4) for i in range(len(I.matrices)))", "holds": 93, "root": "solutions-proved", "solution_id": "1170_62", "status": "ok", "violated": 0}
 {"clause": "exists c :: 0 <= c < n && a_list[c] == k", "error": 3, "expr": "any((I.a_list[c] == I.k) for c in range(I.n))", "holds": 82, "root": "solutions", "solution_id": "1332_41", "status": "violated-python-also-fails", "violated": 34, "violated_by_tier": {"generated_tests": 27, "private_tests": 7}, "violated_python_ok": 0}
 {"clause": "n == |a_list|", "error": 3, "expr": "I.n == len(I.a_list)", "holds": 116, "root": "solutions", "solution_id": "1332_41", "status": "ok", "violated": 0}
 {"clause": "exists c :: 0 <= c < n && a_list[c] == k", "error": 3, "expr": "any((I.a_list[c] == I.k) for c in range(I.n))", "holds": 82, "root": "solutions-proved", "solution_id": "1332_41", "status": "violated-python-also-fails", "violated": 34, "violated_by_tier": {"generated_tests": 27, "private_tests": 7}, "violated_python_ok": 0}
@@ -101,6 +103,9 @@
 {"clause": "a <= |d_list|", "error": 0, "expr": "I.a <= len(I.d_list)", "holds": 113, "root": "solutions-proved", "solution_id": "1820_180", "status": "ok", "violated": 0}
 {"clause": "b >= 0", "error": 0, "expr": "I.b >= 0", "holds": 113, "root": "solutions-proved", "solution_id": "1820_180", "status": "ok", "violated": 0}
 {"clause": "c >= 0", "error": 0, "expr": "I.c >= 0", "holds": 113, "root": "solutions-proved", "solution_id": "1820_180", "status": "ok", "violated": 0}
+{"clause": "a <= |d_list|", "error": 0, "expr": "I.a <= len(I.d_list)", "holds": 113, "root": "value-bounded", "solution_id": "1820_180", "status": "ok", "violated": 0}
+{"clause": "b >= 0", "error": 0, "expr": "I.b >= 0", "holds": 113, "root": "value-bounded", "solution_id": "1820_180", "status": "ok", "violated": 0}
+{"clause": "c >= 0", "error": 0, "expr": "I.c >= 0", "holds": 113, "root": "value-bounded", "solution_id": "1820_180", "status": "ok", "violated": 0}
 {"clause": "forall t :: 0 <= t < |string_| ==> 'A' <= string_[t] <= 'Z'", "error": 0, "expr": "all(('A' <= I.string[t] <= 'Z') for t in range(len(I.string)))", "holds": 103, "root": "solutions", "solution_id": "1830_16", "status": "ok", "violated": 0}
 {"clause": "forall t :: 0 <= t < |string_| ==> 'A' <= string_[t] <= 'Z'", "error": 0, "expr": "all(('A' <= I.string[t] <= 'Z') for t in range(len(I.string)))", "holds": 103, "root": "solutions-proved", "solution_id": "1830_16", "status": "ok", "violated": 0}
 {"clause": "|hour| == 2 && |minute| == 2", "error": 0, "expr": "len(I.hour) == 2  and  len(I.minute) == 2", "holds": 164, "root": "solutions-proved", "solution_id": "1855_33", "status": "ok", "violated": 0}
@@ -143,6 +148,12 @@
 {"clause": "forall k :: 0 <= k < |queries| ==> |queries[k]| >= 3", "error": 0, "expr": "all((len(I.queries[k]) >= 3) for k in range(len(I.queries)))", "holds": 104, "root": "solutions-proved", "solution_id": "2124_2", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |data_list| ==> |data_list[k]| >= 2", "error": 3, "expr": "all((len(I.data_list[k]) >= 2) for k in range(len(I.data_list)))", "holds": 172, "root": "solutions", "solution_id": "2128_34", "status": "ok", "violated": 0}
 {"clause": "m >= 0", "error": 3, "expr": "I.m >= 0", "holds": 172, "root": "solutions", "solution_id": "2128_34", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < n ==> |rows[k]| >= 8", "error": 0, "expr": "all((len(I.rows[k]) >= 8) for k in range(I.n))", "holds": 101, "root": "solutions", "solution_id": "2183_2", "status": "ok", "violated": 0}
+{"clause": "n >= 0", "error": 0, "expr": "I.n >= 0", "holds": 101, "root": "solutions", "solution_id": "2183_2", "status": "ok", "violated": 0}
+{"clause": "|rows| == n", "error": 0, "expr": "len(I.rows) == I.n", "holds": 101, "root": "solutions", "solution_id": "2183_2", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < n ==> |rows[k]| >= 8", "error": 0, "expr": "all((len(I.rows[k]) >= 8) for k in range(I.n))", "holds": 101, "root": "solutions-proved", "solution_id": "2183_2", "status": "ok", "violated": 0}
+{"clause": "n >= 0", "error": 0, "expr": "I.n >= 0", "holds": 101, "root": "solutions-proved", "solution_id": "2183_2", "status": "ok", "violated": 0}
+{"clause": "|rows| == n", "error": 0, "expr": "len(I.rows) == I.n", "holds": 101, "root": "solutions-proved", "solution_id": "2183_2", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |coord_list| ==> |coord_list[k]| >= 2", "error": 0, "expr": "all((len(I.coord_list[k]) >= 2) for k in range(len(I.coord_list)))", "holds": 116, "root": "solutions", "solution_id": "2185_274", "status": "ok", "violated": 0}
 {"clause": "n != 0", "error": 0, "expr": "I.n != 0", "holds": 116, "root": "solutions", "solution_id": "2185_274", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |coord_list| ==> |coord_list[k]| >= 2", "error": 0, "expr": "all((len(I.coord_list[k]) >= 2) for k in range(len(I.coord_list)))", "holds": 116, "root": "solutions-proved", "solution_id": "2185_274", "status": "ok", "violated": 0}

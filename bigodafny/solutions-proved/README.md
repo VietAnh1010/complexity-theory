@@ -62,6 +62,15 @@ measuring the Dafny Python backend. A proof written before that switch may
 charge `|s|` for a `seq` update where the axioms now charge 1; the bound is
 still sound, just no longer tight.
 
+## Same code as the row
+
+A proof may add only ghost code: the proof and its row must compile to the same
+Python. The campaign `audit.py` checks this for every drawn row. On 2026-09-29,
+19 proofs that failed it were fixed by hand: non-ghost temporaries and counters
+made ghost, and the row's own statements restored. Bounds did not change.
+`2496_30` (caps added to three loop conditions) and `1077_84` (recursive
+`Factorial` replaced by an iterative method) still differ and are under review.
+
 ## Labels proved
 
     O(n*m) 9 · O(nlogn) 7 · O(n) 5 · O(n**2) 4 · O(n+m) 3

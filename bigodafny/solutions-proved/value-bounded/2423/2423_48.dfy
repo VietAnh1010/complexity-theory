@@ -160,12 +160,13 @@ method Solve(n: int, k: int, pairs: seq<(int, int)>) returns (output: string, gh
   ensures steps <= 2 * |pairs| * (CeilLog2(|pairs|) + 1)
                  + 12 * OuterTrips(pairs) + 2 * n + 21
 {
-  var less := (x: (int, int), y: (int, int)) => x.0 < y.0 || (x.0 == y.0 && x.1 < y.1);
+  ghost var less := (x: (int, int), y: (int, int)) => x.0 < y.0 || (x.0 == y.0 && x.1 < y.1);
   assert StrictTotalOrder(less);
   assert forall a: (int, int), b: (int, int) :: !less(a, b) ==> b.0 <= a.0;
 
   SortCostTreeBound(|pairs|);
-  var d := Sort(pairs, less);
+  var d := Sort(pairs, (x: (int, int), y: (int, int)) => x.0 < y.0 || (x.0 == y.0 && x.1 < y.1));
+  assert d == Sort(pairs, less);
   steps := 1 + SortCost(|pairs|);
 
   LastIsMaxFirst(pairs, less);

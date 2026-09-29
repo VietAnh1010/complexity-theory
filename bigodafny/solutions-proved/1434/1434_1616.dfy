@@ -40,9 +40,9 @@ method Solve(values: seq<int>) returns (output: string, ghost steps: nat)
   {
     ghost var i_old := i;
     // ContainsInt1434a scans values[..i]: charge its length, plus 1 for the slice.
-    var contained := ContainsInt1434a(values[..i], values[i]);
+    ghost var contained := ContainsInt1434a(values[..i], values[i]);
     steps := steps + 1 + i;
-    if contained {
+    if ContainsInt1434a(values[..i], values[i]) {
       count := count + 1;
       steps := steps + 1;
     }

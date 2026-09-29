@@ -79,7 +79,7 @@ method IntSqrt2358b(x: int) returns (r: int, ghost steps: nat)
 {
   steps := 1;
   r := 0;
-  var xPos := if x > 0 then x else 0;
+  ghost var xPos := if x > 0 then x else 0;
   while (r + 1) * (r + 1) <= x
     invariant r >= 0
     invariant r <= xPos

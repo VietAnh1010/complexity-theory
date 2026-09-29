@@ -57,19 +57,10 @@
   "emitted_python": {
     "checked": 44,
     "differs": [
-      "1073_645",
-      "1359_4",
-      "1453_211",
-      "1820_180",
-      "2423_48",
-      "2425_5",
-      "2496_30",
-      "2771_26",
-      "2926_54",
-      "348_33"
+      "2496_30"
     ],
     "error": [],
-    "identical": 34
+    "identical": 43
   },
   "obstacles": {
     "CeilSqrt does a value-bounded binary search (doubling to find hi, then bisecting): tying the per-iteration Pow2/Log2 growth invariants together into one closed log(x) step bound across both phases did not close within budget": 1,
@@ -80,16 +71,7 @@
     "the options-queue is popped and conditionally re-pushed in the same iteration; the amortized total-degree argument needs a cleaner potential function (e.g. unvisited-node count) than the budget counter attempted here, and the row already carries decreases * with no termination proof to build on": 1
   },
   "problems": [
-    "1073_645: solutions-proved/1073/1073_645.dfy changes the row's executable code (emitted Python differs)",
-    "1359_4: solutions-proved/1359/1359_4.dfy changes the row's executable code (emitted Python differs)",
-    "1453_211: solutions-proved/1453/1453_211.dfy changes the row's executable code (emitted Python differs)",
-    "1820_180: solutions-proved/value-bounded/1820/1820_180.dfy changes the row's executable code (emitted Python differs)",
-    "2423_48: solutions-proved/value-bounded/2423/2423_48.dfy changes the row's executable code (emitted Python differs)",
-    "2425_5: solutions-proved/2425/2425_5.dfy changes the row's executable code (emitted Python differs)",
-    "2496_30: solutions-proved/2496/2496_30.dfy changes the row's executable code (emitted Python differs)",
-    "2771_26: solutions-proved/2771/2771_26.dfy changes the row's executable code (emitted Python differs)",
-    "2926_54: solutions-proved/2926/2926_54.dfy changes the row's executable code (emitted Python differs)",
-    "348_33: solutions-proved/348/348_33.dfy changes the row's executable code (emitted Python differs)"
+    "2496_30: solutions-proved/2496/2496_30.dfy changes the row's executable code (emitted Python differs)"
   ],
   "proved": 44,
   "reads_coverage": 0.0,

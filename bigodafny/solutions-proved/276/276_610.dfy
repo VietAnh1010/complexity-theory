@@ -50,7 +50,7 @@ function Min2(a: int, b: int): int { if a < b then a else b }
 //   "YES\n" + s + " " + s + " " + s + "\n", s charged 1  ->  4 + 3 + 3 = 10
 //
 // so 10 covers either branch.
-const PART_CHARGE: nat := 10
+ghost const PART_CHARGE: nat := 10
 
 method Solve(n: int, abc_list: seq<seq<int>>) returns (output: string, ghost steps: nat)
   requires forall r :: r in abc_list ==> |r| == 3

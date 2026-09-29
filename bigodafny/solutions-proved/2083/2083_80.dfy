@@ -103,9 +103,9 @@ method Solve(a: int, b: int, c_list: seq<int>, d: string) returns (output: strin
     steps := steps + SortCost(|p|);
     var c := if k < |sortedDesc| then k else |sortedDesc|;
     steps := steps + 1;
-    var slice := sortedDesc[0..c];
+    ghost var slice := sortedDesc[0..c];
     steps := steps + 1;
-    t := t + SumSeq(slice);
+    t := t + SumSeq(sortedDesc[0..c]);
     steps := steps + c + 1;
     i := j;
     steps := steps + 1;

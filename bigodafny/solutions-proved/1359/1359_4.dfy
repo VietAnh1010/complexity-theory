@@ -46,70 +46,72 @@ method Solve(a: int, b: int, c: int) returns (output: string, ghost steps: nat)
   ensures steps <= 2 * a + |output| + 20
 {
   steps := 1;
-  var d1 := 0;
-  var d2 := 0;
-  var e := 0;
-  var f := a;
-  ghost var cnt1 := 0;
-  while e < f
-    invariant 0 <= e <= f <= a
-    invariant cnt1 == steps - 1
-    invariant cnt1 + (f - e) <= a
-    invariant d1 + d2 <= cnt1
-    decreases f - e
   {
-    var g := (e + f) / 2;
-    if g <= c {
-      e := g + 1;
-      if g < c { d1 := d1 + 1; }
-    } else {
-      f := g;
-      d2 := d2 + 1;
+    var d1 := 0;
+    var d2 := 0;
+    var e := 0;
+    var f := a;
+    ghost var cnt1 := 0;
+    while e < f
+      invariant 0 <= e <= f <= a
+      invariant cnt1 == steps - 1
+      invariant cnt1 + (f - e) <= a
+      invariant d1 + d2 <= cnt1
+      decreases f - e
+    {
+      var g := (e + f) / 2;
+      if g <= c {
+        e := g + 1;
+        if g < c { d1 := d1 + 1; }
+      } else {
+        f := g;
+        d2 := d2 + 1;
+      }
+      cnt1 := cnt1 + 1;
+      steps := steps + 1;
     }
-    cnt1 := cnt1 + 1;
-    steps := steps + 1;
+    assert steps <= 1 + a;
+    assert d1 + d2 <= a;
+    var h := 1;
+    var i := b - 1;
+    ghost var base2 := steps;
+    while i > b - 1 - d1
+      invariant b - 1 - d1 <= i <= b - 1
+      invariant steps <= base2 + ((b - 1) - i)
+      decreases i - (b - 1 - d1)
+    {
+      h := h * i;
+      i := i - 1;
+      steps := steps + 1;
+    }
+    assert steps <= base2 + d1;
+    var i2 := a - b;
+    ghost var base3 := steps;
+    while i2 > a - b - d2
+      invariant a - b - d2 <= i2 <= a - b
+      invariant steps <= base3 + ((a - b) - i2)
+      decreases i2 - (a - b - d2)
+    {
+      h := h * i2;
+      i2 := i2 - 1;
+      steps := steps + 1;
+    }
+    assert steps <= base3 + d2;
+    var i3 := 1;
+    ghost var base4 := steps;
+    while i3 < a - d1 - d2
+      invariant 1 <= i3 <= a - d1 - d2 + 1
+      invariant steps <= base4 + (i3 - 1)
+      decreases (a - d1 - d2) - i3
+    {
+      h := h * i3;
+      i3 := i3 + 1;
+      steps := steps + 1;
+    }
+    assert steps <= base4 + (a - d1 - d2);
+    assert steps <= (1 + a) + d1 + d2 + (a - d1 - d2);
+    assert steps <= 1 + 2 * a;
+    output := IntToString(h % 1000000007);
+    steps := steps + |output| + 2;
   }
-  assert steps <= 1 + a;
-  assert d1 + d2 <= a;
-  var h := 1;
-  var i := b - 1;
-  ghost var base2 := steps;
-  while i > b - 1 - d1
-    invariant b - 1 - d1 <= i <= b - 1
-    invariant steps <= base2 + ((b - 1) - i)
-    decreases i - (b - 1 - d1)
-  {
-    h := h * i;
-    i := i - 1;
-    steps := steps + 1;
-  }
-  assert steps <= base2 + d1;
-  var i2 := a - b;
-  ghost var base3 := steps;
-  while i2 > a - b - d2
-    invariant a - b - d2 <= i2 <= a - b
-    invariant steps <= base3 + ((a - b) - i2)
-    decreases i2 - (a - b - d2)
-  {
-    h := h * i2;
-    i2 := i2 - 1;
-    steps := steps + 1;
-  }
-  assert steps <= base3 + d2;
-  var i3 := 1;
-  ghost var base4 := steps;
-  while i3 < a - d1 - d2
-    invariant 1 <= i3 <= a - d1 - d2 + 1
-    invariant steps <= base4 + (i3 - 1)
-    decreases (a - d1 - d2) - i3
-  {
-    h := h * i3;
-    i3 := i3 + 1;
-    steps := steps + 1;
-  }
-  assert steps <= base4 + (a - d1 - d2);
-  assert steps <= (1 + a) + d1 + d2 + (a - d1 - d2);
-  assert steps <= 1 + 2 * a;
-  output := IntToString(h % 1000000007);
-  steps := steps + |output| + 2;
 }
