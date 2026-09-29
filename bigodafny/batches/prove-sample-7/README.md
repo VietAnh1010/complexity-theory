@@ -125,7 +125,6 @@ The current files are the single source of truth. Superseded data is in the
 | `slice_{a,c2,ra,rb,rc}.jsonl`, `PROMPT_{a,c2,rerun}.md` | slices and briefs of the records kept |
 | `traj_{a,c2,ra,rb,rc}.jsonl` | one record per row, 50 in all |
 | `label_relation.jsonl` | reviewed relation where it is not the record's own: `888_6` (original run) and `1718_1166` (its proof predates the rerun) |
-| `obstacles.jsonl` | obstacle of the one original-run row without a proof now, `2704_92`; rerun records carry theirs in `rerun.obstacle` |
 | `audit.jsonl`, `summary.json` | verifier results joined to records |
 | `old-record.jsonl` | every superseded line, as `{file, superseded_on, why, record}`: the original B and C records, the rerun's staging records and verifier results, and earlier revisions |
 | `old-slice_{b,c}.jsonl`, `old-PROMPT_{b,c}.md` | the original run's slices B and C and their briefs |

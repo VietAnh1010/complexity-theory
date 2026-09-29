@@ -71,13 +71,10 @@
     "identical": 43
   },
   "obstacles": {
-    "CeilSqrt's binary search over the VALUE numbers[i] (not the list length) needs its own charged bound; getting the two nested loops' step counts to compose into a single proved formula in x did not close in 3 attempts. Real cost is O(log v) per element, a per-element cost the O(n) label omits (would have been looser-structural).": 1,
-    "Dfs's recursion depth depends on how fast x shrinks against a quadratically-spaced lookup table (FindIdxFrom); bounding that depth is a real number-theoretic argument, not fitting the budget": 1,
-    "row keeps `decreases *` on an unbounded stack-based BFS traversal; a real bound needs a potential-function argument (total pushes bounded by sum of vertex degrees over a tree) that the 5-minute budget cannot fit, and the rule against decreases * would also have to be resolved as part of the same proof": 1,
-    "substring-scan cost (Contains1272b) adds a SumLen(arr) term whose prefix bookkeeping did not close, and the shared SortCost nlogn lemma timed out once combined with that extra machinery": 1,
-    "the loop is `decreases *` in the original (unproven termination); a ghost step bound needs a digit-growth convergence argument relating pow=9**i to NumDigits(nn) that was not attempted given the risk/budget tradeoff": 1,
-    "the pos/level-advance loop's per-step increase in n is not bounded by a constant, so the standard decreases-metric-bounds-iteration-count argument gives itnAdv<=initM+overshoot, not itnAdv<=initM; closing it needs a separate bound on the overshoot that was not found in budget": 1,
-    "the scan loop initializes i:=1 before checking n, so an invariant bounding i by n is false on entry whenever n==0; needs a case split or an i<=n+1-style invariant not yet found": 1
+    "decreases-star": 2,
+    "invariant-gap": 1,
+    "recursion-depth": 1,
+    "z3-nonlinear": 3
   },
   "problems": [
     "1765_40: proof changes `requires` of Solve -- fix the row, not the proof",

@@ -74,6 +74,5 @@ frequently read prelude declarations were `IntToString` and `Join`.
 | `manifest.jsonl`, `excluded.jsonl` | the draw |
 | `slice_{a,b,c}.jsonl`, `PROMPT_{a,b,c}.md` | slices and prompts |
 | `traj_{a,b,c}.jsonl` | one record per row |
-| `obstacles.jsonl` | obstacle codes for the 2 unresolved rows |
 | `label_relation.jsonl` | empty: no relation needed review |
 | `audit.jsonl`, `summary.json` | verifier results joined to records |

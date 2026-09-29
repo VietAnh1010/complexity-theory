@@ -72,22 +72,21 @@ def load():
                 r["_slice"] = f.stem.split("_")[-1]
                 traj[r["solution_id"]] = r
         rel = {r["solution_id"]: r for r in jsonl(d / "label_relation.jsonl")}
-        obst = {r["solution_id"]: r for r in jsonl(d / "obstacles.jsonl")}
         # A record revised after the campaign keeps the agent's result beside
         # the current one, and its superseded lines live in old-record.jsonl.
         # This file measures the CAMPAIGNS, so it reads the agent's result:
         # a row proved later by hand, outside the budget, is still a row the
         # bounded agent did not close.
+        # the EARLIEST superseded line is the agent's; later ones are later edits
         old = {}
         for o in jsonl(d / "old-record.jsonl"):
-            old.setdefault(o["record"]["solution_id"], {})[o["file"]] = o["record"]
+            old.setdefault(o["record"]["solution_id"], {}).setdefault(o["file"], o["record"])
         for sid, m in man.items():
             t = traj.get(sid, {})
             # a rerun record is the campaign's record; old lines are history
             then = {} if t.get("rerun") else old.get(sid, {})
             outcome = t.get("agent_outcome", t.get("outcome", "not attempted"))
             rel_then = then.get("label_relation.jsonl") or rel.get(sid) or {}
-            obst_then = then.get("obstacles.jsonl") or obst.get(sid) or {}
             rows.append({
                 "campaign": b,
                 "solution_id": sid,
@@ -105,10 +104,8 @@ def load():
                 "relation": (t.get("relation") if t.get("rerun") else
                              (rel_then.get("relation") if "revision" not in rel_then
                               else None)) if outcome == "proved" else None,
-                # campaign 1 kept the obstacle beside the relation; later ones
-                # moved it to its own file
-                "obstacle": ((t.get("rerun") or {}).get("obstacle") if t.get("rerun")
-                             else (obst_then.get("obstacle") or rel_then.get("obstacle"))),
+                # on the record; a revised record keeps the agent's beside
+                "obstacle": t.get("agent_obstacle", t.get("obstacle")),
                 "resolved": rel_then.get("resolved"),
                 "attempts_used": t.get("attempts_used"),
                 "seconds": t.get("seconds"),

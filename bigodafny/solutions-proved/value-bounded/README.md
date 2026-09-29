@@ -74,7 +74,7 @@ From a campaign, two ways:
 
 - `relation: looser-structural` in a batch's `label_relation.jsonl`, where the
   reason names an input **value**. Move its proof file here.
-- `obstacle: value-to-size` in a batch's `obstacles.jsonl`. No proof exists, so
+- `obstacle: value-to-size` on a batch's trajectory record. No proof exists, so
   the row goes to `batches/value-bounded-open/MANIFEST.jsonl`, **not** here.
 
 Either way, name the campaign that found it.

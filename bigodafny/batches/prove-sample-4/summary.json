@@ -47,12 +47,10 @@
     "identical": 44
   },
   "obstacles": {
-    "BFS options-queue loop needs a bounded-worklist potential argument (total pushes <= sum of degrees) to replace the source's `decreases *`; not attempted in budget": 1,
-    "FCost90 composes four recursive functions (ParseBinary90 over the whole bx string, LowSum90 bounded by n, RepeatChar90, IntToBinary90) called inside a second while loop of length |bx|=n+digits(total_score) -- digits(total_score) is value-bounded, not size-bounded, so a correct charge needs an extra parameter beyond n plus per-function length lemmas; comparably-sized multi-loop/multi-function proofs this session (2831_71, 2947_115) both timed out at 30s even without that extra value-vs-size complication, so this was not attempted within budget.": 1,
-    "connecting IntSqrtFloor's value-bounded CeilLog2(k) cost to the n-bounded label needs a SumQueryCost-style construction (as in 810_131) that wasn't completed; RepStr/Join charging alone was not the blocker": 1,
-    "needs a two-accumulator amortized argument (cheap not-taken-branch count vs. gotCount-bounded expensive concatenation count) plus an index-range fact carried through Sort's permutation lemma; more scaffolding than the budget allows": 1,
-    "triangular-sum double loop (inner bound i, not n) needed a dedicated triangular-number lemma to connect the per-outer-iteration charge to the n^2 postcondition; ran out of attempts before adding one": 1,
-    "while guard calls SumDiv1306(counts,day) inline each iteration (short-circuited with day<=maxC+1); charging it needs the guard rewritten into a precomputed ghost-tracked boolean, and the true cost maxC*|counts| is not linear in any single input (worst case ~k^2 when counts split as one big group + many singletons) -- no O(n) scaffold reachable in budget": 1
+    "decreases-star": 1,
+    "invariant-gap": 2,
+    "value-to-size": 2,
+    "z3-nonlinear": 1
   },
   "problems": [
     "1089_96: proof changes `requires` of Solve -- fix the row, not the proof",

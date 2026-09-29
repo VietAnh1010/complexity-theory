@@ -205,7 +205,7 @@ def relation_of(sid, traj_row, rel):
     return "confirms" if traj_row.get("outcome") == "proved" else "unresolved"
 
 
-def agent_view(d, traj, rel, obst=None):
+def agent_view(d, traj, rel):
     """A batch's records as its agents left them, plus where each row stands now.
 
     Rows revised after their campaign -- proved, or their proofs tightened, by
@@ -214,9 +214,10 @@ def agent_view(d, traj, rel, obst=None):
     measure what a BOUNDED agent achieved, so they are built from the
     superseded lines; each revised row also carries `current_*` fields.
     """
+    # the EARLIEST superseded line is the agent's; later ones are later edits
     old = {}
     for o in jsonl(d / "old-record.jsonl"):
-        old.setdefault(o["file"], {})[o["record"]["solution_id"]] = o["record"]
+        old.setdefault(o["file"], {}).setdefault(o["record"]["solution_id"], o["record"])
     old_traj = {}
     for fn, recs in old.items():
         if fn.startswith("traj_"):
@@ -230,15 +231,19 @@ def agent_view(d, traj, rel, obst=None):
         a["current_bound"] = r.get("bound")
         a["current_relation"] = r.get("relation")
         a["revised"] = bool(r.get("revision"))
+        # the obstacle lives on the current record; a revised one keeps the
+        # agent's as agent_obstacle
+        a["obstacle"] = r.get("agent_obstacle", r.get("obstacle"))
         traj2.append(a)
     rel2 = {sid: rec for sid, rec in rel.items() if not rec.get("revision")}
-    rel2.update(old.get("label_relation.jsonl", {}))
-    obst2 = dict(obst or {})
-    obst2.update(old.get("obstacles.jsonl", {}))
-    return traj2, rel2, obst2
+    # a rerun record carries its own relation; old lines describe another run
+    reruns = {r["solution_id"] for r in traj if r.get("rerun")}
+    rel2.update({sid: rec for sid, rec in old.get("label_relation.jsonl", {}).items()
+                 if sid not in reruns})
+    return traj2, rel2
 
 
-def prove_sample(manifest, traj, rel, depth, meta=None, obst=None):
+def prove_sample(manifest, traj, rel, depth, meta=None):
     """The proof campaign: did a bounded agent close the complexity label?
 
     Unlike the verification sample there is no tool that settles this -- a
@@ -249,10 +254,6 @@ def prove_sample(manifest, traj, rel, depth, meta=None, obst=None):
     if not manifest:
         return {"status": "not yet run"}
     meta = meta or {"seed": 20260917, "pool": 329}
-    # The first campaign kept the obstacle code alongside the relation; the
-    # second moved it to its own file, since an obstacle belongs to a row that
-    # did NOT close and a relation to one that did.
-    obst = obst or {}
     by_sid = {r["solution_id"]: r for r in traj}
     rows = []
     for m in manifest:
@@ -267,12 +268,14 @@ def prove_sample(manifest, traj, rel, depth, meta=None, obst=None):
             # normalised reading; `agent_said_agrees` is what the agent wrote,
             # kept so the normalisation stays auditable.
             "relation": relation_of(s, t, rel),
-            "relation_reason": (rel.get(s) or {}).get("reason"),
-            "obstacle": ((t.get("rerun") or {}).get("obstacle") if t.get("rerun") else
-                         (rel.get(s) or {}).get("obstacle")
-                         or (obst.get(s) or {}).get("obstacle")),
+            # a rerun record's reviewed note, else its agent's reason
+            "relation_reason": ((t["rerun"].get("relation_note")
+                                 or t.get("relation_reason") or None) if t.get("rerun")
+                                else (rel.get(s) or {}).get("reason")),
+            "obstacle": t.get("obstacle"),
             "agent_said_agrees": t.get("agrees_with_label"),
-            "agent_said_relation": (rel.get(s) or {}).get("agent_said_relation"),
+            "agent_said_relation": (t.get("relation") if t.get("rerun")
+                                    else (rel.get(s) or {}).get("agent_said_relation")),
             "attempts_used": t.get("attempts_used"),
             "seconds": t.get("seconds"),
             "why_failed": t.get("why_failed"),
@@ -306,12 +309,13 @@ def prove_sample(manifest, traj, rel, depth, meta=None, obst=None):
             "costs something CPython does not) and `tighter-translation` (the "
             "Dafny runs a cheaper algorithm than the Python)."),
         "tighter_rows": {
-            sid: r["relation"] for sid, r in sorted(rel.items())
+            r["solution_id"]: r["relation"]
+            for r in sorted(rows, key=lambda r: r["solution_id"])
             if str(r["relation"]).startswith("tighter")},
         "value_vs_size_rows": sorted(
-            sid for sid, r in rel.items()
+            r["solution_id"] for r in rows
             if r["relation"] == "looser-structural"
-            or r.get("obstacle") == "structural-unbounded"),
+            or r["obstacle"] == "structural-unbounded"),
         "by_label": {
             lab: {"drawn": sum(1 for r in rows if r["label"] == lab),
                   "proved": sum(1 for r in proved if r["label"] == lab)}
@@ -334,57 +338,50 @@ def main():
                for r in jsonl(f)]
     pv_rel = {r["solution_id"]: r
               for r in jsonl(HERE / "batches/prove-sample/label_relation.jsonl")}
-    pv_traj, pv_rel, _ = agent_view(HERE / "batches/prove-sample", pv_traj, pv_rel)
+    pv_traj, pv_rel = agent_view(HERE / "batches/prove-sample", pv_traj, pv_rel)
 
     p2 = HERE / "batches/prove-sample-2"
     p2_manifest = jsonl(p2 / "manifest.jsonl")
     p2_traj = [r for f in sorted(p2.glob("traj_*.jsonl")) for r in jsonl(f)]
     p2_rel = {r["solution_id"]: r for r in jsonl(p2 / "label_relation.jsonl")}
-    p2_obst = {r["solution_id"]: r for r in jsonl(p2 / "obstacles.jsonl")}
-    p2_traj, p2_rel, p2_obst = agent_view(p2, p2_traj, p2_rel, p2_obst)
+    p2_traj, p2_rel = agent_view(p2, p2_traj, p2_rel)
     p2_excluded = jsonl(p2 / "excluded.jsonl")
 
     p3 = HERE / "batches/prove-sample-3"
     p3_manifest = jsonl(p3 / "manifest.jsonl")
     p3_traj = [r for f in sorted(p3.glob("traj_*.jsonl")) for r in jsonl(f)]
     p3_rel = {r["solution_id"]: r for r in jsonl(p3 / "label_relation.jsonl")}
-    p3_obst = {r["solution_id"]: r for r in jsonl(p3 / "obstacles.jsonl")}
-    p3_traj, p3_rel, p3_obst = agent_view(p3, p3_traj, p3_rel, p3_obst)
+    p3_traj, p3_rel = agent_view(p3, p3_traj, p3_rel)
 
     p4 = HERE / "batches/prove-sample-4"
     p4_manifest = jsonl(p4 / "manifest.jsonl")
     p4_traj = [r for f in sorted(p4.glob("traj_*.jsonl")) for r in jsonl(f)]
     p4_rel = {r["solution_id"]: r for r in jsonl(p4 / "label_relation.jsonl")}
-    p4_obst = {r["solution_id"]: r for r in jsonl(p4 / "obstacles.jsonl")}
-    p4_traj, p4_rel, p4_obst = agent_view(p4, p4_traj, p4_rel, p4_obst)
+    p4_traj, p4_rel = agent_view(p4, p4_traj, p4_rel)
 
     p5 = HERE / "batches/prove-sample-5"
     p5_manifest = jsonl(p5 / "manifest.jsonl")
     p5_traj = [r for f in sorted(p5.glob("traj_*.jsonl")) for r in jsonl(f)]
     p5_rel = {r["solution_id"]: r for r in jsonl(p5 / "label_relation.jsonl")}
-    p5_obst = {r["solution_id"]: r for r in jsonl(p5 / "obstacles.jsonl")}
-    p5_traj, p5_rel, p5_obst = agent_view(p5, p5_traj, p5_rel, p5_obst)
+    p5_traj, p5_rel = agent_view(p5, p5_traj, p5_rel)
 
     p6 = HERE / "batches/prove-sample-6"
     p6_manifest = jsonl(p6 / "manifest.jsonl")
     p6_traj = [r for f in sorted(p6.glob("traj_*.jsonl")) for r in jsonl(f)]
     p6_rel = {r["solution_id"]: r for r in jsonl(p6 / "label_relation.jsonl")}
-    p6_obst = {r["solution_id"]: r for r in jsonl(p6 / "obstacles.jsonl")}
-    p6_traj, p6_rel, p6_obst = agent_view(p6, p6_traj, p6_rel, p6_obst)
+    p6_traj, p6_rel = agent_view(p6, p6_traj, p6_rel)
 
     p7 = HERE / "batches/prove-sample-7"
     p7_manifest = jsonl(p7 / "manifest.jsonl")
     p7_traj = [r for f in sorted(p7.glob("traj_*.jsonl")) for r in jsonl(f)]
     p7_rel = {r["solution_id"]: r for r in jsonl(p7 / "label_relation.jsonl")}
-    p7_obst = {r["solution_id"]: r for r in jsonl(p7 / "obstacles.jsonl")}
-    p7_traj, p7_rel, p7_obst = agent_view(p7, p7_traj, p7_rel, p7_obst)
+    p7_traj, p7_rel = agent_view(p7, p7_traj, p7_rel)
 
     p8 = HERE / "batches/prove-sample-8"
     p8_manifest = jsonl(p8 / "manifest.jsonl")
     p8_traj = [r for f in sorted(p8.glob("traj_*.jsonl")) for r in jsonl(f)]
     p8_rel = {r["solution_id"]: r for r in jsonl(p8 / "label_relation.jsonl")}
-    p8_obst = {r["solution_id"]: r for r in jsonl(p8 / "obstacles.jsonl")}
-    p8_traj, p8_rel, p8_obst = agent_view(p8, p8_traj, p8_rel, p8_obst)
+    p8_traj, p8_rel = agent_view(p8, p8_traj, p8_rel)
 
     dirs = {d.name: sum(1 for _ in d.rglob("*.dfy"))
             for d in sorted(HERE.glob("solutions*")) if d.is_dir()}
@@ -411,22 +408,22 @@ def main():
 
     pv = prove_sample(pv_manifest, pv_traj, pv_rel, depth)
     pv2 = prove_sample(p2_manifest, p2_traj, p2_rel, depth,
-                       meta={"seed": 20260921, "pool": 287}, obst=p2_obst)
+                       meta={"seed": 20260921, "pool": 287})
     pv3 = prove_sample(p3_manifest, p3_traj, p3_rel, depth,
-                       meta={"seed": 2026092102, "pool": 250}, obst=p3_obst)
+                       meta={"seed": 2026092102, "pool": 250})
     pv4 = prove_sample(p4_manifest, p4_traj, p4_rel, depth,
-                       meta={"seed": 2026092103, "pool": 211}, obst=p4_obst)
+                       meta={"seed": 2026092103, "pool": 211})
     pv5 = prove_sample(p5_manifest, p5_traj, p5_rel, depth,
-                       meta={"seed": 20260922, "pool": 179}, obst=p5_obst)
+                       meta={"seed": 20260922, "pool": 179})
     pv6 = prove_sample(p6_manifest, p6_traj, p6_rel, depth,
-                       meta={"seed": 20260923, "pool": 137}, obst=p6_obst)
+                       meta={"seed": 20260923, "pool": 137})
     # The last plain draw. 28% of it was rows an earlier campaign had already
     # failed, so the sample had drifted from "a random row of the corpus" to
     # "a random row of what is left". Campaign 7 uses --exclude-drawn.
     pv6["draw_mode"] = "plain"
     pv6["repeat_share"] = 0.28
     pv7 = prove_sample(p7_manifest, p7_traj, p7_rel, depth,
-                       meta={"seed": 20260923, "pool": 68}, obst=p7_obst)
+                       meta={"seed": 20260923, "pool": 68})
     # The first --exclude-drawn draw: 50 rows from the 68 no earlier campaign
     # had touched, so it is comparable with campaign 1 and with nothing in
     # between. It also collects a reading trace, but only for the 20 rows whose
@@ -436,7 +433,7 @@ def main():
     pv7["reads_coverage"] = round(
         sum(1 for r in p7_traj if r.get("reads")) / len(p7_traj), 4)
     pv8 = prove_sample(p8_manifest, p8_traj, p8_rel, depth,
-                       meta={"seed": 20260924, "pool": 18}, obst=p8_obst)
+                       meta={"seed": 20260924, "pool": 18})
     # The last 18 never-drawn rows: a census of the remainder, not a sample.
     # Its brief carried the reading trace and the prelude's sort and search
     # lemmas from the start.

@@ -89,8 +89,8 @@ they must not be reused as current guidance without checking their date.
 
 `batches/prove-sample*` preserves what bounded agents did: manifests define the
 draw, `traj_*.jsonl` records attempts, `attempts/` keeps every attempt's
-`.dfy` including failed ones, `obstacles.jsonl` records unresolved rows, and
-`label_relation.jsonl` records reviewed proof/label relationships. Campaigns
+`.dfy` including failed ones, each unresolved record carries an `obstacle` code,
+and `label_relation.jsonl` records reviewed proof/label relationships. Campaigns
 1–8 predate `attempts/`: their failed attempts survive only as descriptions.
 Campaign 7 introduced `reads`, an ordered trace of material source, helper, and
 prelude declarations consulted during a proof.

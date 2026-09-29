@@ -50,8 +50,8 @@
     "identical": 48
   },
   "obstacles": {
-    "the Reduce postcondition needs |s0|*iters <= |s0|*|s0| from iters<=|s0|, a monotone-multiplication fact never isolated into its own lemma (per the isolate-every-multiplication rule), and Solve's compounded nonlinear asserts (i*i growth, length-squared folding) push verification over the 30s limit before that gets fixed": 1,
-    "the outer while's own termination is only justified in the source by decreases *; a real bound needs a potential-function argument (this is CF 389A's fixed-point mod-reduction) tying the number of full n^2 sweeps to how fast values shrink under repeated modulo, which is a quantitative number-theoretic argument, not a size-based invariant, and out of reach of the budget": 1
+    "decreases-star": 1,
+    "z3-nonlinear": 1
   },
   "problems": [
     "1673_129: proof changes `requires` of Solve -- fix the row, not the proof",

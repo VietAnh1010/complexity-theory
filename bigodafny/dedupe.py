@@ -85,7 +85,6 @@ def draws(batches):
     for b in batches:
         d = HERE / "batches" / b
         traj, rel = {}, {r["solution_id"]: r for r in jsonl(d / "label_relation.jsonl")}
-        obst = {r["solution_id"]: r for r in jsonl(d / "obstacles.jsonl")}
         for f in sorted(d.glob("traj_*.jsonl")):
             for r in jsonl(f):
                 r["_slice"] = f.stem.split("_", 1)[1]
@@ -108,10 +107,7 @@ def draws(batches):
                 # the hand-normalised relation where one exists; the agent's
                 # otherwise. Never the other way round.
                 "relation": (rel.get(sid) or t).get("relation"),
-                # a rerun record carries its own obstacle
-                "obstacle": ((t.get("rerun") or {}).get("obstacle")
-                             or (obst.get(sid) or {}).get("obstacle")
-                             or (rel.get(sid) or {}).get("obstacle")),
+                "obstacle": t.get("obstacle"),
                 "attempts_used": t.get("attempts_used"),
                 "seconds": t.get("seconds"),
                 "reads": len(t.get("reads") or []) or None,

@@ -140,9 +140,8 @@ file it came from.
 | `slice_{a,b,c}.jsonl` | the three agent assignments, 17/17/16 |
 | `excluded.jsonl` | rows kept out of the pool, with the reason |
 | `PROMPT_{a,b,c}.md` | the agent briefs, from the skill's template |
-| `traj_{a,b,c}.jsonl` | per-row attempts, bound, timing, failure reason |
+| `traj_{a,b,c}.jsonl` | per-row attempts, bound, timing, failure reason, obstacle code |
 | `label_relation.jsonl` | normalised relation per proved row, with reasons |
-| `obstacles.jsonl` | coded obstacle per unresolved row |
 | `audit.jsonl`, `summary.json` | the verifier-joined audit and its totals |
 | `old-record.jsonl` | every line superseded by the 2026-09-23 revision, with its source file |
 

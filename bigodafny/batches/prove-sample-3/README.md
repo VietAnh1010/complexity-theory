@@ -158,9 +158,8 @@ file it came from.
 | `slice_{a,b,c}.jsonl` | the three agent assignments, 17/17/16 |
 | `resume_{a,b,c}.jsonl` | the 16 rows left after the interruption |
 | `PROMPT_{a,b,c}.md`, `PROMPT_resume_{a,b,c}.md` | the agent briefs |
-| `traj_{a,b,c}.jsonl` | per-row attempts, bound, timing, failure reason |
+| `traj_{a,b,c}.jsonl` | per-row attempts, bound, timing, failure reason, obstacle code |
 | `label_relation.jsonl` | normalised relation per proved row, with reasons |
-| `obstacles.jsonl` | coded obstacle per unresolved row |
 | `audit.jsonl`, `summary.json` | the verifier-joined audit and its totals |
 | `old-record.jsonl` | every line superseded by the 2026-09-23 revision, with its source file |
 

@@ -171,7 +171,11 @@ the refreshed `data/`. Push to the session's designated branch.
 - **`why_failed` names an obstacle**, not "ran out of attempts". Which
   invariant would not hold; which multiplication the solver refused. Codes used
   so far: `value-to-size`, `z3-nonlinear`, `invariant-gap`, `decreases-star`,
-  `recursion-depth`, `budget`, `prelude-gap`, `label-mismatch`.
+  `recursion-depth`, `budget`, `prelude-gap`, `label-mismatch`. You write the
+  code into the record's `obstacle` field (null on a proved record); a record
+  revised to proved keeps the agent's as `agent_obstacle`. There is no
+  `obstacles.jsonl` any more. `audit.py` fails an unresolved record whose
+  `obstacle` is missing or outside the vocabulary.
 - **Never read a trend off one campaign's per-label table.** A class holds 8
   to 25 rows, so two rows move the rate ten points. After campaign 3 this
   project reported a crossover — `O(nlogn)` overtaking `O(n)` — and campaign 4
@@ -229,9 +233,9 @@ the refreshed `data/`. Push to the session's designated branch.
   in `old-record.jsonl`, the agent's result kept beside.** When a row is
   proved or its proof tightened later — by hand, outside the budget — rewrite
   its trajectory line to the current state and add `agent_outcome`,
-  `agent_relation`, `agent_bound` (and `agent_why_failed`) plus a `revision`
+  `agent_relation`, `agent_bound` (and `agent_why_failed`, `agent_obstacle`) plus a `revision`
   block saying what changed and that it was done by hand. Move every
-  superseded line — trajectory, `label_relation`, `obstacles`, `audit` — into
+  superseded line — trajectory, `label_relation`, `audit` — into
   the batch's `old-record.jsonl` as `{"file", "superseded_on", "why",
   "record"}`. Campaign rates are then computed from `agent_outcome`: a row a
   bounded agent missed stays missed in its campaign's rate, however it was

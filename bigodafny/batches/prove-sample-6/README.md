@@ -168,7 +168,6 @@ file it came from.
 | `PROMPT_{a,b,c}.md` | the brief each agent was given |
 | `traj_{a,b,c}.jsonl` | one line per row: outcome, bound, attempts, obstacle |
 | `label_relation.jsonl` | hand-checked relations for the non-`confirms` rows |
-| `obstacles.jsonl` | the 20 unresolved rows with their obstacle codes |
 | `audit.jsonl` | verifier output joined to the trajectories |
 | `summary.json` | the counts every number above is drawn from |
 | `old-record.jsonl` | every line superseded by the 2026-09-23 revision, with its source file |

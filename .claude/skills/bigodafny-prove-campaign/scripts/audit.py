@@ -34,6 +34,18 @@ RELATIONS = {
     None,
 }
 
+OBSTACLES = {
+    "value-to-size",
+    "z3-nonlinear",
+    "invariant-gap",
+    "decreases-star",
+    "prelude-gap",
+    "recursion-depth",
+    "budget",
+    "label-mismatch",
+    "structural-unbounded",
+}
+
 
 def read_jsonl(path):
     if not os.path.exists(path):
@@ -237,6 +249,7 @@ def main():
             "proved_bound": (p or {}).get("proved_bound"),
             "relation": (t or {}).get("relation"),
             "why_failed": (t or {}).get("why_failed"),
+            "obstacle": (t or {}).get("obstacle"),
             "attempts_used": (t or {}).get("attempts_used"),
             "seconds": (t or {}).get("seconds"),
             "slice": (t or {}).get("_slice"),
@@ -275,6 +288,10 @@ def main():
             problems.append(f"{sid}: claimed unresolved, but a verified proof exists")
         if t and t.get("relation") not in RELATIONS:
             problems.append(f"{sid}: relation {t.get('relation')!r} not in vocabulary")
+        # every unresolved record names its obstacle, from the vocabulary
+        if t and t.get("outcome") != "proved" and t.get("obstacle") not in OBSTACLES:
+            problems.append(f"{sid}: unresolved with obstacle {t.get('obstacle')!r}"
+                            " -- set a code from the vocabulary")
         if t and t.get("relation") == "contradicts" and not t.get("relation_reason"):
             problems.append(f"{sid}: contradicts with no reason given")
         if p and p.get("assume_count"):
@@ -414,9 +431,9 @@ def main():
         if r["verified"]:
             key = r["relation"] or "unrecorded"
             summary["by_relation"][key] = summary["by_relation"].get(key, 0) + 1
-        elif r["why_failed"]:
-            summary["obstacles"][r["why_failed"]] = (
-                summary["obstacles"].get(r["why_failed"], 0) + 1
+        elif r["obstacle"]:
+            summary["obstacles"][r["obstacle"]] = (
+                summary["obstacles"].get(r["obstacle"], 0) + 1
             )
 
     with open(f"{args.batch}/audit.jsonl", "w") as fh:

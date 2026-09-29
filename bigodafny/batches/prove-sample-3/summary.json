@@ -63,12 +63,10 @@
     "identical": 43
   },
   "obstacles": {
-    "CeilSqrt does a value-bounded binary search (doubling to find hi, then bisecting): tying the per-iteration Pow2/Log2 growth invariants together into one closed log(x) step bound across both phases did not close within budget": 1,
-    "Pow10_2282's own O(e) recursion inside the while loop makes the true cost a shrinking series (quadratic in i); isolating the multiplications got the loop invariant to verify but the final postcondition combining it with the branch-constant terms timed out": 1,
-    "Solve computes d, b, y through a chain (d=FloorDiv(s-1,2), b=triangular(d)+1, y=k-b) where RepStr is then called on x-y-1 and y; bounding those arguments back in terms of the row (nn, k) needs 4-5 chained nonlinear inequality lemmas (sqrt bound, FloorDiv bound, triangular-number bound, subtraction bound) to avoid the bound blowing up sign-wise, which does not fit in the per-row budget.": 1,
-    "no decreasing well-founded metric was constructed; termination requires an exponential-sum lemma (nn < 10^i) relating pow=9^i's growth to NumDigits(nn), which is out of scope for the time box": 1,
-    "s2 (the running digit remainder in the prepend loop) needed a nonnegativity invariant that was never built, blocking the IntToString digit-length lemma": 1,
-    "the options-queue is popped and conditionally re-pushed in the same iteration; the amortized total-degree argument needs a cleaner potential function (e.g. unvisited-node count) than the budget counter attempted here, and the row already carries decreases * with no termination proof to build on": 1
+    "decreases-star": 2,
+    "invariant-gap": 1,
+    "value-to-size": 2,
+    "z3-nonlinear": 1
   },
   "problems": [
     "1073_645: proof changes `requires` of Solve -- fix the row, not the proof",
