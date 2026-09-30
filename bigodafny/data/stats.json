@@ -1,5 +1,5 @@
 {
-  "complexity_proved": 253,
+  "complexity_proved": 323,
   "dafny_status": {
     "agrees": 95,
     "differs": 1,
