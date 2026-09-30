@@ -37,7 +37,9 @@ def bound_of(text):
 
     Returns the clauses joined by " AND " when Solve states more than one.
     """
-    m = re.search(r"\bmethod\s+Solve\b.*?(?=\n\{)", text, re.S)
+    # skip attributes: `method {:isolate_assertions} Solve` otherwise misses
+    # and the whole file becomes the scope, pulling body code into the bound
+    m = re.search(r"\bmethod\s+(?:\{:[^}]*\}\s*)*Solve\b.*?(?=\n\{)", text, re.S)
     scope = m.group(0) if m else text
     out = []
     for line in scope.splitlines():

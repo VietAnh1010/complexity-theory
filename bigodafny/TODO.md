@@ -28,9 +28,11 @@ when done.
 - [x] `810_131` and `1948_388`: the looser term comes from the translation (no
       float `sqrt`), not the Python; the vocabulary has no `looser-translation`.
       Now `looser-translation` (`vocab.py`).
-- [ ] `proofs.py`'s `bound_of` captures code after the `ensures` of `2128_34`,
-      `514_140` and `1871_291`; their `proved_bound` in `complexity_proofs.jsonl`
-      is wrong (the records and manifest hold the right bound).
+- [x] `proofs.py`'s `bound_of` missed `Solve` when an attribute sat between
+      `method` and `Solve` (`method {:isolate_assertions} Solve`), so it
+      searched the whole file and copied body code into `proved_bound` for
+      `2128_34`, `514_140`, `1871_291`. Regex now skips attributes; the three
+      bounds in `complexity_proofs.jsonl` recomputed (no other row changed).
 
 ## Value-bounded filing
 
