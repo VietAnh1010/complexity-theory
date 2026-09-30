@@ -6,7 +6,7 @@ ran and printed the wrong thing), `timeout`/`error` (it did not finish or threw)
 Collapsing those into one number would hide which half of the pipeline broke.
 """
 from __future__ import annotations
-import argparse, json, os, shutil, subprocess, sys
+import argparse, json, shutil, subprocess, sys
 from collections import Counter
 from pathlib import Path
 
@@ -14,8 +14,8 @@ from common import (BUILD, DAFNY_VERSION, DATA, UNSCREENED, PRELUDE, SOLUTIONS,
                     UNVERIFIED, PROVED, event, log, read_jsonl, write_json,
                     write_jsonl, DISPUTED)
 
-DAFNY = shutil.which("dafny") or os.path.expanduser("~/.dotnet/tools/dafny")
-SOLVER = shutil.which("z3") or "/usr/local/bin/z3"
+DAFNY = shutil.which("dafny") or "dafny"   # on PATH
+SOLVER = shutil.which("z3") or "z3"   # on PATH
 
 
 def conv_expr(dtype: str, v: str) -> str:

@@ -15,8 +15,8 @@ from common import (DAFNY_VERSION, DATA, UNSCREENED, SOLUTIONS, UNVERIFIED,
                     PROVED, event, log, read_jsonl, write_jsonl, DISPUTED,
                     UNGATEABLE)
 
-DAFNY = shutil.which("dafny") or "/root/.dotnet/tools/dafny"
-SOLVER = shutil.which("z3") or "/usr/local/bin/z3"
+DAFNY = shutil.which("dafny") or "dafny"   # on PATH
+SOLVER = shutil.which("z3") or "z3"   # on PATH
 
 
 def bound_of(text):

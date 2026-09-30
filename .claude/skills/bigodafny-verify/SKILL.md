@@ -31,8 +31,8 @@ batch to ~97.5%.
 ```bash
 cd bigodafny
 mkdir -p batches/verifyN
-find solutions-unverified -name '*.dfy' | sed 's|.*/||; s|\.dfy||' | sort > batches/verifyN/pool.txt
-split -l 20 -d -a 2 --additional-suffix=.txt batches/verifyN/pool.txt batches/verifyN/w_
+find solutions-unverified -name '*.dfy' | sed 's|.*/||; s|\.dfy||' | sort \
+  | split -l 20 -d -a 2 --additional-suffix=.txt - batches/verifyN/w_
 ```
 
 ~20 rows per agent, 4 agents at a time. Give each a unique validation prefix.

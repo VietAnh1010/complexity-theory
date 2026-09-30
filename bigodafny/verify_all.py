@@ -18,8 +18,8 @@ from pathlib import Path
 from common import (DATA, UNSCREENED, ROOT, SOLUTIONS, UNGATEABLE, event, log, write_json,
                     write_jsonl)
 
-DAFNY = shutil.which("dafny") or "/root/.dotnet/tools/dafny"
-SOLVER = shutil.which("z3") or "/usr/local/bin/z3"
+DAFNY = shutil.which("dafny") or "dafny"   # on PATH
+SOLVER = shutil.which("z3") or "z3"   # on PATH
 UNVERIFIED = ROOT / "solutions-unverified"
 
 # Dafny reports these against code with no user-written specification at all.

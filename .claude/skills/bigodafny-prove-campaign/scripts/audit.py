@@ -76,7 +76,7 @@ def jsonl_problems(path):
     return out
 
 
-DAFNY = shutil.which("dafny") or "/root/.dotnet/tools/dafny"
+DAFNY = shutil.which("dafny") or "dafny"   # on PATH
 
 
 def emitted_python(repo, path):
