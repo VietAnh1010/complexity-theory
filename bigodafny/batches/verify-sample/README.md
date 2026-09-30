@@ -21,8 +21,9 @@ and a tail of 9 others.
 
 ## Result
 
-A one-off script ran `dafny verify --verification-time-limit 30` on each row
-and wrote `baseline.jsonl`. **50 of 50 verified, zero edits, zero agent attempts.**
+A one-off script ran `dafny verify --verification-time-limit 30` on each row;
+`trajectory.jsonl` records the result as attempt 0. **50 of 50 verified, zero
+edits, zero agent attempts.**
 Neither of the two bounds — 3 attempts, 5 minutes per row — was ever reached.
 
 **One of the 50 is verified on weaker terms.** `1675_29` carries `decreases *`,
@@ -62,10 +63,10 @@ was never a backlog of hard rows. It was one sweep that had not been re-run.
 | file | what it is |
 |---|---|
 | `manifest.jsonl` | the 50 sampled rows: id, path, label, split, gate |
-| `baseline.jsonl` | attempt 0: the verifier's raw result per row, file unmodified |
-| `trajectory.jsonl` | per-row attempt record, the deliverable |
+| `trajectory.jsonl` | per-row attempt record, the deliverable; attempt 0 is the unedited verify |
 
-The script that wrote `baseline.jsonl` and an unused repair-agent brief were
+The one-off script, its raw output (`baseline.jsonl`, duplicated by
+`trajectory.jsonl` and `manifest.jsonl`) and an unused repair-agent brief were
 removed on 2026-09-30. `verify_all.py` now covers the whole corpus, and the
 `bigodafny-verify` skill carries the repair brief.
 

@@ -71,7 +71,7 @@ when done.
       taken from PATH.
 - [x] `verify-sample/baseline.py` (one-off, superseded by `verify_all.py`) and
       `verify-sample/AGENT_PROMPT.md` (duplicate of the verify skill's brief)
-      removed.
+      removed, with `baseline.jsonl` (duplicated by `trajectory.jsonl`).
 - [x] `label_relation.jsonl` ad-hoc flags: `reason_rewritten` (c4),
       `redrawn_already_proved` (c5), `relation_superseded` (c1, c4), `resolved`
       (c2). Fold into the `revision` scheme; `provestats.py` reads `resolved`.
