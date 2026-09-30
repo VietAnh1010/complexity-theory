@@ -22,7 +22,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 // ---- proof-only scaffolding for the complexity bound (see
-// solutions-proved/nlogn/603/603_284.dfy for the same argument) ----------
+// solutions-proved/603/603_284.dfy for the same argument) ----------
 
 method Solve(n: int, ratings: seq<int>) returns (output: string, ghost steps: nat)
   ensures steps <= 2 * |ratings| * (CeilLog2(|ratings|) + 1) + 5 * |ratings| + 5

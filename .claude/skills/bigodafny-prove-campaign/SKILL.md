@@ -30,7 +30,7 @@ Take whatever the user names instead. If they name none, use these and say so.
 ### 1. Draw the sample
 
 ```bash
-cd /home/user/complexity-theory/bigodafny
+cd bigodafny                     # from the repository root
 python3 ../.claude/skills/bigodafny-prove-campaign/scripts/sample.py \
     --batch batches/<name> --n 50 --seed <YYYYMMDD> --slices 3
 ```

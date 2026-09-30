@@ -30,8 +30,9 @@ batch to ~97.5%.
 
 ```bash
 cd bigodafny
-find solutions-unverified -name '*.dfy' | sed 's|.*/||; s|\.dfy||' | sort > /tmp/pool
-split -l 20 -d -a 2 --additional-suffix=.txt /tmp/pool batches/verifyN/w_
+mkdir -p batches/verifyN
+find solutions-unverified -name '*.dfy' | sed 's|.*/||; s|\.dfy||' | sort > batches/verifyN/pool.txt
+split -l 20 -d -a 2 --additional-suffix=.txt batches/verifyN/pool.txt batches/verifyN/w_
 ```
 
 ~20 rows per agent, 4 agents at a time. Give each a unique validation prefix.
@@ -45,13 +46,12 @@ split -l 20 -d -a 2 --additional-suffix=.txt /tmp/pool batches/verifyN/w_
     Make 20 existing Dafny translations pass `dafny verify`. They already pass
     their tests. Do NOT change what they compute.
 
-    Working directory: /home/user/complexity-theory/bigodafny
+    Working directory: bigodafny/ (from the repository root)
     Manifest: batches/<name>/w_NN.txt   Files: solutions-unverified/<PID>/<SID>.dfy
-    Start every Bash call that invokes dafny with:
-        export PATH="$PATH:/root/.dotnet/tools"
+    `dafny` and `z3` are on PATH.
 
         dafny verify solutions-unverified/<PID>/<SID>.dfy \
-            --solver-path /usr/local/bin/z3 --verification-time-limit 30
+            --solver-path "$(command -v z3)" --verification-time-limit 30
 
     # What you are fixing
     Dafny raises obligations with no specification written: every `s[i]` needs
@@ -125,12 +125,12 @@ split -l 20 -d -a 2 --additional-suffix=.txt /tmp/pool batches/verifyN/w_
 Three things can go wrong and only one of them shows in the agent's report.
 
 ```bash
-cd bigodafny && export PATH="$PATH:/root/.dotnet/tools"
+cd bigodafny
 B=batches/verifyN/w_01.txt
 
 # 1. re-verify from scratch -- never trust the count
 for sid in $(cat $B); do pid="${sid%%_*}"; f=$(ls solutions*/$pid/$sid.dfy)
-  dafny verify "$f" --solver-path /usr/local/bin/z3 --verification-time-limit 30 \
+  dafny verify "$f" --solver-path "$(command -v z3)" --verification-time-limit 30 \
     2>&1 | grep -q "0 errors" || echo "still unverified: $sid"; done
 
 # 2. no hollow proofs

@@ -61,9 +61,12 @@ when done.
 
 ## Records and docs
 
-- [ ] `solutions-disputed/README.md` exit rule still names
+- [x] `solutions-disputed/README.md` exit rule still names
       `data/gate_exempt.jsonl`, replaced by `data/gate_ungateable.jsonl` on
-      2026-09-21. Restate the rule.
+      2026-09-21. Restated (also in the two `1950` headers and `gate-audit/`).
+- [x] Six proofs cited deleted `solutions-proved/nlogn/` files; repointed.
+- [x] Skills and `verify-sample/AGENT_PROMPT.md` hardcoded container paths; now
+      relative, with `dafny` and `z3` taken from PATH.
 - [x] `label_relation.jsonl` ad-hoc flags: `reason_rewritten` (c4),
       `redrawn_already_proved` (c5), `relation_superseded` (c1, c4), `resolved`
       (c2). Fold into the `revision` scheme; `provestats.py` reads `resolved`.

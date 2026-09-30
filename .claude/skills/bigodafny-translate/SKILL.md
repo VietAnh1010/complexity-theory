@@ -26,9 +26,8 @@ Give each agent: its manifest path, a unique validation prefix, and this body.
 
     FIRST ACTION: call the Skill tool with skill="my-concise".
 
-    Working directory: /home/user/complexity-theory/bigodafny
-    Start every Bash call that invokes dafny with:
-        export PATH="$PATH:/root/.dotnet/tools"
+    Working directory: bigodafny/ (from the repository root)
+    `dafny` and `z3` are on PATH.
 
     CONTRACT
     method Solve(<args>) returns (output: string) returns the ENTIRE stdout the
@@ -53,7 +52,7 @@ Give each agent: its manifest path, a unique validation prefix, and this body.
     running an O(n) DP.
 
     ALSO MAKE IT VERIFY (~3 extra calls per row)
-        dafny verify solutions/<PID>/<SID>.dfy --solver-path /usr/local/bin/z3 \
+        dafny verify solutions/<PID>/<SID>.dfy --solver-path "$(command -v z3)" \
             --verification-time-limit 30
     - while i < |a| invariant 0 <= i <= |a| decreases |a| - i
     - `invariant i <= n` with an unconstrained int n FAILS on entry; drop the
@@ -101,7 +100,7 @@ Never trust the agent's count.
 python3 validate.py --only $(cat batches/<b>.txt | tr '\n' ' ') --out-prefix audit_
 python3 difftest.py --only <loose ids>
 for sid in $(cat batches/<b>.txt); do pid="${sid%%_*}"
-  dafny verify solutions/$pid/$sid.dfy --solver-path /usr/local/bin/z3 \
+  dafny verify solutions/$pid/$sid.dfy --solver-path "$(command -v z3)" \
     --verification-time-limit 30 | grep -q "0 errors" || echo "unverified: $sid"; done
 python3 precheck.py $(cat batches/<b>.txt | tr '\n' ' ')
 grep -rl assume solutions --include='*.dfy' | wc -l     # must stay 0

@@ -23,7 +23,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 // Label O(logn) -- agrees, and this is the first logarithmic bound proved for a
-// row that does not sort. `solutions-nlogn/` needed a CEILING log because a
+// row that does not sort. The sort proofs (`CeilLog2`) need a CEILING log as a
 // merge split of size k recurses on ceil(k/2); here the loop divides by two and
 // rounds DOWN, so the matching function is a floor log and the step
 //     m >= 2  ==>  Log2(m / 2) == Log2(m) - 1

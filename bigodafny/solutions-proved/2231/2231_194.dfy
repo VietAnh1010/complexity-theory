@@ -54,7 +54,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 // ---- proof-only scaffolding for the complexity bound (see
-// solutions-proved/nlogn/603/603_284.dfy for the same argument). Comparator
+// solutions-proved/603/603_284.dfy for the same argument). Comparator
 // cost of `less` inside Sort/Merge is not charged separately -- same
 // simplification as the rest of this corpus's nlogn scaffolds. ------------
 

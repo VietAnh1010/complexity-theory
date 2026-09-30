@@ -8,9 +8,8 @@ your job is to make them discharge **without weakening what the row computes**.
 ## Setup
 
 ```bash
-cd /home/user/complexity-theory/bigodafny
-export PATH="$PATH:/root/.dotnet/tools"
-dafny verify <path> --solver-path /usr/local/bin/z3 --verification-time-limit 30
+cd bigodafny                     # from the repository root
+dafny verify <path> --solver-path "$(command -v z3)" --verification-time-limit 30
 ```
 
 Your rows are listed in the assignment at the end of this prompt.

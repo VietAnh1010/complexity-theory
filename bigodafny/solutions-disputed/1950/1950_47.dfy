@@ -13,9 +13,11 @@
 //   cause           : translation
 //   control         : batches/gate-audit/control.py, 2026-09-21
 //   note            : filed here as the review queue, not as a label dispute.
-//                     What is disputed is the code. Moving it back to
-//                     solutions/ needs 23/23 on the runnable tests plus an
-//                     entry in data/gate_exempt.jsonl for the other 19.
+//                     What is disputed is the code. Moving it out needs
+//                     23/23 on the runnable tests; the other 19 fail in the
+//                     problem's own harness, so it then goes to
+//                     solutions-ungateable/ with an entry in
+//                     data/gate_ungateable.jsonl.
 //
 // 697_B. Barnicle  (problem 1950, solution 1950_47)
 // time complexity: O(n**2)

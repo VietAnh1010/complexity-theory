@@ -27,7 +27,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 // ---- proof-only scaffolding for the complexity bound (see
-// solutions-proved/nlogn/603/603_284.dfy for the same argument) ----------
+// solutions-proved/603/603_284.dfy for the same argument) ----------
 
 method Solve(n: int, k: int, pairs: seq<(int, int)>) returns (output: string, ghost steps: nat)
   requires n >= 0 && n == |pairs|

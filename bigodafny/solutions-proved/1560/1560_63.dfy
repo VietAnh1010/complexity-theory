@@ -35,7 +35,7 @@ import opened Prelude
 
 // ---- proof-only scaffolding for the complexity bound ----------------
 // Same SortCost/CeilLog2 recursion-tree argument as
-// solutions-proved/nlogn/1484/1484_82.dfy: Sort carries no ghost step
+// solutions-proved/1484/1484_82.dfy: Sort carries no ghost step
 // counter of its own, so its cost is charged as an opaque-but-defined
 // SortCost mirroring Sort's own split.
 

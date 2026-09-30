@@ -10,9 +10,8 @@ counter with a proved upper bound.
 ## Setup
 
 ```bash
-cd /home/user/complexity-theory/bigodafny
-export PATH="$PATH:/root/.dotnet/tools"
-dafny verify <file> --solver-path /usr/local/bin/z3 --verification-time-limit 30
+cd bigodafny                     # from the repository root
+dafny verify <file> --solver-path "$(command -v z3)" --verification-time-limit 30
 ```
 
 ## Where your work goes — read this twice

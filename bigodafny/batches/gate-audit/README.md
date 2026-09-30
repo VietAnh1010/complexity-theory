@@ -63,8 +63,9 @@ input's own precision.
 Moved to `solutions-disputed/` with a `TRANSLATION AUDIT` header. That
 directory is the project's review queue and its README says every gate still
 runs on what sits there; what is disputed here is the code, not the label. To
-come back they need 23/23 on the runnable tests plus a `gate_exempt` entry for
-the other 19.
+come back they need 23/23 on the runnable tests, then a move to
+`solutions-ungateable/` with a `data/gate_ungateable.jsonl` entry for the other
+19 (the successor of `gate_exempt`).
 
 ## `1501_224`
 

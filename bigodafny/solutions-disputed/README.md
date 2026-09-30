@@ -285,9 +285,10 @@ the **original Python** too once routed through it. No translation can exceed
 genuine failures on top of the harness defect: both cap the fractional part at
 12 digits where the Python uses `Decimal`.
 
-To leave, they need 23/23 on the runnable tests and an entry in
-`data/gate_exempt.jsonl` for the other 19. `batches/gate-audit/` has the
-evidence.
+To leave, they need 23/23 on the runnable tests. The other 19 fail in the
+problem's own harness, so they then go to `solutions-ungateable/` with an entry
+in `data/gate_ungateable.jsonl` (which replaced `data/gate_exempt.jsonl` on
+2026-09-21). `batches/gate-audit/` has the evidence.
 
 ## `276/276_610.dfy` came from a proof, not an audit pass
 
