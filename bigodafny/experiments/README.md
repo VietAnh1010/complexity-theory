@@ -1,5 +1,12 @@
 # Can an agent prove — and guess — the complexity label?
 
+> **Archived.** Nothing here runs any more; it is kept as context. The
+> `guard.py` hook was removed from `.claude/settings.json` on 2026-09-30, and
+> the run-state files (disarmed markers, the transcript snapshot) were deleted.
+> To re-arm it, add a `PreToolUse` hook whose command is relative to the
+> project: `python3 "$CLAUDE_PROJECT_DIR"/bigodafny/experiments/guard.py`.
+> `selftest_grade.py` no longer imports: `common.py` dropped the names it uses.
+
 Two arms over the same 100 rows.
 
 - **labeled** — the agent is told BigOBench's complexity label and must prove it

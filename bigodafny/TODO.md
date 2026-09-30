@@ -48,8 +48,9 @@ when done.
 
 - [x] Remove the `solutions-proved/nlogn/` remnants: `PROVED_NLOGN` in
       `common.py`, `proofs.py`, `precheck.py`; `tight_variant` in `collect.py`.
-- [ ] `experiments/selftest_grade.py` imports `INEXACT`, `NLOGN`, `VERIFIED`,
-      which `common.py` no longer defines; it fails on import.
+- [x] `experiments/selftest_grade.py` imports `INEXACT`, `NLOGN`, `VERIFIED`,
+      which `common.py` no longer defines; it fails on import. Won't fix:
+      `experiments/` is archived (its README says so).
 - [x] `precheck.py` never drops a row's stale clauses when the row loses all its
       `requires` (the main agent removed 1077_84's).
 - [ ] `audit.py` does not flag budget overruns. Recorded overruns: `2128_34`
