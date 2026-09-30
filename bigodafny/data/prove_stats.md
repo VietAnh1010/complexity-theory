@@ -83,14 +83,14 @@ in one pass; use it for the corpus, never for comparing campaigns.
 ### Where the drawn rows stand now
 
 Everything above is what a bounded agent achieved inside its budget.
-27 rows were revised after their campaign, by the main agent and outside the budget; their records keep the
+32 rows were revised after their campaign, by the main agent and outside the budget; their records keep the
 agent's result as `agent_outcome`, and the superseded lines sit in
 each batch's `old-record.jsonl`.
 
 **292 of 329 distinct drawn rows carry a proof now — 89%.**
 
 - Closed after their campaign: 11 — `1039_15`, `1582_118`, `1718_1166`, `1827_66`, `1892_121`, `2105_248`, `2128_3`, `2423_48`, `2826_81`, `514_140`, `661_47`.
-- Relations of the proofs as they stand: `confirms` 264, `looser-structural` 14, `tighter-costmodel` 8, `looser-translation` 2, `looser-costmodel` 1, `looser-slack` 1, `tighter-translation` 1, `tighter-label` 1.
+- Relations of the proofs as they stand: `confirms` 259, `looser-structural` 19, `tighter-costmodel` 8, `looser-translation` 2, `looser-costmodel` 1, `looser-slack` 1, `tighter-translation` 1, `tighter-label` 1.
 
 ## The label is the strongest predictor
 
@@ -171,10 +171,13 @@ is noted below rather than overwritten, so the finding is not erased:
 
 - **`1421_89`** — quadratic SortCost scaffold replaced by the prelude's tight bound
 - **`1586_188`** — quadratic SortCost scaffold replaced by the prelude's tight bound
+- **`1871_291`** — re-proved charging each Gcd call Euclid's recursion depth (GcdSteps), as the charge table's helper rule requires; the earlier proof charged 1; filed in solutions-proved/value-bounded/
+- **`1915_158`** — re-proved charging each Gcd call Euclid's recursion depth (GcdSteps), as the charge table's helper rule requires; the earlier proof charged 1; filed in solutions-proved/value-bounded/
 - **`2381_156`** — re-proved tight after IntToString was charged 1
 - **`2742_0`** — quadratic SortCost scaffold replaced by the prelude's tight bound
 - **`1180_626`** — quadratic SortCost scaffold replaced by the prelude's tight bound
 - **`1243_0`** — Acted on 2026-09-21: the Dafny was re-translated to sort, as the Python does, and re-proved at the tight two-term bound 2*|s1|*(CeilLog2(|s1|)+1) + 2*|s2|*(CeilLog2(|s2|)+1) + 3*|s1| + |s2| + 5. The row's CURRENT relation is confirms; this record keeps what the campaign found.
+- **`1386_38`** — re-proved charging each Gcd call Euclid's recursion depth (GcdSteps), as the charge table's helper rule requires; the earlier proof charged 1; filed in solutions-proved/value-bounded/
 - **`2225_154`** — quadratic SortCost scaffold replaced by the prelude's tight bound
 - **`2593_332`** — quadratic SortCost scaffold replaced by the prelude's tight bound
 - **`1333_127`** — quadratic SortCost scaffold replaced by the prelude's tight bound
@@ -182,7 +185,9 @@ is noted below rather than overwritten, so the finding is not erased:
 - **`2496_30`** — quadratic SortCost scaffold replaced by the prelude's tight bound
 - **`2725_319`** — quadratic SortCost scaffold replaced by the prelude's tight bound
 - **`3070_180`** — quadratic SortCost scaffold replaced by the prelude's tight bound
+- **`1871_156`** — re-proved charging each Gcd call Euclid's recursion depth (GcdSteps), as the charge table's helper rule requires; the earlier proof charged 1; filed in solutions-proved/value-bounded/
 - **`276_610`** — re-proved tight after IntToString was charged 1
+- **`1386_19`** — re-proved charging each Gcd call Euclid's recursion depth (GcdSteps), as the charge table's helper rule requires; the earlier proof charged 1; filed in solutions-proved/value-bounded/
 - **`499_82`** — quadratic SortCost scaffold replaced by the prelude's tight bound
 - **`85_71`** — loose O(|arr|) binary-search bound replaced by the prelude's halving potential; sorts charged SortCost
 

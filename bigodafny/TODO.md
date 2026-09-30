@@ -1,6 +1,7 @@
 # TODO
 
-Open items found while normalising on 2026-09-29. Tick a box when done.
+Open items found while normalising on 2026-09-29 and 2026-09-30. Tick a box
+when done.
 
 ## Proofs
 
@@ -27,8 +28,9 @@ Open items found while normalising on 2026-09-29. Tick a box when done.
 - [x] `810_131` and `1948_388`: the looser term comes from the translation (no
       float `sqrt`), not the Python; the vocabulary has no `looser-translation`.
       Now `looser-translation` (`vocab.py`).
-- [ ] `proofs.py`'s `bound_of` captures code after the `ensures` of `2128_34`
-      and `514_140`; their `proved_bound` in `complexity_proofs.jsonl` is wrong.
+- [ ] `proofs.py`'s `bound_of` captures code after the `ensures` of `2128_34`,
+      `514_140` and `1871_291`; their `proved_bound` in `complexity_proofs.jsonl`
+      is wrong (the records and manifest hold the right bound).
 
 ## Value-bounded filing
 
@@ -75,6 +77,8 @@ Open items found while normalising on 2026-09-29. Tick a box when done.
 - [x] `value-bounded/MANIFEST.jsonl` repeated a stale `relation` for 2 rows;
       dropped (the relation lives in `label_relation.jsonl`).
 - [x] 5 `value-bounded/` proofs lacked the `VALUE-BOUNDED` header; added.
-- [ ] `label_relation.jsonl` `proved_bound` differs from `complexity_proofs.jsonl`
-      for `354_95`, `305_76`, `2607_90` (see below after regeneration).
+- [x] Stale `proved_bound` in `label_relation.jsonl` (`354_95` held a helper's
+      bound, `305_76` a superseded one, `514_140` and `2128_34` a misparse) and
+      in `value-bounded/MANIFEST.jsonl` (`305_76`, `2607_90`); copied from the
+      proofs.
 

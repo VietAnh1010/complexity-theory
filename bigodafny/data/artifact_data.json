@@ -1,6 +1,6 @@
 {
-  "generated": "2026-09-30T07:25:46+00:00",
-  "commit": "fc829a8",
+  "generated": "2026-09-30T08:13:53+00:00",
+  "commit": "e89dad9",
   "branch": "claude/bigobench-python-dafny-dataset-ts4tm5",
   "toolchain": {
     "dafny": "4.11.0",
@@ -875,7 +875,7 @@
         "why_failed": "Solve mixes real-number tuple-sort quantifiers (forall x in ratios/d) with the new nonlinear Pow2Cost/SortCost step arithmetic in one VC; Z3 does not close it even at 3x the time budget. Note: the real obstacle here is more than proof technique -- Pow2_140 is linear recursion (not squaring), so this row's true charged cost is O(n^2), genuinely disagreeing with its O(nlogn) label, but that disagreement was never machine-checked because the surrounding VC would not close.",
         "current_outcome": "proved",
         "current_bound": "2 * n * n + 2 * NLogN(n) + 13 * n + 4",
-        "current_relation": "looser-structural",
+        "current_relation": "looser-costmodel",
         "revised": true,
         "call_depth": 2,
         "recursive": true
@@ -1314,9 +1314,9 @@
         "seconds": 120,
         "why_failed": null,
         "current_outcome": "proved",
-        "current_bound": "6 * |a_list| + 10",
-        "current_relation": null,
-        "revised": false,
+        "current_bound": "|a_list| * (10 + 4 * BitLen(MaxSeq(a_list)) + 2 * BitLen(a_list[0] * a_list[1])) + 2 * BitLen(MaxSeq(a_list)) + 7",
+        "current_relation": "looser-structural",
+        "revised": true,
         "call_depth": 2,
         "recursive": true
       },
@@ -1380,9 +1380,9 @@
         "seconds": 90,
         "why_failed": null,
         "current_outcome": "proved",
-        "current_bound": "3 * n + 3 * m + 6",
-        "current_relation": null,
-        "revised": false,
+        "current_bound": "4 * n + 3 * m + 2 * GapBits(n_list, n) + 6",
+        "current_relation": "looser-structural",
+        "revised": true,
         "call_depth": 2,
         "recursive": true
       },
@@ -2061,7 +2061,7 @@
         "why_failed": "combining the O(n**2) step accounting with the pre-existing forall-membership invariants pushed verification over the 30s limit",
         "current_outcome": "proved",
         "current_bound": "2 * n * n + 2 * NLogN(n) + 13 * n + 4",
-        "current_relation": "looser-structural",
+        "current_relation": "looser-costmodel",
         "revised": true,
         "call_depth": 2,
         "recursive": true
@@ -2434,8 +2434,8 @@
         "seconds": 300,
         "why_failed": "post-loop step bound (steps<=base2+4*(n-1)) would not close after the second while loop even though the loop invariant steps<=base2+4*i verified inside the loop",
         "current_outcome": "proved",
-        "current_bound": "2 * |b_list| * (CeilLog2(|b_list|) + 1) + 6 * |b_list| + 12",
-        "current_relation": "confirms",
+        "current_bound": "2 * |b_list| * (CeilLog2(|b_list|) + 1) + 5 * a + 2 * a * BitLen(MaxSeq(b_list)) + 6",
+        "current_relation": "looser-structural",
         "revised": true,
         "call_depth": 3,
         "recursive": true
@@ -2456,9 +2456,9 @@
         "seconds": 75,
         "why_failed": null,
         "current_outcome": "proved",
-        "current_bound": "5*|b_list|+10",
-        "current_relation": "confirms",
-        "revised": false,
+        "current_bound": "5 * a + 2 * SumLog(b_list, a) + |b_list| + 4",
+        "current_relation": "looser-structural",
+        "revised": true,
         "call_depth": 2,
         "recursive": true
       },
@@ -4441,7 +4441,7 @@
         "why_failed": null,
         "current_outcome": "proved",
         "current_bound": "24 * n + 2",
-        "current_relation": "looser-structural",
+        "current_relation": "confirms",
         "revised": true,
         "call_depth": 2,
         "recursive": true
@@ -4924,9 +4924,9 @@
         "seconds": 150,
         "why_failed": null,
         "current_outcome": "proved",
-        "current_bound": "2*|a_list|*(CeilLog2(|a_list|)+1)+6*|a_list|+12",
-        "current_relation": "confirms",
-        "revised": false,
+        "current_bound": "2 * |a_list| * (CeilLog2(|a_list|) + 1) + |a_list| * (10 + 4 * BitLen(MaxSeq(a_list)) + 2 * BitLen(MaxSeq(a_list) * MaxSeq(a_list))) + 2 * BitLen(MaxSeq(a_list)) + 8",
+        "current_relation": "looser-structural",
+        "revised": true,
         "call_depth": 3,
         "recursive": true
       },
@@ -4991,7 +4991,7 @@
         "why_failed": "linear-search loop `while s*s<target` is genuinely value-bounded (O(sqrt(n)), not O(1), per the value-counts-as-parameter convention); the label is likely unreachable and even a loose linear bound needs two case-split implication invariants over nonlinear s*s that Z3 would not close in budget",
         "current_outcome": "proved",
         "current_bound": "32 * n + 5",
-        "current_relation": "looser-structural",
+        "current_relation": "looser-translation",
         "revised": true,
         "call_depth": 0,
         "recursive": false
@@ -5928,9 +5928,9 @@
         "seconds": 180,
         "why_failed": null,
         "current_outcome": "proved",
-        "current_bound": "2 * |b_list| * (CeilLog2(|b_list|) + 1) + 6 * |b_list| + 12",
-        "current_relation": "confirms",
-        "revised": false,
+        "current_bound": "2 * |b_list| * (CeilLog2(|b_list|) + 1) + 5 * a + 2 * a * BitLen(MaxSeq(b_list)) + 6",
+        "current_relation": "looser-structural",
+        "revised": true,
         "call_depth": 3,
         "recursive": true
       },
@@ -6927,7 +6927,7 @@
         "why_failed": "final ensures constant/coefficient was one arithmetic tweak short (needed ~9*n not 8*n) when the 3-attempt budget ran out",
         "current_outcome": "proved",
         "current_bound": "2 * n * n + 2 * NLogN(n) + 13 * n + 4",
-        "current_relation": "looser-structural",
+        "current_relation": "looser-costmodel",
         "revised": true,
         "call_depth": 2,
         "recursive": true
@@ -10182,24 +10182,6 @@
         "recursive": true
       },
       {
-        "solution_id": "1386_19",
-        "file": "solutions-proved/1386/1386_19.dfy",
-        "era": "campaign",
-        "label": "O(nlogn)",
-        "bound": "2 * |b_list| * (CeilLog2(|b_list|) + 1) + 6 * |b_list| + 12",
-        "call_depth": 3,
-        "recursive": true
-      },
-      {
-        "solution_id": "1386_38",
-        "file": "solutions-proved/1386/1386_38.dfy",
-        "era": "campaign",
-        "label": "O(n)",
-        "bound": "5 * |b_list| + 10",
-        "call_depth": 2,
-        "recursive": true
-      },
-      {
         "solution_id": "1387_19",
         "file": "solutions-proved/1387/1387_19.dfy",
         "era": "campaign",
@@ -10659,24 +10641,6 @@
         "recursive": true
       },
       {
-        "solution_id": "1871_156",
-        "file": "solutions-proved/1871/1871_156.dfy",
-        "era": "campaign",
-        "label": "O(nlogn)",
-        "bound": "2 * |a_list| * (CeilLog2(|a_list|) + 1) + 6 * |a_list| + 12",
-        "call_depth": 3,
-        "recursive": true
-      },
-      {
-        "solution_id": "1871_291",
-        "file": "solutions-proved/1871/1871_291.dfy",
-        "era": "campaign",
-        "label": "O(n)",
-        "bound": "6 * |a_list| + 10",
-        "call_depth": 2,
-        "recursive": true
-      },
-      {
         "solution_id": "1878_29",
         "file": "solutions-proved/1878/1878_29.dfy",
         "era": "campaign",
@@ -10710,15 +10674,6 @@
         "label": "O(n)",
         "bound": "10 * n + 20",
         "call_depth": 3,
-        "recursive": true
-      },
-      {
-        "solution_id": "1915_158",
-        "file": "solutions-proved/1915/1915_158.dfy",
-        "era": "campaign",
-        "label": "O(n+m)",
-        "bound": "3 * n + 3 * m + 6",
-        "call_depth": 2,
         "recursive": true
       },
       {
@@ -12621,6 +12576,24 @@
         "recursive": true
       },
       {
+        "solution_id": "1386_19",
+        "file": "solutions-proved/value-bounded/1386/1386_19.dfy",
+        "era": "campaign",
+        "label": "O(nlogn)",
+        "bound": "2 * |b_list| * (CeilLog2(|b_list|) + 1) + 5 * a",
+        "call_depth": 3,
+        "recursive": true
+      },
+      {
+        "solution_id": "1386_38",
+        "file": "solutions-proved/value-bounded/1386/1386_38.dfy",
+        "era": "campaign",
+        "label": "O(n)",
+        "bound": "5 * a + 2 * SumLog(b_list, a) + |b_list| + 4",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
         "solution_id": "1484_26",
         "file": "solutions-proved/value-bounded/1484/1484_26.dfy",
         "era": "campaign",
@@ -12663,6 +12636,33 @@
         "label": "O(n)",
         "bound": "2 + 2 * n * 500001 + 2 * SumPos(numbers, 0, n)",
         "call_depth": 1,
+        "recursive": true
+      },
+      {
+        "solution_id": "1871_156",
+        "file": "solutions-proved/value-bounded/1871/1871_156.dfy",
+        "era": "campaign",
+        "label": "O(nlogn)",
+        "bound": "2 * |a_list| * (CeilLog2(|a_list|) + 1)",
+        "call_depth": 3,
+        "recursive": true
+      },
+      {
+        "solution_id": "1871_291",
+        "file": "solutions-proved/value-bounded/1871/1871_291.dfy",
+        "era": "campaign",
+        "label": "O(n)",
+        "bound": "|a_list| * (10 + 4 * BitLen(MaxSeq(a_list)) + 2 * BitLen(a_list[0] * a_list[1]))",
+        "call_depth": 2,
+        "recursive": true
+      },
+      {
+        "solution_id": "1915_158",
+        "file": "solutions-proved/value-bounded/1915/1915_158.dfy",
+        "era": "campaign",
+        "label": "O(n+m)",
+        "bound": "4 * n + 3 * m + 2 * GapBits(n_list, n) + 6",
+        "call_depth": 2,
         "recursive": true
       },
       {
