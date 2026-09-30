@@ -231,10 +231,10 @@ the refreshed `data/`. Push to the session's designated branch.
   (Campaign 7's slice A lost 14 such files to deletion before this rule.)
 - **Revising a row after its campaign: latest state in the file, the old line
   in `old-record.jsonl`, the agent's result kept beside.** When a row is
-  proved or its proof tightened later — by hand, outside the budget — rewrite
-  its trajectory line to the current state and add `agent_outcome`,
+  proved or its proof tightened later — by the main agent, outside the budget —
+  rewrite its trajectory line to the current state and add `agent_outcome`,
   `agent_relation`, `agent_bound` (and `agent_why_failed`, `agent_obstacle`) plus a `revision`
-  block saying what changed and that it was done by hand. Move every
+  block `{on, what, by}` with `by: "main agent, outside the campaign budget"`. Move every
   superseded line — trajectory, `label_relation`, `audit` — into
   the batch's `old-record.jsonl` as `{"file", "superseded_on", "why",
   "record"}`. Campaign rates are then computed from `agent_outcome`: a row a
@@ -246,8 +246,17 @@ the refreshed `data/`. Push to the session's designated branch.
   record sits in the trajectory of the slice that produced it; slices and
   briefs whose records were replaced, staging files and every superseded line
   go into `old-` files (`old-record.jsonl`, `old-slice_*.jsonl`,
-  `old-PROMPT_*.md`). A proof fixed by hand before promotion is not kept as an
-  attempt; its record says what was fixed. `prove-sample-7` is the example.
+  `old-PROMPT_*.md`). A proof the main agent fixed before promotion is not kept
+  as an attempt; its record says what was fixed. `prove-sample-7` is the example.
+- **`label_relation.jsonl` has one line per proved row, in one schema.**
+  `solution_id`, `label`, `proved_bound`, `relation`, `reason` (never empty),
+  `prover_relation` (what the proving subagent wrote; null in campaign 1, whose
+  prover wrote only `agrees_with_label`), optional `prover_reason` (only where
+  the reviewer rewrote it), `review` (`read-python`: the main agent re-read the
+  Python; `bound-only`: it compared the bound with the label only), and
+  optional `revision` `{on, what, by}` when the row changed after its campaign.
+  A row drawn although it already had a proof carries
+  `already_proved_when_drawn: true` in the manifest, not here.
 - **Sorts and binary searches use the prelude.** `SortCost`, `NLogN`,
   `SortCostWithin`, `SearchPot`, `BisectStep` and `SearchLoopWithin` live in
   `prelude.dfy` and `PROMPT.md` tells agents to call them. A trajectory whose

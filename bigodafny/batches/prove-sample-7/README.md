@@ -26,7 +26,7 @@ it:
 | `rc` | 10 | 10 | rerun, 2026-09-24 |
 
 All 28 rerun proofs are in `solutions-proved/`. 24 compiled to their row's
-Python as written. 4 changed the row's code and were fixed by hand on
+Python as written. 4 changed the row's code and were fixed by the main agent on
 2026-09-29 before promotion; each record says what in
 `rerun.fixed_before_promotion`:
 
@@ -77,7 +77,7 @@ Use the original-run figure for a like-for-like comparison.
 
 Four of the five `z3-nonlinear` rows combine a sort cost with a second
 logarithmic or product term. `1039_15`, `2128_3`, `2826_81` and `1718_1166`
-were later proved by hand with the prelude lemmas, outside the budget.
+were later proved by the main agent with the prelude lemmas, outside the budget.
 `2704_92` fails on a string-length product instead.
 
 `2704_92` recorded 1,500 seconds against the 5-minute limit. It remained
@@ -124,7 +124,7 @@ The current files are the single source of truth. Superseded data is in the
 | `manifest.jsonl`, `excluded.jsonl` | the draw |
 | `slice_{a,c2,ra,rb,rc}.jsonl`, `PROMPT_{a,c2,rerun}.md` | slices and briefs of the records kept |
 | `traj_{a,c2,ra,rb,rc}.jsonl` | one record per row, 50 in all |
-| `label_relation.jsonl` | reviewed relation where it is not the record's own: `888_6` (original run) and `1718_1166` (its proof predates the rerun) |
+| `label_relation.jsonl` | reviewed relation for each proved original-run row, and for `1718_1166`, whose proof predates the rerun; rerun records carry their own |
 | `audit.jsonl`, `summary.json` | verifier results joined to records |
 | `old-record.jsonl` | every superseded line, as `{file, superseded_on, why, record}`: the original B and C records, the rerun's staging records and verifier results, and earlier revisions |
 | `old-slice_{b,c}.jsonl`, `old-PROMPT_{b,c}.md` | the original run's slices B and C and their briefs |

@@ -36,9 +36,6 @@ DATA = HERE / "data"
 BATCHES = ["prove-sample", "prove-sample-2", "prove-sample-3",
            "prove-sample-4", "prove-sample-5", "prove-sample-6",
            "prove-sample-7", "prove-sample-8"]
-# rows a campaign drew although a proof already existed: a sampler bug, not
-# new work, so they are not in the denominator
-REDRAWN = {"prove-sample-5": {"2128_34", "305_76"}}
 # rows with a verified proof in the overlay now, whoever wrote it
 VERIFIED = {r["solution_id"] for r in
             (json.loads(l) for l in (DATA / "complexity_proofs.jsonl").open() if l.strip())
@@ -75,7 +72,7 @@ def load():
         # A record revised after the campaign keeps the agent's result beside
         # the current one, and its superseded lines live in old-record.jsonl.
         # This file measures the CAMPAIGNS, so it reads the agent's result:
-        # a row proved later by hand, outside the budget, is still a row the
+        # a row proved later by the main agent, outside the budget, is still a row the
         # bounded agent did not close.
         # the EARLIEST superseded line is the agent's; later ones are later edits
         old = {}
@@ -100,13 +97,16 @@ def load():
                                      or (rel.get(sid) or {}).get("relation"))
                                     if t.get("outcome") == "proved" else None,
                 "revised": bool(t.get("revision")),
-                "redrawn": sid in REDRAWN.get(b, set()),
+                # drawn although a proof already existed: a sampler bug, not
+                # new work, so not in the denominator
+                "redrawn": bool(m.get("already_proved_when_drawn")),
                 "relation": (t.get("relation") if t.get("rerun") else
                              (rel_then.get("relation") if "revision" not in rel_then
                               else None)) if outcome == "proved" else None,
                 # on the record; a revised record keeps the agent's beside
                 "obstacle": t.get("agent_obstacle", t.get("obstacle")),
-                "resolved": rel_then.get("resolved"),
+                # a later revision of the row's proof, from its current line
+                "resolved": ((rel.get(sid) or {}).get("revision") or {}).get("what"),
                 "attempts_used": t.get("attempts_used"),
                 "seconds": t.get("seconds"),
                 "slice": t.get("_slice"),
@@ -173,8 +173,11 @@ def main():
         "by_label": by_label,
         "obstacles": dict(Counter(r["obstacle"] or "unrecorded" for r in unres).most_common()),
         "relations": dict(Counter(r["relation"] or "confirms" for r in proved).most_common()),
+        # rows whose relation changed after the campaign, and why
         "resolved_since": {r["solution_id"]: r["resolved"]
-                           for r in proved if r.get("resolved")},
+                           for r in proved if r.get("resolved")
+                           and r.get("current_relation")
+                           and (r["relation"] or "confirms") != r["current_relation"]},
         "obstacle_by_label": {k: dict(v.most_common()) for k, v in obstacle_by_label.items()},
         "relation_by_label": {k: dict(v.most_common()) for k, v in relation_by_label.items()},
         "attempts_when_proved": dict(sorted(attempts.items())),
@@ -339,7 +342,7 @@ def corpus_context():
         "proof_files": len(proved_files),
         "proved_rows": len({Path(f).stem for f in proved_files}),
         "note": ("proved_rows counts every proof in the corpus, including the "
-                 "33 that predate the campaigns and the rows proved by hand."),
+                 "33 that predate the campaigns and the rows the main agent proved later."),
     }
 
 
@@ -402,7 +405,7 @@ def render(p):
         a("rest out as `superseded`.")
         a("")
         a(f"**{d['proved']} of {d['distinct_rows']} distinct rows were proved by a "
-          f"bounded agent — {d['rate']:.0%}.** With the proofs made by hand "
+          f"bounded agent — {d['rate']:.0%}.** With the proofs the main agent made "
           f"afterwards, {d['proved_now']} carry one now.")
         a("")
         a(f"- {d['drawn_more_than_once']} rows were drawn more than once.")
@@ -433,7 +436,7 @@ def render(p):
         a("")
         a("Everything above is what a bounded agent achieved inside its budget.")
         a(f"{len(c['revised_after_campaign'])} rows were revised after their "
-          "campaign, by hand and outside the budget; their records keep the")
+          "campaign, by the main agent and outside the budget; their records keep the")
         a("agent's result as `agent_outcome`, and the superseded lines sit in")
         a("each batch's `old-record.jsonl`.")
         a("")

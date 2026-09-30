@@ -2,7 +2,7 @@
 
 10 rows. Each one's real cost depends on how **large** an input is, while its
 BigOBench label only counts how **many** inputs there are — and unlike the
-fourteen in `solutions-proved/value-bounded/`, nobody has managed to prove a
+sixteen in `solutions-proved/value-bounded/`, nobody has managed to prove a
 bound for it.
 
 There are no `.dfy` files here, because there is nothing proved to hold.
@@ -61,7 +61,7 @@ holds the same elements as the input. Nothing said it was ordered, so the trip
 count could not be tied to `pairs` at all.
 
 `SortIsSorted` and `SortLastIsMax` went into the prelude on 2026-09-22. The row
-was proved by hand the same day, after failing in two separate campaigns, and
+was proved by the main agent the same day, after failing in two separate campaigns, and
 is now in `solutions-proved/value-bounded/`. The proof's use of the new lemma
 is four lines.
 

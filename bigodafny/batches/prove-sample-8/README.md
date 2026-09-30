@@ -45,8 +45,8 @@ unresolved, so the overrun did not inflate the result.
 
 ## Relations
 
-All 16 proofs `confirm` their labels. Every bound is in its label's class, so no
-relation needed review.
+All 16 proofs `confirm` their labels. Every bound is in its label's class. The
+main agent re-read each against its Python on 2026-09-30 and all 16 stand.
 
 Both sort rows used the prelude directly. `1718_621` proves
 `2*NLogN(|list1|) + 2*NLogN(|list2|) + linear` against `O(nlogn+mlogm)`, and
@@ -74,5 +74,5 @@ frequently read prelude declarations were `IntToString` and `Join`.
 | `manifest.jsonl`, `excluded.jsonl` | the draw |
 | `slice_{a,b,c}.jsonl`, `PROMPT_{a,b,c}.md` | slices and prompts |
 | `traj_{a,b,c}.jsonl` | one record per row |
-| `label_relation.jsonl` | empty: no relation needed review |
+| `label_relation.jsonl` | reviewed relation and reason for each proved row |
 | `audit.jsonl`, `summary.json` | verifier results joined to records |

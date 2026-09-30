@@ -185,7 +185,7 @@ def main():
     print(f"  {proved}/{len(kept)} proved now ({proved / len(kept):.0%}) over distinct rows")
     print(f"  {meta['proved_by_an_agent']}/{len(kept)} proved by a bounded agent "
           f"({meta['proved_by_an_agent'] / len(kept):.0%}); "
-          f"{len(meta['proved_after_the_campaigns'])} closed afterwards by hand")
+          f"{len(meta['proved_after_the_campaigns'])} closed afterwards by the main agent")
     # a CAMPAIGN closing what an earlier campaign missed: agent outcomes only,
     # so a later hand proof cannot count as a campaign's success
     rescued = sum(1 for r in kept if r["agent_outcome"] == "proved"

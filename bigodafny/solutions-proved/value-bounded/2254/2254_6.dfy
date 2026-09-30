@@ -13,7 +13,7 @@
 //     print(s)
 // --------------------------------------------------------------------
 
-include "../../prelude.dfy"
+include "../../../prelude.dfy"
 import opened Prelude
 
 // kk is bounded 1..26 by `requires`, so the inner block-building loop is

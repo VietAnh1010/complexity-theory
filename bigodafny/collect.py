@@ -264,17 +264,18 @@ def prove_sample(manifest, traj, rel, depth, meta=None):
             "bound": t.get("bound"),
             # Every bound here is an UPPER bound, so a bound above the label
             # fails to confirm it and cannot contradict it. `relation` is the
-            # normalised reading; `agent_said_agrees` is what the agent wrote,
-            # kept so the normalisation stays auditable.
+            # reviewed reading; `prover_*` is what the proving subagent wrote,
+            # kept so the review stays auditable.
             "relation": relation_of(s, t, rel),
             # a rerun record's reviewed note, else its agent's reason
             "relation_reason": ((t["rerun"].get("relation_note")
                                  or t.get("relation_reason") or None) if t.get("rerun")
                                 else (rel.get(s) or {}).get("reason")),
             "obstacle": t.get("obstacle"),
-            "agent_said_agrees": t.get("agrees_with_label"),
-            "agent_said_relation": (t.get("relation") if t.get("rerun")
-                                    else (rel.get(s) or {}).get("agent_said_relation")),
+            "prover_agrees": t.get("agrees_with_label"),
+            "prover_relation": (t.get("relation") if t.get("rerun")
+                                else (rel.get(s) or {}).get("prover_relation")),
+            "review": (rel.get(s) or {}).get("review"),
             "attempts_used": t.get("attempts_used"),
             "seconds": t.get("seconds"),
             "why_failed": t.get("why_failed"),
@@ -445,7 +446,8 @@ def main():
     # added the day before. Their outcomes are real but they are not new work,
     # so the rate over NEW rows is 35/48, not 37/50.
     pv5["redrawn_already_proved"] = {
-        "rows": ["2128_34", "305_76"],
+        "rows": [r["solution_id"] for r in p5_manifest
+                 if r.get("already_proved_when_drawn")],
         "cause": "sample.py missed solutions-proved/value-bounded/; fixed by "
                  "walking the overlay to any depth",
         "proved_excluding_them": 35, "drawn_excluding_them": 48,

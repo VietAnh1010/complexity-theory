@@ -12,6 +12,19 @@ Open items found while normalising on 2026-09-29. Tick a box when done.
 - [ ] Includes `794_794` and `307_14`, promoted from the campaign 7 rerun.
 - [ ] 31 overlay proofs were never drawn, so `audit.py` never checked their
       emitted Python or `requires`. Run both checks over them.
+- [ ] Campaign 1's first audit (2026-09-30): `1359_189` and `810_131` emit
+      Python that differs from their rows.
+- [ ] Five proofs charge each `Gcd` call one step, against the charge table's
+      helper rule: `1386_19`, `1386_38`, `1871_156`, `1871_291`, `1915_158`.
+      Re-prove with Euclid's depth charged, or add a gcd exception to the table.
+- [ ] `2942_55`: the translation adds a 2009-slot table the Python's dict lacks;
+      that literal bounds the `2**m` loop, so the O(n) bound hides a value term.
+- [ ] `305_284`: the translation replaces the Python's `for x in range(p, q)`
+      search with a closed form (CLAUDE.md: preserve the algorithm).
+- [ ] `810_131` and `1948_388`: the looser term comes from the translation (no
+      float `sqrt`), not the Python; the vocabulary has no `looser-translation`.
+- [ ] `proofs.py`'s `bound_of` captures code after the `ensures` of `2128_34`
+      and `514_140`; their `proved_bound` in `complexity_proofs.jsonl` is wrong.
 
 ## Value-bounded filing
 
@@ -42,10 +55,11 @@ Open items found while normalising on 2026-09-29. Tick a box when done.
 - [ ] `solutions-disputed/README.md` exit rule still names
       `data/gate_exempt.jsonl`, replaced by `data/gate_ungateable.jsonl` on
       2026-09-21. Restate the rule.
-- [ ] `label_relation.jsonl` ad-hoc flags: `reason_rewritten` (c4),
+- [x] `label_relation.jsonl` ad-hoc flags: `reason_rewritten` (c4),
       `redrawn_already_proved` (c5), `relation_superseded` (c1, c4), `resolved`
       (c2). Fold into the `revision` scheme; `provestats.py` reads `resolved`.
-- [ ] Campaign 1 records predate `relation` and use `agrees_with_label`; the
-      reviewed relation is only in `label_relation.jsonl`.
+- [x] Campaign 1 records predate `relation` and use `agrees_with_label`; the
+      reviewed relation is only in `label_relation.jsonl`. Now true of every
+      campaign by design: every proved row has a reviewed line there.
 - [ ] `batches/prove-sample/explore.py` reads agent transcripts from a session
       `/tmp` path that no longer exists; it cannot be re-run.

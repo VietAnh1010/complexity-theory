@@ -29,7 +29,7 @@
 // print(ans+1)
 // --------------------------------------------------------------------
 
-include "../../prelude.dfy"
+include "../../../prelude.dfy"
 import opened Prelude
 
 lemma MulMonoRight(x: nat, p: nat, q: nat)

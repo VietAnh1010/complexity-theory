@@ -1,6 +1,6 @@
 # `value-bounded/` — the label counts items, the code follows magnitudes
 
-**14 rows, each with a machine-checked proof.** Rows in the same category with
+**16 rows, each with a machine-checked proof.** Rows in the same category with
 **no** proof do not belong under a directory named `solutions-proved`; they are
 in `batches/value-bounded-open/`, which has its own README and manifest.
 
@@ -38,7 +38,7 @@ rows still live in `solutions/`, `solutions-disputed/` or wherever the
 partition puts them; `MANIFEST.jsonl` gives each one's `row` path. Nothing was
 taken out of the dataset.
 
-Three of the fourteen proved rows also sit in `solutions-disputed/` —
+Three of the sixteen proved rows also sit in `solutions-disputed/` —
 `810_131`, `1484_26` and `2607_90`, moved there on 2026-09-17. Being here is
 not the same as being disputed: this directory says *the proof carries a value
 term*, the disputed queue says *somebody should change the label*.
@@ -151,3 +151,13 @@ The row's `GcdEx` is recursive in the Python too. The earlier proof charged it
 one step and proved 15. The rerun charges its recursion depth, as the charge
 table does for any helper, and that depth grows with the input value `rows`.
 The bound is loose: Euclid's depth is logarithmic.
+
+## Two rows arrived on 2026-09-30
+
+The relation review of every proved row found two more:
+
+    2254_6     40*n + 3*SumFirst(pairs, n) + 4                  O(n)
+    1580_12    8*(a*c) + 8*b + |output| + 20                    O(n+m)
+
+`2254_6` prints a string of length `n_i`, an input value, for each test.
+`1580_12` loops until `b*i` reaches `a*c`, a product of input values.

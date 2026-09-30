@@ -48,7 +48,7 @@ So `contradicts` is empty by construction, not by luck.
 
 `label_relation.jsonl` carries the normalised reading per row, with the reason
 written out. The agents' original booleans are kept in the payload as
-`agent_said_agrees` so the normalisation stays auditable.
+`prover_agrees` so the normalisation stays auditable.
 
 | relation | rows | |
 |---|---|---|
@@ -84,7 +84,7 @@ decision that would most change the dataset**, and it is not ours to make.
 ## Revised 2026-09-23
 
 These rows' records were brought to their latest state after this campaign.
-`hand` means proved or tightened by hand, outside any budget, mostly with the
+`hand` means proved or tightened by the main agent (not a person), outside any budget, mostly with the
 prelude's sort-cost and binary-search lemmas; a campaign name means a later
 campaign's bounded agent proved a row this one missed.
 

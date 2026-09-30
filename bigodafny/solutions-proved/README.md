@@ -66,7 +66,7 @@ still sound, just no longer tight.
 
 A proof may add only ghost code: the proof and its row must compile to the same
 Python. The campaign `audit.py` checks this for every drawn row. On 2026-09-29,
-19 proofs that failed it were fixed by hand: non-ghost temporaries and counters
+the main agent fixed 19 proofs that failed it: non-ghost temporaries and counters
 made ghost, and the row's own statements restored. Bounds did not change.
 `1077_84` was rewritten on the row's recursive `Factorial`. `2496_30` (caps
 added to three loop conditions) still differs and is under review.

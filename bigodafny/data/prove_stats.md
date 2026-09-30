@@ -56,7 +56,7 @@ rows, since a repeat draw selects for failure. `dedupe.py` keeps
 one record per row — the most positive outcome — and writes the
 rest out as `superseded`.
 
-**281 of 329 distinct rows were proved by a bounded agent — 85%.** With the proofs made by hand afterwards, 292 carry one now.
+**281 of 329 distinct rows were proved by a bounded agent — 85%.** With the proofs the main agent made afterwards, 292 carry one now.
 
 - 32 rows were drawn more than once.
 - 16 were closed by a later campaign after an earlier one missed them.
@@ -83,14 +83,14 @@ in one pass; use it for the corpus, never for comparing campaigns.
 ### Where the drawn rows stand now
 
 Everything above is what a bounded agent achieved inside its budget.
-24 rows were revised after their campaign, by hand and outside the budget; their records keep the
+27 rows were revised after their campaign, by the main agent and outside the budget; their records keep the
 agent's result as `agent_outcome`, and the superseded lines sit in
 each batch's `old-record.jsonl`.
 
 **292 of 329 distinct drawn rows carry a proof now — 89%.**
 
 - Closed after their campaign: 11 — `1039_15`, `1582_118`, `1718_1166`, `1827_66`, `1892_121`, `2105_248`, `2128_3`, `2423_48`, `2826_81`, `514_140`, `661_47`.
-- Relations of the proofs as they stand: `confirms` 267, `looser-structural` 14, `tighter-costmodel` 7, `tighter-translation` 2, `contradicts` 1, `looser-slack` 1.
+- Relations of the proofs as they stand: `confirms` 264, `looser-structural` 17, `tighter-costmodel` 8, `tighter-translation` 2, `looser-slack` 1.
 
 ## The label is the strongest predictor
 
@@ -155,9 +155,9 @@ invites a dozen comparisons and no correction is applied.
 
 | relation | rows | share |
 |---|---|---|
-| `confirms` | 244 | 87% |
+| `confirms` | 241 | 86% |
+| `looser-structural` | 16 | 6% |
 | `looser-slack` | 14 | 5% |
-| `looser-structural` | 13 | 5% |
 | `tighter-costmodel` | 7 | 2% |
 | `tighter-translation` | 2 | 1% |
 | `contradicts` | 1 | 0% |
@@ -169,7 +169,22 @@ These are the relations each campaign RECORDED. Where a finding was
 later acted on, the row's current relation differs and the resolution
 is noted below rather than overwritten, so the finding is not erased:
 
+- **`1421_89`** — quadratic SortCost scaffold replaced by the prelude's tight bound
+- **`1586_188`** — quadratic SortCost scaffold replaced by the prelude's tight bound
+- **`2381_156`** — re-proved tight after IntToString was charged 1
+- **`2742_0`** — quadratic SortCost scaffold replaced by the prelude's tight bound
+- **`1180_626`** — quadratic SortCost scaffold replaced by the prelude's tight bound
 - **`1243_0`** — Acted on 2026-09-21: the Dafny was re-translated to sort, as the Python does, and re-proved at the tight two-term bound 2*|s1|*(CeilLog2(|s1|)+1) + 2*|s2|*(CeilLog2(|s2|)+1) + 3*|s1| + |s2| + 5. The row's CURRENT relation is confirms; this record keeps what the campaign found.
+- **`2225_154`** — quadratic SortCost scaffold replaced by the prelude's tight bound
+- **`2593_332`** — quadratic SortCost scaffold replaced by the prelude's tight bound
+- **`1333_127`** — quadratic SortCost scaffold replaced by the prelude's tight bound
+- **`1453_211`** — quadratic SortCost scaffold replaced by the prelude's tight bound
+- **`2496_30`** — quadratic SortCost scaffold replaced by the prelude's tight bound
+- **`2725_319`** — quadratic SortCost scaffold replaced by the prelude's tight bound
+- **`3070_180`** — quadratic SortCost scaffold replaced by the prelude's tight bound
+- **`276_610`** — re-proved tight after IntToString was charged 1
+- **`499_82`** — quadratic SortCost scaffold replaced by the prelude's tight bound
+- **`85_71`** — loose O(|arr|) binary-search bound replaced by the prelude's halving potential; sorts charged SortCost
 
 | relation | meaning |
 |---|---|
@@ -184,10 +199,10 @@ is noted below rather than overwritten, so the finding is not erased:
 
 | label | `confirms` | `contradicts` | `looser-slack` | `looser-structural` | `tighter-costmodel` | `tighter-translation` | total |
 |---|---|---|---|---|---|---|---|
-| `O(n)` | 137 |  |  | 8 |  |  | 145 |
+| `O(n)` | 135 |  |  | 10 |  |  | 145 |
 | `O(nlogn)` | 41 |  | 12 |  |  |  | 53 |
 | `O(n**2)` | 27 |  | 1 | 1 | 6 | 1 | 36 |
-| `O(1)` | 27 |  |  | 3 |  |  | 30 |
+| `O(1)` | 26 |  |  | 4 |  |  | 30 |
 | `O(n+m)` | 10 |  |  |  | 1 |  | 11 |
 | `O(nlogn+mlogm)` | 1 |  |  | 1 |  | 1 | 3 |
 | `O(n*m)` |  | 1 |  |  |  |  | 1 |
@@ -257,7 +272,7 @@ pushes the rate down for reasons unrelated to the agents.
 
 - `solutions/` holds 344 rows.
 - 323 rows carry a proof, in 323 files.
-- proved_rows counts every proof in the corpus, including the 33 that predate the campaigns and the rows proved by hand.
+- proved_rows counts every proof in the corpus, including the 33 that predate the campaigns and the rows the main agent proved later.
 
 ## What this does not measure
 

@@ -1,0 +1,149 @@
+{
+  "batch": "batches/prove-sample",
+  "by_label": {
+    "O(1)": {
+      "campaign_proved": 4,
+      "drawn": 5,
+      "proved": 4
+    },
+    "O(n)": {
+      "campaign_proved": 24,
+      "drawn": 24,
+      "proved": 24
+    },
+    "O(n**2)": {
+      "campaign_proved": 5,
+      "drawn": 6,
+      "proved": 6
+    },
+    "O(n*m)": {
+      "campaign_proved": 1,
+      "drawn": 1,
+      "proved": 1
+    },
+    "O(n+m)": {
+      "campaign_proved": 3,
+      "drawn": 3,
+      "proved": 3
+    },
+    "O(nlogn)": {
+      "campaign_proved": 5,
+      "drawn": 11,
+      "proved": 11
+    }
+  },
+  "by_relation": {
+    "confirms": 42,
+    "looser-structural": 6,
+    "tighter-costmodel": 1
+  },
+  "campaign": {
+    "proved": 42,
+    "revised_after": [
+      "1421_89",
+      "1582_118",
+      "1586_188",
+      "1892_121",
+      "2036_120",
+      "2105_248",
+      "2128_34",
+      "2381_156",
+      "2425_5",
+      "2742_0",
+      "514_140",
+      "661_47"
+    ],
+    "unresolved": 8
+  },
+  "drawn": 50,
+  "emitted_python": {
+    "checked": 49,
+    "differs": [
+      "1359_189",
+      "810_131"
+    ],
+    "error": [],
+    "identical": 47
+  },
+  "obstacles": {
+    "budget": 1
+  },
+  "problems": [
+    "1359_189: solutions-proved/1359/1359_189.dfy changes the row's executable code (emitted Python differs)",
+    "1359_189: proof changes `requires` of Solve -- fix the row, not the proof",
+    "2235_384: proof changes `requires` of Solve -- fix the row, not the proof",
+    "2381_156: proof changes `requires` of Solve -- fix the row, not the proof",
+    "2425_5: proof changes `requires` of Solve -- fix the row, not the proof",
+    "2742_0: proof changes `requires` of Solve -- fix the row, not the proof",
+    "810_131: solutions-proved/value-bounded/810/810_131.dfy changes the row's executable code (emitted Python differs)"
+  ],
+  "proved": 49,
+  "reads_coverage": 0.0,
+  "reads_missing": [
+    "1243_178",
+    "1303_56",
+    "1359_189",
+    "1366_112",
+    "1414_8",
+    "1421_89",
+    "1453_483",
+    "1484_26",
+    "1501_177",
+    "1560_164",
+    "1582_118",
+    "1586_188",
+    "1675_150",
+    "1739_447",
+    "1756_1282",
+    "1857_13",
+    "1871_291",
+    "1878_29",
+    "1892_121",
+    "1915_158",
+    "1952_22",
+    "1952_87",
+    "2036_120",
+    "2036_19",
+    "2065_24",
+    "2071_33",
+    "2105_248",
+    "2128_34",
+    "2188_359",
+    "2217_247",
+    "2235_384",
+    "2254_6",
+    "2381_156",
+    "2425_5",
+    "2426_4",
+    "2589_115",
+    "2607_90",
+    "2719_289",
+    "2742_0",
+    "2942_42",
+    "3033_146",
+    "3060_1359",
+    "450_276",
+    "457_27",
+    "499_359",
+    "514_140",
+    "61_295",
+    "661_47",
+    "810_131",
+    "976_1131"
+  ],
+  "requires_changed": [
+    "1359_189",
+    "2235_384",
+    "2381_156",
+    "2425_5",
+    "2742_0"
+  ],
+  "rerun": {
+    "existing_proof_not_used": [],
+    "not_promoted": [],
+    "proved": 0,
+    "rows": 0,
+    "unresolved": 0
+  },
+  "unresolved": 1
+}

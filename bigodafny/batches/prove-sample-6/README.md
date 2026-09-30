@@ -89,7 +89,7 @@ row's own early return gives `steps = 3` while `5*n + 10` goes negative.
 | `looser-structural` | 1 |
 | `tighter-translation` | 1 |
 
-Every non-`confirms` row was re-read by hand against the Python;
+Every non-`confirms` row was re-read by the main agent against the Python;
 `label_relation.jsonl` carries the reason and the agent's original claim.
 
 ## Four findings
@@ -141,7 +141,7 @@ coefficient was one arithmetic tweak short.
 ## Revised 2026-09-23
 
 These rows' records were brought to their latest state after this campaign.
-`hand` means proved or tightened by hand, outside any budget, mostly with the
+`hand` means proved or tightened by the main agent (not a person), outside any budget, mostly with the
 prelude's sort-cost and binary-search lemmas; a campaign name means a later
 campaign's bounded agent proved a row this one missed.
 

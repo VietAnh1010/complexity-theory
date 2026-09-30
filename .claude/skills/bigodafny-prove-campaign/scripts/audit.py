@@ -34,6 +34,11 @@ RELATIONS = {
     None,
 }
 
+# label_relation.jsonl: one line per proved row, in this schema
+LR_KEYS = {"solution_id", "label", "proved_bound", "relation", "reason",
+           "prover_relation", "prover_reason", "review", "revision"}
+REVIEWS = {"read-python", "bound-only"}
+
 OBSTACLES = {
     "value-to-size",
     "z3-nonlinear",
@@ -204,12 +209,30 @@ def main():
         r["solution_id"]: r
         for r in read_jsonl(os.path.join(args.repo, "data/complexity_proofs.jsonl"))
     }
-    # Once the relations have been normalised by hand, that file is the
-    # authority; the agents' own values survive inside it as agent_said_*.
+    # Once the main agent has reviewed the relations, that file is the
+    # authority; the prover's own values survive inside it as prover_*.
     normalised = {
         r["solution_id"]: r
         for r in read_jsonl(f"{args.batch}/label_relation.jsonl")
     }
+    schema_problems = []
+    for sid, row in normalised.items():
+        extra = set(row) - LR_KEYS
+        if extra:
+            schema_problems.append(f"{sid}: label_relation has unknown keys {sorted(extra)}")
+        for k in ("label", "proved_bound", "relation", "reason", "review"):
+            if not row.get(k):
+                schema_problems.append(f"{sid}: label_relation has no `{k}`")
+        if row.get("relation") not in RELATIONS - {None}:
+            schema_problems.append(f"{sid}: label_relation relation {row.get('relation')!r} "
+                                   "not in vocabulary")
+        if row.get("review") not in REVIEWS:
+            schema_problems.append(f"{sid}: label_relation review {row.get('review')!r} "
+                                   f"not one of {sorted(REVIEWS)}")
+    # every row proved by a non-rerun record has a reviewed line
+    for sid, t in traj.items():
+        if t.get("outcome") == "proved" and not t.get("rerun") and sid not in normalised:
+            schema_problems.append(f"{sid}: proved, but label_relation has no line for it")
     for sid, row in normalised.items():
         # a rerun record's relation is about the rerun's own proof, not the
         # proof label_relation.jsonl describes
@@ -229,7 +252,7 @@ def main():
     } if os.path.exists(f"{args.batch}/rerun/verify.jsonl") else {}
     not_used, not_promoted = [], []
 
-    rows, problems, no_reads = [], [], []
+    rows, problems, no_reads = [], list(schema_problems), []
     # Every attempt's .dfy is kept under attempts/ once the brief says so.
     # Enforced only for campaigns whose brief carries the rule: campaigns 1-8
     # predate it and deleted their failed attempts.
@@ -395,7 +418,7 @@ def main():
         "obstacles": {},
         "problems": problems,
         # `proved` above is the verifier's view of the rows as they stand now.
-        # A row proved by hand after the campaign counts there, not here: this
+        # A row the main agent proved after the campaign counts there, not here: this
         # block is what the campaign's bounded agents achieved.
         "campaign": {
             "proved": sum(1 for r in rows if r["agent_outcome"] == "proved"),

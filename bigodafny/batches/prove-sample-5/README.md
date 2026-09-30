@@ -108,7 +108,7 @@ signature.
 ## Revised 2026-09-23
 
 These rows' records were brought to their latest state after this campaign.
-`hand` means proved or tightened by hand, outside any budget, mostly with the
+`hand` means proved or tightened by the main agent (not a person), outside any budget, mostly with the
 prelude's sort-cost and binary-search lemmas; a campaign name means a later
 campaign's bounded agent proved a row this one missed.
 
