@@ -1,6 +1,6 @@
 # `value-bounded/` — the label counts items, the code follows magnitudes
 
-**16 rows, each with a machine-checked proof.** Rows in the same category with
+**21 rows, each with a machine-checked proof.** Rows in the same category with
 **no** proof do not belong under a directory named `solutions-proved`; they are
 in `batches/value-bounded-open/`, which has its own README and manifest.
 
@@ -38,7 +38,7 @@ rows still live in `solutions/`, `solutions-disputed/` or wherever the
 partition puts them; `MANIFEST.jsonl` gives each one's `row` path. Nothing was
 taken out of the dataset.
 
-Three of the sixteen proved rows also sit in `solutions-disputed/` —
+Three of the twenty-one proved rows also sit in `solutions-disputed/` —
 `810_131`, `1484_26` and `2607_90`, moved there on 2026-09-17. Being here is
 not the same as being disputed: this directory says *the proof carries a value
 term*, the disputed queue says *somebody should change the label*.
@@ -161,3 +161,20 @@ The relation review of every proved row found two more:
 
 `2254_6` prints a string of length `n_i`, an input value, for each test.
 `1580_12` loops until `b*i` reaches `a*c`, a product of input values.
+
+## Five rows arrived on 2026-09-30, from the Gcd charge
+
+Their proofs had charged each `Gcd` call one step. The charge table charges a
+helper its own steps, so they were re-proved charging Euclid's depth,
+`GcdSteps` (prelude, with `GcdStepsBound`):
+
+    1386_38    5*a + 2*SumLog(b_list, a) + |b_list| + 4                O(n)
+    1386_19    sort + 5*a + 2*a*BitLen(MaxSeq(b_list)) + 6             O(nlogn)
+    1871_156   sort + |a_list|*(10 + 4*BitLen(max) + 2*BitLen(max*max)) + ...   O(nlogn)
+    1871_291   |a_list|*(10 + 4*BitLen(max) + 2*BitLen(a0*a1)) + ...  O(n)
+    1915_158   4*n + 3*m + 2*GapBits(n_list, n) + 6                   O(n+m)
+
+`BitLen(v)` is the bit length of `v`, so each adds a log-of-value term. The
+bounds are loose: the running gcd only shrinks, so the depths telescope to
+`O(n + log max)` in total. That tighter bound still names a value.
+

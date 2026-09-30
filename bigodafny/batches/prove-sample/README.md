@@ -81,9 +81,10 @@ corpus, not of the rows that happened to be audited first. **It is the single
 decision that would most change the dataset**, and it is not ours to make.
 
 
-## Revised 2026-09-23
+## Revised after the campaign
 
 These rows' records were brought to their latest state after this campaign.
+`now` is the reviewed relation in `label_relation.jsonl` as of 2026-09-30.
 `hand` means proved or tightened by the main agent (not a person), outside any budget, mostly with the
 prelude's sort-cost and binary-search lemmas; a campaign name means a later
 campaign's bounded agent proved a row this one missed.
@@ -93,13 +94,16 @@ campaign's bounded agent proved a row this one missed.
 | `1421_89` | O(nlogn) | proved, `looser-slack` | proved, `confirms` | hand |
 | `1582_118` | O(nlogn) | unresolved | proved, `confirms` | hand |
 | `1586_188` | O(nlogn) | proved, `looser-slack` | proved, `confirms` | hand |
+| `1871_291` | O(n) | proved, `confirms` | proved, `looser-structural` | hand |
 | `1892_121` | O(nlogn) | unresolved | proved, `confirms` | hand |
+| `1915_158` | O(n+m) | proved, `confirms` | proved, `looser-structural` | hand |
 | `2036_120` | O(n**2) | unresolved | proved, `confirms` | `prove-sample-4` |
 | `2105_248` | O(nlogn) | unresolved | proved, `confirms` | hand |
 | `2128_34` | O(n**2) | proved, `looser-structural` | proved, `looser-structural` | hand |
+| `2381_156` | O(1) | proved, `looser-structural` | proved, `confirms` | hand |
 | `2425_5` | O(nlogn) | unresolved | proved, `confirms` | `prove-sample-3` |
 | `2742_0` | O(nlogn) | proved, `looser-slack` | proved, `confirms` | hand |
-| `514_140` | O(nlogn) | unresolved | proved, `looser-structural` | hand |
+| `514_140` | O(nlogn) | unresolved | proved, `looser-costmodel` | hand |
 | `661_47` | O(nlogn) | unresolved | proved, `confirms` | hand |
 
 **The numbers in this README are unchanged**: they are what this campaign's

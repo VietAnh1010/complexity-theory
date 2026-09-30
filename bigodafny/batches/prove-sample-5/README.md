@@ -105,15 +105,17 @@ one of them builds an **unreduced integer product**: `2803_133`, `1073_645`,
 signature.
 
 
-## Revised 2026-09-23
+## Revised after the campaign
 
 These rows' records were brought to their latest state after this campaign.
+`now` is the reviewed relation in `label_relation.jsonl` as of 2026-09-30.
 `hand` means proved or tightened by the main agent (not a person), outside any budget, mostly with the
 prelude's sort-cost and binary-search lemmas; a campaign name means a later
 campaign's bounded agent proved a row this one missed.
 
 | row | label | this campaign | now | by |
 |---|---|---|---|---|
+| `1386_19` | O(nlogn) | proved, `confirms` | proved, `looser-structural` | hand |
 | `1582_118` | O(nlogn) | unresolved | proved, `confirms` | hand |
 | `1699_98` | O(n**2) | unresolved | proved, `confirms` | `prove-sample-6` |
 | `1827_66` | O(nlogn) | unresolved | proved, `confirms` | hand |

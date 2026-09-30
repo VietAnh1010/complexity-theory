@@ -423,7 +423,7 @@ def run(sids):
     # a corpus with preconditions in dozens. A re-check of a row replaces ALL
     # that row's clauses and leaves every other row alone -- including when the
     # re-check finds none: a copy that lost its last `requires`, or moved, must
-    # not keep its old clauses (1077_84 did, until they were removed by hand).
+    # not keep its old clauses (1077_84 did, until the main agent removed them).
     out = DATA / "precondition_check.jsonl"
     prior = [r for r in read_jsonl(out)] if out.exists() else []
     merged = [r for r in prior if r.get("solution_id") not in checked] + rows

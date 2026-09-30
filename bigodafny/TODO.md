@@ -14,9 +14,12 @@ Open items found while normalising on 2026-09-29. Tick a box when done.
       emitted Python or `requires`. Run both checks over them.
 - [ ] Campaign 1's first audit (2026-09-30): `1359_189` and `810_131` emit
       Python that differs from their rows.
-- [ ] Five proofs charge each `Gcd` call one step, against the charge table's
+- [x] Five proofs charge each `Gcd` call one step, against the charge table's
       helper rule: `1386_19`, `1386_38`, `1871_156`, `1871_291`, `1915_158`.
-      Re-prove with Euclid's depth charged, or add a gcd exception to the table.
+      Re-proved charging `GcdSteps` (prelude); all five now `looser-structural`,
+      filed in `value-bounded/`.
+- [ ] The five `Gcd` bounds are loose (`n * log max`): the running gcd only
+      shrinks, so the depths telescope to `O(n + log max)`. Optional tightening.
 - [ ] `2942_55`: the translation adds a 2009-slot table the Python's dict lacks;
       that literal bounds the `2**m` loop, so the O(n) bound hides a value term.
 - [ ] `305_284`: the translation replaces the Python's `for x in range(p, q)`
@@ -33,9 +36,11 @@ Open items found while normalising on 2026-09-29. Tick a box when done.
       from agent text only: `1263_2538`, `1332_16`, `1364_161`, `1626_179`,
       `2358_103`, `2465_212`, `342_86`.
 - [ ] `1332_16` reads like a missing log-bound lemma, not `value-to-size`.
-- [ ] `514_140` and `1718_1166` are `looser-structural` but not in
-      `value-bounded/`; their reasons name a translation artifact and a sort,
-      not an input value. Confirm they stay out.
+- [x] `514_140` is `looser-costmodel` now, so it stays out.
+- [ ] `1718_1166` is `looser-structural` but not in `value-bounded/`; its reason
+      names a sort, not an input value. Confirm it stays out.
+- [ ] `810_131` and `1948_388` are in `value-bounded/` but `looser-translation`
+      now; the filing rule admits only `looser-structural`. Keep or move out.
 
 ## Gates (not for an agent whose work they judge)
 
@@ -44,7 +49,7 @@ Open items found while normalising on 2026-09-29. Tick a box when done.
 - [ ] `experiments/selftest_grade.py` imports `INEXACT`, `NLOGN`, `VERIFIED`,
       which `common.py` no longer defines; it fails on import.
 - [x] `precheck.py` never drops a row's stale clauses when the row loses all its
-      `requires` (1077_84's was removed by hand).
+      `requires` (the main agent removed 1077_84's).
 - [ ] `audit.py` does not flag budget overruns. Recorded overruns: `2128_34`
       (4 attempts, 480 s), `1582_118` and `2254_6` (4 attempts), `2704_92`
       (1,500 s), `2231_77` (420 s).
@@ -64,3 +69,12 @@ Open items found while normalising on 2026-09-29. Tick a box when done.
       campaign by design: every proved row has a reviewed line there.
 - [ ] `batches/prove-sample/explore.py` reads agent transcripts from a session
       `/tmp` path that no longer exists; it cannot be re-run.
+- [x] Revised trajectory records of `514_140`, `1948_388`, `276_610` kept their
+      pre-review relation; synced with `label_relation.jsonl`.
+- [x] Campaign READMEs' "revised" tables were stale; rebuilt from the records.
+- [x] `value-bounded/MANIFEST.jsonl` repeated a stale `relation` for 2 rows;
+      dropped (the relation lives in `label_relation.jsonl`).
+- [x] 5 `value-bounded/` proofs lacked the `VALUE-BOUNDED` header; added.
+- [ ] `label_relation.jsonl` `proved_bound` differs from `complexity_proofs.jsonl`
+      for `354_95`, `305_76`, `2607_90` (see below after regeneration).
+

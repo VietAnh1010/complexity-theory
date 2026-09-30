@@ -2,7 +2,7 @@
 
 10 rows. Each one's real cost depends on how **large** an input is, while its
 BigOBench label only counts how **many** inputs there are — and unlike the
-sixteen in `solutions-proved/value-bounded/`, nobody has managed to prove a
+twenty-one in `solutions-proved/value-bounded/`, nobody has managed to prove a
 bound for it.
 
 There are no `.dfy` files here, because there is nothing proved to hold.

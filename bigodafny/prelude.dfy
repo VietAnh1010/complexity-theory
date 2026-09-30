@@ -634,6 +634,122 @@ module Prelude {
     n * (CeilLog2(n) + 1)
   }
 
+  // ---- the cost of a gcd -------------------------------------------------
+  // A helper call costs the helper's steps (COMPLEXITY.md), and Euclid's
+  // algorithm runs once per remainder: GcdSteps is Gcd's recursion depth.
+  // Every two steps the second argument drops below half, so the depth is
+  // logarithmic in that argument.
+  ghost function GcdSteps(a: int, b: int): nat
+    requires a >= 0 && b >= 0
+    decreases b
+  {
+    if b == 0 then 1 else 1 + GcdSteps(b, a % b)
+  }
+
+  lemma GcdStepsBound(a: int, b: int)
+    requires a >= 0 && b >= 0
+    ensures GcdSteps(a, b) <= 2 * CeilLog2(b + 1) + 2
+    decreases b
+  {
+    if b > 0 {
+      var r1 := a % b;
+      if r1 > 0 {
+        var r2 := b % r1;
+        // r2 < b / 2: either r1 is at most half of b, or b % r1 == b - r1
+        if 2 * r1 > b {
+          assert b / r1 == 1;
+          assert r2 == b - r1;
+        }
+        assert 2 * r2 < b;
+        GcdStepsBound(r1, r2);
+        assert r2 + 1 <= (b + 2) / 2;
+        CeilLog2Monotone(r2 + 1, (b + 2) / 2);
+        assert CeilLog2(b + 1) == 1 + CeilLog2((b + 2) / 2);
+      }
+    }
+  }
+
+  // The sum of CeilLog2(v + 1) over the first n values, negatives as 0: the
+  // total gcd depth of a pass that takes one gcd per value.
+  // The bits of a value (0 for v <= 0): what a gcd on it costs, halved.
+  ghost function BitLen(v: int): nat
+  {
+    CeilLog2((if v > 0 then v else 0) + 1)
+  }
+
+  ghost function SumLog(s: seq<int>, n: nat): nat
+    requires n <= |s|
+    decreases n
+  {
+    if n == 0 then 0 else SumLog(s, n - 1) + BitLen(s[n - 1])
+  }
+
+  // The depth bounded by the first argument instead: one step reduces it to
+  // the second-argument bound on a % b <= a.
+  lemma GcdStepsBoundFirst(a: int, b: int)
+    requires a >= 0 && b >= 0
+    ensures GcdSteps(a, b) <= 2 * CeilLog2(a + 1) + 3
+  {
+    if b > 0 {
+      var r := a % b;
+      assert GcdSteps(a, b) == 1 + GcdSteps(b, r);
+      if a < b {
+        assert r == a;
+      } else {
+        assert r < b <= a;
+      }
+      GcdStepsBound(b, r);
+      CeilLog2Monotone(r + 1, a + 1);
+    }
+  }
+
+  lemma GcdLeSecond(a: int, b: int)
+    requires a >= 0 && b >= 1
+    ensures 1 <= Gcd(a, b) <= b
+    decreases b
+  {
+    if a % b > 0 {
+      GcdLeSecond(b, a % b);
+    }
+  }
+
+  lemma GcdLeFirst(a: int, b: int)
+    requires a >= 1 && b >= 0
+    ensures 1 <= Gcd(a, b) <= a
+  {
+    if b > 0 {
+      if b <= a {
+        GcdLeSecond(a, b);
+      } else {
+        assert a % b == a;
+        GcdLeSecond(b, a);
+      }
+    }
+  }
+
+  lemma MaxSeqFromBound(s: seq<int>, i: nat, best: int)
+    requires i <= |s|
+    ensures best <= MaxSeqFrom(s, i, best)
+    ensures forall k :: i <= k < |s| ==> s[k] <= MaxSeqFrom(s, i, best)
+    decreases |s| - i
+  {
+    if i < |s| {
+      MaxSeqFromBound(s, i + 1, if s[i] > best then s[i] else best);
+    }
+  }
+
+  lemma MaxSeqBound(s: seq<int>)
+    requires |s| > 0
+    ensures forall v :: v in s ==> v <= MaxSeq(s)
+  {
+    MaxSeqFromBound(s, 1, s[0]);
+    forall v | v in s
+      ensures v <= MaxSeq(s)
+    {
+      var k :| 0 <= k < |s| && s[k] == v;
+    }
+  }
+
   // Every multiplication the proofs below need, isolated, so the solver never
   // has to discover one.
   lemma CostMulMono(x: nat, p: nat, q: nat)

@@ -29,6 +29,7 @@ length, and one unit of loop overhead per iteration.
 | sorting k items | `SortCost(k)`; prove it with `SortCostNLogN` |
 | helper calls | the helper's `steps` |
 | recursive helpers used for Python `**` | recursion depth |
+| `Gcd(a, b)` (Python `math.gcd` or a Euclid loop) | `GcdSteps(a, b)`; bound it with `GcdStepsBound` |
 
 `array<T>` is absent from the corpus. The two files that retain arrays explain
 why in their headers; that is a backend note, not a different charge table.

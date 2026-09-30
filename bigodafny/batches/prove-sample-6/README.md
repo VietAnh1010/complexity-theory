@@ -138,9 +138,10 @@ near-misses. `514_140` is the one exception, and says so: its final
 coefficient was one arithmetic tweak short.
 
 
-## Revised 2026-09-23
+## Revised after the campaign
 
 These rows' records were brought to their latest state after this campaign.
+`now` is the reviewed relation in `label_relation.jsonl` as of 2026-09-30.
 `hand` means proved or tightened by the main agent (not a person), outside any budget, mostly with the
 prelude's sort-cost and binary-search lemmas; a campaign name means a later
 campaign's bounded agent proved a row this one missed.
@@ -149,7 +150,7 @@ campaign's bounded agent proved a row this one missed.
 |---|---|---|---|---|
 | `2105_248` | O(nlogn) | unresolved | proved, `confirms` | hand |
 | `499_82` | O(nlogn) | proved, `looser-slack` | proved, `confirms` | hand |
-| `514_140` | O(nlogn) | unresolved | proved, `looser-structural` | hand |
+| `514_140` | O(nlogn) | unresolved | proved, `looser-costmodel` | hand |
 | `85_71` | O(nlogn) | proved, `looser-slack` | proved, `confirms` | hand |
 
 **The numbers in this README are unchanged**: they are what this campaign's
@@ -167,7 +168,7 @@ file it came from.
 | `slice_{a,b,c}.jsonl` | the split handed to each agent |
 | `PROMPT_{a,b,c}.md` | the brief each agent was given |
 | `traj_{a,b,c}.jsonl` | one line per row: outcome, bound, attempts, obstacle |
-| `label_relation.jsonl` | hand-checked relations for the non-`confirms` rows |
+| `label_relation.jsonl` | normalised relation per proved row, with reasons |
 | `audit.jsonl` | verifier output joined to the trajectories |
 | `summary.json` | the counts every number above is drawn from |
 | `old-record.jsonl` | every line superseded by the 2026-09-23 revision, with its source file |

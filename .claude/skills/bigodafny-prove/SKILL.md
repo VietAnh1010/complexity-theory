@@ -140,6 +140,19 @@ argument in one `calc` timed out at 30s; splitting each multiplication fact into
 its own lemma took it to 2.8s. The prelude's `CostMulMono`, `CostMulMonoLeft`,
 `CostMulDistrib` and `CostMulAssoc` are those lemmas.
 
+**A gcd costs Euclid's depth, not 1.** Charge `GcdSteps(a, b)` (the prelude's
+`Gcd` recursion depth) and bound it with the prelude:
+
+| lemma | gives |
+|---|---|
+| `GcdStepsBound(a, b)` | `GcdSteps(a, b) <= 2 * CeilLog2(b + 1) + 2` |
+| `GcdStepsBoundFirst(a, b)` | `GcdSteps(a, b) <= 2 * CeilLog2(a + 1) + 3` |
+| `GcdLeFirst`, `GcdLeSecond` | a gcd is at most a positive argument |
+| `MaxSeqBound(s)` | every element is at most `MaxSeq(s)` |
+
+`BitLen(v)` and `SumLog(s, n)` state the result. The five rows re-proved this
+way on 2026-09-30 (`1386_38`, `1871_291`, ...) are worked examples.
+
 `solutions-proved/nlogn/` once held tight companions for two rows whose base
 proofs were quadratic. Both base proofs are tight since 2026-09-23 and the
 directory was removed.

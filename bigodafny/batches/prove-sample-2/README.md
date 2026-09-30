@@ -107,9 +107,10 @@ do not belong in the clean partition. **Not investigated here** — it is a
 dataset-integrity question, not a proof question.
 
 
-## Revised 2026-09-23
+## Revised after the campaign
 
 These rows' records were brought to their latest state after this campaign.
+`now` is the reviewed relation in `label_relation.jsonl` as of 2026-09-30.
 `hand` means proved or tightened by the main agent (not a person), outside any budget, mostly with the
 prelude's sort-cost and binary-search lemmas; a campaign name means a later
 campaign's bounded agent proved a row this one missed.
@@ -117,14 +118,16 @@ campaign's bounded agent proved a row this one missed.
 | row | label | this campaign | now | by |
 |---|---|---|---|---|
 | `1180_626` | O(n+m)log(n+m) | proved, `looser-slack` | proved, `confirms` | hand |
-| `1386_19` | O(nlogn) | unresolved | proved, `confirms` | `prove-sample-5` |
+| `1243_0` | O(nlogn+mlogm) | proved, `confirms` | proved, `confirms` | hand |
+| `1386_19` | O(nlogn) | unresolved | proved, `looser-structural` | `prove-sample-5`, then hand |
+| `1386_38` | O(n) | proved, `confirms` | proved, `looser-structural` | hand |
 | `1765_40` | O(n**2) | unresolved | proved, `confirms` | `prove-sample-4` |
 | `1972_295` | O(logn) | unresolved | proved, `confirms` | `prove-sample-6` |
 | `2036_120` | O(n**2) | unresolved | proved, `confirms` | `prove-sample-4` |
 | `2225_154` | O(nlogn) | proved, `looser-slack` | proved, `confirms` | hand |
 | `2593_332` | O(nlogn) | proved, `looser-slack` | proved, `confirms` | hand |
 | `2926_54` | O(n**2) | unresolved | proved, `confirms` | `prove-sample-3` |
-| `514_140` | O(nlogn) | unresolved | proved, `looser-structural` | hand |
+| `514_140` | O(nlogn) | unresolved | proved, `looser-costmodel` | hand |
 
 **The numbers in this README are unchanged**: they are what this campaign's
 bounded agents achieved. Each revised trajectory keeps the agent's result as

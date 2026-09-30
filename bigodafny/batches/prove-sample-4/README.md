@@ -84,6 +84,8 @@ stood; two of the reasons did not**, and are rewritten in
 printed values — the same shape as `2381_156`, one of the four rows moved to
 `solutions-disputed/` under the value-versus-size convention. **It has not been
 moved.** That decision named a specific set of rows and this is not one of them.
+Since 2026-09-22 `IntToString` is charged 1, and `276_610` was re-proved tight:
+`confirms`.
 
 ## The draw was the narrowest yet
 
@@ -102,17 +104,20 @@ is rows already known to be hard. That pushes the rate down for reasons that
 have nothing to do with the agents, and it is another argument for reading the
 pooled column.
 
-## Revised 2026-09-23
+## Revised after the campaign
 
 These rows' records were brought to their latest state after this campaign.
+`now` is the reviewed relation in `label_relation.jsonl` as of 2026-09-30.
 `hand` means proved or tightened by the main agent (not a person), outside any budget, mostly with the
 prelude's sort-cost and binary-search lemmas; a campaign name means a later
 campaign's bounded agent proved a row this one missed.
 
 | row | label | this campaign | now | by |
 |---|---|---|---|---|
-| `1948_388` | O(1) | unresolved | proved, `looser-structural` | `prove-sample-6` |
+| `1871_156` | O(nlogn) | proved, `confirms` | proved, `looser-structural` | hand |
+| `1948_388` | O(1) | unresolved | proved, `looser-translation` | `prove-sample-6` |
 | `2423_48` | O(nlogn) | unresolved | proved, `looser-structural` | hand |
+| `276_610` | O(n) | proved, `looser-structural` | proved, `confirms` | hand |
 | `2831_71` | O(nlogn) | unresolved | proved, `confirms` | `prove-sample-6` |
 | `2926_50` | O(n) | unresolved | proved, `confirms` | `prove-sample-5` |
 | `2947_115` | O(n**2) | unresolved | proved, `confirms` | `prove-sample-5` |

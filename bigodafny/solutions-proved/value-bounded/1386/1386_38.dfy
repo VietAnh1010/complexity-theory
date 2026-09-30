@@ -1,3 +1,13 @@
+// VALUE-BOUNDED -- filed for review; the proof carries a term the label omits.
+//
+//   This proof's bound depends on the MAGNITUDE of an input, not only on how
+//   many inputs there are. BigOBench fitted the label by profiling, which
+//   treats a capped value as constant; COMPLEXITY.md section 1 decides the
+//   opposite, so the two disagree here by construction.
+//
+//   See solutions-proved/value-bounded/README.md for the category and
+//   MANIFEST.jsonl for this row's entry.
+//
 // 346_A. Alice and Bob  (problem 1386, solution 1386_38)
 // time complexity: O(n)
 // python exact-diff baseline: exact
@@ -21,7 +31,7 @@
 // 	print('Bob')
 // --------------------------------------------------------------------
 
-include "../../prelude.dfy"
+include "../../../prelude.dfy"
 import opened Prelude
 
 lemma GcdPos(x: int, y: int)
@@ -38,7 +48,7 @@ lemma GcdPos(x: int, y: int)
 method Solve(a: int, b_list: seq<int>) returns (output: string, ghost steps: nat)
   requires 1 <= a <= |b_list|
   requires forall k :: 0 <= k < |b_list| ==> b_list[k] >= 1
-  ensures steps <= 5 * |b_list| + 10
+  ensures steps <= 5 * a + 2 * SumLog(b_list, a) + |b_list| + 4
 {
   steps := 1;
   var n := a;
@@ -49,13 +59,15 @@ method Solve(a: int, b_list: seq<int>) returns (output: string, ghost steps: nat
     invariant 0 <= i <= n
     invariant g >= 0
     invariant i > 0 ==> g > 0
-    invariant steps <= 4 * i + 1
+    invariant steps <= 5 * i + 2 * SumLog(arr, i) + 1
     decreases n - i
   {
     GcdPos(g, arr[i]);
+    GcdStepsBound(g, arr[i]);
+    // the call costs Euclid's recursion depth (COMPLEXITY.md: helper calls)
+    steps := steps + 3 + GcdSteps(g, arr[i]);
     g := Gcd(g, arr[i]);
     i := i + 1;
-    steps := steps + 4;
   }
   var mx := MaxSeq(arr);
   steps := steps + |arr|;

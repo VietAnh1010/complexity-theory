@@ -70,6 +70,7 @@ unit of loop overhead per iteration.
 | `Sort`, `SortInts`, `SortStrings` on k elements | `SortCost(k)` |
 | a recursive prelude function over a seq or string | its length |
 | a call to a helper | the helper's `steps` |
+| `Gcd(a, b)` | `GcdSteps(a, b)`, Euclid's depth; bound it with `GcdStepsBound` |
 
 Do **not** charge `|s|` for `s[i := v]`. That was the old backend-derived model
 and it was retired; old files in `solutions-proved/` still use it.
