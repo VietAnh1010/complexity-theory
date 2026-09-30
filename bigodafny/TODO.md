@@ -29,7 +29,7 @@ Open items found while normalising on 2026-09-29. Tick a box when done.
       `common.py`, `proofs.py`, `precheck.py`; `tight_variant` in `collect.py`.
 - [ ] `experiments/selftest_grade.py` imports `INEXACT`, `NLOGN`, `VERIFIED`,
       which `common.py` no longer defines; it fails on import.
-- [ ] `precheck.py` never drops a row's stale clauses when the row loses all its
+- [x] `precheck.py` never drops a row's stale clauses when the row loses all its
       `requires` (1077_84's was removed by hand).
 - [ ] `audit.py` does not flag budget overruns. Recorded overruns: `2128_34`
       (4 attempts, 480 s), `1582_118` and `2254_6` (4 attempts), `2704_92`

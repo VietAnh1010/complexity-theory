@@ -99,9 +99,6 @@
 {"clause": "a <= |d_list|", "error": 0, "expr": "I.a <= len(I.d_list)", "holds": 113, "root": "solutions", "solution_id": "1820_180", "status": "ok", "violated": 0}
 {"clause": "b >= 0", "error": 0, "expr": "I.b >= 0", "holds": 113, "root": "solutions", "solution_id": "1820_180", "status": "ok", "violated": 0}
 {"clause": "c >= 0", "error": 0, "expr": "I.c >= 0", "holds": 113, "root": "solutions", "solution_id": "1820_180", "status": "ok", "violated": 0}
-{"clause": "a <= |d_list|", "error": 0, "expr": "I.a <= len(I.d_list)", "holds": 113, "root": "solutions-proved", "solution_id": "1820_180", "status": "ok", "violated": 0}
-{"clause": "b >= 0", "error": 0, "expr": "I.b >= 0", "holds": 113, "root": "solutions-proved", "solution_id": "1820_180", "status": "ok", "violated": 0}
-{"clause": "c >= 0", "error": 0, "expr": "I.c >= 0", "holds": 113, "root": "solutions-proved", "solution_id": "1820_180", "status": "ok", "violated": 0}
 {"clause": "a <= |d_list|", "error": 0, "expr": "I.a <= len(I.d_list)", "holds": 113, "root": "value-bounded", "solution_id": "1820_180", "status": "ok", "violated": 0}
 {"clause": "b >= 0", "error": 0, "expr": "I.b >= 0", "holds": 113, "root": "value-bounded", "solution_id": "1820_180", "status": "ok", "violated": 0}
 {"clause": "c >= 0", "error": 0, "expr": "I.c >= 0", "holds": 113, "root": "value-bounded", "solution_id": "1820_180", "status": "ok", "violated": 0}
@@ -110,8 +107,8 @@
 {"clause": "|hour| == 2 && |minute| == 2", "error": 0, "expr": "len(I.hour) == 2  and  len(I.minute) == 2", "holds": 164, "root": "solutions-proved", "solution_id": "1855_33", "status": "ok", "violated": 0}
 {"clause": "n >= 0", "error": 0, "expr": "I.n >= 0", "holds": 132, "root": "solutions", "solution_id": "1867_16", "status": "ok", "violated": 0}
 {"clause": "|numbers| >= n", "error": 0, "expr": "len(I.numbers) >= I.n", "holds": 132, "root": "solutions", "solution_id": "1867_16", "status": "ok", "violated": 0}
-{"clause": "n >= 0", "error": 0, "expr": "I.n >= 0", "holds": 132, "root": "solutions-proved", "solution_id": "1867_16", "status": "ok", "violated": 0}
-{"clause": "|numbers| >= n", "error": 0, "expr": "len(I.numbers) >= I.n", "holds": 132, "root": "solutions-proved", "solution_id": "1867_16", "status": "ok", "violated": 0}
+{"clause": "n >= 0", "error": 0, "expr": "I.n >= 0", "holds": 132, "root": "value-bounded", "solution_id": "1867_16", "status": "ok", "violated": 0}
+{"clause": "|numbers| >= n", "error": 0, "expr": "len(I.numbers) >= I.n", "holds": 132, "root": "value-bounded", "solution_id": "1867_16", "status": "ok", "violated": 0}
 {"clause": "forall v :: v in a_list ==> v >= 1", "error": 0, "expr": "all((v >= 1) for v in I.a_list)", "holds": 96, "root": "solutions", "solution_id": "1871_156", "status": "ok", "violated": 0}
 {"clause": "n <= |a_list|", "error": 0, "expr": "I.n <= len(I.a_list)", "holds": 96, "root": "solutions", "solution_id": "1871_156", "status": "ok", "violated": 0}
 {"clause": "|a_list| >= 2", "error": 0, "expr": "len(I.a_list) >= 2", "holds": 96, "root": "solutions", "solution_id": "1871_156", "status": "ok", "violated": 0}
@@ -243,7 +240,6 @@
 {"clause": "n >= 0", "error": 0, "expr": "I.n >= 0", "holds": 89, "root": "solutions-proved", "solution_id": "2926_54", "status": "ok", "violated": 0}
 {"clause": "a >= 0", "error": 0, "expr": "I.a >= 0", "holds": 110, "root": "solutions-proved", "solution_id": "2982_103", "status": "ok", "violated": 0}
 {"clause": "|c_list| >= 1 && |d_list| >= 1", "error": 0, "expr": "len(I.c_list) >= 1  and  len(I.d_list) >= 1", "holds": 136, "root": "solutions", "solution_id": "305_76", "status": "ok", "violated": 0}
-{"clause": "|c_list| >= 1 && |d_list| >= 1", "error": 0, "expr": "len(I.c_list) >= 1  and  len(I.d_list) >= 1", "holds": 136, "root": "solutions-proved", "solution_id": "305_76", "status": "ok", "violated": 0}
 {"clause": "|c_list| >= 1 && |d_list| >= 1", "error": 0, "expr": "len(I.c_list) >= 1  and  len(I.d_list) >= 1", "holds": 136, "root": "value-bounded", "solution_id": "305_76", "status": "ok", "violated": 0}
 {"clause": "n >= 1", "error": 0, "expr": "I.n >= 1", "holds": 137, "root": "solutions-proved", "solution_id": "3070_180", "status": "ok", "violated": 0}
 {"clause": "a >= 1", "error": 0, "expr": "I.a >= 1", "holds": 249, "root": "solutions", "solution_id": "310_51", "status": "ok", "violated": 0}

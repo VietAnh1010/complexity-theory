@@ -347,10 +347,12 @@ def python_fails(code, stdin, timeout=20):
 def run(sids):
     tasks = {t["solution_id"]: t for t in read_jsonl(DATA / "tasks.jsonl")}
     rows = []
+    checked = set()
     for sid in sids:
         pid = sid.split("_")[0]
         if sid not in tasks:
             continue
+        checked.add(sid)
         t = tasks[sid]
         for p in find_all(sid, pid):
           clauses = requires_of(p.read_text(encoding="utf-8"))
@@ -418,13 +420,13 @@ def run(sids):
     # This tool only ever runs on explicit sids -- there is no "check
     # everything" mode -- so the file must accumulate. Replacing it meant the
     # record held whichever row was checked last: four clauses of one row, for
-    # a corpus with preconditions in dozens. A re-check of a row replaces that
-    # row's clauses and leaves every other row alone.
+    # a corpus with preconditions in dozens. A re-check of a row replaces ALL
+    # that row's clauses and leaves every other row alone -- including when the
+    # re-check finds none: a copy that lost its last `requires`, or moved, must
+    # not keep its old clauses (1077_84 did, until they were removed by hand).
     out = DATA / "precondition_check.jsonl"
     prior = [r for r in read_jsonl(out)] if out.exists() else []
-    touched = {(r["root"], r["solution_id"]) for r in rows}
-    merged = [r for r in prior
-              if (r.get("root"), r.get("solution_id")) not in touched] + rows
+    merged = [r for r in prior if r.get("solution_id") not in checked] + rows
     merged.sort(key=lambda r: (r.get("solution_id", ""), r.get("root", ""),
                                r.get("clause", "")))
     write_jsonl(out, merged)
