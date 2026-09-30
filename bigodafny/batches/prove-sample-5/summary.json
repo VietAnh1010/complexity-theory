@@ -38,13 +38,14 @@
     }
   },
   "by_relation": {
-    "confirms": 38,
-    "looser-structural": 2,
+    "confirms": 37,
+    "looser-structural": 3,
     "tighter-costmodel": 1
   },
   "campaign": {
     "proved": 37,
     "revised_after": [
+      "1386_19",
       "1582_118",
       "1699_98",
       "1827_66",

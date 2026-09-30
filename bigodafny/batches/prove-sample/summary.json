@@ -33,9 +33,9 @@
     }
   },
   "by_relation": {
-    "confirms": 42,
+    "confirms": 40,
     "looser-costmodel": 1,
-    "looser-structural": 4,
+    "looser-structural": 6,
     "looser-translation": 1,
     "tighter-costmodel": 1
   },
@@ -45,7 +45,9 @@
       "1421_89",
       "1582_118",
       "1586_188",
+      "1871_291",
       "1892_121",
+      "1915_158",
       "2036_120",
       "2105_248",
       "2128_34",

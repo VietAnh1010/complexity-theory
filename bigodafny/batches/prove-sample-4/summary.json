@@ -23,14 +23,15 @@
     }
   },
   "by_relation": {
-    "confirms": 39,
+    "confirms": 38,
     "looser-slack": 1,
-    "looser-structural": 3,
+    "looser-structural": 4,
     "looser-translation": 1
   },
   "campaign": {
     "proved": 38,
     "revised_after": [
+      "1871_156",
       "1948_388",
       "2423_48",
       "276_610",

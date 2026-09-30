@@ -43,8 +43,9 @@
     }
   },
   "by_relation": {
-    "confirms": 41,
+    "confirms": 39,
     "looser-costmodel": 1,
+    "looser-structural": 2,
     "tighter-costmodel": 1
   },
   "campaign": {
@@ -53,6 +54,7 @@
       "1180_626",
       "1243_0",
       "1386_19",
+      "1386_38",
       "1765_40",
       "1972_295",
       "2036_120",
