@@ -28,10 +28,10 @@
     }
   },
   "by_relation": {
-    "confirms": 43,
-    "looser-structural": 3,
+    "confirms": 42,
+    "looser-structural": 4,
     "tighter-costmodel": 1,
-    "unrecorded": 1
+    "tighter-label": 1
   },
   "campaign": {
     "proved": 44,

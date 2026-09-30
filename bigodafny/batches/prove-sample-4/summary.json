@@ -25,7 +25,8 @@
   "by_relation": {
     "confirms": 39,
     "looser-slack": 1,
-    "looser-structural": 4
+    "looser-structural": 3,
+    "looser-translation": 1
   },
   "campaign": {
     "proved": 38,

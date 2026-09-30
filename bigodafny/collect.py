@@ -6,6 +6,7 @@ sweep; it reads and never writes outside data/artifact_data.json.
 """
 from __future__ import annotations
 import json, re, subprocess
+from vocab import RELATIONS
 from collections import Counter
 from pathlib import Path
 
@@ -185,20 +186,13 @@ def campaign_series(campaigns):
 
 
 def relation_of(sid, traj_row, rel):
-    """confirms | looser-slack | looser-structural | contradicts | unresolved.
+    """A relation from vocab.RELATIONS, or unresolved / not attempted.
 
-    Defaults to `confirms` for a proved row with no entry in
-    label_relation.jsonl. That file carries the judgement for every row where
-    the proved bound is not within its label's class; a row absent from it is
-    one where the agent's bound and the label agree and nothing was disputed.
+    label_relation.jsonl holds the reviewed relation for every proved row;
+    the default covers only a row with no line, which audit.py rejects.
     """
     if not traj_row:
         return "not attempted"
-    # a rerun's relation is about its own proof, not the one label_relation
-    # describes
-    if traj_row.get("rerun"):
-        return traj_row.get("relation") or (
-            "confirms" if traj_row.get("outcome") == "proved" else "unresolved")
     if sid in rel:
         return rel[sid]["relation"]
     return "confirms" if traj_row.get("outcome") == "proved" else "unresolved"
@@ -267,14 +261,10 @@ def prove_sample(manifest, traj, rel, depth, meta=None):
             # reviewed reading; `prover_*` is what the proving subagent wrote,
             # kept so the review stays auditable.
             "relation": relation_of(s, t, rel),
-            # a rerun record's reviewed note, else its agent's reason
-            "relation_reason": ((t["rerun"].get("relation_note")
-                                 or t.get("relation_reason") or None) if t.get("rerun")
-                                else (rel.get(s) or {}).get("reason")),
+            "relation_reason": (rel.get(s) or {}).get("reason"),
             "obstacle": t.get("obstacle"),
             "prover_agrees": t.get("agrees_with_label"),
-            "prover_relation": (t.get("relation") if t.get("rerun")
-                                else (rel.get(s) or {}).get("prover_relation")),
+            "prover_relation": (rel.get(s) or {}).get("prover_relation"),
             "review": (rel.get(s) or {}).get("review"),
             "attempts_used": t.get("attempts_used"),
             "seconds": t.get("seconds"),
@@ -298,16 +288,15 @@ def prove_sample(manifest, traj, rel, depth, meta=None):
         "proved": len(proved),
         "unresolved": sum(1 for r in done if r["outcome"] == "unresolved"),
         "relations": dict(Counter(r["relation"] for r in rows).most_common()),
-        "contradicts_label": [r["solution_id"] for r in rows
-                              if r["relation"] == "contradicts"],
-        "note_on_contradiction": (
+        "label_overstated": [r["solution_id"] for r in rows
+                             if r["relation"] == "tighter-label"],
+        "relation_vocabulary": RELATIONS,
+        "note_on_relations": (
             "Every proof in these campaigns is an upper bound. A bound ABOVE "
-            "the label is `looser` -- it fails to confirm the label and cannot "
-            "disagree with it, since that needs a lower bound. A bound BELOW "
-            "the label does bear on it, but only after the other two "
-            "explanations are ruled out: `tighter-costmodel` (the charge table "
-            "costs something CPython does not) and `tighter-translation` (the "
-            "Dafny runs a cheaper algorithm than the Python)."),
+            "the label fails to confirm it and cannot contradict it, since that "
+            "needs a lower bound. A bound BELOW the label bears on it only once "
+            "the charge table (`tighter-costmodel`) and the translation "
+            "(`tighter-translation`) are ruled out; then it is `tighter-label`."),
         "tighter_rows": {
             r["solution_id"]: r["relation"]
             for r in sorted(rows, key=lambda r: r["solution_id"])

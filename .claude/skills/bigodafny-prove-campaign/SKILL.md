@@ -107,14 +107,22 @@ confirms a label or fails to; it refutes one only by being strictly tighter
 than the label allows. A proved `O(n**2)` on an `O(nlogn)` row is not a
 disagreement.
 
+The vocabulary is defined once, in `bigodafny/vocab.py`; `audit.py` enforces
+it on `relation` and `prover_relation`, and the table below repeats it:
+
 | relation | meaning |
 |---|---|
-| `confirms` | the bound is within the label's class |
-| `looser-slack` | a loose scaffold was used; the tight bound was not attempted |
-| `looser-structural` | the proof exposes a real cost the label omits |
-| `tighter-costmodel` | the bound is below the label because the charge table costs something CPython does not |
-| `tighter-translation` | the bound is below the label because the Dafny uses a cheaper algorithm than the Python |
-| `contradicts` | a literal in the source forces more work than the label allows |
+| `confirms` | the bound is in the label's class |
+| `looser-slack` | above the label: the proof used a loose scaffold; a tighter proof was not attempted |
+| `looser-structural` | above the label: the Python really pays a cost the label omits, usually a loop over an input value |
+| `looser-costmodel` | above the label: the charge table costs something more than CPython does |
+| `looser-translation` | above the label: the Dafny does work the Python does not |
+| `tighter-costmodel` | below the label: the charge table costs something less than CPython does, most often int arithmetic past a machine word |
+| `tighter-translation` | below the label: the Dafny does less work than the Python |
+| `tighter-label` | below the label, and the Python itself does no more: the label overstates |
+
+`review` is `read-python` (the main agent re-read the Python) or `bound-only`
+(it compared the bound with the label only).
 
 A bound **below** the label is the case agents mishandle most. It has three
 possible causes and they are not interchangeable: the label is loose, the

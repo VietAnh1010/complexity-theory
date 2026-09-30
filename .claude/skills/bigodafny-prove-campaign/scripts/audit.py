@@ -24,20 +24,14 @@ import sys
 import tempfile
 from concurrent.futures import ThreadPoolExecutor
 
-RELATIONS = {
-    "confirms",
-    "looser-slack",
-    "looser-structural",
-    "tighter-costmodel",
-    "tighter-translation",
-    "contradicts",
-    None,
-}
+# The vocabularies live in bigodafny/vocab.py; this script enforces them.
+sys.path.insert(0, str(__import__("pathlib").Path(__file__).resolve().parents[4] / "bigodafny"))
+import vocab  # noqa: E402
 
-# label_relation.jsonl: one line per proved row, in this schema
-LR_KEYS = {"solution_id", "label", "proved_bound", "relation", "reason",
-           "prover_relation", "prover_reason", "review", "revision"}
-REVIEWS = {"read-python", "bound-only"}
+# a record's relation is the prover's claim, and may be absent
+RELATIONS = set(vocab.RELATIONS) | {None}
+LR_KEYS = set(vocab.LABEL_RELATION_KEYS)
+REVIEWS = set(vocab.REVIEWS)
 
 OBSTACLES = {
     "value-to-size",
@@ -229,14 +223,15 @@ def main():
         if row.get("review") not in REVIEWS:
             schema_problems.append(f"{sid}: label_relation review {row.get('review')!r} "
                                    f"not one of {sorted(REVIEWS)}")
-    # every row proved by a non-rerun record has a reviewed line
+        if row.get("prover_relation") not in RELATIONS:
+            schema_problems.append(f"{sid}: label_relation prover_relation "
+                                   f"{row.get('prover_relation')!r} not in vocabulary")
+    # every proved row, rerun or not, has a reviewed line
     for sid, t in traj.items():
-        if t.get("outcome") == "proved" and not t.get("rerun") and sid not in normalised:
+        if t.get("outcome") == "proved" and sid not in normalised:
             schema_problems.append(f"{sid}: proved, but label_relation has no line for it")
     for sid, row in normalised.items():
-        # a rerun record's relation is about the rerun's own proof, not the
-        # proof label_relation.jsonl describes
-        if sid in traj and not traj[sid].get("rerun"):
+        if sid in traj:
             traj[sid]["relation"] = row.get("relation")
             traj[sid]["relation_reason"] = row.get("reason", "")
 
@@ -315,8 +310,8 @@ def main():
         if t and t.get("outcome") != "proved" and t.get("obstacle") not in OBSTACLES:
             problems.append(f"{sid}: unresolved with obstacle {t.get('obstacle')!r}"
                             " -- set a code from the vocabulary")
-        if t and t.get("relation") == "contradicts" and not t.get("relation_reason"):
-            problems.append(f"{sid}: contradicts with no reason given")
+        if t and t.get("relation") not in (None, "confirms") and not t.get("relation_reason"):
+            problems.append(f"{sid}: {t.get('relation')} with no reason given")
         if p and p.get("assume_count"):
             problems.append(f"{sid}: proof carries {p['assume_count']} assume(s)")
         if keeps_attempts and t is not None:

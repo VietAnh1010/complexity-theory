@@ -34,7 +34,9 @@
   },
   "by_relation": {
     "confirms": 25,
-    "looser-structural": 3,
+    "looser-costmodel": 1,
+    "looser-structural": 1,
+    "looser-translation": 1,
     "tighter-costmodel": 3,
     "tighter-translation": 1
   },

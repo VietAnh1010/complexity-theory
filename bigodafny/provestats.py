@@ -27,6 +27,7 @@ label_relation.jsonl.
 from __future__ import annotations
 
 import json
+from vocab import RELATIONS
 from collections import Counter, defaultdict
 from math import comb
 from pathlib import Path
@@ -92,17 +93,14 @@ def load():
                 "outcome": outcome,
                 # the row's state now is the verifier's, not any record's
                 "current_outcome": "proved" if sid in VERIFIED else ("unresolved" if t else "not attempted"),
-                # a proved rerun record carries its own relation
-                "current_relation": ((t.get("relation") if t.get("rerun") else None)
-                                     or (rel.get(sid) or {}).get("relation"))
+                "current_relation": (rel.get(sid) or {}).get("relation")
                                     if t.get("outcome") == "proved" else None,
                 "revised": bool(t.get("revision")),
                 # drawn although a proof already existed: a sampler bug, not
                 # new work, so not in the denominator
                 "redrawn": bool(m.get("already_proved_when_drawn")),
-                "relation": (t.get("relation") if t.get("rerun") else
-                             (rel_then.get("relation") if "revision" not in rel_then
-                              else None)) if outcome == "proved" else None,
+                "relation": (rel_then.get("relation") if "revision" not in rel_then
+                             else None) if outcome == "proved" else None,
                 # on the record; a revised record keeps the agent's beside
                 "obstacle": t.get("agent_obstacle", t.get("obstacle")),
                 # a later revision of the row's proof, from its current line
@@ -519,12 +517,8 @@ def render(p):
     a("")
     a("| relation | meaning |")
     a("|---|---|")
-    a("| `confirms` | the bound is within the label's class |")
-    a("| `looser-slack` | a loose scaffold was used; the tight bound was not attempted |")
-    a("| `looser-structural` | the proof exposes a real cost the label omits |")
-    a("| `tighter-costmodel` | the bound is below the label because the charge table costs something CPython does not |")
-    a("| `tighter-translation` | the bound is below the label because the Dafny runs a cheaper algorithm than the Python |")
-    a("| `contradicts` | a literal in the source forces more work than the label allows |")
+    for name, meaning in RELATIONS.items():
+        a(f"| `{name}` | {meaning} |")
     a("")
     a("### Relation by label")
     a("")

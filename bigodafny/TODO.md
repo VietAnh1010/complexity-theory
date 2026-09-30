@@ -21,8 +21,9 @@ Open items found while normalising on 2026-09-29. Tick a box when done.
       that literal bounds the `2**m` loop, so the O(n) bound hides a value term.
 - [ ] `305_284`: the translation replaces the Python's `for x in range(p, q)`
       search with a closed form (CLAUDE.md: preserve the algorithm).
-- [ ] `810_131` and `1948_388`: the looser term comes from the translation (no
+- [x] `810_131` and `1948_388`: the looser term comes from the translation (no
       float `sqrt`), not the Python; the vocabulary has no `looser-translation`.
+      Now `looser-translation` (`vocab.py`).
 - [ ] `proofs.py`'s `bound_of` captures code after the `ensures` of `2128_34`
       and `514_140`; their `proved_bound` in `complexity_proofs.jsonl` is wrong.
 

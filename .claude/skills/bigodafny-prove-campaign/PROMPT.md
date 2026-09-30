@@ -160,15 +160,17 @@ So record `relation` from exactly this vocabulary:
 
 | value | when |
 |---|---|
-| `confirms` | your bound is within the label's class |
-| `looser-slack` | you used a loose scaffold and did not attempt the tight bound |
-| `looser-structural` | your proof exposes a real cost the label omits |
-| `tighter-costmodel` | your bound is below the label because the charge table costs something CPython does not — most often `int` arithmetic on values that outgrow a machine word |
-| `tighter-translation` | your bound is below the label because the Dafny uses a cheaper algorithm than the Python, not because the label is loose |
-| `contradicts` | the row provably cannot meet the label — a literal in the source forces more work than the label allows |
+| `confirms` | your bound is in the label's class |
+| `looser-slack` | above the label: you used a loose scaffold and did not attempt the tight bound |
+| `looser-structural` | above the label: the Python really pays a cost the label omits, usually a loop over an input value |
+| `looser-costmodel` | above the label: the charge table costs something more than CPython does |
+| `looser-translation` | above the label: the Dafny does work the Python does not |
+| `tighter-costmodel` | below the label: the charge table costs something less than CPython does — most often `int` arithmetic on values that outgrow a machine word |
+| `tighter-translation` | below the label: the Dafny does less work than the Python |
+| `tighter-label` | below the label, and the Python itself does no more: the label overstates |
 
-`contradicts` needs a reason naming the construct in the source. Do not reach
-for it because a bound came out large.
+Every value other than `confirms` needs a `relation_reason` naming the construct
+in the source.
 
 A bound **below** the label is not automatically a tighter reading of the row.
 Before recording one, read the Python: if it sorts and your Dafny compares

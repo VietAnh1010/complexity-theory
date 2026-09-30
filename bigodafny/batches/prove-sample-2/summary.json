@@ -43,10 +43,9 @@
     }
   },
   "by_relation": {
-    "confirms": 40,
-    "looser-structural": 1,
-    "tighter-costmodel": 1,
-    "tighter-translation": 1
+    "confirms": 41,
+    "looser-costmodel": 1,
+    "tighter-costmodel": 1
   },
   "campaign": {
     "proved": 37,

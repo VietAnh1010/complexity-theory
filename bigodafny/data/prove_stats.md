@@ -90,7 +90,7 @@ each batch's `old-record.jsonl`.
 **292 of 329 distinct drawn rows carry a proof now — 89%.**
 
 - Closed after their campaign: 11 — `1039_15`, `1582_118`, `1718_1166`, `1827_66`, `1892_121`, `2105_248`, `2128_3`, `2423_48`, `2826_81`, `514_140`, `661_47`.
-- Relations of the proofs as they stand: `confirms` 264, `looser-structural` 17, `tighter-costmodel` 8, `tighter-translation` 2, `looser-slack` 1.
+- Relations of the proofs as they stand: `confirms` 264, `looser-structural` 14, `tighter-costmodel` 8, `looser-translation` 2, `looser-costmodel` 1, `looser-slack` 1, `tighter-translation` 1, `tighter-label` 1.
 
 ## The label is the strongest predictor
 
@@ -188,12 +188,14 @@ is noted below rather than overwritten, so the finding is not erased:
 
 | relation | meaning |
 |---|---|
-| `confirms` | the bound is within the label's class |
-| `looser-slack` | a loose scaffold was used; the tight bound was not attempted |
-| `looser-structural` | the proof exposes a real cost the label omits |
-| `tighter-costmodel` | the bound is below the label because the charge table costs something CPython does not |
-| `tighter-translation` | the bound is below the label because the Dafny runs a cheaper algorithm than the Python |
-| `contradicts` | a literal in the source forces more work than the label allows |
+| `confirms` | the bound is in the label's class |
+| `looser-slack` | the bound is above the label because the proof used a loose scaffold; a tighter proof was not attempted |
+| `looser-structural` | the bound is above the label because the Python really pays a cost the label omits, usually a loop over an input value |
+| `looser-costmodel` | the bound is above the label because the charge table costs something more than CPython does |
+| `looser-translation` | the bound is above the label because the Dafny does work the Python does not |
+| `tighter-costmodel` | the bound is below the label because the charge table costs something less than CPython does, most often int arithmetic on values that outgrow a machine word |
+| `tighter-translation` | the bound is below the label because the Dafny does less work than the Python |
+| `tighter-label` | the bound is below the label and the Python itself does no more: the label overstates the row |
 
 ### Relation by label
 
