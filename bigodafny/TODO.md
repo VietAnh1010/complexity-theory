@@ -73,8 +73,9 @@ when done.
 - [x] Campaign 1 records predate `relation` and use `agrees_with_label`; the
       reviewed relation is only in `label_relation.jsonl`. Now true of every
       campaign by design: every proved row has a reviewed line there.
-- [ ] `batches/prove-sample/explore.py` reads agent transcripts from a session
-      `/tmp` path that no longer exists; it cannot be re-run.
+- [x] `batches/prove-sample/explore.py` reads agent transcripts from a session
+      `/tmp` path that no longer exists; it cannot be re-run. Removed with
+      `exploration.json`; the finding is in campaign 1's README.
 - [x] Revised trajectory records of `514_140`, `1948_388`, `276_610` kept their
       pre-review relation; synced with `label_relation.jsonl`.
 - [x] Campaign READMEs' "revised" tables were stale; rebuilt from the records.
