@@ -18,7 +18,6 @@ import hashlib
 import json
 import os
 import re
-import shutil
 import subprocess
 import sys
 import tempfile
@@ -76,7 +75,7 @@ def jsonl_problems(path):
     return out
 
 
-DAFNY = shutil.which("dafny") or "dafny"   # on PATH
+DAFNY = "dafny"   # on PATH; dafny finds z3 on PATH itself
 
 
 def emitted_python(repo, path):

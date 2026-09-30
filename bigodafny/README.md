@@ -76,7 +76,7 @@ instrumented copies with machine-checked complexity bounds.
 The repository uses Dafny 4.11.0 and Z3 4.12.1. Typical commands are:
 
 ```bash
-export PATH="$PATH:$HOME/.dotnet/tools"
+# dafny and z3 on PATH
 python3 cli.py all
 python3 validate.py --only 1053_38
 python3 difftest.py --loose

@@ -8,7 +8,7 @@ import re, subprocess, sys
 from collections import Counter
 
 from common import (CACHE, DATA, SOURCE_NAME, SOURCE_URL, event, log,
-                    read_jsonl, write_jsonl)
+                    read_jsonl, write_jsonl, ROOT)
 
 # Descriptions that permit more than one correct output. Byte-diff validation
 # rejects correct translations of these, so they are split out rather than
@@ -38,7 +38,7 @@ def fetch(force=False):
     log(f"downloading {SOURCE_URL}")
     subprocess.run(["curl", "-sS", "-L", "--fail", SOURCE_URL, "-o", str(dest)],
                    check=True)
-    event("fetch", path=str(dest), bytes=dest.stat().st_size)
+    event("fetch", path=str(dest.relative_to(ROOT)), bytes=dest.stat().st_size)
     log(f"fetched {dest.stat().st_size} bytes")
     return dest
 

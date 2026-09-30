@@ -1,4 +1,4 @@
-{"ts": "2026-08-31T04:24:14", "kind": "fetch", "path": "/home/user/complexity-theory/bigodafny/.cache/time_complexity_test_set.jsonl", "bytes": 82341933}
+{"ts": "2026-08-31T04:24:14", "kind": "fetch", "path": ".cache/time_complexity_test_set.jsonl", "bytes": 82341933}
 {"ts": "2026-08-31T04:24:16", "kind": "extract", "rows": 640, "problems": 311, "splits": {"strict": 522, "nondeterministic-output": 118}, "problems_per_split": {"strict": 253, "nondeterministic-output": 58}}
 {"ts": "2026-08-31T04:24:30", "kind": "extract", "rows": 640, "problems": 311, "splits": {"strict": 522, "nondeterministic-output": 118}, "problems_per_split": {"strict": 253, "nondeterministic-output": 58}}
 {"ts": "2026-08-31T04:25:11", "kind": "signatures", "ok": 309, "unmappable": 2, "total": 311}
@@ -558,9 +558,10 @@
 {"ts": "2026-09-29T08:46:40", "kind": "assume_scan", "count": 0}
 {"ts": "2026-09-29T10:03:34", "kind": "proofs", "verified": 323, "total": 323, "with_assume": 0}
 {"ts": "2026-09-29T10:03:34", "kind": "assume_scan", "count": 0}
-{"ts": "2026-09-30T06:32:35", "kind": "fetch", "path": "/home/user/complexity-theory/bigodafny/.cache/time_complexity_test_set.jsonl", "bytes": 82341933}
+{"ts": "2026-09-30T06:32:35", "kind": "fetch", "path": ".cache/time_complexity_test_set.jsonl", "bytes": 82341933}
 {"ts": "2026-09-30T06:32:37", "kind": "extract", "rows": 640, "problems": 311, "nondet_hint": 118}
 {"ts": "2026-09-30T07:24:47", "kind": "proofs", "verified": 323, "total": 323, "with_assume": 0}
 {"ts": "2026-09-30T07:24:47", "kind": "assume_scan", "count": 0}
 {"ts": "2026-09-30T08:19:38", "kind": "proofs", "verified": 323, "total": 323, "with_assume": 0}
 {"ts": "2026-09-30T08:19:38", "kind": "assume_scan", "count": 0}
+{"ts": "2026-09-30T09:15:05", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 1, "valid": 1, "fail": 0, "build": 0, "error": 0}

@@ -10,7 +10,7 @@ A failure here is not a failing test. It means the translation may fault on an
 input outside the stored set, and nothing in the test gate would notice.
 """
 from __future__ import annotations
-import argparse, re, shutil, subprocess, sys
+import argparse, re, subprocess, sys
 from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
@@ -18,8 +18,7 @@ from pathlib import Path
 from common import (DATA, UNSCREENED, ROOT, SOLUTIONS, UNGATEABLE, event, log, write_json,
                     write_jsonl)
 
-DAFNY = shutil.which("dafny") or "dafny"   # on PATH
-SOLVER = shutil.which("z3") or "z3"   # on PATH
+DAFNY = "dafny"   # on PATH; dafny finds z3 on PATH itself
 UNVERIFIED = ROOT / "solutions-unverified"
 
 # Dafny reports these against code with no user-written specification at all.
@@ -47,7 +46,7 @@ def one(path_str):
     p = Path(path_str)
     try:
         r = subprocess.run(
-            [DAFNY, "verify", str(p), "--solver-path", SOLVER,
+            [DAFNY, "verify", str(p),
              "--verification-time-limit", "30"],
             capture_output=True, text=True, timeout=180)
         out = (r.stdout + r.stderr)

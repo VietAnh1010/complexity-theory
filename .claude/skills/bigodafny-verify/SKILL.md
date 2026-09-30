@@ -50,8 +50,7 @@ find solutions-unverified -name '*.dfy' | sed 's|.*/||; s|\.dfy||' | sort \
     Manifest: batches/<name>/w_NN.txt   Files: solutions-unverified/<PID>/<SID>.dfy
     `dafny` and `z3` are on PATH.
 
-        dafny verify solutions-unverified/<PID>/<SID>.dfy \
-            --solver-path "$(command -v z3)" --verification-time-limit 30
+        dafny verify solutions-unverified/<PID>/<SID>.dfy --verification-time-limit 30
 
     # What you are fixing
     Dafny raises obligations with no specification written: every `s[i]` needs
@@ -130,7 +129,7 @@ B=batches/verifyN/w_01.txt
 
 # 1. re-verify from scratch -- never trust the count
 for sid in $(cat $B); do pid="${sid%%_*}"; f=$(ls solutions*/$pid/$sid.dfy)
-  dafny verify "$f" --solver-path "$(command -v z3)" --verification-time-limit 30 \
+  dafny verify "$f" --verification-time-limit 30 \
     2>&1 | grep -q "0 errors" || echo "still unverified: $sid"; done
 
 # 2. no hollow proofs

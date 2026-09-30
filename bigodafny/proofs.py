@@ -9,14 +9,13 @@ over profiling runs; a proved bound holds for every input. Where they conflict,
 the proof is the stronger statement.
 """
 from __future__ import annotations
-import re, shutil, subprocess, sys
+import re, subprocess, sys
 
 from common import (DAFNY_VERSION, DATA, UNSCREENED, SOLUTIONS, UNVERIFIED,
                     PROVED, event, log, read_jsonl, write_jsonl, DISPUTED,
                     UNGATEABLE)
 
-DAFNY = shutil.which("dafny") or "dafny"   # on PATH
-SOLVER = shutil.which("z3") or "z3"   # on PATH
+DAFNY = "dafny"   # on PATH; dafny finds z3 on PATH itself
 
 
 def bound_of(text):
@@ -95,7 +94,7 @@ def run():
     for p in files:
         sid = p.stem
         text = p.read_text(encoding="utf-8")
-        r = subprocess.run([DAFNY, "verify", str(p), "--solver-path", SOLVER],
+        r = subprocess.run([DAFNY, "verify", str(p)],
                            capture_output=True, text=True, timeout=600)
         out = (r.stdout + r.stderr)
         ok = r.returncode == 0 and "0 errors" in out

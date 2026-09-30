@@ -9,7 +9,7 @@ your job is to make them discharge **without weakening what the row computes**.
 
 ```bash
 cd bigodafny                     # from the repository root
-dafny verify <path> --solver-path "$(command -v z3)" --verification-time-limit 30
+dafny verify <path> --verification-time-limit 30
 ```
 
 Your rows are listed in the assignment at the end of this prompt.

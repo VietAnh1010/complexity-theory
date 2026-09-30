@@ -4,14 +4,13 @@ Writes one row per solution to baseline.jsonl. This is not a gate and it
 writes only inside batches/verify-sample/, so it cannot touch
 data/verification.jsonl.
 """
-import json, re, shutil, subprocess, sys
+import json, re, subprocess, sys
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
-DAFNY = shutil.which("dafny") or "dafny"   # on PATH
-SOLVER = shutil.which("z3") or "z3"   # on PATH
+DAFNY = "dafny"   # on PATH; dafny finds z3 on PATH itself
 
 KINDS = [("index out of range","index-out-of-range"),
          ("sequence size might be negative","negative-seq-size"),
@@ -31,7 +30,7 @@ def classify(o):
 def one(rec):
     p = ROOT / rec["path"]
     try:
-        r = subprocess.run([DAFNY,"verify",str(p),"--solver-path",SOLVER,
+        r = subprocess.run([DAFNY,"verify",str(p),
                             "--verification-time-limit","30"],
                            capture_output=True, text=True, timeout=300)
         out = r.stdout + r.stderr

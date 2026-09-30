@@ -11,7 +11,7 @@ counter with a proved upper bound.
 
 ```bash
 cd bigodafny                     # from the repository root
-dafny verify <file> --solver-path "$(command -v z3)" --verification-time-limit 30
+dafny verify <file> --verification-time-limit 30
 ```
 
 ## Where your work goes — read this twice

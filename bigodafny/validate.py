@@ -6,16 +6,15 @@ ran and printed the wrong thing), `timeout`/`error` (it did not finish or threw)
 Collapsing those into one number would hide which half of the pipeline broke.
 """
 from __future__ import annotations
-import argparse, json, shutil, subprocess, sys
+import argparse, json, subprocess, sys
 from collections import Counter
 from pathlib import Path
 
 from common import (BUILD, DAFNY_VERSION, DATA, UNSCREENED, PRELUDE, SOLUTIONS,
                     UNVERIFIED, PROVED, event, log, read_jsonl, write_json,
-                    write_jsonl, DISPUTED)
+                    write_jsonl, DISPUTED, ROOT)
 
-DAFNY = shutil.which("dafny") or "dafny"   # on PATH
-SOLVER = shutil.which("z3") or "z3"   # on PATH
+DAFNY = "dafny"   # on PATH; dafny finds z3 on PATH itself
 
 
 def conv_expr(dtype: str, v: str) -> str:
@@ -117,7 +116,7 @@ def build_one(dfy: Path, workdir: Path):
     out = workdir / "out"
     p = subprocess.run(
         [DAFNY, "translate", "py", str(dfy), "--no-verify",
-         "--include-runtime", "--solver-path", SOLVER, "--output", str(out)],
+         "--include-runtime", "--output", str(out)],
         capture_output=True, text=True, timeout=300)
     pydir = workdir / "out-py"
     if p.returncode != 0 or not (pydir / "module_.py").exists():
@@ -226,7 +225,7 @@ def validate(only=None, tiers=("public_tests", "private_tests"),
         rec = {"solution_id": sid, "problem_id": t["problem_id"],
                "problem_name": t["problem_name"],
                "time_complexity_inferred": t["time_complexity_inferred"],
-               "dafny_version": DAFNY_VERSION, "dfy_path": str(dfy)}
+               "dafny_version": DAFNY_VERSION, "dfy_path": str(dfy.relative_to(ROOT))}
 
         pydir, err = build_one(dfy, work)
         if err:

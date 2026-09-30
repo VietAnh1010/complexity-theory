@@ -165,7 +165,7 @@ directory was removed.
    terms of the input, matching the label's shape.
 3. Charge every operation per the table. Loop invariants relate `steps` to the
    counter.
-4. `dafny verify --solver-path "$(command -v z3)" --verification-time-limit 30`.
+4. `dafny verify --verification-time-limit 30`.
 5. `python3 validate.py --solutions-dir solutions-proved --out-prefix ver_` —
    a bare `--only <SID>` resolves to `solutions/` and tests the ORIGINAL, and it
    overwrites the corpus-wide `data/validation.jsonl`. Then diff the emitted
