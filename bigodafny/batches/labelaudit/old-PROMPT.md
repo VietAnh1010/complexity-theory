@@ -16,13 +16,6 @@ else, anywhere. Do not modify any `.dfy`. Do not run `dafny`.
 
 ## The cost model — stipulated, not measured
 
-> **Re-audit r3, 2026-10-01.** Three rules changed after the 2026-09-16 audit,
-> and every `verdicts_NN.jsonl` here predates them:
-> **input values are cost parameters** (2026-09-17), **`IntToString` is charged
-> 1** (2026-09-22), and **a `Gcd` call costs Euclid's depth** (2026-09-30).
-> `bigodafny/COMPLEXITY.md` is the authority. § *Value terms* below is the
-> rule that changes the most verdicts.
-
 > **This table changed on 2026-09-16.** Every `verdicts_*.jsonl` file in this
 > directory — all 25 — was filed against a table read off Dafny's Python
 > backend, in which `s[i := v]`, `m[k := v]` and set insertion were all linear. They are `1` now. Do not compare a verdict
@@ -50,10 +43,7 @@ Everything else costs what the table says:
 | `multiset(s)` | O(\|s\|) | one pass |
 | `multiset(a) == multiset(b)` | O(\|a\|+\|b\|) | a **linear** permutation test |
 | `Join`, `JoinInts` | O(total output length) | linear |
-| `SumSeq`, `MaxSeq`, `MinSeq`, `ParseInt`, `SplitWs`, `ReplaceAll`, `Repeat` | O(length of the argument) | recursive over the sequence/string |
-| `IntToString(x)`, `\|IntToString(x)\|` | O(1) | machine-word values; this does NOT make a value-bounded loop constant |
-| `Gcd(a, b)` (or a Euclid loop) | O(log min(a, b)) | Euclid's depth: a VALUE term |
-| a recursive helper for Python `**` | its recursion depth | O(e) or O(log e) in the exponent VALUE |
+| `SumSeq`, `MaxSeq`, `MinSeq`, `ParseInt`, `SplitWs`, `ReplaceAll`, `Repeat`, `IntToString` | O(length of the argument) | recursive over the sequence/string |
 | `SortInts`, `SortStrings`, `Sort` | O(k log k) | merge sort |
 | a hand-written recursion on `s[1..]` | O(\|s\|) | one level per element; the slice itself is free |
 | `int` ops where the value grows with n (factorials, `2**n`) | not O(1) | bignum |
@@ -95,33 +85,12 @@ the signature exposes.
 - A label naming a growth rate no construct exhibits is wrong. `O(n**2)` on
   straight-line code with no loop and no recursion over a collection is O(1) or
   linear in the input text.
-- A loop bounded by an input **value** costs in that value, **even when the
-  problem statement caps it**. See § *Value terms*. Only a bound fixed in the
-  SOURCE (a literal such as `range(2009)`) is a constant.
+- A loop bounded by a **value** rather than a size is not automatically wrong —
+  if the problem statement caps that value, the cost is constant in the input
+  size. Say so rather than calling it unbounded.
 - Same growth rank under different names is **not** a mismatch. `O(n*m)` vs
   `O(n**2)` where n and m are the two halves of the same input, or
   `O(n**2)` vs `O(n**2+m**2)`, are naming choices. Verdict `ok`.
-
-## Value terms
-
-The labels count **how many** inputs there are; the code can also pay for **how
-large** they are. Since 2026-09-17 an input value is a parameter of the cost:
-
-- A label variable may name a value when that value is the problem's size: a
-  single integer `n` that the code loops to, or a count line `n` followed by
-  `n` items. O(n) on `for i in range(n)` with `n` read from input is `ok`.
-- It is a **mismatch** when the cost depends on a value the label's variables
-  do not account for: a per-test value inside a test-case loop (`O(n)` where
-  `n` counts tests), a loop to an element's value (`while x > 0: x //= 2` over
-  each `a[i]`), a `Gcd`, a `**` helper, or a `sqrt` search.
-- A statement cap ("`1 <= a_i <= 10^9`") does **not** make such a term
-  constant. A literal in the source does.
-- Verdict `mismatch`, `cause: "label"` when the Python pays the same value
-  term (it usually does), `true_class: "other"`, and name the real class in
-  `evidence`, e.g. "O(n log max a_i)" or "O(sum of the per-test n_i)".
-- If only the Dafny pays the value term, use `cause: "translation"`: the
-  standard case is a Dafny `sqrt` search where the Python calls `math.sqrt`
-  once. CPython's `math.gcd` runs Euclid too, so a `Gcd` term is `label`.
 
 ## The two causes — getting this right is the point of the audit
 
@@ -152,7 +121,7 @@ against the **Python**, which is what the label was measured on:
  "true_class": "O(n)", "cause": "translation", "confidence": "high",
  "what_to_look_for": "The label was measured on a Python that does `a = a[1:]` in a loop, which copies, so the Python really is quadratic. Open the Dafny and check whether it peels with `s[1..]`; a Dafny slice is a view, so the same loop is linear and the translation is in a BETTER class than the program the label describes.",
  "evidence": "The Dafny peels with s := s[1..] inside a loop over n elements. A seq slice is a view and costs O(1), so the loop is O(n) total; the Python's a = a[1:] copies the remaining n-i elements at every step and is O(n**2) as labelled. The translation is faithful line for line and still lands a class faster, which is the algorithm-replacement shape, not a container difference.",
- "auditor": "labelaudit-r3-NN"}
+ "auditor": "labelaudit-batch-NN"}
 ```
 
 - `verdict`: `ok` | `mismatch` | `unsure`
