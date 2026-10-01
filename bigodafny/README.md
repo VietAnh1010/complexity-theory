@@ -83,9 +83,14 @@ python3 scaffold.py         # .dfy stubs; never overwrites a real body
 python3 baseline.py         # original Python vs its own tests (--workers N)
 python3 dataset.py          # join everything -> dataset.jsonl, stats.json
 # gates
+python3 selftest.py         # validate.py must report a wrong answer as fail, a build error as build
 python3 validate.py --only 1053_38
 python3 difftest.py --loose
 python3 proofs.py
+# derived data, after any change to the corpus
+python3 callgraph.py        # call depth per row -> data/call_depth.jsonl
+python3 corpusstats.py      # size and loop profile -> data/corpus_stats.json
+python3 collect.py          # everything above -> data/artifact_data.json
 ```
 
 The complexity model is intentionally not a measurement of Dafny's Python
