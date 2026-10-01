@@ -37,6 +37,14 @@ from features import (class_risk, extract, split_file,                  # noqa: 
                       strip_comments, accumulator_read_in_loop)
 
 DISPUTED = ROOT / "solutions-disputed"
+
+# The review header a row carries in solutions-disputed/. An auditor must not
+# see the verdict it is re-judging, so evidence strips it; apply replaces it.
+AUDIT_HEADER = re.compile(r"\A// LABEL AUDIT --.*?\n// -{68}\n\n?", re.S)
+
+
+def strip_header(text):
+    return AUDIT_HEADER.sub("", text, count=1)
 BATCHES = ROOT / "batches" / "labelaudit"
 
 # Prelude functions whose cost is linear in their argument, not constant. An
@@ -74,7 +82,7 @@ def facts(dfy_text):
     }
 
 
-def evidence(limit=None, only=None, batch_size=20, prefix=None):
+def evidence(limit=None, only=None, batch_size=20, prefix=None, root=SOLUTIONS):
     # `--only` used to write batch_01.json like a full run does, which silently
     # overwrote the real batch 1 with whatever handful of rows was being
     # re-audited. A re-audit is a different thing from a batch and gets a
@@ -83,7 +91,7 @@ def evidence(limit=None, only=None, batch_size=20, prefix=None):
         prefix = "batch" if not only else "reaudit"
     tasks = {t["solution_id"]: t for t in read_jsonl(DATA / "tasks.jsonl")}
     rows = []
-    for p in sorted(SOLUTIONS.rglob("*.dfy"),
+    for p in sorted(root.rglob("*.dfy"),
                     key=lambda q: (int(q.parent.name), q.stem)):
         sid = p.stem
         if only and sid not in only:
@@ -91,7 +99,7 @@ def evidence(limit=None, only=None, batch_size=20, prefix=None):
         t = tasks.get(sid)
         if t is None:
             continue
-        text = p.read_text(encoding="utf-8")
+        text = strip_header(p.read_text(encoding="utf-8"))
         rows.append({
             "sid": sid,
             "problem_id": p.parent.name,
@@ -169,37 +177,68 @@ def _wrap(text, width=68, pre="//     "):
     return "\n".join(out) or (pre + "unavailable")
 
 
+def header(v, t, text):
+    return HEADER.format(
+        label=v.get("label") or t["time_complexity_inferred"],
+        true_class=v.get("true_class") or "unstated",
+        cause=v.get("cause") or "unclear",
+        confidence=v.get("confidence") or "unstated",
+        auditor=v.get("auditor") or "unstated",
+        cause_gloss=_wrap(GLOSS.get(v.get("cause"), GLOSS["unclear"]),
+                          pre="//   ").lstrip("/ "),
+        evidence=_wrap(v.get("evidence")),
+        what_to_look_for=_wrap(v.get("what_to_look_for")
+                               or "not recorded by this batch"),
+        facts=_wrap(json.dumps(facts(text), sort_keys=True)),
+        rule="-" * 68)
+
+
 def apply(verdicts_path, dry_run=False):
     verdicts = [json.loads(l) for l in
                 Path(verdicts_path).read_text(encoding="utf-8").splitlines()
                 if l.strip()]
     tasks = {t["solution_id"]: t for t in read_jsonl(DATA / "tasks.jsonl")}
     moved, kept, missing = [], 0, []
+    requeued, released = 0, []
     for v in verdicts:
         sid = v["sid"]
         t = tasks.get(sid)
         if t is None:
             missing.append(sid); continue
         src = SOLUTIONS / t["problem_id"] / f"{sid}.dfy"
+        queued = DISPUTED / t["problem_id"] / f"{sid}.dfy"
+        if not src.exists() and queued.exists():
+            # A re-audit of a queued row. `ok` releases it to solutions/
+            # without its header; anything else rewrites the header. A row
+            # queued by a translation audit is not a label question: leave it.
+            text = queued.read_text(encoding="utf-8")
+            if text.startswith("// TRANSLATION AUDIT"):
+                kept += 1
+                continue
+            body = strip_header(text)
+            if v.get("verdict") == "ok":
+                if not dry_run:
+                    src.parent.mkdir(parents=True, exist_ok=True)
+                    src.write_text(body, encoding="utf-8")
+                    queued.unlink()
+                    try:
+                        queued.parent.rmdir()
+                    except OSError:
+                        pass
+                released.append(sid)
+                log(f"  {sid:>10}  released to solutions/ (verdict ok)")
+                continue
+            if not dry_run:
+                queued.write_text(header(v, t, body) + "\n" + body, encoding="utf-8")
+            requeued += 1
+            continue
         if not src.exists():
             missing.append(sid); continue
         if v.get("verdict") != "mismatch":
             kept += 1
             continue
         text = src.read_text(encoding="utf-8")
-        head = HEADER.format(
-            label=v.get("label") or t["time_complexity_inferred"],
-            true_class=v.get("true_class") or "unstated",
-            cause=v.get("cause") or "unclear",
-            confidence=v.get("confidence") or "unstated",
-            auditor=v.get("auditor") or "unstated",
-            cause_gloss=_wrap(GLOSS.get(v.get("cause"), GLOSS["unclear"]),
-                              pre="//   ").lstrip("/ "),
-            evidence=_wrap(v.get("evidence")),
-            what_to_look_for=_wrap(v.get("what_to_look_for")
-                                   or "not recorded by this batch"),
-            facts=_wrap(json.dumps(facts(text), sort_keys=True)),
-            rule="-" * 68)
+        head = header(v, t, text)
         dst = DISPUTED / t["problem_id"] / f"{sid}.dfy"
         if not dry_run:
             dst.parent.mkdir(parents=True, exist_ok=True)
@@ -227,7 +266,8 @@ def apply(verdicts_path, dry_run=False):
         old.update({r["sid"]: r for r in verdicts})
         write_jsonl(path, list(old.values()))
         log(f"audit trail: {len(old)} verdicts on record")
-    log(f"apply: {len(moved)} moved to solutions-disputed/, {kept} kept"
+    log(f"apply: {len(moved)} moved to solutions-disputed/, {kept} kept, "
+        f"{requeued} re-queued, {len(released)} released to solutions/"
         + (f", {len(missing)} not found: {missing}" if missing else "")
         + ("  [DRY RUN]" if dry_run else ""))
     return moved
@@ -242,11 +282,14 @@ if __name__ == "__main__":
     e.add_argument("--batch-size", type=int, default=20)
     e.add_argument("--prefix", help="output file stem; defaults to 'batch' for "
                                     "a full run and 'reaudit' with --only")
+    e.add_argument("--dir", default="solutions",
+                   help="row directory to audit (default solutions; "
+                        "solutions-disputed re-audits the queue, header stripped)")
     a2 = sub.add_parser("apply")
     a2.add_argument("verdicts")
     a2.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
     if a.cmd == "evidence":
-        evidence(a.limit, a.only, a.batch_size, a.prefix)
+        evidence(a.limit, a.only, a.batch_size, a.prefix, ROOT / a.dir)
     else:
         apply(a.verdicts, a.dry_run)
