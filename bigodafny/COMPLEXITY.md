@@ -34,7 +34,7 @@ length, and one unit of loop overhead per iteration.
 `array<T>` is absent from the corpus. The two files that retain arrays explain
 why in their headers; that is a backend note, not a different charge table.
 
-### Two decisions that often cause confusion
+### Three decisions that often cause confusion
 
 **Input values are parameters.** A loop bounded by an input value costs in that
 value (`O(v)` or `O(log v)`), even when the problem statement caps it. Hiding a
@@ -44,6 +44,16 @@ description.
 **`IntToString` is a narrow exception.** Decimal conversion and the returned
 string are charged one unit because their length is bounded by the machine-word
 inputs used here. This does not make a value-bounded loop constant.
+
+**A label names each size it depends on** (2026-10-01). A label variable is one
+size: one list's length, one string's length, or one input value. A label must
+be the tight class in those sizes, in both directions.
+
+- `O(n)` over n strings that are each scanned is wrong, even though the cost is
+  linear in the total text. It is `O(n*m)`.
+- `O(n**2)` is one size squared. Two different sizes multiplied are `O(n*m)`.
+
+`batches/labelaudit/PROMPT.md` § *Naming the sizes* has the full table.
 
 ## What a proof means
 

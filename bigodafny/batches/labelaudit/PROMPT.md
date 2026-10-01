@@ -16,6 +16,11 @@ else, anywhere. Do not modify any `.dfy`. Do not run `dafny`.
 
 ## The cost model — stipulated, not measured
 
+> **Naming rule, 2026-10-01.** A label must be the tight class and name each
+> size it depends on: `O(n)` over several strings and `O(n**2)` for two
+> different sizes are mismatches. See § *Naming the sizes*. Verdicts filed
+> before it read "same rank under different names" as `ok`.
+
 > **Re-audit r3, 2026-10-01.** Three rules changed after the 2026-09-16 audit,
 > and every `verdicts_NN.jsonl` here predates them:
 > **input values are cost parameters** (2026-09-17), **`IntToString` is charged
@@ -101,9 +106,32 @@ the signature exposes.
 - A loop bounded by an input **value** costs in that value, **even when the
   problem statement caps it**. See § *Value terms*. Only a bound fixed in the
   SOURCE (a literal such as `range(2009)`) is a constant.
-- Same growth rank under different names is **not** a mismatch. `O(n*m)` vs
-  `O(n**2)` where n and m are the two halves of the same input, or
-  `O(n**2)` vs `O(n**2+m**2)`, are naming choices. Verdict `ok`.
+- The label must be the **tight** class, in both directions. A label above
+  the Dafny's tight class (`O(n**2)` on a linear scan) is a mismatch, as is
+  one below it.
+- The label must name the sizes the code pays for. See § *Naming the sizes*.
+
+## Naming the sizes
+
+Decided 2026-10-01. Each label variable names **one** size: the length of one
+list, the length of one string, or one input value.
+
+| code | `ok` label | mismatch |
+|---|---|---|
+| one pass over one string `s` | `O(n)`, n = \|s\| | |
+| n strings, each scanned once | `O(n*m)` | `O(n)` over the total characters; `O(n**2)` |
+| n strings, only `s[0]` read from each | `O(n)` | `O(n*m)` |
+| double loop over one list | `O(n**2)` | `O(n*m)` |
+| loop over list a inside loop over list b | `O(n*m)` | `O(n**2)` |
+| nested loops to two input values M, D | `O(n*m)` | `O(n**2)` |
+| two lists, one pass each | `O(n+m)` | `O(n)` |
+
+- `O(n)` over several strings is a mismatch even when the cost is linear in the
+  total input text. Write `true_class: "O(n*m)"`.
+- `O(n**2)` means one size squared. Two different sizes multiplied are
+  `O(n*m)`, even when both are capped by the same constant.
+- Two lists of the same kind that the problem gives the same length (an n×n
+  grid's rows and columns) are one size: `O(n**2)` is `ok` there.
 
 ## Big integers
 
@@ -129,7 +157,8 @@ large** they are. Since 2026-09-17 an input value is a parameter of the cost:
   constant. A literal in the source does.
 - Verdict `mismatch`, `cause: "label"` when the Python pays the same value
   term (it usually does), `true_class: "other"`, and name the real class in
-  `evidence`, e.g. "O(n log max a_i)" or "O(sum of the per-test n_i)".
+  `evidence`, e.g. "O(n log max a_i)". A per-test size inside a test-case
+  loop is a size, not a value: `O(n*m)` per § *Naming the sizes*.
 - If only the Dafny pays the value term, use `cause: "translation"`: the
   standard case is a Dafny `sqrt` search where the Python calls `math.sqrt`
   once. CPython's `math.gcd` runs Euclid too, so a `Gcd` term is `label`.
@@ -253,7 +282,7 @@ and the evidence right is not formatting: it is what makes the batch usable.
 - **Answer `unsure` when you are not sure.** These verdicts feed a human review
   queue. A wrong `mismatch` costs a reviewer more than a missed one; a queue
   full of false positives is worse than a short queue.
-- Never answer `mismatch` on a same-rank naming difference.
+- A label that names the wrong sizes is a `mismatch`, not a naming choice.
 - Judge only from the `dafny`, `python` and `facts` given. Do not open other
   files, do not search the repository, do not run anything.
 - Every row in the batch gets exactly one line in the output, including the ones
