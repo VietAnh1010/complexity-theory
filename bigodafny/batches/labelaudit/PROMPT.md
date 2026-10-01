@@ -56,7 +56,7 @@ Everything else costs what the table says:
 | a recursive helper for Python `**` | its recursion depth | O(e) or O(log e) in the exponent VALUE |
 | `SortInts`, `SortStrings`, `Sort` | O(k log k) | merge sort |
 | a hand-written recursion on `s[1..]` | O(\|s\|) | one level per element; the slice itself is free |
-| `int` ops where the value grows with n (factorials, `2**n`) | not O(1) | bignum |
+| `int` arithmetic, however large the value (factorials, `2**n`) | O(1) | the model charges 1; see below |
 
 `array<T>` is not in this table because it is not in the corpus. Two rows keep
 one for reasons about the backend, not the model; see `COMPLEXITY.md`'s
@@ -79,8 +79,11 @@ rows at its peak — and it no longer exists. If your evidence for `cause:
 - **Slicing.** CPython's `a = a[1:]` copies; Dafny's `s[1..]` is a view. A row
   whose Python peels a list in a loop is genuinely quadratic while its
   faithful-looking translation is linear. `2087_50` is the case.
-- **A concat rebuilt at every level.** `f(s[1..]) + [x]` is quadratic because of
-  the concat, not the slice — `888_6`.
+- **Not a defect: a recursion that peels `s[1..]`.** `f(s[1..]) + [x]` and
+  `[x] + f(s[1..])` are O(|s|) by the table's recursion row: a recursive helper
+  costs its argument's length. (Before 2026-09-16 this was called quadratic;
+  `888_6`'s proof charges its `ReverseSeq` |s|.) A helper that recurses on an
+  INTEGER (`f(k-1)`, `f(e/2)`) costs its recursion depth, which is a value term.
 - **A library call reimplemented.** `Log2Floor` looping where Python calls
   `math.log2` once is real per-call overhead the translation introduced.
 
@@ -101,6 +104,14 @@ the signature exposes.
 - Same growth rank under different names is **not** a mismatch. `O(n*m)` vs
   `O(n**2)` where n and m are the two halves of the same input, or
   `O(n**2)` vs `O(n**2+m**2)`, are naming choices. Verdict `ok`.
+
+## Big integers
+
+The model charges integer arithmetic 1 whatever the magnitude
+(`COMPLEXITY.md`). A label measured on CPython may include bignum growth
+(factorials, products, `2**n`). That gap is the cost model's, not the label's
+and not the translation's: if the label matches once bignum ops are counted as
+CPython pays them, the verdict is `ok`. Say so in `evidence`.
 
 ## Value terms
 
@@ -219,11 +230,9 @@ and set `confidence: "low"`; say in the evidence which way you lean and why.
 
 ## When the label matches the Dafny by accident
 
-A row can be `ok` for the wrong reason. `888_6` is labelled O(n**2) and its
-Dafny is O(n**2) -- but only because `ReverseSeq` slices `s[1..]` and
-concatenates at every level. The Python's `D[::-1]` is O(n) and everything
-around it is O(n), so the Python is linear. The label describes the Dafny, and
-the two agree by coincidence.
+A row can be `ok` for the wrong reason: the Dafny pays a cost the Python does
+not (a search loop where the Python calls `math.sqrt`, a bit-by-bit recursion
+where the Python uses `|`), and that extra cost happens to reach the label.
 
 Set `"translation_defect": true` on any row where the **Dafny** is in a worse
 class than the **Python**, whatever the verdict. On a `mismatch` it usually
