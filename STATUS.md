@@ -60,7 +60,7 @@ Separate deliverable in `bigodafny/`, built from BigOBench's
 | split `strict` / `loose` / unvalidatable | 534 / 100 / 6 |
 | translated | 636 of 640 (4 cannot be — bare `print(float)`) |
 | behaviour gated | 529 valid, 3 fail |
-| safety verified | 304 (`solutions/` and `solutions-ungateable/`, `verify_all.py`) |
+| safety verified | 316 (`solutions/` and `solutions-ungateable/`, `verify_all.py`) |
 | complexity proved | 323 files, all verify, zero `assume` |
 | label audit | 506 screened: 305 `ok`, 183 `mismatch`, 18 `unsure` |
 | Dafny / Z3 | 4.11.0 / 4.12.1 |

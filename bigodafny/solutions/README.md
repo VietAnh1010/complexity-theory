@@ -18,7 +18,7 @@ directories name work that is pending or disputed:
 
 ## Current checks
 
-All 299 files pass `dafny verify`; seven still use `decreases *`, so they are not
+All 311 files pass `dafny verify`; eight still use `decreases *`, so they are not
 termination proofs for every input. Complexity labels are proved only by the
 323 files in `solutions-proved/`.
 
