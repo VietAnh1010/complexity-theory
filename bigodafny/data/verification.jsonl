@@ -19,14 +19,16 @@
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/241/241_47.dfy", "solution_id": "241_47", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/271/271_58.dfy", "solution_id": "271_58", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/276/276_610.dfy", "solution_id": "276_610", "termination_opt_out": false, "verified": true}
-{"detail": "", "error_count": 0, "kind": null, "path": "solutions/305/305_284.dfy", "solution_id": "305_284", "termination_opt_out": false, "verified": true}
+{"detail": "", "error_count": 0, "kind": null, "path": "solutions-unsure/305/305_284.dfy", "solution_id": "305_284", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/307/307_116.dfy", "solution_id": "307_116", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/307/307_14.dfy", "solution_id": "307_14", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/310/310_51.dfy", "solution_id": "310_51", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/348/348_33.dfy", "solution_id": "348_33", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/354/354_35.dfy", "solution_id": "354_35", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/354/354_95.dfy", "solution_id": "354_95", "termination_opt_out": false, "verified": true}
+{"detail": "", "error_count": 0, "kind": null, "path": "solutions-unsure/378/378_20.dfy", "solution_id": "378_20", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/378/378_91.dfy", "solution_id": "378_91", "termination_opt_out": false, "verified": true}
+{"detail": "", "error_count": 0, "kind": null, "path": "solutions-unsure/380/380_112.dfy", "solution_id": "380_112", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/380/380_19.dfy", "solution_id": "380_19", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/384/384_34.dfy", "solution_id": "384_34", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/384/384_38.dfy", "solution_id": "384_38", "termination_opt_out": false, "verified": true}
@@ -49,7 +51,7 @@
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/554/554_107.dfy", "solution_id": "554_107", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/566/566_101.dfy", "solution_id": "566_101", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/566/566_183.dfy", "solution_id": "566_183", "termination_opt_out": false, "verified": true}
-{"detail": "", "error_count": 0, "kind": null, "path": "solutions/577/577_509.dfy", "solution_id": "577_509", "termination_opt_out": false, "verified": true}
+{"detail": "", "error_count": 0, "kind": null, "path": "solutions-unsure/577/577_509.dfy", "solution_id": "577_509", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/603/603_284.dfy", "solution_id": "603_284", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/603/603_489.dfy", "solution_id": "603_489", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/641/641_31.dfy", "solution_id": "641_31", "termination_opt_out": false, "verified": true}
@@ -57,7 +59,8 @@
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/659/659_63.dfy", "solution_id": "659_63", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/661/661_47.dfy", "solution_id": "661_47", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/661/661_99.dfy", "solution_id": "661_99", "termination_opt_out": false, "verified": true}
-{"detail": "", "error_count": 0, "kind": null, "path": "solutions/662/662_527.dfy", "solution_id": "662_527", "termination_opt_out": false, "verified": true}
+{"detail": "", "error_count": 0, "kind": null, "path": "solutions-unsure/662/662_527.dfy", "solution_id": "662_527", "termination_opt_out": false, "verified": true}
+{"detail": "", "error_count": 0, "kind": null, "path": "solutions-unsure/662/662_559.dfy", "solution_id": "662_559", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/669/669_40.dfy", "solution_id": "669_40", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/681/681_105.dfy", "solution_id": "681_105", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/685/685_777.dfy", "solution_id": "685_777", "termination_opt_out": false, "verified": true}
@@ -87,7 +90,7 @@
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1018/1018_254.dfy", "solution_id": "1018_254", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1027/1027_207.dfy", "solution_id": "1027_207", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1039/1039_15.dfy", "solution_id": "1039_15", "termination_opt_out": false, "verified": true}
-{"detail": "", "error_count": 0, "kind": null, "path": "solutions/1047/1047_26.dfy", "solution_id": "1047_26", "termination_opt_out": false, "verified": true}
+{"detail": "", "error_count": 0, "kind": null, "path": "solutions-unsure/1047/1047_26.dfy", "solution_id": "1047_26", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1053/1053_38.dfy", "solution_id": "1053_38", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1053/1053_44.dfy", "solution_id": "1053_44", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1073/1073_645.dfy", "solution_id": "1073_645", "termination_opt_out": false, "verified": true}
@@ -100,6 +103,8 @@
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1138/1138_66.dfy", "solution_id": "1138_66", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1168/1168_24.dfy", "solution_id": "1168_24", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1170/1170_62.dfy", "solution_id": "1170_62", "termination_opt_out": false, "verified": true}
+{"detail": "", "error_count": 0, "kind": null, "path": "solutions-unsure/1177/1177_230.dfy", "solution_id": "1177_230", "termination_opt_out": false, "verified": true}
+{"detail": "", "error_count": 0, "kind": null, "path": "solutions-unsure/1177/1177_9.dfy", "solution_id": "1177_9", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions-ungateable/1196/1196_100.dfy", "solution_id": "1196_100", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions-ungateable/1196/1196_51.dfy", "solution_id": "1196_51", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1235/1235_283.dfy", "solution_id": "1235_283", "termination_opt_out": false, "verified": true}
@@ -107,8 +112,8 @@
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1243/1243_178.dfy", "solution_id": "1243_178", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1254/1254_182.dfy", "solution_id": "1254_182", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1254/1254_187.dfy", "solution_id": "1254_187", "termination_opt_out": false, "verified": true}
-{"detail": "", "error_count": 0, "kind": null, "path": "solutions/1272/1272_115.dfy", "solution_id": "1272_115", "termination_opt_out": false, "verified": true}
-{"detail": "", "error_count": 0, "kind": null, "path": "solutions/1272/1272_278.dfy", "solution_id": "1272_278", "termination_opt_out": false, "verified": true}
+{"detail": "", "error_count": 0, "kind": null, "path": "solutions-unsure/1272/1272_115.dfy", "solution_id": "1272_115", "termination_opt_out": false, "verified": true}
+{"detail": "", "error_count": 0, "kind": null, "path": "solutions-unsure/1272/1272_278.dfy", "solution_id": "1272_278", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1303/1303_56.dfy", "solution_id": "1303_56", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1303/1303_8.dfy", "solution_id": "1303_8", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1306/1306_15.dfy", "solution_id": "1306_15", "termination_opt_out": false, "verified": true}
@@ -127,7 +132,7 @@
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1414/1414_23.dfy", "solution_id": "1414_23", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1421/1421_53.dfy", "solution_id": "1421_53", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1421/1421_89.dfy", "solution_id": "1421_89", "termination_opt_out": false, "verified": true}
-{"detail": "", "error_count": 0, "kind": null, "path": "solutions/1434/1434_1616.dfy", "solution_id": "1434_1616", "termination_opt_out": false, "verified": true}
+{"detail": "", "error_count": 0, "kind": null, "path": "solutions-unsure/1434/1434_1616.dfy", "solution_id": "1434_1616", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1453/1453_211.dfy", "solution_id": "1453_211", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1453/1453_483.dfy", "solution_id": "1453_483", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1467/1467_233.dfy", "solution_id": "1467_233", "termination_opt_out": false, "verified": true}
@@ -177,7 +182,7 @@
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1878/1878_72.dfy", "solution_id": "1878_72", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1892/1892_121.dfy", "solution_id": "1892_121", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1892/1892_347.dfy", "solution_id": "1892_347", "termination_opt_out": false, "verified": true}
-{"detail": "", "error_count": 0, "kind": null, "path": "solutions/1935/1935_61.dfy", "solution_id": "1935_61", "termination_opt_out": false, "verified": true}
+{"detail": "", "error_count": 0, "kind": null, "path": "solutions-unsure/1935/1935_61.dfy", "solution_id": "1935_61", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1937/1937_10.dfy", "solution_id": "1937_10", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1937/1937_360.dfy", "solution_id": "1937_360", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1952/1952_22.dfy", "solution_id": "1952_22", "termination_opt_out": false, "verified": true}
@@ -216,6 +221,7 @@
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/2185/2185_274.dfy", "solution_id": "2185_274", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/2188/2188_359.dfy", "solution_id": "2188_359", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/2193/2193_138.dfy", "solution_id": "2193_138", "termination_opt_out": false, "verified": true}
+{"detail": "", "error_count": 0, "kind": null, "path": "solutions-unsure/2193/2193_70.dfy", "solution_id": "2193_70", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/2198/2198_50.dfy", "solution_id": "2198_50", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/2198/2198_52.dfy", "solution_id": "2198_52", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/2217/2217_247.dfy", "solution_id": "2217_247", "termination_opt_out": false, "verified": true}
@@ -223,9 +229,9 @@
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/2225/2225_154.dfy", "solution_id": "2225_154", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/2226/2226_1222.dfy", "solution_id": "2226_1222", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/2231/2231_194.dfy", "solution_id": "2231_194", "termination_opt_out": false, "verified": true}
-{"detail": "", "error_count": 0, "kind": null, "path": "solutions/2231/2231_77.dfy", "solution_id": "2231_77", "termination_opt_out": false, "verified": true}
+{"detail": "", "error_count": 0, "kind": null, "path": "solutions-unsure/2231/2231_77.dfy", "solution_id": "2231_77", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/2235/2235_384.dfy", "solution_id": "2235_384", "termination_opt_out": false, "verified": true}
-{"detail": "", "error_count": 0, "kind": null, "path": "solutions/2254/2254_143.dfy", "solution_id": "2254_143", "termination_opt_out": false, "verified": true}
+{"detail": "", "error_count": 0, "kind": null, "path": "solutions-unsure/2254/2254_143.dfy", "solution_id": "2254_143", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/2266/2266_172.dfy", "solution_id": "2266_172", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/2266/2266_298.dfy", "solution_id": "2266_298", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/2269/2269_59.dfy", "solution_id": "2269_59", "termination_opt_out": false, "verified": true}
@@ -246,7 +252,7 @@
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/2425/2425_5.dfy", "solution_id": "2425_5", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/2426/2426_17.dfy", "solution_id": "2426_17", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/2426/2426_4.dfy", "solution_id": "2426_4", "termination_opt_out": false, "verified": true}
-{"detail": "", "error_count": 0, "kind": null, "path": "solutions/2436/2436_325.dfy", "solution_id": "2436_325", "termination_opt_out": false, "verified": true}
+{"detail": "", "error_count": 0, "kind": null, "path": "solutions-unsure/2436/2436_325.dfy", "solution_id": "2436_325", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/2465/2465_139.dfy", "solution_id": "2465_139", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/2465/2465_212.dfy", "solution_id": "2465_212", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/2482/2482_13.dfy", "solution_id": "2482_13", "termination_opt_out": true, "verified": true}
