@@ -4,18 +4,23 @@
 //   audited class  : O(n**2)
 //   cause          : translation
 //   confidence     : high
-//   auditor        : labelaudit-batch-03
+//   auditor        : labelaudit-r3d-01
 //
 //   The Python matches its label; the DAFNY does not. The label is right
 //   about the program it was measured on and the translation is the
 //   defect.
 //
 //   evidence:
-//     ContainsInt(source, s) linearly scans the seq `source` (length up to
-//     idx) on every loop iteration to emulate Python's `s in source`, so
-//     total cost is O(n**2); Python uses set() with O(1) average
-//     membership and add(), so the Python is genuinely O(n) as labelled
-//     and the seq-based translation is the defect.
+//     Solve calls the hand-written recursive ContainsInt over the growing
+//     source and dest seqs on every edge, O(i) per iteration and O(n**2)
+//     total, where the Python's set lookups are O(1); the data structure
+//     was replaced.
+//
+//   how this label could be wrong, and what to check:
+//     The label matches the Python's set membership (O(1) per edge), but
+//     the Dafny replaces the set with sequences. Check ContainsInt(source,
+//     s) and ContainsInt(dest, d) in Solve versus the Python's `s in
+//     source` and `d in dest` on sets.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 38, "data_dependent_loops": 0, "decreases_star":

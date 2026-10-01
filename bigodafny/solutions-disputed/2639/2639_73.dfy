@@ -4,26 +4,24 @@
 //   audited class  : O(1)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-20
+//   auditor        : labelaudit-r3d-07
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The outer loop in Solve and all three loops in DistributeMancala
-//     (over j, over t up to r = x % 14 <= 13, and over k) are bounded by
-//     the literal constant 14, matching the fixed 14-hole board in the
-//     description, so the whole computation is O(1); the Python mirrors
-//     this with range(len(a)) and range(1, x % 14 + 1) over the same
-//     fixed-size list.
+//     Solve calls DistributeMancala for each of 14 holes, and every inner
+//     loop runs to the literal 14 or to x % 14 (at most 13), so the work
+//     is a constant independent of the stone counts. The Python's
+//     range(len(a)) loops and `range(1, x % 14 + 1)` are the same constant
+//     bound, so the n**2 label matches neither.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes a scaling n, but Solve(values: seq<int>) requires
-//     |values| == 14 and the description fixes the board at 14 integers.
-//     Check that every loop in DistributeMancala and Solve is bounded by
-//     the literal 14 (or by r <= 13, itself bounded by x % 14), never by
-//     |values| or a derived n, which would mean the method is
-//     constant-time.
+//     The label assumes quadratic growth, but the board is fixed at 14
+//     holes. Check `requires |values| == 14`, the literal 14 loop bounds
+//     in DistributeMancala, and that the sowing loop `while t <= r` is
+//     bounded by r = x % 14, which is below the literal 14 and so
+//     constant.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 55, "data_dependent_loops": 0, "decreases_star":

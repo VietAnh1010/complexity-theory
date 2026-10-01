@@ -1,26 +1,24 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n**2)
-//   audited class  : O(n)
+//   audited class  : other
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-r2-02
+//   auditor        : labelaudit-r3d-01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Resolved by review with the problem statement: 1 <= a_i <= 100, so
-//     the inner loop bounded by x/2 runs at most fifty times regardless of
-//     n. The row is O(n) in both Dafny and Python, not O(n**2).
+//     Solve runs a linear pass and then for each element a_i another loop
+//     to a_i/2, so cost is O(n * max a_i) with a value term, not O(n**2);
+//     the Python has the same inner range(2, x // 2 + 1).
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes the inner loop grows with n. Read the Input
-//     section of the problem statement: it caps a_i at 100 while n reaches
-//     5*10^4, so the inner bound is a constant. If a later revision of the
-//     problem lets a_i scale with n, the O(n**2) label stands; as written
-//     it does not. Sibling 342_86 carries O(n) for the same shape and is
-//     the correct one.
+//     The label assumes two input-size loops, but the inner loop runs to
+//     x/2 where x is the VALUE a_i. Check `while y <= x / 2` in Solve and
+//     the Python's range(2, x // 2 + 1); the statement caps a_i at 100 but
+//     that is not a literal in the source.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 39, "data_dependent_loops": 0, "decreases_star":

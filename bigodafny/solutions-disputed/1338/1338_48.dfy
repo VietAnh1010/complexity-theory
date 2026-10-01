@@ -3,28 +3,25 @@
 //   stated label   : O(n+mlogm)
 //   audited class  : other
 //   cause          : label
-//   confidence     : medium
-//   auditor        : labelaudit-batch-08
+//   confidence     : high
+//   auditor        : labelaudit-r3d-04
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Both the Python (`c=b[:k]; c.sort(key=...)`) and the Dafny
-//     (`c:=bSorted[..kk]; cSorted:=Sort(c,...)`) re-sort up to kk<=n
-//     elements inside the per-query loop of q iterations, giving
-//     worst-case O(q*n*log n), not O(n+m log m); this is a naive
-//     resort-per-query approach in both sources, so the Python itself is
-//     already outside the labelled class.
+//     For each of the q queries the Dafny slices bSorted[..kk] (free) and
+//     then calls Sort(c, ...) on k elements, which is O(k log k), so the
+//     total is O(n log n + q*n log n) in the worst case, not O(n + m log
+//     m); the Python's c.sort(key=...) inside `for qu in range(m)` costs
+//     the same per query.
 //
 //   how this label could be wrong, and what to check:
-//     The label implies each query is answered in roughly O(log n) or O(1)
-//     after one O(n log n) preprocessing sort. Open the query loop and
-//     check that `c := bSorted[..kk]` then `cSorted := Sort(c,...)`
-//     re-sorts up to kk<=n elements on every one of the q queries; if
-//     queries can have kk close to n (the description only bounds
-//     1<=k<=n), the per-query cost is O(n log n), not O(log m), making the
-//     whole loop O(q*n*log n).
+//     The label reads as if queries cost O(log) each. Open the `while i <
+//     q` loop and find `var cSorted := Sort(c, ...)` where c =
+//     bSorted[..kk]: it sorts up to n elements for every query, so the
+//     cost is about q*n*log n; the Python's `c.sort(key=lambda x: x[1])`
+//     in the query loop confirms the label is the one that is off.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 28, "data_dependent_loops": 0, "decreases_star":

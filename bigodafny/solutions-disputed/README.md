@@ -1,6 +1,6 @@
 # `solutions-disputed/` — label audit review queue
 
-202 rows whose stated complexity label does not describe what the code costs.
+190 rows whose stated complexity label does not describe what the code costs.
 **Queued for manual review; nothing here is a decision.** Each file keeps its
 full original body with a header naming the audited class, the cause, the
 confidence and the evidence, so a reviewer needs nothing else open.
@@ -26,8 +26,27 @@ Euclid's depth. Brief: `batches/labelaudit/PROMPT.md`; verdicts:
   `2913_309`, `2913_484`; below it: `1306_126`, `1414_8`, `2282_437`; and
   `2680_221`, a `harness` case (the Python's cost is parsing outside `Solve`).
 
-Five rows here have no `mismatch` verdict: `810_131`, `1484_26` and `2607_90`
-(value-versus-size, 2026-09-17) and `1950_45`, `1950_47` (gate audit).
+## Re-audit r3 of the queue itself (2026-10-01)
+
+The 157 rows already here were re-audited on the same brief, with their old
+review header stripped so the auditor never saw the verdict it was re-judging.
+Verdicts: `batches/labelaudit/verdicts_r3d_*.jsonl`, plus one main-agent
+override in `verdicts_r3_overrides.jsonl` (`1484_26`: the auditor treated a
+20-character cap as constant; its proof bounds it in the string length).
+
+- **138 `mismatch`** stay, with the header rewritten to the r3 verdict.
+- **12 `ok`** went back to `solutions/` without a header: `101_10`,
+  `952_116`, `966_134`, `966_54`, `1073_822`, `1303_8`, `1306_15`, `1414_23`,
+  `1467_233`, `1733_64`, `2282_1118`, `2482_13`. Each had been queued under a
+  rule since withdrawn: a statement cap making a loop constant, a seq update
+  charged as a copy, a peeling recursion charged as quadratic, or bignum
+  arithmetic charged above 1.
+- **6 `unsure`** stay for a reviewer: `378_20`, `380_112`, `662_559`,
+  `1177_230`, `1177_9`, `2193_70`.
+- `1950_45` and `1950_47` keep their gate-audit header; they are here for a
+  translation defect, not a label question.
+
+The queue is now 183 `mismatch`, 6 `unsure` and `1950_45`.
 
 ## These rows are still in the dataset
 
@@ -72,6 +91,8 @@ Every row that left the queue was re-gated: 26 strict rows `VALID`, 5 loose rows
 
 
 ## The audit is complete — all 506 rows screened
+
+_As of 2026-09-16; the r3 sections above give the current verdicts._
 
 Every row in `solutions/` has a verdict. 506 screened; after the re-file above,
 347 `ok`, 152 `mismatch`, 7 `unsure`. The mismatches are here.

@@ -1,32 +1,27 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n**2)
-//   audited class  : O(n)
+//   audited class  : other
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-batch-21
+//   auditor        : labelaudit-r3d-08
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Solve's outer `while i >= 0 && !found` decrements kk by the
-//     increasing value `right` each round, a triangular-number drain, so
-//     it and the trailing `while kk > 0 { j := j-1 }` together cost O(n)
-//     per test case, not O(n**2); the description caps the sum of n over
-//     test cases at 1e5, matching linear total work in both Python and
-//     Dafny.
+//     For each pair row, Solve allocates buf of size nn, walks i down from
+//     nn-2 once, and the inner `while kk > 0` loop runs only at the found
+//     position, so each test is O(nn) and the whole is O(sum nn_i), a
+//     per-test value term. The Python's ['a']*n, zip loop with break, and
+//     print(*ans) cost the same, so the O(n**2) label is wrong.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes the outer while loop over i (searching for the 'b'
-//     positions) runs O(n) times for O(n) total inner work, giving
-//     O(n**2). Check that kk decreases by the triangular value `right`
-//     (1,2,3,...) each non-breaking iteration: since the cumulative
-//     subtraction after m steps is ~m**2/2 and k is capped by n*(n-1)/2,
-//     the loop breaks after O(n) steps total (not O(n) per each of O(n)
-//     outer positions), and the subsequent inner `while kk` drains at most
-//     `right`<=n more steps once. Confirm by tracing kk's decrements
-//     against the description's k <= n*(n-1)/2 bound.
+//     The label treats n as if each test cost quadratic. Check the loop in
+//     Solve: per test the `while i >= 0 && !found` loop runs at most nn
+//     iterations and the inner `while kk > 0` runs once (found is then
+//     set), so cost per test is linear in that test's nn; the total is
+//     O(sum of the per-test n_i), not O(n**2) in the test count.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 53, "data_dependent_loops": 1, "decreases_star":

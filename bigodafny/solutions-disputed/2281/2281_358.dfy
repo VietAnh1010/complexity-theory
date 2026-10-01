@@ -4,23 +4,22 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-17
+//   auditor        : labelaudit-r3d-07
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Both Solve and the Python for-i-in-range(n) loop are a single linear
-//     pass over a_list/a with O(1) work per element (a1/b/c updates, no
-//     sort, no second collection), so the true cost is O(n) with no m
-//     dimension present at all.
+//     Solve has a single loop over a_list up to n with O(1) counters a1,
+//     b, c and no sort or second collection, so it is O(n); the Python
+//     likewise has one for loop over n (its power() helper is never
+//     called), so the m log m term is not exhibited by either.
 //
 //   how this label could be wrong, and what to check:
-//     The label names a second size dimension m and a log factor, but the
-//     signature only takes n and a_list (a single seq_args=1). Check the
-//     Python: there is no second input array, no .sort() call (a.sort() is
-//     commented out), and power()/math are defined but never invoked, so
-//     nothing produces an mlogm term.
+//     The label claims a second dimension m with a sort, but the signature
+//     has only n and a_list. Open Solve and confirm the only loop is
+//     `while i < n && f` with constant work per element and no sort or
+//     second sequence anywhere.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 40, "data_dependent_loops": 1, "decreases_star":

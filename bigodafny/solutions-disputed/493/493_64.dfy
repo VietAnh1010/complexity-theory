@@ -3,17 +3,23 @@
 //   stated label   : O(1)
 //   audited class  : O(n)
 //   cause          : label
-//   confidence     : high
-//   auditor        : labelaudit-batch-04
+//   confidence     : medium
+//   auditor        : labelaudit-r3d-01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The while loop scans the entire string_ to find hasC and lastF, an
-//     O(n) pass equivalent to Python's s.index('C') and s.rindex('F'),
-//     which are themselves O(n) scans; O(1) is wrong for both the Dafny
-//     and the Python.
+//     Solve scans string_ once with `while i < |string_|`, which is
+//     O(|s|); the Python's 'C' in s, s.index and s.rindex are linear too,
+//     and the cap |s| ≤ 100 appears only in the statement, not as a
+//     literal bound in the source.
+//
+//   how this label could be wrong, and what to check:
+//     The label may treat |s| ≤ 100 as constant, but the statement cap is
+//     not a literal in the source. Check `while i < |string_|` in Solve
+//     and the Python's `in`, index and rindex over s; if the dataset
+//     treats capped sizes as constants the label would stand.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 28, "data_dependent_loops": 0, "decreases_star":

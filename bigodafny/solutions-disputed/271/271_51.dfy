@@ -1,21 +1,25 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(1)
-//   audited class  : O(n)
+//   audited class  : other
 //   cause          : label
-//   confidence     : high
-//   auditor        : labelaudit-batch-02
+//   confidence     : medium
+//   auditor        : labelaudit-r3d-01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Repeat('4', z + w * 2) + Repeat('7', x - w) builds output whose
-//     length is proportional to the magnitude of n (x = n/7), costing O(n)
-//     per the Repeat cost rule; sibling row 271_58 for the same problem
-//     uses the identical Repeat pattern and is labeled O(n), and Python's
-//     '4'*(...) string multiplication is equally O(n), so O(1) is wrong
-//     for both.
+//     Solve calls the recursive Repeat with counts z+2w and x-w, costing
+//     O(n) in the VALUE n (about n/7 characters, up to 10^6), and the
+//     Python's string repetition builds the same long output, so O(1) is
+//     wrong.
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes straight-line code, but the output string has
+//     length about n/7 digits. Check Repeat('4', ...) and Repeat('7', x-w)
+//     in Solve (recursion depth equals the count) and the Python's
+//     '4'*(...) + '7'*(...), which also builds a length-O(n) string.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 19, "data_dependent_loops": 0, "decreases_star":

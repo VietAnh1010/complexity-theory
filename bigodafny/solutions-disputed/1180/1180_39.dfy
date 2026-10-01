@@ -3,25 +3,24 @@
 //   stated label   : O(n+m)
 //   audited class  : O(n*m)
 //   cause          : translation
-//   confidence     : high
-//   auditor        : labelaudit-batch-07
+//   confidence     : medium
+//   auditor        : labelaudit-r3d-03
 //
 //   The Python matches its label; the DAFNY does not. The label is right
 //   about the program it was measured on and the translation is the
 //   defect.
 //
 //   evidence:
-//     For each of the b queries the Dafny runs a nested `while j < |x|`
-//     that scans the whole prefix-sum array x (length a+1) linearly,
-//     replacing Python's `bisect(x, v)` binary search, so the true cost is
-//     O(n*m) while the Python stays O(n + m log n), labelled O(n+m).
+//     For each of the b letters the Dafny runs `while j < |x|` over all
+//     a+1 prefix sums counting x[j] <= v, so it costs O(a*b); the Python's
+//     bisect is O(log n) per letter (O(n+m log n) overall, close to the
+//     label), so the binary search was replaced by a linear scan.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes the Dafny keeps Python's bisect binary search.
-//     Open the inner `while j < |x|` loop nested inside the loop over
-//     b_list and confirm it scans all of x linearly per query rather than
-//     calling a binary-search helper; if so every one of the b queries
-//     costs O(a), giving O(a*b).
+//     The label assumes a binary search per letter. The Python uses
+//     `bisect(x, v)` which is logarithmic, but check whether the Dafny's
+//     inner `while j < |x|` counting scan over the whole prefix array for
+//     each letter replaces it.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 44, "data_dependent_loops": 0, "decreases_star":

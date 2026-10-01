@@ -2,21 +2,26 @@
 //
 //   stated label   : O(n+m)
 //   audited class  : O(n)
-//   cause          : label
-//   confidence     : medium
-//   auditor        : labelaudit-batch-01-sonnet
+//   cause          : harness
+//   confidence     : high
+//   auditor        : labelaudit-r3d-01
 //
-//   The PYTHON is not the labelled class either. BigOBench's label looks
-//   wrong; the translation is faithful to it.
+//   Both artifacts are right. The Python pays to parse stdin and
+//   BigOBench profiled the whole script; the Dafny's Solve receives the
+//   inputs already parsed, so that cost is outside the measured method.
+//   Nothing to repair -- document it.
 //
 //   evidence:
-//     Only `b_list[0]` is ever read and no loop indexes further into
-//     b_list, so m never contributes to the cost though it is an argument;
-//     the executing branch is only reached when `CountZeros(a_list) <= 1`,
-//     so the seq update `a := a[i := bv]` fires at most once and does not
-//     add a term, leaving both loops at O(n); Python shows the identical
-//     single use of b[0] and the same count(0) <= 1 guard, so the +m in
-//     the label names a dimension neither side scans.
+//     Solve reads only b_list[0] and otherwise does CountZeros and two
+//     loops over a_list, so it is O(n); the Python's O(n+m) comes from
+//     parsing the whole b line, which the Dafny receives pre-parsed.
+//
+//   how this label could be wrong, and what to check:
+//     The label includes m for the length of b, but the Dafny never scans
+//     b_list. Check Solve: it reads only b_list[0] after
+//     CountZeros(a_list) and two loops over |a|; the Python parses all of
+//     b with list(map(int, input().split())), which is where the m term
+//     comes from.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 40, "data_dependent_loops": 1, "decreases_star":

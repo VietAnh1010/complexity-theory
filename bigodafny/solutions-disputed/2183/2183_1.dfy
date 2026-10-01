@@ -4,23 +4,21 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-16
+//   auditor        : labelaudit-r3d-06
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The inner loop while j < 8 runs exactly 4 times regardless of n,
-//     building px/py of fixed length 4 via concatenation with no same-seq
-//     read, so per-query work is O(1) and the outer loop over n queries
-//     gives O(n), matching the Python's fixed-size p = [complex(...) for i
-//     in range(0,8,2)].
+//     The inner loop bound is the literal 8, which is constant, so the
+//     Dafny does O(1) work per row over n rows plus a linear Join, giving
+//     O(n); the Python's `range(0, 8, 2)` is the same constant.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes row width m grows, but the problem statement fixes
-//     each query to exactly 8 integers 'xp0 yp0 xp1 yp1 xp2 yp2 xp3 yp3'.
-//     Confirm the inner while loop's bound j < 8 is a literal constant,
-//     not tied to |row|; if so m is fixed and O(n*m) collapses to O(n).
+//     The label O(n*m) assumes a variable row width m, but each query row
+//     is exactly 8 integers and the inner loop is the literal `while j <
+//     8`. Check the statement: every query has eight coordinates, and the
+//     Python's range(0, 8, 2) uses the same literal.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 40, "data_dependent_loops": 0, "decreases_star":

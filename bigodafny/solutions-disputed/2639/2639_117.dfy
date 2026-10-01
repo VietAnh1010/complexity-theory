@@ -4,26 +4,23 @@
 //   audited class  : O(1)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-20
+//   auditor        : labelaudit-r3d-07
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Both while loops in CheckMancala and the outer loop in Solve are
-//     bounded by the literal constant 14, not by |values| or any variable;
-//     the board size is fixed by the problem statement ("The only line
-//     contains 14 integers"), so the whole method does O(1) work
-//     regardless of any n, and the Python check() function is likewise
-//     called at most 14 times over a fixed 14-element list.
+//     All loops in Solve and CheckMancala run to the literal 14 (14
+//     rotations of 14 holes) and the stone counts enter only through O(1)
+//     division, so the cost is constant; the Python likewise loops over
+//     range(14) with a 14-element list, so O(n) names no dimension that
+//     exists.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes some dimension named n grows, but the signature is
-//     Solve(values: seq<int>) requiring |values| == 14 and the board is
-//     always exactly 14 holes per the description ("The only line contains
-//     14 integers"). Check that every loop bound in Solve and CheckMancala
-//     is the literal 14, never |values| or a derived count, confirming
-//     there is no scaling variable at all.
+//     The label assumes growth with an input size, but the board is always
+//     14 holes. Check `requires |values| == 14` and the literal bounds
+//     `while i < 14` in Solve and CheckMancala; the stone counts only feed
+//     O(1) arithmetic.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 55, "data_dependent_loops": 0, "decreases_star":

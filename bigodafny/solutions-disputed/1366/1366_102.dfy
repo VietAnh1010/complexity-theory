@@ -4,26 +4,24 @@
 //   audited class  : O(n)
 //   cause          : translation
 //   confidence     : high
-//   auditor        : labelaudit-batch-08
+//   auditor        : labelaudit-r3d-04
 //
 //   The Python matches its label; the DAFNY does not. The label is right
 //   about the program it was measured on and the translation is the
 //   defect.
 //
 //   evidence:
-//     The Dafny replaces Python's two `sorted(...)` calls with two O(n)
-//     linear scans over a_list that track the extremal odd value directly
-//     (confirmed by the empty `sorts` fact), so the Dafny's tight class is
-//     O(n) even though Python's use of sorted() genuinely makes it O(n log
-//     n) as labelled.
+//     The Python does sorted(n) and sorted(p) when the positive sum is
+//     even, which is O(n log n), but the Dafny replaces both sorts with
+//     plain linear scans for the maximum odd negative and minimum odd
+//     positive (its comment says the scan is order-independent), so it is
+//     O(n).
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes the Dafny sorts as Python does with
-//     `sorted(n)[::-1]` and `sorted(p)`. Check the `sorts` fact (it is
-//     empty) and confirm the Dafny instead does two linear scans over
-//     a_list tracking the best odd negative and odd positive directly,
-//     which is O(n), not O(n log n); this makes the Dafny faster than its
-//     label, an inverse of the usual translation defect.
+//     The label is correct about the Python's two sorted() calls. Check
+//     the Dafny's else-branch: the two `while j < |a_list|` loops only
+//     track a running best, with no Sort call (facts show sorts: []), so
+//     the sort has been replaced by a linear selection.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 37, "data_dependent_loops": 0, "decreases_star":

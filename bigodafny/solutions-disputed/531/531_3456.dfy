@@ -3,18 +3,24 @@
 //   stated label   : O(n)
 //   audited class  : O(1)
 //   cause          : label
-//   confidence     : high
-//   auditor        : labelaudit-batch-04
+//   confidence     : medium
+//   auditor        : labelaudit-r3d-02
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The while loop is bounded by the literal constant 5 (i<5), not by
-//     any size parameter n, and AllSame3456/IndexOf1From3456 run over a
-//     fixed-width row, so the whole method is O(1); Python's for i in
-//     range(0,5) loop with break is the same fixed 5-iteration scan, also
-//     O(1).
+//     Solve loops a literal `while i < 5` and scans each row with
+//     AllSame3456 and IndexOf1From3456, but the statement fixes a 5x5
+//     matrix, so row width is constant. The Python is the same fixed 5-row
+//     loop with a set() and index() over 5 items, so the label is wrong,
+//     not the translation.
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes the matrix size varies. Open the description: it
+//     says exactly five lines of five integers, so the loop to 5 and the
+//     row scans are bounded by the problem, not by n. If a reviewer finds
+//     the signature intends a variable width, the label stands.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 40, "data_dependent_loops": 1, "decreases_star":

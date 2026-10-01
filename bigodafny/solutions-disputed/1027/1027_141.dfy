@@ -4,19 +4,22 @@
 //   audited class  : O(n**2)
 //   cause          : translation
 //   confidence     : high
-//   auditor        : labelaudit-batch-07
+//   auditor        : labelaudit-r3d-03
 //
 //   The Python matches its label; the DAFNY does not. The label is right
 //   about the program it was measured on and the translation is the
 //   defect.
 //
 //   evidence:
-//     The Dafny dedups target values with a nested while loop (`while j <
-//     i`) comparing every new entry against all previous entries via
-//     signs/nums/dens, an O(n**2) construct with no SortInts call at all;
-//     Python instead does target.sort() then itertools.groupby, giving the
-//     labelled O(nlogn), so the translation replaced the sort with
-//     quadratic pairwise comparison.
+//     The Dafny dedups directions with a nested loop `while j < i`
+//     comparing signs and nums[i]*dens[j] against earlier entries, which
+//     is O(n**2); the Python sorts the cos2 list and groups, O(nlogn) as
+//     labelled, so the algorithm was replaced by a worse one.
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes a sort. The Python does `target.sort()` then
+//     groupby, which is O(nlogn); open the Dafny and check whether it
+//     still sorts or instead scans earlier elements for each i.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 45, "data_dependent_loops": 0, "decreases_star":

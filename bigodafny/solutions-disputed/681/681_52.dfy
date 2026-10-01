@@ -4,18 +4,23 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-05
+//   auditor        : labelaudit-r3d-02
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     FactorialMod681 is called twice, each running a while loop `i <= n`
-//     for n or m iterations, so the Dafny scales linearly with the scalar
-//     inputs rather than being constant. Python's math.factorial(n) and
-//     math.factorial(m) compute a genuinely growing product, which the
-//     cost table's own rule flags as not O(1) for factorial-like
-//     operations, so the O(1) label undercounts both sides.
+//     FactorialMod681 loops `while i <= n` up to the input value, called
+//     twice when a == b or |a-b| == 1, so the cost is O(n) in the value N;
+//     a statement cap does not make it constant. The Python's
+//     math.factorial(n) also does n multiplications, so the Python pays
+//     the same value term and the label is wrong.
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes the work is constant. Open FactorialMod681 and
+//     check that its `while i <= n` loop runs to the input value a (and b)
+//     when |a-b| <= 1; the description gives 1 <= N,M <= 10^5 which is a
+//     cap, not a constant.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 30, "data_dependent_loops": 0, "decreases_star":

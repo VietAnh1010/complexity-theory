@@ -4,19 +4,24 @@
 //   audited class  : O(n+m)
 //   cause          : translation
 //   confidence     : high
-//   auditor        : labelaudit-batch-05
+//   auditor        : labelaudit-r3d-02
 //
 //   The Python matches its label; the DAFNY does not. The label is right
 //   about the program it was measured on and the translation is the
 //   defect.
 //
 //   evidence:
-//     Max685 is a plain O(n)/O(m) linear scan with no SortInts call
-//     anywhere (facts.sorts is empty), so the Dafny is O(n+m). Python
-//     calls sorted(int_array_a) and sorted(int_array_b) purely to then
-//     read int_array_a[-1] and int_array_b[-1], a real O(n log n)+O(m log
-//     m) cost that the label reflects, so the translation dropped the sort
-//     that Python actually pays for.
+//     The Python sorts both arrays with sorted() and reads the last
+//     element, which is O(n log n + m log m), while the Dafny calls Max685
+//     on each list, a single linear scan, giving O(n+m). The translation
+//     replaced the sort by a maximum scan, so the label fits the Python
+//     and not the Dafny.
+//
+//   how this label could be wrong, and what to check:
+//     The label comes from the Python's two `sorted(...)` calls followed
+//     by `[-1]`. Check that Max685 is a single linear scan with no Sort
+//     call and that the Python really sorts both int_array_a and
+//     int_array_b.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 21, "data_dependent_loops": 0, "decreases_star":

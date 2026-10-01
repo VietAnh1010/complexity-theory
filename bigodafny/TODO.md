@@ -61,10 +61,15 @@ when done.
       a recursive `Lowbit`; each recurses to a value's bit length. `1029_92`'s
       proof charges `BitOr` 1 per call, as the Gcd proofs did. Use the prelude's
       `bv64` `BitOr` in the row, or charge the depth.
-- [ ] The 157 rows already in `solutions-disputed/` keep 2026-09-16 verdicts.
-      Re-audit them under r3 too, or leave them for human review.
-- [ ] `label_audit.py evidence` reads only `solutions/`, though
-      `solutions-unscreened/README.md` tells you to run it on that directory.
+- [x] The 157 rows already in `solutions-disputed/` re-audited under r3: 138
+      mismatch, 12 released to `solutions/`, 6 unsure; one main-agent override
+      (`1484_26`).
+- [ ] 6 `unsure` rows in the queue: `378_20`, `380_112`, `662_559`,
+      `1177_230`, `1177_9`, `2193_70`. Decide each.
+- [x] `label_audit.py evidence` read only `solutions/`; it now takes `--dir`
+      (`solutions-unscreened/README.md` now passes it).
+- [ ] `label_audit.py apply` handles rows in `solutions/` and
+      `solutions-disputed/` only; auditing `solutions-unscreened/` needs it extended.
 - [ ] `label_audit.py` imports `features` from the archived `experiments/`.
 
 ## Gates (not for an agent whose work they judge)

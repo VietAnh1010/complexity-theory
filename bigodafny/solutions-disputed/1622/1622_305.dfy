@@ -4,20 +4,23 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-10
+//   auditor        : labelaudit-r3d-04
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     arr := arr[pos := "0"] and arr[pos2 := "1"] each perform a full O(n)
-//     seq copy inside two while loops bounded by d and k-d, giving O(n**2)
-//     in the Dafny, while Python's number[-i-1]='0' is an O(1) in-place
-//     list write making the Python O(n); the label's O(n**2) matches the
-//     Dafny only by coincidence.
+//     The Dafny runs two while loops counting up to k (the value x, with
+//     requires k <= |binary_list|) doing O(1) seq updates arr[pos := "0"],
+//     so the cost is O(n); the Python does the same `while i < x` loops
+//     with O(1) list assignments, so it is not quadratic either.
 //
 //   how this label could be wrong, and what to check:
-//     not recorded by this batch
+//     The label claims quadratic cost. Look for a nested loop or
+//     per-iteration copy in either source; the Dafny has only `while i <
+//     d` and `while i < k` with constant-time updates, and x < n bounds
+//     both. If the label came from the old copying model of seq updates,
+//     it is stale.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 42, "data_dependent_loops": 0, "decreases_star":

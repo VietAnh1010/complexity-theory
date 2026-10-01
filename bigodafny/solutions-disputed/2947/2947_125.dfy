@@ -4,27 +4,24 @@
 //   audited class  : O(n**2)
 //   cause          : translation
 //   confidence     : high
-//   auditor        : labelaudit-batch-22
+//   auditor        : labelaudit-r3d-08
 //
 //   The Python matches its label; the DAFNY does not. The label is right
 //   about the program it was measured on and the translation is the
 //   defect.
 //
 //   evidence:
-//     The p-loop scans keys[0..|keys|) every outer iteration to emulate `v
-//     in score`, and vals := vals[idx := vals[idx]+1] is a seq update on
-//     the growing vals sequence; with up to n distinct ids the scan cost
-//     sums to O(n**2), while Python's score dict gives O(1) lookup and
-//     update per element, making the Python genuinely O(n) as labelled.
+//     The Dafny replaces the Python dict with parallel keys/vals seqs and
+//     rescans keys for each of the n likes, giving O(n * distinct) =
+//     O(n**2). The Python's score dict makes each update O(1), so it is
+//     O(n) as labelled; the dict-to-linear-search swap is an algorithm
+//     replacement, not a container update.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes the score-dict lookup `v in score` is O(1) as it
-//     is in Python's dict. Open the inner p-loop and confirm it linearly
-//     scans the whole `keys` sequence built so far to check for a
-//     duplicate on every one of the n outer iterations; if a_list is
-//     all-distinct values, keys grows to n and the cumulative scan cost is
-//     0+1+...+(n-1)=O(n**2), while Python's dict membership and dict[v]+=1
-//     stay O(1) each.
+//     The label matches the Python's dict `score`, which is O(1) per vote.
+//     Check the inner `while p < |keys|` loop in the Dafny that linearly
+//     scans keys for every like; with many distinct ids it makes the whole
+//     thing quadratic.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 40, "data_dependent_loops": 0, "decreases_star":

@@ -3,25 +3,24 @@
 //   stated label   : O(n+m)log(n+m)
 //   audited class  : O(n+mlogm)
 //   cause          : label
-//   confidence     : high
-//   auditor        : labelaudit-batch-13
+//   confidence     : medium
+//   auditor        : labelaudit-r3d-05
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The scan 'while i<|s|' building kiri/tupl is a plain O(n) pass with
-//     O(1) amortised appends, and SortInts is called only on 'ini' whose
-//     length is capped by m via 'tupl[..take]' with take<=m/2, so the true
-//     cost is O(n+m log m), a smaller class than the labelled
-//     O((n+m)log(n+m)).
+//     The Dafny scans s once (O(n)), then builds ini with at most m
+//     entries and calls SortInts(ini), which costs O(m log m), and the
+//     final loop is O(m). The Python's ini.sort() is likewise over only
+//     the first k//2 pairs, so the class is O(n+mlogm), a distinct entry
+//     from O((n+m)log(n+m)) when m is small.
 //
 //   how this label could be wrong, and what to check:
-//     The label O((n+m)log(n+m)) implies the entire string of length n
-//     gets sorted. Check that SortInts is called only on 'ini', whose size
-//     is bounded by m via 'tupl:=tupl[..take]' with take<=m/2, and that
-//     the earlier scan of s is a single unsorted O(n) pass; if so the sort
-//     contributes m log m, not (n+m) log(n+m).
+//     The label assumes the sort covers n+m items. Check the sorted
+//     sequence: ini holds only 2*(m/2) positions taken from tupl[..take],
+//     so the sort is over m elements while the stack scan over s is a
+//     plain O(n) loop.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 56, "data_dependent_loops": 0, "decreases_star":

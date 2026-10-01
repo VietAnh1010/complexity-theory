@@ -1,24 +1,29 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n**2)
-//   audited class  : O(n)
+//   audited class  : O(n*m)
 //   cause          : label
 //   confidence     : low
-//   auditor        : labelaudit-batch-05
+//   auditor        : labelaudit-r3d-02
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     IsAllChar and the Repeat("01", nn)/Repeat("10", nn) calls are each
-//     O(|s|) per the cost table's explicit Repeat rule, so the Dafny is
-//     linear in total string length rather than quadratic. Python's `ans =
-//     ans + "01"` loop is the classic in-place string-concatenation
-//     pattern, which CPython's refcount-1 optimization typically makes
-//     amortized linear rather than the naively-assumed O(n**2), so the
-//     label may be wrong on the Python side too rather than only on the
-//     translation; I am not fully certain this optimization reliably
-//     applies here.
+//     Per string the Dafny pays O(|s|) via IsAllChar (peeling s[1..]) and
+//     Repeat, so the total is O(sum of |s_i|), at most the tests times the
+//     string length, not n**2 under the table's concat rule. The Python's
+//     `ans = ans + "01"` loop is only quadratic if concatenation copies,
+//     and n and m could just be a naming choice, so cause and verdict are
+//     both uncertain.
+//
+//   how this label could be wrong, and what to check:
+//     The label claims quadratic, but the Dafny does work linear in the
+//     summed lengths of the strings: IsAllChar recurses on s[1..] and
+//     Repeat("01", nn) builds a string of length 2|s|. Open the Python and
+//     decide whether `ans = ans + "01"` is modelled as copying (quadratic
+//     in |s|) or CPython's in-place concat, and whether the label's n
+//     names tests or string length.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 31, "data_dependent_loops": 0, "decreases_star":

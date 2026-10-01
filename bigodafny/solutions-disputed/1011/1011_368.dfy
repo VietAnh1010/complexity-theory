@@ -3,18 +3,24 @@
 //   stated label   : O(n)
 //   audited class  : other
 //   cause          : label
-//   confidence     : high
-//   auditor        : labelaudit-batch-07
+//   confidence     : medium
+//   auditor        : labelaudit-r3d-03
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The while loop `a*b < n` alternately increments the smaller of a and
-//     b, so both a and b converge to about sqrt(n) and the loop runs
-//     O(sqrt(n)) times; Python implements the identical loop, so both
-//     languages are O(sqrt(n)), not the labelled O(n), which is a label
-//     error.
+//     The loop `while a * b < n` alternately increments a and b, so it
+//     stops after roughly 2*sqrt(n) iterations in the input value n; the
+//     Python has the identical loop, so the true class is O(sqrt n), which
+//     is below the labelled O(n).
+//
+//   how this label could be wrong, and what to check:
+//     The label treats the loop as running n times. Trace `while a * b <
+//     n` in the Python: a and b grow alternately by 1, so a*b reaches n
+//     after about 2*sqrt(n) steps, not n. If you read n as the value the
+//     loop runs to, check whether sqrt(n) iterations still counts as O(n)
+//     for this dataset.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 13, "data_dependent_loops": 1, "decreases_star":

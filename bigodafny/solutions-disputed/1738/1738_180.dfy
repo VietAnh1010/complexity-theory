@@ -1,26 +1,26 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n**2)
-//   audited class  : O(1)
+//   audited class  : other
 //   cause          : label
-//   confidence     : high
-//   auditor        : labelaudit-batch-11
+//   confidence     : medium
+//   auditor        : labelaudit-r3d-05
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Solve(a,b,c) takes three plain ints with seq_args 0, and the nested
-//     while loops run d=c/a and e=c/b times, both capped at 10000 by the
-//     description's 1<=n,m,z<=10000, so the O(d*e) work is a fixed
-//     constant, not O(n**2).
+//     The Dafny builds test with c/a entries and then, for each of the c/b
+//     values of i, scans all of test, so the cost is O((c/a)*(c/b)), a
+//     product of input values rather than of input sizes. The Python's
+//     `i*b in test` over a list does the same linear scan, so the Python
+//     pays this value term as well and the label is wrong.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes n and e grow, but the description bounds all three
-//     inputs at 1<=n,m,z<=10000 with no sequence argument in Solve at all.
-//     Check that bound; if it holds, d=c/a and e=c/b are capped by a fixed
-//     constant and the nested while loops, in both Python and Dafny, run a
-//     bounded number of times independent of any growing size.
+//     The label names a size n that does not exist: the input is three
+//     integers n, m, z. Check the loop bounds d := c / a and e := c / b
+//     and the inner scan over test; if you treat z as the problem size the
+//     label might be read as a value-as-size case.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 35, "data_dependent_loops": 0, "decreases_star":

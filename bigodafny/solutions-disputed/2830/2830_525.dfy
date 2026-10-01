@@ -4,25 +4,24 @@
 //   audited class  : O(n**2)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-21
+//   auditor        : labelaudit-r3d-08
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Solve's outer `while len > 0` (n iterations) contains `while j < len
-//     - 1 { idxArr[j] := idxArr[j+1]; ... }`, shifting ~len/2 array
-//     entries every step; this faithfully mirrors Python's
-//     `index_letras.pop((len-1)//2)` and `letras.pop(...)`, both O(n)
-//     mid-list pops repeated n times, so both are O(n**2), not O(nlogn).
+//     For each of the n steps the Dafny shifts idxArr[pos..len-1] one slot
+//     left, which is about len/2 work, giving O(n**2) total; the final
+//     ans.sort adds only O(n log n). The Python's list.pop(index) inside
+//     `while len(letras) != 0` is also O(n) per call, so the Python is
+//     quadratic and the O(nlogn) label is wrong.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes the O(n log n) `ans.sort()` dominates, but check
-//     the `while len > 0` loop: each iteration pops the middle index and
-//     shifts everything after it, an inner `while j < len - 1` loop of
-//     size ~len/2, run once per len from n down to 1. If that shift is
-//     present at every step, the total is Theta(n**2), which the sort's n
-//     log n cannot beat.
+//     The label assumes the removal of the median is cheap like a heap
+//     pop. Check the inner `while j < len - 1` loop that shifts idxArr
+//     left on each step, and the Python's
+//     index_letras.pop(i)/letras.pop(i), which are O(n) list deletions: n
+//     pops of O(n) each.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 48, "data_dependent_loops": 0, "decreases_star":

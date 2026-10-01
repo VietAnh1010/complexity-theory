@@ -4,17 +4,21 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-03
+//   auditor        : labelaudit-r3d-01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     ContainsChar, FindFirst and FindLast are each linear recursions over
-//     `arrows` costing O(|arrows|), called to emulate Python's `in`,
-//     `.find()`, and `.rfind()`, which are themselves O(n) string scans in
-//     CPython; both the Python and the Dafny are Theta(n), so the O(1)
-//     label is wrong on both sides, not just in translation.
+//     Solve calls ContainsChar, FindFirst and FindLast, each recursing
+//     once per character of arrows (O(|arrows|) = O(n)); the Python's `'<'
+//     not in s`, s.find and s.rfind are also linear scans of the string.
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes constant work, but the string of bumpers must be
+//     scanned. Check ContainsChar, FindFirst and FindLast in Solve, each
+//     recursing over arrows, and the Python's `in`, find and rfind on the
+//     string, all linear.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 38, "data_dependent_loops": 0, "decreases_star":

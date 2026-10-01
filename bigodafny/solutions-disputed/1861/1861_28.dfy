@@ -1,27 +1,28 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n**2)
-//   audited class  : O(n)
-//   cause          : label
-//   confidence     : medium
-//   auditor        : labelaudit-batch-13
+//   audited class  : other
+//   cause          : both
+//   confidence     : low
+//   auditor        : labelaudit-r3d-05
 //
-//   The PYTHON is not the labelled class either. BigOBench's label looks
-//   wrong; the translation is faithful to it.
+//   The Python does not match the label AND the translation diverges
+//   from the Python. Both need attention.
 //
 //   evidence:
-//     The row-loop 'while row<H' does O(W*|pats|) work per row, and since
-//     W<=8 and |pats| is bounded by combinatorics on W (also <=8 per the
-//     constraints), that inner factor is a fixed constant, leaving H as
-//     the only growing dimension; the Python has the identical nested-list
-//     structure, so both are O(H), not O(H^2).
+//     The Dafny's main loop runs H times, then W columns, then scans every
+//     pattern in pats (about Fibonacci(W) of them), giving O(H*W*|pats|)
+//     with |pats| exponential in W. The Python builds Counter objects once
+//     and then does O(H*W**2) per-row work, so the Python is not O(n**2)
+//     and the Dafny is in a worse class than the Python; I lean both, with
+//     low confidence on the cause.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes cost scales with H*W or a squared term. Check that
-//     W is capped at 8 by the problem statement ('W between 1 and 8'), and
-//     confirm |pats| stays bounded by a small constant across the outer
-//     'while i<W' loop; if so only H drives growth and the true cost is
-//     O(H), not quadratic.
+//     The label assumes polynomial growth in a size n, but the input is
+//     three values (H, W, K) and the cost is exponential in W. Check the
+//     pats construction, whose size grows like Fibonacci in W, and the row
+//     loop that scans all of pats for every column; the Python's Counter
+//     aggregation (iws) avoids that per-row factor.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 76, "data_dependent_loops": 0, "decreases_star":

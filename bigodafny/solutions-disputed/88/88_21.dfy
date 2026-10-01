@@ -1,24 +1,26 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n)
-//   audited class  : O(n**2)
+//   audited class  : other
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-batch-01-sonnet
+//   auditor        : labelaudit-r3d-01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     This solves the identical problem with the identical shape as
-//     sibling solution 88_200 -- an outer loop over n test cases, each
-//     doing a constant number of O(string-length) reversal and scan
-//     operations via ReverseString, bRev-scanning and aRev-scanning -- and
-//     88_200's equivalent pattern is labelled O(n**2) for exactly this
-//     shape, so a plain O(n) label here omits the per-test string-length
-//     dimension that both Python's
-//     `b[::-1].index("1")`/`a[k::].index("1")` and the Dafny while loops
-//     genuinely scan.
+//     Per test the Dafny calls ReverseString(b) and ReverseString(a) (each
+//     O(|s|)) and scans bRev and aRev, so cost is O(sum of |x_i|+|y_i|),
+//     not O(n tests); the Python's [::-1], index and slice are linear in
+//     length as well.
+//
+//   how this label could be wrong, and what to check:
+//     The label's n counts test cases, but each test scans two strings
+//     whose lengths the label does not name. Check the loops over bRev and
+//     aRev and ReverseString in Solve, and the statement's bound of total
+//     length of x and y at most 10^5 each; if the label is meant as total
+//     input size it would stand.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 50, "data_dependent_loops": 2, "decreases_star":

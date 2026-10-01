@@ -4,25 +4,23 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-14
+//   auditor        : labelaudit-r3d-06
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Every access into edges (edges[a-1][0], edges[i-1][1], etc.) indexes
-//     a fixed 2-element row, and both while loops touch each of the n rows
-//     a constant number of times, so the true cost is O(n) in the number
-//     of kids, matching the Python's identical O(n) walk over 2-element
-//     lists.
+//     The while loop `|ans| < n` does constant work per step (two reads of
+//     edges[i-1]), and the parts/Join loop is linear, so the Dafny is
+//     O(n); the Python's inner `for c in l[i-1]` and `b in l[a-1]` scan
+//     2-element lists, so no m dimension exists there either.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes row width varies as a second dimension m. Check
-//     the `requires forall k :: |edges[k]| == 2` clause and the problem
-//     statement's 'a_{i,1} and a_{i,2}' -- each kid remembers exactly two
-//     others, so every row is a fixed-width pair, not an m-wide row. If m
-//     is pinned at 2, the O(n*m) label collapses to O(n) since m never
-//     grows independently of n.
+//     The label O(n*m) assumes rows have a variable width m, but each row
+//     of `edges` is exactly 2 integers (the Dafny requires |edges[k]| == 2
+//     and the problem gives a_{i,1}, a_{i,2}). Check the statement's input
+//     format and the Python's `for c in l[i-1]`, which iterates a
+//     2-element list.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 44, "data_dependent_loops": 1, "decreases_star":

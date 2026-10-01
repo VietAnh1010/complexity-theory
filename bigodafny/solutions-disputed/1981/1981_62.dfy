@@ -4,26 +4,24 @@
 //   audited class  : O(n)
 //   cause          : translation
 //   confidence     : high
-//   auditor        : labelaudit-batch-14
+//   auditor        : labelaudit-r3d-06
 //
 //   The Python matches its label; the DAFNY does not. The label is right
 //   about the program it was measured on and the translation is the
 //   defect.
 //
 //   evidence:
-//     The Dafny loop does `up := up[val := up[val] + i]` for each of n
-//     iterations, a seq-update copy costing O(n) per iteration per the
-//     prelude cost table, for O(n**2) total, while the Python's cost is
-//     dominated by its O(n log n) `sorted(tpls)` call with O(1) list
-//     updates thereafter.
+//     The Python builds tuples and calls sorted(tpls), costing O(n log n),
+//     while the Dafny drops the sort and does one pass of O(1) seq updates
+//     plus JoinInts, which is O(n); this is the algorithm-replaced shape
+//     and the translation lands in a faster class.
 //
 //   how this label could be wrong, and what to check:
-//     The label comes from Python's `sorted(tpls)` in argsort, an O(n log
-//     n) sort; the Dafny never sorts and instead updates `up` with `up :=
-//     up[val := up[val] + i]` inside a while loop over n. Confirm no Sort
-//     call appears anywhere in the Dafny, then check that this seq update,
-//     per the cost table, is O(|up|) and runs n times, giving O(n**2)
-//     regardless of the missing sort.
+//     The label O(nlogn) comes from the Python's argsort, `sorted(tpls)`
+//     on (value, index) tuples. Open the Dafny and check that no
+//     Sort/SortInts is called: it applies `up := up[val := up[val] + i]`
+//     for i in order, with a_list a permutation so every up index is hit
+//     once and the order is irrelevant.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 20, "data_dependent_loops": 0, "decreases_star":

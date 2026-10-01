@@ -1,26 +1,27 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n)
-//   audited class  : O(1)
+//   audited class  : other
 //   cause          : label
-//   confidence     : high
-//   auditor        : labelaudit-batch-11
+//   confidence     : medium
+//   auditor        : labelaudit-r3d-05
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Solve(rows, columns, value) has no sequence parameter at all
-//     (seq_args is 0) and the while loop runs c/a+1 times, which the
-//     description caps at at most 10001 by 1<=c<=10000 and 1<=a<=100, so
-//     the loop count is a fixed constant, not a growing n.
+//     The single while loop in Solve runs c/a + 1 times, so the cost is
+//     O(c/a), a cost in input values that no label variable accounts for,
+//     even though the statement caps c at 10000. The Python's for i in
+//     range(c//a+1) pays the same value term, so the label is wrong, not
+//     the translation.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes an unbounded n, but Solve takes only three ints
-//     with no seq argument. Check the description's bound 1<=c<=10000,
-//     1<=a<=100: if that holds, the loop count c//a+1 is capped by a fixed
-//     constant in both the Python range(c//a+1) and the Dafny while, and
-//     the true cost is O(1).
+//     The label O(n) names a size that the input does not have: the input
+//     is three integers a, b, c with no count line. Check the loop bound
+//     limit := c / a + 1 in Solve and the Python's range(c//a+1); if you
+//     read c as the problem size n the label could be accepted as a
+//     value-as-size case.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 23, "data_dependent_loops": 0, "decreases_star":

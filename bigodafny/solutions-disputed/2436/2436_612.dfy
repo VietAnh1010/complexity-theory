@@ -4,25 +4,23 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-18
+//   auditor        : labelaudit-r3d-07
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The while loop iterates i from 0 to |a|, doing one IsVowel612
-//     comparison per character until a mismatch or the end of the string,
-//     exactly mirroring Python's any((u in a)^(v in a) for u,v in
-//     zip(x,y)) which also walks the full zipped string; both are O(n),
-//     not O(1).
+//     Solve loops i over |a| comparing IsVowel612(a[i]) with
+//     IsVowel612(b[i]) until a mismatch, which is O(n) for equal-length
+//     strings; the Python's any() over zip(x, y) likewise walks the
+//     strings, so the O(1) label is wrong for both.
 //
 //   how this label could be wrong, and what to check:
-//     The label claims constant time, but the while loop scans i from 0 up
-//     to |a| comparing IsVowel612(a[i]) vs IsVowel612(b[i]) at each step;
-//     open the loop and check it is bounded by |a| (string length up to
-//     1000), a genuine size not a capped value, so this is a linear scan.
-//     Compare against sibling 2436_325, whose near-identical algorithm on
-//     the same problem is labelled O(n+m).
+//     The label assumes constant work, but both strings are scanned
+//     character by character. Open the Dafny loop `while i < |a| &&
+//     !mismatch` and the Python's `any(... for u,v in zip(x,y))`; the
+//     lengths (up to 1000) are input sizes, so a statement cap does not
+//     make them constant.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 30, "data_dependent_loops": 1, "decreases_star":

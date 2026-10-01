@@ -1,31 +1,26 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n**2)
-//   audited class  : O(n)
+//   audited class  : other
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-batch-12
+//   auditor        : labelaudit-r3d-05
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Every append to `S`/`S.append` reduces the running `ss`/`s` by at
-//     least `Pow2(xx)`/`2**x` >= 1, so across all levels of `xx` the total
-//     number of appends is capped by the initial `s` (<=1e5 per the
-//     constraint), making the whole build O(n) rather than the O(n**2) the
-//     nested-loop shape suggests, in both Dafny and Python.
+//     The Dafny inner loop adds one element to S per iteration, so it runs
+//     at most O(min(sum, limit)) times in total, each calling Pow2(xx)
+//     whose recursion costs only xx, a geometric-weighted sum that stays
+//     O(limit). No construct is quadratic, and the Python's identical
+//     while loop with 2 ** x is linear in the same values.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes the double `while xx >= 0 { while Pow2(xx) <= ss
-//     ... }` loop structure is quadratic in the value n=sum/limit. Check
-//     that every successful inner iteration strictly decreases `ss` by
-//     `Pow2(xx) >= 1`; since `ss` starts at `s <= 1e5` and the loop stops
-//     appending once `ss` runs out, the total number of appends across
-//     every level `xx` is bounded by `s`, not by (number of levels) x
-//     (appends per level), so the true cost is O(n) in the value of s/l,
-//     and Python's identical `s -= 2**x` accounting gives it the same O(n)
-//     bound.
+//     The label assumes quadratic growth in a size n, but the input is two
+//     values (sum, limit). Check how many times the innermost while loop
+//     runs: each pass appends one element of S, and the output size is at
+//     most limit, so the cost is linear in the values.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 44, "data_dependent_loops": 2, "decreases_star":

@@ -4,23 +4,22 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-11
+//   auditor        : labelaudit-r3d-05
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The Dafny loop reads only pairs[i][0] and pairs[i][1] at fixed
-//     positions, never a variable-length row, and the Python's
-//     d[i][0]/d[i][1] access matches exactly, so both languages are O(n),
-//     not O(n*m).
+//     The Dafny has one loop over |pairs| (n) that reads pairs[i][0] and
+//     pairs[i][1] and never walks a row, so cost is O(n). The Python
+//     likewise appends one two-token list per line in a single range(n)
+//     loop, so O(n*m) names a width that does not exist.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes a variable row width m, but the description fixes
-//     each line to exactly li and ri. Check the input format: if every
-//     pairs[k] has length 2, no m dimension exists in either the Python
-//     (d[i][0]/d[i][1]) or the Dafny (pairs[i][0]/pairs[i][1]), and the
-//     true cost is O(n).
+//     The label assumes each cupboard row has a variable width m. Check
+//     the statement: each of the n lines holds exactly two integers li and
+//     ri, so the row is a fixed pair and m is constant; if rows could be
+//     ragged the label would stand.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 20, "data_dependent_loops": 0, "decreases_star":

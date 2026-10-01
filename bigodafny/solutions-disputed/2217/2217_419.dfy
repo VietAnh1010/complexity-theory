@@ -4,28 +4,25 @@
 //   audited class  : O(n**2)
 //   cause          : translation
 //   confidence     : high
-//   auditor        : labelaudit-batch-16
+//   auditor        : labelaudit-r3d-06
 //
 //   The Python matches its label; the DAFNY does not. The label is right
 //   about the program it was measured on and the translation is the
 //   defect.
 //
 //   evidence:
-//     Each of the n outer iterations over handles runs three linear scans
-//     over keys (the fi, fj, fk while loops, each O(|keys|)) plus, when a
-//     pop is needed, a slice concatenation keys[..popIdx]+keys[popIdx+1..]
-//     and a seq update vals[newIdx := val], all O(n); over n iterations
-//     this is O(n**2), while the Python's d[new]=d.get(old,old) and
-//     d.pop(old) are O(1) average dict operations, giving O(n).
+//     For each of the q requests the Dafny scans the `keys` seq three
+//     times (up to q entries) and rebuilds it by concatenation on removal,
+//     so the cost is O(q**2) in the worst case, where the Python's dict
+//     get/pop/set is O(1) per request; the association list replaces the
+//     hash map.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes handle lookups are O(1) as in Python's dict. Open
-//     the Dafny and check whether 'old'/'new' lookups use a linear scan
-//     over a seq<string> keys (the fi/fj/fk while loops) rather than a
-//     hash-based map; if each of those three O(n) scans plus the
-//     slice-based delete keys[..popIdx]+keys[popIdx+1..] runs once per
-//     outer iteration, the whole method is O(n**2) regardless of the
-//     label.
+//     The label O(n) matches the Python, which keeps a dict `d` with O(1)
+//     lookups and pops. Open the Dafny and check that keys/vals are
+//     parallel seqs searched linearly by the loops `while fi < |keys|`,
+//     `fj`, `fk` for every request, and that removal rebuilds both with
+//     `keys[..popIdx] + keys[popIdx+1..]`.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 63, "data_dependent_loops": 0, "decreases_star":

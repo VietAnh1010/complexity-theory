@@ -4,19 +4,23 @@
 //   audited class  : O(n)
 //   cause          : translation
 //   confidence     : high
-//   auditor        : labelaudit-batch-05
+//   auditor        : labelaudit-r3d-02
 //
 //   The Python matches its label; the DAFNY does not. The label is right
 //   about the program it was measured on and the translation is the
 //   defect.
 //
 //   evidence:
-//     The Dafny never calls SortInts (facts.sorts is empty) and instead
-//     finds mn/mx and then counts occurrences of mn/mx in two separate
-//     O(n) passes, giving O(n) total. Python's s.sort() runs on the raw,
-//     arbitrary-order list s before min/max are taken via a=min(s),
-//     b=max(s), a real O(n log n) cost that the label reflects, so the
-//     omitted sort is the translation's dropped cost.
+//     The Python calls s.sort() (O(n log n)) then min(s), max(s) and a
+//     counting loop, but the Dafny Solve only runs two linear while-loops
+//     over a_list tracking mn, mx, cntA and cntB. No sort is performed, so
+//     the Dafny is O(n) against the Python's labelled O(n log n): the sort
+//     was dropped in translation.
+//
+//   how this label could be wrong, and what to check:
+//     The label comes from the Python's `s.sort()` before taking min and
+//     max. Check that the Dafny has no sort and uses one scan for mn/mx
+//     and a second scan for counts; if so the sort was dropped.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 31, "data_dependent_loops": 0, "decreases_star":

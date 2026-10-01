@@ -4,28 +4,21 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-r2-06
+//   auditor        : labelaudit-r3d-03
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The Dafny is a single while loop over `i < n` scanning the string s
-//     once with O(1) character comparisons, increments and a constant-time
-//     flag update per iteration; there is no nested loop, no
-//     seq_update_in_loop, and no recursion, so the tight class is O(n),
-//     exactly matching sibling 1168_24's O(n) label for the very same
-//     bracket-sequence problem.
+//     The Dafny has a single loop `while i < n` over the string with O(1)
+//     body, plus an O(1) length parity check; the Python's fn() is the
+//     same single pass, so there is no quadratic construct and the cost is
+//     O(n).
 //
 //   how this label could be wrong, and what to check:
-//     The label O(n**2) implies some nested or repeated pass over the
-//     string, but the Dafny body (facts: loop_depth 1, loops 1, no
-//     seq_update_in_loop, no set_build_in_loop) is a single pass with O(1)
-//     work per character. Check the loop body for any hidden seq copy
-//     (e.g. a slice or `s[i := v]`) that would make an iteration cost O(n)
-//     instead of O(1); absent that, compare to sibling 1168_24, which
-//     solves the same problem with the same loop shape and is labeled
-//     O(n).
+//     The label assumes nested work. Check the Python fn(): it has one
+//     `for i in range(n)` loop with constant-time branches; the Dafny
+//     mirrors it with one `while i < n`.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 39, "data_dependent_loops": 0, "decreases_star":

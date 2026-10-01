@@ -1,23 +1,28 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(1)
-//   audited class  : O(logn)
+//   audited class  : other
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-batch-05
+//   auditor        : labelaudit-r3d-02
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The while loop implements a continued-fraction search (p0/q0/p1/q1,
-//     k := FloorDiv(n,d)) whose iteration count is the number of
-//     continued-fraction terms of x0/y0, an O(log(y0)) Euclidean-style
-//     bound rather than a fixed constant; Python's
-//     Fraction(x,y).limit_denominator(n) performs the same
-//     continued-fraction expansion internally, so O(1) undercounts both
-//     sides, though I am not fully certain the dataset doesn't intend O(1)
-//     loosely here.
+//     Gcd of x and y plus the while loop over continued-fraction
+//     convergents each cost Euclid's depth, O(log of the input values), a
+//     value term the model charges even though the cap is 10^5. The
+//     Python's Fraction constructor takes a gcd and limit_denominator runs
+//     the same convergent loop, so the label O(1) is wrong, not the
+//     translation.
+//
+//   how this label could be wrong, and what to check:
+//     The label treats the work as constant, but Solve calls
+//     Gcd(AbsInt(x0), AbsInt(y0)) and then runs a continued-fraction loop
+//     (FloorDiv, q2 > maxDen) whose iteration count is Euclid's depth.
+//     Check the Python's Fraction(x,y).limit_denominator(n), which does
+//     the same gcd and continued fraction.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 60, "data_dependent_loops": 1, "decreases_star":

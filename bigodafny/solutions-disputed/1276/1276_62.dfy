@@ -4,25 +4,24 @@
 //   audited class  : other
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-batch-07
+//   auditor        : labelaudit-r3d-04
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     `lim` is set via `while (r+1)*(r+1)<=n` so lim ~ sqrt(n), and `m :=
-//     partCount+extra` with extra = n - s = n/lim per the loop invariant,
-//     making the ws/dp arrays size O(sqrt(n)); the `while rep<k-1` loop
-//     repeats the O(m) inner scan up to k-1 times, giving O(k*sqrt(n))
-//     (real class) versus the label's O(n+m), and the Python's `lim =
-//     int((n+0.1)**0.5)+1` computes the identical bound.
+//     The Dafny runs a sqrt search for r, builds ws of length m = (lim-1)
+//     + (n - s), which is about 2*sqrt(N), and then loops `rep < k - 1`
+//     times over m elements, so the cost is O(K*sqrt(N)), a product not a
+//     sum; the Python's dp loop `for _ in range(k-1)` over len(ws) pays
+//     the same.
 //
 //   how this label could be wrong, and what to check:
-//     The label O(n+m) assumes the ws/dp arrays scale with n. Check the
-//     invariant `s == n - n/i` at the exit of the `while i<lim` loop: it
-//     implies extra = n - s = n/lim, and lim ~ sqrt(n), so m :=
-//     partCount+extra is O(sqrt(n)), not O(n); the `while rep<k-1` loop
-//     then does O(m) work k-1 times.
+//     The label is a sum n+m but the code multiplies: the outer `while rep
+//     < k - 1` contains an inner `while t < m`. Check the loop nesting and
+//     that m = partCount + extra is about 2*sqrt(N) (extra = n - s =
+//     n/lim); if the two loops are nested the cost is K*sqrt(N), not a
+//     sum.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 94, "data_dependent_loops": 1, "decreases_star":

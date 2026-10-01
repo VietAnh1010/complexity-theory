@@ -1,28 +1,26 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(nlogn)
-//   audited class  : O(n)
+//   audited class  : other
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-batch-07
+//   auditor        : labelaudit-r3d-03
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The inner `while v != 0` loop and the following `Sort(res, ...)`
-//     both operate on `res`, whose length is bounded by the number of
-//     decimal digits of a value <=10^4 (at most 5) per the problem
-//     statement, so each of the n test cases costs O(1) and the total is
-//     O(n), not O(nlogn); the Python shows the identical bound via
-//     `res.sort(reverse=True)` on the same digit list.
+//     Each test pays `while v != 0` with v := v / 10, which runs
+//     log10(a_i) times, plus Sort on at most that many round numbers,
+//     giving O(n log max a_i) in the test count and values; the Python has
+//     the same digit loop and sort, so the label's n is not the growth
+//     variable.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes the per-test Sort call scales with n. Check that
-//     `res` never holds more than one entry per decimal digit of
-//     a_list[t]; since a_list[t] <= 10^4 per the problem statement, |res|
-//     <= 5 always, so Sort(res,...) is O(1) regardless of how many test
-//     cases n there are.
+//     The label assumes cost depends on the count n with a log factor from
+//     sorting. The digit loop `while v != 0` runs once per decimal digit
+//     of each value, so check whether the cost is log(a_i) per test rather
+//     than log(n).
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 34, "data_dependent_loops": 1, "decreases_star":

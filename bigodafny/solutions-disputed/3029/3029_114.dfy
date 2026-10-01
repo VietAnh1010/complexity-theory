@@ -3,29 +3,25 @@
 //   stated label   : O(n+m)
 //   audited class  : O(n**2)
 //   cause          : both
-//   confidence     : high
-//   auditor        : labelaudit-batch-23
+//   confidence     : medium
+//   auditor        : labelaudit-r3d-08
 //
 //   The Python does not match the label AND the translation diverges
 //   from the Python. Both need attention.
 //
 //   evidence:
-//     The Dafny simulates `heapq.heappush`/`heapq.heappop` with a
-//     from-scratch linear insertion scan (`while j < |heap|`) executed
-//     once per outer iteration over N iterations, giving O(N**2); the
-//     Python uses real `heapq` operations at O(log N) each, so Python is
-//     O(N log N), and O(n+m) matches neither source.
+//     The Dafny's `while i < N` loop contains `while j < |heap|`, which
+//     copies N elements to newHeap each step, so it is O(n**2); SortInts
+//     adds O(n log n). The Python's heappush/heappop pair per step is O(n
+//     log n), so the O(n+m) label fits neither and the sorted-insertion
+//     heap is worse than the Python.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes near-linear cost, but both `while j < |heap|` and
-//     `while j < |heap2|` rebuild a size-N array by linear scan on every
-//     one of the N outer iterations (invariant `|heap|==N`), which is O(N)
-//     work times N outer steps. Open the inner while loops and confirm
-//     `|heap|` stays fixed at N through the outer loop, so total
-//     inner-loop iterations sum to N*N; separately, compare against the
-//     Python's `heapq.heappush`/`heapq.heappop`, which are true O(log N)
-//     heap operations, giving Python O(N log N) — so the label O(n+m)
-//     matches neither.
+//     The label claims linear cost, but the Python uses heapq with a push
+//     and pop per step (O(n log n)), and the Dafny rebuilds a sorted seq
+//     of size N in an inner loop at each of N steps. Check the
+//     heappush/heappop loop in the Python and the `while j < |heap|` loop
+//     inside `while i < N` in the Dafny.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 97, "data_dependent_loops": 0, "decreases_star":

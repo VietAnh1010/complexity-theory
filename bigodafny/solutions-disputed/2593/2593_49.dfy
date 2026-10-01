@@ -4,25 +4,22 @@
 //   audited class  : O(nlogn)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-19
+//   auditor        : labelaudit-r3d-07
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     SortInts(a_list) is the only non-constant cost here; the while loop
-//     runs at most n times doing only O(1) arithmetic (dif, s update) per
-//     iteration with no seq copies, so this is O(nlogn) not O(n**2), and
-//     the Python has the identical sort-then-scan structure and is also
-//     O(nlogn).
+//     Solve calls SumSeq (O(n)), SortInts (O(n log n)) and one loop of at
+//     most n steps with O(1) body, which is O(n log n); the Python does
+//     l.sort() and an identical single loop, so the n**2 label is wrong
+//     for both.
 //
 //   how this label could be wrong, and what to check:
-//     The label claims quadratic, but facts show seq_update_in_loop=false
-//     and the only non-constant step is SortInts (facts.sorts confirms a
-//     sort call). Compare directly against sibling 2593_332, which solves
-//     the same problem with the identical sort-then-scan shape and is
-//     labeled O(nlogn); if the loop bodies match, this label is the
-//     outlier.
+//     The label assumes quadratic work, but the only superlinear step is
+//     one sort. Verify that SortInts(a_list) is the single O(n log n) call
+//     and the while loop over l runs at most n times with O(1) work; the
+//     Python has the same sort then a single while loop.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 53, "data_dependent_loops": 1, "decreases_star":

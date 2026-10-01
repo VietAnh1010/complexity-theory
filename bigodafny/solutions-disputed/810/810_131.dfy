@@ -1,32 +1,34 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n)
-//   audited class  : O(n log v)
-//   cause          : label
+//   audited class  : other
+//   cause          : translation
 //   confidence     : high
-//   auditor        : value-vs-size convention, 2026-09-17
+//   auditor        : labelaudit-r3d-02
 //
-//   The label disagrees with the code under the value-versus-size
-//   convention. BigOBench fitted its labels by profiling, which treats a
-//   capped input value as constant; COMPLEXITY.md section 1 decides the
-//   opposite. This row is where the two disagree.
+//   The Python matches its label; the DAFNY does not. The label is right
+//   about the program it was measured on and the translation is the
+//   defect.
 //
 //   evidence:
-//     The label omits a value-derived factor. IntSqrt binary-searches
-//     over the value a*b rather than over the query count, so each query
-//     costs log of that value. Under the convention decided 2026-09-17 a
-//     loop bounded by an input VALUE counts as a parameter, so the true
-//     class carries a log v factor that O(n) does not.
+//     The Python takes (a*b)**0.5 in O(1) per query, so it is O(Q), but
+//     the Dafny's IntSqrt method binary-searches lo/hi, costing
+//     O(log(a*b)) per query, i.e. O(n log max(a_i b_i)) overall. The Dafny
+//     pays a value term via a reimplemented sqrt that the Python does not,
+//     which is the sqrt-search translation shape.
 //
 //   how this label could be wrong, and what to check:
-//     Open the Dafny and confirm IntSqrt's loop bound is derived from
-//     the argument's magnitude, not from |pairs|. If it is, O(n)
-//     understates the cost by exactly that factor. The proof in
-//     solutions-proved/810/810_131.dfy already states the correct bound
-//     and is unaffected by this move.
+//     The label is right about the Python, which computes
+//     `floor((a*b)**0.5)` once per query. Check that IntSqrt does a binary
+//     search over [0, x+1] with about log2(a*b) iterations per query.
 //
-//   note: the translation is NOT at fault in any of these four rows. The
-//   proof in solutions-proved/ is correct and stays there.
+//   structural facts (deterministic, from label_audit.py):
+//     {"body_lines": 49, "data_dependent_loops": 1, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 1,
+//     "loops": 2, "recursive_helpers": 0, "seq_append_read_in_same_loop":
+//     false, "seq_args": 1, "seq_update_in_loop": false,
+//     "set_build_in_loop": false, "sorts": [], "uses_map": false,
+//     "uses_multiset": false, "uses_set": false}
 // --------------------------------------------------------------------
 
 // p03388 AtCoder Beginner Contest 093 - Worst Case  (problem 810, solution 810_131)

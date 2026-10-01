@@ -4,18 +4,23 @@
 //   audited class  : other
 //   cause          : translation
 //   confidence     : high
-//   auditor        : labelaudit-batch-07
+//   auditor        : labelaudit-r3d-03
 //
 //   The Python matches its label; the DAFNY does not. The label is right
 //   about the program it was measured on and the translation is the
 //   defect.
 //
 //   evidence:
-//     The while loop `(f+1)*(f+1) <= n` increments f from 0 to about
-//     sqrt(n), an O(sqrt(n)) construct that Python does not pay for since
-//     rt = n**0.5 is a single hardware float operation, O(1); the true
-//     Dafny class is O(sqrt(n)), outside the given vocabulary, not the
-//     labelled O(1).
+//     The Dafny finds floor(sqrt(n)) with the loop `while (f + 1) * (f +
+//     1) <= n`, which runs about sqrt(n) iterations, a value term O(sqrt
+//     n); the Python computes `n**0.5` once and has no loop, so O(1) is
+//     right for it and the search loop is a reimplemented library call.
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes the square root is a single library call. Compare
+//     the Dafny's `while (f + 1) * (f + 1) <= n` search loop against the
+//     Python's `rt = n**0.5`; if the Python has no loop on n, the label is
+//     right about the Python and the Dafny is slower.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 22, "data_dependent_loops": 1, "decreases_star":

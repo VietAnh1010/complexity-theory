@@ -4,17 +4,22 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-01-sonnet
+//   auditor        : labelaudit-r3d-01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Each of the n loop iterations reads only the five fixed positions
-//     k[0] through k[4] of the current row and never loops over the row's
-//     own length, so row width m never enters the cost in either the Dafny
-//     or the Python, which only ever indexes k[0], k[1], k[2], k[3] and
-//     k[-1].
+//     Solve loops once over the n test lists and reads only fixed indices
+//     k[0] through k[4]; no inner loop walks a row, and the Python
+//     likewise parses a constant five numbers per line, so the cost is
+//     O(n).
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes a second dimension m for row width. Check that
+//     each test line holds exactly five integers a,b,c,d,k (Python reads
+//     k[0..4], k[-1]); Solve only indexes k[0]..k[4] and never walks a
+//     row, so no m appears.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 31, "data_dependent_loops": 0, "decreases_star":

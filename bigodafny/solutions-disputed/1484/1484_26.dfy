@@ -1,29 +1,34 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n)
-//   audited class  : O(n * L)
+//   audited class  : other
 //   cause          : label
 //   confidence     : high
-//   auditor        : value-vs-size convention, 2026-09-17
+//   auditor        : main agent, override of labelaudit-r3d-04
 //
-//   The label disagrees with the code under the value-versus-size
-//   convention. BigOBench fitted its labels by profiling, which treats a
-//   capped input value as constant; COMPLEXITY.md section 1 decides the
-//   opposite. This row is where the two disagree.
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The label treats a string comparison as unit cost. StringLess
-//     against a running best compares character by character, so the
-//     per-iteration cost carries the string length L. The proved bound
-//     is 6*|numbers|*MaxLen(numbers) + 4*MaxLen(numbers) + 6.
+//     Override of labelaudit-r3d-04's ok, which treated the statement's
+//     20-character cap as constant; the brief does not allow that. The
+//     machine-checked bound is 6 * |numbers| * MaxLen(numbers) + 4 *
+//     MaxLen(numbers) + 6, O(n * L), and the Python's max(l)/min(l)
+//     compare strings the same way, so O(n) omits the length term.
 //
 //   how this label could be wrong, and what to check:
-//     Confirm the loop compares whole strings rather than a precomputed
-//     key. Note the sibling row of the same problem sorts first and does
-//     not have this shape, which is why only this row is affected.
+//     The label counts the strings only. Each StringLess comparison walks
+//     the strings' common prefix, so the max/min pass costs n times the
+//     string length; check the proof in
+//     solutions-proved/value-bounded/1484/1484_26.dfy.
 //
-//   note: the translation is NOT at fault in any of these four rows. The
-//   proof in solutions-proved/ is correct and stays there.
+//   structural facts (deterministic, from label_audit.py):
+//     {"body_lines": 24, "data_dependent_loops": 1, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 1,
+//     "loops": 2, "recursive_helpers": 0, "seq_append_read_in_same_loop":
+//     false, "seq_args": 1, "seq_update_in_loop": false,
+//     "set_build_in_loop": false, "sorts": [], "uses_map": false,
+//     "uses_multiset": false, "uses_set": false}
 // --------------------------------------------------------------------
 
 // 172_A. Phone Code  (problem 1484, solution 1484_26)

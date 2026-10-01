@@ -1,30 +1,26 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(nlogn)
-//   audited class  : O(n+m)
+//   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-23
+//   auditor        : labelaudit-r3d-08
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Python's `sort(n[i], m[i])` sorts a fixed 2-character string (`x+y`
-//     from two single-char indices) at O(1), not an n-sized collection, so
-//     the surrounding `for i in range(0, len(n))` loop is O(n) overall;
-//     the Dafny mirrors this with a direct `if n[i] > m[i]` comparison in
-//     a single scan, matching the O(n+m) convention used by sibling row
-//     3060_1359 for the same problem, not O(nlogn).
+//     The Dafny lowercases both strings with seq comprehensions and runs
+//     one `while i < |n|` loop with an O(1) comparison, so it is O(n). The
+//     Python's sorted(x+y) is applied to two characters at a time, a
+//     constant-size sort, so the Python is O(n) too and the O(nlogn) label
+//     is wrong.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes a real sort over an n-sized collection, but the
-//     Python's `sort(n[i], m[i])` helper calls `sorted(x+y)` where x and y
-//     are single characters, so it always sorts a length-2 string
-//     regardless of input size. Open the Python `sort` helper and confirm
-//     its argument is always 2 characters; then note the Dafny's
-//     equivalent is a plain `if n[i] > m[i]` comparison inside a single
-//     O(n+m) scan, with no log factor anywhere.
+//     The label assumes a real sort. Check the Python's helper `sort(x,
+//     y)`: it sorts x+y, which is two single characters, so the sort is
+//     O(1) per call; the Dafny likewise takes a two-way max inside one
+//     loop.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 34, "data_dependent_loops": 0, "decreases_star":

@@ -1,20 +1,27 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(nlogn)
-//   audited class  : O(n)
+//   audited class  : other
 //   cause          : label
-//   confidence     : low
-//   auditor        : labelaudit-batch-06
+//   confidence     : medium
+//   auditor        : labelaudit-r3d-02
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Check's binary search `while l+1<r` over r-l is bounded by the value
-//     b-a, not by the query count n, so like sibling row 810_131 the
-//     per-query cost is effectively constant and the total across |pairs|
-//     queries is O(n), not O(nlogn); the Python's identical binary search
-//     over the same b-a range shows the same pattern.
+//     Per query the Dafny binary-searches `l`..`r` with r = b - a, costing
+//     O(log(b-a)), so the total is O(Q log max value), where the logarithm
+//     is of an input value not of the query count n. The Python runs the
+//     same binary search, so the label does not account for the value term
+//     and is wrong rather than the translation.
+//
+//   how this label could be wrong, and what to check:
+//     The label reads as n log n in the query count, but the log comes
+//     from a binary search over [1, b-a], i.e. over the VALUES a and b.
+//     Check the `while l + 1 < r` loop and the Python's identical loop; if
+//     the label's n is meant to bound those values, the verdict flips to
+//     ok.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 46, "data_dependent_loops": 1, "decreases_star":

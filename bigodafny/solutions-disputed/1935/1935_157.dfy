@@ -4,23 +4,21 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-13
+//   auditor        : labelaudit-r3d-05
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The Dafny loop iterates i from 0 to |s| once, doing O(1) work per
-//     character, so its cost is O(n) in the string length, and Python's
-//     two str.replace calls each scan the whole string too, so the O(1)
-//     label undercounts both the Python and the Dafny.
+//     The Dafny walks all |s| characters of the string in the while i <
+//     |s| loop, appending to res, so it is O(n). The Python's two
+//     s.replace calls and the input() read are also linear in the string
+//     length, so the O(1) label names a cost no construct exhibits.
 //
 //   how this label could be wrong, and what to check:
-//     The label claims constant time. Confirm the Dafny 'while i<|s|' loop
-//     scans every character of s regardless of 'ans', and that Python's
-//     two s.replace(...) calls likewise scan the full string each time; if
-//     both are proportional to |s|, the O(1) label is wrong regardless of
-//     any translation choice.
+//     The label assumes only arithmetic on n and k. Check the while i <
+//     |s| loop in Solve, which visits every character of s, and the
+//     Python's s.replace calls, which each scan the string.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 23, "data_dependent_loops": 0, "decreases_star":

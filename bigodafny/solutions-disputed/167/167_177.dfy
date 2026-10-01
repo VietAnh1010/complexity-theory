@@ -3,27 +3,24 @@
 //   stated label   : O(n)
 //   audited class  : other
 //   cause          : label
-//   confidence     : high
-//   auditor        : labelaudit-r2-01
+//   confidence     : medium
+//   auditor        : labelaudit-r3d-01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     IntSqrtFloor is an O(log n) binary search, but the following loop
-//     `while i < x && p == 0 { ...; i := i + 1; }` runs up to x =
-//     floor(sqrt(n)) times, making the whole method Theta(sqrt(n)) rather
-//     than Theta(n); the Python's `for i in range(1, x)` has the identical
-//     bound x = floor(sqrt(n)).
+//     The main loop in Solve runs at most sqrt(n) iterations and
+//     IntSqrtFloor adds O(log n) binary search steps, so the true cost is
+//     O(sqrt n) in the value n; the Python also loops range(1,
+//     floor(sqrt(n))).
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes the search loop scans on the order of n
-//     candidates, but it is bounded by x = floor(sqrt(n)), not n, via
-//     `while i < x && p == 0`. Instrument the loop counter i for a large n
-//     (e.g. n=10**8) and check it tops out near sqrt(n) (~10000) rather
-//     than near n; if so the tight class is O(sqrt(n)), and it is the
-//     label (measured on the same Python range(1,x) loop) that is wrong,
-//     not the translation.
+//     The label treats the value r (named n) as the loop size, but the
+//     loop only runs to floor(sqrt(n)). Check `while i < x && p == 0` with
+//     x := IntSqrtFloor(n), and the Python's range(1, x) with x =
+//     floor(sqrt(n)); a reviewer accepting value-bounded O(n) as an upper
+//     bound would keep the label.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 41, "data_dependent_loops": 1, "decreases_star":

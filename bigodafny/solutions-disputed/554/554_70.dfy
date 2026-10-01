@@ -1,22 +1,27 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n**2)
-//   audited class  : O(n)
+//   audited class  : other
 //   cause          : label
-//   confidence     : high
-//   auditor        : labelaudit-batch-04
+//   confidence     : medium
+//   auditor        : labelaudit-r3d-02
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The two inner while loops are bounded by 100-K and K+1, and the
-//     requires clause caps K at 0..9 and N at 1..150, so per-query work
-//     (DigitSum, RepeatChar, ParseDecimal) is a fixed constant, not
-//     proportional to any n; the outer loop over pairs is then O(n) in the
-//     number of test cases, not O(n**2); Python's identical
-//     range(100-K)/range(i,i+K+1) loops under the same N<=150,K<=9 bound
-//     are equally constant per query.
+//     Cost is O(sum over tests of (100 + N_t)): the outer loop is over
+//     |pairs|, the i and j loops are literal-bounded, and RepeatChar('9',
+//     x / 9) plus ParseDecimal cost the per-test value N_t, a value term
+//     the label does not account for. The Python builds str('9')*(x//9)
+//     and int() the same way, so the label is wrong, not quadratic.
+//
+//   how this label could be wrong, and what to check:
+//     The label claims quadratic in n, but I find only a loop over the
+//     test count whose body is bounded by literals (100-K, K+1) plus
+//     RepeatChar/ParseDecimal on x/9 with x derived from the per-test
+//     value N. Check that the inner loops never depend on pairs length and
+//     that N <= 150 only caps a value.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 73, "data_dependent_loops": 0, "decreases_star":

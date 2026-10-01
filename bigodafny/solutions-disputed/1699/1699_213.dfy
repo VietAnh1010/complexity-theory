@@ -3,24 +3,24 @@
 //   stated label   : O(n)
 //   audited class  : O(nlogn)
 //   cause          : label
-//   confidence     : high
-//   auditor        : labelaudit-batch-11
+//   confidence     : medium
+//   auditor        : labelaudit-r3d-05
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     fib is built by a while loop that stops once fib[|fib|-1]>n, so
-//     |fib| is O(log n); the outer while i<=n then runs an inner while
-//     k<|fib| every iteration, mirroring Python's `i in fib` linear scan,
-//     giving O(n log n) total for both languages.
+//     For each of the n positions the Dafny scans all of fib with the
+//     inner while k < |fib|, and |fib| grows like log n since the first
+//     loop stops when fib[|fib|-1] > n. The Python's `i in fib` is the
+//     same linear list scan, so the Python is O(n log n) as well and the
+//     label is wrong on both.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes fib membership is O(1) per check. Confirm |fib|
-//     grows only logarithmically because Fibonacci exceeds n after about
-//     log_phi(n) terms, and that the inner while k<|fib| (and Python's `i
-//     in fib`) rescans that whole list on every one of the n iterations of
-//     i; if so the true cost is O(n log n), not O(n).
+//     The label assumes the membership test against fib is constant. Check
+//     the inner k loop over |fib| inside the outer i <= n loop; fib has
+//     only about log n entries because it stops once a term exceeds n, so
+//     the cost is n log n rather than n.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 38, "data_dependent_loops": 1, "decreases_star":

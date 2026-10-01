@@ -4,23 +4,21 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-15
+//   auditor        : labelaudit-r3d-06
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Solve has a single while loop over i from 1 to y=n with O(1) body
-//     work per iteration (ParseInts and IntToString each cost O(length)
-//     once, outside the loop), and the Python mirrors this with one for
-//     loop over range(1,y) and no sort call anywhere.
+//     The Dafny runs ParseInts(a_list) once (linear) and a single while
+//     loop i < y with O(1) work, so it is O(n); the live Python (the last
+//     block) is one map/list parse and a single for loop with no sort or
+//     second input.
 //
 //   how this label could be wrong, and what to check:
-//     The label posits a second dimension m with a sort, but Solve takes
-//     only n and a_list. Check the Dafny body for any Sort/SortInts call
-//     or a second sequence parameter; there is none, and the Python
-//     for-loop over range(1,y) has no sort either, so a single-dimension
-//     linear label is the correct one.
+//     The label O(n+mlogm) assumes a second sized input and a sort, but
+//     the signature has a single sequence a_list and the code never sorts.
+//     Check the Python: one list of n heights, one loop, no sorted call.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 30, "data_dependent_loops": 0, "decreases_star":

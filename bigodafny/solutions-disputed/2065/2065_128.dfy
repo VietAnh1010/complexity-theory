@@ -4,28 +4,25 @@
 //   audited class  : other
 //   cause          : both
 //   confidence     : medium
-//   auditor        : labelaudit-batch-15
+//   auditor        : labelaudit-r3d-06
 //
 //   The Python does not match the label AND the translation diverges
 //   from the Python. Both need attention.
 //
 //   evidence:
-//     The outer while loop runs about sqrt(2n) times (bounded by the
-//     binary-search-computed lim), and each iteration itself runs an inner
-//     binary search of O(log n) steps to emulate math.sqrt(c), giving
-//     Dafny cost O(sqrt(n) log n); the Python's for i in
-//     range(1,int(math.sqrt(a))) is the same sqrt(n) outer count but each
-//     iteration calls the O(1) hardware math.sqrt, giving Python cost
-//     O(sqrt(n)), so neither matches the O(n) label and the translation
-//     itself adds a log(n) factor Python does not pay.
+//     The Python loops about sqrt(2n) times with math.sqrt, so O(sqrt n),
+//     while the Dafny's outer loop runs sqrt(2n) times with an inner
+//     binary-search sqrt, giving O(sqrt(n) log n) in the VALUE n; neither
+//     is the labelled O(n), and the Dafny additionally reimplements
+//     math.sqrt.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes cost scales with the value n, but the outer loop
-//     only runs until i reaches lim ~ sqrt(2n) (a binary search replacing
-//     math.sqrt), so no construct touches n items directly. Count the
-//     outer loop's iteration bound (lim, derived from a binary search on
-//     mid*mid<=a) against sqrt(n) to confirm it is sublinear in the value
-//     n, not linear.
+//     The label O(n) treats n as a linear loop bound, but the outer loop
+//     `while i < lim` runs lim ~ sqrt(2n) times, and the Dafny runs an
+//     inner binary search for the integer sqrt at each step (log factor),
+//     where the Python calls math.sqrt in O(1). Check the Python `for i in
+//     range(1,int(math.sqrt(a)))` to confirm O(sqrt n), and the Dafny
+//     inner `dlo < dhi` loop to confirm the extra log.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 50, "data_dependent_loops": 0, "decreases_star":

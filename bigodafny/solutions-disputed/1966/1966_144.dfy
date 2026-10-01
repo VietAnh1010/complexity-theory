@@ -3,27 +3,24 @@
 //   stated label   : O(1)
 //   audited class  : O(n)
 //   cause          : label
-//   confidence     : medium
-//   auditor        : labelaudit-batch-14
+//   confidence     : high
+//   auditor        : labelaudit-r3d-06
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The while loop `while i+1 < |s|` walks the whole string in steps of
-//     2 building parts, and Join(parts, "-") costs O(total output length)
-//     per the prelude cost table, so the Dafny is linear in |s|; the
-//     Python's `s[::2]`/`zip`/`'-'.join` slicing is the same linear work,
-//     so this is not a translation artifact.
+//     Both branches loop `while i + 1 < |s|` stepping by 2 and building
+//     parts, then Join(parts, "-") is linear in output length, so cost is
+//     O(n) in |s|; the Python's zip(s[::2], s[1::2]) and '-'.join are also
+//     linear.
 //
 //   how this label could be wrong, and what to check:
-//     The label claims constant time, but n = |s| is the phone number's
-//     own digit count (the problem's primary size, not an incidental
-//     bounded constant like an alphabet size), and both while loops scan
-//     it building `parts` before Join. Check whether BigOBench's O(1) came
-//     from timing only n in [2,100] where a linear scan is too fast to
-//     distinguish from constant overhead; if so the label reflects a
-//     measurement floor, not the algorithm's shape.
+//     The label O(1) assumes straight-line code, but the Dafny loops
+//     `while i + 1 < |s|` over the whole phone string and then calls Join
+//     over the parts. Check the problem statement: n is the digit count
+//     (2..100), but a cap is not a literal in the source, and the Python's
+//     zip/join over s is likewise linear.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 31, "data_dependent_loops": 2, "decreases_star":

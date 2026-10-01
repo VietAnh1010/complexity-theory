@@ -1,31 +1,3 @@
-// LABEL AUDIT -- queued for manual review, not a decision.
-//
-//   stated label   : O(n)
-//   audited class  : O(1)
-//   cause          : label
-//   confidence     : high
-//   auditor        : labelaudit-batch-07
-//
-//   The PYTHON is not the labelled class either. BigOBench's label looks
-//   wrong; the translation is faithful to it.
-//
-//   evidence:
-//     Solve requires 1 <= n <= 4, so the while loop over n and the
-//     MaxSeq/MinSeq calls over xs/ys all run over a problem-capped
-//     constant-size input; per the value-bounded-loop rule this is O(1) in
-//     both Python and Dafny, so the labelled O(n) is wrong for the label,
-//     not the translation.
-//
-//   structural facts (deterministic, from label_audit.py):
-//     {"body_lines": 40, "data_dependent_loops": 0, "decreases_star":
-//     false, "linear_prelude_calls": ["IntToString", "MaxSeq", "MinSeq",
-//     "ParseInt", "ParseIntFrom"], "loop_depth": 1, "loops": 1,
-//     "recursive_helpers": 2, "seq_append_read_in_same_loop": false,
-//     "seq_args": 1, "seq_update_in_loop": false, "set_build_in_loop":
-//     false, "sorts": [], "uses_map": false, "uses_multiset": false,
-//     "uses_set": false}
-// --------------------------------------------------------------------
-
 // 596_A. Wilbur and Swimming Pool  (problem 966, solution 966_134)
 // time complexity: O(n)
 // python exact-diff baseline: exact

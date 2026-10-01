@@ -1,21 +1,26 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(1)
-//   audited class  : O(logn)
+//   audited class  : other
 //   cause          : translation
 //   confidence     : high
-//   auditor        : labelaudit-batch-01-sonnet
+//   auditor        : labelaudit-r3d-01
 //
 //   The Python matches its label; the DAFNY does not. The label is right
 //   about the program it was measured on and the translation is the
 //   defect.
 //
 //   evidence:
-//     The translated binary search `while lo < hi` halves the [0, num+2)
-//     range each iteration to recover the integer square root, giving
-//     O(log(num)) iterations, while the Python it replaces computes the
-//     same value with a single O(1) call to math.sqrt, so O(1) held for
-//     the Python but not for this Dafny loop.
+//     The Dafny replaces the Python's single math.sqrt(1 + 8*num) with a
+//     binary search loop over [0, n+2], costing O(log n) in the input
+//     value n, while the Python is O(1) per call; this is a reimplemented
+//     library call.
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes constant work, which matches the Python's single
+//     math.sqrt call. Check Solve's binary search (lo, hi := 0, num+2): it
+//     runs about log2(n) iterations in the VALUE n, standing in for the
+//     one math.sqrt call in the Python.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 27, "data_dependent_loops": 0, "decreases_star":

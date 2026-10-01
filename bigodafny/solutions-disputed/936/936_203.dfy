@@ -2,19 +2,25 @@
 //
 //   stated label   : O(n*m)
 //   audited class  : O(n)
-//   cause          : harness
+//   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-07
+//   auditor        : labelaudit-r3d-02
 //
-//   Which of the label or the translation is at fault was not determined
-//   by the audit.
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The Dafny Solve only reads row[0] and row[2] from each grid row
-//     inside the while loop and never walks the row, so it is O(n);
-//     Python's L=list(map(int,input().split())) additionally pays to parse
-//     each full line, which is outside what Solve measures, so O(n*m) is
-//     right about the harness, not the method.
+//     Solve loops over the n queries and reads only row[0] and row[2] of
+//     each fixed four-number row, never walking a row, so row width does
+//     not enter the cost and it is O(n). The Python's L has exactly four
+//     entries per line, so the m dimension is constant there too and the
+//     O(n*m) label is wrong.
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes row width m varies, but the description says each
+//     query line holds exactly four integers (l1, r1, l2, r2). Check that
+//     the Dafny only reads row[0] and row[2], and that the Python's L =
+//     list(map(int, ...split())) has four fixed entries.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 21, "data_dependent_loops": 0, "decreases_star":

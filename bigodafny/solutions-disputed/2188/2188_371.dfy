@@ -4,28 +4,22 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-16
+//   auditor        : labelaudit-r3d-06
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Both while loops build ga/gb and counts via ga := ga[a_list[i] := i]
-//     and counts := counts[o := counts[o]+1], seq functional updates
-//     inside n-iteration loops, each costing O(n) and giving O(n**2) total
-//     for the Dafny, while the label's m dimension does not exist in the
-//     signature and the Python's dict writes ga[a[i]]=i, g[o]=... are O(1)
-//     amortized, giving O(n) for the Python.
+//     The Dafny fills ga/gb in one loop, updates counts in a second loop
+//     with O(1) seq updates, and calls MaxSeq once, so it is O(n); the
+//     Python uses dicts with the same single passes, so there is no n*m
+//     term.
 //
 //   how this label could be wrong, and what to check:
-//     The label names a dimension m that the signature does not expose
-//     (a_list and b_list are both length n, and n is the only size
-//     parameter) -- confirm there is no second array or width in Solve's
-//     signature, which alone makes O(n*m) wrong. Separately, check whether
-//     ga, gb and counts are built via seq functional updates like `ga :=
-//     ga[a_list[i] := i]` inside loops of n iterations; if so each update
-//     is O(n), making the Dafny O(n**2) even though the Python's dict
-//     writes ga[a[i]]=i are O(1).
+//     The label O(n*m) assumes a two-dimensional cost, but both
+//     permutations have the same length n and every loop is a single pass.
+//     Check the Python: two dict fills over range(n), one pass over 1..n
+//     and a max over the dict, all linear.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 39, "data_dependent_loops": 0, "decreases_star":

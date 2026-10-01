@@ -4,21 +4,23 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-08
+//   auditor        : labelaudit-r3d-04
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     b is declared seq<int>, not array<int>, and `b := b[i := 1]` (plus
-//     `b := b[key := 0]`) executes every loop iteration as an O(n)
-//     full-seq-copy per the dataset's seq-update rule, giving O(n**2)
-//     total that happens to match the label; Python's `b[i]=1` list
-//     assignment is O(1), so Python is genuinely O(n) and the agreement
-//     with the label is accidental.
+//     The Dafny builds b with seq(n+1, ...) and then runs one `while i <=
+//     n` loop doing O(1) seq updates b[i := 1] and b[key := 0]; the Python
+//     does the same list assignments in one loop, so both are O(n), not
+//     quadratic.
 //
 //   how this label could be wrong, and what to check:
-//     not recorded by this batch
+//     The label claims quadratic cost. Look for a nested loop or a copying
+//     operation in the Python (`for i in range(2, n + 1)` with `b[...]`
+//     assignments); there is none, each iteration does constant work. If
+//     the label came from the old copying model of seq updates, it is
+//     stale.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 30, "data_dependent_loops": 0, "decreases_star":

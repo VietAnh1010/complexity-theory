@@ -4,25 +4,23 @@
 //   audited class  : O(n)
 //   cause          : translation
 //   confidence     : high
-//   auditor        : labelaudit-batch-09
+//   auditor        : labelaudit-r3d-04
 //
 //   The Python matches its label; the DAFNY does not. The label is right
 //   about the program it was measured on and the translation is the
 //   defect.
 //
 //   evidence:
-//     The Dafny finds the first and last out-of-range elements with two
-//     independent linear scans (idx1, idx2) and never sorts, while
-//     Python's `ar=sorted(ar)` call used to check for any oversized
-//     element costs O(n log n); dropping the sort leaves the Dafny at
-//     O(n).
+//     The Python executes ar=sorted(ar), which is O(n log n), but the
+//     Dafny only does a forward scan for the first element above k and a
+//     backward scan for the last, with no Sort call, so it is O(n).
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes the Dafny needs Python's `sorted(ar)` check for
-//     any oversized element. Confirm the Dafny has no call to
-//     SortInts/Sort/SortStrings anywhere and that both while loops break
-//     as soon as they find one out-of-range element; if so the sort's cost
-//     never appears in the Dafny and the tight class is linear.
+//     The label is right about the Python's sorted(ar). Confirm in the
+//     Dafny that there is no Sort (facts show sorts: []) and that the
+//     loops `while i < n && idx1 == -1` and `while j >= 0 && !found2` are
+//     single scans; the sort was only used in the Python to test whether
+//     any element exceeds k, which the Dafny gets from idx1 == -1.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 30, "data_dependent_loops": 2, "decreases_star":

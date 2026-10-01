@@ -50,9 +50,9 @@ The six status directories partition the 640 rows:
 
 | Directory | Rows | Meaning |
 |---|---:|---|
-| `solutions/` | 299 | Behaviour-gated, safety-verified, and label-screened. |
+| `solutions/` | 311 | Behaviour-gated, safety-verified, and label-screened. |
 | `solutions-unscreened/` | 127 | Behaviour-gated but not label-audited. |
-| `solutions-disputed/` | 202 | The audit found a label or translation concern. |
+| `solutions-disputed/` | 190 | The audit found a label or translation concern. |
 | `solutions-ungateable/` | 5 | The normal behaviour gate cannot reach a reliable verdict. |
 | `solutions-unverified/` | 3 | Behaviour-gated, but Dafny cannot prove safety or termination. |
 | `solutions-untranslated/` | 4 | Bare-float output has no practical exact Dafny specification. |

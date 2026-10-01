@@ -1,22 +1,25 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(logn)
-//   audited class  : O(n)
+//   audited class  : other
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-02
+//   auditor        : labelaudit-r3d-01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     curr_div increments by 1 on each failed trial division with no
-//     sqrt(n) cutoff, so a large prime factor in a forces curr_div up
-//     toward the magnitude of a itself before n % curr_div == 0 fires;
-//     sibling row 310_51 runs the identical increment strategy for the
-//     same problem 797A, explicitly bounded to 2*i<=n, and is labeled O(n)
-//     -- the same worst case applies here to both this Dafny and the
-//     identical Python increment logic, so O(logn) understates it.
+//     In Solve the loop increments curr_div one step at a time up to the
+//     largest prime factor of a, so a prime input costs O(a) iterations, a
+//     value term far above O(log n); the Python has the same
+//     trial-division loop.
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes cost logarithmic in n, but the trial division loop
+//     increments curr_div by 1 until it divides n. Check `curr_div :=
+//     curr_div + 1` in the else branch: for prime n and k=2 it climbs all
+//     the way to n; the Python's while loop is identical.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 28, "data_dependent_loops": 1, "decreases_star":

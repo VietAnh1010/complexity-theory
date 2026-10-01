@@ -1,28 +1,27 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n**2)
-//   audited class  : O(n)
+//   audited class  : other
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-batch-20
+//   auditor        : labelaudit-r3d-07
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     y1 = intervals[0][1] is capped at 100 by the dryer-length constraint
-//     (0 <= li < ri <= 100), so the inner while over j and the seq update
-//     marked[j := true] both cost O(sz) with sz <= 100, a constant; only
-//     the outer loop over k scales with n, giving O(n), and the Python
-//     alex[j] = "X" list write is O(1) too.
+//     The outer loop runs n-1 times and the inner `while j < hi` runs up
+//     to min(b, y1) - a iterations, with a final loop from y0 to y1, so
+//     the cost is O(n * y1 + y1), a value term in the segment endpoints
+//     rather than n**2. The Python's `for j in range(a, min(b, y[1]))`
+//     pays the same, so the label is the cause.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes the inner marked-array update scales with n rather
-//     than the fixed dryer length. Check the constraint 0 <= li < ri <=
-//     100 in the description: since y1 <= 100 bounds sz and hi, the inner
-//     while loop and the marked[j := true] update are O(1) amortized per
-//     outer step; confirm the outer k-loop over n is the only construct
-//     that scales with n.
+//     The label claims n squared, but the cost is n times the interval
+//     length (a coordinate VALUE) plus the length of Alexey's segment.
+//     Check the inner `while j < hi` loop: its bound is min(b, y1) - a,
+//     taken from input values, not from n; the statement's cap of 100 does
+//     not make it a source literal.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 45, "data_dependent_loops": 0, "decreases_star":

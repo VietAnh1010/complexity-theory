@@ -4,30 +4,25 @@
 //   audited class  : O(n)
 //   cause          : translation
 //   confidence     : high
-//   auditor        : labelaudit-batch-15
+//   auditor        : labelaudit-r3d-06
 //
 //   The Python matches its label; the DAFNY does not. The label is right
 //   about the program it was measured on and the translation is the
 //   defect.
 //
 //   evidence:
-//     The inner while loop strips one character from either end of a via
-//     a[1..] or a[..|a|-1] each iteration, which the prelude cost table
-//     marks O(|s|) total for this recursion shape rather than quadratic,
-//     while the Python's equivalent a=a[1:] / a=a[:-1] copies a fresh
-//     string of length len(a) on every step, making the Python genuinely
-//     O(n**2) over the reduction and the label correct for it.
+//     The Python's a=a[1:] copies on each iteration and is quadratic per
+//     string, but the Dafny's slice views and O(1) appends make the peel
+//     loop O(len), and the rev/alphabet scan is bounded by the literal
+//     26-letter alphabet, so total cost is linear in the input; this is
+//     the slicing shape.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes the reduction loop's repeated a := a[1..] / a :=
-//     a[..|a|-1] is quadratic as it is in Python, but the cost table
-//     states this exact shape -- a hand-written recursion trimming one
-//     element off a flat seq each step -- is O(|s|) measured in Dafny, not
-//     quadratic. Confirm the inner while loop only ever slices a by one
-//     element per iteration (no nested scan), then check the Python's
-//     a=a[1:]/a=a[:-1] does create a fresh string copy of length len(a)
-//     each call, which is genuinely O(n) per call and sums to O(n**2) over
-//     the reduction.
+//     The label O(n**2) was measured on a Python that peels with `a =
+//     a[1:]`, which copies the remaining string each step and is quadratic
+//     in the string length. Check the Dafny: it peels with `a := a[1..]`
+//     and `a[..|a|-1]`, which are O(1) views, and appends with `s + [x]`
+//     (O(1) amortised), so the same loop is linear.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 47, "data_dependent_loops": 2, "decreases_star":

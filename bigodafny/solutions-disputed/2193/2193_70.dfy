@@ -1,30 +1,31 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(nlogn)
-//   audited class  : O(n)
-//   cause          : label
-//   confidence     : high
-//   auditor        : labelaudit-batch-16
+//   audited class  : O(n**2)
+//   cause          : translation
+//   confidence     : low
+//   auditor        : labelaudit-r3d-06
 //
-//   The PYTHON is not the labelled class either. BigOBench's label looks
-//   wrong; the translation is faithful to it.
+//   The Python matches its label; the DAFNY does not. The label is right
+//   about the program it was measured on and the translation is the
+//   defect.
 //
 //   evidence:
-//     The outer while loop over distinct is capped at 3 iterations because
-//     a_list values are restricted to {1,2,3} per the description, so the
-//     inner O(n) scan over a_list runs at most 3 times giving O(n) total,
-//     and Sort/SumSeq then operate on a sequence of length at most 3,
-//     contributing O(1); the Python's dict-based freq counting over at
-//     most 3 keys is likewise O(n).
+//     The Dafny builds `distinct` with a linear seq membership test per
+//     element and then runs a full pass over a_list per distinct value, so
+//     cost is O(n*d) with no source-level cap on d, whereas the Python
+//     counts with a dict in one pass; the label O(nlogn) matches the
+//     Python's worst-case sort of counts.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes real sorting work scales with n, but the
-//     description states 'every number is from 1 to 3 inclusively', so
-//     distinct (built via `v !in distinct`) never exceeds length 3.
-//     Confirm the outer while loop over distinct is bounded by that
-//     constant rather than by n; if so the inner O(n) scan runs at most 3
-//     times and Sort/SumSeq act on a length-<=3 seq, making the whole
-//     method O(n).
+//     The Dafny scans `distinct` with `v !in distinct` for every element
+//     and re-scans a_list once per distinct value, which is O(n*d) with d
+//     the number of distinct values, up to n if values are unrestricted.
+//     The statement says 1 <= a_i <= 3, so d <= 3 in practice, but the
+//     source has no literal bound on d. Decide whether the data cap should
+//     make d constant (then the Dafny is O(n) and the label is too loose)
+//     or the signature's worst case (O(n**2), against the Python's dict
+//     count plus sort of the distinct counts).
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 43, "data_dependent_loops": 0, "decreases_star":

@@ -4,24 +4,23 @@
 //   audited class  : O(n)
 //   cause          : translation
 //   confidence     : high
-//   auditor        : labelaudit-batch-09
+//   auditor        : labelaudit-r3d-04
 //
 //   The Python matches its label; the DAFNY does not. The label is right
 //   about the program it was measured on and the translation is the
 //   defect.
 //
 //   evidence:
-//     The Dafny never calls SortInts; it checks the string is
-//     non-decreasing with one forward pass comparing s[i] to s[i+1], so
-//     the whole method is O(n), while Python's `sorted(s)` call makes the
-//     original O(n log n).
+//     The Python computes t = sorted(s) and compares s != t, which is O(n
+//     log n), but the Dafny checks sortedness with a single adjacent-pair
+//     loop (`s[i] > s[i+1]`) and counts letters in another loop, so it is
+//     O(n) with no sort.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes the Dafny needs Python's sort to check ordering.
-//     Open the first while loop (`while i + 1 < n`) and confirm it only
-//     compares adjacent characters s[i] and s[i+1] with no call to
-//     SortInts or Sort anywhere in the file; if so the method is a single
-//     linear pass, not O(n log n).
+//     The label correctly describes the Python's sorted(s). Open the Dafny
+//     and confirm the only loops are the adjacent comparison and the
+//     letter count (facts show sorts: []); sortedness was tested by a
+//     linear scan instead of sorting.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 30, "data_dependent_loops": 1, "decreases_star":

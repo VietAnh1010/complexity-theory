@@ -1,28 +1,26 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n**2)
-//   audited class  : O(n)
+//   audited class  : other
 //   cause          : label
-//   confidence     : low
-//   auditor        : labelaudit-batch-13
+//   confidence     : medium
+//   auditor        : labelaudit-r3d-05
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The inner while loop's S accumulates by i each pass while i grows by
-//     2, so it reaches S==nn in O(sqrt(nn)) iterations rather than O(nn),
-//     and since nn<=5000 is capped, the outer 'while idx<|numbers|' loop
-//     dominates at O(n); the Python has the identical range(3,n+5,2) loop
-//     with a break, so the label overstates both.
+//     Per test case the inner loop adds successive odd numbers to S until
+//     S == nn, taking about sqrt(nn) iterations, so the total is O(sum of
+//     sqrt(s_i)) plus an O(t) Join. The Python's for i in range(3, n+5, 2)
+//     with the same S == n break pays the same sqrt term, so the label is
+//     wrong, not the translation.
 //
 //   how this label could be wrong, and what to check:
-//     The label implies the inner search scales with the value s. Check
-//     that 'while i<nn+5 && S!=nn' converges in O(sqrt(nn)) steps because
-//     S accumulates roughly quadratically in the loop counter i, and that
-//     nn<=5000 is capped by the problem statement; if both hold, per-test
-//     cost is a bounded constant and the total is O(n) in the test count,
-//     not O(n^2).
+//     The label treats n as a size, but n counts test cases (t <= 5000)
+//     and each test pays in its value s. Check the inner while i < nn + 5
+//     && S != nn loop: S adds odd numbers 3, 5, 7, ..., so it exits after
+//     about sqrt(s) steps.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 40, "data_dependent_loops": 1, "decreases_star":

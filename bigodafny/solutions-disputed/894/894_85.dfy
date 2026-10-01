@@ -4,18 +4,24 @@
 //   audited class  : O(n)
 //   cause          : translation
 //   confidence     : high
-//   auditor        : labelaudit-batch-07
+//   auditor        : labelaudit-r3d-02
 //
 //   The Python matches its label; the DAFNY does not. The label is right
 //   about the program it was measured on and the translation is the
 //   defect.
 //
 //   evidence:
-//     Python's Valid(l,i,x,y) recomputes prefix sums and calls sum(l) from
-//     scratch for each i up to the break point, giving the labelled
-//     O(n**2); the Dafny instead tracks s and total incrementally in a
-//     single pass with a found flag, doing O(1) work per iteration of the
-//     while loop, so it is O(n).
+//     The Python calls Valid for each i, and each call loops i times
+//     (recomputing the prefix and sum(l)), which is O(n**2) as labelled.
+//     The Dafny hoists sum into `total` and keeps a running prefix s in
+//     one loop over a_list, which is O(n): the algorithm was replaced by a
+//     faster single pass.
+//
+//   how this label could be wrong, and what to check:
+//     The label comes from the Python's `for i in range(len(l))` calling
+//     Valid(l, i, x, y), which re-sums a prefix of length i each time (and
+//     sum(l) inside the check). Check that the Dafny computes `total` once
+//     and a running prefix `s` in a single loop with no nested pass.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 30, "data_dependent_loops": 1, "decreases_star":

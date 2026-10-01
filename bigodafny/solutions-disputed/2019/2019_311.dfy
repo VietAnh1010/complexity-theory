@@ -4,23 +4,22 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-15
+//   auditor        : labelaudit-r3d-06
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The while loop over i from 0 to n does constant work per iteration
-//     (arithmetic on tank, count, k) with no nested loop or per-iteration
-//     scan, and the Python for-loop over range(n) with an early break is
-//     the same shape.
+//     The Dafny does one linear ParseInts(c_list) and one loop over at
+//     most n days with O(1) arithmetic, so O(n); the Python is a single
+//     for loop with break, so the quadratic label has no construct behind
+//     it.
 //
 //   how this label could be wrong, and what to check:
-//     The label implies nested iteration over n, but Solve has one while
-//     loop over i with O(1) work per iteration (tank/count/k updates) and
-//     an early stopped flag. Check for any inner loop or n-sized recompute
-//     inside the body; there is none, and the Python's single for-loop
-//     with break confirms linear, not quadratic, work.
+//     The label O(n**2) assumes nested work, but the Dafny has one loop
+//     `while i < n && !stopped` with constant work per step after a single
+//     ParseInts. Check the Python: one `for i in range(n)` with no inner
+//     loop.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 44, "data_dependent_loops": 1, "decreases_star":

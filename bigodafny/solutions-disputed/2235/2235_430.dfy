@@ -1,28 +1,28 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n**2)
-//   audited class  : O(n)
+//   audited class  : other
 //   cause          : label
-//   confidence     : high
-//   auditor        : labelaudit-batch-17
+//   confidence     : medium
+//   auditor        : labelaudit-r3d-07
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The inner while loop appends buf := buf + [s[i]] stepping i by 2,
-//     reading only the input string s[i], never buf itself, so each append
-//     is O(1) and the total per test case is O(|s|); summed over t test
-//     cases this is O(n), and the Python's equivalent stride-2 print loop
-//     is likewise linear.
+//     Solve loops over the t test cases and, per case, steps through s
+//     with i := i + 2, appending to buf in O(1); Join is linear in output,
+//     so the cost is O(t + sum of |s_i|), a per-test value summed over
+//     tests rather than n squared. The Python does the same `for i in
+//     range(0, len(s), 2)` per test, so the label is wrong for both.
 //
 //   how this label could be wrong, and what to check:
-//     The label implies a quadratic construct, but buf := buf + [s[i]]
-//     never reads buf[i] in the same loop (only s[i], the input) so per
-//     the table it is the O(1)-per-append deferred-concat case, not the
-//     O(|s|) flatten case. Confirm no other loop reads buf by index before
-//     the loop ends, and check the Python's for-i-in-range(0,len(s),2)
-//     print loop is also single-pass linear.
+//     The label claims quadratic growth, but the two loops are tests (t)
+//     times characters per test, i.e. total input length. Check that the
+//     inner `while i < |s|` loop runs once per element of s_list with step
+//     2 and that nothing else walks s; if n in the label is meant as t
+//     times per-test n, the label is a name for the same product and the
+//     verdict flips to ok.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 34, "data_dependent_loops": 0, "decreases_star":

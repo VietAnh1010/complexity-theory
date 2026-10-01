@@ -4,25 +4,23 @@
 //   audited class  : other
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-batch-07
+//   auditor        : labelaudit-r3d-04
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     `s` is computed as floor(sqrt(n)) via `while (s+1)*(s+1)<=n`, and
-//     `l:=2*s+1` bounds the size of `num0`, `num`, `prevRow` and `row`, so
-//     the DP loop `while i<k` nested with `while j<l` costs O(k*sqrt(n)),
-//     not O(n*m) (real class O(k*sqrt(n))); the Python's `s=int(n**0.5)`
-//     builds the identical sqrt(n)-sized `Num` array, so both share this
-//     sub-linear-in-n shape.
+//     The Dafny runs a sqrt search loop (while (s+1)*(s+1) <= n), builds
+//     arrays of length l = 2*s+1, then loops k times over l, so the cost
+//     is O(K*sqrt(N)) in the input VALUES; the Python pays the same via
+//     len(Num) = 2*int(n**0.5) in its k-by-l DP loop.
 //
 //   how this label could be wrong, and what to check:
-//     The label O(n*m) assumes the loop count scales with N itself. Check
-//     `while (s+1)*(s+1) <= n`: it sets s to floor(sqrt(n)), and `l :=
-//     2*s+1` sizes every array that follows, so the inner DP loop over j<l
-//     runs O(sqrt(n)) times per k, not O(n) times; compare against the
-//     Python's identical `s=int(n**0.5)`.
+//     The label treats N and K as plain sizes (N*K). Open the nested loops
+//     `while i < k` / `while j < l` and check that l = 2*s+1 with s =
+//     floor(sqrt(n)); if l is sqrt(N) rather than N, the true cost is
+//     K*sqrt(N), a value term the label does not name. If the dataset
+//     reads n and m as other quantities, the label could stand.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 74, "data_dependent_loops": 1, "decreases_star":

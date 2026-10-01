@@ -1,20 +1,27 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n**2)
-//   audited class  : O(n)
+//   audited class  : other
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-batch-06
+//   auditor        : labelaudit-r3d-02
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The loop over numbers calls Repeat("9",cnt9) and Repeat("8",cnt8),
-//     each costing O(length) per the table, so total cost is linear in the
-//     summed test values with no nested or squared construct; the Python's
-//     `['9']*(n-...) + ['8']*...` list construction is the same linear
-//     build, so O(n**2) matches neither source.
+//     Cost is O(sum of the per-test n_i): for each nv the Dafny builds
+//     Repeat("9", cnt9) + Repeat("8", cnt8), linear in nv, inside a loop
+//     over the tests. The Python's list multiplication and join are also
+//     linear in n, so no construct is quadratic and the per-test value
+//     term is not in the label's variables.
+//
+//   how this label could be wrong, and what to check:
+//     The label claims quadratic but nothing is quadratic: each test
+//     builds Repeat("9", cnt9) + Repeat("8", cnt8) whose length is the
+//     per-test value nv. Check the Python's `['9'] * (n - ceil(n/4))` and
+//     `''.join(s)`, both linear in that n, and that the per-test n is a
+//     value, not a count.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 24, "data_dependent_loops": 0, "decreases_star":

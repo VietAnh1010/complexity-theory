@@ -4,28 +4,22 @@
 //   audited class  : O(n*m)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-23
+//   auditor        : labelaudit-r3d-08
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The nested loops `while r < |v_3|` (n floors) and inner `while i <
-//     2*m` (m flats per floor) together scan all n*m entries, and the
-//     Python does the same with `for _ in range(n)` plus `sum(... for i in
-//     range(0, m*2, 2))`, so both sources are O(n*m), not O(n) as
-//     labelled; sibling row 3046_65 for the same problem is correctly
-//     labelled O(n*m).
+//     The outer loop runs over the n floor rows and the inner `while i < 2
+//     * m` loop runs m times per row, so the cost is O(n*m). The Python
+//     parses each row of 2m ints and runs a generator over range(0, m*2,
+//     2), paying the same, so the O(n) label omits m.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes only the floor count n matters, but the problem
-//     statement gives `1 <= n, m <= 100` as two independent parameters and
-//     each floor line has 2m characters that the inner loop `while i <
-//     2*m` fully scans for every one of n floors. Confirm m is not fixed
-//     (unlike the 396_361 rectangle case) by rereading the input format,
-//     then check the inner loop bound `i < 2*m` runs to completion each
-//     outer iteration, giving O(n*m); compare directly against sibling
-//     `3046_65`, labelled O(n*m) for the identical problem.
+//     The label counts only the floors. Check the inner `while i < 2 * m`
+//     loop in Solve: it runs m times for each of the n rows, and the
+//     Python does `sum(... for i in range(0, m*2, 2))` for each row; m is
+//     up to 100 but a cap does not make it constant.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 26, "data_dependent_loops": 0, "decreases_star":

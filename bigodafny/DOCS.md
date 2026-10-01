@@ -28,21 +28,21 @@ for provenance, but they are not operational instructions.
 | Translated rows | 636 |
 | Strict behaviour gate | 529 valid, 3 failed, 2 parser-blocked |
 | Loose behaviour gate | 95 agree, 1 timeout-only unresolved, 4 untranslatable |
-| Clean `solutions/` rows | 299 |
+| Clean `solutions/` rows | 311 |
 | Complexity proof files | 323, all verify without `assume` |
 | Bounded campaign results | 281 proved of 366 draws (77%) |
 | Distinct drawn rows with a proof now | 292 of 329 (89%) |
-| Label-audited rows | 506: 296 ok, 197 mismatch, 13 unsure (`solutions/` re-audited 2026-10-01) |
+| Label-audited rows | 506: 305 ok, 183 mismatch, 18 unsure (re-audited 2026-10-01) |
 
 The status directories are the source of truth for a row's current state. Do
 not infer state from an old campaign result or commit message.
 
-`data/label_audit.jsonl`'s verdicts for the rows that were in `solutions/` come
-from re-audit r3 (2026-10-01), under the current rules: input values are cost
-parameters, `IntToString` is charged 1, a `Gcd` costs Euclid's depth. It moved
-45 rows to `solutions-disputed/`. Verdicts for rows already disputed date from
-2026-09-16, before those rules; the superseded lines are in
-`data/old-record.jsonl`.
+`data/label_audit.jsonl` comes from re-audit r3 (2026-10-01) for every row in
+`solutions/` and `solutions-disputed/`, under the current rules: input values
+are cost parameters, `IntToString` is charged 1, a `Gcd` costs Euclid's depth.
+It moved 45 rows into the queue and released 12 from it. Only the 5
+`solutions-ungateable/` rows keep 2026-09-16 verdicts; every superseded line is
+in `data/old-record.jsonl`.
 
 ## Status directories
 

@@ -4,26 +4,26 @@
 //   audited class  : O(n)
 //   cause          : translation
 //   confidence     : high
-//   auditor        : labelaudit-batch-18
+//   auditor        : labelaudit-r3d-07
 //
 //   The Python matches its label; the DAFNY does not. The label is right
 //   about the program it was measured on and the translation is the
 //   defect.
 //
 //   evidence:
-//     The Dafny never calls a sort; it maintains sndOk with one O(1)
-//     comparison sndLast > s[i] per loop iteration and writes into a real
-//     array (O(1) per write), so the whole loop is O(n), whereas the
-//     Python builds snd_lst then calls sorted(snd_lst) and compares, an
-//     O(n log n) operation.
+//     The Python sorts snd_lst (up to n elements) to test it is
+//     non-decreasing, which is O(n log n) as labelled, while the Dafny
+//     replaces that with a one-pass `haveSnd && sndLast > s[i]` check in a
+//     single loop over m, so Solve is O(n). That is an algorithm
+//     replacement (a sort dropped), landing in a better class than the
+//     labelled Python.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes the sndOk check re-sorts snd_lst as Python's
-//     sorted(snd_lst)==snd_lst does. Open the Dafny loop and confirm sndOk
-//     is tracked incrementally via a single sndLast>s[i] comparison per
-//     iteration, with no SortStrings/SortInts call anywhere; if so the
-//     Dafny never sorts and is O(n), while the label was measured on the
-//     Python's O(n log n) sort.
+//     The label's n log n comes from the Python's
+//     `sorted(snd_lst)==snd_lst`; the Dafny has no sort. Compare the
+//     Python's final sorted() check against the Dafny's running
+//     sndLast/sndOk comparison inside the single loop; if the Dafny still
+//     sorted anywhere the label would stand.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 36, "data_dependent_loops": 0, "decreases_star":

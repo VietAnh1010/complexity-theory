@@ -4,23 +4,22 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-22
+//   auditor        : labelaudit-r3d-08
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The while loop reads only intervals[i][0] and intervals[i][1] for
-//     each of the n chapters, never iterating over intervals[i] itself,
-//     matching mas[i][0] and mas[i][1] in the Python; row width is fixed
-//     at two fields so the cost is O(n), not O(n*m).
+//     The loop `while i < n && !found` reads only intervals[i][0] and
+//     intervals[i][1], so it is O(n) with no walk of a row. The Python
+//     parses each line into exactly two ints and indexes mas[i][0] and
+//     mas[i][1], so it is O(n) too and the O(n*m) label is wrong.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes each chapter row has width m that the code scans.
-//     Check the input format: a chapter is always the pair (l_i, r_i), so
-//     intervals[i][0] and intervals[i][1] are the only fields ever read;
-//     confirm no loop walks intervals[i] itself, which would mean row
-//     width is a constant 2, not a second dimension m.
+//     The label assumes chapter rows have a variable width m. Check the
+//     statement: each of the n lines holds exactly two integers l_i and
+//     r_i, so row width is a constant; if rows could be longer the label
+//     would stand.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 22, "data_dependent_loops": 1, "decreases_star":

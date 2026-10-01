@@ -4,23 +4,22 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-22
+//   auditor        : labelaudit-r3d-08
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     output := Repeat("1", c) builds a string of length about n/2, which
-//     the table charges O(length of argument), and the Python's '1'*(n//2)
-//     allocates the same length string, so both are O(n) and the O(1)
-//     label undercounts the output-size cost on both sides.
+//     Repeat("1", c) is linear in the length of the string it builds, c =
+//     n/2, so Solve is O(n) in the single integer n that is the problem's
+//     size. The Python's '1'*(n//2) and print of that string pay the same
+//     O(n), so the O(1) label is wrong, not the translation.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes building the output string is free. Check that
-//     Repeat("1", c) with c around n/2 is O(length of argument) per the
-//     cost table, so the Dafny is O(n); then check the Python's '1'*(n//2)
-//     string multiplication, which also allocates a string of length ~n/2
-//     and is O(n) in CPython, so this is not a translation gap either.
+//     The label assumes the output is built in constant time. Check
+//     Repeat("1", c) with c about n/2 and the Python's '1'*(n//2): both
+//     produce a string whose length grows with the value n, which is the
+//     problem's size.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 14, "data_dependent_loops": 0, "decreases_star":

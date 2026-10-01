@@ -1,31 +1,26 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n)
-//   audited class  : other
-//   cause          : both
-//   confidence     : low
-//   auditor        : labelaudit-batch-11
+//   audited class  : O(n**2)
+//   cause          : label
+//   confidence     : high
+//   auditor        : labelaudit-r3d-05
 //
-//   The Python does not match the label AND the translation diverges
-//   from the Python. Both need attention.
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Python rebuilds the whole list c and calls c.index(i+1) once per
-//     outer iteration of the n-step for loop, each O(n), giving Python
-//     O(n**2) rather than the labelled O(n); the Dafny additionally builds
-//     RepeatInt and ReverseInt via seq-concatenation at every recursive
-//     level, the same shape the audit notes made 888_6's ReverseSeq
-//     quadratic per call, so the true Dafny cost looks worse still,
-//     plausibly cubic.
+//     Each of the n iterations of the main loop in Solve calls IndexOfInt
+//     over c (recursion on s[1..], O(n)), builds m with RepeatInt and
+//     JoinInts, and rebuilds c by concatenation, so the total is O(n**2).
+//     The Python does c.index, list slicing and ' '.join each iteration,
+//     so it is quadratic too and the label is wrong for both.
 //
 //   how this label could be wrong, and what to check:
-//     The label claims O(n) but c.index(i+1) and the list rebuild
-//     c=c[:i]+c[j:i-1:-1]+c[j+1:] each cost O(n) and run once per outer
-//     iteration, so check whether Python is actually O(n**2); separately
-//     confirm whether ReverseInt's `ReverseInt(s[1..]) + [s[0]]` recursion
-//     is the same concatenate-at-every-level shape flagged as quadratic
-//     for 888_6 -- if so, RepeatInt and ReverseInt called on segments up
-//     to size n inside the O(n) outer loop push the Dafny past O(n**2).
+//     The label assumes each of the n outer iterations is O(1). Check the
+//     body of the while i < n loop: it calls IndexOfInt(c, i+1),
+//     RepeatInt, ReverseInt(seg), concatenates c[..i] + mid + c[j+1..] and
+//     JoinInts(m, " "), each linear in n.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 147, "data_dependent_loops": 0, "decreases_star":

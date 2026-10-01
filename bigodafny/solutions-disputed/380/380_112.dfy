@@ -3,22 +3,24 @@
 //   stated label   : O(nlogn)
 //   audited class  : O(n+mlogm)
 //   cause          : label
-//   confidence     : high
-//   auditor        : labelaudit-batch-03
+//   confidence     : low
+//   auditor        : labelaudit-r3d-01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     `aSorted := SortInts(a_list)` sorts the whole seq of size m (merge
-//     sort, Theta(m log m) per the table) before a loop only reads its
-//     first `m`-param elements, plus three separate Theta(strLen) passes
-//     over `s`, so the tight class is Theta(strLen + m log m); n (string
-//     length) and m (the count read on its own input line) are independent
-//     inputs, not a naming split of one input, and Python's
-//     `sorted(map(int,...))` followed by the same linear passes is the
-//     same Theta(n + m log m), not O(n log n), so the label is wrong on
-//     the Python's own terms.
+//     Solve sorts a_list with SortInts (m log m) and runs four linear
+//     loops over strLen = |s|, so cost is O(|s| + m log m) with two
+//     independent sizes; the Python sorts lis and loops range(n), n =
+//     len(s), identically.
+//
+//   how this label could be wrong, and what to check:
+//     The label has a single variable, but there are two independent
+//     sizes: |s| (string length) and the count of days with the sorted
+//     a_list. Check Solve: SortInts(a_list) is O(|a| log |a|) and the
+//     loops over strLen+3 and strLen/2 are linear in |s|; the label holds
+//     only if |s| is at most about |a| log |a|.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 90, "data_dependent_loops": 0, "decreases_star":

@@ -4,23 +4,23 @@
 //   audited class  : other
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-19
+//   auditor        : labelaudit-r3d-07
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The while st loop, for i loop, and for j loop are all nested and
-//     each range over st..idx (up to n elements), giving O(n**3) total;
-//     the Python has the identical triple-nested structure, so the label
-//     is wrong for the Python too, not just the translation.
+//     The Dafny and the Python both run st, i, j loops, each bounded by
+//     idx (the number of values under 0.5, up to n), so the total is about
+//     idx**3/3, which is cubic and not in the O(n**2) class; the Sort is
+//     only O(n log n). The Python has the same triple nest, so the label
+//     is the cause.
 //
 //   how this label could be wrong, and what to check:
-//     The label claims quadratic but facts show loop_depth=3: the while st
-//     loop nests a for i loop which nests a for j loop, both ranging over
-//     st..idx. Count the nesting in Solve directly, and sum (idx-st)^2
-//     over st from 0 to idx-2 to confirm the true cost is O(n**3), not
-//     O(n**2).
+//     The label claims quadratic, but there are three nested loops over
+//     the prefix of probabilities below 0.5. Count the nesting `while st <
+//     idx - 1` / `while i < idx` / `while j < idx`; with all p below 0.5,
+//     idx is about n, giving cubic work.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 51, "data_dependent_loops": 2, "decreases_star":

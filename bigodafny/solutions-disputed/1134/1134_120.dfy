@@ -4,28 +4,22 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-r2-06
+//   auditor        : labelaudit-r3d-03
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Solve reads only row[0], row[1], row[2] from each matrix entry (a,
-//     b, c) per the `requires |matrix[k]| >= 3` precondition, and the
-//     triple-nested i/j/k loop ranges only over the fixed constants -1..1
-//     (27 total iterations per test case), so row width m never enters the
-//     cost and the true class is O(n) where n=|matrix|, exactly mirroring
-//     the O(n*m)-on-fixed-row-width example in the audit guide.
+//     Solve loops t over |matrix| and each row is read at three fixed
+//     indices; the nested `while i/j/k <= 1` loops have literal bounds, so
+//     the cost is O(n) in the test count and row width never enters; the
+//     Python's l=list(map(int,...)) is a fixed 3-element row too.
 //
 //   how this label could be wrong, and what to check:
-//     The label O(n*m) claims the cost scales with row width m, but check
-//     that the Dafny reads only row[0..2] (a, b, c) via the `requires
-//     |matrix[k]| >= 3` precondition, and that the i/j/k loops each range
-//     over the constant [-1,1] (27 total iterations), never over the row
-//     itself. If a reviewer finds any construct that walks the full row
-//     rather than three fixed indices, the O(n) verdict is wrong;
-//     otherwise, since the Python's own triple `for i in range(-1,2)`
-//     loops are equally fixed at 27 iterations, the label should be O(n).
+//     The label assumes a second dimension m. Check the input: each test
+//     row is exactly three integers a, b, c, and Solve reads row[0],
+//     row[1], row[2] only; the 27-point neighbourhood loops are fixed
+//     literals.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 45, "data_dependent_loops": 0, "decreases_star":

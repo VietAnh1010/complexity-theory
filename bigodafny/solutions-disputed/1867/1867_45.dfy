@@ -1,28 +1,26 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n**2)
-//   audited class  : O(n)
+//   audited class  : other
 //   cause          : label
-//   confidence     : medium
-//   auditor        : labelaudit-batch-13
+//   confidence     : high
+//   auditor        : labelaudit-r3d-05
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The inner while loop increments x by 1 until x*(x-1)/2>=val, taking
-//     O(sqrt(val)) iterations bounded by the stated cap val<=10^9, so like
-//     its sibling 1867_16 the whole method is O(n) in the query count, not
-//     O(n^2); the Python has the identical loop so the label is wrong for
-//     both sources.
+//     Per query the Dafny runs a search loop to x with x*(x-1)/2 >= val,
+//     about sqrt(val) iterations, plus Repeat calls of that length, so the
+//     cost is O(sum of sqrt(n_i)). The Python's while (x*(x-1)//2 < n)
+//     loop pays the same sqrt term, so the label is wrong, not the
+//     translation.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes each query's search over x costs O(val). Confirm
-//     that 'while x*(x-1)/2<val: x:=x+1' converges in O(sqrt(val)) steps
-//     because x grows the accumulator quadratically, and that val is
-//     capped at 10^9 by the problem statement; if both hold, per-query
-//     work is a bounded constant and the total over n queries is O(n),
-//     like sibling 1867_16.
+//     The label treats n as a size, but here n counts queries (t <= 10)
+//     and the cost sits in each query's value n_i. Check the while x * (x
+//     - 1) / 2 < val loop: it runs about sqrt(2*val) times per query, and
+//     the statement allows val up to 10^9.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 34, "data_dependent_loops": 1, "decreases_star":

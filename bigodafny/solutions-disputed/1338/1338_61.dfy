@@ -3,27 +3,25 @@
 //   stated label   : O(n*m)
 //   audited class  : other
 //   cause          : label
-//   confidence     : medium
-//   auditor        : labelaudit-batch-08
+//   confidence     : high
+//   auditor        : labelaudit-r3d-04
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Each query's inner loop repeatedly finds and removes the minimum of
-//     a shrinking sequence of up to n elements via FindMinIndex/RemoveAt
-//     (Python: min(ai)/ai.remove(...)), costing O(n**2) per query when k
-//     is small, and this happens once per query across m queries, giving
-//     O(m*n**2) in both sources rather than O(n*m).
+//     Each query does ReverseSeq (O(n)) and then n-k iterations of
+//     FindMinIndex (O(n) scan) plus RemoveAt (concat of O(n)), so one
+//     query costs O(n*(n-k)) and the total is O(m*n**2), cubic when m is
+//     about n; the Python's ai.remove(min(ai)) in `for j in
+//     range(1,n-k+1)` pays O(n) twice per removal as well.
 //
 //   how this label could be wrong, and what to check:
-//     The label implies cost proportional to n*m. Open the inner `for j in
-//     range(1,n-k+1): ai.remove(min(ai))` loop (Python) and the matching
-//     `while jcount<removeCount { FindMinIndex(ai); RemoveAt(ai,mi); }`
-//     (Dafny): min()/remove() and FindMinIndex/RemoveAt are each
-//     O(len(ai)), and len(ai) shrinks from n to k across n-k iterations,
-//     so a single query already costs O(n**2) in the worst case (small k),
-//     and this repeats for each of the m queries.
+//     The label gives n*m but the body has a removal loop nested inside
+//     the query loop. Open the inner `while jcount < removeCount` loop:
+//     removeCount = n - kk and each iteration runs FindMinIndex over all
+//     of ai, so each query is about n**2 for small k; compare the Python's
+//     `ai.remove(min(ai))` under `for j in range(1,n-k+1)`.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 63, "data_dependent_loops": 0, "decreases_star":

@@ -3,28 +3,24 @@
 //   stated label   : O(n**2)
 //   audited class  : O(nlogn)
 //   cause          : label
-//   confidence     : medium
-//   auditor        : labelaudit-batch-15
+//   confidence     : high
+//   auditor        : labelaudit-r3d-06
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The second while loop calls Sort once per disjoint segment segv with
-//     sizes summing to n, and SumSeq once per segment likewise summing to
-//     n, so the aggregate cost is O(sum s_i log s_i) which is at most
-//     O(nlogn); the Python performs the identical per-segment
-//     sorted(...)[:k] and sum(seg) with the same disjoint-segment
-//     structure.
+//     Segment building appends O(1) per element, and each run longer than
+//     k is sorted in O(len log len) and summed by SumSeq, so the total is
+//     O(n log n); the Python sorts the same runs, so the O(n**2) label
+//     matches neither.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes the per-segment Sort calls add up to quadratic
-//     work, but each segment is disjoint and sizes sum to n, so by the
-//     log-sum bound sum(s_i * log(s_i)) <= n*log(n) regardless of how the
-//     segments split. Check whether any single segment can itself be
-//     re-sorted more than once across the outer loop (it cannot -- si only
-//     advances) and whether SumSeq is called on overlapping ranges (it is
-//     not); if both hold, the total is O(nlogn), not O(n**2).
+//     The label O(n**2) assumes quadratic work, but the Dafny's loops are
+//     one pass over |s| building segments and one pass over segments,
+//     where each segment is sorted once (`Sort(segv, ...)`) and summed.
+//     Check that segment sizes sum to n, so the sorts total O(n log n);
+//     the Python does the same `sorted(seg, reverse=True)` per run.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 44, "data_dependent_loops": 0, "decreases_star":

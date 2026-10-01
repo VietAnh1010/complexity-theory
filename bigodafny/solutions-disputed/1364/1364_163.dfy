@@ -2,29 +2,26 @@
 //
 //   stated label   : O(1)
 //   audited class  : other
-//   cause          : both
+//   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-batch-08
+//   auditor        : labelaudit-r3d-04
 //
-//   The Python does not match the label AND the translation diverges
-//   from the Python. Both need attention.
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Python's z(n) calls bin(n), n.count("0") and n.find("0"), each O(log
-//     n) in the bit-length of n, so z is O(log n) not O(1); Dafny's
-//     ToBinary builds the same string via `ToBinary(n/2) + (if n%2==0 then
-//     "0" else "1")`, concatenating at every one of O(log n) levels in the
-//     same pattern flagged for ReverseSeq/888_6, giving O(log**2 n) and
-//     making the Dafny worse than the already-mislabelled Python.
+//     Z(n) calls ToBinary(n), which recurses on n/2 and so has depth
+//     log2(n), then CountZeros and FindZero scan the whole binary string,
+//     so the cost is O(log a + log b) in the input VALUES; the Python's
+//     bin(n)[2:], n.count('0') and n.find('0') are linear in the same bit
+//     length.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes z(n) is constant time. Check that Python's
-//     bin(n)/count/find are each O(log n) (bit-length work), so z is O(log
-//     n), not O(1). Then open Dafny's ToBinary and check its shape:
-//     `ToBinary(n/2) + (char)` concatenates a growing string at every one
-//     of O(log n) recursion levels -- the same quadratic-recursion pattern
-//     as ReverseSeq in 888_6 -- making ToBinary O(log**2 n), worse than
-//     Python's O(log n) bin() call.
+//     The label treats the work as constant, presumably because a,b <=
+//     10**18. A statement cap does not make a value term constant under
+//     the current rules; open ToBinary (recursion on n/2) and CountZeros,
+//     which are bounded by the bit length of the argument. If the dataset
+//     deems 64-bit binary conversion free, the label would stand.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 39, "data_dependent_loops": 0, "decreases_star":

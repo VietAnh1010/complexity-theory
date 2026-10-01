@@ -4,18 +4,22 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-02
+//   auditor        : labelaudit-r3d-01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     abc_list rows are pinned to length 3 by requires forall r :: |r| ==
-//     3, so MaxSeq/MinSeq/CountEq/IndexOfEq and the seq updates on ls1 all
-//     cost O(1) regardless of any 'm'; the loop over n rows plus Join is
-//     O(n), and Python's max/count/index calls on a 3-element ls are
-//     equally O(n) overall, so O(n*m) names a row-width dimension that
-//     never varies.
+//     Solve loops over the test triples and calls MaxSeq, MinSeq, CountEq
+//     and IndexOfEq on a length-3 seq, constant work per test, then Join
+//     over n parts, so cost is O(n); the Python's count/max/min over a
+//     3-list is also constant.
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes variable row width m. Check the statement: each
+//     test line holds exactly three integers x,y,z and the Dafny requires
+//     |r| == 3; MaxSeq, MinSeq, CountEq and IndexOfEq run over a
+//     three-element seq.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 49, "data_dependent_loops": 0, "decreases_star":

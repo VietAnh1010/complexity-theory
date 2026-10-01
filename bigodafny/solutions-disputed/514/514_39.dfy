@@ -2,18 +2,26 @@
 //
 //   stated label   : O(n)
 //   audited class  : O(1)
-//   cause          : label
-//   confidence     : high
-//   auditor        : labelaudit-batch-04
+//   cause          : harness
+//   confidence     : medium
+//   auditor        : labelaudit-r3d-01
 //
-//   The PYTHON is not the labelled class either. BigOBench's label looks
-//   wrong; the translation is faithful to it.
+//   Both artifacts are right. The Python pays to parse stdin and
+//   BigOBench profiled the whole script; the Dafny's Solve receives the
+//   inputs already parsed, so that cost is outside the measured method.
+//   Nothing to repair -- document it.
 //
 //   evidence:
-//     Every loop in Solve is bounded by the literal constant 31
-//     (idxFill<31, i<30, j from 30 down to 0), not by n, which itself the
-//     requires clause caps at 31; Python's source uses the same fixed N=31
-//     ranges regardless of n, so both are O(1), not O(n).
+//     Solve's loops run to the source literals 30 and 31 (idxFill from n
+//     up to 31, i < 30, j from 30 to 0) and Pow2_39(j) recurses at most 30
+//     levels, so cost is constant; the Python's O(n) is parsing the cost
+//     line, outside Solve.
+//
+//   how this label could be wrong, and what to check:
+//     The label's n comes from the Python parsing cost list(map(int,
+//     input().split())). Check Solve: every loop is bounded by the
+//     literals 31 and 30, Pow2_39 recurses at most 30 deep, and `scores`
+//     is only copied by reference, so the body never scales with n.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 54, "data_dependent_loops": 0, "decreases_star":

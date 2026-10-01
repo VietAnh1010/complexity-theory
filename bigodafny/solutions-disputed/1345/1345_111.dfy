@@ -1,32 +1,28 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n)
-//   audited class  : other
-//   cause          : both
-//   confidence     : high
-//   auditor        : labelaudit-batch-08
+//   audited class  : O(n**2)
+//   cause          : label
+//   confidence     : medium
+//   auditor        : labelaudit-r3d-04
 //
-//   The Python does not match the label AND the translation diverges
-//   from the Python. Both need attention.
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     ReverseString1345(s) = ReverseString1345(s[1..]) + [s[0]]
-//     concatenates a growing accumulator at every one of n recursion
-//     levels, exactly the ReverseSeq/888_6 pattern, making a single call
-//     O(n**2) on a row of length n, and it runs inside a loop of n/2
-//     iterations giving O(n**3) overall; Python's `right[i][::-1]` is a
-//     single O(n) C-level slice reversal called n/2 times, so Python is
-//     O(n**2), not matching the O(n) label either.
+//     The loop runs n/2 times and each iteration calls
+//     ReverseString1345(board[n-1-i]) on a row of n characters, which
+//     costs O(n) by its recursion on s[1..], so the Dafny is O(n**2) in
+//     the side length; the Python's right[i][::-1] and the string
+//     comparison per row are O(n) each, also O(n**2).
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes reversing a row costs O(n). Open ReverseString1345
-//     and check its shape: `ReverseString1345(s[1..]) + [s[0]]`
-//     concatenates a growing result at every one of |s| recursion levels,
-//     which is the same quadratic-recursion pattern documented for
-//     ReverseSeq in 888_6, making one call O(n**2), not O(n). It is called
-//     `half` = n/2 times in Solve's while loop, so also check that this
-//     multiplies out across the whole grid rather than being a one-off
-//     call.
+//     The label O(n) is right only if n counts the total characters of the
+//     board. The statement says n lines of n characters each, so the row
+//     width equals n; open the Dafny `while i < half` loop and
+//     ReverseString1345, and decide whether the dataset's n is the line
+//     count (then cost is n*n) or the input length (then the label
+//     stands).
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 23, "data_dependent_loops": 0, "decreases_star":

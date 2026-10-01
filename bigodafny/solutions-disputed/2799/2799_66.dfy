@@ -3,26 +3,25 @@
 //   stated label   : O(n**2)
 //   audited class  : O(n)
 //   cause          : label
-//   confidence     : medium
-//   auditor        : labelaudit-batch-21
+//   confidence     : high
+//   auditor        : labelaudit-r3d-08
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The Python has a single pass 'for i in s' with O(1) work per char
-//     and only bounded string slicing/multiplication afterward (ar[0..2]
-//     capped at 100 by 1<=A,B,C<=100); the Dafny mirrors it with one while
-//     loop plus CountChar and RepStr, both O(length) not quadratic, so no
-//     construct in either source reaches n**2.
+//     CountChar recurses on s[1..] and RepStr peels one count per level,
+//     both O(length) under the recursion rule, and the scan for '=' is one
+//     loop, so Solve is O(n) in the input length. The Python is one `for i
+//     in s` pass plus linear slicing and string repetition, so it is O(n)
+//     too and the O(n**2) label is wrong.
 //
 //   how this label could be wrong, and what to check:
-//     The label claims a quadratic pass over the stick string but the code
-//     shows only one top-level scan plus bounded post-processing. Check
-//     whether any branch nests a loop or repeats CountChar/RepStr work
-//     proportional to n inside another n-sized loop; if not, both this row
-//     and its sibling 2799_164 (labelled O(n) for the same problem with
-//     the same CountChar shape) should carry the same class.
+//     The label assumes some quadratic step. Check CountChar (peels s[1..]
+//     with an O(1) addition per level) and RepStr (a one-character string
+//     + recursive tail): each is linear in the string length, and the
+//     Python is a single pass over s plus s[1:]+s[0] and '|'*k, all
+//     linear.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 62, "data_dependent_loops": 0, "decreases_star":

@@ -4,27 +4,22 @@
 //   audited class  : O(n**2)
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-batch-12
+//   auditor        : labelaudit-r3d-05
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     `SumSeq(d_list[i..])` is called once per outer iteration i=0..m-1,
-//     each costing O(m-i); summed over the loop that is Theta(m**2), and
-//     Python's `sum(c[i:])` recomputes the identical suffix the same way,
-//     so the quadratic cost is inherent to both sources, not introduced by
-//     translation.
+//     Each of the m iterations calls SumSeq(d_list[i..]), which is O(m-i),
+//     so that alone is O(m**2) while the zero and block padding loops
+//     total O(n). The Python's sum(c[i:]) in the for loop has the same
+//     quadratic cost, so the label O(n) is wrong for both.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes the suffix total `sum(c[i:])` (Python) /
-//     `SumSeq(d_list[i..])` (Dafny) is maintained incrementally in O(1)
-//     per step of the outer `i`/`m` loop. Open both sources and check
-//     whether that suffix sum is recomputed from scratch on every
-//     iteration of the outer loop instead of updated by subtracting
-//     `c[i-1]`; if it is recomputed, both sources pay Theta(m) per outer
-//     step summing to Theta(m**2) (m<=n), so the O(n) label is wrong for
-//     the Python too, not just the translation.
+//     The label assumes the loop body is O(1) per platform. Check var
+//     suffix := SumSeq(d_list[i..]) inside the while i < m loop: it is
+//     linear in the remaining platforms, giving O(m**2) with m <= n
+//     because every platform has length at least 1.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 48, "data_dependent_loops": 0, "decreases_star":

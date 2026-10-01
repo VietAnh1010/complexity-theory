@@ -4,17 +4,20 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-01-sonnet
+//   auditor        : labelaudit-r3d-01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Identical structure to sibling solution 171_0 -- the single while
-//     loop reads only the two fixed positions l[0] and l[1] of each row
-//     and never scans row width, so m never enters the cost in either the
-//     Dafny or Python's fixed two-field unpacking `a = int(l[0]); b =
-//     int(l[1])`.
+//     Solve makes one pass over the n pairs and reads only l[0] and l[1],
+//     with O(1) arithmetic and IntToString, and Join over the n parts is
+//     linear in output; no row is ever walked, so it is O(n).
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes variable row width m. Check the statement: each
+//     test line has exactly two integers a and b; Solve reads only
+//     pairs[i][0] and pairs[i][1] and the Python splits a two-token line.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 25, "data_dependent_loops": 0, "decreases_star":

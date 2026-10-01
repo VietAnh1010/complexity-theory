@@ -4,18 +4,21 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-04
+//   auditor        : labelaudit-r3d-01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The while loop only ever reads points[i][0], points[i][1], and the
-//     previous row's same two indices, never walking a row of width m, so
-//     the code is O(n) not O(n*m); sibling row 525_234 with the identical
-//     read pattern is correctly labelled O(n), and Python's
-//     min(pair[i])/max(pair[i-1]) also only ever operate on the fixed
-//     two-element rows this problem produces.
+//     Solve loops once over the n points reading pi[0], pi[1], pprev[0],
+//     pprev[1] with O(1) arithmetic; the Python's min/max over a
+//     two-number list are constant, so the whole thing is O(n) with no
+//     second dimension.
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes variable score-pair width m. Check the statement:
+//     each line is exactly two integers a_i, b_i; Solve reads only p[0],
+//     p[1] and the Python's min/max over pair[i] act on two elements.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 31, "data_dependent_loops": 0, "decreases_star":

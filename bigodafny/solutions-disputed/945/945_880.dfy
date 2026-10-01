@@ -4,17 +4,23 @@
 //   audited class  : O(logn)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-07
+//   auditor        : labelaudit-r3d-02
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The Dafny while loop halves m each iteration until m==0, taking
-//     O(logn) iterations; Python's bin(x) produces a string of length
-//     proportional to the bit-length of x and .count('1') scans it, also
-//     O(logn), so the labelled O(1) is wrong for both, not just the
-//     translation.
+//     Solve loops `while m > 0` with m := m / 2, so it runs about log2(x)
+//     iterations for the input value x, a value term the model charges
+//     even though x <= 10^9. The Python's bin(x).count('1') builds and
+//     scans a string of log x characters, so it pays the same cost and the
+//     O(1) label is wrong.
+//
+//   how this label could be wrong, and what to check:
+//     The label treats the work as constant, but Solve halves m in `while
+//     m > 0` once per bit of the input value x. Check that the Python's
+//     bin(x).count('1') also touches every bit of x; the 10^9 cap does not
+//     make it constant.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 14, "data_dependent_loops": 0, "decreases_star":

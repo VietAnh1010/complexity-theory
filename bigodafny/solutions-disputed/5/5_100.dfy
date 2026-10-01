@@ -3,27 +3,23 @@
 //   stated label   : O(n)
 //   audited class  : other
 //   cause          : label
-//   confidence     : high
-//   auditor        : labelaudit-r2-01
+//   confidence     : medium
+//   auditor        : labelaudit-r3d-01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The Dafny loop `while m > k { m := m - k; k := k + 1; }` terminates
-//     once the triangular number k(k+1)/2 passes n, giving Theta(sqrt(n))
-//     iterations rather than n; the Python has the byte-identical
-//     while-loop with the same k increment, so it is Theta(sqrt(n)) too,
-//     meaning the label is wrong about the Python it was measured on.
+//     The loop `while m > k` subtracts k and increments k each pass, so it
+//     stops after about sqrt(2n) iterations, a value term of O(sqrt n),
+//     not O(n); the Python has the identical loop.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes the loop runs on the order of n times, but k grows
-//     by 1 every pass while m falls by k, so it stops once k(k+1)/2
-//     exceeds n -- Theta(sqrt(n)) iterations, not n. Instrument the `while
-//     m > k` loop with a counter for a large n (e.g. n=10**6) and check
-//     the count lands near sqrt(2n) (~1414) rather than near n; if so the
-//     tight class is O(sqrt(n)), which is outside this dataset's
-//     vocabulary.
+//     The label treats the value n as the loop size, but the loop may run
+//     only about sqrt(2n) times. Read the while loop in Solve: m drops by
+//     k while k grows by 1, so the iteration count k satisfies k(k-1)/2 <
+//     n. If a reviewer accepts a value-bounded O(n) as an upper bound, the
+//     label stands; if tight classes are required it is O(sqrt n).
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 13, "data_dependent_loops": 0, "decreases_star":

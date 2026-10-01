@@ -1,30 +1,27 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n*m)
-//   audited class  : O(n+m)
+//   audited class  : other
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-batch-20
+//   auditor        : labelaudit-r3d-08
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The nested while loops building bArr and cArr run a combined total
-//     of sum(a_list) iterations regardless of n, since the inner while j
-//     bound is data-dependent per i and the outputs bSeq/cSeq have length
-//     lenB/lenC = 1+sum(a_list); the Python mirrors this with 'for j in
-//     range(a[i])' inside 'for i in range(1,n+1)', giving O(n+S) for both,
-//     not O(n*S).
+//     The inner `while j < a_list[i]` loops, the b/c array fills, and
+//     JoinInts/sequence equality cost O(sum of a_i) on top of the O(n)
+//     outer loops, so the real class is O(n + sum a_i), a value term. The
+//     Python's `for j in range(a[i])` with b.append and `b == c` pays the
+//     same, so the label is at fault, not the translation.
 //
 //   how this label could be wrong, and what to check:
-//     The label claims a product n*m, but the b/c-building loops are an
-//     outer pass over n=|a_list| with an inner data-dependent loop whose
-//     total iterations across all i equal S = sum(a_list), bounded by the
-//     description's 'sum of all ai does not exceed 2*10^5'; check that the
-//     inner loop count is a running total capped by S regardless of how it
-//     distributes across i, which makes the pair O(n+m) rather than
-//     O(n*m).
+//     The label assumes the cost is a product of two input sizes. Check
+//     the loops over a_list[i]: the inner whiles run a_list[i] times, so
+//     total cost is O(h + sum a_i), a cost in the element values the label
+//     does not name; if m is meant as max a_i the label is only a loose
+//     upper bound.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 85, "data_dependent_loops": 3, "decreases_star":

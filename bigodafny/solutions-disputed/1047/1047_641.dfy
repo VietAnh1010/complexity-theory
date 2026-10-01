@@ -1,31 +1,26 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n**2)
-//   audited class  : O(n)
+//   audited class  : other
 //   cause          : label
-//   confidence     : high
-//   auditor        : labelaudit-r2-06
+//   confidence     : medium
+//   auditor        : labelaudit-r3d-03
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Each cell string a is bounded to a small constant length because
-//     columns and rows are capped at 10^6 by the problem, so IsRCFormat,
-//     DigitRunEnd, the alpha-scan loops, and ColToLetters all do O(1) work
-//     per cell; the outer loop over |strings| test cases is the only
-//     scaling factor, giving O(n), matching sibling 1047_26's identical
-//     O(n) treatment of the same problem.
+//     Solve does one pass over `strings`, and per string runs DigitRunEnd,
+//     ParseInt, ColToLetters and a letter loop, each linear in that
+//     string's length (about log of the column); the Python's per-line
+//     re.search/while col loop is the same, so the cost is O(total
+//     characters), not O(n**2).
 //
 //   how this label could be wrong, and what to check:
-//     The label O(n**2) implies either a nested scan over n test cases or
-//     per-cell work that grows with n. Open the Dafny and check that
-//     DigitRunEnd, ColToLetters and the alpha-scanning while loops only
-//     ever iterate over a single cell string a, whose length is bounded by
-//     the problem's 10^6 column/row cap (at most a handful of characters),
-//     never by |strings|. If so there is no quadratic construct and the
-//     label is wrong; compare against sibling 1047_26, which solves the
-//     identical problem and is labeled O(n).
+//     The label assumes a quadratic term. Check whether anything in Solve
+//     scans earlier strings or builds a sequence quadratically; each
+//     coordinate string is converted independently and the lines seq grows
+//     by one element per string.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 76, "data_dependent_loops": 1, "decreases_star":

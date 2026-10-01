@@ -4,24 +4,22 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-20
+//   auditor        : labelaudit-r3d-08
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The while loop over |values_list| reads only row[0] and row[1] of
-//     each fixed-width 3-int row and never scans the row itself, so the
-//     O(n*m) label names a dimension m that the code never walks; the
-//     Python 'for k in alist' loop is likewise O(1) per row and O(n)
-//     overall, so both are O(n).
+//     The single loop over values_list reads row[0] and row[1] and never
+//     walks a row, so Solve is O(n) in the number of commands. The Python
+//     splits each line into exactly three ints, so it pays constant per
+//     row and is O(n) too; the label is wrong, not the translation.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes row width m scales, but the loop only ever reads
-//     row[0] and row[1] of each fixed 3-integer row (t,x,y) per the
-//     description; check that no construct reads |row| or iterates over
-//     row contents, which would confirm m never enters the cost and the
-//     label should be O(n).
+//     The label assumes each command row has a variable width m. Check the
+//     problem statement: each line is exactly three integers ti, xi, yi,
+//     so the row width is a constant; if rows could be ragged the label
+//     would stand.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 25, "data_dependent_loops": 0, "decreases_star":

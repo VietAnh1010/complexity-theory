@@ -4,23 +4,21 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-14
+//   auditor        : labelaudit-r3d-06
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The loop reads only pairs[i][0] and pairs[i][1], a constant 2-wide
-//     access, and runs n times doing O(1) work each, so the true cost is
-//     O(n); the Python's `Y = list(map(int, input().split()))` also only
-//     ever holds two values per line.
+//     The Dafny loops i < n once, reading pairs[i][0] and pairs[i][1] with
+//     O(1) arithmetic, so it is O(n); the Python also parses a 2-element
+//     list per line and takes max/min of scalars, so there is no m term.
 //
 //   how this label could be wrong, and what to check:
-//     Check `requires forall idx :: |pairs[idx]| == 2` and the problem
-//     statement: each restaurant has exactly two integers f_i and t_i, so
-//     pairs is fixed-width 2, not an m-wide row. Compare against sibling
-//     2012_342 of the same problem, correctly labeled O(n) for the
-//     identical fixed-pair access pattern.
+//     The label O(n*m) assumes row width matters, but each pair has
+//     exactly two integers (f_i, t_i) and the loop only reads pairs[i][0]
+//     and pairs[i][1]. Check the statement: each of the n lines has two
+//     integers, so m is the constant 2.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 22, "data_dependent_loops": 0, "decreases_star":

@@ -1,28 +1,28 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(nlogn)
-//   audited class  : O(n**2)
-//   cause          : label
-//   confidence     : high
-//   auditor        : labelaudit-batch-19
+//   audited class  : O(n)
+//   cause          : both
+//   confidence     : medium
+//   auditor        : labelaudit-r3d-07
 //
-//   The PYTHON is not the labelled class either. BigOBench's label looks
-//   wrong; the translation is faithful to it.
+//   The Python does not match the label AND the translation diverges
+//   from the Python. Both need attention.
 //
 //   evidence:
-//     The active i loop runs n-1 times and on each hit does arr := arr[i
-//     := target] and arr := arr[i+1 := ...], both O(n) seq updates;
-//     Python's parallel branch does s = s[:i]+'W'+...+s[i+2:], a full O(n)
-//     string rebuild per iteration, so both are O(n**2), not the labeled
-//     O(nlogn).
+//     The Dafny does a count loop plus one pass with O(1) seq updates and
+//     a linear JoinInts, so it is O(n), with no sort anywhere; the Python
+//     rebuilds s by slicing and concatenation on up to n-1 iterations,
+//     which is O(n**2), so n log n fits neither.
 //
 //   how this label could be wrong, and what to check:
-//     The label claims nlogn but facts.sorts is empty, meaning no sort
-//     call exists in this solution at all. Check the Python's active
-//     branch (after the commented-out code): the line s = s[:i] + 'W' +
-//     ... + s[i+2:] inside the for loop rebuilds the whole string each
-//     iteration; confirm this executes up to n-1 times, which would make
-//     the Python itself quadratic.
+//     The label matches neither program: the Dafny is one linear pass, and
+//     the Python rebuilds the string in the flip loop. Check the line `s =
+//     s[:i] + 'W' + 'BW'[...] + s[i+2:]` inside `for i in range(n - 1)`:
+//     each rebuild copies O(n), making the Python O(n**2), while the
+//     Dafny's `arr[i := target]` is O(1). If you consider the string
+//     rebuild an O(1) in-place edit, the Python is O(n) and the cause is
+//     label.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 41, "data_dependent_loops": 0, "decreases_star":

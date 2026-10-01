@@ -4,22 +4,22 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-11
+//   auditor        : labelaudit-r3d-05
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The Dafny while loop reads only pairs[i][0] per iteration and builds
-//     pieces with seq+[x] with no pieces[k] read in the loop, so appends
-//     are O(1) amortised and the whole method is O(n), matching the
-//     Python's single a=... read per line.
+//     The Dafny loops i < n once, reading only pairs[i][0] and appending
+//     to pieces in O(1), then calls Join(pieces, "") once at O(n). The
+//     Python does one range(eggs) loop splitting a two-token line and a
+//     single ''.join, so both are O(n) and no m dimension is scanned.
 //
 //   how this label could be wrong, and what to check:
-//     The label implies a second scanned dimension m from pairs[k].
-//     Confirm the description's ai/gi pair format gives each row exactly
-//     one used field pairs[i][0]; if so there is no m and the loop, in
-//     both Python (a=int(input().split()[0])) and Dafny, is O(n).
+//     The label assumes a second dimension m. Check the statement: each of
+//     the n lines contains exactly two integers ai and gi, so there is no
+//     variable width; if lines could carry many values the label might
+//     stand.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 25, "data_dependent_loops": 0, "decreases_star":

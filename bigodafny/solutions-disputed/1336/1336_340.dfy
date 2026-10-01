@@ -4,28 +4,24 @@
 //   audited class  : O(n)
 //   cause          : translation
 //   confidence     : high
-//   auditor        : labelaudit-batch-08
+//   auditor        : labelaudit-r3d-04
 //
 //   The Python matches its label; the DAFNY does not. The label is right
 //   about the program it was measured on and the translation is the
 //   defect.
 //
 //   evidence:
-//     The final while loop performs `A := A[i := C[|C|-1]]` or `A := A[i
-//     := C[|C|-2]]`, each an O(N) seq-update on the length-N sequence A,
-//     and this can execute for up to N indices where A[i]==-1, giving
-//     O(N**2) total; Python's `A[i]=...` list assignment is O(1), so
-//     Python is genuinely O(n log n) via C.sort while the Dafny is
-//     quadratic.
+//     The Python calls C.sort(key=lambda x: A[x] == B[x]), which is O(k
+//     log k), but the Dafny replaces the sort with a stable partition into
+//     firstGroup and secondGroup in one pass over C, so every loop is
+//     linear and the Dafny is O(n).
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes C.sort(key=...) costs O(n log n) as in Python. The
-//     Dafny replaces that sort with an O(n) stable partition into
-//     firstGroup/secondGroup (cheaper, not the issue). Instead check the
-//     final while loop over i: `A := A[i := C[|C|-1]]` is a seq update on
-//     A (length N) executed on an iteration where A[i]==-1, which can
-//     happen for up to N indices, each update costing O(N); confirm this
-//     by checking whether A is declared seq<int> rather than array<int>.
+//     The label is right about the Python's sort on C. Open the Dafny and
+//     confirm there is no Sort call (facts show sorts: []) and that
+//     firstGroup/secondGroup are built in a single `while u < |C|` pass;
+//     if the grouping is a stable partition by a boolean key, the sort was
+//     replaced by a linear algorithm.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 76, "data_dependent_loops": 0, "decreases_star":

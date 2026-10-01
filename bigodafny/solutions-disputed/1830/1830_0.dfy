@@ -4,29 +4,22 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-12
+//   auditor        : labelaudit-r3d-05
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     `st` and `ed` are declared `seq(26, _ => 0)` and only ever
-//     indexed/updated at positions 0..25 (one per uppercase letter), so
-//     `SortInts(st)` and `SortInts(ed)` cost O(1) regardless of n; the
-//     sole n-scaling work is the `while idx < n` loop doing O(1) per
-//     character, making the method O(n) rather than the labelled O(nlogn),
-//     and Python's fixed-size `st.sort()`/`ed.sort()` show the same
-//     pattern.
+//     The only n-dependent work is the while idx < n loop with O(1)
+//     updates; SortInts(st) and SortInts(ed) act on 26-element sequences
+//     and the merging loop is bounded by 26. The Python likewise sorts two
+//     26-element lists, so its cost is O(n) as well and the label is
+//     wrong.
 //
 //   how this label could be wrong, and what to check:
-//     The label likely assumes `SortInts(st)`/`SortInts(ed)` sorts an
-//     n-length array. Check the declarations `var st := seq(26, _ => 0)`
-//     and `var ed := seq(26, _ => 0)`: both stay fixed at length 26 (one
-//     per letter) regardless of the guest count n, so the sort is O(26 log
-//     26)=O(1); the only loop that scales with n is the first `while idx <
-//     n` pass over the guest string, so the true cost is O(n), and
-//     Python's `st.sort()`/`ed.sort()` sort the same fixed 26-element
-//     lists.
+//     The label assumes a sort over n elements. Check the SortInts calls:
+//     they sort st and ed, both seq(26, ...) of fixed length 26, so the
+//     sort is a constant; only the loop over n guests is data-sized.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 62, "data_dependent_loops": 0, "decreases_star":

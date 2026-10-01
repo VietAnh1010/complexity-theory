@@ -4,25 +4,21 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-21
+//   auditor        : labelaudit-r3d-08
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Both branches of Solve run a single `while i < n` loop with
-//     constant-cost `buf[pos] := s[i]` array assignments and no nested
-//     loop, then slice `buf[0..sz]` once; the Python `solution` mirrors
-//     this with one for-loop over range(n) and a single `''.join(ans)`, so
-//     both are O(n).
+//     Solve has a fill loop and one `while i < n` loop (in either the even
+//     or the odd branch) that writes buf[pos] in O(1), so it is O(n). The
+//     Python does the same single loop over range(n) with ''.join at the
+//     end, so it is O(n) and the O(n**2) label is wrong.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes some quadratic cost, but Solve has a single `while
-//     i < n` loop (one branch taken by parity of n) doing O(1) `buf[pos]
-//     := s[i]` array writes and one final `buf[0..sz]` flatten. Check
-//     there is no second loop or nested scan over n anywhere in either
-//     branch; if the whole body is exactly this one linear pass, O(n) is
-//     tight.
+//     The label assumes some nested quadratic work. Check the three loops
+//     in Solve: the buffer fill, and the two branches that each run a
+//     single `while i < n` with an O(1) body; none nests, so it is linear.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 40, "data_dependent_loops": 0, "decreases_star":

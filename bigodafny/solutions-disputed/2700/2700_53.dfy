@@ -4,24 +4,22 @@
 //   audited class  : O(1)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-20
+//   auditor        : labelaudit-r3d-07
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Solve has zero loops and parses four fixed one-character slices of
-//     the 5-character time string via ParseInt(time[0..1]) etc, doing O(1)
-//     arithmetic and IntToString concatenation; the Python mirrors this
-//     with a fixed for i in range(5) loop over the same 5-character list,
-//     so both are O(1) with no variable that could be n.
+//     Solve has no loops: it makes four ParseInt calls on one-character
+//     slices and a few IntToString calls (charged 1), so it is O(1); the
+//     Python's `for i in range(5)` has a literal bound and the rest is
+//     straight-line code, so the O(n) label is wrong for both.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes some dimension named n grows, but Solve(N, time)
-//     requires |time| == 5 (a fixed HH:MM string) and has no loop at all
-//     (loop_depth 0). Check that every ParseInt call is on a fixed-width
-//     slice (time[0..1], time[1..2], etc.) rather than a variable-length
-//     one, confirming there is no scaling input.
+//     The label assumes growth in n, but the time string is always HH:MM.
+//     Check `requires |time| == 5` and that Solve has no loop; ParseInt is
+//     applied only to 1-character slices such as time[0..1], so its linear
+//     cost is constant.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 26, "data_dependent_loops": 0, "decreases_star":

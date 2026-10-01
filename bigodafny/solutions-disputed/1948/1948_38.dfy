@@ -1,27 +1,27 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n)
-//   audited class  : O(1)
+//   audited class  : other
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-batch-13
+//   auditor        : labelaudit-r3d-06
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The loop 'while 2*a>m*m+m: m:=m+1' runs O(sqrt(a)) times, and a is
-//     capped at 500 per the problem statement, so the iteration count is a
-//     fixed bound regardless of any growing size; the Python's identical
-//     while loop is bounded the same way, so O(n) mislabels what is really
-//     a constant-time computation.
+//     The only loop in Solve increments m by 1 while 2*a > m*m+m, so it
+//     runs about sqrt(2n) iterations in the input VALUE n, and the Python
+//     has the identical loop; the true cost is O(sqrt n), outside the
+//     vocabulary and below the O(n) label.
 //
 //   how this label could be wrong, and what to check:
-//     Compare against sibling 1948_388, labelled O(1) for a similarly
-//     bounded search. Confirm the input a is capped at 500 by the problem
-//     statement ('1<=n<=500'), which bounds 'while 2*a>m*m+m' to about
-//     sqrt(2a)<=32 iterations; if so the cost does not grow with any
-//     exposed size and O(n) is the wrong label.
+//     The label O(n) treats the single integer n as the loop bound, but
+//     the loop only runs until m*m+m reaches 2n, about sqrt(2n) times.
+//     Open the Dafny while loop `while 2 * a > m * m + m` and the Python
+//     `while 2*a>n**2+n` and check that m advances by 1 per iteration; if
+//     so the cost is O(sqrt n), not O(n). If a reviewer accepts any
+//     value-bounded loop as O(n) the label stands.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 18, "data_dependent_loops": 1, "decreases_star":

@@ -1,29 +1,35 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n)
-//   audited class  : O(n + (hi - lo))
+//   audited class  : other
 //   cause          : label
-//   confidence     : high
-//   auditor        : value-vs-size convention, 2026-09-17
+//   confidence     : medium
+//   auditor        : labelaudit-r3d-07
 //
-//   The label disagrees with the code under the value-versus-size
-//   convention. BigOBench fitted its labels by profiling, which treats a
-//   capped input value as constant; COMPLEXITY.md section 1 decides the
-//   opposite. This row is where the two disagree.
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     A third loop's range comes straight from input values, with no
-//     requires tying it to n. The proved bound is 6*n + 400 + 4*max(0,
-//     intervals[0][1] - intervals[0][0]); the trailing term is invisible
-//     to the O(n) label.
+//     The first loop is O(n) and the prefix-sum loop runs a literal 100
+//     times (constant), but the last loop `while t < ra` starts at la and
+//     runs ra - la times, so the cost is O(n + (ra - la)), a value term
+//     the label ignores even though the statement caps it at 100. The
+//     Python's `for i in range(la, ra)` pays the same value term.
 //
 //   how this label could be wrong, and what to check:
-//     Confirm the third loop's bounds are read from intervals[0] rather
-//     than derived from |intervals|. If they are, no bound in n alone
-//     covers it.
+//     The label counts only the n segments, but the final loop `while t <
+//     ra` runs ra - la times, a value taken from Alexey's own segment.
+//     Check that la and ra come from intervals[0] and that the bound is
+//     not a source literal; if you treat the 100-cm cap as constant, the
+//     label stands as O(n).
 //
-//   note: the translation is NOT at fault in any of these four rows. The
-//   proof in solutions-proved/ is correct and stays there.
+//   structural facts (deterministic, from label_audit.py):
+//     {"body_lines": 48, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 1,
+//     "loops": 3, "recursive_helpers": 0, "seq_append_read_in_same_loop":
+//     false, "seq_args": 1, "seq_update_in_loop": true,
+//     "set_build_in_loop": false, "sorts": [], "uses_map": false,
+//     "uses_multiset": false, "uses_set": false}
 // --------------------------------------------------------------------
 
 // 397_A. On Segment's Own Points  (problem 2607, solution 2607_90)

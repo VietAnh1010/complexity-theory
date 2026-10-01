@@ -4,25 +4,23 @@
 //   audited class  : O(1)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-12
+//   auditor        : labelaudit-r3d-05
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The Python defines unused helper functions `getdict` and `prime`
-//     containing loops, but the executed program is only `h, m = map(int,
-//     input().split(':'))` followed by `print((h % 12) * 30 + m / 2, m *
-//     6)`, so its real complexity is O(1), same as the Dafny's
-//     straight-line ParseInt/arithmetic body.
+//     Solve calls ParseInt on the two-digit hour and minute strings, does
+//     constant integer arithmetic and IntToString (charged 1), with no
+//     loop or recursion over a collection. The Python is a single
+//     split(':') and one print, and its helper functions are never called,
+//     so the cost is constant.
 //
 //   how this label could be wrong, and what to check:
-//     The label may have been derived from the `prime(n)` function's `for
-//     d in range(3, sqr, 2)` loop or `getdict`'s loops defined earlier in
-//     the Python file. Check whether `prime` or `getdict` is ever called
-//     after their definitions; in this file only `h, m = map(int,
-//     input().split(':'))` and the final `print(...)` execute, so the true
-//     runtime is O(1), matching the Dafny's loop-free body.
+//     The label assumes quadratic work, but Solve has no loops or
+//     recursion over data. Check that hour and minute come from the fixed
+//     HH:MM format, so ParseInt runs on two-character strings and the rest
+//     is arithmetic.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 12, "data_dependent_loops": 0, "decreases_star":

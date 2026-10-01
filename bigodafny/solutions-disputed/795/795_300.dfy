@@ -4,17 +4,24 @@
 //   audited class  : other
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-batch-06
+//   auditor        : labelaudit-r3d-02
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The triple nested while loops over i<=nv/3, j<=nv/5, k<=nv/7 are all
-//     bounded by the same per-test value nv, giving worst-case O(nv**3)
-//     per test, which is cubic and outside the O(n**2) label; the Python's
-//     identical triple `for` loop with the same early-break `f==1` guard
-//     is equally cubic, so the label is wrong for both sources.
+//     The i, j, k loops all test `!found` and stop at the first (i,j,k)
+//     with 3i+5j+7k == nv; with i = 0 a hit needs at most about 5 j-values
+//     times nv/7 k-values, so the cost is O(nv) per test and O(sum of
+//     per-test n_i) overall. The Python has the same early break, so the
+//     true cost is a per-test value term, not n**2, and not cubic.
+//
+//   how this label could be wrong, and what to check:
+//     The label claims quadratic, but the triple loop exits at the first
+//     solution and a solution exists with i = 0 for every n >= 24 (5 and 7
+//     are coprime, Frobenius number 23). Check that found short-circuits
+//     all three loop guards and that the first hit needs only about 5
+//     values of j, each scanning k <= nv/7.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 53, "data_dependent_loops": 3, "decreases_star":

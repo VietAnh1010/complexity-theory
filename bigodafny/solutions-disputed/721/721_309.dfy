@@ -1,19 +1,27 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(nlogn)
-//   audited class  : O(n)
+//   audited class  : other
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-batch-06
+//   auditor        : labelaudit-r3d-02
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The single loop over numbers builds each output line with two Repeat
-//     calls costing O(length) and there is no Sort, log, or nested-loop
-//     construct anywhere in this Dafny or the Python, so the tight cost is
-//     linear in the summed test sizes, not O(nlogn).
+//     Cost is O(sum of the per-test values m_i): Solve loops over numbers
+//     and calls Repeat with counts about m/4 and 3m/4, then concatenates,
+//     all linear in m. The Python's string multiplication and
+//     concatenation are the same, and nothing sorts or halves, so the
+//     label's growth rate matches no construct.
+//
+//   how this label could be wrong, and what to check:
+//     The label claims n log n, but there is no sort and no logarithmic
+//     loop: each test concatenates Repeat("9", digleftNat) + zPart +
+//     Repeat("8", timesNat) with lengths proportional to the per-test
+//     value m. Check the Python's `"8" * times` and `"9" * digleft`, which
+//     are linear in n.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 26, "data_dependent_loops": 0, "decreases_star":

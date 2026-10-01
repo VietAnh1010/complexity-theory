@@ -4,17 +4,21 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-07
+//   auditor        : labelaudit-r3d-03
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The inner while loops over i and j are hardcoded to 2 iterations
-//     each (`i < 2`, `j < 2`), never scanning a variable-width row, so
-//     there is no m dimension in either the Dafny or Python (`for i in
-//     range(2): for j in range(2)`); the true class is O(n), and the
-//     labelled O(n*m) is a label error.
+//     Solve loops t < n over the test cases and the inner `while i < 2`
+//     and `while j < 2` loops are fixed-size, reading a[i], b[j] from
+//     2-element rows; no loop walks a row of variable width, so the cost
+//     is O(n) in the test count and the Python has the same shape.
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes a row-width dimension m. Check the input format:
+//     each test gives two dimension pairs, so a and b are always 2-element
+//     rows, and the 2x2 inner loops are constant.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 36, "data_dependent_loops": 0, "decreases_star":

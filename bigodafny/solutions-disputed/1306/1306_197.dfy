@@ -1,29 +1,29 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(nlogn)
-//   audited class  : O(n)
+//   audited class  : O(n**2)
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-batch-08
+//   auditor        : labelaudit-r3d-04
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     l2 (and Dafny's `counts`) has size bounded by 100 distinct food
-//     types, so SortInts/l2.sort cost O(1), but the while loop `i <=
-//     maxC+1` and Python's `range(1,max(l2)+2)` scale with maxC which can
-//     equal m when one type dominates, giving O(m) total for both, not O(m
-//     log m).
+//     GroupCounts1306c costs O(m*d) (CountOccur and RemoveAll are each
+//     O(|a|) per distinct value), quadratic in |a_list|, and the day loop
+//     adds up to maxC+1 iterations of SumDiv over d counts; the Python's
+//     loop `for i in range(1, max(l2)+2)` summing over l2 is also
+//     O(maxC*d), which reaches quadratic when n is small and counts are
+//     balanced.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes l2.sort(reverse=True) dominates. Check that l2 has
-//     at most 100 entries (one per distinct food type, capped by the
-//     description's 1<=a_i<=100), making the sort O(1); the real cost is
-//     the `for i in range(1,max(l2)+2)` loop, whose bound max(l2) can
-//     reach m when one food type holds nearly all m packages. Confirm the
-//     Dafny's `sorts` fact is empty (it is) and that MaxSeq plus the
-//     while-loop bound scale with m, not with distinct count.
+//     The label assumes the Counter plus sort dominates. Check the Python
+//     loop `for i in range(1,max(l2)+2): sum(int(x/i) for x in l2)`: with
+//     n=1 it runs max(l2) times over len(l2) counts, so a list with half
+//     the elements one value and half distinct gives about (m/2)**2 work.
+//     If you consider only typical inputs the label may stand, but the
+//     Dafny's GroupCounts1306c replaces Counter with an O(m*d) scan.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 48, "data_dependent_loops": 1, "decreases_star":

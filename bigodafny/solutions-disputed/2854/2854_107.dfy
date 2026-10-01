@@ -3,23 +3,26 @@
 //   stated label   : O(n**2)
 //   audited class  : O(n)
 //   cause          : label
-//   confidence     : high
-//   auditor        : labelaudit-batch-22
+//   confidence     : medium
+//   auditor        : labelaudit-r3d-08
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     adj := adj[u := adj[u] + [v]] and visited := visited[node := true]
-//     are top-level seq updates over an n+1-length sequence executed
-//     inside the edge loop and the stack-pop loop, each costing O(n) per
-//     write and O(n) writes overall. The Python builds data[u] with
-//     list.append and sets visited[u[0]]=True in place, both O(1), so the
-//     tree DFS itself is O(n); the label matches the Dafny only because
-//     the seq-update translation reintroduced a quadratic factor.
+//     Adjacency building does O(1) seq updates per edge line, and the
+//     stack loop pops each tree node once and scans its adjacency list
+//     once (visited check and stack + [x] are O(1)), so total is O(n). The
+//     Python's list stack and per-node neighbour loop are linear too, so
+//     the O(n**2) label is wrong; `decreases *` only covers non-tree
+//     inputs.
 //
 //   how this label could be wrong, and what to check:
-//     not recorded by this batch
+//     The label assumes the DFS can revisit nodes quadratically. Check the
+//     push rule: a neighbour is pushed only if not visited and the input
+//     is a tree, so each node is pushed once, from its parent; the stack
+//     can hold a node twice only on cyclic input, which the statement
+//     rules out.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 58, "data_dependent_loops": 1, "decreases_star":

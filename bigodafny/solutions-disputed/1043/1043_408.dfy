@@ -1,32 +1,25 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n**2)
-//   audited class  : O(n)
+//   audited class  : other
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r2-06
+//   auditor        : labelaudit-r3d-03
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The loop over a_list (t=n test cases) calls Repeat("3", m-2) whose
-//     argument is the per-test digit count m, capped by the problem's
-//     stated bound that the sum of m across all test cases never exceeds
-//     1e5, so this per-test cost is bounded independent of n and the total
-//     is O(n), not O(n**2); the Python's identical while-loop over the
-//     same capped m shows the same growth.
+//     Solve loops over a_list and builds each answer with `Repeat("3",
+//     m-2)` then Join, so the cost is O(t + sum of the per-test values
+//     m_i), linear in output length; the Python's `while n>2` printing
+//     loop is linear in the same sum, so O(n**2) matches neither.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes total print work scales with n**2, as if the
-//     number of test cases and the per-test digit value both grow
-//     together. Check the description's line 'sum of n for all test cases
-//     does not exceed 1e5': since that caps the Repeat/print cost
-//     independent of |a_list|, increasing the number of test cases while
-//     holding that sum fixed should not increase total work quadratically.
-//     If a reviewer can construct a valid input where both the test-case
-//     count and the total digit-sum grow together without violating that
-//     cap, the O(n) verdict is wrong instead.
+//     The label assumes a quadratic cost. Check the Python: the inner
+//     `while n>2` prints one character per iteration, so the cost per test
+//     is its own n_i, and the statement says the sum of n over tests is at
+//     most 10^5; nothing in either source is quadratic.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 20, "data_dependent_loops": 0, "decreases_star":

@@ -4,29 +4,22 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-23
+//   auditor        : labelaudit-r3d-08
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Each room record is a fixed two-element (pi, qi) pair per the
-//     problem statement, so `a := a + pairs_list[i]` concatenates a
-//     constant-size chunk n times with no read of `a` inside that loop,
-//     and the second `while idx+1 < |a|` loop is a single O(n) scan;
-//     Python's `a += list(map(int, ...))` plus its `while i<n*2` loop are
-//     likewise O(n), not O(n*m) as labelled — sibling row 3091_1574 for
-//     the same problem is correctly labelled O(n).
+//     The first loop concatenates each two-element row onto a (cost
+//     O(|row|) = 2 per row) and the second loop steps through a by twos,
+//     so Solve is O(n). The Python's `a+=list(map(int,input().split()))`
+//     adds two ints per line and its while loop runs n times, so it is
+//     O(n) and the O(n*m) label is wrong.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes a growing row-width m, but the problem statement
-//     fixes each room record to exactly two integers (pi, qi); check the
-//     input format confirms a fixed 2-element row like the 396_361
-//     rectangle precedent, which makes m a constant, not a real dimension.
-//     Then confirm the first loop's `a := a + pairs_list[i]` never reads
-//     `a[...]` inside that loop (so it is O(1) amortised per row) and the
-//     second loop is a single O(n) scan over the flattened 2n-length
-//     array.
+//     The label assumes variable row width m. Check the statement: each of
+//     the n lines holds exactly two integers pi and qi, so the width is a
+//     constant; if rows could be longer the label would stand.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 26, "data_dependent_loops": 1, "decreases_star":

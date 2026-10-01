@@ -32,7 +32,7 @@ after a proper screening — they have not been screened, so they have not moved
 
 ## What to do with this directory
 
-Run the label audit over it. `label_audit.py evidence --prefix unscreened` emits
+Run the label audit over it. `label_audit.py evidence --dir solutions-unscreened --prefix unscreened` emits
 batches in the same shape the audit used, and `batches/labelaudit/PROMPT.md` is
 the agent prompt. Each row then either joins `solutions/` or joins
 `solutions-disputed/` with a verdict, and this directory empties.

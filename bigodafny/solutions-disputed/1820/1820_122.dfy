@@ -1,29 +1,26 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n**2)
-//   audited class  : O(n)
+//   audited class  : other
 //   cause          : label
-//   confidence     : high
-//   auditor        : labelaudit-batch-12
+//   confidence     : medium
+//   auditor        : labelaudit-r3d-05
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     `x` and `y` are bounded by 0<=x,y<=7 per the statement, so the Dafny
-//     inner loops `while j < i` (bounded by x) and `while j < i+y+1`
-//     (bounded by y) each do at most 7 O(1) steps; the outer `while i <
-//     |arr| && !found` loop is the only part scaling with n, and Python's
-//     identical `range(i-x,i)`/`range(i+1,i+y+1)` loops are just as
-//     bounded, making both sources O(n).
+//     The outer loop runs up to |arr| times and each iteration runs the
+//     inner loops for x and y steps, so the cost is O(n*(x+y)), a value
+//     term; nothing scans the array quadratically. The Python's
+//     range(i-x,i) and range(i+1,i+y+1) loops pay the same, so the label
+//     O(n**2) names a growth rate no construct exhibits.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes the inner scans over x and y grow with n. Check
-//     the problem constraint `0 <= x, y <= 7`: since x and y are each
-//     capped at 7, the `while j < i` and `while j < i + y + 1` loops run
-//     at most 7 iterations regardless of n, so the outer `while i < |arr|`
-//     loop's O(n) iterations dominate and the true cost is O(n), not
-//     O(n**2).
+//     The label assumes quadratic work in n. Check the two inner loops, j
+//     from i-x to i and j from i+1 to i+y+1: their length depends on the
+//     values x and y, not on n, so the cost is O(n*(x+y)), and the
+//     statement cap of 7 does not make it constant.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 48, "data_dependent_loops": 1, "decreases_star":

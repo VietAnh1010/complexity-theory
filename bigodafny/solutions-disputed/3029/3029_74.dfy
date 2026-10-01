@@ -4,28 +4,23 @@
 //   audited class  : O(n**2)
 //   cause          : translation
 //   confidence     : high
-//   auditor        : labelaudit-batch-23
+//   auditor        : labelaudit-r3d-08
 //
 //   The Python matches its label; the DAFNY does not. The label is right
 //   about the program it was measured on and the translation is the
 //   defect.
 //
 //   evidence:
-//     Both `SUM1` and `SUM2` computation loops rebuild `newR`/`newB` via a
-//     full O(N) linear insertion scan on each of N outer iterations
-//     (`while j < |R|`, invariant `|R| == N`), giving O(N**2), while
-//     Python's real `heapq.heappush`/`heappop` are O(log N) each so the
-//     Python is O(N log N) as labelled.
+//     The Dafny replaces heapq with a sorted seq and an O(N) insertion
+//     loop (`while j < |R|`) executed N times, plus the same again for B,
+//     giving O(n**2). The Python's heappush/heappop is O(log n) per step,
+//     so its O(n log n) matches the label; heap replaced by linear
+//     insertion is the algorithm-replaced shape.
 //
 //   how this label could be wrong, and what to check:
-//     The label O(nlogn) is right about the Python
-//     (`heapq.heappush`/`heapq.heappop` are O(log N) each, N iterations,
-//     O(N log N) total) but the Dafny replaces the heap with a linear-scan
-//     insertion (`while j < |R|` / `while j < |B|`) rebuilt on every one
-//     of N outer steps. Confirm the invariant `|R| == N` (resp. `|B| ==
-//     N`) holds through the outer loop, so the inner scan is O(N) work
-//     repeated N times, giving O(N**2) — check this is the same shape as
-//     sibling `3029_114`.
+//     The label matches the Python, whose heapq push/pop per step gives
+//     O(n log n). Check the `while j < |R|` loop nested in `while i < 2 *
+//     N` in the Dafny: it rebuilds a size-N seq at every step.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 103, "data_dependent_loops": 0, "decreases_star":

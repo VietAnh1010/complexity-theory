@@ -4,22 +4,21 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-07
+//   auditor        : labelaudit-r3d-03
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The inner `while j < |l|` loop scans `l`, but per the problem
-//     statement l is always the four values r,g,b,w, so its length is a
-//     fixed constant, not a growing m; the Python's `for i in l` loop is
-//     the same fixed-size scan, so both are O(n), not O(n*m).
+//     Solve loops once over the n test rows and the inner `while j < |l|`
+//     counts odd entries of a 4-element row, a constant; the Python's `for
+//     i in l` over four numbers is the same, so row width does not enter
+//     and the cost is O(n).
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes row width m grows with n. Check the problem
-//     statement: each test case always has exactly r,g,b,w (four balls),
-//     so `matrix[k]` is a fixed-width row of length >=3; if width never
-//     varies m is a constant, not a real dimension.
+//     The label assumes a variable row width m. Check the input: each test
+//     has exactly four counts r g b w, so the `while j < |l|` loop runs 4
+//     times.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 33, "data_dependent_loops": 0, "decreases_star":

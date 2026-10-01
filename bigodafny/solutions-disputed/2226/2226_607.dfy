@@ -4,23 +4,23 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-17
+//   auditor        : labelaudit-r3d-06
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Both Python's count_moves and the Dafny Solve run a single linear
-//     scan over name/binary_string with O(1) work per index and no sort or
-//     divide-and-conquer; unused helper functions like is_prime do not
-//     execute.
+//     The Dafny scans the string once counting runs of 'x' with O(1)
+//     arithmetic per character, so it is O(n); the Python's only executed
+//     function is count_moves, a single loop, with no sort anywhere on the
+//     executed path.
 //
 //   how this label could be wrong, and what to check:
-//     The label implies a log-factor construct (sort, log-recursion)
-//     somewhere in the solution. Open the Python: only count_moves(n,
-//     name) is invoked from main;
-//     mod_expo/is_prime/find_sum/prin_abc/get_scores are defined but never
-//     called and contribute no cost.
+//     The label O(nlogn) assumes a sort or logarithmic structure, but the
+//     Dafny has a single loop `while i < n` with O(1) work. Check the
+//     Python: only count_moves(n, name) is called, and it is one for loop;
+//     the other helpers (mod_expo, is_prime, sorting in prin_abc) are
+//     never invoked.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 25, "data_dependent_loops": 0, "decreases_star":

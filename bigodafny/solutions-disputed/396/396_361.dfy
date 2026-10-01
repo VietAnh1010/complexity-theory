@@ -4,18 +4,22 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-03
+//   auditor        : labelaudit-r3d-01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Corrected by review: the auditor called this translation because the
-//     Python uses max(dimensions[i]) where the Dafny reads row[0]/row[1].
-//     A rectangle row holds exactly two numbers, so that max is O(1) per
-//     row and the Python is O(n) too. The O(n*m) label names a dimension
-//     neither source scans. Matches the proved bound 8*|rectangles| + 6 in
-//     solutions-verified/.
+//     Solve makes one loop over the rectangles with comparisons of row[0]
+//     and row[1] only; the Python's max(dimensions[i]) runs over exactly
+//     two numbers, so both are O(n) and the O(n*m) label names a dimension
+//     that does not exist.
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes variable rectangle width m. Check the statement:
+//     each line is exactly two integers w_i, h_i; Solve reads only row[0]
+//     and row[1] and the Python's max/min over dimensions[i] act on a
+//     two-element list.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 26, "data_dependent_loops": 1, "decreases_star":

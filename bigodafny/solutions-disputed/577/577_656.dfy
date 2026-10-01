@@ -1,28 +1,27 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n**2)
-//   audited class  : O(n)
+//   audited class  : other
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-r2-03
+//   auditor        : labelaudit-r3d-02
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Resolved by review with the problem statement: 1345_B gives up to t
-//     <= 1000 test cases each with a value n <= 10^9. Pyramid is
-//     O(sqrt(value)), so a single query costs at most about 31623 steps
-//     regardless of how many queries there are. Total cost is linear in
-//     the query count, not quadratic.
+//     Pyramid(nVal) loops while aux >= 2, subtracting 3*altura-1 per step,
+//     which takes O(sqrt(nVal)) iterations per pyramid and O(sqrt(nVal))
+//     in total because the remainder is itself O(sqrt). The total is O(sum
+//     of sqrt(n_i)) over the tests, a value term that is neither n**2 nor
+//     expressed in the label's variables; the Python runs the same loop.
 //
 //   how this label could be wrong, and what to check:
-//     The label reads as quadratic in the query count. Check the Input
-//     section: the per-test value n is capped at 10^9 independently of t,
-//     so the per-query sqrt work is a constant factor and the total is
-//     O(t). If instead the label's n means a single query's magnitude, the
-//     row is O(sqrt(n)) and still not quadratic. Sibling 577_509 carries
-//     O(n) for the same signature convention.
+//     The label claims quadratic but the cost is a per-test value term:
+//     Pyramid's while loop steps altura by one and subtracts about
+//     3*altura each step. Check that aux shrinks by 3h-1 per step, so each
+//     test needs about sqrt(n_i) iterations, and compare with the Python's
+//     identical `while(aux>=2)` loop.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 39, "data_dependent_loops": 0, "decreases_star":

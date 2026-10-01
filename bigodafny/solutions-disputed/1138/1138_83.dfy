@@ -4,27 +4,21 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-r2-06
+//   auditor        : labelaudit-r3d-03
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The single while loop iterates over n rows of `data`, reading only
-//     data[i][0] and data[i][1] (and data[i-1][1]) with O(1) FloorMod and
-//     arithmetic per iteration; the parameter m is the skip value x used
-//     only as a modulus operand, never as a loop bound or a scanned
-//     dimension, so the true class is O(n), matching sibling 1138_66's
-//     identical O(n) label for the same problem.
+//     Solve has a single loop `while i < n` reading data[i][0] and
+//     data[i][1], with FloorMod(.., m) as O(1) arithmetic; m is the skip
+//     value x, not a size, and the Python is the same single loop, so the
+//     cost is O(n).
 //
 //   how this label could be wrong, and what to check:
-//     The label O(n*m) implies the loop's cost scales with m, but m here
-//     is the skip-length x (a `requires m > 0` scalar), used only inside
-//     `FloorMod(..., m)` as an O(1) arithmetic operand, never as a range
-//     or size that gets walked. Confirm no loop in the Dafny iterates 'm
-//     times' or over a structure of length m; if none exists, compare to
-//     sibling 1138_66 (same problem, same structure, labeled O(n)) to
-//     confirm O(n) is correct here too.
+//     The label assumes m is a size dimension. Check how m is used in the
+//     Dafny: it appears only as the divisor in FloorMod(..., m), which is
+//     the problem's value x, never as a loop bound.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 24, "data_dependent_loops": 0, "decreases_star":

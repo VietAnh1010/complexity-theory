@@ -3,28 +3,23 @@
 //   stated label   : O(n)
 //   audited class  : O(n+m)
 //   cause          : label
-//   confidence     : high
-//   auditor        : labelaudit-r2-06
+//   confidence     : low
+//   auditor        : labelaudit-r3d-03
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Solve runs two separate while loops, one scanning `rectangles` for n
-//     iterations and a second scanning `checks` for m iterations, each
-//     doing O(1) min/max updates per iteration; n and m are independent
-//     parameters (each bounded separately at 200,000 in the problem
-//     statement), so the tight class is O(n+m), and the Python's own two
-//     separate for-loops over n and m show the identical two-phase linear
-//     cost.
+//     Solve scans rectangles (n items) and then checks (m items) in two
+//     sequential loops, O(n+m) in the signature's sizes, and the Python
+//     does the same two loops; the label O(n) drops m, which is only a
+//     naming choice if n denotes the total.
 //
 //   how this label could be wrong, and what to check:
-//     The label O(n) omits the second while loop, which scans `checks`
-//     (length m) exactly once with the same O(1) per-iteration cost as the
-//     first loop over `rectangles`. Check that n and m can vary
-//     independently per the problem's two separate bounds (1<=n<=200000 on
-//     one line, 1<=m<=200000 on another); if so the true class must
-//     include both dimensions as O(n+m), not O(n) alone.
+//     The label may use n for the total input size. Check whether the
+//     dataset's other n-labelled two-list rows mean n+m; the Dafny has two
+//     independent loops, `while i < n` over rectangles and `while i < m`
+//     over checks, so O(n) omits m if they are independent sizes.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 40, "data_dependent_loops": 0, "decreases_star":

@@ -4,24 +4,22 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-16
+//   auditor        : labelaudit-r3d-06
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The loop over |queries| reads only queries[i][0], queries[i][1],
-//     queries[i][2], a fixed-width row per the problem statement, so no
-//     dimension scales with row width; Join and IntToString are linear in
-//     output length, giving O(n) overall, same as the Python's two single
-//     passes over t queries.
+//     The Dafny loops once over |queries| doing O(1) arithmetic and
+//     FloorDiv per query, then Join, so it is O(n); k enters only through
+//     closed-form arithmetic, and the Python loop over t queries is
+//     likewise linear.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes query rows have a variable width m, but the
-//     problem statement fixes each query line to exactly three integers a,
-//     b, k. Open the description's 'three space-separated integers a, b,
-//     k' and confirm queries[i] is only ever indexed at 0, 1, 2; if so m
-//     is a constant and O(n*m) collapses to O(n).
+//     The label O(n*m) assumes row width varies, but each query is exactly
+//     three numbers (a, b, k) and the loop reads queries[i][0..2]. Check
+//     the statement: each of the t lines has three space-separated
+//     integers.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 20, "data_dependent_loops": 0, "decreases_star":

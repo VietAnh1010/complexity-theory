@@ -3,23 +3,23 @@
 //   stated label   : O(nlogn)
 //   audited class  : O(nlogn+mlogm)
 //   cause          : label
-//   confidence     : high
-//   auditor        : labelaudit-batch-07
+//   confidence     : low
+//   auditor        : labelaudit-r3d-03
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Solve sorts both `rectangles` (size n) and `checks` (size m) via two
-//     separate Sort calls, each O(k log k) per the table, and the Python
-//     mirrors this with c.sort() and p.sort(), so the true cost is
-//     O(nlogn+mlogm), not O(nlogn) alone.
+//     Solve calls Sort on rectangles and on checks and then runs one loop
+//     over each, giving O(nlogn+mlogm); the Python sorts c and p the same
+//     way, so the label omits the m list, a naming difference if n is the
+//     total size.
 //
 //   how this label could be wrong, and what to check:
-//     The label O(nlogn) claims cost depends only on n, but
-//     Sort(checks,...) sorts p, the m-sized array, too. Check the second
-//     Sort call on checks/p and confirm the Python's p.sort() likewise
-//     costs O(mlogm); if so the m term must appear.
+//     The label may use n for the combined size of both lists. Check
+//     whether n and m are independent in the signature: Solve sorts
+//     rectangles (n) and checks (m) separately, so the tight class is
+//     O(nlogn+mlogm).
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 31, "data_dependent_loops": 0, "decreases_star":

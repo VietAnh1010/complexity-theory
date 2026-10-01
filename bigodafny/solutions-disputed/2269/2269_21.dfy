@@ -4,26 +4,25 @@
 //   audited class  : other
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-17
+//   auditor        : labelaudit-r3d-07
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     IsPalindrome269 (Dafny) and t != t[::-1] (Python) each cost
-//     O(len(t)) per call, and on an all-identical-character string like
-//     example 3 the break never triggers, so the two nested loops each run
-//     O(|s|) times with an O(|s|)-cost palindrome check inside, giving
-//     Theta(|s|**3), cubic rather than quadratic.
+//     The outer loop over i (n values) and inner loop over j (up to i - r
+//     values) each call IsPalindrome269(s[j..i]), whose recursion
+//     IsPalindromeFrom269 has depth about |t|/2; on an all-equal string
+//     nothing breaks early, so the cost is cubic, O(n**3). The Python's `t
+//     != t[::-1]` is likewise linear per pair, so the label is wrong for
+//     both.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes only the two nested loops (i, j) cost matters,
-//     treating each palindrome check as O(1). Trace the all-same-character
-//     case from the problem's own example 3 ("qqqqqqqq"->0): found never
-//     becomes true, so the inner loop runs its full i-r range for every i
-//     from |s| down to 1, and each IsPalindrome269(t)/t[::-1] check costs
-//     O(|t|). Sum sum_i sum_j O(i-j) to see it is cubic in |s|, not
-//     quadratic.
+//     The label assumes quadratic work, but each of the O(n**2) (i, j)
+//     pairs builds and palindrome-tests a substring costing up to its
+//     length. Take s = 'qqqqqqqq' (all palindromes) and count the work:
+//     the Python's t[::-1] compare and the Dafny's IsPalindromeFrom269
+//     both do about (i-j)/2 steps per pair, giving a cubic total.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 43, "data_dependent_loops": 1, "decreases_star":

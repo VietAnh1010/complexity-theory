@@ -3,34 +3,25 @@
 //   stated label   : O(n*m)
 //   audited class  : O(n)
 //   cause          : label
-//   confidence     : medium
-//   auditor        : labelaudit-r2-02
+//   confidence     : low
+//   auditor        : labelaudit-r3d-01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Both loops touch only pairs[idx][0] and pairs[idx][1] via ParseInt
-//     -- no dimension beyond n=|pairs| is scanned -- and map<int,int>
-//     lookups/inserts are the only other cost, which the table marks
-//     UNMEASURED rather than tied to any m. Sibling 378_91 solves the same
-//     problem (432_B Football Kit) with an isomorphic
-//     ParseInt+map<int,int> two-loop structure and carries label O(n), so
-//     this row's extra 'm' factor is not visible anywhere in the Dafny.
+//     Solve loops over the pairs twice with O(1) map operations and two
+//     ParseInt calls per row, costing O(digits) each; with fixed width-2
+//     rows and short tokens the cost is O(n), but the label's m might name
+//     token length.
 //
 //   how this label could be wrong, and what to check:
-//     The label claims a second dimension m (row width, or the
-//     digit-length of the team-id strings parsed by ParseInt) drives the
-//     cost, but both loops only ever touch pairs[idx][0] and pairs[idx][1]
-//     -- no width or length beyond n=|pairs| is scanned -- and
-//     map<int,int> lookups/inserts (the only other cost) are UNMEASURED in
-//     this cost model. Check whether team/kit indices in problem 432_B are
-//     bounded by n (then any string round-trip via ParseInt is O(log n),
-//     not an independent m); also diff this Dafny against sibling 378_91,
-//     which has an isomorphic ParseInt+map<int,int> two-loop structure for
-//     the same problem and carries label O(n) -- if the structures really
-//     are equivalent, this row's extra m factor is a stale label rather
-//     than a real cost.
+//     The label may be right if m is the digit length of each colour
+//     token, since ParseInt scans every character of pairs[idx][0] and
+//     pairs[idx][1]; or wrong if m is meant as row width (always 2).
+//     Decide what m denotes by checking the statement (two numbers per
+//     line, each at most 10^5, so at most six characters) and
+//     ParseIntFrom's recursion.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 48, "data_dependent_loops": 0, "decreases_star":

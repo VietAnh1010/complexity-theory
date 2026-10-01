@@ -4,20 +4,22 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-19
+//   auditor        : labelaudit-r3d-07
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     d := d[data[i] := false] and d := d[i+1 := true] are seq updates
-//     inside the for-i loop over n elements, each copying |d|=n+4 entries,
-//     giving O(n**2), which happens to match the label even though
-//     Python's d[idx]=val list write is O(1) and the Python is really
-//     O(n).
+//     Solve builds d with n+4 amortised O(1) appends, then makes one pass
+//     over data with O(1) seq updates per element, so it is O(n); the
+//     Python does the same one pass with O(1) list assignments, so the
+//     n**2 label matches neither.
 //
 //   how this label could be wrong, and what to check:
-//     not recorded by this batch
+//     The label assumes quadratic work, but every loop is a single pass of
+//     n or n+4 with O(1) body. Check the init loop `d := d + [false]` and
+//     the main loop; seq append is amortised O(1) and `d[i := v]` is O(1)
+//     in the model, and the Python's list indexing is also O(1).
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 38, "data_dependent_loops": 0, "decreases_star":

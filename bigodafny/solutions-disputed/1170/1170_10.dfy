@@ -4,26 +4,21 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-r2-06
+//   auditor        : labelaudit-r3d-03
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Each matrix row is read only at fixed indices l[0]..l[3] (A, B, C,
-//     D) per the `requires |matrices[i]| >= 4` precondition, with O(1)
-//     arithmetic and string selection per test case and no loop over row
-//     width; the outer loop runs |matrices|=n times, so the true class is
-//     O(n), and sibling 1170_62 solving the identical problem is correctly
-//     labeled O(n).
+//     Solve loops once over |matrices| and reads l[0], l[1], l[2], l[3]
+//     directly with constant-size string concatenation; row width never
+//     enters and the Python's per-test work is fixed too, so the cost is
+//     O(n) in the test count.
 //
 //   how this label could be wrong, and what to check:
-//     The label O(n*m) implies cost scaling with row width m, but check
-//     that the Dafny only ever indexes l[0], l[1], l[2], l[3] -- four
-//     fixed positions -- and never loops over the row itself. If
-//     confirmed, m does not enter the cost and the label should be O(n),
-//     matching sibling 1170_62 which solves the identical 'Huge Boxes of
-//     Animal Toys' problem with the same structure and that label.
+//     The label assumes a row-width dimension. Check the input format:
+//     each test line has exactly four integers A B C D, and Solve reads
+//     l[0]..l[3] at fixed indices without walking the row.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 32, "data_dependent_loops": 0, "decreases_star":

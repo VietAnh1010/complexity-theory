@@ -4,21 +4,25 @@
 //   audited class  : O(n)
 //   cause          : translation
 //   confidence     : medium
-//   auditor        : labelaudit-batch-05
+//   auditor        : labelaudit-r3d-02
 //
 //   The Python matches its label; the DAFNY does not. The label is right
 //   about the program it was measured on and the translation is the
 //   defect.
 //
 //   evidence:
-//     j.sort() in the Python runs on a list built by scanning i from 0
-//     upward, so it is already in increasing order and costs O(n) under
-//     Timsort's best case, but h.sort() sorts the gap differences
-//     -j[f]+j[f+1]-1, which are not pre-ordered, so Python genuinely pays
-//     O(n log n) there and the label reflects that real sort. The Dafny
-//     drops sorting entirely (facts.sorts is empty) and tracks maxGap
-//     directly inside the single while loop over j, giving O(n), so the
-//     label is right about the Python and the translation is the defect.
+//     The Python sorts j and h and pops the maximum gap, which is O(n log
+//     n), while the Dafny never sorts: it scans s once to build j and once
+//     more keeping a running maxGap, all O(1) amortised steps, so it is
+//     O(n). The algorithm was replaced by a faster one, so the label is
+//     right about the Python and the Dafny lands a class lower.
+//
+//   how this label could be wrong, and what to check:
+//     The label comes from the Python's `j.sort()` and `h.sort()`. Check
+//     that the Dafny has no Sort/SortInts call and only does two linear
+//     scans (the `j := j + [i]` loop and the max-gap loop). If the Dafny's
+//     maxGap scan is accepted as the intended algorithm, the translation
+//     replaced the sort+pop with a running max.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 29, "data_dependent_loops": 1, "decreases_star":

@@ -3,23 +3,23 @@
 //   stated label   : O(n+m)
 //   audited class  : O(n)
 //   cause          : label
-//   confidence     : high
-//   auditor        : labelaudit-batch-15
+//   confidence     : medium
+//   auditor        : labelaudit-r3d-06
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Solve takes scalar a, scalar b (k), and one sequence c_list parsed
-//     into v; the while loop runs over |v| once with O(1) work per
-//     iteration, and there is no second collection to give an m term.
+//     ParseInts(c_list) and the single loop over |v| are both linear in
+//     the one list, and k only decreases by at most 8 per step so it adds
+//     no cost term; the Python enumerates one list likewise, so no m
+//     dimension exists.
 //
 //   how this label could be wrong, and what to check:
-//     The label posits a second sized dimension m, but Solve's signature
-//     has only scalars a and b plus one sequence c_list; check the
-//     signature for any second seq/array parameter. There is none, so the
-//     single while loop over |v| makes this O(n), and the Python's single
-//     for loop over enumerate(...) confirms it.
+//     The label O(n+m) assumes a second dimension m, but the only
+//     collection is c_list; the other input k (b) is a scalar that is
+//     subtracted from, never looped to. Check that the loop `while i <
+//     |v|` is the only loop and that k does not bound any iteration.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 25, "data_dependent_loops": 1, "decreases_star":

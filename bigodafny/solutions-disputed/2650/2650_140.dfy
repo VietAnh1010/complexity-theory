@@ -1,31 +1,27 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(nlogn)
-//   audited class  : other
-//   cause          : both
-//   confidence     : medium
-//   auditor        : labelaudit-batch-20
+//   audited class  : O(n**2)
+//   cause          : label
+//   confidence     : high
+//   auditor        : labelaudit-r3d-07
 //
-//   The Python does not match the label AND the translation diverges
-//   from the Python. Both need attention.
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     In the worst case (already-distinct input) the outer pref loop runs
-//     n+1 times and the inner k loop scans close to n elements each time
-//     without breaking, making the Python O(n**2) rather than O(nlogn);
-//     the Dafny inner loop additionally performs dused := dused[ind :=
-//     dused[ind]+1], a seq update costing O(n) per call versus Pythons
-//     O(1) list write, pushing the Dafny to O(n**3).
+//     After the O(n log n) sort and the n binary searches in RankOf, the
+//     `while pref <= n` loop contains an inner `while k < n && !brk2`
+//     suffix scan, giving about n**2/2 steps on distinct data. The Python
+//     has the same prefix loop with a `while suf < n` scan and a
+//     used.copy(), so both are O(n**2) and the label is wrong for both.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes the pref/suf scan is linear or logarithmic, but
-//     the outer while pref <= n and inner while k < n form a nested O(n) x
-//     O(n) scan that only breaks once a duplicate appears; trace the
-//     all-distinct case (e.g. array 1 2 3 ... n) where no duplicate is
-//     ever found, so both loops run to near completion on every outer
-//     step. Separately check that dused := dused[ind := dused[ind] + 1] is
-//     a full seq copy each call, versus the Python dused[ind] += 1 which
-//     is an O(1) in-place list write.
+//     The label assumes sort-dominated work, but the pref loop runs up to
+//     n times and each iteration rescans the suffix with an inner loop of
+//     up to n steps. Take an array of all distinct values: the suffix scan
+//     stops only when it meets a prefix element, so it runs n - pref steps
+//     per iteration.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 130, "data_dependent_loops": 2, "decreases_star":

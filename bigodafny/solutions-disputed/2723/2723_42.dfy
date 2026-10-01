@@ -1,28 +1,26 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n)
-//   audited class  : O(n+m)
+//   audited class  : other
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-batch-20
+//   auditor        : labelaudit-r3d-08
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     SumSeq(a_list) plus the nested while j < x loop together cost
-//     O(|a_list| + total), where total is the sum of all ai values,
-//     matching the Python's 'tree.extend([len(tree)] * x)' which is O(x)
-//     per element and O(sum(a)) overall, so both are O(n+m) rather than
-//     the labeled O(n).
+//     Solve runs `while j < x` for each element x of a_list, and also
+//     calls SumSeq and builds arr[..] and JoinInts over total = sum a_i
+//     elements, so the cost is O(n + sum a_i), a value term the O(n) label
+//     omits. The Python's `tree.extend([len(tree)] * x)` and the final
+//     joins pay the same, so this is a label error.
 //
 //   how this label could be wrong, and what to check:
-//     The label O(n) ignores that the inner while j < x loop's total
-//     iterations across all i equal total = SumSeq(a_list), a second size
-//     that the constraint 'sum of all ai does not exceed 2*10^5' lets grow
-//     independent of |a_list|; check whether an input with small |a_list|
-//     (few, large ai) still forces total (and thus arr's length and
-//     JoinInts cost) to scale, which would confirm the missing +m term.
+//     The label counts only the length of a_list. Check the inner `while j
+//     < x` loop in Solve: x is the element value a_list[i], so cost grows
+//     with sum a_i; the statement caps sum a_i at 2e5 but a cap does not
+//     make it constant.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 49, "data_dependent_loops": 0, "decreases_star":

@@ -4,31 +4,24 @@
 //   audited class  : O(n**2)
 //   cause          : translation
 //   confidence     : high
-//   auditor        : labelaudit-r2-05
+//   auditor        : labelaudit-r3d-03
 //
 //   The Python matches its label; the DAFNY does not. The label is right
 //   about the program it was measured on and the translation is the
 //   defect.
 //
 //   evidence:
-//     This sibling of 1027_207 keeps the same nested-loop dedup: `while
-//     j<|dxs|` scans the whole accumulated slope list for each of the n
-//     points, an O(n**2) construct; but its Python replaces the linear
-//     scan with `if m not in slope` on a dict keyed by slope, an
-//     O(1)-average membership test, making the Python genuinely O(n) as
+//     The Dafny replaces the Python's dict `slope` with seqs dxs/dys and
+//     an inner loop `while j < |dxs|` that cross-multiplies against every
+//     distinct direction seen so far, O(n**2) when directions are
+//     distinct; the Python's dict membership is O(1), so it is O(n) as
 //     labelled.
 //
 //   how this label could be wrong, and what to check:
-//     The label O(n) is claimed to match the Dafny, but check whether the
-//     inner `while j < |dxs|` loop is bounded by a constant or by the
-//     growing list dxs; if dxs can hold up to n distinct slopes (e.g. all
-//     points at different angles from the gun), that inner loop's total
-//     work across all outer iterations is O(n**2), the same shape as
-//     1027_207's Dafny. Compare directly against 1027_207's inner loop,
-//     translated the same way and already labelled O(n**2) -- if the two
-//     Dafny loop bodies are structurally identical, one of the two labels
-//     must be wrong, and the Python source (dict membership vs manual
-//     scan) settles which one.
+//     The label assumes a hash lookup per point. The Python tests `m not
+//     in slope` on a dict, O(1); check whether the Dafny's inner `while j
+//     < |dxs|` scan over the distinct slopes found so far is a replacement
+//     for that dict.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 43, "data_dependent_loops": 0, "decreases_star":

@@ -4,25 +4,24 @@
 //   audited class  : O(n**2)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-batch-20
+//   auditor        : labelaudit-r3d-07
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The while loop over i runs k times, and each iteration calls
-//     FindIndex(l, ...) three times, each an O(|l|) linear scan, plus
-//     three seq updates l := l[idx := -1] costing O(|l|) each; with k up
-//     to n/3 this is O(n**2), and the Python mirrors it with three
-//     l.index() calls per iteration, also O(n**2).
+//     The loop runs k = min counts times, and each iteration does three
+//     FindIndex linear scans over l; the matched slots are replaced by -1,
+//     so the scan start drifts and total work is Theta(n**2) beyond the
+//     O(n log n) SortInts. The Python's three `l.index(...)` calls per
+//     round are equally linear, so the label is wrong for both.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes the sort dominates, but the main loop calls
-//     FindIndex (a linear scan over l) three times per iteration and runs
-//     up to k = min(t1,t2,t3) <= n/3 iterations. Check that k can be
-//     Theta(n) (e.g. n/3 children in each category) and that
-//     FindIndex/list.index is O(n) per call; that makes both the Dafny and
-//     Python O(n**2), with SortInts/l2.sort() not the bottleneck.
+//     The label assumes sort-dominated work, but each of up to n/3 team
+//     iterations calls FindIndex three times, each a linear scan. Try
+//     input with all 1s first, then 2s, then 3s: the first match of each
+//     value moves right by one per round, so scans are about n/3 to n
+//     long.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 82, "data_dependent_loops": 1, "decreases_star":

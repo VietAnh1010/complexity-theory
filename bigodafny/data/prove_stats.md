@@ -277,13 +277,13 @@ pushes the rate down for reasons unrelated to the agents.
 
 ## Corpus context
 
-- `solutions/` holds 299 rows.
+- `solutions/` holds 311 rows.
 - 323 rows carry a proof, in 323 files.
 - proved_rows counts every proof in the corpus, including the 33 that predate the campaigns and the rows the main agent proved later.
 
 ## What this does not measure
 
-- **Only `solutions/`.** The 127 unscreened and 202 disputed rows have
+- **Only `solutions/`.** The 127 unscreened and 190 disputed rows have
   never been drawn. Nothing here generalises to them.
 - **A bounded agent, not the problem.** `unresolved` means 3 attempts
   and 5 minutes were not enough, not that the row cannot be proved.

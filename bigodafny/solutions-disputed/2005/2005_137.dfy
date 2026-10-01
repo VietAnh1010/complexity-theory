@@ -4,25 +4,23 @@
 //   audited class  : O(nlogn)
 //   cause          : translation
 //   confidence     : high
-//   auditor        : labelaudit-batch-14
+//   auditor        : labelaudit-r3d-06
 //
 //   The Python matches its label; the DAFNY does not. The label is right
 //   about the program it was measured on and the translation is the
 //   defect.
 //
 //   evidence:
-//     SortInts(numbers) costs O(n log n) per the prelude table, and the
-//     loop `while m < |numbers|` runs a binary search over distinct on
-//     every iteration, adding O(n log n) more, whereas the Python's
-//     Counter gives O(1) lookups for an overall O(n) pass.
+//     The Python uses Counter and linear loops so it is O(n) as labelled,
+//     but the Dafny sorts with SortInts (O(n log n)) and then
+//     binary-searches `distinct` for each of the n elements, so its class
+//     is O(n log n); the sort/binary search replaces the hash count.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes O(1) frequency lookups as Python's Counter gives;
-//     the Dafny instead calls SortInts (O(n log n) per the cost table) and
-//     then runs a binary search over `distinct` inside the final while
-//     loop over m, adding another O(n log n). Confirm SortInts appears and
-//     that the final loop's binary search (`while lo < hi`) executes once
-//     per element of numbers.
+//     The label O(n) matches the Python, which counts with
+//     collections.Counter in one pass. Open the Dafny and check for
+//     `SortInts(numbers)` at the top and the per-element binary search
+//     over `distinct` in the final loop; either makes it O(n log n).
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 65, "data_dependent_loops": 1, "decreases_star":

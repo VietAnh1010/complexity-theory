@@ -3,18 +3,23 @@
 //   stated label   : O(1)
 //   audited class  : O(n)
 //   cause          : label
-//   confidence     : medium
-//   auditor        : labelaudit-batch-07
+//   confidence     : high
+//   auditor        : labelaudit-r3d-03
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     When m>=1 (n odd) the seq(2*m, ...) comprehension builds a sequence
-//     of length 2m, O(n) work that the loop-counting facts miss because it
-//     is a comprehension, not a while loop; Python's generator unpacked
-//     into print over range(2*n) does the same O(n) work, so the labelled
-//     O(1) is wrong for both.
+//     The Dafny builds `vals := seq(2 * m, ...)` and passes it to
+//     JoinInts, which is linear in the output length 2n, a loop to the
+//     single integer n; the Python prints 2n numbers from `range(2*n)`
+//     too, so O(1) is wrong and O(n) is right.
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes the arithmetic-only body is constant. Check the
+//     problem: the output lists 2n numbers for n up to 10^5, so the
+//     Dafny's seq of 2*m values and JoinInts, and the Python's generator
+//     over range(2*n), both scale with the value n.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 12, "data_dependent_loops": 0, "decreases_star":

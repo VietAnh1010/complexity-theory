@@ -3,27 +3,27 @@
 //   stated label   : O(n)
 //   audited class  : O(n**2)
 //   cause          : translation
-//   confidence     : high
-//   auditor        : labelaudit-batch-09
+//   confidence     : medium
+//   auditor        : labelaudit-r3d-04
 //
 //   The Python matches its label; the DAFNY does not. The label is right
 //   about the program it was measured on and the translation is the
 //   defect.
 //
 //   evidence:
-//     CountDistinct1434 recurses on xs[1..] but at every level first calls
-//     ContainsInt1434b(xs[1..], xs[0]), a full O(|xs|) linear scan of the
-//     remaining tail, so the total cost is 1+2+...+n = O(n**2), unlike
-//     Python's dict-based counting which is O(n).
+//     CountDistinct1434 calls ContainsInt1434b(xs[1..], xs[0]) at each
+//     level, which is O(|xs|) per call, so it is O(|values|**2); the
+//     Python tracks seen colours with `each not in dic`, an O(1) dict
+//     lookup, so it is O(n). The linear dict test was replaced by a linear
+//     scan.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes distinctness is checked with a hash table as in
-//     Python's `dic`. Confirm the Dafny has no map<K,V> anywhere (facts
-//     show uses_map:false) and instead calls ContainsInt1434b inside
-//     CountDistinct1434's own recursion on xs[1..]; if every recursion
-//     level does a fresh linear scan of what remains, the doubly-recursive
-//     shape is quadratic, the same shape as the min/max trap noted in this
-//     repo's CLAUDE.md.
+//     The problem fixes the input at exactly four integers, so every class
+//     here is really constant. If the dataset takes |values| as the size,
+//     the Dafny's membership scan inside the recursion is quadratic
+//     against the Python's dict; open CountDistinct1434 and
+//     ContainsInt1434b to check. If you treat four elements as a pinned
+//     constant, the label O(n) itself is the error.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 21, "data_dependent_loops": 0, "decreases_star":
