@@ -9,7 +9,7 @@ The result defines the `strict` split by measurement instead of by reading the
 problem statement for phrases like "print any of them".
 """
 from __future__ import annotations
-import json, subprocess, sys, tempfile
+import argparse, json, subprocess, sys, tempfile
 from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
@@ -90,4 +90,7 @@ def run(workers=8):
 
 
 if __name__ == "__main__":
-    run()
+    ap = argparse.ArgumentParser(prog="baseline.py")
+    ap.add_argument("--workers", type=int, default=8,
+                    help="rows run at the same time (default 8)")
+    run(workers=ap.parse_args().workers)

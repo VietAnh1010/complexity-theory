@@ -69,7 +69,6 @@ instrumented copies with machine-checked complexity bounds.
 | `data/` | Generated corpus state, gate results, and analysis records. |
 | `batches/` | Campaign manifests, prompts, trajectories, and audit evidence. |
 | `COMPLEXITY.md` | The stipulated cost model and proof approach. |
-| `cli.py` | Deterministic extract, signature, scaffold, baseline, validate, and dataset workflow. |
 
 ## Toolchain
 
@@ -77,7 +76,13 @@ The repository uses Dafny 4.11.0 and Z3 4.12.1. Typical commands are:
 
 ```bash
 # dafny and z3 on PATH
-python3 cli.py all
+# the build, in order
+python3 extract.py          # download BigOBench -> data/tasks.jsonl
+python3 signature.py        # dataclass -> Dafny Solve signatures
+python3 scaffold.py         # .dfy stubs; never overwrites a real body
+python3 baseline.py         # original Python vs its own tests (--workers N)
+python3 dataset.py          # join everything -> dataset.jsonl, stats.json
+# gates
 python3 validate.py --only 1053_38
 python3 difftest.py --loose
 python3 proofs.py
