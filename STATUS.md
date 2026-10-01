@@ -52,7 +52,8 @@ Separate deliverable in `bigodafny/`, built from BigOBench's
 - **Phase:** translated and gated; 323 complexity proofs; `solutions/` and the
   disputed queue re-audited (r3) under the current cost rules
 - **Last updated:** 2026-10-01
-- **Next action:** review the 190 disputed rows; screen the 127 unscreened ones
+- **Next action:** review the 184 disputed and 17 unsure rows; screen the 127
+  unscreened ones
 
 | | |
 |---|---|
@@ -66,9 +67,10 @@ Separate deliverable in `bigodafny/`, built from BigOBench's
 | Dafny / Z3 | 4.11.0 / 4.12.1 |
 
 **Rows are partitioned by status**, one directory each, each with a `README.md`:
-`solutions/` 311, `solutions-unscreened/` 127, `solutions-disputed/` 190,
-`solutions-ungateable/` 5, `solutions-unverified/` 3, `solutions-untranslated/` 4. `solutions-proved/` is
-an overlay of instrumented copies, not a sixth bucket.
+`solutions/` 300, `solutions-unscreened/` 127, `solutions-disputed/` 184,
+`solutions-unsure/` 17, `solutions-ungateable/` 5, `solutions-unverified/` 3,
+`solutions-untranslated/` 4. `solutions-proved/` is an overlay of instrumented
+copies, not another bucket.
 
 **The split is measured, not read.** Running the original Python against its own
 stored tests, only 540 of 640 reproduce the expected output byte-for-byte.
@@ -113,11 +115,10 @@ non-commercial. See `bigodafny/LICENSE.md`.
 - `bigodafny`: **resolved** — agents translated all 636 rows behind the
   validator. `CLAUDE.md`'s "no model in this pipeline" was written for the paper
   pipeline; `bigodafny/CLAUDE.md` scopes it to the deterministic stages.
-- `bigodafny`: 190 rows sit in `solutions-disputed/` awaiting manual review.
-  - Re-audit r3 (2026-10-01) moved 45 in and released 12. Under r3 the queue
-    holds 183 `mismatch` (140 label, 36 translation, 4 both, 3 harness) and
-    6 `unsure`, plus the gate-audit row `1950_45`.
-    See `solutions-disputed/README.md`.
+- `bigodafny`: 184 rows sit in `solutions-disputed/` awaiting manual review:
+  183 `mismatch` (140 label, 36 translation, 4 both, 3 harness) and the
+  gate-audit row `1950_45`. Re-audit r3 (2026-10-01) moved 45 in and released
+  12; its 17 `unsure` rows are in `solutions-unsure/`.
   - The re-file under the cost axioms is done (from a per-row decision table,
     `batches/cost-axioms/refile_decisions.jsonl`). 31 rows left the queue, 5 joined it, 3 were re-classified.
   - The five that joined were filed `ok` only because the old copy charge

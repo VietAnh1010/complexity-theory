@@ -31,14 +31,15 @@ grep -rl 'TODO: translate' solutions --include='*.dfy' | wc -l   # stubs
 The directory a row sits in *is* its classification. Never infer status from
 memory or from an earlier message.
 
-**A partition.** These five are disjoint and cover all 640 rows; each has a
+**A partition.** These seven are disjoint and cover all 640 rows; each has a
 `README.md` stating what it means and how a row leaves it.
 
 | directory | rows | meaning |
 |---|---|---|
-| `solutions/` | 311 | valid, `dafny verify` clean, label screened and unsuspected |
+| `solutions/` | 300 | valid, `dafny verify` clean, label screened and unsuspected |
 | `solutions-unscreened/` | 127 | valid; the label was never screened (sibling reuse or `set<T>`) |
-| `solutions-disputed/` | 190 | valid; the audit says the label does not match the code |
+| `solutions-disputed/` | 184 | valid; the audit says the label does not match the code |
+| `solutions-unsure/` | 17 | valid and verified; the label audit could not decide |
 | `solutions-ungateable/` | 5 | the gate cannot reach a verdict; the stored test data fails first |
 | `solutions-unverified/` | 3 | valid; safety obligations not discharged |
 | `solutions-untranslated/` | 4 | will not be translated; each file states why |

@@ -1,3 +1,40 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n)
+//   audited class  : O(n)
+//   cause          : unclear
+//   confidence     : low
+//   auditor        : labelaudit-r3-03
+//
+//   Which of the label or the translation is at fault was not determined
+//   by the audit.
+//
+//   evidence:
+//     The precompute loop is bounded by the literal 1000000000 and the
+//     per-query FindIdxFrom scan is over that constant-length table, so
+//     cost is O(t) times the Dfs depth, which is about 6 levels at the
+//     stated cap but is a function of the per-test value x that the label
+//     does not name; I lean ok because the depth is tiny and bounded by
+//     the statement, but the strict value rule could make this a mismatch.
+//
+//   how this label could be wrong, and what to check:
+//     The label O(n) counts test cases, but each query's cost depends on
+//     its value x through the depth of Dfs. Open Dfs and FindIdxFrom: each
+//     level scans the whole check sequence (a source-literal 1e9 bound, so
+//     constant) and the recursion depth is roughly log log x for x <= 1e9
+//     but grows linearly in x for x above the table top, and requires only
+//     x >= 0; decide whether a loglog-in-value term counts as a value term
+//     here.
+//
+//   structural facts (deterministic, from label_audit.py):
+//     {"body_lines": 48, "data_dependent_loops": 1, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString", "Join"],
+//     "loop_depth": 1, "loops": 2, "recursive_helpers": 2,
+//     "seq_append_read_in_same_loop": true, "seq_args": 1,
+//     "seq_update_in_loop": false, "set_build_in_loop": false, "sorts":
+//     [], "uses_map": false, "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 1345_B. Card Constructions  (problem 577, solution 577_509)
 // time complexity: O(n)
 // python exact-diff baseline: exact

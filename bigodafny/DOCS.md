@@ -28,7 +28,7 @@ for provenance, but they are not operational instructions.
 | Translated rows | 636 |
 | Strict behaviour gate | 529 valid, 3 failed, 2 parser-blocked |
 | Loose behaviour gate | 95 agree, 1 timeout-only unresolved, 4 untranslatable |
-| Clean `solutions/` rows | 311 |
+| Clean `solutions/` rows | 300 |
 | Complexity proof files | 323, all verify without `assume` |
 | Bounded campaign results | 281 proved of 366 draws (77%) |
 | Distinct drawn rows with a proof now | 292 of 329 (89%) |
@@ -51,6 +51,7 @@ in `data/old-record.jsonl`.
 | `solutions/` | Behaviour-gated, safety-verified, and screened against its label. |
 | `solutions-unscreened/` | Behaviour-gated but not yet audited for label accuracy. |
 | `solutions-disputed/` | A review queue for label, translation, or harness questions. |
+| `solutions-unsure/` | Gated and verified; the label audit returned `unsure`. |
 | `solutions-ungateable/` | The available evidence cannot support a normal behaviour verdict. |
 | `solutions-unverified/` | A behaviour-gated translation with unproved safety obligations. |
 | `solutions-untranslated/` | A row that cannot be represented faithfully enough to gate. |

@@ -32,7 +32,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent / "experiments"))
-from common import DATA, ROOT, SOLUTIONS, log, read_jsonl, write_jsonl  # noqa: E402
+from collections import Counter                                    # noqa: E402
+from common import DATA, ROOT, SOLUTIONS, UNSURE, log, read_jsonl, write_jsonl  # noqa: E402
 from features import (class_risk, extract, split_file,                  # noqa: E402
                       strip_comments, accumulator_read_in_loop)
 
@@ -194,67 +195,49 @@ def header(v, t, text):
 
 
 def apply(verdicts_path, dry_run=False):
+    """Put each audited row where its verdict says: ok -> solutions/ (no
+    header), mismatch -> solutions-disputed/, unsure -> solutions-unsure/ (both
+    with the review header), from whichever of the three it is in now. A row
+    queued by a translation audit is not a label question: it stays put."""
     verdicts = [json.loads(l) for l in
                 Path(verdicts_path).read_text(encoding="utf-8").splitlines()
                 if l.strip()]
     tasks = {t["solution_id"]: t for t in read_jsonl(DATA / "tasks.jsonl")}
-    moved, kept, missing = [], 0, []
-    requeued, released = 0, []
+    home = {"ok": SOLUTIONS, "mismatch": DISPUTED, "unsure": UNSURE}
+    moves, kept, missing = Counter(), 0, []
     for v in verdicts:
         sid = v["sid"]
         t = tasks.get(sid)
         if t is None:
             missing.append(sid); continue
-        src = SOLUTIONS / t["problem_id"] / f"{sid}.dfy"
-        queued = DISPUTED / t["problem_id"] / f"{sid}.dfy"
-        if not src.exists() and queued.exists():
-            # A re-audit of a queued row. `ok` releases it to solutions/
-            # without its header; anything else rewrites the header. A row
-            # queued by a translation audit is not a label question: leave it.
-            text = queued.read_text(encoding="utf-8")
-            if text.startswith("// TRANSLATION AUDIT"):
-                kept += 1
-                continue
-            body = strip_header(text)
-            if v.get("verdict") == "ok":
-                if not dry_run:
-                    src.parent.mkdir(parents=True, exist_ok=True)
-                    src.write_text(body, encoding="utf-8")
-                    queued.unlink()
-                    try:
-                        queued.parent.rmdir()
-                    except OSError:
-                        pass
-                released.append(sid)
-                log(f"  {sid:>10}  released to solutions/ (verdict ok)")
-                continue
-            if not dry_run:
-                queued.write_text(header(v, t, body) + "\n" + body, encoding="utf-8")
-            requeued += 1
-            continue
-        if not src.exists():
+        name = Path(t["problem_id"]) / f"{sid}.dfy"
+        src = next((d / name for d in (SOLUTIONS, DISPUTED, UNSURE)
+                    if (d / name).exists()), None)
+        if src is None:
             missing.append(sid); continue
-        if v.get("verdict") != "mismatch":
+        text = src.read_text(encoding="utf-8")
+        if text.startswith("// TRANSLATION AUDIT"):
             kept += 1
             continue
-        text = src.read_text(encoding="utf-8")
-        head = header(v, t, text)
-        dst = DISPUTED / t["problem_id"] / f"{sid}.dfy"
+        body = strip_header(text)
+        dst = home[v["verdict"]] / name
+        out = body if v["verdict"] == "ok" else header(v, t, body) + "\n" + body
+        if dst == src and out == text:
+            kept += 1
+            continue
         if not dry_run:
             dst.parent.mkdir(parents=True, exist_ok=True)
-            dst.write_text(head + "\n" + text, encoding="utf-8")
-            src.unlink()
-            try:
-                src.parent.rmdir()          # only if now empty
-            except OSError:
-                pass
-        moved.append({"sid": sid, "problem_id": t["problem_id"],
-                      "label": t["time_complexity_inferred"],
-                      "true_class": v.get("true_class"),
-                      "cause": v.get("cause"), "confidence": v.get("confidence"),
-                      "evidence": v.get("evidence")})
-        log(f"  {sid:>10}  {t['time_complexity_inferred']:>14} -> "
-            f"{v.get('true_class'):<14} cause={v.get('cause')}")
+            dst.write_text(out, encoding="utf-8")
+            if dst != src:
+                src.unlink()
+                try:
+                    src.parent.rmdir()          # only if now empty
+                except OSError:
+                    pass
+        moves[(src.parent.parent.name, dst.parent.parent.name)] += 1
+        if dst != src:
+            log(f"  {sid:>10}  {src.parent.parent.name} -> {dst.parent.parent.name}"
+                f"  ({v['verdict']}, {v.get('true_class')}, cause={v.get('cause')})")
     if not dry_run:
         # MERGE, never overwrite. This file is the provenance of every verdict,
         # and apply runs once per wave: a plain write silently replaced round
@@ -266,11 +249,11 @@ def apply(verdicts_path, dry_run=False):
         old.update({r["sid"]: r for r in verdicts})
         write_jsonl(path, list(old.values()))
         log(f"audit trail: {len(old)} verdicts on record")
-    log(f"apply: {len(moved)} moved to solutions-disputed/, {kept} kept, "
-        f"{requeued} re-queued, {len(released)} released to solutions/"
-        + (f", {len(missing)} not found: {missing}" if missing else "")
+    log("apply: " + ", ".join(f"{a} -> {b}: {n}" for (a, b), n in sorted(moves.items()))
+        + f"; {kept} unchanged"
+        + (f"; {len(missing)} not found: {missing}" if missing else "")
         + ("  [DRY RUN]" if dry_run else ""))
-    return moved
+    return moves
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 # `solutions/`: translated rows that passed their available checks
 
-This directory contains 311 translated rows. Membership means the row is in the
+This directory contains 300 translated rows. Membership means the row is in the
 screened corpus; it does not mean its complexity label has been proved.
 
 A row normally arrives here after its behaviour gate passes, `dafny verify` has
@@ -11,6 +11,7 @@ directories name work that is pending or disputed:
 |---|---|
 | `solutions-unscreened/` | behaviour passed; label audit not run |
 | `solutions-disputed/` | label, translation, or harness question remains |
+| `solutions-unsure/` | the label audit could not decide |
 | `solutions-ungateable/` | the harness cannot produce a normal verdict |
 | `solutions-unverified/` | a safety or termination obligation remains |
 | `solutions-untranslated/` | no faithful translation was made |

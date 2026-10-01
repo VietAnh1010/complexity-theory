@@ -12,7 +12,7 @@ from pathlib import Path
 
 from common import (BUILD, DAFNY_VERSION, DATA, UNSCREENED, PRELUDE, SOLUTIONS,
                     UNVERIFIED, PROVED, event, log, read_jsonl, write_json,
-                    write_jsonl, DISPUTED, ROOT)
+                    write_jsonl, DISPUTED, ROOT, UNSURE)
 
 DAFNY = "dafny"   # on PATH; dafny finds z3 on PATH itself
 
@@ -192,7 +192,7 @@ def validate(only=None, per_test=30, batch_timeout=900, solutions_dir=None,
             "tier; validating every translated row")
 
     roots = ([Path(solutions_dir)] if solutions_dir
-             else [SOLUTIONS, UNSCREENED, UNVERIFIED, PROVED, DISPUTED])
+             else [SOLUTIONS, UNSCREENED, UNVERIFIED, PROVED, DISPUTED, UNSURE])
     targets, skipped = [], Counter()
     for sid, t in tasks.items():
         dfy = next((r / t["problem_id"] / f"{sid}.dfy" for r in roots

@@ -1,3 +1,39 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n**2)
+//   audited class  : O(n**2)
+//   cause          : label
+//   confidence     : low
+//   auditor        : labelaudit-r3-06
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     The nested i/j loops with an O(1) seq update give O(n**2), but the
+//     later Contains1272a scan is O(|hay|*|needle|) per adjacent pair
+//     since each position compares a slice of length |needle|; with free
+//     string lengths L the true class would be n**2 + n*L**2, which the
+//     label ignores. I lean toward ok because the n**2 term is real and
+//     the statement caps lengths at 100.
+//
+//   how this label could be wrong, and what to check:
+//     The label names only the string count n, yet Contains1272a does a
+//     naive substring search whose cost is |hay| times |needle| for each
+//     adjacent pair. Check the problem statement: strings are capped at
+//     100 characters but that is a size, not a literal in the source. If
+//     string length is treated as a fixed constant the n**2
+//     selection-style loop dominates and the label stands.
+//
+//   structural facts (deterministic, from label_audit.py):
+//     {"body_lines": 64, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": ["Join"], "loop_depth": 2, "loops":
+//     4, "recursive_helpers": 2, "seq_append_read_in_same_loop": false,
+//     "seq_args": 1, "seq_update_in_loop": true, "set_build_in_loop":
+//     false, "sorts": [], "uses_map": false, "uses_multiset": false,
+//     "uses_set": false}
+// --------------------------------------------------------------------
+
 // 988_B. Substrings Sort  (problem 1272, solution 1272_115)
 // time complexity: O(n**2)
 // python exact-diff baseline: exact

@@ -15,7 +15,7 @@ from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
-from common import (DATA, UNSCREENED, ROOT, SOLUTIONS, UNGATEABLE, event, log, write_json,
+from common import (DATA, UNSCREENED, ROOT, SOLUTIONS, UNGATEABLE, UNSURE, event, log, write_json,
                     write_jsonl)
 
 DAFNY = "dafny"   # on PATH; dafny finds z3 on PATH itself
@@ -115,5 +115,5 @@ if __name__ == "__main__":
     # solutions-ungateable/ rows are translated and were verified while they
     # still sat in solutions/. Leaving them out of the sweep would drop their
     # safety record silently, which is how a directory becomes a blind spot.
-    dirs = [SOLUTIONS, UNGATEABLE] + ([UNSCREENED] if a.unscreened else [])
+    dirs = [SOLUTIONS, UNGATEABLE, UNSURE] + ([UNSCREENED] if a.unscreened else [])
     run([d for d in dirs if d.exists()], workers=a.workers, move=a.move)

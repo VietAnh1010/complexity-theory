@@ -1046,7 +1046,7 @@
     ]
   },
   "corpus": {
-    "solutions_rows": 311,
+    "solutions_rows": 300,
     "proof_files": 323,
     "proved_rows": 323,
     "note": "proved_rows counts every proof in the corpus, including the 33 that predate the campaigns and the rows the main agent proved later."

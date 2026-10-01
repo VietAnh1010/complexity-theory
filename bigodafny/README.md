@@ -46,18 +46,19 @@ byte comparison would reject the original program itself.
 
 ## Current corpus shape
 
-The six status directories partition the 640 rows:
+The seven status directories partition the 640 rows:
 
 | Directory | Rows | Meaning |
 |---|---:|---|
-| `solutions/` | 311 | Behaviour-gated, safety-verified, and label-screened. |
+| `solutions/` | 300 | Behaviour-gated, safety-verified, and label-screened. |
 | `solutions-unscreened/` | 127 | Behaviour-gated but not label-audited. |
-| `solutions-disputed/` | 190 | The audit found a label or translation concern. |
+| `solutions-disputed/` | 184 | The audit found a label or translation concern. |
+| `solutions-unsure/` | 17 | Gated and verified; the label audit could not decide. |
 | `solutions-ungateable/` | 5 | The normal behaviour gate cannot reach a reliable verdict. |
 | `solutions-unverified/` | 3 | Behaviour-gated, but Dafny cannot prove safety or termination. |
 | `solutions-untranslated/` | 4 | Bare-float output has no practical exact Dafny specification. |
 
-`solutions-proved/` is an overlay, not a seventh status. It contains 323
+`solutions-proved/` is an overlay, not an eighth status. It contains 323
 instrumented copies with machine-checked complexity bounds.
 
 ## Repository map

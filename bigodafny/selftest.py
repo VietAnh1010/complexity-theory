@@ -14,7 +14,7 @@ import shutil, sys, tempfile
 from pathlib import Path
 
 from common import (DISPUTED, PRELUDE, SOLUTIONS, UNSCREENED,
-                    UNVERIFIED, log)
+                    UNVERIFIED, UNSURE, log)
 from validate import validate
 
 BASE = ("5", "5_100")
@@ -22,7 +22,7 @@ BASE = ("5", "5_100")
 # label audit put 5_100 in the review queue, and this file went on reading
 # `solutions/` and crashed. The gate's own test must not depend on a verdict
 # about the row it borrows, so look wherever the row currently lives.
-BASE_ROOTS = (SOLUTIONS, DISPUTED, UNSCREENED, UNVERIFIED)
+BASE_ROOTS = (SOLUTIONS, DISPUTED, UNSCREENED, UNVERIFIED, UNSURE)
 
 
 def base_path() -> Path:

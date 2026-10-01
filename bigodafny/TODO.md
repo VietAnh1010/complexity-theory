@@ -50,9 +50,8 @@ when done.
 
 - [x] `solutions/` (344) re-audited under the current rules; 45 rows moved to
       `solutions-disputed/` (now 202), 299 remain.
-- [ ] 11 `unsure` rows stay in `solutions/`: `305_284`, `577_509`, `662_527`,
-      `1047_26`, `1272_115`, `1272_278`, `1434_1616`, `1935_61`, `2231_77`,
-      `2254_143`, `2436_325`. Decide each.
+- [ ] 17 `unsure` rows are in `solutions-unsure/` (its README lists them).
+      Decide each: to `solutions/` or `solutions-disputed/`.
 - [ ] 10 verdicts disagree with the row's reviewed proof relation: `514_140`,
       `1029_92`, `1180_626`, `1414_8`, `1718_1166`, `2680_221`, `2913_309`,
       `2913_484`, `2942_42`, `2942_55`. Most turn on whether string length
@@ -64,8 +63,6 @@ when done.
 - [x] The 157 rows already in `solutions-disputed/` re-audited under r3: 138
       mismatch, 12 released to `solutions/`, 6 unsure; one main-agent override
       (`1484_26`).
-- [ ] 6 `unsure` rows in the queue: `378_20`, `380_112`, `662_559`,
-      `1177_230`, `1177_9`, `2193_70`. Decide each.
 - [x] `label_audit.py evidence` read only `solutions/`; it now takes `--dir`
       (`solutions-unscreened/README.md` now passes it).
 - [ ] `label_audit.py apply` handles rows in `solutions/` and

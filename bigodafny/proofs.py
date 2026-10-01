@@ -13,7 +13,7 @@ import re, subprocess, sys
 
 from common import (DAFNY_VERSION, DATA, UNSCREENED, SOLUTIONS, UNVERIFIED,
                     PROVED, event, log, read_jsonl, write_jsonl, DISPUTED,
-                    UNGATEABLE)
+                    UNGATEABLE, UNSURE)
 
 DAFNY = "dafny"   # on PATH; dafny finds z3 on PATH itself
 
@@ -73,7 +73,7 @@ def scan_assumes():
     grepped solutions-unverified/.
     """
     hits = []
-    for d in (SOLUTIONS, UNVERIFIED, UNSCREENED, PROVED, DISPUTED, UNGATEABLE):
+    for d in (SOLUTIONS, UNVERIFIED, UNSCREENED, PROVED, DISPUTED, UNGATEABLE, UNSURE):
         if not d.exists():
             continue
         for f in sorted(d.rglob("*.dfy")):

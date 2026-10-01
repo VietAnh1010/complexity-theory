@@ -1,3 +1,41 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(n)
+//   audited class  : O(n**2)
+//   cause          : translation
+//   confidence     : low
+//   auditor        : labelaudit-r3-13
+//
+//   The Python matches its label; the DAFNY does not. The label is right
+//   about the program it was measured on and the translation is the
+//   defect.
+//
+//   evidence:
+//     On each run boundary the Dafny scans and rebuilds the whole
+//     `entries` seq (inner loop j over |entries|) where the Python does
+//     one dict get and set; entries is bounded only by the number of
+//     distinct characters, which the source does not cap, so the cost is
+//     O(runs * distinct) rather than O(n).
+//
+//   how this label could be wrong, and what to check:
+//     The label assumes the Python dict result is O(1) per key. The Dafny
+//     replaces it with a seq of (char,int) pairs rebuilt by the inner
+//     `while j < |entries|` loop at every run flush. Check whether the
+//     number of distinct keys in `entries` can be treated as constant: the
+//     statement says lowercase letters, but the Dafny has no requires
+//     bounding the alphabet, so the inner loop is up to n long. If the
+//     26-letter cap is accepted as a fixed constant the label stands; if
+//     not, the row is O(n*d).
+//
+//   structural facts (deterministic, from label_audit.py):
+//     {"body_lines": 62, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString", "MaxSeq"],
+//     "loop_depth": 2, "loops": 3, "recursive_helpers": 0,
+//     "seq_append_read_in_same_loop": false, "seq_args": 1,
+//     "seq_update_in_loop": false, "set_build_in_loop": false, "sorts":
+//     [], "uses_map": false, "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
 // 1105_B. Zuhair and Strings  (problem 2231, solution 2231_77)
 // time complexity: O(n)
 // python exact-diff baseline: exact

@@ -1,6 +1,6 @@
 # `solutions-disputed/` — label audit review queue
 
-190 rows whose stated complexity label does not describe what the code costs.
+184 rows whose stated complexity label does not describe what the code costs.
 **Queued for manual review; nothing here is a decision.** Each file keeps its
 full original body with a header naming the audited class, the cause, the
 confidence and the evidence, so a reviewer needs nothing else open.
@@ -17,7 +17,7 @@ with every mismatch re-checked by the orchestrating session before the move.
 Every row then in `solutions/` (344) was re-audited under the current rules:
 input values are cost parameters, `IntToString` is charged 1, a `Gcd` costs
 Euclid's depth. Brief: `batches/labelaudit/PROMPT.md`; verdicts:
-`batches/labelaudit/verdicts_r3_*.jsonl`. 288 `ok`, 45 `mismatch`, 11 `unsure`.
+`batches/labelaudit/verdicts_r3_*.jsonl`. 288 `ok`, 45 `mismatch`, 11 `unsure` (now in `solutions-unsure/`).
 
 - **Value terms the label omits, `cause: label` (26):** `281_12`, `305_76`, `342_86`, `514_90`, `794_794`, `1043_358`, `1263_2538`, `1364_161`, `1386_19`, `1386_38`, `1580_12`, `1626_179`, `1675_29`, `1678_68`, `1820_180`, `1861_16`, `1867_16`, `1871_156`, `1871_291`, `1915_158`, `2128_34`, `2254_6`, `2423_48`, `2819_926`, `2942_42`, `2942_55`.
 - **Translation (10):** `514_140`, `647_11`, `704_351`, `1029_119`, `1029_92`, `1332_16`, `1944_50`, `1948_388`, `2358_103`, `2358_421`. Mostly a Dafny `sqrt` search or a
@@ -41,12 +41,12 @@ override in `verdicts_r3_overrides.jsonl` (`1484_26`: the auditor treated a
   rule since withdrawn: a statement cap making a loop constant, a seq update
   charged as a copy, a peeling recursion charged as quadratic, or bignum
   arithmetic charged above 1.
-- **6 `unsure`** stay for a reviewer: `378_20`, `380_112`, `662_559`,
-  `1177_230`, `1177_9`, `2193_70`.
+- **6 `unsure`** moved to `solutions-unsure/`: `378_20`, `380_112`,
+  `662_559`, `1177_230`, `1177_9`, `2193_70`.
 - `1950_45` and `1950_47` keep their gate-audit header; they are here for a
   translation defect, not a label question.
 
-The queue is now 183 `mismatch`, 6 `unsure` and `1950_45`.
+The queue is now 183 `mismatch` and `1950_45`.
 
 ## These rows are still in the dataset
 

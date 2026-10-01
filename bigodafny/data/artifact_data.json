@@ -1,6 +1,6 @@
 {
-  "generated": "2026-10-01T09:25:17+00:00",
-  "commit": "39ce3c5",
+  "generated": "2026-10-01T09:26:41+00:00",
+  "commit": "c921d2a",
   "branch": "claude/bigobench-python-dafny-dataset-ts4tm5",
   "toolchain": {
     "dafny": "4.11.0",
@@ -10,11 +10,12 @@
     "rows": 640,
     "problems": 311,
     "directories": {
-      "solutions": 311,
-      "solutions-disputed": 190,
+      "solutions": 300,
+      "solutions-disputed": 184,
       "solutions-proved": 323,
       "solutions-ungateable": 5,
       "solutions-unscreened": 127,
+      "solutions-unsure": 17,
       "solutions-untranslated": 4,
       "solutions-unverified": 3
     },
@@ -197,8 +198,8 @@
         "termination_opt_out": false,
         "attempts_used": 0,
         "outcome": "verified-unedited",
-        "call_depth": 2,
-        "recursive": true
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "1364_161",
@@ -653,8 +654,8 @@
         "termination_opt_out": false,
         "attempts_used": 0,
         "outcome": "verified-unedited",
-        "call_depth": 1,
-        "recursive": true
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "2394_125",
@@ -1995,8 +1996,8 @@
         "current_bound": "2*|c_list| + |d_list| + 4",
         "current_relation": "confirms",
         "revised": false,
-        "call_depth": 2,
-        "recursive": true
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "354_95",
@@ -2083,8 +2084,8 @@
         "current_bound": null,
         "current_relation": null,
         "revised": false,
-        "call_depth": 2,
-        "recursive": true
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "641_31",
@@ -2369,8 +2370,8 @@
         "current_bound": null,
         "current_relation": null,
         "revised": false,
-        "call_depth": 2,
-        "recursive": true
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "1333_58",
@@ -3417,8 +3418,8 @@
         "current_bound": "5*SumLen(binary_strings)+4*max(n,0)+3",
         "current_relation": "confirms",
         "revised": false,
-        "call_depth": 1,
-        "recursive": true
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "704_351",
@@ -3505,8 +3506,8 @@
         "current_bound": "41 * SumLen(strings) + 41 * |strings| + 3",
         "current_relation": "confirms",
         "revised": true,
-        "call_depth": 2,
-        "recursive": true
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "1073_645",
@@ -3945,8 +3946,8 @@
         "current_bound": "3 * |a| + 6",
         "current_relation": "confirms",
         "revised": false,
-        "call_depth": 2,
-        "recursive": false
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "2496_30",
@@ -5797,8 +5798,8 @@
         "current_bound": "41 * SumLen(strings) + 41 * |strings| + 3",
         "current_relation": "confirms",
         "revised": false,
-        "call_depth": 2,
-        "recursive": true
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "1053_44",
@@ -6171,8 +6172,8 @@
         "current_bound": "7 * |s| + 3",
         "current_relation": "confirms",
         "revised": false,
-        "call_depth": 0,
-        "recursive": true
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "1954_157",
@@ -7125,8 +7126,8 @@
         "current_bound": null,
         "current_relation": null,
         "revised": false,
-        "call_depth": 2,
-        "recursive": true
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "1272_278",
@@ -7147,8 +7148,8 @@
         "current_bound": null,
         "current_relation": null,
         "revised": false,
-        "call_depth": 2,
-        "recursive": true
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "1332_16",
@@ -7477,8 +7478,8 @@
         "current_bound": "4*SumFirst(pairs,n) + 3*n + |output| + 3, where SumFirst sums pairs[t][0] over the n test cases (value-bounded per-test inner loop)",
         "current_relation": "tighter-costmodel",
         "revised": false,
-        "call_depth": 1,
-        "recursive": true
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "2266_172",
@@ -9220,8 +9221,8 @@
         "current_bound": "2 + (|values| + 1) * (|values| + 3)",
         "current_relation": "confirms",
         "revised": false,
-        "call_depth": 2,
-        "recursive": true
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "1622_48",
@@ -9418,8 +9419,8 @@
         "current_bound": null,
         "current_relation": null,
         "revised": false,
-        "call_depth": 2,
-        "recursive": true
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "2847_45",
@@ -9915,8 +9916,8 @@
         "era": "campaign",
         "label": "O(n)",
         "bound": "41 * SumLen(strings) + 41 * |strings| + 3",
-        "call_depth": 2,
-        "recursive": true
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "1053_38",
@@ -10230,8 +10231,8 @@
         "era": "campaign",
         "label": "O(n**2)",
         "bound": "2 + (|values| + 1) * (|values| + 3)",
-        "call_depth": 2,
-        "recursive": true
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "1453_211",
@@ -10680,8 +10681,8 @@
         "era": "campaign",
         "label": "O(n+m)",
         "bound": "7 * |s| + 3",
-        "call_depth": 0,
-        "recursive": true
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "1937_10",
@@ -11121,8 +11122,8 @@
         "era": "campaign",
         "label": "O(n**2)",
         "bound": "4 * SumFirst(pairs, n) + 3 * n + |output| + 3",
-        "call_depth": 1,
-        "recursive": true
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "2266_172",
@@ -11301,8 +11302,8 @@
         "era": "campaign",
         "label": "O(n+m)",
         "bound": "3 * |a| + 6",
-        "call_depth": 2,
-        "recursive": false
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "2465_139",
@@ -11868,8 +11869,8 @@
         "era": "campaign",
         "label": "O(n+m)",
         "bound": "2 * |c_list| + |d_list| + 4",
-        "call_depth": 2,
-        "recursive": true
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "3060_1359",
@@ -12300,8 +12301,8 @@
         "era": "campaign",
         "label": "O(n)",
         "bound": "5 * SumLen(binary_strings) + 4 * (if n > 0 then n else 0) + 3",
-        "call_depth": 1,
-        "recursive": true
+        "call_depth": null,
+        "recursive": null
       },
       {
         "solution_id": "669_40",
@@ -12759,16 +12760,16 @@
     "n": 368,
     "by_call_depth": {
       "0": {
-        "proved": 24,
-        "of": 30
+        "proved": 23,
+        "of": 29
       },
       "1": {
-        "proved": 18,
-        "of": 23
+        "proved": 16,
+        "of": 21
       },
       "2": {
-        "proved": 161,
-        "of": 192
+        "proved": 157,
+        "of": 182
       },
       "3": {
         "proved": 45,
@@ -12779,22 +12780,22 @@
         "of": 3
       },
       "unknown": {
-        "proved": 32,
-        "of": 61
+        "proved": 39,
+        "of": 74
       }
     },
     "by_recursive": {
       "False": {
-        "proved": 28,
-        "of": 34
+        "proved": 27,
+        "of": 33
       },
       "True": {
-        "proved": 223,
-        "of": 273
+        "proved": 217,
+        "of": 261
       },
       "unknown": {
-        "proved": 32,
-        "of": 61
+        "proved": 39,
+        "of": 74
       }
     },
     "by_label": {
@@ -12855,63 +12856,62 @@
   },
   "callgraph": {
     "scope": "solutions/",
-    "rows": 311,
+    "rows": 300,
     "depth_distribution": {
-      "0": 27,
-      "1": 22,
-      "2": 195,
+      "0": 26,
+      "1": 20,
+      "2": 187,
       "3": 62,
       "4": 4,
       "5": 1
     },
     "median_depth": 2,
-    "recursive": 280,
-    "self_contained_depth_0_1": 49,
+    "recursive": 270,
+    "self_contained_depth_0_1": 46,
     "reachable_distribution": {
-      "0": 27,
-      "1": 20,
-      "2": 91,
-      "3": 40,
+      "0": 26,
+      "1": 19,
+      "2": 90,
+      "3": 37,
       "4": 42,
-      "5": 42,
-      "6": 23,
+      "5": 39,
+      "6": 22,
       "7": 12,
       "8": 5,
-      "9": 5,
+      "9": 4,
       "10": 2,
       "11": 1,
       "12": 1
     },
     "own_decls_distribution": {
-      "1": 236,
-      "2": 38,
-      "3": 26,
+      "1": 232,
+      "2": 36,
+      "3": 22,
       "4": 5,
       "5": 3,
       "6": 1,
-      "7": 1,
       "11": 1
     },
-    "rows_deepened_by_ghost": 11,
-    "prelude_calls_total": 958,
+    "rows_deepened_by_ghost": 10,
+    "prelude_calls_total": 931,
     "prelude_call_frequency": {
-      "DigitChar": 240,
-      "IntToString": 240,
-      "Merge": 74,
-      "Sort": 74,
-      "Join": 61,
+      "DigitChar": 235,
+      "IntToString": 235,
+      "Merge": 73,
+      "Sort": 73,
+      "Join": 55,
       "SortInts": 40,
-      "FloorDiv": 31,
+      "FloorDiv": 30,
       "JoinInts": 22,
-      "MaxSeq": 17,
-      "MaxSeqFrom": 17,
       "SumFrom": 16,
       "SumSeq": 16,
+      "MaxSeq": 15,
+      "MaxSeqFrom": 15,
       "AbsInt": 15,
       "FloorMod": 12,
-      "MinSeq": 10,
-      "MinSeqFrom": 10,
-      "Repeat": 7,
+      "MinSeq": 9,
+      "MinSeqFrom": 9,
+      "Repeat": 6,
       "ParseInt": 6,
       "ParseIntFrom": 6,
       "IsSpace": 5,
@@ -12933,95 +12933,93 @@
       "IntToStringLen": 1,
       "JoinLenUniform": 1,
       "JoinSplitEmptySep": 1,
-      "Closes": 1,
       "SortStringsKeepsElems": 1,
       "BitOr": 1,
       "BitAnd": 1,
       "ReplaceAll": 1
     },
-    "rows_using_no_prelude": 34,
+    "rows_using_no_prelude": 33,
     "search_truncated": 0
   },
   "corpus_stats": {
     "call_depth": {
       "distribution": {
-        "0": 27,
-        "1": 22,
-        "2": 195,
+        "0": 26,
+        "1": 20,
+        "2": 187,
         "3": 62,
         "4": 4,
         "5": 1
       },
-      "mean": 1.99,
-      "median": 2
+      "mean": 2.0,
+      "median": 2.0
     },
     "dafny_loc": {
       "max": 186,
-      "mean": 34.5,
-      "median": 30,
+      "mean": 34.3,
+      "median": 30.0,
       "min": 6,
-      "p90": 57,
+      "p90": 55,
       "p99": 109,
-      "total": 10745
+      "total": 10286
     },
     "data_dependent_loops": {
       "distribution": {
-        "0": 233,
-        "1": 62,
+        "0": 224,
+        "1": 60,
         "2": 12,
         "3": 2,
         "4": 1,
         "6": 1
       },
-      "rows_with_any": 78
+      "rows_with_any": 76
     },
     "expansion": {
-      "mean": 2.89,
+      "mean": 2.87,
       "median_dafny_over_python": 2.25,
-      "rows_smaller_in_dafny": 4
+      "rows_smaller_in_dafny": 3
     },
     "labels": {
       "O(1)": 30,
       "O(logn)": 2,
-      "O(n)": 147,
-      "O(n**2)": 47,
+      "O(n)": 143,
+      "O(n**2)": 44,
       "O(n**2+m**2)": 1,
       "O(n*m)": 2,
-      "O(n+m)": 10,
-      "O(nlogn)": 69,
+      "O(n+m)": 7,
+      "O(nlogn)": 68,
       "O(nlogn+mlogm)": 3
     },
     "loop_depth": {
       "distribution": {
-        "0": 41,
-        "1": 226,
-        "2": 43,
+        "0": 40,
+        "1": 219,
+        "2": 40,
         "4": 1
       },
-      "nested": 44
+      "nested": 41
     },
     "loops": {
       "distribution": {
-        "0": 41,
-        "1": 155,
-        "2": 67,
-        "3": 30,
-        "4": 11,
+        "0": 40,
+        "1": 150,
+        "2": 64,
+        "3": 29,
+        "4": 10,
         "5": 4,
         "6": 2,
         "7": 1
       },
-      "loopless_rows": 41,
+      "loopless_rows": 40,
       "max": 7
     },
     "own_decls": {
-      "1": 236,
-      "2": 38,
-      "3": 26,
+      "1": 232,
+      "2": 36,
+      "3": 22,
       "4": 5,
       "5": 3,
       "6": 1,
-      "7": 1,
       "11": 1
     },
     "prelude": {
@@ -13029,23 +13027,22 @@
         "AbsInt": 15,
         "BitAnd": 1,
         "BitOr": 1,
-        "Closes": 1,
-        "DigitChar": 240,
-        "FloorDiv": 31,
+        "DigitChar": 235,
+        "FloorDiv": 30,
         "FloorMod": 12,
-        "IntToString": 240,
+        "IntToString": 235,
         "IntToStringLen": 1,
         "IsSpace": 5,
-        "Join": 61,
+        "Join": 55,
         "JoinInts": 22,
         "JoinLenUniform": 1,
         "JoinSplitEmptySep": 1,
-        "MaxSeq": 17,
-        "MaxSeqFrom": 17,
-        "Merge": 74,
+        "MaxSeq": 15,
+        "MaxSeqFrom": 15,
+        "Merge": 73,
         "MergeIsPermutation": 2,
-        "MinSeq": 10,
-        "MinSeqFrom": 10,
+        "MinSeq": 9,
+        "MinSeqFrom": 9,
         "ParseInt": 6,
         "ParseIntFrom": 6,
         "ParseInts": 3,
@@ -13055,9 +13052,9 @@
         "PrefixSumIsSumSeq": 1,
         "PrefixSumWindowDoubled": 1,
         "PyIndex": 2,
-        "Repeat": 7,
+        "Repeat": 6,
         "ReplaceAll": 1,
-        "Sort": 74,
+        "Sort": 73,
         "SortInts": 40,
         "SortIsPermutation": 2,
         "SortKeepsElems": 2,
@@ -13070,20 +13067,20 @@
         "SumFromIsPrefixSum": 1,
         "SumSeq": 16
       },
-      "median_per_row": 2,
-      "rows_using_none": 34
+      "median_per_row": 2.0,
+      "rows_using_none": 33
     },
     "python_loc": {
       "max": 57,
-      "mean": 14.4,
-      "median": 13.0,
+      "mean": 14.5,
+      "median": 13,
       "min": 1,
-      "total": 4476
+      "total": 4323
     },
     "recursive_helpers": {
-      "rows_with_own_recursion": 64
+      "rows_with_own_recursion": 58
     },
-    "rows": 311,
+    "rows": 300,
     "rows_detail": [
       {
         "call_depth": 3,
@@ -13182,25 +13179,6 @@
         "recursive_helpers": 3,
         "seq_args": 2,
         "solution_id": "1039_15"
-      },
-      {
-        "call_depth": 2,
-        "dafny_loc": 85,
-        "data_dependent_loops": 0,
-        "label": "O(n)",
-        "loop_depth": 1,
-        "loops": 1,
-        "own_decls": 7,
-        "prelude_calls": [
-          "DigitChar",
-          "IntToString",
-          "Join"
-        ],
-        "python_loc": 9,
-        "reachable": 9,
-        "recursive_helpers": 6,
-        "seq_args": 1,
-        "solution_id": "1047_26"
       },
       {
         "call_depth": 2,
@@ -13515,42 +13493,6 @@
         "recursive_helpers": 0,
         "seq_args": 0,
         "solution_id": "1254_187"
-      },
-      {
-        "call_depth": 2,
-        "dafny_loc": 64,
-        "data_dependent_loops": 0,
-        "label": "O(n**2)",
-        "loop_depth": 2,
-        "loops": 4,
-        "own_decls": 3,
-        "prelude_calls": [
-          "Join"
-        ],
-        "python_loc": 24,
-        "reachable": 3,
-        "recursive_helpers": 2,
-        "seq_args": 1,
-        "solution_id": "1272_115"
-      },
-      {
-        "call_depth": 2,
-        "dafny_loc": 40,
-        "data_dependent_loops": 0,
-        "label": "O(nlogn)",
-        "loop_depth": 1,
-        "loops": 2,
-        "own_decls": 3,
-        "prelude_calls": [
-          "Join",
-          "Merge",
-          "Sort"
-        ],
-        "python_loc": 21,
-        "reachable": 5,
-        "recursive_helpers": 2,
-        "seq_args": 1,
-        "solution_id": "1272_278"
       },
       {
         "call_depth": 3,
@@ -13895,24 +13837,6 @@
         "recursive_helpers": 0,
         "seq_args": 1,
         "solution_id": "1421_89"
-      },
-      {
-        "call_depth": 2,
-        "dafny_loc": 21,
-        "data_dependent_loops": 0,
-        "label": "O(n**2)",
-        "loop_depth": 1,
-        "loops": 1,
-        "own_decls": 2,
-        "prelude_calls": [
-          "DigitChar",
-          "IntToString"
-        ],
-        "python_loc": 6,
-        "reachable": 3,
-        "recursive_helpers": 1,
-        "seq_args": 1,
-        "solution_id": "1434_1616"
       },
       {
         "call_depth": 3,
@@ -14876,23 +14800,6 @@
         "recursive_helpers": 0,
         "seq_args": 1,
         "solution_id": "1892_347"
-      },
-      {
-        "call_depth": 0,
-        "dafny_loc": 32,
-        "data_dependent_loops": 0,
-        "label": "O(n+m)",
-        "loop_depth": 1,
-        "loops": 1,
-        "own_decls": 1,
-        "prelude_calls": [
-          "Closes"
-        ],
-        "python_loc": 15,
-        "reachable": 0,
-        "recursive_helpers": 0,
-        "seq_args": 1,
-        "solution_id": "1935_61"
       },
       {
         "call_depth": 2,
@@ -15873,27 +15780,6 @@
         "solution_id": "2231_194"
       },
       {
-        "call_depth": 2,
-        "dafny_loc": 62,
-        "data_dependent_loops": 0,
-        "label": "O(n)",
-        "loop_depth": 2,
-        "loops": 3,
-        "own_decls": 1,
-        "prelude_calls": [
-          "DigitChar",
-          "FloorDiv",
-          "IntToString",
-          "MaxSeq",
-          "MaxSeqFrom"
-        ],
-        "python_loc": 12,
-        "reachable": 5,
-        "recursive_helpers": 0,
-        "seq_args": 1,
-        "solution_id": "2231_77"
-      },
-      {
         "call_depth": 1,
         "dafny_loc": 26,
         "data_dependent_loops": 0,
@@ -15909,23 +15795,6 @@
         "recursive_helpers": 0,
         "seq_args": 2,
         "solution_id": "2235_384"
-      },
-      {
-        "call_depth": 1,
-        "dafny_loc": 32,
-        "data_dependent_loops": 0,
-        "label": "O(n**2)",
-        "loop_depth": 2,
-        "loops": 2,
-        "own_decls": 1,
-        "prelude_calls": [
-          "Join"
-        ],
-        "python_loc": 9,
-        "reachable": 1,
-        "recursive_helpers": 0,
-        "seq_args": 1,
-        "solution_id": "2254_143"
       },
       {
         "call_depth": 0,
@@ -16324,21 +16193,6 @@
         "recursive_helpers": 1,
         "seq_args": 1,
         "solution_id": "2426_4"
-      },
-      {
-        "call_depth": 2,
-        "dafny_loc": 35,
-        "data_dependent_loops": 1,
-        "label": "O(n+m)",
-        "loop_depth": 1,
-        "loops": 1,
-        "own_decls": 3,
-        "prelude_calls": [],
-        "python_loc": 18,
-        "reachable": 2,
-        "recursive_helpers": 0,
-        "seq_args": 2,
-        "solution_id": "2436_325"
       },
       {
         "call_depth": 2,
@@ -17580,28 +17434,6 @@
         "solution_id": "3046_65"
       },
       {
-        "call_depth": 2,
-        "dafny_loc": 12,
-        "data_dependent_loops": 0,
-        "label": "O(n+m)",
-        "loop_depth": 0,
-        "loops": 0,
-        "own_decls": 1,
-        "prelude_calls": [
-          "DigitChar",
-          "IntToString",
-          "MaxSeq",
-          "MaxSeqFrom",
-          "MinSeq",
-          "MinSeqFrom"
-        ],
-        "python_loc": 17,
-        "reachable": 6,
-        "recursive_helpers": 0,
-        "seq_args": 2,
-        "solution_id": "305_284"
-      },
-      {
         "call_depth": 0,
         "dafny_loc": 28,
         "data_dependent_loops": 1,
@@ -18196,25 +18028,6 @@
         "solution_id": "566_183"
       },
       {
-        "call_depth": 2,
-        "dafny_loc": 48,
-        "data_dependent_loops": 1,
-        "label": "O(n)",
-        "loop_depth": 1,
-        "loops": 2,
-        "own_decls": 3,
-        "prelude_calls": [
-          "DigitChar",
-          "IntToString",
-          "Join"
-        ],
-        "python_loc": 13,
-        "reachable": 5,
-        "recursive_helpers": 2,
-        "seq_args": 1,
-        "solution_id": "577_509"
-      },
-      {
         "call_depth": 3,
         "dafny_loc": 18,
         "data_dependent_loops": 0,
@@ -18390,24 +18203,6 @@
         "recursive_helpers": 0,
         "seq_args": 1,
         "solution_id": "661_99"
-      },
-      {
-        "call_depth": 1,
-        "dafny_loc": 28,
-        "data_dependent_loops": 0,
-        "label": "O(n)",
-        "loop_depth": 1,
-        "loops": 1,
-        "own_decls": 2,
-        "prelude_calls": [
-          "Join",
-          "Repeat"
-        ],
-        "python_loc": 9,
-        "reachable": 3,
-        "recursive_helpers": 1,
-        "seq_args": 1,
-        "solution_id": "662_527"
       },
       {
         "call_depth": 2,

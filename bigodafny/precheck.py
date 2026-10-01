@@ -15,7 +15,7 @@ from pathlib import Path
 
 from common import (DATA, UNSCREENED, SOLUTIONS, UNVERIFIED, PROVED,
                     log, read_jsonl, write_jsonl, DISPUTED, UNGATEABLE,
-                    PROVED_VALUE)
+                    PROVED_VALUE, UNSURE)
 from signature import input_fields
 
 # solutions-proved/ was missing here, so the twelve
@@ -25,7 +25,7 @@ from signature import input_fields
 # row answers. A gate that skips the files most likely to need it is not a
 # gate.
 ROOTS = [SOLUTIONS, UNVERIFIED, UNSCREENED, PROVED, PROVED_VALUE,
-         DISPUTED, UNGATEABLE]
+         DISPUTED, UNGATEABLE, UNSURE]
 
 
 def find(sid, pid):

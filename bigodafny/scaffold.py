@@ -13,7 +13,7 @@ import sys
 from pathlib import Path
 
 from common import (DATA, UNSCREENED, SOLUTIONS, UNTRANSLATED, UNVERIFIED,
-                    PROVED, DISPUTED, UNGATEABLE, event, log, read_jsonl)
+                    PROVED, DISPUTED, UNGATEABLE, UNSURE, event, log, read_jsonl)
 
 STUB_BODY = '  output := ""; // TODO: translate the Python above\n'
 
@@ -68,7 +68,7 @@ def scaffold(force=False):
         name = f"{t['solution_id']}.dfy"
         existing = next((d / t["problem_id"] / name
                          for d in (SOLUTIONS, UNSCREENED, UNVERIFIED, PROVED,
-                                   UNTRANSLATED, DISPUTED, UNGATEABLE)
+                                   UNTRANSLATED, DISPUTED, UNGATEABLE, UNSURE)
                          if (d / t["problem_id"] / name).exists()), None)
         if existing is not None and not force:
             kept += 1

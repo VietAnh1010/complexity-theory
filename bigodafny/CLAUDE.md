@@ -13,7 +13,7 @@ quadratic scan with a closed form, or one sibling solution with another.
 
 ## Respect the status directories
 
-The six `solutions*` status directories partition the corpus. Move a row only
+The seven `solutions*` status directories partition the corpus. Move a row only
 when the directory's README says its entry and exit conditions are met.
 `solutions-proved/` is an overlay: copy a row there to add ghost proof state;
 do not remove its source copy.

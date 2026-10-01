@@ -19,7 +19,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 
 from common import (DATA, event, log, read_jsonl, write_json, write_jsonl,
-                    DISPUTED, UNGATEABLE)
+                    DISPUTED, UNGATEABLE, UNSURE)
 from validate import build_one, conv_expr, HARNESS
 from common import BUILD, UNSCREENED, SOLUTIONS, UNVERIFIED, PROVED
 
@@ -90,7 +90,7 @@ def python_outputs(task, tests):
 
 
 def find(sid, pid):
-    for r in (SOLUTIONS, UNVERIFIED, UNSCREENED, PROVED, DISPUTED, UNGATEABLE):
+    for r in (SOLUTIONS, UNVERIFIED, UNSCREENED, PROVED, DISPUTED, UNGATEABLE, UNSURE):
         p = r / pid / f"{sid}.dfy"
         if p.exists():
             return p

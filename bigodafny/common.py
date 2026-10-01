@@ -37,6 +37,10 @@ DISPUTED = ROOT / "solutions-disputed"
 # not finish. Every gate still runs on these rows and they still carry a label;
 # what is missing is the answer, not the row. See solutions-ungateable/README.md.
 UNGATEABLE = ROOT / "solutions-ungateable"
+# The label audit could not decide (verdict `unsure`). Valid and verified like
+# solutions/, but the label is neither confirmed nor disputed; a reviewer
+# moves each row to solutions/ or solutions-disputed/. See its README.md.
+UNSURE = ROOT / "solutions-unsure"
 
 # --- The proof overlay ----------------------------------------------------
 # NOT part of the partition: an instrumented *copy* of a row that also lives in
