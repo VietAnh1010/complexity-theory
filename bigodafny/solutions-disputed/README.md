@@ -24,8 +24,8 @@ one.
 
 `COMPLEXITY.md` § 1 charges `s[i := v]`, `m[k := v]` and set insertion `1`, by
 stipulation. A verdict filed `cause: translation` *solely* because a Dafny
-collection copies where CPython assigns in place is no longer a defect. `refile.py`
-applied that, from a decision written per row in
+collection copies where CPython assigns in place is no longer a defect. The queue
+was re-filed on 2026-09-16 from a decision written per row in
 `batches/cost-axioms/refile_decisions.jsonl`:
 
 | | |

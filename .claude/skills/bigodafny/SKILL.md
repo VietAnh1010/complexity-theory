@@ -79,10 +79,10 @@ benchmark and load-bearing for this dataset.
 | `siblings.py` | same-problem rows converged despite different labels | everything |
 | `labelaudit.py` | the label describes what the code costs | `solutions/` |
 
-`refile.py` moves rows between `solutions/` and `solutions-disputed/` when the
-cost model changes, from the per-row decision table in
-`batches/cost-axioms/refile_decisions.jsonl`. It is not a re-audit and forms no
-new opinion about any row.
+When the cost model changed on 2026-09-16, rows moved between `solutions/` and
+`solutions-disputed/` from the per-row decision table in
+`batches/cost-axioms/refile_decisions.jsonl`. That was not a re-audit and formed
+no new opinion about any row.
 
 `callgraph.py` is a **measurement, not a gate**: it writes `data/call_depth.jsonl`,
 the longest acyclic chain from `Solve` per row, ghost declarations excluded.

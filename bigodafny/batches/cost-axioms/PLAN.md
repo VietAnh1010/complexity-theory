@@ -162,7 +162,7 @@ not the same assertion as one about `a` over a sequence.
    banner, a § *What this rules out as a verdict*, and a schema example that no
    longer teaches the closed defect class.
 3. Re-file the queued rows mechanically; report how many moved back to `ok`.
-   **Done** — `refile.py`, applied from `refile_decisions.jsonl`, a per-row
+   **Done** — applied from `refile_decisions.jsonl`, a per-row
    decision table with the derivation written out for each. 31 of the 58
    `translation` rows returned to `solutions/`, inside the predicted 30–40.
    Two things the prediction missed:

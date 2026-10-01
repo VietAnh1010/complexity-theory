@@ -115,8 +115,8 @@ non-commercial. See `bigodafny/LICENSE.md`.
   pipeline; `bigodafny/CLAUDE.md` scopes it to the deterministic stages.
 - `bigodafny`: 152 rows sit in `solutions-disputed/` awaiting manual review.
   - 118 need the **label** changed, 27 the **translation**, 6 both, 1 neither.
-  - The re-file under the cost axioms is done (`refile.py`, from a per-row
-    decision table). 31 rows left the queue, 5 joined it, 3 were re-classified.
+  - The re-file under the cost axioms is done (from a per-row decision table,
+    `batches/cost-axioms/refile_decisions.jsonl`). 31 rows left the queue, 5 joined it, 3 were re-classified.
   - The five that joined were filed `ok` only because the old copy charge
     reproduced their label by accident. An accidental agreement is not a pass,
     and a model change exposes it in both directions.
