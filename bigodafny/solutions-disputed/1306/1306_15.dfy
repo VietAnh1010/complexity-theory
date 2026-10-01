@@ -26,7 +26,7 @@
 //     O(m) passes, i.e. O(m). If a_i were unbounded this would be O(m**2);
 //     it is not.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 42, "data_dependent_loops": 1, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 1,
 //     "loops": 1, "recursive_helpers": 4, "seq_append_read_in_same_loop":

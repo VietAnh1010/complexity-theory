@@ -20,7 +20,7 @@
 //     same Theta(n + m log m), not O(n log n), so the label is wrong on
 //     the Python's own terms.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 90, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": [], "loop_depth": 1, "loops": 5,
 //     "recursive_helpers": 3, "seq_append_read_in_same_loop": false,

@@ -24,7 +24,7 @@
 //     <= 5 always, so Sort(res,...) is O(1) regardless of how many test
 //     cases n there are.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 34, "data_dependent_loops": 1, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "Join", "JoinInts"],
 //     "loop_depth": 2, "loops": 2, "recursive_helpers": 0,

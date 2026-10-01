@@ -24,7 +24,7 @@
 //     row is O(sqrt(n)) and still not quadratic. Sibling 577_509 carries
 //     O(n) for the same signature convention.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 39, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "Join"],
 //     "loop_depth": 1, "loops": 2, "recursive_helpers": 0,

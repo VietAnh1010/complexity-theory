@@ -22,7 +22,7 @@
 //     over st from 0 to idx-2 to confirm the true cost is O(n**3), not
 //     O(n**2).
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 51, "data_dependent_loops": 2, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 3,
 //     "loops": 5, "recursive_helpers": 0, "seq_append_read_in_same_loop":

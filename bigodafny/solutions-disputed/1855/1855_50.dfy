@@ -24,7 +24,7 @@
 //     input().split(':'))` and the final `print(...)` execute, so the true
 //     runtime is O(1), matching the Dafny's loop-free body.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 12, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "ParseInt"],
 //     "loop_depth": 0, "loops": 0, "recursive_helpers": 0,

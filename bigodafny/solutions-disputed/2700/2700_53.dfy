@@ -23,7 +23,7 @@
 //     slice (time[0..1], time[1..2], etc.) rather than a variable-length
 //     one, confirming there is no scaling input.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 26, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "ParseInt"],
 //     "loop_depth": 0, "loops": 0, "recursive_helpers": 0,

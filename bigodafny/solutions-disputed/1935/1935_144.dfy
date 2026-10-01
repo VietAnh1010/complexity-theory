@@ -23,7 +23,7 @@
 //     the earlier scan of s is a single unsorted O(n) pass; if so the sort
 //     contributes m log m, not (n+m) log(n+m).
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 56, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": [], "loop_depth": 1, "loops": 3,
 //     "recursive_helpers": 0, "seq_append_read_in_same_loop": false,

@@ -24,7 +24,7 @@
 //     partCount+extra is O(sqrt(n)), not O(n); the `while rep<k-1` loop
 //     then does O(m) work k-1 times.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 94, "data_dependent_loops": 1, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 2,
 //     "loops": 8, "recursive_helpers": 0, "seq_append_read_in_same_loop":

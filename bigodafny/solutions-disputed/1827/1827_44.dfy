@@ -27,7 +27,7 @@
 //     and Python's identical `s -= 2**x` accounting gives it the same O(n)
 //     bound.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 44, "data_dependent_loops": 2, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "JoinInts"],
 //     "loop_depth": 2, "loops": 3, "recursive_helpers": 1,

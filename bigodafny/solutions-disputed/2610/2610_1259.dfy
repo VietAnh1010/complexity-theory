@@ -24,7 +24,7 @@
 //     FindIndex/list.index is O(n) per call; that makes both the Dafny and
 //     Python O(n**2), with SortInts/l2.sort() not the bottleneck.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 82, "data_dependent_loops": 1, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "Join"],
 //     "loop_depth": 1, "loops": 2, "recursive_helpers": 4,

@@ -27,7 +27,7 @@
 //     heap operations, giving Python O(N log N) — so the label O(n+m)
 //     matches neither.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 97, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "SumSeq"],
 //     "loop_depth": 2, "loops": 5, "recursive_helpers": 0,

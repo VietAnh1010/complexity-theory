@@ -23,7 +23,7 @@
 //     Dafny and the Python (which does the same two O(|a|) passes) scale
 //     linearly with the number of test cases t, not quadratically.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 87, "data_dependent_loops": 2, "decreases_star":
 //     false, "linear_prelude_calls": ["Join"], "loop_depth": 1, "loops":
 //     3, "recursive_helpers": 3, "seq_append_read_in_same_loop": false,

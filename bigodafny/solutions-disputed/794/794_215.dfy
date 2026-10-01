@@ -17,7 +17,7 @@
 //     shared-counter while loops is the same linear structure, so O(n**2)
 //     matches neither source.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 55, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["Join", "JoinInts"], "loop_depth":
 //     2, "loops": 5, "recursive_helpers": 0,

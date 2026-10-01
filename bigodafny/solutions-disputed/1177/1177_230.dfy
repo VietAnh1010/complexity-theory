@@ -26,7 +26,7 @@
 //     one line, 1<=m<=200000 on another); if so the true class must
 //     include both dimensions as O(n+m), not O(n) alone.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 40, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 1,
 //     "loops": 2, "recursive_helpers": 0, "seq_append_read_in_same_loop":

@@ -27,7 +27,7 @@
 //     repeated N times, giving O(N**2) — check this is the same shape as
 //     sibling `3029_114`.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 103, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "SumSeq"],
 //     "loop_depth": 2, "loops": 5, "recursive_helpers": 0,

@@ -18,7 +18,7 @@
 //     -- the same worst case applies here to both this Dafny and the
 //     identical Python increment logic, so O(logn) understates it.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 28, "data_dependent_loops": 1, "decreases_star":
 //     true, "linear_prelude_calls": ["JoinInts"], "loop_depth": 1,
 //     "loops": 1, "recursive_helpers": 0, "seq_append_read_in_same_loop":

@@ -20,7 +20,7 @@
 //     `b[::-1].index("1")`/`a[k::].index("1")` and the Dafny while loops
 //     genuinely scan.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 50, "data_dependent_loops": 2, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "Join"],
 //     "loop_depth": 2, "loops": 3, "recursive_helpers": 1,

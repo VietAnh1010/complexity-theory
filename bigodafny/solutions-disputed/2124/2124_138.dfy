@@ -23,7 +23,7 @@
 //     k' and confirm queries[i] is only ever indexed at 0, 1, 2; if so m
 //     is a constant and O(n*m) collapses to O(n).
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 20, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "Join"],
 //     "loop_depth": 1, "loops": 1, "recursive_helpers": 0,

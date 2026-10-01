@@ -27,7 +27,7 @@
 //     outer iteration, the whole method is O(n**2) regardless of the
 //     label.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 63, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "Join", "SplitWs"],
 //     "loop_depth": 2, "loops": 5, "recursive_helpers": 0,

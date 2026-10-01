@@ -25,7 +25,7 @@
 //     so a single query already costs O(n**2) in the worst case (small k),
 //     and this repeats for each of the m queries.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 63, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "Join"],
 //     "loop_depth": 2, "loops": 2, "recursive_helpers": 4,

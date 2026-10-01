@@ -22,7 +22,7 @@
 //     SumSeq(pairs_list[i]) costs O(1) per row, not O(m), and the loop
 //     over N rows collapses to O(n).
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 15, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "Join", "SumSeq"],
 //     "loop_depth": 1, "loops": 1, "recursive_helpers": 0,

@@ -16,7 +16,7 @@
 //     both Python and Dafny, so the labelled O(n) is wrong for the label,
 //     not the translation.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 40, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "MaxSeq", "MinSeq",
 //     "ParseInt", "ParseIntFrom"], "loop_depth": 1, "loops": 1,

@@ -21,7 +21,7 @@
 //   how this label could be wrong, and what to check:
 //     not recorded by this batch
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 58, "data_dependent_loops": 1, "decreases_star":
 //     true, "linear_prelude_calls": ["IntToString", "ParseInt",
 //     "SplitWs"], "loop_depth": 2, "loops": 3, "recursive_helpers": 0,

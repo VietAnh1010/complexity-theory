@@ -27,7 +27,7 @@
 //     otherwise, since the Python's own triple `for i in range(-1,2)`
 //     loops are equally fixed at 27 iterations, the label should be O(n).
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 45, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "Join"],
 //     "loop_depth": 4, "loops": 4, "recursive_helpers": 0,

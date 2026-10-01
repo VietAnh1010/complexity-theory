@@ -22,7 +22,7 @@
 //     n*(N-1)+1<M runs at most ~20 times regardless of any collection
 //     size, so the label should be O(1).
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 13, "data_dependent_loops": 1, "decreases_star":
 //     true, "linear_prelude_calls": ["IntToString"], "loop_depth": 1,
 //     "loops": 1, "recursive_helpers": 0, "seq_append_read_in_same_loop":

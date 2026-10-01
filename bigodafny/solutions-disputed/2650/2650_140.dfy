@@ -27,7 +27,7 @@
 //     a full seq copy each call, versus the Python dused[ind] += 1 which
 //     is an O(1) in-place list write.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 130, "data_dependent_loops": 2, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 2,
 //     "loops": 5, "recursive_helpers": 3, "seq_append_read_in_same_loop":

@@ -18,7 +18,7 @@
 //     m) cost that the label reflects, so the translation dropped the sort
 //     that Python actually pays for.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 21, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 1,
 //     "loops": 1, "recursive_helpers": 0, "seq_append_read_in_same_loop":

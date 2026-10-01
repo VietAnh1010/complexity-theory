@@ -24,7 +24,7 @@
 //     and its sibling 2799_164 (labelled O(n) for the same problem with
 //     the same CountChar shape) should carry the same class.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 62, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": [], "loop_depth": 1, "loops": 1,
 //     "recursive_helpers": 2, "seq_append_read_in_same_loop": false,

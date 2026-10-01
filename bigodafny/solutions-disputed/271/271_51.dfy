@@ -17,7 +17,7 @@
 //     '4'*(...) string multiplication is equally O(n), so O(1) is wrong
 //     for both.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 19, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["Repeat"], "loop_depth": 0, "loops":
 //     0, "recursive_helpers": 1, "seq_append_read_in_same_loop": false,

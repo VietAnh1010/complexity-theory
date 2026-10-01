@@ -27,7 +27,7 @@ against what wave 5 actually contained.
   record of a rejection.
 - `batch_NN.json` — **git-ignored**. Each embeds a full `.dfy` and its Python,
   so they are 1.4M of content already committed elsewhere. Regenerate with
-  `python3 labelaudit.py evidence`.
+  `python3 label_audit.py evidence`.
 
 ## The `--only` trap, four times
 
@@ -36,7 +36,7 @@ whole file with that subset unless someone stopped it. Four did:
 
 | tool | what it clobbered | fix |
 |---|---|---|
-| `labelaudit.py evidence --only` | a numbered `batch_NN.json` | writes `reaudit_NN.json` unless `--prefix` says otherwise |
+| `label_audit.py evidence --only` | a numbered `batch_NN.json` | writes `reaudit_NN.json` unless `--prefix` says otherwise |
 | `difftest.py --only` | `data/difftest.jsonl` — it held 5 rows for a tier of 100 | merges by `solution_id` |
 | `validate.py --only` | `data/validation.jsonl` — 532 rows | any `--only` or `--solutions-dir` run writes `data/<prefix>validation.jsonl` (default `partial_`) |
 | `precheck.py SID...` | `data/precondition_check.jsonl` — it held one row's clauses | merges, replacing only the rows re-checked |

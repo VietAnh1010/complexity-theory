@@ -25,7 +25,7 @@
 //     which is O(n), not O(n log n); this makes the Dafny faster than its
 //     label, an inverse of the usual translation defect.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 37, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 1,
 //     "loops": 3, "recursive_helpers": 0, "seq_append_read_in_same_loop":

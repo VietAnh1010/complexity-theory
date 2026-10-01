@@ -26,7 +26,7 @@
 //     distributes across i, which makes the pair O(n+m) rather than
 //     O(n*m).
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 85, "data_dependent_loops": 3, "decreases_star":
 //     false, "linear_prelude_calls": ["JoinInts"], "loop_depth": 2,
 //     "loops": 7, "recursive_helpers": 0, "seq_append_read_in_same_loop":

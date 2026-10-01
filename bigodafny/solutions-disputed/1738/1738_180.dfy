@@ -22,7 +22,7 @@
 //     constant and the nested while loops, in both Python and Dafny, run a
 //     bounded number of times independent of any growing size.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 35, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 2,
 //     "loops": 3, "recursive_helpers": 0, "seq_append_read_in_same_loop":

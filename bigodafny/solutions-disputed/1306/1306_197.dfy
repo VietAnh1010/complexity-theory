@@ -25,7 +25,7 @@
 //     Dafny's `sorts` fact is empty (it is) and that MaxSeq plus the
 //     while-loop bound scale with m, not with distinct count.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 48, "data_dependent_loops": 1, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "MaxSeq"],
 //     "loop_depth": 1, "loops": 1, "recursive_helpers": 4,

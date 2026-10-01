@@ -24,7 +24,7 @@
 //     is pinned at 2, the O(n*m) label collapses to O(n) since m never
 //     grows independently of n.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 44, "data_dependent_loops": 1, "decreases_star":
 //     true, "linear_prelude_calls": ["IntToString", "Join"], "loop_depth":
 //     1, "loops": 2, "recursive_helpers": 0,

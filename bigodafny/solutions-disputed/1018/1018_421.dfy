@@ -16,7 +16,7 @@
 //     range(2): for j in range(2)`); the true class is O(n), and the
 //     labelled O(n*m) is a label error.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 36, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["Join"], "loop_depth": 3, "loops":
 //     3, "recursive_helpers": 0, "seq_append_read_in_same_loop": false,

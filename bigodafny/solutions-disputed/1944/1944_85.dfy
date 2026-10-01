@@ -24,7 +24,7 @@
 //     cost is a bounded constant and the total is O(n) in the test count,
 //     not O(n^2).
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 40, "data_dependent_loops": 1, "decreases_star":
 //     true, "linear_prelude_calls": ["IntToString", "Join"], "loop_depth":
 //     2, "loops": 2, "recursive_helpers": 0,

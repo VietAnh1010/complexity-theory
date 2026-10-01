@@ -24,7 +24,7 @@
 //     (few, large ai) still forces total (and thus arr's length and
 //     JoinInts cost) to scale, which would confirm the missing +m term.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 49, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["JoinInts", "SumSeq"], "loop_depth":
 //     2, "loops": 2, "recursive_helpers": 0,

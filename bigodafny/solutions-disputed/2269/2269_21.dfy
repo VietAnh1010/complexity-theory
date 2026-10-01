@@ -25,7 +25,7 @@
 //     O(|t|). Sum sum_i sum_j O(i-j) to see it is cubic in |s|, not
 //     quadratic.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 43, "data_dependent_loops": 1, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 2,
 //     "loops": 2, "recursive_helpers": 1, "seq_append_read_in_same_loop":

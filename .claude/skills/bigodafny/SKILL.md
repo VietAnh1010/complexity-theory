@@ -77,7 +77,7 @@ benchmark and load-bearing for this dataset.
 | `proofs.py` | complexity **proved**; fails on any `assume` | `solutions-proved/` |
 | `precheck.py` | every added `requires` holds on real inputs | anything with `requires` |
 | `siblings.py` | same-problem rows converged despite different labels | everything |
-| `labelaudit.py` | the label describes what the code costs | `solutions/` |
+| `label_audit.py` | the label describes what the code costs | `solutions/` |
 
 When the cost model changed on 2026-09-16, rows moved between `solutions/` and
 `solutions-disputed/` from the per-row decision table in

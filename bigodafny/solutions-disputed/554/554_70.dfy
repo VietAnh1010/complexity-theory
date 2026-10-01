@@ -18,7 +18,7 @@
 //     range(100-K)/range(i,i+K+1) loops under the same N<=150,K<=9 bound
 //     are equally constant per query.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 73, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "Join"],
 //     "loop_depth": 3, "loops": 3, "recursive_helpers": 3,

@@ -24,7 +24,7 @@
 //     outer step; confirm the outer k-loop over n is the only construct
 //     that scales with n.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 45, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 2,
 //     "loops": 3, "recursive_helpers": 0, "seq_append_read_in_same_loop":

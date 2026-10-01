@@ -16,7 +16,7 @@
 //     Dafny or Python's fixed two-field unpacking `a = int(l[0]); b =
 //     int(l[1])`.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 25, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "Join"],
 //     "loop_depth": 1, "loops": 1, "recursive_helpers": 0,

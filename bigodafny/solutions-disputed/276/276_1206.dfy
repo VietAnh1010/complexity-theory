@@ -17,7 +17,7 @@
 //     equally O(n) overall, so O(n*m) names a row-width dimension that
 //     never varies.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 49, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "Join", "MaxSeq",
 //     "MinSeq"], "loop_depth": 1, "loops": 1, "recursive_helpers": 2,

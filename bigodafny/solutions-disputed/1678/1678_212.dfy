@@ -22,7 +22,7 @@
 //     constant in both the Python range(c//a+1) and the Dafny while, and
 //     the true cost is O(1).
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 23, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": [], "loop_depth": 1, "loops": 1,
 //     "recursive_helpers": 0, "seq_append_read_in_same_loop": false,

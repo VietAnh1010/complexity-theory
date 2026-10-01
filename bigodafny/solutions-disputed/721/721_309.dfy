@@ -15,7 +15,7 @@
 //     construct anywhere in this Dafny or the Python, so the tight cost is
 //     linear in the summed test sizes, not O(nlogn).
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 26, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["Join", "Repeat"], "loop_depth": 1,
 //     "loops": 1, "recursive_helpers": 0, "seq_append_read_in_same_loop":

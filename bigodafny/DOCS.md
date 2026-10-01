@@ -67,7 +67,7 @@ the others passed.
 | `dafny verify` / `verify_all.py` | Are the stated safety and termination obligations discharged? |
 | `precheck.py` | Do added preconditions accept the row's real inputs? |
 | `proofs.py` | Does an instrumented complexity proof verify without `assume`? |
-| `labelaudit.py` / `checkverdicts.py` | Is a label-audit record well formed and consistent with proofs? |
+| `label_audit.py` / `checkverdicts.py` | Is a label-audit record well formed and consistent with proofs? |
 
 `solutions-ungateable/` exists for a different failure mode: the harness cannot
 produce evidence that the gate needs. It does not mean the translation is known

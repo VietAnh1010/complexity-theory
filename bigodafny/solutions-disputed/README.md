@@ -5,7 +5,7 @@
 full original body with a header naming the audited class, the cause, the
 confidence and the evidence, so a reviewer needs nothing else open.
 
-Produced by `labelaudit.py` from agent verdicts that passed `checkverdicts.py`,
+Produced by `label_audit.py` from agent verdicts that passed `checkverdicts.py`,
 with every mismatch re-checked by the orchestrating session before the move.
 
 > Renamed from `solutions-tofix/`. "To fix" overstated the verdict: 118 of the

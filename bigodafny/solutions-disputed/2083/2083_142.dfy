@@ -26,7 +26,7 @@
 //     advances) and whether SumSeq is called on overlapping ranges (it is
 //     not); if both hold, the total is O(nlogn), not O(n**2).
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 44, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "SumSeq"],
 //     "loop_depth": 1, "loops": 2, "recursive_helpers": 0,

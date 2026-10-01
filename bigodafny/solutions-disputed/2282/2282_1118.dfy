@@ -29,7 +29,7 @@
 //     deferred-concat loop case. Confirm by counting: each level's concat
 //     costs O(remaining recursion depth), summing to O(m**2).
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 51, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "JoinInts"],
 //     "loop_depth": 0, "loops": 0, "recursive_helpers": 2,

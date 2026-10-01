@@ -25,7 +25,7 @@
 //     matching sibling 1170_62 which solves the identical 'Huge Boxes of
 //     Animal Toys' problem with the same structure and that label.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 32, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["Join"], "loop_depth": 1, "loops":
 //     1, "recursive_helpers": 0, "seq_append_read_in_same_loop": false,

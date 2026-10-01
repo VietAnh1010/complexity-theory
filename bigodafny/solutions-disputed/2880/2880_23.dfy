@@ -22,7 +22,7 @@
 //     string multiplication, which also allocates a string of length ~n/2
 //     and is O(n) in CPython, so this is not a translation gap either.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 14, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["Repeat"], "loop_depth": 0, "loops":
 //     0, "recursive_helpers": 0, "seq_append_read_in_same_loop": false,

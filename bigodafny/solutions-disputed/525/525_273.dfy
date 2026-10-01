@@ -17,7 +17,7 @@
 //     min(pair[i])/max(pair[i-1]) also only ever operate on the fixed
 //     two-element rows this problem produces.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 31, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 1,
 //     "loops": 1, "recursive_helpers": 0, "seq_append_read_in_same_loop":

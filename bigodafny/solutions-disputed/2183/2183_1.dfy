@@ -22,7 +22,7 @@
 //     Confirm the inner while loop's bound j < 8 is a literal constant,
 //     not tied to |row|; if so m is fixed and O(n*m) collapses to O(n).
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 40, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "Join"],
 //     "loop_depth": 2, "loops": 2, "recursive_helpers": 0,

@@ -26,7 +26,7 @@
 //     step summing to Theta(m**2) (m<=n), so the O(n) label is wrong for
 //     the Python too, not just the translation.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 48, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "Join", "SumSeq"],
 //     "loop_depth": 2, "loops": 4, "recursive_helpers": 0,

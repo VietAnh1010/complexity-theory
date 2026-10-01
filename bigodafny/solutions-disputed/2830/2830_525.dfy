@@ -24,7 +24,7 @@
 //     present at every step, the total is Theta(n**2), which the sort's n
 //     log n cannot beat.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 48, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": [], "loop_depth": 2, "loops": 4,
 //     "recursive_helpers": 0, "seq_append_read_in_same_loop": false,

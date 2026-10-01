@@ -135,7 +135,7 @@ HEADER = """// LABEL AUDIT -- queued for manual review, not a decision.
 //   how this label could be wrong, and what to check:
 {what_to_look_for}
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 {facts}
 // {rule}
 """

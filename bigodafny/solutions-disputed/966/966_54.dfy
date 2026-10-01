@@ -26,7 +26,7 @@
 //     times and the true class is O(1), not O(n**2). If some other reading
 //     of the statement lets n scale further, the label stands.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 54, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "ParseInt",
 //     "ParseIntFrom"], "loop_depth": 2, "loops": 3, "recursive_helpers":

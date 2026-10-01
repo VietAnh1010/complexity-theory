@@ -32,7 +32,7 @@
 //     are equivalent, this row's extra m factor is a stale label rather
 //     than a real cost.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 48, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "Join", "ParseInt",
 //     "ParseIntFrom"], "loop_depth": 1, "loops": 2, "recursive_helpers":

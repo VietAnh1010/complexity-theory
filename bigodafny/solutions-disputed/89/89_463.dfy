@@ -16,7 +16,7 @@
 //     or the Python, which only ever indexes k[0], k[1], k[2], k[3] and
 //     k[-1].
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 31, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "Join"],
 //     "loop_depth": 1, "loops": 1, "recursive_helpers": 0,

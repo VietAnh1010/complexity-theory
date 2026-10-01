@@ -23,7 +23,7 @@
 //     loop_depth:1, loops:2); if they never nest, total work is n+m, not
 //     n*m.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 37, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["Gcd", "IntToString"], "loop_depth":
 //     1, "loops": 2, "recursive_helpers": 0,

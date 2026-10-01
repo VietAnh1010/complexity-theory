@@ -26,7 +26,7 @@
 //     times and Sort/SumSeq act on a length-<=3 seq, making the whole
 //     method O(n).
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 43, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "SumSeq"],
 //     "loop_depth": 2, "loops": 3, "recursive_helpers": 0,

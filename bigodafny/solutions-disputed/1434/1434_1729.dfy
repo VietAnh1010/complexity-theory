@@ -25,7 +25,7 @@
 //     shape is quadratic, the same shape as the min/max trap noted in this
 //     repo's CLAUDE.md.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 21, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 0,
 //     "loops": 0, "recursive_helpers": 2, "seq_append_read_in_same_loop":

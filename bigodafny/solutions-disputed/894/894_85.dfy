@@ -17,7 +17,7 @@
 //     single pass with a found flag, doing O(1) work per iteration of the
 //     while loop, so it is O(n).
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 30, "data_dependent_loops": 1, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 1,
 //     "loops": 2, "recursive_helpers": 0, "seq_append_read_in_same_loop":

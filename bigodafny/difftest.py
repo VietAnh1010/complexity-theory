@@ -193,7 +193,7 @@ def run(sids, tiers=("public_tests", "private_tests"), workers=6):
     # A `--only` run must not replace the record of every other row. This file
     # is the loose-tier gate's history; before this merge it held whatever the
     # last partial run happened to produce -- two rows at one point, and five
-    # at another, for a tier of 100. Same defect `labelaudit.py evidence --only`
+    # at another, for a tier of 100. Same defect `label_audit.py evidence --only`
     # had against the numbered batches.
     out = DATA / "difftest.jsonl"
     merged = {r["solution_id"]: r for r in read_jsonl(out)} if out.exists() else {}

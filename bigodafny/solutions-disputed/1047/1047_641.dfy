@@ -27,7 +27,7 @@
 //     label is wrong; compare against sibling 1047_26, which solves the
 //     identical problem and is labeled O(n).
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 76, "data_dependent_loops": 1, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "Join", "ParseInt",
 //     "ParseIntFrom"], "loop_depth": 2, "loops": 3, "recursive_helpers":

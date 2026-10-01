@@ -16,7 +16,7 @@
 //     identical triple `for` loop with the same early-break `f==1` guard
 //     is equally cubic, so the label is wrong for both sources.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 53, "data_dependent_loops": 3, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "Join"],
 //     "loop_depth": 4, "loops": 4, "recursive_helpers": 0,

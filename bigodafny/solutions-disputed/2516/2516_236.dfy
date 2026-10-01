@@ -24,7 +24,7 @@
 //     iteration; confirm this executes up to n-1 times, which would make
 //     the Python itself quadratic.
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 41, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "JoinInts"],
 //     "loop_depth": 1, "loops": 2, "recursive_helpers": 0,

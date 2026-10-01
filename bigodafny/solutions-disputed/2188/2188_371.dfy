@@ -27,7 +27,7 @@
 //     is O(n), making the Dafny O(n**2) even though the Python's dict
 //     writes ga[a[i]]=i are O(1).
 //
-//   structural facts (deterministic, from labelaudit.py):
+//   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 39, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "MaxSeq"],
 //     "loop_depth": 1, "loops": 2, "recursive_helpers": 0,
