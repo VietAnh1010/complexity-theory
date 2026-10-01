@@ -3,24 +3,24 @@
 //   stated label   : O(n**2)
 //   audited class  : other
 //   cause          : label
-//   confidence     : medium
-//   auditor        : labelaudit-r3d-05
+//   confidence     : high
+//   auditor        : labelaudit-r4-d02
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Per test case the inner loop adds successive odd numbers to S until
-//     S == nn, taking about sqrt(nn) iterations, so the total is O(sum of
-//     sqrt(s_i)) plus an O(t) Join. The Python's for i in range(3, n+5, 2)
-//     with the same S == n break pays the same sqrt term, so the label is
-//     wrong, not the translation.
+//     The outer loop runs over the numbers list once and the inner loop
+//     `while i < nn + 5 && S != nn` runs about sqrt(nn) times because S
+//     accumulates the odd numbers i, so the cost is a sum of per-test
+//     value terms, not O(n**2). The Python's for i in range(3, n+5, 2)
+//     with break has the same bound.
 //
 //   how this label could be wrong, and what to check:
-//     The label treats n as a size, but n counts test cases (t <= 5000)
-//     and each test pays in its value s. Check the inner while i < nn + 5
-//     && S != nn loop: S adds odd numbers 3, 5, 7, ..., so it exits after
-//     about sqrt(s) steps.
+//     The label counts queries, but the inner loop is bounded by a
+//     per-test value. Check `while i < nn + 5 && S != nn` and how S grows
+//     (S := S + i with i += 2): it exits after about sqrt(nn) iterations,
+//     a value term the label's n does not cover.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 40, "data_dependent_loops": 1, "decreases_star":

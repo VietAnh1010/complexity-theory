@@ -4,23 +4,23 @@
 //   audited class  : other
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-r3d-07
+//   auditor        : labelaudit-r4-d03
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The Dafny and the Python both run st, i, j loops, each bounded by
-//     idx (the number of values under 0.5, up to n), so the total is about
-//     idx**3/3, which is cubic and not in the O(n**2) class; the Sort is
-//     only O(n log n). The Python has the same triple nest, so the label
-//     is the cause.
+//     After sorting, the loops `while st < idx - 1`, `while i < idx` and
+//     `while j < idx` nest three deep over the same idx <= n elements,
+//     giving O(n**3) from the product accumulation, which is outside the
+//     vocabulary and dominates the O(n log n) sort. The Python has the
+//     same st/i/j triple loop, so the O(n**2) label is wrong for both.
 //
 //   how this label could be wrong, and what to check:
-//     The label claims quadratic, but there are three nested loops over
-//     the prefix of probabilities below 0.5. Count the nesting `while st <
-//     idx - 1` / `while i < idx` / `while j < idx`; with all p below 0.5,
-//     idx is about n, giving cubic work.
+//     The label gives two nested loops, but there are three: st, i and j
+//     all range over the elements below 0.5. Open the body and count the
+//     `while` levels (st, i, j), each bounded by idx; three nested loops
+//     over one list is cubic.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 51, "data_dependent_loops": 2, "decreases_star":

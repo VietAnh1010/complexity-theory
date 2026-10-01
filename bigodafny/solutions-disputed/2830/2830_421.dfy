@@ -4,21 +4,23 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-r3d-08
+//   auditor        : labelaudit-r4-d03
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Solve has a fill loop and one `while i < n` loop (in either the even
-//     or the odd branch) that writes buf[pos] in O(1), so it is O(n). The
-//     Python does the same single loop over range(n) with ''.join at the
-//     end, so it is O(n) and the O(n**2) label is wrong.
+//     Solve fills buf with one `while k < n` loop and then runs one `while
+//     i < n` loop in the even or odd branch, with O(1) writes and a final
+//     buf[0..sz] copy, so it is O(n). The Python does [" "]*n, one for
+//     loop and ''.join, which is linear, so the O(n**2) label is wrong for
+//     both.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes some nested quadratic work. Check the three loops
-//     in Solve: the buffer fill, and the two branches that each run a
-//     single `while i < n` with an O(1) body; none nests, so it is linear.
+//     The label claims quadratic work, but the loops are sequential. Check
+//     `while k < n` (fill buf) and the single `while i < n` loop in
+//     whichever parity branch runs; array writes are O(1), so no loop
+//     nests inside another.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 40, "data_dependent_loops": 0, "decreases_star":

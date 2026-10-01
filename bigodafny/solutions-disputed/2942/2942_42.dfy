@@ -1,29 +1,24 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n*m)
-//   audited class  : other
+//   audited class  : O(n)
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r3-17
+//   auditor        : main agent, override of labelaudit-r3-17
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The win branch runs `while e < x` to compute 2**x, so each of the n
-//     transactions costs O(x) in an element VALUE, giving O(n * max x),
-//     not a product of two input sizes; the Python pays the same through
-//     bignum 2**x and ans+2**x, and the 2000 cap is a statement bound, not
-//     a literal in the source.
+//     Override of labelaudit-r3-17's other: the Python's table is the
+//     literal range(2009) and d[x] fails unless x < 2009, so the source
+//     caps the exponent; the Dafny guards 0 <= x < |d| the same way, each
+//     of the n transactions costs O(1), and the class is O(n).
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes m is a second input dimension, but transactions
-//     rows are fixed two-element (kind, x) pairs, so no width m is
-//     scanned. Check whether m was meant to be the exponent value x
-//     (statement: 0 <= x <= 2000); if so the label is a value-term in
-//     disguise and may be acceptable naming, otherwise it is wrong. Find
-//     the inner `while e < x` loop in the win branch and compare with
-//     `d[x] = ans + 2**x` in the Python.
+//     The label's m is the bit length of 2**x. Check the Python's `d = [0
+//     for i in range(2009)]`: d[x] fails for x >= 2009, so the literal
+//     caps x and the 2**x work is constant per transaction.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 36, "data_dependent_loops": 0, "decreases_star":

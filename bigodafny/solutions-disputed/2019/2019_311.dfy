@@ -3,23 +3,25 @@
 //   stated label   : O(n**2)
 //   audited class  : O(n)
 //   cause          : label
-//   confidence     : high
-//   auditor        : labelaudit-r3d-06
+//   confidence     : medium
+//   auditor        : labelaudit-r4-d02
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The Dafny does one linear ParseInts(c_list) and one loop over at
-//     most n days with O(1) arithmetic, so O(n); the Python is a single
-//     for loop with break, so the quadratic label has no construct behind
-//     it.
+//     ParseInts(c_list) converts the n tokens once and the single loop
+//     `while i < n && !stopped` does O(1) arithmetic per day, so Solve is
+//     O(n). The Python's list(map(int, input().split())) and one for loop
+//     are linear as well, so O(n**2) matches neither. Each token is a
+//     number of at most three digits (a_i <= 100), which I treated as a
+//     constant-width parse, not a second size.
 //
 //   how this label could be wrong, and what to check:
-//     The label O(n**2) assumes nested work, but the Dafny has one loop
-//     `while i < n && !stopped` with constant work per step after a single
-//     ParseInts. Check the Python: one `for i in range(n)` with no inner
-//     loop.
+//     The label claims quadratic work, but there is one loop. Check `while
+//     i < n && !stopped`: it does O(1) work per day and the other cost is
+//     ParseInts(c_list) once; if the tokens are one short number each,
+//     parsing is linear in the count too.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 44, "data_dependent_loops": 1, "decreases_star":

@@ -4,23 +4,22 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-r3d-04
+//   auditor        : labelaudit-r4-d02
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The Dafny builds b with seq(n+1, ...) and then runs one `while i <=
-//     n` loop doing O(1) seq updates b[i := 1] and b[key := 0]; the Python
-//     does the same list assignments in one loop, so both are O(n), not
-//     quadratic.
+//     Building b with seq(n + 1, ...) is O(n) and the single loop `while i
+//     <= n` does O(1) seq reads and updates per step, so Solve is O(n).
+//     The Python does the same `b = [0] * (n + 1)` and one for loop with
+//     O(1) list updates, so it is linear too and the label is wrong.
 //
 //   how this label could be wrong, and what to check:
-//     The label claims quadratic cost. Look for a nested loop or a copying
-//     operation in the Python (`for i in range(2, n + 1)` with `b[...]`
-//     assignments); there is none, each iteration does constant work. If
-//     the label came from the old copying model of seq updates, it is
-//     stale.
+//     The label assumes work quadratic in n. Check whether `b := b[i :=
+//     1]` and `b := b[key := 0]` are the only mutations in the loop; the
+//     table charges a seq update O(1), so the single loop `while i <= n`
+//     is linear.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 30, "data_dependent_loops": 0, "decreases_star":

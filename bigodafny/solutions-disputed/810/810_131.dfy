@@ -4,23 +4,24 @@
 //   audited class  : other
 //   cause          : translation
 //   confidence     : high
-//   auditor        : labelaudit-r3d-02
+//   auditor        : labelaudit-r4-d01
 //
 //   The Python matches its label; the DAFNY does not. The label is right
 //   about the program it was measured on and the translation is the
 //   defect.
 //
 //   evidence:
-//     The Python takes (a*b)**0.5 in O(1) per query, so it is O(Q), but
-//     the Dafny's IntSqrt method binary-searches lo/hi, costing
-//     O(log(a*b)) per query, i.e. O(n log max(a_i b_i)) overall. The Dafny
-//     pays a value term via a reimplemented sqrt that the Python does not,
-//     which is the sqrt-search translation shape.
+//     The Python computes floor((a*b)**0.5) in one operation per query, so
+//     it is O(n) in the number of queries as labelled, but the Dafny calls
+//     IntSqrt, a binary-search loop `while lo + 1 < hi` costing
+//     O(log(a*b)) per query, giving O(n log max(a,b)), a value term. This
+//     is the sqrt-search shape: only the Dafny pays it.
 //
 //   how this label could be wrong, and what to check:
-//     The label is right about the Python, which computes
-//     `floor((a*b)**0.5)` once per query. Check that IntSqrt does a binary
-//     search over [0, x+1] with about log2(a*b) iterations per query.
+//     The label counts queries only. Check IntSqrt: it binary-searches
+//     0..a*b+1 so it costs O(log(a*b)) per query, whereas the Python takes
+//     `(a*b)**0.5` in one step; the Dafny pays a value term the Python
+//     does not.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 49, "data_dependent_loops": 1, "decreases_star":

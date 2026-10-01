@@ -1,27 +1,26 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n**2)
-//   audited class  : other
+//   audited class  : O(n*m)
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r3d-02
+//   auditor        : labelaudit-r4-d01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Per test the Dafny runs `while i < nv` once and three loops that
-//     share one counter cnt (each iteration decrements it), then
-//     JoinInts(ans), so cost is O(sum of the per-test n_i), a value term
-//     not covered by the label. The Python mirrors this exactly, so no
-//     loop nest is quadratic and the label is wrong.
+//     Solve loops over the test list once; per test the `while i < nv`
+//     divisor search and the three append loops (cnt = nv) plus JoinInts
+//     cost O(nv), so tests times per-test array length is O(n*m), not
+//     O(n**2); the cap n <= 50 is a statement cap. The Python has the same
+//     range(1,n) loop and while n>0 loops, so the label is wrong.
 //
 //   how this label could be wrong, and what to check:
-//     The label claims quadratic, but the loops are per-test linear in the
-//     value nv: the `while i < nv` divisor loop and three while loops that
-//     each decrement cnt, plus JoinInts over nv elements. Check that the
-//     Python's `for i in range(1,n)` and the three append loops are also
-//     linear in the per-test n.
+//     The label assumes quadratic work in one size. Check the per-test
+//     loops: `while i < nv` runs to the per-test array length nv and the
+//     three append loops (cnt = nv) plus JoinInts are also O(nv), while
+//     the test count loops only once.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 55, "data_dependent_loops": 0, "decreases_star":

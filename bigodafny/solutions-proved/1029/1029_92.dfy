@@ -25,16 +25,6 @@
 include "../../prelude.dfy"
 import opened Prelude
 
-function BitOr(a: int, b: int): int
-  requires a >= 0 && b >= 0
-  ensures BitOr(a, b) >= 0
-  decreases a + b
-{
-  if a == 0 then b
-  else if b == 0 then a
-  else 2 * BitOr(a / 2, b / 2) + (if a % 2 == 1 || b % 2 == 1 then 1 else 0)
-}
-
 // Isolated multiplication: (l+1)*K == l*K + K.
 lemma MulDistribAdd(l: int, K: int)
   ensures (l + 1) * K == l * K + K
@@ -44,8 +34,8 @@ method Solve(n: int, a_list: seq<int>, b_list: seq<int>) returns (output: string
   requires n >= 0
   requires |a_list| == n
   requires |b_list| == n
-  requires forall k :: 0 <= k < n ==> a_list[k] >= 0
-  requires forall k :: 0 <= k < n ==> b_list[k] >= 0
+  requires forall k :: 0 <= k < n ==> 0 <= a_list[k] < 0x1_0000_0000_0000_0000
+  requires forall k :: 0 <= k < n ==> 0 <= b_list[k] < 0x1_0000_0000_0000_0000
   ensures steps <= 3 + (10 * n + 12) * n
 {
   steps := 1;
@@ -63,7 +53,8 @@ method Solve(n: int, a_list: seq<int>, b_list: seq<int>) returns (output: string
     var r := l;
     while r < n
       invariant l <= r <= n
-      invariant sa >= 0 && sb >= 0
+      invariant 0 <= sa < 0x1_0000_0000_0000_0000
+      invariant 0 <= sb < 0x1_0000_0000_0000_0000
       invariant steps <= innerbase + 10 * (r - l)
       decreases n - r
     {

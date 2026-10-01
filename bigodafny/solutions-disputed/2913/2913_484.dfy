@@ -4,23 +4,23 @@
 //   audited class  : other
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r3-16
+//   auditor        : labelaudit-r4-d03
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The while loop in Solve increments a until a * a > n and sets found,
-//     which happens at a = floor(sqrt n) + 1, so it runs O(sqrt n)
-//     iterations in the value n, not O(n); the Python for-loop breaks out
-//     at the same point via return, so the label is loose for both.
+//     The loop `while a <= n && !found` increments a until a * a > n,
+//     which happens after about sqrt(n) iterations, so the tight cost is
+//     O(sqrt n), below the labelled O(n) and outside the vocabulary. The
+//     Python's range(1, x+1) loop with `if ((a*a)>x)` returns at the same
+//     point.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes the loop runs to n. Check the loop condition: it
-//     stops at the first a with a * a > n, so for n = 100 count the
-//     iterations (11), which is about sqrt(n), not n; if reviewers accept
-//     the statement-level worst case rather than the tight class, the
-//     label stands.
+//     The label assumes the loop runs to n. Check the exit condition
+//     inside the loop: `if a * a > n` sets found, so the loop stops at a
+//     about sqrt(n) + 1 and never reaches n; if the loop really ran to n
+//     for typical x the label would stand.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 24, "data_dependent_loops": 1, "decreases_star":

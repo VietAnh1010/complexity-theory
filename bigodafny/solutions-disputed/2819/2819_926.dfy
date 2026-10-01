@@ -1,28 +1,27 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n)
-//   audited class  : other
+//   audited class  : O(n*m)
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r3-16
+//   auditor        : labelaudit-r4-d03
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Solve loops over pairs_list (the T tests) and per test calls
-//     RepStr("a", nn - x - 1) etc., which recurses nn times on an integer,
-//     so cost is O(T + sum of per-test n_i); the Python pays the same via
-//     "a"*(n-x-1) and the list A built with range(n), so the label is
-//     wrong, not the translation (the IntSqrtFloor binary search over k is
-//     subsumed since k is at most about n squared).
+//     Solve loops over the test rows and per test calls IntSqrtFloor (log
+//     k steps, at most about log n) and three RepStr calls whose counts
+//     sum to nn, so each test is O(nn) and the total is tests times string
+//     length, O(n*m), not O(n). The Python builds A = ['a' for i in
+//     range(n)] and the string R per test, also O(n) per test. The sqrt
+//     search is dominated by the string building.
 //
 //   how this label could be wrong, and what to check:
-//     The label O(n) reads n as the number of test cases (the first
-//     parameter of Solve, the count line T). Check the statement: if each
-//     test has its own length n_i and the program builds an output string
-//     of that length, the cost depends on the sum of the n_i, which the
-//     label does not name. If the n_i are fixed or tiny, the label stands.
+//     The label has one size, but Solve loops over the tests and per test
+//     builds strings of length nn with RepStr. Check RepStr("a", nn - x -
+//     1) and the other two calls: each recurses on a per-test count, and
+//     the loop `while t < |pairs_list|` is outside them.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 49, "data_dependent_loops": 0, "decreases_star":

@@ -4,25 +4,26 @@
 //   audited class  : O(n**2)
 //   cause          : translation
 //   confidence     : high
-//   auditor        : labelaudit-r3d-06
+//   auditor        : labelaudit-r4-d03
 //
 //   The Python matches its label; the DAFNY does not. The label is right
 //   about the program it was measured on and the translation is the
 //   defect.
 //
 //   evidence:
-//     For each of the q requests the Dafny scans the `keys` seq three
-//     times (up to q entries) and rebuilds it by concatenation on removal,
-//     so the cost is O(q**2) in the worst case, where the Python's dict
-//     get/pop/set is O(1) per request; the association list replaces the
-//     hash map.
+//     The Python's dict d gives O(1) get, set and pop per request, so it
+//     is O(n). The Dafny replaced the map with parallel seqs keys and vals
+//     and does three `while ... < |keys|` linear scans per handle (fi, fj,
+//     fk) and a keys[..popIdx] + keys[popIdx+1..] rebuild, so each of n
+//     requests costs O(|keys|) and the total is O(n**2). A hash lookup
+//     became a linear search, which is an algorithm change, not a
+//     container-update difference.
 //
 //   how this label could be wrong, and what to check:
-//     The label O(n) matches the Python, which keeps a dict `d` with O(1)
-//     lookups and pops. Open the Dafny and check that keys/vals are
-//     parallel seqs searched linearly by the loops `while fi < |keys|`,
-//     `fj`, `fk` for every request, and that removal rebuilds both with
-//     `keys[..popIdx] + keys[popIdx+1..]`.
+//     The label was measured on a Python that keeps the handle map in a
+//     dict (O(1) lookups). Check that the Dafny holds keys and vals in two
+//     seqs and runs three linear scans per request (fi, fj, fk loops) plus
+//     slice-and-concatenate on removal.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 63, "data_dependent_loops": 0, "decreases_star":

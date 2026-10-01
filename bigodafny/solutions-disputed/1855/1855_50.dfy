@@ -3,24 +3,26 @@
 //   stated label   : O(n**2)
 //   audited class  : O(1)
 //   cause          : label
-//   confidence     : high
-//   auditor        : labelaudit-r3d-05
+//   confidence     : low
+//   auditor        : labelaudit-r4-d02
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Solve calls ParseInt on the two-digit hour and minute strings, does
-//     constant integer arithmetic and IntToString (charged 1), with no
-//     loop or recursion over a collection. The Python is a single
-//     split(':') and one print, and its helper functions are never called,
-//     so the cost is constant.
+//     Solve has no loop; it calls ParseInt on hour and minute, then does a
+//     handful of arithmetic and IntToString operations, and the statement
+//     fixes the input as HH:MM, so every string has two digits and the
+//     cost is O(1). The Python is also straight-line code, so nothing
+//     quadratic exists in either. If hour and minute are treated as
+//     free-length strings, the class is O(n+m), still not the labelled
+//     O(n**2).
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes quadratic work, but Solve has no loops or
-//     recursion over data. Check that hour and minute come from the fixed
-//     HH:MM format, so ParseInt runs on two-character strings and the rest
-//     is arithmetic.
+//     The label claims quadratic work on straight-line code. Open Solve:
+//     the only calls that look at input text are ParseInt(hour) and
+//     ParseInt(minute), and the problem fixes the format HH:MM, so each
+//     string is two characters wide.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 12, "data_dependent_loops": 0, "decreases_star":

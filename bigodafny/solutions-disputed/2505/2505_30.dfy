@@ -4,22 +4,23 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-r3d-07
+//   auditor        : labelaudit-r4-d03
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Solve builds d with n+4 amortised O(1) appends, then makes one pass
-//     over data with O(1) seq updates per element, so it is O(n); the
-//     Python does the same one pass with O(1) list assignments, so the
-//     n**2 label matches neither.
+//     Solve builds d with one `while z < n + 4` loop and then runs a
+//     single `while i < n` loop doing O(1) seq reads and updates, so it is
+//     O(n). The Python builds [False] * (n + 4) and runs one for loop with
+//     O(1) list updates, so it is linear too and the O(n**2) label is
+//     wrong.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes quadratic work, but every loop is a single pass of
-//     n or n+4 with O(1) body. Check the init loop `d := d + [false]` and
-//     the main loop; seq append is amortised O(1) and `d[i := v]` is O(1)
-//     in the model, and the Python's list indexing is also O(1).
+//     The label claims quadratic work, but the body is one loop. Check
+//     `while i < n` and the d setup loop `while z < n + 4`: both are
+//     single passes, and `d := d[data[i] := false]` is an O(1) seq update
+//     in this cost model.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 38, "data_dependent_loops": 0, "decreases_star":

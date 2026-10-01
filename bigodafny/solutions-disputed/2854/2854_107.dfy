@@ -4,25 +4,24 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r3d-08
+//   auditor        : labelaudit-r4-d03
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Adjacency building does O(1) seq updates per edge line, and the
-//     stack loop pops each tree node once and scans its adjacency list
-//     once (visited check and stack + [x] are O(1)), so total is O(n). The
-//     Python's list stack and per-node neighbour loop are linear too, so
-//     the O(n**2) label is wrong; `decreases *` only covers non-tree
-//     inputs.
+//     Building adj does one SplitWs/ParseInt per edge with O(1) seq
+//     updates, and the DFS pops each node once and loops over its
+//     neighbour list, so over a tree the total work is O(n) (the sum of
+//     degrees is 2(n-1)). The Python's data[u].append and stk loop do the
+//     same, so it is linear and the O(n**2) label is wrong. Parsing each
+//     edge string was treated as constant width.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes the DFS can revisit nodes quadratically. Check the
-//     push rule: a neighbour is pushed only if not visited and the input
-//     is a tree, so each node is pushed once, from its parent; the stack
-//     can hold a node twice only on cyclic input, which the statement
-//     rules out.
+//     The label may assume the DFS rescans neighbours repeatedly. Check
+//     the stack loop: the comment says nodes can be pushed more than once,
+//     but in a tree a node's only unvisited neighbours are its children,
+//     so each node is pushed once and the total pushes equal n.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 58, "data_dependent_loops": 1, "decreases_star":

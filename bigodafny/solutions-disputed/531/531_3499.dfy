@@ -4,22 +4,23 @@
 //   audited class  : O(1)
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r3d-02
+//   auditor        : labelaudit-r4-d01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Solve loops a literal `while i < 5` calling IndexOf1From3499 on each
-//     row of a fixed 5x5 matrix; there is no sort anywhere in the Dafny or
-//     the live Python (the x.sort() is commented out). The cost is
-//     constant, so O(nlogn) names a growth rate no construct exhibits.
+//     Solve has one loop with the literal bound `while i < 5`, calling
+//     IndexOf1From3499 on each row of the fixed 5 x 5 matrix, and there is
+//     no sort or recursion on a growing size, so the cost is O(1). The
+//     Python has only a commented-out x.sort() and the live code loops
+//     range(5) with .index, so it is not O(n log n) either.
 //
 //   how this label could be wrong, and what to check:
-//     The label claims an n log n growth rate but nothing here sorts.
-//     Check that the Python only has `range(5)` with
-//     `input().split().index("1")` (the sort lines are commented out) and
-//     that the description fixes a 5x5 grid.
+//     The label claims a sort-like n log n cost, but no sort appears.
+//     Search the Dafny for SortInts/Sort and for any loop over a
+//     data-dependent length; if the only loop is `while i < 5` over fixed
+//     rows, the label has no construct behind it.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 32, "data_dependent_loops": 0, "decreases_star":

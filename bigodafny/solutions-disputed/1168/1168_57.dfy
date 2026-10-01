@@ -4,21 +4,22 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-r3d-03
+//   auditor        : labelaudit-r4-d02
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The Dafny has a single loop `while i < n` over the string with O(1)
-//     body, plus an O(1) length parity check; the Python's fn() is the
-//     same single pass, so there is no quadratic construct and the cost is
-//     O(n).
+//     Solve has a single `while i < n` loop that reads s[i] and updates
+//     diff, ans and f in O(1) per step, with no nested loop or recursion,
+//     so it is O(n). The Python fn() likewise runs one `for i in range(n)`
+//     pass, so the O(n**2) label is wrong for both.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes nested work. Check the Python fn(): it has one
-//     `for i in range(n)` loop with constant-time branches; the Dafny
-//     mirrors it with one `while i < n`.
+//     The label claims quadratic work, but the body may be a single pass.
+//     Open Solve and count the loops: if the only loop is `while i < n`
+//     over s with O(1) body work, the row is linear and the label is
+//     wrong.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 39, "data_dependent_loops": 0, "decreases_star":

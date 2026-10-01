@@ -4,24 +4,24 @@
 //   audited class  : other
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-r3d-02
+//   auditor        : labelaudit-r4-d01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Pyramid(nVal) loops while aux >= 2, subtracting 3*altura-1 per step,
-//     which takes O(sqrt(nVal)) iterations per pyramid and O(sqrt(nVal))
-//     in total because the remainder is itself O(sqrt). The total is O(sum
-//     of sqrt(n_i)) over the tests, a value term that is neither n**2 nor
-//     expressed in the label's variables; the Python runs the same loop.
+//     Solve loops over the test list and each call to Pyramid runs `while
+//     aux >= 2` for a number of iterations growing with the card count
+//     nVal (up to 1e9 in the statement, which does not cap the cost), so
+//     the cost is a sum of per-test value terms such as O(t * sqrt(max
+//     n_i)), not O(n**2). The Python pyramid() has the identical while
+//     loop.
 //
 //   how this label could be wrong, and what to check:
-//     The label claims quadratic but the cost is a per-test value term:
-//     Pyramid's while loop steps altura by one and subtracts about
-//     3*altura each step. Check that aux shrinks by 3h-1 per step, so each
-//     test needs about sqrt(n_i) iterations, and compare with the Python's
-//     identical `while(aux>=2)` loop.
+//     The label treats n as a size, but in Pyramid the loop bound is a
+//     card count VALUE. Check `while aux >= 2` in Pyramid: it decrements
+//     aux by about 3*altura per iteration, so iterations grow with the
+//     per-test value n_i, not with the number of tests.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 39, "data_dependent_loops": 0, "decreases_star":

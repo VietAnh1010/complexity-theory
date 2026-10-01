@@ -1,26 +1,26 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n)
-//   audited class  : other
+//   audited class  : O(n*m)
 //   cause          : label
-//   confidence     : medium
-//   auditor        : labelaudit-r3d-01
+//   confidence     : high
+//   auditor        : labelaudit-r4-d01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Per test the Dafny calls ReverseString(b) and ReverseString(a) (each
-//     O(|s|)) and scans bRev and aRev, so cost is O(sum of |x_i|+|y_i|),
-//     not O(n tests); the Python's [::-1], index and slice are linear in
-//     length as well.
+//     Solve loops n test cases and per test runs ReverseString(b), a scan
+//     of bRev, ReverseString(a) and a scan of aRev from k, so each of n
+//     strings is scanned once, giving O(n*m) under the naming rule. The
+//     Python (b[::-1].index, a[k::].index) is likewise linear per string,
+//     so the label is at fault.
 //
 //   how this label could be wrong, and what to check:
-//     The label's n counts test cases, but each test scans two strings
-//     whose lengths the label does not name. Check the loops over bRev and
-//     aRev and ReverseString in Solve, and the statement's bound of total
-//     length of x and y at most 10^5 each; if the label is meant as total
-//     input size it would stand.
+//     The label counts one size, but the body scans strings once per test.
+//     Check whether n is the number of query pairs and whether each pair
+//     has its own string length; if so the cost is tests times string
+//     length, not linear in n alone.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 50, "data_dependent_loops": 2, "decreases_star":

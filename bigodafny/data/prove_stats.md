@@ -90,7 +90,7 @@ each batch's `old-record.jsonl`.
 **292 of 329 distinct drawn rows carry a proof now — 89%.**
 
 - Closed after their campaign: 11 — `1039_15`, `1582_118`, `1718_1166`, `1827_66`, `1892_121`, `2105_248`, `2128_3`, `2423_48`, `2826_81`, `514_140`, `661_47`.
-- Relations of the proofs as they stand: `confirms` 259, `looser-structural` 19, `tighter-costmodel` 8, `looser-translation` 2, `looser-costmodel` 1, `looser-slack` 1, `tighter-translation` 1, `tighter-label` 1.
+- Relations of the proofs as they stand: `confirms` 249, `looser-structural` 26, `tighter-costmodel` 7, `tighter-label` 5, `looser-translation` 2, `tighter-translation` 2, `looser-slack` 1.
 
 ## The label is the strongest predictor
 
@@ -169,27 +169,39 @@ These are the relations each campaign RECORDED. Where a finding was
 later acted on, the row's current relation differs and the resolution
 is noted below rather than overwritten, so the finding is not erased:
 
+- **`1414_8`** — label naming rule (2026-10-01): a label names each size it depends on: O(n) over several scanned strings is O(n*m)
 - **`1421_89`** — quadratic SortCost scaffold replaced by the prelude's tight bound
 - **`1586_188`** — quadratic SortCost scaffold replaced by the prelude's tight bound
 - **`1871_291`** — re-proved charging each Gcd call Euclid's recursion depth (GcdSteps), as the charge table's helper rule requires; the earlier proof charged 1; filed in solutions-proved/value-bounded/
 - **`1915_158`** — re-proved charging each Gcd call Euclid's recursion depth (GcdSteps), as the charge table's helper rule requires; the earlier proof charged 1; filed in solutions-proved/value-bounded/
+- **`2235_384`** — label naming rule (2026-10-01): a label names each size it depends on: O(n) over several scanned strings is O(n*m)
 - **`2381_156`** — re-proved tight after IntToString was charged 1
 - **`2742_0`** — quadratic SortCost scaffold replaced by the prelude's tight bound
+- **`2942_42`** — relation re-read: the source literal 2009 caps x, so the bignum term is constant and the gap is the label's, not the cost model's
+- **`3060_1359`** — label naming rule (2026-10-01): a label names each size it depends on: O(n+m) needs two sizes the code pays for
 - **`1180_626`** — quadratic SortCost scaffold replaced by the prelude's tight bound
 - **`1243_0`** — Acted on 2026-09-21: the Dafny was re-translated to sort, as the Python does, and re-proved at the tight two-term bound 2*|s1|*(CeilLog2(|s1|)+1) + 2*|s2|*(CeilLog2(|s2|)+1) + 3*|s1| + |s2| + 5. The row's CURRENT relation is confirms; this record keeps what the campaign found.
 - **`1386_38`** — re-proved charging each Gcd call Euclid's recursion depth (GcdSteps), as the charge table's helper rule requires; the earlier proof charged 1; filed in solutions-proved/value-bounded/
+- **`1421_53`** — label naming rule (2026-10-01): a label names each size it depends on: O(n+m) needs two sizes the code pays for
 - **`2225_154`** — quadratic SortCost scaffold replaced by the prelude's tight bound
 - **`2593_332`** — quadratic SortCost scaffold replaced by the prelude's tight bound
+- **`305_284`** — re-translated: the closed form replaced by the Python's search loop (CLAUDE.md: preserve the algorithm); filed in solutions-proved/value-bounded/
 - **`1333_127`** — quadratic SortCost scaffold replaced by the prelude's tight bound
 - **`1453_211`** — quadratic SortCost scaffold replaced by the prelude's tight bound
+- **`2436_325`** — label naming rule (2026-10-01): a label names each size it depends on; the Python's list(b) is a parse the harness does outside Solve
 - **`2496_30`** — quadratic SortCost scaffold replaced by the prelude's tight bound
 - **`2725_319`** — quadratic SortCost scaffold replaced by the prelude's tight bound
+- **`2942_55`** — re-translated: the 2009-slot table replaced by a map, as the Python's dict, and 2**m computed by squaring; filed in solutions-proved/value-bounded/
+- **`2962_1968`** — label naming rule (2026-10-01): a label names each size it depends on: O(n**2) is one size squared
 - **`3070_180`** — quadratic SortCost scaffold replaced by the prelude's tight bound
+- **`662_527`** — label naming rule (2026-10-01): a label names each size it depends on: O(n) over several scanned strings is O(n*m)
 - **`1871_156`** — re-proved charging each Gcd call Euclid's recursion depth (GcdSteps), as the charge table's helper rule requires; the earlier proof charged 1; filed in solutions-proved/value-bounded/
 - **`276_610`** — re-proved tight after IntToString was charged 1
 - **`1386_19`** — re-proved charging each Gcd call Euclid's recursion depth (GcdSteps), as the charge table's helper rule requires; the earlier proof charged 1; filed in solutions-proved/value-bounded/
+- **`1935_61`** — label naming rule (2026-10-01): a label names each size it depends on: O(n+m) needs two sizes the code pays for
 - **`499_82`** — quadratic SortCost scaffold replaced by the prelude's tight bound
 - **`85_71`** — loose O(|arr|) binary-search bound replaced by the prelude's halving potential; sorts charged SortCost
+- **`1954_83`** — label naming rule (2026-10-01): a label names each size it depends on: O(n**2) is one size squared
 
 | relation | meaning |
 |---|---|
@@ -277,13 +289,13 @@ pushes the rate down for reasons unrelated to the agents.
 
 ## Corpus context
 
-- `solutions/` holds 300 rows.
+- `solutions/` holds 291 rows.
 - 323 rows carry a proof, in 323 files.
 - proved_rows counts every proof in the corpus, including the 33 that predate the campaigns and the rows the main agent proved later.
 
 ## What this does not measure
 
-- **Only `solutions/`.** The 127 unscreened and 184 disputed rows have
+- **Only `solutions/`.** The 127 unscreened and 202 disputed rows have
   never been drawn. Nothing here generalises to them.
 - **A bounded agent, not the problem.** `unresolved` means 3 attempts
   and 5 minutes were not enough, not that the row cannot be proved.

@@ -3,24 +3,24 @@
 //   stated label   : O(n**2)
 //   audited class  : O(n+m)
 //   cause          : label
-//   confidence     : medium
-//   auditor        : labelaudit-r3d-05
+//   confidence     : high
+//   auditor        : labelaudit-r4-d02
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The outer loop runs m times and the inner j loop runs d_list[i]
-//     times, which sums to at most SumSeq(d_list) <= n; SumSeq, the
-//     seq(n+1, ...) build and the final Join loop are O(n+m). The Python's
-//     inner range(pos, pos+array[i]) has the same total, so nothing is
-//     quadratic.
+//     SumSeq(d_list) is O(m), the outer loop runs m times, the inner loop
+//     `while j < pos + d_list[i]` runs c_i times with the c_i summing to
+//     at most n, and the final output loop runs n times, so the total is
+//     O(n+m), not O(n**2). The Python's nested range(pos, pos + array[i])
+//     loops have the same total, so the label is wrong.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes the inner platform-filling loop makes the cost
-//     quadratic. Check the requires SumSeq(d_list) <= a and the statement
-//     line that the sum of platform lengths does not exceed n: the inner
-//     while j < pos + d_list[i] runs sum(c_i) <= n times in total.
+//     The label assumes a quadratic scan. Check the inner `while j < pos +
+//     d_list[i]` loop: it writes platform i's cells once, and the platform
+//     lengths sum to at most n, so across all m platforms it is O(n)
+//     total, not O(n) per platform.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 73, "data_dependent_loops": 1, "decreases_star":

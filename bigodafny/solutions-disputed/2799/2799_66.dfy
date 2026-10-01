@@ -3,25 +3,25 @@
 //   stated label   : O(n**2)
 //   audited class  : O(n)
 //   cause          : label
-//   confidence     : high
-//   auditor        : labelaudit-r3d-08
+//   confidence     : medium
+//   auditor        : labelaudit-r4-d03
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     CountChar recurses on s[1..] and RepStr peels one count per level,
-//     both O(length) under the recursion rule, and the scan for '=' is one
-//     loop, so Solve is O(n) in the input length. The Python is one `for i
-//     in s` pass plus linear slicing and string repetition, so it is O(n)
-//     too and the O(n**2) label is wrong.
+//     Solve concatenates the two pieces, scans `rest` once for '=', runs
+//     CountChar three times over the pieces and builds at most one result
+//     with RepStr counts bounded by the expression length, so every step
+//     is linear in the input text: O(n). The Python does one `for i in s`
+//     pass and a few slices, so it is O(n) as well and the label is wrong;
+//     the input arrives as two strings, so O(n+m) is the other reading.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes some quadratic step. Check CountChar (peels s[1..]
-//     with an O(1) addition per level) and RepStr (a one-character string
-//     + recursive tail): each is linear in the string length, and the
-//     Python is a single pass over s plus s[1:]+s[0] and '|'*k, all
-//     linear.
+//     The label claims quadratic work on what looks like a few passes.
+//     Check CountChar (linear recursion on the string) and RepStr
+//     (recursion on a count bounded by the string length): none is nested
+//     inside another loop over the same size.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 62, "data_dependent_loops": 0, "decreases_star":

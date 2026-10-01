@@ -2,29 +2,28 @@
 //
 //   stated label   : O(n+m)
 //   audited class  : O(1)
-//   cause          : harness
-//   confidence     : medium
-//   auditor        : labelaudit-r3-15
+//   cause          : translation
+//   confidence     : low
+//   auditor        : labelaudit-r4-d03
 //
-//   Both artifacts are right. The Python pays to parse stdin and
-//   BigOBench profiled the whole script; the Dafny's Solve receives the
-//   inputs already parsed, so that cost is outside the measured method.
-//   Nothing to repair -- document it.
+//   The Python matches its label; the DAFNY does not. The label is right
+//   about the program it was measured on and the translation is the
+//   defect.
 //
 //   evidence:
-//     The `while |a| > 0 && |b| > 0 && k <= 1000` loop is bounded by the
-//     literal 1000 and does O(1) work per iteration (`a[1..] + [b0, a0]`
-//     appends two elements), and Solve never scans list1 or list2 beyond
-//     index 0, so the Dafny is O(1). The Python's O(n+m) comes from
-//     parsing both lines and slicing `a[1:]`, which is outside Solve's
-//     boundary.
+//     The loop `while |a| > 0 && |b| > 0 && k <= 1000` has a literal 1000
+//     cap and each round does O(1) work (a[1..] is a view, concat appends
+//     two elements), so the Dafny is O(1) in the list sizes. The Python's
+//     pop(0) shifts the remaining list each round, so its rounds cost
+//     O(|a|+|b|), matching the label; I lean translation (the slicing
+//     shape), but the Python's n+m dependence is small.
 //
 //   how this label could be wrong, and what to check:
-//     The label O(n+m) assumes Solve scans both card lists. Open the Dafny
-//     and check that the only list accesses are a[0] and b[0] inside a
-//     loop capped by the literal `k <= 1000`; if so Solve is O(1) and the
-//     O(n+m) comes from the Python's input parsing (`a = a[1:]`, list
-//     comprehensions), i.e. the harness boundary.
+//     The label matches a Python that does `a.pop(0)`, `b.pop(0)` and list
+//     appends on lists of the card counts, which shift elements and cost
+//     O(n+m) per round. Check that the Dafny uses `a[1..] + [b0, a0]`, a
+//     view plus a two-element concat, inside a loop whose bound k <= 1000
+//     is a source literal.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 29, "data_dependent_loops": 1, "decreases_star":

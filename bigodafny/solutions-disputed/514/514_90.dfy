@@ -4,27 +4,24 @@
 //   audited class  : other
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r3-fix
+//   auditor        : labelaudit-r4-d01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     bx = RepeatChar90('0', n) + IntToBinary90(x) has length n + log2(x),
-//     the main loop over j < |bx| calls FCost90 (ParseBinary90 over |bx|)
-//     and RepeatChar90 per iteration, so the cost is O((n + log L)**2), a
-//     value term in total_score that the label O(n**2) omits. The Python's
-//     bin(x), int(bs, 2) and per-i slicing pay the same, so the label is
-//     at fault.
+//     The main loop runs |bx| = n + (binary length of x) times and each
+//     FCost90 call is linear in |bs| (ParseBinary90, Pow2_90(n-1),
+//     LowSum90), so the cost is O((n + log L)**2), a value term in L that
+//     the label omits; the n <= 30 and L <= 1e9 caps do not make it
+//     constant. The Python pays the same via bin(x) and per-candidate
+//     int(bs, 2) work.
 //
 //   how this label could be wrong, and what to check:
-//     The label names only n (the number of bottle types), but the loop
-//     over j runs |bx| = n + bitlength(total_score) times and each
-//     iteration costs O(|bx|), so the cost depends on the value L. Check
-//     IntToBinary90/IntToBinaryPos90 (recursion on x/2) and the Python's
-//     bin(x)[2:]; if the intended reading is that L's bit-length is
-//     bounded by the 10^9 cap, the statement cap does not make it constant
-//     under the value-terms rule, so the mismatch stands.
+//     The label counts only n (bottle types). Check the length of bx: it
+//     is n zeros plus IntToBinary90(x), the binary digits of the value L,
+//     so the loop over |bx| and the per-iteration FCost90 depend on log L
+//     as well as n.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 80, "data_dependent_loops": 0, "decreases_star":

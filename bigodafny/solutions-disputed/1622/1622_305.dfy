@@ -1,26 +1,26 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n**2)
-//   audited class  : O(n)
+//   audited class  : other
 //   cause          : label
-//   confidence     : high
-//   auditor        : labelaudit-r3d-04
+//   confidence     : medium
+//   auditor        : labelaudit-r4-d02
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The Dafny runs two while loops counting up to k (the value x, with
-//     requires k <= |binary_list|) doing O(1) seq updates arr[pos := "0"],
-//     so the cost is O(n); the Python does the same `while i < x` loops
-//     with O(1) list assignments, so it is not quadratic either.
+//     The two sequential loops `while i < d` and `while i < k` each do
+//     O(1) work per step with O(1) seq updates and run to the input values
+//     y and x, so the cost is O(x), a value term (at most linear in n
+//     since x < n), never quadratic. The Python has the same `while i < y`
+//     and `while i < x` loops, so the O(n**2) label is wrong.
 //
 //   how this label could be wrong, and what to check:
-//     The label claims quadratic cost. Look for a nested loop or
-//     per-iteration copy in either source; the Dafny has only `while i <
-//     d` and `while i < k` with constant-time updates, and x < n bounds
-//     both. If the label came from the old copying model of seq updates,
-//     it is stale.
+//     The label assumes nested loops over n digits. Check the two loops in
+//     Solve: `while i < d` and `while i < k` are sequential, not nested,
+//     and their bounds are the input values y and x (0 <= y < x < n), so
+//     the cost is linear in x at most.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 42, "data_dependent_loops": 0, "decreases_star":

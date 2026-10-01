@@ -4,26 +4,26 @@
 //   audited class  : other
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r3-02
+//   auditor        : labelaudit-r4-d01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The inner oi/j double loop is O(n**2) per pass, but the enclosing
-//     `while flag` repeats it until no element exceeds a divisor, which is
-//     a Euclid-style mod reduction taking about O(log max a_i) passes, so
-//     the cost is roughly O(n**2 log max a_i); the Python pays the same
-//     repeated `while True` passes, so the label is the one that omits the
-//     value term.
+//     Each pass of while flag costs n*n (oi loop with inner j loop), but
+//     the number of passes is set by how many mod reductions the values
+//     need, a Euclid-like value term (roughly O(n**2 log max x_i)); the
+//     statement cap of 100 does not make it constant. The Python repeats
+//     the same while True loop, so the label omits a value term the
+//     original also pays.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes the outer `while flag` loop runs a constant number
-//     of passes of the O(n**2) double loop. Check how many passes the loop
-//     takes: each pass reduces the minimum like a Euclid step on the
-//     values, so the pass count depends on the a_i values (up to 100), not
-//     on n. If the passes are provably bounded by a constant independent
-//     of values, the label stands.
+//     The label assumes the repeat-until-stable outer loop runs a constant
+//     number of rounds. Check the while flag loop in Solve (decreases *):
+//     if the number of rounds depends on the values x_i (mod reduction,
+//     Euclid-like), the cost carries a value factor; if you can show
+//     rounds bounded by a constant independent of values, the label
+//     stands.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 51, "data_dependent_loops": 1, "decreases_star":

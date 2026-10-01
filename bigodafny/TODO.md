@@ -21,10 +21,12 @@ when done.
       filed in `value-bounded/`.
 - [ ] The five `Gcd` bounds are loose (`n * log max`): the running gcd only
       shrinks, so the depths telescope to `O(n + log max)`. Optional tightening.
-- [ ] `2942_55`: the translation adds a 2009-slot table the Python's dict lacks;
+- [x] `2942_55`: the translation adds a 2009-slot table the Python's dict lacks;
       that literal bounds the `2**m` loop, so the O(n) bound hides a value term.
-- [ ] `305_284`: the translation replaces the Python's `for x in range(p, q)`
-      search with a closed form (CLAUDE.md: preserve the algorithm).
+      Re-translated with a map and `2**m` by squaring; re-proved in `value-bounded/`.
+- [x] `305_284`: the translation replaces the Python's `for x in range(p, q)`
+      search with a closed form (CLAUDE.md: preserve the algorithm). Loop
+      restored; re-proved in `value-bounded/` with the `q - p` value term.
 - [x] `810_131` and `1948_388`: the looser term comes from the translation (no
       float `sqrt`), not the Python; the vocabulary has no `looser-translation`.
       Now `looser-translation` (`vocab.py`).
@@ -41,8 +43,10 @@ when done.
       `2358_103`, `2465_212`, `342_86`.
 - [ ] `1332_16` reads like a missing log-bound lemma, not `value-to-size`.
 - [x] `514_140` is `looser-costmodel` now, so it stays out.
-- [ ] `1718_1166` is `looser-structural` but not in `value-bounded/`; its reason
-      names a sort, not an input value. Confirm it stays out.
+- [x] `1718_1166` is `looser-structural` but not in `value-bounded/`; its reason
+      names a sort, not an input value. Stays out: `value-bounded/` is for value
+      terms. So do the five naming-rule rows (`1414_8`, `2235_384`, `662_527`,
+      `1954_83`, `2962_1968`): `looser-structural` on a size the label omits.
 - [ ] `810_131` and `1948_388` are in `value-bounded/` but `looser-translation`
       now; the filing rule admits only `looser-structural`. Keep or move out.
 
@@ -50,16 +54,26 @@ when done.
 
 - [x] `solutions/` (344) re-audited under the current rules; 45 rows moved to
       `solutions-disputed/` (now 202), 299 remain.
-- [ ] 17 `unsure` rows are in `solutions-unsure/` (its README lists them).
-      Decide each: to `solutions/` or `solutions-disputed/`.
-- [ ] 10 verdicts disagree with the row's reviewed proof relation: `514_140`,
+- [x] 17 `unsure` rows are in `solutions-unsure/` (its README lists them).
+      Decide each: to `solutions/` or `solutions-disputed/`. Re-audit r4
+      decided 14; 8 remain `unsure` (5 new from `solutions/`).
+- [ ] Decide the `ParseInt` charge: the brief charges a numeral token its
+      width, the proofs charge it 1 as `IntToString`. Six `unsure` rows wait on
+      it (`solutions-unsure/README.md`).
+- [x] 10 verdicts disagree with the row's reviewed proof relation: `514_140`,
       `1029_92`, `1180_626`, `1414_8`, `1718_1166`, `2680_221`, `2913_309`,
       `2913_484`, `2942_42`, `2942_55`. Most turn on whether string length
       counts as a size, or a label above the tight class is a mismatch.
-- [ ] `1029_92`, `1029_119` define a bit-by-bit `BitOr`, `1332_16` and `1827_66`
+      Settled 2026-10-01 by the naming rule and decision A (strict), r4.
+- [ ] `1180_626`, `2913_309`, `2913_484`: the label is above the tight class
+      (`mismatch`), but the proof only reaches the label (`confirms`). A
+      tighter proof would make the relation `tighter-label`.
+- [x] `1029_92`, `1029_119` define a bit-by-bit `BitOr`, `1332_16` and `1827_66`
       a recursive `Lowbit`; each recurses to a value's bit length. `1029_92`'s
       proof charges `BitOr` 1 per call, as the Gcd proofs did. Use the prelude's
-      `bv64` `BitOr` in the row, or charge the depth.
+      `bv64` `BitOr` in the row, or charge the depth. Done for the first three
+      (`bv64`, new `requires` prechecked); `1827_66`'s proof already charges
+      the depth and stays O(n log n).
 - [x] The 157 rows already in `solutions-disputed/` re-audited under r3: 138
       mismatch, 12 released to `solutions/`, 6 unsure; one main-agent override
       (`1484_26`).
@@ -70,6 +84,9 @@ when done.
 - [ ] `label_audit.py` imports `features` from the archived `experiments/`.
 
 ## Gates (not for an agent whose work they judge)
+
+- [ ] `proofs.py`'s corpus `assume` scan matches comments: it flags the word
+      in `2854_107`'s audit header. Skip `//` text, or accept the false hit.
 
 - [x] Remove the `solutions-proved/nlogn/` remnants: `PROVED_NLOGN` in
       `common.py`, `proofs.py`, `precheck.py`; `tight_variant` in `collect.py`.

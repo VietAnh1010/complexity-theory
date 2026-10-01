@@ -1,6 +1,6 @@
 # `solutions/`: translated rows that passed their available checks
 
-This directory contains 300 translated rows. Membership means the row is in the
+This directory contains 291 translated rows. Membership means the row is in the
 screened corpus; it does not mean its complexity label has been proved.
 
 A row normally arrives here after its behaviour gate passes, `dafny verify` has
@@ -19,7 +19,7 @@ directories name work that is pending or disputed:
 
 ## Current checks
 
-All 300 files pass `dafny verify`; eight still use `decreases *`, so they are not
+All 291 files pass `dafny verify`; six still use `decreases *`, so they are not
 termination proofs for every input. Complexity labels are proved only by the
 323 files in `solutions-proved/`.
 

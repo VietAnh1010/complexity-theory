@@ -4,23 +4,25 @@
 //   audited class  : other
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r3-09
+//   auditor        : labelaudit-r4-d02
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The outer while does up to |t| passes over s of |s|+1 steps each (i
-//     wraps to 0 when i==|s|), and every step runs the inner idx scan over
-//     |s| (Python's `t[j] in s` list scan does the same), so the worst
-//     case is O(|s|*|t|*|s|), cubic rather than O(n**2).
+//     Each outer iteration scans all of s in `while idx < |s|`, and the
+//     outer loop advances i and wraps to 0 once per consumed character of
+//     t (e.g. s = a^k b^k with t alternating b and a), giving up to
+//     |s|*|t| iterations of O(|s|) work, a cubic bound O(|s|^2 |t|)
+//     outside the vocabulary. The Python `t[j] in s` scans s per iteration
+//     the same way, so the label is wrong; the cubic worst case is my
+//     derivation, not a stated bound.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes quadratic cost, but the outer loop wraps over s
-//     repeatedly (once per matched letter of t) and each outer step also
-//     rescans s for t[j]. Open the Dafny's outer while and inner idx loop,
-//     and the Python's `t[j] in s`, and construct s with distinct letters
-//     and t its reverse to confirm about n passes of n steps of n scan.
+//     The label stops at quadratic, but there is a full scan of s inside a
+//     loop that can itself run about |s|*|t| times. Check the inner `while
+//     idx < |s|` scan (no early exit) inside the `while i <= |s| && j <
+//     |t|` loop, and whether i wraps once per consumed character of t.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 66, "data_dependent_loops": 1, "decreases_star":

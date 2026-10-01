@@ -4,24 +4,23 @@
 //   audited class  : other
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r3d-02
+//   auditor        : labelaudit-r4-d01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Per query the Dafny binary-searches `l`..`r` with r = b - a, costing
-//     O(log(b-a)), so the total is O(Q log max value), where the logarithm
-//     is of an input value not of the query count n. The Python runs the
-//     same binary search, so the label does not account for the value term
-//     and is wrong rather than the translation.
+//     Per query, the `while l + 1 < r` loop binary-searches r = b - a,
+//     giving O(log(b - a)) per query and O(n log max a_i) in total; there
+//     is no sort or n-sized divide and conquer, so O(nlogn) in the query
+//     count names the wrong thing. The Python's identical check/l/r loop
+//     pays the same value term, so the label is at fault.
 //
 //   how this label could be wrong, and what to check:
-//     The label reads as n log n in the query count, but the log comes
-//     from a binary search over [1, b-a], i.e. over the VALUES a and b.
-//     Check the `while l + 1 < r` loop and the Python's identical loop; if
-//     the label's n is meant to bound those values, the verdict flips to
-//     ok.
+//     The label reads the logarithm as a log of the query count. Check the
+//     loop `while l + 1 < r` in Solve: it halves the range b - a, an input
+//     VALUE, once per query, so the log factor is in the values, not in
+//     the number of queries.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 46, "data_dependent_loops": 1, "decreases_star":

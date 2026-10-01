@@ -3,26 +3,24 @@
 //   stated label   : O(n)
 //   audited class  : O(n**2)
 //   cause          : label
-//   confidence     : medium
-//   auditor        : labelaudit-r3d-04
+//   confidence     : high
+//   auditor        : labelaudit-r4-d02
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
 //     The loop runs n/2 times and each iteration calls
-//     ReverseString1345(board[n-1-i]) on a row of n characters, which
-//     costs O(n) by its recursion on s[1..], so the Dafny is O(n**2) in
-//     the side length; the Python's right[i][::-1] and the string
-//     comparison per row are O(n) each, also O(n**2).
+//     ReverseString1345(board[n-1-i]), a recursion over a row of n
+//     characters, then compares it with board[i]; with an n x n board that
+//     is O(n**2). The Python does right[i][::-1] != left[i] on the same
+//     rows, so it is quadratic as well and the label is wrong.
 //
 //   how this label could be wrong, and what to check:
-//     The label O(n) is right only if n counts the total characters of the
-//     board. The statement says n lines of n characters each, so the row
-//     width equals n; open the Dafny `while i < half` loop and
-//     ReverseString1345, and decide whether the dataset's n is the line
-//     count (then cost is n*n) or the input length (then the label
-//     stands).
+//     The label counts the n rows only, but each row is itself n
+//     characters long. Check ReverseString1345 inside the `while i < half`
+//     loop: it reverses a whole row (length n), so each of n/2 iterations
+//     costs O(n).
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 23, "data_dependent_loops": 0, "decreases_star":

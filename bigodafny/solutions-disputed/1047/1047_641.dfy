@@ -1,26 +1,29 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n**2)
-//   audited class  : other
+//   audited class  : O(n*m)
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r3d-03
+//   auditor        : labelaudit-r4-d01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Solve does one pass over `strings`, and per string runs DigitRunEnd,
-//     ParseInt, ColToLetters and a letter loop, each linear in that
-//     string's length (about log of the column); the Python's per-line
-//     re.search/while col loop is the same, so the cost is O(total
-//     characters), not O(n**2).
+//     Solve loops over the n strings once, and per string runs
+//     IsRCFormat/DigitRunEnd, ParseInt and ColToLetters or the letter
+//     scan, each linear in that string's length, so each of n strings is
+//     scanned a constant number of times: O(n*m), not O(n**2). The Python
+//     re.search plus per-character loops pays the same. Short-string
+//     concatenation in ColToLetters is quadratic in letters per string but
+//     those are bounded by the string length.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes a quadratic term. Check whether anything in Solve
-//     scans earlier strings or builds a sequence quadratically; each
-//     coordinate string is converted independently and the lines seq grows
-//     by one element per string.
+//     The label squares one size, but the work is n coordinate strings,
+//     each scanned a few times. Check the loop `while idx < |strings|`: it
+//     runs once per string, and everything inside (DigitRunEnd, ParseInt,
+//     the alpha scan, ColToLetters) works on one short string, so the cost
+//     is n strings times string length.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 76, "data_dependent_loops": 1, "decreases_star":

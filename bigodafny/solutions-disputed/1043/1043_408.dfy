@@ -1,25 +1,26 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n**2)
-//   audited class  : other
+//   audited class  : O(n*m)
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r3d-03
+//   auditor        : labelaudit-r4-d01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Solve loops over a_list and builds each answer with `Repeat("3",
-//     m-2)` then Join, so the cost is O(t + sum of the per-test values
-//     m_i), linear in output length; the Python's `while n>2` printing
-//     loop is linear in the same sum, so O(n**2) matches neither.
+//     Solve loops over a_list once and per test builds "23" + Repeat("3",
+//     m-2), so each test costs O(m) and the total is tests times per-test
+//     length, O(n*m), not O(n**2). The Python prints '3' in a `while n>2`
+//     loop of the same length per test, so the label is wrong about the
+//     Python too.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes a quadratic cost. Check the Python: the inner
-//     `while n>2` prints one character per iteration, so the cost per test
-//     is its own n_i, and the statement says the sum of n over tests is at
-//     most 10^5; nothing in either source is quadratic.
+//     The label looks for quadratic work, but the loop runs once per test
+//     and builds a string of length m. Check Repeat("3", (m - 2) as nat):
+//     its cost is the per-test length m, and nothing is nested inside
+//     another loop over the same size.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 20, "data_dependent_loops": 0, "decreases_star":

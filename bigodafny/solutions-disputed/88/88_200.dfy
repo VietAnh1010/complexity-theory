@@ -1,29 +1,26 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n**2)
-//   audited class  : O(n)
+//   audited class  : O(n*m)
 //   cause          : label
-//   confidence     : medium
-//   auditor        : labelaudit-r3-fix
+//   confidence     : high
+//   auditor        : labelaudit-r4-d01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Per test, ReverseString(string_list[2t]) and
-//     ReverseString(string_list[2t+1]) each cost O(|s|) by the recursion
-//     row, and the two scans over y and x are single bounded passes, so
-//     the total is O(sum of string lengths), not quadratic. The Python's
-//     x[::-1] and its two break loops are equally linear, so the label is
-//     wrong, not the translation.
+//     Solve loops n tests and per test calls ReverseString on x and y and
+//     scans each once (while i < |y|, while j < |x|), so the cost is n
+//     tests times string length, O(n*m); nothing is quadratic in one size.
+//     The Python pays the same ([::-1] plus two scans), so the label is
+//     wrong rather than the translation.
 //
 //   how this label could be wrong, and what to check:
-//     The label claims quadratic cost, but the per-test work may be linear
-//     in the two strings' lengths. Find ReverseString (it peels s[1..] and
-//     appends [s[0]], O(|s|) by the recursion row) and the two search
-//     loops that each stop at the first '1'; confirm no loop nests over
-//     the same data and check the Python's x[::-1] and break loops are
-//     linear too.
+//     The label treats the cost as one size squared. Open Solve and check
+//     that no loop runs over the test count inside another loop over the
+//     test count; if the only nesting is tests times the length of one
+//     string, the label names the wrong sizes.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 48, "data_dependent_loops": 2, "decreases_star":

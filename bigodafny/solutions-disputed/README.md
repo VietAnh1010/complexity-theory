@@ -1,6 +1,6 @@
 # `solutions-disputed/` — label audit review queue
 
-184 rows whose stated complexity label does not describe what the code costs.
+202 rows whose stated complexity label does not describe what the code costs.
 **Queued for manual review; nothing here is a decision.** Each file keeps its
 full original body with a header naming the audited class, the cause, the
 confidence and the evidence, so a reviewer needs nothing else open.
@@ -11,6 +11,31 @@ with every mismatch re-checked by the orchestrating session before the move.
 > Renamed from `solutions-tofix/`. "To fix" overstated the verdict: 118 of the
 > 152 rows need a **label** changed, not code. What is disputed is the label,
 > and that is what the name now says.
+
+## Re-audit r4: the naming rule (2026-10-01)
+
+A label must be the tight class and name each size it depends on
+(`COMPLEXITY.md`; brief § *Naming the sizes*). `O(n)` over several scanned
+strings and `O(n**2)` for two different sizes are mismatches; both are
+`O(n*m)`. 160 rows that the rule could affect were re-audited: those with a
+multi-string or nested signature, an `O(n**2)` label over two inputs, a
+two-variable label, or an `unsure` verdict. Verdicts:
+`batches/labelaudit/verdicts_r4*.jsonl`; 8 main-agent overrides in
+`verdicts_r4_overrides.jsonl`.
+
+- **In from `solutions/` (9):** `1414_23`, `1954_83`, `2962_1968` (`O(n**2)` on
+  two sizes); `2087_119`, `2235_384` (`O(n)` over scanned strings);
+  `1421_53`, `3060_1359` (`O(n+m)` where one size is paid); `1718_1166`
+  (sorts beside the `O(n*m)` loop); `2704_92` (a fixpoint per word).
+- **In from `solutions-unsure/` (13):** `305_284`, `380_112`, `577_509`,
+  `662_527`, `662_559`, `1177_9`, `1177_230`, `1272_115`, `1272_278`,
+  `1935_61`, `2193_70`, `2254_143`, `2436_325`.
+- **Out to `solutions/` (4):** `514_140`, `1029_92`, `1029_119`, `1332_16`,
+  re-translated so `**`, `|` and `&` are one operation, as in the Python.
+- Re-translated and still here: `2942_55` (a map for the Python's dict) and
+  `305_284` (the Python's search loop restored); both bounds carry a value
+  term, in `solutions-proved/value-bounded/`.
+- The 59 rows already here stay; true classes moved to the rule's names.
 
 ## Re-audit r3 moved 45 rows in (2026-10-01)
 
@@ -46,7 +71,7 @@ override in `verdicts_r3_overrides.jsonl` (`1484_26`: the auditor treated a
 - `1950_45` and `1950_47` keep their gate-audit header; they are here for a
   translation defect, not a label question.
 
-The queue is now 183 `mismatch` and `1950_45`.
+The queue was then 183 `mismatch` and `1950_45`; r4 above gives the current count.
 
 ## These rows are still in the dataset
 

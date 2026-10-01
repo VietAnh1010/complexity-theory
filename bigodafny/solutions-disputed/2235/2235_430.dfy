@@ -1,28 +1,26 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n**2)
-//   audited class  : other
+//   audited class  : O(n*m)
 //   cause          : label
-//   confidence     : medium
-//   auditor        : labelaudit-r3d-07
+//   confidence     : high
+//   auditor        : labelaudit-r4-d03
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Solve loops over the t test cases and, per case, steps through s
-//     with i := i + 2, appending to buf in O(1); Join is linear in output,
-//     so the cost is O(t + sum of |s_i|), a per-test value summed over
-//     tests rather than n squared. The Python does the same `for i in
-//     range(0, len(s), 2)` per test, so the label is wrong for both.
+//     Solve loops over the t test strings and for each runs `while i <
+//     |s|` with step 2, appending one character in O(1), so t strings each
+//     scanned once is O(n*m), not O(n**2). The Python prints s[i] over
+//     range(0, len(s), 2) per test and pays the same, so the label names
+//     the wrong sizes.
 //
 //   how this label could be wrong, and what to check:
-//     The label claims quadratic growth, but the two loops are tests (t)
-//     times characters per test, i.e. total input length. Check that the
-//     inner `while i < |s|` loop runs once per element of s_list with step
-//     2 and that nothing else walks s; if n in the label is meant as t
-//     times per-test n, the label is a name for the same product and the
-//     verdict flips to ok.
+//     The label squares one size, but the work is t strings, each scanned
+//     once at stride 2. Check the loops: `while x < t` over the test
+//     strings and `while i < |s|` inside it; nothing nests over the same
+//     size.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 34, "data_dependent_loops": 0, "decreases_star":

@@ -4,24 +4,24 @@
 //   audited class  : other
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r3d-02
+//   auditor        : labelaudit-r4-d01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The i, j, k loops all test `!found` and stop at the first (i,j,k)
-//     with 3i+5j+7k == nv; with i = 0 a hit needs at most about 5 j-values
-//     times nv/7 k-values, so the cost is O(nv) per test and O(sum of
-//     per-test n_i) overall. The Python has the same early break, so the
-//     true cost is a per-test value term, not n**2, and not cubic.
+//     The outer loop runs once per test while the triple loop in Solve is
+//     bounded by the per-test value nv (nv/3, nv/5, nv/7) with an early
+//     exit on found, so the cost is a value term in nv (at least linear,
+//     up to cubic), not O(n**2) in a size. The Python has the same three
+//     range(n//3+1) style loops, so the label is wrong; the exact power of
+//     nv is less certain than that it is a value term.
 //
 //   how this label could be wrong, and what to check:
-//     The label claims quadratic, but the triple loop exits at the first
-//     solution and a solution exists with i = 0 for every n >= 24 (5 and 7
-//     are coprime, Frobenius number 23). Check that found short-circuits
-//     all three loop guards and that the first hit needs only about 5
-//     values of j, each scanning k <= nv/7.
+//     The label counts n as a size, but the nested i/j/k loops are bounded
+//     by nv/3, nv/5 and nv/7, which are per-test input values. Check the
+//     bounds `i <= nv / 3`, `j <= nv / 5`, `k <= nv / 7`; none is a list
+//     length.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 53, "data_dependent_loops": 3, "decreases_star":

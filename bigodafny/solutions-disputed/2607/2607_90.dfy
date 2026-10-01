@@ -4,24 +4,23 @@
 //   audited class  : other
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r3d-07
+//   auditor        : labelaudit-r4-d03
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The first loop is O(n) and the prefix-sum loop runs a literal 100
-//     times (constant), but the last loop `while t < ra` starts at la and
-//     runs ra - la times, so the cost is O(n + (ra - la)), a value term
-//     the label ignores even though the statement caps it at 100. The
-//     Python's `for i in range(la, ra)` pays the same value term.
+//     The first loop is O(n) and the sweep loop `while i < 100` has a
+//     literal bound, but the last loop `while t < ra` starting at t := la
+//     runs ra - la times, a cost in input values, so the class is O(n +
+//     (ra - la)), a value term the label omits. The Python's `for i in
+//     range(la, ra)` pays the same.
 //
 //   how this label could be wrong, and what to check:
-//     The label counts only the n segments, but the final loop `while t <
-//     ra` runs ra - la times, a value taken from Alexey's own segment.
-//     Check that la and ra come from intervals[0] and that the bound is
-//     not a source literal; if you treat the 100-cm cap as constant, the
-//     label stands as O(n).
+//     The label counts only the n intervals, but the final loop `while t <
+//     ra` runs from la to ra, input values. Check that loop: it costs ra -
+//     la, which the label's variable does not account for, even though the
+//     statement caps coordinates at 100.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 48, "data_dependent_loops": 0, "decreases_star":

@@ -1,28 +1,28 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n)
-//   audited class  : other
+//   audited class  : O(n*m)
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r3-13
+//   auditor        : labelaudit-r4-d03
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The outer loop runs t = n times and each iteration pays an inner
-//     loop to the per-query value kk plus Repeat building nn characters,
-//     so the cost is O(t + sum of per-query n_i + k_i), a value term the
-//     label's n (the query count) does not account for; the Python slicing
-//     and multiplication pays the same.
+//     Solve loops over n test pairs and per test builds the block (kk <=
+//     26 steps) and then Repeat(block, reps) + Repeat("a", rem), about nn
+//     characters, so the cost is the number of tests times the per-test
+//     length, O(n*m), not O(n). The Python alpha[:k]*(n//k) + 'a'*(n%k)
+//     builds the same string per test. How the prelude charges
+//     Repeat(block, reps) was not checked, hence medium.
 //
 //   how this label could be wrong, and what to check:
-//     The label claims linear in one n, but the cost has per-query value
-//     terms. Open the Dafny and find the inner `while i < kk` loop and the
-//     Repeat(block, reps) calls inside `while t < n`: each is bounded by
-//     the per-query values pairs[t][1] and pairs[t][0], not by the query
-//     count n. If n is read as the total output length the label stands;
-//     as the signature's t it does not.
+//     The label has a single size, but Solve loops over the test pairs and
+//     each test builds a string of length nn. Check Repeat(block, reps) +
+//     Repeat("a", rem): they cost the per-test length nn (the loop to kk
+//     <= 26 is a block of at most 26 letters), so the cost is tests times
+//     string length.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 33, "data_dependent_loops": 0, "decreases_star":

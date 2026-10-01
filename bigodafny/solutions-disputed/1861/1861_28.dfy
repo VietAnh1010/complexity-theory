@@ -3,26 +3,25 @@
 //   stated label   : O(n**2)
 //   audited class  : other
 //   cause          : both
-//   confidence     : low
-//   auditor        : labelaudit-r3d-05
+//   confidence     : medium
+//   auditor        : labelaudit-r4-d02
 //
 //   The Python does not match the label AND the translation diverges
 //   from the Python. Both need attention.
 //
 //   evidence:
-//     The Dafny's main loop runs H times, then W columns, then scans every
-//     pattern in pats (about Fibonacci(W) of them), giving O(H*W*|pats|)
-//     with |pats| exponential in W. The Python builds Counter objects once
-//     and then does O(H*W**2) per-row work, so the Python is not O(n**2)
-//     and the Dafny is in a worse class than the Python; I lean both, with
-//     low confidence on the cause.
+//     pats is rebuilt by concatenations that roughly double per column, so
+//     |pats| is exponential in W, and the main loop runs H rows times W
+//     columns times |pats| patterns (`while pi < |pats|`), a cost in the
+//     values H and W, not O(n**2). The Python also builds pats
+//     exponentially but sums over Counter keys (at most W per column), so
+//     the Dafny pays an extra |pats| factor per row.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes polynomial growth in a size n, but the input is
-//     three values (H, W, K) and the cost is exponential in W. Check the
-//     pats construction, whose size grows like Fibonacci in W, and the row
-//     loop that scans all of pats for every column; the Python's Counter
-//     aggregation (iws) avoids that per-row factor.
+//     The label reads the loops as quadratic in one size, but the pattern
+//     list pats grows with W (roughly Fibonacci). Check the loop `while pi
+//     < |pats|` inside the H x W loops: its bound is |pats|, exponential
+//     in W, so the cost is a value term in W and H.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 76, "data_dependent_loops": 0, "decreases_star":

@@ -4,24 +4,24 @@
 //   audited class  : O(1)
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r3d-05
+//   auditor        : labelaudit-r4-d02
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The only loop in Solve is while i < 1000 && !done with a literal
-//     bound, and each iteration does a fixed number of ContainsInt checks
-//     on face lists of fixed width 6, so the cost does not depend on n at
-//     all. The Python has the same while i < 1000 loop and reads at most
-//     three lines, so it is constant too.
+//     The loop `while i < 1000` has a literal source bound, and the body
+//     does a bounded number of ContainsInt1722_66 checks over cube lists
+//     of exactly six digits with n <= 3 selecting a branch, so the cost is
+//     O(1). The Python has the same `while (i < 1000)` loop and `in`
+//     checks over six-face lists, so the label is wrong, not the
+//     translation.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes cost grows with the cube count n. Check that the
-//     outer loop is bounded by the literal 1000 (while i < 1000) and that
-//     n only picks a branch (n == 1/2/3) with at most six ContainsInt
-//     calls on rows of 6 faces; if the cost scaled with n the label would
-//     stand.
+//     The label assumes the cost grows with n, but n is at most 3 and the
+//     main loop has a literal bound. Check `while i < 1000` and that each
+//     cube list always has the 6 faces fixed by the statement; if so,
+//     nothing varies with the input size.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 67, "data_dependent_loops": 1, "decreases_star":

@@ -4,26 +4,25 @@
 //   audited class  : other
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r3-12
+//   auditor        : labelaudit-r4-d03
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The inner loop in Solve runs j from neg[ni].0 up to r for each
-//     element of neg, and arr is allocated with size r+1 then scanned in
-//     full, so the cost is O(|neg| * r + r) where r is the input rating
-//     value plus gains; the Python's range(neg[i][0], r+1) loop pays
-//     exactly the same value term, so the true class is O(n*r) (other).
+//     Sorting pos and neg costs O(n log n), but the knapsack loop runs
+//     once per negative project and its inner loop `while j <= r` runs to
+//     the rating r, so the cost is O(n log n + n*r), a value term in r
+//     that the label's n does not cover; the max scan over arr is O(r).
+//     The Python's range(neg[i][0], r+1) loop and [0]*(r+1) array pay the
+//     same.
 //
 //   how this label could be wrong, and what to check:
-//     The label O(n**2) assumes the neg-by-neg DP is quadratic in the
-//     project count n. Check the inner `while j <= r` loop (Python `for j
-//     in range(neg[i][0], r+1)`) and `new int[r+1]`: if r, the rating
-//     value read from input (up to 30000 and independent of n), is what
-//     the loop runs to, the cost is n*r, not n**2. If the statement tied r
-//     to n the label would stand, but it states 1 <= n <= 100 and 1 <= r
-//     <= 30000 separately.
+//     The label reads the two nested loops as n by n, but the inner loop
+//     runs `while j <= r` over the rating VALUE r, with arr sized r + 1.
+//     Check the bound on j and the allocation `new int[r+1]`: r is the
+//     starting rating plus gains (up to 30000 in the row's own comment),
+//     not the project count.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 66, "data_dependent_loops": 0, "decreases_star":

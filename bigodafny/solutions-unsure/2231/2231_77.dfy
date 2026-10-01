@@ -1,31 +1,29 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n)
-//   audited class  : O(n**2)
-//   cause          : translation
+//   audited class  : O(n)
+//   cause          : unclear
 //   confidence     : low
-//   auditor        : labelaudit-r3-13
+//   auditor        : labelaudit-r4-u01
 //
-//   The Python matches its label; the DAFNY does not. The label is right
-//   about the program it was measured on and the translation is the
-//   defect.
+//   Which of the label or the translation is at fault was not determined
+//   by the audit.
 //
 //   evidence:
-//     On each run boundary the Dafny scans and rebuilds the whole
-//     `entries` seq (inner loop j over |entries|) where the Python does
-//     one dict get and set; entries is bounded only by the number of
-//     distinct characters, which the source does not cap, so the cost is
-//     O(runs * distinct) rather than O(n).
+//     The outer loop runs n+1 times and on every letter change the inner
+//     loop copies `entries`, whose size is the number of distinct letters,
+//     so cost is O(n*d); with the statement's 26-letter alphabet d is a
+//     constant and the row is O(n) like the Python, but no requires in the
+//     Dafny enforces that bound.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes the Python dict result is O(1) per key. The Dafny
-//     replaces it with a seq of (char,int) pairs rebuilt by the inner
-//     `while j < |entries|` loop at every run flush. Check whether the
-//     number of distinct keys in `entries` can be treated as constant: the
-//     statement says lowercase letters, but the Dafny has no requires
-//     bounding the alphabet, so the inner loop is up to n long. If the
-//     26-letter cap is accepted as a fixed constant the label stands; if
-//     not, the row is O(n*d).
+//     The label O(n) holds only if the number of distinct letters is a
+//     constant. Open Solve and find the inner `while j < |entries|` loop
+//     that rebuilds newEntries each time the letter changes: its length is
+//     the distinct-letter count d, so cost is O(n*d) where the Python's
+//     dict is O(1) per change. Check whether you count the statement's
+//     lowercase alphabet (d <= 26) as constant; if not the Dafny is
+//     O(n**2) worst case and the row is a translation defect.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 62, "data_dependent_loops": 0, "decreases_star":

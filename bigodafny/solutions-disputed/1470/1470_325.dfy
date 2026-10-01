@@ -4,24 +4,25 @@
 //   audited class  : O(n)
 //   cause          : translation
 //   confidence     : medium
-//   auditor        : labelaudit-r3d-04
+//   auditor        : labelaudit-r4-d02
 //
 //   The Python matches its label; the DAFNY does not. The label is right
 //   about the program it was measured on and the translation is the
 //   defect.
 //
 //   evidence:
-//     The Python runs `del l[0]` and `del l[-1]` in a while loop, and del
-//     l[0] shifts the whole list, so it is O(n**2) as labelled, but the
-//     Dafny walks two indices lo and hi over a_list without removing
-//     anything, so one pass is O(n).
+//     The Python's `del l[0]` shifts the remaining list on every pop,
+//     giving O(n**2) over up to n pops, as labelled. The Dafny keeps
+//     indices lo and hi into a_list with `lo := lo + 1` and never deletes,
+//     so its single loop is O(n); the translation replaced list deletion
+//     with pointer movement, which is the slicing shape. The Python's
+//     quadratic claim rests on del l[0] being a linear shift.
 //
 //   how this label could be wrong, and what to check:
-//     The label matches the Python's deletion from the front of a list.
-//     Check the Dafny `while lo <= hi && !stop` loop: it advances lo or
-//     retreats hi and never builds a shorter sequence; if the Python's del
-//     l[0] is considered quadratic, the translation avoided it by changing
-//     the representation.
+//     The label matches a Python that deletes from the front of a list
+//     with `del l[0]`, which is O(n) per call in CPython. Check that the
+//     Dafny uses lo/hi indices instead of removing elements; if so it
+//     never shifts anything and is linear.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 26, "data_dependent_loops": 1, "decreases_star":

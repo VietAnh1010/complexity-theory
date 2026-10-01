@@ -4,24 +4,24 @@
 //   audited class  : other
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r3d-02
+//   auditor        : labelaudit-r4-d01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Cost is O(sum over tests of (100 + N_t)): the outer loop is over
-//     |pairs|, the i and j loops are literal-bounded, and RepeatChar('9',
-//     x / 9) plus ParseDecimal cost the per-test value N_t, a value term
-//     the label does not account for. The Python builds str('9')*(x//9)
-//     and int() the same way, so the label is wrong, not quadratic.
+//     Solve loops over the tests once; inside, `while i < 100 - K` runs a
+//     literal 100 times with a j loop to K, and RepeatChar('9', x / 9)
+//     plus ParseDecimal cost O(N/9) per candidate, so the cost is linear
+//     in the number of tests times per-test value terms in N and K, not
+//     quadratic in anything. The Python pays the same ('9' * int(x // 9)
+//     and the range(j) loops), so the label is wrong.
 //
 //   how this label could be wrong, and what to check:
-//     The label claims quadratic in n, but I find only a loop over the
-//     test count whose body is bounded by literals (100-K, K+1) plus
-//     RepeatChar/ParseDecimal on x/9 with x derived from the per-test
-//     value N. Check that the inner loops never depend on pairs length and
-//     that N <= 150 only caps a value.
+//     The label seems to read the nested loops as quadratic in the number
+//     of tests. Check which loops are bounded by the test count: only
+//     `while idx < |pairs|` is, and everything inside is bounded by the
+//     per-test values N and K (and the literal 100).
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 73, "data_dependent_loops": 0, "decreases_star":

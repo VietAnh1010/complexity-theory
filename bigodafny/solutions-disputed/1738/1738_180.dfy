@@ -1,26 +1,27 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n**2)
-//   audited class  : other
+//   audited class  : O(n*m)
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r3d-05
+//   auditor        : labelaudit-r4-d02
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The Dafny builds test with c/a entries and then, for each of the c/b
-//     values of i, scans all of test, so the cost is O((c/a)*(c/b)), a
-//     product of input values rather than of input sizes. The Python's
-//     `i*b in test` over a list does the same linear scan, so the Python
-//     pays this value term as well and the label is wrong.
+//     Solve fills test with d = c / a entries, then for each of e = c / b
+//     values scans all of test (`while k < |test|`), so the cost is the
+//     product of two different value bounds, O(n*m) under the naming rule,
+//     not O(n**2). The Python does the same `i*b in test` list scan inside
+//     `for i in range(1, e+1)`, so the label is at fault.
 //
 //   how this label could be wrong, and what to check:
-//     The label names a size n that does not exist: the input is three
-//     integers n, m, z. Check the loop bounds d := c / a and e := c / b
-//     and the inner scan over test; if you treat z as the problem size the
-//     label might be read as a value-as-size case.
+//     The label squares one size, but the two nested loops run to
+//     different values c/a and c/b. Check that `while i <= d` fills test
+//     (length d = c/a) and the later `while i <= e` scans test for each of
+//     e = c/b iterations; two different value bounds multiply as n*m, not
+//     n squared.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 35, "data_dependent_loops": 0, "decreases_star":

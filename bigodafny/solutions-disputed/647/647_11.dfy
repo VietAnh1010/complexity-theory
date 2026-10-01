@@ -4,24 +4,25 @@
 //   audited class  : O(n)
 //   cause          : translation
 //   confidence     : high
-//   auditor        : labelaudit-r3-04
+//   auditor        : labelaudit-r4-d01
 //
 //   The Python matches its label; the DAFNY does not. The label is right
 //   about the program it was measured on and the translation is the
 //   defect.
 //
 //   evidence:
-//     The Dafny precomputes suffix sums in `total` in one O(n) loop, then
-//     the main loop reads total[i] in O(1) with O(1) seq updates, so it is
-//     O(n). The Python's sum(X[i:n]) per iteration is O(n**2) as labelled,
-//     so the Dafny replaced the algorithm with a faster one.
+//     The Python recomputes sum(X[i:n]) for every i (a slice copy plus
+//     sum, O(n) each), so it is O(n**2) as labelled. The Dafny fills
+//     total[i] = total[i+1] + a_list[i] once in a single backward loop and
+//     reuses it in the second loop, with O(1) seq updates, so it is O(n):
+//     the translation replaced the algorithm with a prefix-sum, landing a
+//     class faster.
 //
 //   how this label could be wrong, and what to check:
-//     The label was measured on a Python that calls sum(X[i:n]) inside the
-//     loop, which copies and sums n-i items each step, so the Python is
-//     quadratic. Open the Dafny and check that the first loop builds the
-//     suffix-sum seq `total` once with `total[i := total[i+1] +
-//     a_list[i]]`, and that the second loop only reads total[i] in O(1).
+//     The label was measured on a Python that evaluates `sum(X[i:n])`
+//     inside its loop, which is quadratic. Check that the Dafny replaces
+//     that with a precomputed suffix table `total` filled in a separate
+//     loop; if so the Dafny is a better class than the Python.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 33, "data_dependent_loops": 0, "decreases_star":

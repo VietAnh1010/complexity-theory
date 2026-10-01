@@ -4,22 +4,21 @@
 //   audited class  : O(nlogn)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-r3d-07
+//   auditor        : labelaudit-r4-d03
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Solve calls SumSeq (O(n)), SortInts (O(n log n)) and one loop of at
-//     most n steps with O(1) body, which is O(n log n); the Python does
-//     l.sort() and an identical single loop, so the n**2 label is wrong
-//     for both.
+//     Solve computes SumSeq in O(n), sorts with SortInts in O(n log n),
+//     then runs one `while i < n && !done` loop with O(1) work per step,
+//     so the class is O(nlogn), not O(n**2). The Python's sum(l), l.sort()
+//     and a single while loop give the same class.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes quadratic work, but the only superlinear step is
-//     one sort. Verify that SortInts(a_list) is the single O(n log n) call
-//     and the while loop over l runs at most n times with O(1) work; the
-//     Python has the same sort then a single while loop.
+//     The label assumes a quadratic cost, but the loop is a single
+//     early-exit pass after a sort. Check SortInts(a_list) and the `while
+//     i < n && !done` loop: sorting is the only superlinear step.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 53, "data_dependent_loops": 1, "decreases_star":

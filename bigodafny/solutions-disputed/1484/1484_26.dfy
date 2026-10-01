@@ -1,26 +1,27 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n)
-//   audited class  : other
+//   audited class  : O(n*m)
 //   cause          : label
-//   confidence     : high
-//   auditor        : main agent, override of labelaudit-r3d-04
+//   confidence     : medium
+//   auditor        : labelaudit-r4-d02
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Override of labelaudit-r3d-04's ok, which treated the statement's
-//     20-character cap as constant; the brief does not allow that. The
-//     machine-checked bound is 6 * |numbers| * MaxLen(numbers) + 4 *
-//     MaxLen(numbers) + 6, O(n * L), and the Python's max(l)/min(l)
-//     compare strings the same way, so O(n) omits the length term.
+//     Solve loops over n numbers and calls StringLess(best, numbers[idx])
+//     and StringLess(numbers[idx], worst) each iteration, each comparing
+//     strings up to their shared prefix (up to m), so n strings each
+//     scanned is O(n*m), not O(n). The Python max(l) and min(l) compare
+//     strings the same way. StringLess is in the prelude and was not read,
+//     hence medium.
 //
 //   how this label could be wrong, and what to check:
-//     The label counts the strings only. Each StringLess comparison walks
-//     the strings' common prefix, so the max/min pass costs n times the
-//     string length; check the proof in
-//     solutions-proved/value-bounded/1484/1484_26.dfy.
+//     The label counts only the n phone numbers, but each comparison reads
+//     the strings themselves. Check StringLess in the prelude: if it
+//     compares character by character, each of the n iterations costs up
+//     to the string length m, which is not constant by the naming rule.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 24, "data_dependent_loops": 1, "decreases_star":

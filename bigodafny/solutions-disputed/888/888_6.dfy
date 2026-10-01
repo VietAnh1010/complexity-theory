@@ -4,25 +4,23 @@
 //   audited class  : O(n)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-r3-fix
+//   auditor        : labelaudit-r4-d01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     ReverseSeq peels s[1..] with + [s[0]], which is O(|s|) by the
-//     recursion row, the Ans build is one pass, and in the main loop p and
-//     q never decrease (p advances in the inner while, q once per outer
-//     pass), giving O(n) total. The Python does the same single D[::-1]
-//     and two-pointer sweep, so it is linear and the O(n**2) label is
-//     wrong.
+//     doubled = a_list + a_list and ReverseSeq cost O(n), the Ans loop is
+//     O(n), and in the main loop p and q only move forward (each at most
+//     2n), so the Dafny is O(n). The Python does D+=D, D[::-1] and the
+//     same monotone two-pointer loop, so it is O(n) too and the O(n**2)
+//     label is wrong.
 //
 //   how this label could be wrong, and what to check:
-//     The label claims quadratic, but this is a two-pointer sweep where p
-//     and q only ever increase. Find the outer while with decreases twoN -
-//     q and the inner while advancing p; confirm each outer pass
-//     increments q (or exits) and the inner loop never resets p, then
-//     compare the Python's identical p and q updates.
+//     The label assumes nested passes over the months. Check the
+//     two-pointer loop `while p < twoN && q < twoN`: the inner while only
+//     advances p, and every outer iteration advances p or q, so total
+//     pointer movement is at most 4n; nothing is rescanned.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 65, "data_dependent_loops": 1, "decreases_star":

@@ -4,24 +4,24 @@
 //   audited class  : other
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r3-16
+//   auditor        : labelaudit-r4-d03
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Both loops are bounded by the value n but exit through flag at the
-//     first pair with i % j == 0 and i * j > n, which first occurs at i =
-//     floor(sqrt n) + 1, j = i, so the outer loop completes about sqrt(n)
-//     full inner passes of n steps each, about n**1.5 total; the Python
-//     has the same early-exit loops, so O(n**2) is a loose upper bound.
+//     Solve runs `while i <= n && !flag` with an inner `while j <= n &&
+//     !flag`; the first i that satisfies i*j > n with j | i is j = i near
+//     sqrt(n), so the cost is about sqrt(n) * n, i.e. n**1.5, which is
+//     outside the vocabulary and below O(n**2). The Python has the same
+//     loops with flag guards and no break, so the label overstates both.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes both loops run to n. Check the exit: the flag is
-//     set at the first (i, j) with j dividing i and i*j > n, and since j
-//     <= i this needs i > sqrt(n); work n = 100 by hand and count the
-//     inner iterations to see that only about sqrt(n) outer rounds each
-//     run the full inner loop.
+//     The label assumes both loops run to x. Check the exit: the inner
+//     loop `while j <= n && !flag` has no early break before flag is set,
+//     and flag is set first at i about sqrt(n) + 1 (where j = i gives i*j
+//     > n), so the outer loop stops after about sqrt(n) rounds of n steps
+//     each.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 32, "data_dependent_loops": 2, "decreases_star":

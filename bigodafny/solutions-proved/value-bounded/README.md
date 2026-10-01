@@ -1,6 +1,6 @@
 # `value-bounded/` — the label counts items, the code follows magnitudes
 
-**21 rows, each with a machine-checked proof.** Rows in the same category with
+**23 rows, each with a machine-checked proof.** Rows in the same category with
 **no** proof do not belong under a directory named `solutions-proved`; they are
 in `batches/value-bounded-open/`, which has its own README and manifest.
 
@@ -38,9 +38,10 @@ rows still live in `solutions/`, `solutions-disputed/` or wherever the
 partition puts them; `MANIFEST.jsonl` gives each one's `row` path. Nothing was
 taken out of the dataset.
 
-All twenty-one proved rows also sit in `solutions-disputed/`: `810_131`,
-`1484_26` and `2607_90` moved there on 2026-09-17, the other eighteen with the
-label re-audit r3 on 2026-10-01, which applies the value rule. Being here is
+All twenty-three proved rows also sit in `solutions-disputed/`: `810_131`,
+`1484_26` and `2607_90` moved there on 2026-09-17, eighteen with the label
+re-audit r3 on 2026-10-01, which applies the value rule, and `2942_55` and
+`305_284` with their re-translations the same day. Being here is
 not the same as being disputed: this directory says *the proof carries a value
 term*, the disputed queue says *somebody should change the label*.
 
@@ -179,3 +180,15 @@ helper its own steps, so they were re-proved charging Euclid's depth,
 bounds are loose: the running gcd only shrinks, so the depths telescope to
 `O(n + log max)` in total. That tighter bound still names a value.
 
+## Two rows arrived on 2026-10-01, from re-translations
+
+`2942_55`'s translation stored wins in a 2009-slot table the Python's dict
+lacks; that literal capped the `2**m` loop. It now uses a map and computes
+`2**m` by squaring, charged its depth. `305_284`'s translation replaced the
+Python's `for x in range(p, q)` search with a closed form; the loop is back.
+
+    2942_55    20*n + TokBits(transactions, n) + 10                   O(n)
+    305_284    2|c| + |d| + 3*(q - p) + 6                            O(n+m)
+
+`TokBits` sums the exponents' bit lengths: O(n log max m). `q - p` is
+`min(wrong) - max(right)`, a difference of input values.

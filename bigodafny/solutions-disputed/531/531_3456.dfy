@@ -4,23 +4,25 @@
 //   audited class  : O(1)
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r3d-02
+//   auditor        : labelaudit-r4-d01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Solve loops a literal `while i < 5` and scans each row with
-//     AllSame3456 and IndexOf1From3456, but the statement fixes a 5x5
-//     matrix, so row width is constant. The Python is the same fixed 5-row
-//     loop with a set() and index() over 5 items, so the label is wrong,
-//     not the translation.
+//     Solve loops `while i < 5`, a literal bound, and each
+//     AllSame3456/IndexOf1From3456 call scans one row of a matrix the
+//     description fixes at 5 x 5 (24 zeroes and a single one), so no input
+//     size enters the cost: O(1). The Python also loops range(0,5) over
+//     rows of five items, so the label is wrong rather than the
+//     translation.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes the matrix size varies. Open the description: it
-//     says exactly five lines of five integers, so the loop to 5 and the
-//     row scans are bounded by the problem, not by n. If a reviewer finds
-//     the signature intends a variable width, the label stands.
+//     The label assumes a size n that the input varies. Check the
+//     statement: the matrix is always 5x5 and the loop bound is the
+//     literal 5, so if no input dimension can change, the cost is
+//     constant; if row width were allowed to vary, O(n) in the row width
+//     could stand.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 40, "data_dependent_loops": 1, "decreases_star":

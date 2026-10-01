@@ -63,24 +63,54 @@ lemma SortElemsRI(s: seq<(real, int)>, less: ((real, int), (real, int)) -> bool)
   }
 }
 
-// n * (n + 5) + n * (n + 8) == 2 * n * n + 13 * n, isolated so Solve's
-// verification condition never has to discover it
-lemma TwoLoops514(n: nat)
-  ensures n * (n + 5) + n * (n + 8) == 2 * n * n + 13 * n
+// Pow2_140's recursion depth: one level per halving of e.
+ghost function Pow2Depth(e: nat): nat
+  decreases e
 {
+  if e == 0 then 1 else 1 + Pow2Depth(e / 2)
+}
+
+lemma Pow2DepthBound(e: nat)
+  ensures Pow2Depth(e) <= CeilLog2(e + 1) + 1
+  decreases e
+{
+  if e > 0 {
+    Pow2DepthBound(e / 2);
+    assert (e + 2) / 2 == e / 2 + 1;
+  }
+}
+
+// a call with 0 <= e < n costs at most CeilLog2(n) + 1
+lemma Pow2DepthWithin(e: nat, n: nat)
+  requires e < n
+  ensures Pow2Depth(e) <= CeilLog2(n) + 1
+{
+  Pow2DepthBound(e);
+  CeilLog2Monotone(e + 1, n);
+}
+
+// n * K1 + n * K2 == 2 * NLogN(n) + 12 * n, isolated so Solve's
+// verification condition never has to discover it
+lemma TwoLoops514(n: nat, K1: nat, K2: nat)
+  requires K1 == CeilLog2(n) + 5 && K2 == CeilLog2(n) + 9
+  ensures n * K1 + n * K2 == 2 * NLogN(n) + 12 * n
+{
+  reveal NLogN();
+  assert n * K1 == n * (CeilLog2(n) + 1) + 4 * n;
+  assert n * K2 == n * (CeilLog2(n) + 1) + 8 * n;
 }
 
 method {:vcs_split_on_every_assert} Solve(n: int, total_score: int, scores: seq<int>) returns (output: string, ghost steps: nat)
   requires n >= 0
   requires |scores| == n
-  ensures steps <= 2 * n * n + 2 * NLogN(n) + 13 * n + 4
+  ensures steps <= 4 * NLogN(n) + 12 * n + 4
 {
   var l := total_score;
   var p := scores;
   var idx := 0;
   var ratios: seq<(real, int)> := [];
   steps := 1;
-  ghost var K1: nat := n + 5;
+  ghost var K1: nat := CeilLog2(n) + 5;
   while idx < n
     invariant 0 <= idx <= n
     invariant |ratios| == idx
@@ -88,9 +118,9 @@ method {:vcs_split_on_every_assert} Solve(n: int, total_score: int, scores: seq<
     invariant steps <= 1 + idx * K1
     decreases n - idx
   {
-    // Pow2_140(idx) recurses idx times: charged its depth, idx + 1
-    assert (idx + 1) + 4 <= K1;
-    steps := steps + (idx + 1) + 4;
+    // Pow2_140(idx) is charged its recursion depth
+    Pow2DepthWithin(idx, n);
+    steps := steps + Pow2Depth(idx) + 4;
     var r := (p[idx] as real) / (Pow2_140(idx) as real);
     ratios := ratios + [(r, idx + 1)];
     CostMulDistrib(idx, 1, idx + 1, K1);
@@ -103,7 +133,7 @@ method {:vcs_split_on_every_assert} Solve(n: int, total_score: int, scores: seq<
   assert |d| == n;
   assert steps <= 1 + n * K1 + SortCost(n);
   ghost var base := steps;
-  ghost var K2: nat := n + 8;
+  ghost var K2: nat := CeilLog2(n) + 9;
   SortElemsRI(ratios, lessFn);
   assert forall x :: x in d ==> 1 <= x.1 <= n;
   var res := 1000000000000000000;
@@ -126,8 +156,9 @@ method {:vcs_split_on_every_assert} Solve(n: int, total_score: int, scores: seq<
       res := if curres < res then curres else res;
       doneFlag := true;
     } else {
-      // Pow2_140(idxPos - 1) recurses idxPos - 1 <= n - 1 times
-      steps := steps + idxPos;
+      // Pow2_140(idxPos - 1) is charged its recursion depth
+      Pow2DepthWithin(idxPos - 1, n);
+      steps := steps + Pow2Depth(idxPos - 1);
       var pw := Pow2_140(idxPos - 1);
       var curb := q / pw;
       curres := curres + curb * p[idxPos - 1];
@@ -136,7 +167,7 @@ method {:vcs_split_on_every_assert} Solve(n: int, total_score: int, scores: seq<
       q := q % pw;
     }
     steps := steps + 8;
-    assert steps <= s0 + n + 8;
+    assert steps <= s0 + K2;
     CostMulDistrib(k, 1, k + 1, K2);
     k := k + 1;
   }
@@ -144,16 +175,20 @@ method {:vcs_split_on_every_assert} Solve(n: int, total_score: int, scores: seq<
   CostMulMonoLeft(k, n, K2);
   assert steps <= base + n * K2;
   assert base <= 1 + n * K1 + 2 * NLogN(n) + 1;
-  TwoLoops514(n);
-  assert steps <= 2 + n * K1 + n * K2 + 2 * NLogN(n);
+  TwoLoops514(n, K1, K2);
+  assert steps <= 2 + 4 * NLogN(n) + 12 * n;
   output := IntToString(res) + "\n";
   steps := steps + 2;
 }
 
+// 2**e by squaring: depth log e, as Python's ** is one operation
 function Pow2_140(e: int): int
   requires e >= 0
   ensures Pow2_140(e) >= 1
   decreases e
 {
-  if e == 0 then 1 else 2 * Pow2_140(e - 1)
+  if e == 0 then 1
+  else
+    var h := Pow2_140(e / 2);
+    if e % 2 == 0 then h * h else 2 * h * h
 }

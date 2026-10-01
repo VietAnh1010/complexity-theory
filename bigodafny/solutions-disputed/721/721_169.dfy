@@ -1,27 +1,27 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n**2)
-//   audited class  : other
+//   audited class  : O(n*m)
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r3d-02
+//   auditor        : labelaudit-r4-d01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Cost is O(sum of the per-test n_i): for each nv the Dafny builds
-//     Repeat("9", cnt9) + Repeat("8", cnt8), linear in nv, inside a loop
-//     over the tests. The Python's list multiplication and join are also
-//     linear in n, so no construct is quadratic and the per-test value
-//     term is not in the label's variables.
+//     Solve loops over the tests once; per test, Repeat("9", cnt9) +
+//     Repeat("8", cnt8) builds nv digits, so the cost is tests times the
+//     per-test length, O(n*m) under the naming rule, not O(n**2). The
+//     Python builds ['9'] * (n - ceil(n/4)) and joins it, the same linear
+//     cost per test. If nv is read as a value rather than a size the class
+//     would be other.
 //
 //   how this label could be wrong, and what to check:
-//     The label claims quadratic but nothing is quadratic: each test
-//     builds Repeat("9", cnt9) + Repeat("8", cnt8) whose length is the
-//     per-test value nv. Check the Python's `['9'] * (n - ceil(n/4))` and
-//     `''.join(s)`, both linear in that n, and that the per-test n is a
-//     value, not a count.
+//     The label looks for quadratic work, but the loop runs once per test
+//     and builds a string of nv digits. Check Repeat("9", cnt9) and
+//     Repeat("8", cnt8): they cost the per-test digit count nv, and
+//     nothing nests inside another loop over the same size.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 24, "data_dependent_loops": 0, "decreases_star":

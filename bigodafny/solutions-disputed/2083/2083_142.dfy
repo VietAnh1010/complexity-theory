@@ -4,23 +4,23 @@
 //   audited class  : O(nlogn)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-r3d-06
+//   auditor        : labelaudit-r4-d02
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Segment building appends O(1) per element, and each run longer than
-//     k is sorted in O(len log len) and summed by SumSeq, so the total is
-//     O(n log n); the Python sorts the same runs, so the O(n**2) label
-//     matches neither.
+//     The first loop builds segments in O(n) with O(1) appends, then for
+//     each segment Sort(segv, ...) costs O(len log len) and SumSeq O(len);
+//     the lengths sum to |d|, so the total is O(nlogn), not O(n**2). The
+//     Python's sorted(seg, reverse=True)[:k] and sum(seg) on the same
+//     segments give the same class.
 //
 //   how this label could be wrong, and what to check:
-//     The label O(n**2) assumes quadratic work, but the Dafny's loops are
-//     one pass over |s| building segments and one pass over segments,
-//     where each segment is sorted once (`Sort(segv, ...)`) and summed.
-//     Check that segment sizes sum to n, so the sorts total O(n log n);
-//     the Python does the same `sorted(seg, reverse=True)` per run.
+//     The label assumes a quadratic cost, but the only superlinear work is
+//     sorting segments. Check the Sort call on segv: the segment lengths
+//     sum to n, so sorting each costs the sum of len*log(len), at most n
+//     log n, and SumSeq of a segment is linear.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 44, "data_dependent_loops": 0, "decreases_star":

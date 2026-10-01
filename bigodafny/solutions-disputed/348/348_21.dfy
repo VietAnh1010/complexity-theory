@@ -4,23 +4,25 @@
 //   audited class  : O(n**2)
 //   cause          : translation
 //   confidence     : high
-//   auditor        : labelaudit-r3d-01
+//   auditor        : labelaudit-r4-d01
 //
 //   The Python matches its label; the DAFNY does not. The label is right
 //   about the program it was measured on and the translation is the
 //   defect.
 //
 //   evidence:
-//     Solve calls the hand-written recursive ContainsInt over the growing
-//     source and dest seqs on every edge, O(i) per iteration and O(n**2)
-//     total, where the Python's set lookups are O(1); the data structure
-//     was replaced.
+//     The Python tests `s in source or d in dest` on sets (O(1)) so it is
+//     O(n) as labelled, but the Dafny keeps source and dest as seq<int>
+//     and calls the hand-written recursion ContainsInt, which costs
+//     O(|xs|) per call inside the loop over n edges, giving O(n**2). A
+//     data structure was replaced by a linear search, which is an
+//     algorithm change, not a container-update difference.
 //
 //   how this label could be wrong, and what to check:
-//     The label matches the Python's set membership (O(1) per edge), but
-//     the Dafny replaces the set with sequences. Check ContainsInt(source,
-//     s) and ContainsInt(dest, d) in Solve versus the Python's `s in
-//     source` and `d in dest` on sets.
+//     The label was measured on a Python that keeps source and dest in
+//     Python sets (O(1) membership). Check that the Dafny replaced them
+//     with seqs searched by ContainsInt; if so each of the n iterations
+//     scans a growing list and the Dafny is quadratic.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 38, "data_dependent_loops": 0, "decreases_star":

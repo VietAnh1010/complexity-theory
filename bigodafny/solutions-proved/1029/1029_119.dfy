@@ -16,20 +16,10 @@
 include "../../prelude.dfy"
 import opened Prelude
 
-function BitOr(a: int, b: int): int
-  requires a >= 0 && b >= 0
-  decreases a + b
-  ensures BitOr(a, b) >= 0
-{
-  if a == 0 then b
-  else if b == 0 then a
-  else 2 * BitOr(a / 2, b / 2) + (if a % 2 == 1 || b % 2 == 1 then 1 else 0)
-}
-
 
 method Solve(n: int, a_list: seq<int>, b_list: seq<int>) returns (output: string, ghost steps: nat)
-  requires forall i :: 0 <= i < |a_list| ==> a_list[i] >= 0
-  requires forall i :: 0 <= i < |b_list| ==> b_list[i] >= 0
+  requires forall k :: 0 <= k < |a_list| ==> 0 <= a_list[k] < 0x1_0000_0000_0000_0000
+  requires forall k :: 0 <= k < |b_list| ==> 0 <= b_list[k] < 0x1_0000_0000_0000_0000
   ensures steps <= 2 * |a_list| + 2 * |b_list| + 3
 {
   steps := 1;
@@ -37,7 +27,7 @@ method Solve(n: int, a_list: seq<int>, b_list: seq<int>) returns (output: string
   var i := 0;
   while i < |a_list|
     invariant 0 <= i <= |a_list|
-    invariant f1 >= 0
+    invariant 0 <= f1 < 0x1_0000_0000_0000_0000
     invariant steps == 2 * i + 1
     decreases |a_list| - i
   {
@@ -49,7 +39,7 @@ method Solve(n: int, a_list: seq<int>, b_list: seq<int>) returns (output: string
   i := 0;
   while i < |b_list|
     invariant 0 <= i <= |b_list|
-    invariant f2 >= 0
+    invariant 0 <= f2 < 0x1_0000_0000_0000_0000
     invariant steps == 2 * |a_list| + 2 * i + 1
     decreases |b_list| - i
   {

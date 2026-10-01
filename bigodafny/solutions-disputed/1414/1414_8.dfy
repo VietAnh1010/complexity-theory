@@ -3,25 +3,24 @@
 //   stated label   : O(n)
 //   audited class  : O(n*m)
 //   cause          : label
-//   confidence     : medium
-//   auditor        : labelaudit-r3-07
+//   confidence     : high
+//   auditor        : labelaudit-r4-d02
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Solve loops over strings and calls SolveOne, which counts characters
-//     and then scans a with a second while loop, so cost is the sum of the
-//     string lengths, O(n*m) for n tests of length m. The Python's
-//     solve(n, a) does the same two passes per test, so the label O(n)
-//     undercounts for both.
+//     Solve loops over |strings| and each SolveOne call makes two linear
+//     passes over its string a, with SortInts([cntA, cntB, cntC]) on three
+//     counters, so n strings each scanned is O(n*m) under the naming rule,
+//     not O(n). The Python solve() also loops range(n) per string, so the
+//     label names the wrong sizes.
 //
 //   how this label could be wrong, and what to check:
-//     The label's n is the test count (the signature's n and |strings|),
-//     but each iteration of the Solve loop runs SolveOne, which scans the
-//     whole string with two O(m) loops. Check the statement: 2 <= |a| <=
-//     50 is a cap, and a statement cap does not make m constant; if the
-//     label's n is meant as total characters read, it stands.
+//     The label treats n as one size, but Solve receives n separate
+//     strings. Check SolveOne: each call scans its own string a (`while i
+//     < m`, `while j < m`), so the cost is the number of strings times
+//     their length; the 3-element SortInts is constant.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 75, "data_dependent_loops": 1, "decreases_star":

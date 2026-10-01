@@ -4,21 +4,22 @@
 //   audited class  : other
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-r3d-01
+//   auditor        : labelaudit-r4-d01
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Solve runs a linear pass and then for each element a_i another loop
-//     to a_i/2, so cost is O(n * max a_i) with a value term, not O(n**2);
-//     the Python has the same inner range(2, x // 2 + 1).
+//     The outer loop runs |a_list| times and the inner loop `while y <= x
+//     / 2` runs to half of the element value x, so the cost is O(n * max
+//     a_i), a value term the label's variables do not account for; the cap
+//     1 <= a_i <= 100 is a statement cap, not a source literal. The Python
+//     has the same range(2, x // 2 + 1) loop.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes two input-size loops, but the inner loop runs to
-//     x/2 where x is the VALUE a_i. Check `while y <= x / 2` in Solve and
-//     the Python's range(2, x // 2 + 1); the statement caps a_i at 100 but
-//     that is not a literal in the source.
+//     The label reads the nested loops as two list-size loops. Check the
+//     inner `while y <= x / 2` loop: its bound is the element value x, not
+//     a list length, so the label's n does not account for it.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 39, "data_dependent_loops": 0, "decreases_star":

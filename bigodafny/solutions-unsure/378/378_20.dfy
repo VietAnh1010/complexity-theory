@@ -1,27 +1,26 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n*m)
-//   audited class  : O(n)
-//   cause          : label
+//   audited class  : O(n*m)
+//   cause          : unclear
 //   confidence     : low
-//   auditor        : labelaudit-r3d-01
+//   auditor        : main agent, override of labelaudit-r4-u01
 //
-//   The PYTHON is not the labelled class either. BigOBench's label looks
-//   wrong; the translation is faithful to it.
+//   Which of the label or the translation is at fault was not determined
+//   by the audit.
 //
 //   evidence:
-//     Solve loops over the pairs twice with O(1) map operations and two
-//     ParseInt calls per row, costing O(digits) each; with fixed width-2
-//     rows and short tokens the cost is O(n), but the label's m might name
-//     token length.
+//     Override of labelaudit-r4-u01's ok, which rests only on charging
+//     ParseInt per character of each numeral token; the pairs rows are
+//     short numerals and no other construct walks a width, so the class
+//     depends on the open ParseInt charge.
 //
 //   how this label could be wrong, and what to check:
-//     The label may be right if m is the digit length of each colour
-//     token, since ParseInt scans every character of pairs[idx][0] and
-//     pairs[idx][1]; or wrong if m is meant as row width (always 2).
-//     Decide what m denotes by checking the statement (two numbers per
-//     line, each at most 10^5, so at most six characters) and
-//     ParseIntFrom's recursion.
+//     The verdict turns on whether a numeral token's width is a size. The
+//     brief charges ParseInt its argument's length; the proofs (378_91,
+//     976_1131) charge it 1, as IntToString is. Settle the ParseInt charge
+//     in COMPLEXITY.md, then re-file: width as a size gives O(n*m), a
+//     machine-word token gives O(n).
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 48, "data_dependent_loops": 0, "decreases_star":

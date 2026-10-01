@@ -3,25 +3,27 @@
 //   stated label   : O(n**2)
 //   audited class  : O(n)
 //   cause          : translation
-//   confidence     : high
-//   auditor        : labelaudit-r3d-02
+//   confidence     : medium
+//   auditor        : labelaudit-r4-d01
 //
 //   The Python matches its label; the DAFNY does not. The label is right
 //   about the program it was measured on and the translation is the
 //   defect.
 //
 //   evidence:
-//     The Python calls Valid for each i, and each call loops i times
-//     (recomputing the prefix and sum(l)), which is O(n**2) as labelled.
-//     The Dafny hoists sum into `total` and keeps a running prefix s in
-//     one loop over a_list, which is O(n): the algorithm was replaced by a
-//     faster single pass.
+//     The Python's `for i in range(len(l))` calls Valid, whose own loop
+//     runs k < i times with sum(l) evaluated inside, so it is at least
+//     quadratic (cubic when the range tests pass); the Dafny computes
+//     `total` once and runs one `while p < |a_list| && !found` scan, which
+//     is O(n). The repeated-call structure was replaced by a single pass;
+//     if the Python is cubic then neither matches, so the cause lean is
+//     translation.
 //
 //   how this label could be wrong, and what to check:
-//     The label comes from the Python's `for i in range(len(l))` calling
-//     Valid(l, i, x, y), which re-sums a prefix of length i each time (and
-//     sum(l) inside the check). Check that the Dafny computes `total` once
-//     and a running prefix `s` in a single loop with no nested pass.
+//     The label matches a Python that calls Valid(l, i, x, y) for each i,
+//     each looping over k items (quadratic, and sum(l) inside the loop can
+//     make it worse). Check that the Dafny instead sums once into `total`
+//     and does a single scan; if so it is a class faster than the Python.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 30, "data_dependent_loops": 1, "decreases_star":

@@ -1,29 +1,26 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n)
-//   audited class  : O(n)
+//   audited class  : O(n*m)
 //   cause          : unclear
 //   confidence     : low
-//   auditor        : labelaudit-r3-05
+//   auditor        : main agent, override of labelaudit-r4-u01
 //
 //   Which of the label or the translation is at fault was not determined
 //   by the audit.
 //
 //   evidence:
-//     Per cell the Dafny pays O(len(cell)) in DigitRunLen, ParseInt and
-//     LettersToNum and O(log26 col) in NumToLetters, and the Python g and
-//     f lambdas pay the same, so the total is O(sum of cell lengths)
-//     rather than strictly O(n); the cap makes each term tiny, so I lean
-//     to O(n).
+//     Override of labelaudit-r4-u01's mismatch: each cell string (e.g.
+//     R23C55) encodes two machine-word numbers, and FirstDigitIndex,
+//     DigitRunLen, ParseInt and LettersToNum walk it; whether that width
+//     is a size is the open ParseInt question, so the verdict waits on it.
 //
 //   how this label could be wrong, and what to check:
-//     The label O(n) counts cells but each cell's processing depends on
-//     its own text. Find NumToLetters, which recurses on the numeric
-//     column value (depth log base 26), and ParseInt and DigitRunLen,
-//     which scan the cell's characters. The statement caps coordinates at
-//     10^6, so each term is at most about 14 characters; decide whether
-//     that per-cell width counts as a constant or as a missing value or
-//     width parameter.
+//     The verdict turns on whether a numeral token's width is a size. The
+//     brief charges ParseInt its argument's length; the proofs (378_91,
+//     976_1131) charge it 1, as IntToString is. Settle the ParseInt charge
+//     in COMPLEXITY.md, then re-file: width as a size gives O(n*m), a
+//     machine-word token gives O(n).
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 85, "data_dependent_loops": 0, "decreases_star":

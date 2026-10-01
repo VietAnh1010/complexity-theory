@@ -4,24 +4,23 @@
 //   audited class  : other
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r3d-07
+//   auditor        : labelaudit-r4-d03
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The outer loop runs n-1 times and the inner `while j < hi` runs up
-//     to min(b, y1) - a iterations, with a final loop from y0 to y1, so
-//     the cost is O(n * y1 + y1), a value term in the segment endpoints
-//     rather than n**2. The Python's `for j in range(a, min(b, y[1]))`
-//     pays the same, so the label is the cause.
+//     Solve loops over the n-1 intervals and for each the inner `while j <
+//     hi` marks coordinates a..min(b, y1) with O(1) seq updates; there are
+//     also seq(sz) and a final scan to y1. The cost is O(n * y1 + y1), a
+//     value term in the coordinate range, not n squared. The Python's
+//     range(a, min(b, y[1])) loop and list(range(y[1])) pay the same.
 //
 //   how this label could be wrong, and what to check:
-//     The label claims n squared, but the cost is n times the interval
-//     length (a coordinate VALUE) plus the length of Alexey's segment.
-//     Check the inner `while j < hi` loop: its bound is min(b, y1) - a,
-//     taken from input values, not from n; the statement's cap of 100 does
-//     not make it a source literal.
+//     The label reads the nested loops as n by n, but the inner loop
+//     `while j < hi` runs over the coordinate range a to min(b, y1), an
+//     input VALUE span, not over n. Check the statement for the coordinate
+//     cap and compare with the interval count.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 45, "data_dependent_loops": 0, "decreases_star":

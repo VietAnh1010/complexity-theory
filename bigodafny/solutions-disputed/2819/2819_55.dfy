@@ -1,27 +1,26 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n**2)
-//   audited class  : other
+//   audited class  : O(n*m)
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r3d-08
+//   auditor        : labelaudit-r4-d03
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     For each pair row, Solve allocates buf of size nn, walks i down from
-//     nn-2 once, and the inner `while kk > 0` loop runs only at the found
-//     position, so each test is O(nn) and the whole is O(sum nn_i), a
-//     per-test value term. The Python's ['a']*n, zip loop with break, and
-//     print(*ans) cost the same, so the O(n**2) label is wrong.
+//     Per test the Dafny fills buf (nn cells), scans i from nn-2 down with
+//     at most nn steps, runs the inner `while kk > 0` once for at most nn
+//     steps, and copies buf[0..sz], so each test costs O(nn) and the total
+//     over the test list is O(n*m), not O(n**2). The Python's ['a']*n, the
+//     zip loop and the one while k loop pay the same.
 //
 //   how this label could be wrong, and what to check:
-//     The label treats n as if each test cost quadratic. Check the loop in
-//     Solve: per test the `while i >= 0 && !found` loop runs at most nn
-//     iterations and the inner `while kk > 0` runs once (found is then
-//     set), so cost per test is linear in that test's nn; the total is
-//     O(sum of the per-test n_i), not O(n**2) in the test count.
+//     The label squares one size, but the loops are per test and linear in
+//     that test's n. Check that the array fill `while z < sz`, the scan
+//     `while i >= 0 && !found` and the inner `while kk > 0` are sequential
+//     or bounded by nn, and none runs to nn inside another loop to nn.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 53, "data_dependent_loops": 1, "decreases_star":

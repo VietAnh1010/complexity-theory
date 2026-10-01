@@ -2,25 +2,28 @@
 //
 //   stated label   : O(n**2)
 //   audited class  : other
-//   cause          : label
-//   confidence     : medium
-//   auditor        : labelaudit-r3d-05
+//   cause          : both
+//   confidence     : low
+//   auditor        : labelaudit-r4-d02
 //
-//   The PYTHON is not the labelled class either. BigOBench's label looks
-//   wrong; the translation is faithful to it.
+//   The Python does not match the label AND the translation diverges
+//   from the Python. Both need attention.
 //
 //   evidence:
-//     The Dafny inner loop adds one element to S per iteration, so it runs
-//     at most O(min(sum, limit)) times in total, each calling Pow2(xx)
-//     whose recursion costs only xx, a geometric-weighted sum that stays
-//     O(limit). No construct is quadratic, and the Python's identical
-//     while loop with 2 ** x is linear in the same values.
+//     Solve takes two integers and its loops run to log l and to the
+//     number of elements added (bounded by the values s and l), each
+//     iteration calling the recursive Pow2, whose depth is the exponent,
+//     so the cost is a value term like O(s log l), not O(n**2). The Python
+//     uses 2 ** x as one operation, so the Dafny's extra Pow2 recursion is
+//     a reimplemented-library overhead; the true class is outside the
+//     vocabulary.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes quadratic growth in a size n, but the input is two
-//     values (sum, limit). Check how many times the innermost while loop
-//     runs: each pass appends one element of S, and the output size is at
-//     most limit, so the cost is linear in the values.
+//     The label names a size n, but the signature has only two values s
+//     and l and no collection. Check Pow2 (recursion on the exponent)
+//     called inside `while Pow2(xx) <= ss && aa * Pow2(xx) <= l`: each
+//     call costs its exponent depth, and the loop appends up to s/2^xx
+//     items per level.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 44, "data_dependent_loops": 2, "decreases_star":

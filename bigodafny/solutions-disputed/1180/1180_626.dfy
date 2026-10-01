@@ -4,25 +4,23 @@
 //   audited class  : O(n+mlogm)
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r3-06
+//   auditor        : labelaudit-r4-d02
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The while loop advances l_left (m times) or d_left (at most n times)
-//     at O(1) each with seq update charged 1, then Sort is applied only to
-//     lst of size m, so cost is n + m log m, which is a lower rank than
-//     (n+m)log(n+m) when n dominates. The Python sorted(lst) sorts the
-//     same m-element list, so the label is wrong for both programs.
+//     The while loop advances either l_left (m letters) or d_left (at most
+//     n dormitories) so it is O(n+m), and Sort(lst, ...) sorts only the m
+//     answer pairs in O(m log m), giving O(n+mlogm), below the labelled
+//     (n+m)log(n+m). The Python's sorted(lst) also sorts m entries, so the
+//     label overstates the original too.
 //
 //   how this label could be wrong, and what to check:
-//     The label claims an (n+m)log(n+m) term, but only the list of m
-//     letter results is sorted, so the n dormitories should contribute
-//     only linearly. Open Solve and find the Sort call: check that its
-//     argument lst has one entry per letter (appended once per l_left
-//     step) and that the dorm loop never feeds into a sort; if lst could
-//     hold n entries the label stands.
+//     The label applies a log factor to the combined size, but only the m
+//     letter records are sorted. Check the Sort call on lst: its length is
+//     m (one entry per letter), while the dormitory array of length n is
+//     only walked by the d_left pointer.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 51, "data_dependent_loops": 0, "decreases_star":

@@ -4,22 +4,22 @@
 //   audited class  : O(n*m)
 //   cause          : label
 //   confidence     : high
-//   auditor        : labelaudit-r3d-08
+//   auditor        : labelaudit-r4-d03
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The outer loop runs over the n floor rows and the inner `while i < 2
-//     * m` loop runs m times per row, so the cost is O(n*m). The Python
-//     parses each row of 2m ints and runs a generator over range(0, m*2,
-//     2), paying the same, so the O(n) label omits m.
+//     Solve loops over the |v_3| floors and, for each, runs `while i < 2 *
+//     m` in steps of 2, so the cost is n floors times m window pairs,
+//     O(n*m), not O(n). The Python's sum(min(1, windows[i]+windows[i+1])
+//     for i in range(0, m*2, 2)) inside `for _ in range(n)` pays the same.
 //
 //   how this label could be wrong, and what to check:
-//     The label counts only the floors. Check the inner `while i < 2 * m`
-//     loop in Solve: it runs m times for each of the n rows, and the
-//     Python does `sum(... for i in range(0, m*2, 2))` for each row; m is
-//     up to 100 but a cap does not make it constant.
+//     The label counts rows only, but each row is walked over its 2*m
+//     windows. Check `while i < 2 * m` inside `while r < |v_3|`: the inner
+//     loop runs m times per row, so rows times columns, two different
+//     sizes.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 26, "data_dependent_loops": 0, "decreases_star":
