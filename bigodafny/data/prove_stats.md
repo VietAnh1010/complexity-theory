@@ -283,7 +283,7 @@ pushes the rate down for reasons unrelated to the agents.
 
 ## What this does not measure
 
-- **Only `solutions/`.** The 127 unscreened and 157 disputed rows have
+- **Only `solutions/`.** The 127 unscreened and 202 disputed rows have
   never been drawn. Nothing here generalises to them.
 - **A bounded agent, not the problem.** `unresolved` means 3 attempts
   and 5 minutes were not enough, not that the row cannot be proved.

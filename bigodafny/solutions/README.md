@@ -18,9 +18,9 @@ directories name work that is pending or disputed:
 
 ## Current checks
 
-All 344 files pass `dafny verify`; ten still use `decreases *`, so they are not
+All 299 files pass `dafny verify`; seven still use `decreases *`, so they are not
 termination proofs for every input. Complexity labels are proved only by the
-304 files in `solutions-proved/`.
+323 files in `solutions-proved/`.
 
 The cost model is the stipulated model in `COMPLEXITY.md`, not the implementation
 cost of a particular Dafny backend. Sequence updates, map updates, and set
