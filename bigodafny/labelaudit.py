@@ -217,20 +217,16 @@ def apply(verdicts_path, dry_run=False):
         log(f"  {sid:>10}  {t['time_complexity_inferred']:>14} -> "
             f"{v.get('true_class'):<14} cause={v.get('cause')}")
     if not dry_run:
-        # MERGE, never overwrite. These files are the provenance of every move
-        # ever made, and apply runs once per wave: a plain write silently
-        # replaced round 1's 140 verdicts and 46 move records with round 2's,
-        # which is a deletion of the audit trail rather than an update.
-        # Keyed on solution_id so a re-audited row updates in place.
-        def merge(path, new_rows, key="sid"):
-            old = {r.get(key) or r.get("solution_id"): r
-                   for r in read_jsonl(path)} if path.exists() else {}
-            old.update({r.get(key) or r.get("solution_id"): r for r in new_rows})
-            write_jsonl(path, list(old.values()))
-            return len(old)
-        n_v = merge(DATA / "label_audit.jsonl", verdicts)
-        n_m = merge(DATA / "label_audit_moved.jsonl", moved)
-        log(f"audit trail: {n_v} verdicts, {n_m} moves on record")
+        # MERGE, never overwrite. This file is the provenance of every verdict,
+        # and apply runs once per wave: a plain write silently replaced round
+        # 1's 140 verdicts with round 2's, a deletion of the audit trail rather
+        # than an update. Keyed on solution_id so a re-audited row updates in
+        # place. The moved rows are its `mismatch` verdicts; no second file.
+        path = DATA / "label_audit.jsonl"
+        old = {r["sid"]: r for r in read_jsonl(path)} if path.exists() else {}
+        old.update({r["sid"]: r for r in verdicts})
+        write_jsonl(path, list(old.values()))
+        log(f"audit trail: {len(old)} verdicts on record")
     log(f"apply: {len(moved)} moved to solutions-disputed/, {kept} kept"
         + (f", {len(missing)} not found: {missing}" if missing else "")
         + ("  [DRY RUN]" if dry_run else ""))
