@@ -37,6 +37,12 @@ for provenance, but they are not operational instructions.
 The status directories are the source of truth for a row's current state. Do
 not infer state from an old campaign result or commit message.
 
+`data/label_audit.jsonl` is a snapshot from 2026-09-16, the day before input
+values became cost parameters (`COMPLEXITY.md` § 1). Some `ok` verdicts treat a
+capped value as constant; 20 rows it calls `ok` now have a proof that disagrees.
+For a proved row, the reviewed relation in a campaign's `label_relation.jsonl`
+takes precedence over its audit verdict.
+
 ## Status directories
 
 | Directory | Meaning |
