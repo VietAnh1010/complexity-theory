@@ -120,9 +120,10 @@ original Python fails a byte-diff against it. Use `difftest.py` there.
 - **Never let an agent edit a gate it is judged by.** One cut difftest's
   reference-Python budget from 30s to 10s inside an otherwise-real fix; slow rows
   would have dropped out of the comparison, passing more rows by checking fewer.
-- **`validate.py --only <ids>` overwrites `data/validation.jsonl`** with only
-  those rows. `dataset.py` then reports 4 valid translations instead of 529.
-  Pass `--out-prefix` on any partial run; restore from git if it happens.
+- **A subset run never replaces a shared record.** `validate.py --only` or
+  `--solutions-dir` always writes `data/<prefix>validation.jsonl` (default
+  `partial_`); only a full run writes `data/validation.jsonl`. Once, an
+  unguarded `--only` left that file holding 4 rows instead of 529.
 - **A row's file is its status.** Move it; do not annotate and leave it.
 
 ## Running work
@@ -158,8 +159,7 @@ Sub-skills: `bigodafny-translate`, `bigodafny-verify`, `bigodafny-prove`.
   that, every fact about a sequence's contents was lost across a sort and rows
   hand-wrote the same lemma over and over.
 - **Both remaining gates resolve a row to the wrong file.** `validate.py` and
-  `difftest.py` scan `SOLUTIONS, INEXACT, UNVERIFIED, VERIFIED` and take the
-  first hit, so for a row that also sits in `solutions-proved/` they test the
+  `difftest.py` search `solutions/` first and take the first hit, so for a row that also sits in `solutions-proved/` they test the
   uninstrumented original. `precheck.py` had the identical bug and was fixed
   with `find_all()`; the fix never reached the other two. Use
   `validate.py --solutions-dir solutions-proved`, and for `loose` rows compare

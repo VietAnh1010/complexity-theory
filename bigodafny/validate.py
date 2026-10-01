@@ -165,9 +165,12 @@ def run_tests(task, sig, pydir, workdir, tiers, per_test, batch_timeout):
     return res, None
 
 
-def validate(only=None, tiers=("public_tests", "private_tests"),
-             per_test=30, batch_timeout=900, limit=None, solutions_dir=None,
-             out_prefix="", all_splits=False):
+TIERS = ("public_tests", "private_tests")
+
+
+def validate(only=None, per_test=30, batch_timeout=900, solutions_dir=None,
+             out_prefix=""):
+    tiers = TIERS
     tasks = {t["solution_id"]: t for t in read_jsonl(DATA / "tasks.jsonl")}
     sigs = {s["problem_id"]: s for s in read_jsonl(DATA / "signatures.jsonl")}
 
@@ -181,11 +184,10 @@ def validate(only=None, tiers=("public_tests", "private_tests"),
     # and wrote 101 `fail`s, of which 97 were loose rows behaving correctly;
     # the record it replaced had been built from a hand-filtered list, so the
     # canonical file was not reproducible from this tool's own CLI. It is now.
-    # `--all-splits` still sweeps everything, for when that is what you want.
     ds = DATA / "dataset.jsonl"
     split = ({r["solution_id"]: r["split"] for r in read_jsonl(ds)}
              if ds.exists() else {})
-    if not split and not all_splits:
+    if not split:
         log("warning: data/dataset.jsonl absent, cannot filter to the strict "
             "tier; validating every translated row")
 
@@ -201,7 +203,7 @@ def validate(only=None, tiers=("public_tests", "private_tests"),
             continue
         # An explicit --only or --solutions-dir is a deliberate request; only
         # the unfiltered sweep is narrowed to the tier this gate answers for.
-        if (not only and not solutions_dir and not all_splits
+        if (not only and not solutions_dir
                 and split.get(sid, "strict") != "strict"):
             skipped[split[sid]] += 1
             continue
@@ -211,8 +213,6 @@ def validate(only=None, tiers=("public_tests", "private_tests"),
             + ", ".join(f"{v} {k}" for k, v in sorted(skipped.items()))
             + "  (difftest.py --loose is the loose tier's gate)")
     targets.sort(key=lambda x: (int(x[0]["problem_id"]), x[0]["solution_id"]))
-    if limit:
-        targets = targets[:limit]
     log(f"validating {len(targets)} solutions "
         f"(tiers={'+'.join(tiers)}, per-test {per_test}s)")
 
@@ -225,7 +225,8 @@ def validate(only=None, tiers=("public_tests", "private_tests"),
         rec = {"solution_id": sid, "problem_id": t["problem_id"],
                "problem_name": t["problem_name"],
                "time_complexity_inferred": t["time_complexity_inferred"],
-               "dafny_version": DAFNY_VERSION, "dfy_path": str(dfy.relative_to(ROOT))}
+               "dafny_version": DAFNY_VERSION, "dfy_path": str(dfy.relative_to(ROOT) if dfy.is_relative_to(ROOT)
+                                else dfy)}
 
         pydir, err = build_one(dfy, work)
         if err:
@@ -250,15 +251,16 @@ def validate(only=None, tiers=("public_tests", "private_tests"),
         rows.append(rec); tally[rec["status"]] += 1
         log(f"  {sid:>10}  {rec['status'].upper():<6} {c['pass']}/{len(res)} tests")
 
-    # A partial run must never replace the canonical record. `--out-prefix` has
-    # always been the way to say "this is a spot check"; nothing enforced it, so
-    # one `validate.py --only X` would leave data/validation.jsonl holding a
-    # single row where 532 had been. Same defect difftest.py had against
-    # data/difftest.jsonl, which held 5 rows for a tier of 100.
-    if not out_prefix and (only or limit):
+    # A partial run must never replace the canonical record: one
+    # `validate.py --only X` once left data/validation.jsonl holding a single
+    # row where 532 had been (difftest.py had the same defect). Any subset --
+    # `--only` or `--solutions-dir` -- is a spot check and always writes a
+    # prefixed file; `--out-prefix` only names it (default `partial_`).
+    if not out_prefix and (only or solutions_dir):
         out_prefix = "partial_"
-        log("partial run (--only/--limit): writing data/partial_validation.jsonl,"
-            " not the canonical data/validation.jsonl")
+    if out_prefix:
+        log(f"spot check: writing data/{out_prefix}validation.jsonl, not the "
+            "canonical data/validation.jsonl")
 
     write_jsonl(DATA / f"{out_prefix}validation.jsonl", rows)
     summary = {"dafny_version": DAFNY_VERSION, "tiers": list(tiers),
@@ -270,20 +272,23 @@ def validate(only=None, tiers=("public_tests", "private_tests"),
     return rows
 
 
+def main(argv=None):
+    ap = argparse.ArgumentParser(prog="validate.py")
+    ap.add_argument("--only", nargs="*", help="solution_ids to validate "
+                    "(a spot check: never writes the canonical record)")
+    ap.add_argument("--time-limit-per-test", type=int, default=30,
+                    help="seconds per test (default 30)")
+    ap.add_argument("--out-prefix", default="",
+                    help="name the spot-check output data/<prefix>validation.jsonl "
+                         "(default partial_)")
+    ap.add_argument("--solutions-dir", help="look for rows only in this directory "
+                    "(a spot check: never writes the canonical record)")
+    a = ap.parse_args(argv)
+    validate(only=set(a.only) if a.only else None,
+             per_test=a.time_limit_per_test, out_prefix=a.out_prefix,
+             solutions_dir=a.solutions_dir)
+    return 0
+
+
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--only", nargs="*", help="solution_ids to validate")
-    ap.add_argument("--generated", action="store_true",
-                    help="also run the generated_tests tier")
-    ap.add_argument("--per-test", type=int, default=30)
-    ap.add_argument("--limit", type=int)
-    ap.add_argument("--out-prefix", default="")
-    ap.add_argument("--solutions-dir")
-    ap.add_argument("--all-splits", action="store_true",
-                    help="also validate loose/unvalidatable rows, which this "
-                         "gate is the wrong question for")
-    a = ap.parse_args()
-    tiers = ["public_tests", "private_tests"] + (["generated_tests"] if a.generated else [])
-    validate(only=set(a.only) if a.only else None, tiers=tuple(tiers),
-             per_test=a.per_test, limit=a.limit, out_prefix=a.out_prefix,
-             solutions_dir=a.solutions_dir, all_splits=a.all_splits)
+    sys.exit(main())

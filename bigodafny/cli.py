@@ -10,7 +10,7 @@ are judgement steps, each run directly and each with its own flags.
     python3 cli.py signatures          dataclass_code -> Dafny signatures
     python3 cli.py scaffold [--force]  write .dfy stubs (never clobbers a real body)
     python3 cli.py baseline            run the original Python against its own tests
-    python3 cli.py validate [...]      compile .dfy and diff stdout (strict rows)
+    python3 cli.py validate [...]      = validate.py [...]: compile .dfy, diff stdout
     python3 cli.py dataset             join everything -> dataset.jsonl + stats.json
     python3 cli.py selftest            prove the validator rejects bad translations
 
@@ -40,16 +40,13 @@ def main():
     sub.add_parser("signatures")
     sc = sub.add_parser("scaffold"); sc.add_argument("--force", action="store_true")
     bl = sub.add_parser("baseline"); bl.add_argument("--workers", type=int, default=8)
-    va = sub.add_parser("validate")
-    va.add_argument("--only", nargs="*")
-    va.add_argument("--generated", action="store_true")
-    va.add_argument("--per-test", type=int, default=30)
-    va.add_argument("--limit", type=int)
-    va.add_argument("--out-prefix", default="")
+    sub.add_parser("validate", add_help=False)   # options: validate.py --help
     sub.add_parser("dataset")
     sub.add_parser("selftest")
     al = sub.add_parser("all"); al.add_argument("--workers", type=int, default=8)
-    a = ap.parse_args()
+    a, rest = ap.parse_known_args()
+    if rest and a.cmd != "validate":
+        ap.error(f"unrecognized arguments: {' '.join(rest)}")
 
     if a.cmd == "extract":
         import extract; extract.extract()
@@ -60,11 +57,7 @@ def main():
     elif a.cmd == "baseline":
         import baseline; baseline.run(workers=a.workers)
     elif a.cmd == "validate":
-        import validate
-        tiers = ["public_tests", "private_tests"] + \
-                (["generated_tests"] if a.generated else [])
-        validate.validate(only=set(a.only) if a.only else None, tiers=tuple(tiers),
-                          per_test=a.per_test, limit=a.limit, out_prefix=a.out_prefix)
+        import validate; return validate.main(rest)
     elif a.cmd == "dataset":
         import dataset; dataset.build()
     elif a.cmd == "selftest":

@@ -38,7 +38,7 @@ whole file with that subset unless someone stopped it. Four did:
 |---|---|---|
 | `labelaudit.py evidence --only` | a numbered `batch_NN.json` | writes `reaudit_NN.json` unless `--prefix` says otherwise |
 | `difftest.py --only` | `data/difftest.jsonl` — it held 5 rows for a tier of 100 | merges by `solution_id` |
-| `validate.py --only/--limit` | `data/validation.jsonl` — 532 rows | writes `data/partial_validation.jsonl` unless `--out-prefix` is given |
+| `validate.py --only` | `data/validation.jsonl` — 532 rows | any `--only` or `--solutions-dir` run writes `data/<prefix>validation.jsonl` (default `partial_`) |
 | `precheck.py SID...` | `data/precondition_check.jsonl` — it held one row's clauses | merges, replacing only the rows re-checked |
 
 `callgraph.py --only/--limit` was guarded the same way before it could bite.

@@ -166,9 +166,10 @@ directory was removed.
 3. Charge every operation per the table. Loop invariants relate `steps` to the
    counter.
 4. `dafny verify --verification-time-limit 30`.
-5. `python3 validate.py --solutions-dir solutions-proved --out-prefix ver_` —
-   a bare `--only <SID>` resolves to `solutions/` and tests the ORIGINAL, and it
-   overwrites the corpus-wide `data/validation.jsonl`. Then diff the emitted
+5. `python3 validate.py --solutions-dir solutions-proved --only <SID>` —
+   a bare `--only <SID>` resolves to `solutions/` and tests the ORIGINAL. A
+   proof in `value-bounded/` needs `--solutions-dir
+   solutions-proved/value-bounded`. Then diff the emitted
    Python of the proof against its original: identical bytes is the real
    equivalence claim, and it is the only one available for a `loose` row.
 6. `python3 precheck.py <SID>` — every `requires` against every stored input.
@@ -252,25 +253,24 @@ so it is charged against `SumLen(numbers)`. That term is real work, not slack.
 
 ## The gates resolve to the wrong file
 
-`validate.py` and `difftest.py` both scan `SOLUTIONS, INEXACT, UNVERIFIED,
-VERIFIED` and take the **first** hit. A proved row exists in two places and
+`validate.py` and `difftest.py` both search `solutions/` first and take the
+**first** hit. A proved row exists in two places and
 `solutions/` is scanned first, so a plain `validate.py --only <sid>` on a proved
 row tests the **uninstrumented original**. `precheck.py` had this bug, was fixed
 with `find_all()`, and the fix never reached the other two. Do not fix it here —
 an agent may not edit a gate it is judged by. Instead:
 
-- `python3 validate.py --solutions-dir solutions-proved --out-prefix ver_`
-  points the existing flag at the instrumented copies.
+- `python3 validate.py --solutions-dir solutions-proved --only <sid>` points
+  the gate at the instrumented copy.
 - For `loose` rows, and as the stronger check generally, compare the **emitted
   Python** of the proof against its original. Byte-identical compiled code
   cannot differ on any input, and it re-confirms ghost erasure in the same step.
   A `loose` row will FAIL `validate.py` either way — that is the wrong gate for
   it, and its own Python fails the same comparison.
 
-**`validate.py --only <ids>` overwrites `data/validation.jsonl`** with just
-those rows, and `dataset.py` then reports 4 valid translations instead of 529.
-Always pass `--out-prefix` on a partial run; it redirects the output file.
-Restore from git if it happens.
+`validate.py --only` and `--solutions-dir` are spot checks: they write
+`data/<prefix>validation.jsonl` (default `partial_`), never the canonical
+`data/validation.jsonl`.
 
 ## Charging: the correction that cost the most
 
