@@ -38,8 +38,9 @@ rows still live in `solutions/`, `solutions-disputed/` or wherever the
 partition puts them; `MANIFEST.jsonl` gives each one's `row` path. Nothing was
 taken out of the dataset.
 
-Three of the twenty-one proved rows also sit in `solutions-disputed/` —
-`810_131`, `1484_26` and `2607_90`, moved there on 2026-09-17. Being here is
+All twenty-one proved rows also sit in `solutions-disputed/`: `810_131`,
+`1484_26` and `2607_90` moved there on 2026-09-17, the other eighteen with the
+label re-audit r3 on 2026-10-01, which applies the value rule. Being here is
 not the same as being disputed: this directory says *the proof carries a value
 term*, the disputed queue says *somebody should change the label*.
 

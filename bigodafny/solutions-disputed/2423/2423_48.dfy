@@ -1,0 +1,118 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(nlogn)
+//   audited class  : other
+//   cause          : label
+//   confidence     : high
+//   auditor        : labelaudit-r3-14
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     The outer while loop in Solve runs i from 0 to limit = d[|d|-1].0 +
+//     2, the maximum input day value, while the inner idx loops are
+//     amortised O(n); total is O(n log n + max a_i), and the Python's
+//     range(d[-1][0] + 2) pays the same value term.
+//
+//   how this label could be wrong, and what to check:
+//     The label counts only the n trees, but the outer loop runs to limit
+//     = d[|d|-1].0 + 2, i.e. the largest ripening day value. Check the
+//     outer `while i < limit` in the Dafny and `for i in range(d[-1][0] +
+//     2)` in the Python; if the day values can be large, cost is
+//     value-driven. The statement cap 3000 does not make it constant.
+//
+//   structural facts (deterministic, from label_audit.py):
+//     {"body_lines": 43, "data_dependent_loops": 2, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 2,
+//     "loops": 3, "recursive_helpers": 0, "seq_append_read_in_same_loop":
+//     false, "seq_args": 1, "seq_update_in_loop": false,
+//     "set_build_in_loop": false, "sorts": ["Sort"], "uses_map": false,
+//     "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
+// 441_B. Valera and Fruits  (problem 2423, solution 2423_48)
+// time complexity: O(nlogn)
+// python exact-diff baseline: exact
+//
+// Reproduce the Python program's entire stdout in `output`.
+//
+// --- Python ---------------------------------------------------------
+// def a():	
+// 	n, v = list(map(int, input().split(" ")))
+// 	d = []
+// 	for i in range(n):
+// 		d.append(list(map(int, input().split(" "))))
+// 	d.sort()
+// 
+// 	cur = 0
+// 	nex = 0
+// 	k = 0
+// 	r = 0
+// 	for i in range(d[-1][0] + 2):
+// 		nex = 0
+// 		p = v
+// 		if k != n:
+// 			while(d[k][0] < i):
+// 				k += 1
+// 				if k == n:
+// 					break
+// 		if k != n:
+// 			while(d[k][0] == i):
+// 				nex += d[k][1]
+// 				k += 1
+// 				if k == n:
+// 					break
+// 		r += min(p, cur)
+// 		p -= min(p, cur)
+// 		r += min(p, nex)
+// 		cur = nex - min(p, nex)
+// 	return r
+// 
+// print(a())
+// --------------------------------------------------------------------
+
+include "../../prelude.dfy"
+import opened Prelude
+
+method Solve(n: int, k: int, pairs: seq<(int, int)>) returns (output: string)
+  requires |pairs| >= 1
+  requires n <= |pairs|
+{
+  var d := Sort(pairs, (x: (int, int), y: (int, int)) => x.0 < y.0 || (x.0 == y.0 && x.1 < y.1));
+  var cur := 0;
+  var nex := 0;
+  var idx := 0;
+  var r := 0;
+  var limit := d[|d| - 1].0 + 2;
+  var i := 0;
+  while i < limit
+    invariant 0 <= idx
+    invariant |d| == |pairs|
+    decreases limit - i
+  {
+    nex := 0;
+    var p := k;
+    while idx < n && d[idx].0 < i
+      invariant 0 <= idx
+      decreases n - idx
+    {
+      idx := idx + 1;
+    }
+    while idx < n && d[idx].0 == i
+      invariant 0 <= idx
+      decreases n - idx
+    {
+      nex := nex + d[idx].1;
+      idx := idx + 1;
+    }
+    var m1 := if p < cur then p else cur;
+    r := r + m1;
+    p := p - m1;
+    var m2 := if p < nex then p else nex;
+    r := r + m2;
+    cur := nex - m2;
+    i := i + 1;
+  }
+  output := IntToString(r);
+}

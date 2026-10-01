@@ -28,20 +28,21 @@ for provenance, but they are not operational instructions.
 | Translated rows | 636 |
 | Strict behaviour gate | 529 valid, 3 failed, 2 parser-blocked |
 | Loose behaviour gate | 95 agree, 1 timeout-only unresolved, 4 untranslatable |
-| Clean `solutions/` rows | 344 |
+| Clean `solutions/` rows | 299 |
 | Complexity proof files | 323, all verify without `assume` |
 | Bounded campaign results | 281 proved of 366 draws (77%) |
 | Distinct drawn rows with a proof now | 292 of 329 (89%) |
-| Label-audited rows | 506: 347 ok, 152 mismatch, 7 unsure |
+| Label-audited rows | 506: 296 ok, 197 mismatch, 13 unsure (`solutions/` re-audited 2026-10-01) |
 
 The status directories are the source of truth for a row's current state. Do
 not infer state from an old campaign result or commit message.
 
-`data/label_audit.jsonl` is a snapshot from 2026-09-16, the day before input
-values became cost parameters (`COMPLEXITY.md` § 1). Some `ok` verdicts treat a
-capped value as constant; 20 rows it calls `ok` now have a proof that disagrees.
-For a proved row, the reviewed relation in a campaign's `label_relation.jsonl`
-takes precedence over its audit verdict.
+`data/label_audit.jsonl`'s verdicts for the rows that were in `solutions/` come
+from re-audit r3 (2026-10-01), under the current rules: input values are cost
+parameters, `IntToString` is charged 1, a `Gcd` costs Euclid's depth. It moved
+45 rows to `solutions-disputed/`. Verdicts for rows already disputed date from
+2026-09-16, before those rules; the superseded lines are in
+`data/old-record.jsonl`.
 
 ## Status directories
 

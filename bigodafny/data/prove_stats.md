@@ -277,7 +277,7 @@ pushes the rate down for reasons unrelated to the agents.
 
 ## Corpus context
 
-- `solutions/` holds 344 rows.
+- `solutions/` holds 299 rows.
 - 323 rows carry a proof, in 323 files.
 - proved_rows counts every proof in the corpus, including the 33 that predate the campaigns and the rows the main agent proved later.
 

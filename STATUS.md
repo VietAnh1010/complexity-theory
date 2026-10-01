@@ -49,10 +49,10 @@ Report that alongside the edge count.
 Separate deliverable in `bigodafny/`, built from BigOBench's
 `time_complexity_test_set`. Shares nothing with the paper pipeline.
 
-- **Phase:** translated and gated; label audit complete; cost model axiomatised
-  and the queue re-filed under it
-- **Last updated:** 2026-09-16
-- **Next action:** review the 152 disputed rows; screen the 127 unscreened ones
+- **Phase:** translated and gated; 323 complexity proofs; `solutions/`
+  re-audited (r3) under the current cost rules
+- **Last updated:** 2026-10-01
+- **Next action:** review the 202 disputed rows; screen the 127 unscreened ones
 
 | | |
 |---|---|
@@ -61,13 +61,13 @@ Separate deliverable in `bigodafny/`, built from BigOBench's
 | translated | 636 of 640 (4 cannot be — bare `print(float)`) |
 | behaviour gated | 529 valid, 3 fail |
 | safety verified | 350 of 636 |
-| complexity proved | 31 rows, 33 files, all verify, zero `assume` |
-| label audit | 506 screened: 347 `ok`, 152 `mismatch`, 7 `unsure` |
+| complexity proved | 323 files, all verify, zero `assume` |
+| label audit | 506 screened: 296 `ok`, 197 `mismatch`, 13 `unsure` |
 | Dafny / Z3 | 4.11.0 / 4.12.1 |
 
 **Rows are partitioned by status**, one directory each, each with a `README.md`:
-`solutions/` 354, `solutions-unscreened/` 127, `solutions-disputed/` 152,
-`solutions-unverified/` 3, `solutions-untranslated/` 4. `solutions-proved/` is
+`solutions/` 299, `solutions-unscreened/` 127, `solutions-disputed/` 202,
+`solutions-ungateable/` 5, `solutions-unverified/` 3, `solutions-untranslated/` 4. `solutions-proved/` is
 an overlay of instrumented copies, not a sixth bucket.
 
 **The split is measured, not read.** Running the original Python against its own
@@ -113,16 +113,18 @@ non-commercial. See `bigodafny/LICENSE.md`.
 - `bigodafny`: **resolved** — agents translated all 636 rows behind the
   validator. `CLAUDE.md`'s "no model in this pipeline" was written for the paper
   pipeline; `bigodafny/CLAUDE.md` scopes it to the deterministic stages.
-- `bigodafny`: 152 rows sit in `solutions-disputed/` awaiting manual review.
-  - 118 need the **label** changed, 27 the **translation**, 6 both, 1 neither.
+- `bigodafny`: 202 rows sit in `solutions-disputed/` awaiting manual review.
+  - Re-audit r3 (2026-10-01) moved 45 in: 26 omit a value term, 10 are
+    translation cases, 9 other. See `solutions-disputed/README.md`.
+  - Before r3: 118 needed the **label** changed, 27 the **translation**, 6 both,
+    1 neither.
   - The re-file under the cost axioms is done (from a per-row decision table,
     `batches/cost-axioms/refile_decisions.jsonl`). 31 rows left the queue, 5 joined it, 3 were re-classified.
   - The five that joined were filed `ok` only because the old copy charge
     reproduced their label by accident. An accidental agreement is not a pass,
     and a model change exposes it in both directions.
-  - One convention is unsettled across 12 rows: whether a loop bounded by the
-    *value* of a capped scalar counts as constant. See
-    `solutions-disputed/README.md`.
+  - Settled 2026-09-17: a loop bounded by an input value costs in that value,
+    even when the statement caps it (`bigodafny/COMPLEXITY.md`).
 - `bigodafny`: 127 rows in `solutions-unscreened/` have never been through the
   label audit at all.
   - They were quarantined earlier for sibling convergence (12) or for using

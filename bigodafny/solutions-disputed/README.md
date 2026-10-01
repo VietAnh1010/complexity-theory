@@ -1,6 +1,6 @@
 # `solutions-disputed/` — label audit review queue
 
-157 rows whose stated complexity label does not describe what the code costs.
+202 rows whose stated complexity label does not describe what the code costs.
 **Queued for manual review; nothing here is a decision.** Each file keeps its
 full original body with a header naming the audited class, the cause, the
 confidence and the evidence, so a reviewer needs nothing else open.
@@ -12,10 +12,27 @@ with every mismatch re-checked by the orchestrating session before the move.
 > 152 rows need a **label** changed, not code. What is disputed is the label,
 > and that is what the name now says.
 
+## Re-audit r3 moved 45 rows in (2026-10-01)
+
+Every row then in `solutions/` (344) was re-audited under the current rules:
+input values are cost parameters, `IntToString` is charged 1, a `Gcd` costs
+Euclid's depth. Brief: `batches/labelaudit/PROMPT.md`; verdicts:
+`batches/labelaudit/verdicts_r3_*.jsonl`. 288 `ok`, 45 `mismatch`, 11 `unsure`.
+
+- **Value terms the label omits, `cause: label` (26):** `281_12`, `305_76`, `342_86`, `514_90`, `794_794`, `1043_358`, `1263_2538`, `1364_161`, `1386_19`, `1386_38`, `1580_12`, `1626_179`, `1675_29`, `1678_68`, `1820_180`, `1861_16`, `1867_16`, `1871_156`, `1871_291`, `1915_158`, `2128_34`, `2254_6`, `2423_48`, `2819_926`, `2942_42`, `2942_55`.
+- **Translation (10):** `514_140`, `647_11`, `704_351`, `1029_119`, `1029_92`, `1332_16`, `1944_50`, `1948_388`, `2358_103`, `2358_421`. Mostly a Dafny `sqrt` search or a
+  bit-by-bit recursion where the Python makes one call.
+- **Other (9):** labels above the code's class: `88_200`, `888_6`, `1180_626`,
+  `2913_309`, `2913_484`; below it: `1306_126`, `1414_8`, `2282_437`; and
+  `2680_221`, a `harness` case (the Python's cost is parsing outside `Solve`).
+
+Five rows here have no `mismatch` verdict: `810_131`, `1484_26` and `2607_90`
+(value-versus-size, 2026-09-17) and `1950_45`, `1950_47` (gate audit).
+
 ## These rows are still in the dataset
 
 Quarantined, not removed. Every gate runs on them, they keep their labels, and
-they appear in `data/dataset.jsonl` like any other row. 12 of them also carry a
+they appear in `data/dataset.jsonl` like any other row. 45 of them also carry a
 machine-checked complexity proof in `solutions-proved/` — the strongest input a
 reviewer can have, and `checkverdicts.py` rejects any verdict that contradicts
 one.

@@ -1,0 +1,89 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(nlogn)
+//   audited class  : other
+//   cause          : translation
+//   confidence     : high
+//   auditor        : labelaudit-r3-13
+//
+//   The Python matches its label; the DAFNY does not. The label is right
+//   about the program it was measured on and the translation is the
+//   defect.
+//
+//   evidence:
+//     Solve calls IntSqrt2358(v) for each element, which loops about
+//     sqrt(v) iterations, so the Dafny costs O(n log n + sum of
+//     sqrt(a_i)); the Python's math.sqrt call is O(1) per element and
+//     sorted() gives the labelled O(n log n), so the sqrt search is
+//     introduced by the translation.
+//
+//   how this label could be wrong, and what to check:
+//     The label counts only the sort. Open IntSqrt2358: its loop `while (r
+//     + 1) * (r + 1) <= x` runs about sqrt(v) times for each element v, a
+//     value term. Compare with the Python, which calls math.sqrt once per
+//     element in O(1); if the Python is O(n log n) as labelled, the fault
+//     is the Dafny's reimplemented sqrt.
+//
+//   structural facts (deterministic, from label_audit.py):
+//     {"body_lines": 32, "data_dependent_loops": 1, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 1,
+//     "loops": 2, "recursive_helpers": 0, "seq_append_read_in_same_loop":
+//     false, "seq_args": 1, "seq_update_in_loop": false,
+//     "set_build_in_loop": false, "sorts": ["SortInts"], "uses_map":
+//     false, "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
+// 914_A. Perfect Squares  (problem 2358, solution 2358_103)
+// time complexity: O(nlogn)
+// python exact-diff baseline: exact
+//
+// Reproduce the Python program's entire stdout in `output`.
+//
+// --- Python ---------------------------------------------------------
+// from math import sqrt as S
+// def ps(n):
+//     return int(S(n))!=S(n)
+// n=int(input())
+// l=sorted([int(i) for i in input().split()])
+// for i in l:
+//     if i<0:
+//         ans=i 
+//     elif ps(i):
+//         ans=i
+// print(ans)
+// --------------------------------------------------------------------
+
+include "../../prelude.dfy"
+import opened Prelude
+
+method Solve(n: int, a_list: seq<int>) returns (output: string)
+{
+  var l := SortInts(a_list);
+  var ans := 0;
+  var i := 0;
+  while i < |l|
+    decreases |l| - i
+  {
+    var v := l[i];
+    if v < 0 {
+      ans := v;
+    } else {
+      var r := IntSqrt2358(v);
+      if r * r != v {
+        ans := v;
+      }
+    }
+    i := i + 1;
+  }
+  output := IntToString(ans);
+}
+
+method IntSqrt2358(x: int) returns (r: int)
+{
+  r := 0;
+  while (r + 1) * (r + 1) <= x
+    decreases x - r
+  {
+    r := r + 1;
+  }
+}

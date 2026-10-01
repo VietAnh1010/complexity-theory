@@ -46,6 +46,27 @@ when done.
 - [ ] `810_131` and `1948_388` are in `value-bounded/` but `looser-translation`
       now; the filing rule admits only `looser-structural`. Keep or move out.
 
+## Label re-audit r3 (2026-10-01)
+
+- [x] `solutions/` (344) re-audited under the current rules; 45 rows moved to
+      `solutions-disputed/` (now 202), 299 remain.
+- [ ] 11 `unsure` rows stay in `solutions/`: `305_284`, `577_509`, `662_527`,
+      `1047_26`, `1272_115`, `1272_278`, `1434_1616`, `1935_61`, `2231_77`,
+      `2254_143`, `2436_325`. Decide each.
+- [ ] 10 verdicts disagree with the row's reviewed proof relation: `514_140`,
+      `1029_92`, `1180_626`, `1414_8`, `1718_1166`, `2680_221`, `2913_309`,
+      `2913_484`, `2942_42`, `2942_55`. Most turn on whether string length
+      counts as a size, or a label above the tight class is a mismatch.
+- [ ] `1029_92`, `1029_119` define a bit-by-bit `BitOr`, `1332_16` and `1827_66`
+      a recursive `Lowbit`; each recurses to a value's bit length. `1029_92`'s
+      proof charges `BitOr` 1 per call, as the Gcd proofs did. Use the prelude's
+      `bv64` `BitOr` in the row, or charge the depth.
+- [ ] The 157 rows already in `solutions-disputed/` keep 2026-09-16 verdicts.
+      Re-audit them under r3 too, or leave them for human review.
+- [ ] `label_audit.py evidence` reads only `solutions/`, though
+      `solutions-unscreened/README.md` tells you to run it on that directory.
+- [ ] `label_audit.py` imports `features` from the archived `experiments/`.
+
 ## Gates (not for an agent whose work they judge)
 
 - [x] Remove the `solutions-proved/nlogn/` remnants: `PROVED_NLOGN` in

@@ -573,7 +573,10 @@ def render(p):
     a("")
     a("## What this does not measure")
     a("")
-    a("- **Only `solutions/`.** The 127 unscreened and 157 disputed rows have")
+    n_dir = {d: len(list((HERE / d).rglob("*.dfy")))
+             for d in ("solutions-unscreened", "solutions-disputed")}
+    a(f"- **Only `solutions/`.** The {n_dir['solutions-unscreened']} unscreened "
+      f"and {n_dir['solutions-disputed']} disputed rows have")
     a("  never been drawn. Nothing here generalises to them.")
     a("- **A bounded agent, not the problem.** `unresolved` means 3 attempts")
     a("  and 5 minutes were not enough, not that the row cannot be proved.")

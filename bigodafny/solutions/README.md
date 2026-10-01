@@ -1,6 +1,6 @@
 # `solutions/`: translated rows that passed their available checks
 
-This directory contains 344 translated rows. Membership means the row is in the
+This directory contains 299 translated rows. Membership means the row is in the
 screened corpus; it does not mean its complexity label has been proved.
 
 A row normally arrives here after its behaviour gate passes, `dafny verify` has
