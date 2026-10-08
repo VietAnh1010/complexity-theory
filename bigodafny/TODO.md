@@ -50,3 +50,15 @@ Open items only. Delete an item when it is done and record the change in
       (1,500 s), `2231_77` (420 s).
 - [ ] `2254_6` and `2128_34` count as agent-proved in campaign 1 though over
       budget; decide whether to count them as unresolved.
+- [ ] `difftest.py --loose` re-runs `1501_224` (`solutions-ungateable/`), about
+      39 minutes of timeouts for a verdict that cannot change. Skip
+      `solutions-ungateable/` as `validate.py` does; needs the user's go-ahead.
+
+## Environment
+
+- [ ] The remote (cloud) environment still runs Z3 4.12.1; upgrade it to the
+      5.1.0 pin, or its proof runs will disagree with local ones.
+- [ ] `1501_224`'s loose-tier record predates the 2026-10-08 re-run; refresh it
+      with `difftest.py --only 1501_224` when 40 minutes are free.
+- [ ] Delete the stale local branch `claude/cost-model-output-length` (it points
+      at pre-rebase commits).
