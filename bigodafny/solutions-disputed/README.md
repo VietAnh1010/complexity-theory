@@ -13,39 +13,43 @@ History: `../CHANGELOG.md`.
 
 Quarantined, not removed. `solutions-disputed` is in the root list of
 `validate.py`, `difftest.py`, `precheck.py` and `proofs.py`; the rows keep
-their labels and appear in `data/dataset.jsonl`. 44 of them also carry a
+their labels and appear in `data/dataset.jsonl`. 52 of them also carry a
 machine-checked proof in `solutions-proved/`, the strongest input a reviewer
 can have; `checkverdicts.py` rejects any verdict that contradicts one.
 
 ## Where the verdicts come from
 
-| rows | verdict source | rules it applied |
-|---|---|---|
-| 45 | re-audit r3, `batches/labelaudit/verdicts_r3_*.jsonl` | input values are cost parameters; `IntToString` costs 1; `Gcd` costs Euclid's depth |
-| 152 | the first audit, after the cost-model re-file | stipulated collection costs; a capped value is a constant |
-| 5 | no `mismatch` verdict | `810_131`, `1484_26`, `2607_90` (value-versus-size convention); `1950_45`, `1950_47` (translation audit) |
+Every row carries a verdict from re-audit r3 or r4
+(`batches/labelaudit/verdicts_r3*`, `verdicts_r4*`; main-agent overrides in
+`verdicts_r3_overrides.jsonl` and `verdicts_r4_overrides.jsonl`):
 
-Two rules have changed since some verdicts were made:
+| rows | round | rules |
+|---:|---|---|
+| 94 | r3, re-audit of the queue itself (`verdicts_r3d_*`) | input values are cost parameters; `IntToString` costs 1; `Gcd` costs Euclid's depth |
+| 26 | r3, rows moved in from `solutions/` | the same |
+| 82 | r4 | r3's rules plus the naming rule: a label names each size it depends on |
 
-- **Values.** `COMPLEXITY.md` counts a loop bounded by an input value. The
-  first audit treated a capped value as a constant, so its value-loop verdicts
-  may invert. See "Open questions".
-- **Output.** `IntToString(x)` now costs `Digits(x)`, and an additive
-  `|output|` term never counts against a label. A verdict that relies on
-  `IntToString` costing 1 where the string is not output (a digit sum, a
-  comparison) may need re-checking.
+Queue rows were re-judged with their old header stripped, so the auditor never
+saw the verdict it was re-judging. r4 re-judged every row the naming rule
+could affect. `1950_45` and `1950_47` carry a `TRANSLATION AUDIT` header, not
+a label verdict.
+
+One rule has changed since: `IntToString(x)` now costs `Digits(x)`, and an
+additive `|output|` term never counts against a label. A verdict that relies
+on `IntToString` costing 1 where the string is not output (a digit sum, a
+comparison) may need re-checking.
 
 ## Counts
 
 | cause | rows | what is wrong | repair |
 |---|---:|---|---|
-| `label` | 155 | the **Python** is not the labelled class either | fix the label |
-| `translation` | 39 | the Python matches its label; the **Dafny** does not | fix the translation |
-| `both` | 6 | neither matches | both |
-| `harness` | 2 | both are right; the dataset drew the boundary differently | document it |
+| `label` | 159 | the **Python** is not the labelled class either | fix the label |
+| `translation` | 35 | the Python matches its label; the **Dafny** does not | fix the translation |
+| `both` | 5 | neither matches | both |
+| `harness` | 3 | both are right; the dataset drew the boundary differently | document it |
 
-Confidence: 120 high, 74 medium, 6 low; the two translation-audit rows carry
-none. 53 rows have `audited class: other`: the true cost is outside the
+Confidence: 101 high, 95 medium, 4 low; the two translation-audit rows carry
+none. 74 rows have `audited class: other`: the true cost is outside the
 eleven-class vocabulary (cubic, or a cost in a value), named in the evidence.
 
 `harness` is the subtle one. The Python reads stdin and pays to parse every
@@ -64,9 +68,10 @@ label.
     label O(nlogn) -> audited O(n)   the Dafny is faster than the Python
 
 That is not a win. `bigodafny/CLAUDE.md` § "Preserve the algorithm" forbids it,
-and both gates miss it: the output is right. Comparing header classes finds 12
+and both gates miss it: the output is right. Comparing header classes finds 13
 such rows: `1336_340`, `1366_102`, `1368_67`, `1470_325`, `1470_470`,
-`1981_62`, `2087_50`, `2394_182`, `641_25`, `647_11`, `669_107`, `894_85`.
+`1981_62`, `2087_50`, `2394_182`, `2680_221`, `641_25`, `647_11`, `669_107`,
+`894_85`.
 Confirmed by reading both sources:
 
 | row | what the Python does | what the Dafny does |
@@ -97,8 +102,9 @@ Do not rewrite it or reach for another container.
   takes a maximum by linear scan; `348_21` emulates a Python `set` with a linear
   scan.
 - **A value the label omits.** The bound grows with an input's magnitude
-  (`810_131`: binary search over the value `a*b`; `2607_90`: a loop over
-  `hi - lo`). These change the label, never the code.
+  (`2607_90`: a loop over `hi - lo`). These change the label, never the code.
+- **A size the label does not name.** `O(n)` over several scanned strings, or
+  `O(n**2)` for two different sizes; both are `O(n*m)` under the naming rule.
 
 ## Fields a reviewer should not over-trust
 
@@ -122,11 +128,6 @@ To leave, they need 23/23 on the runnable tests; they then go to
 
 ## Open questions
 
-- **Capped-value rows filed as constant.** The first audit filed these as label
-  errors at O(1) or O(n) by treating a capped value as a constant, the
-  opposite of `COMPLEXITY.md`'s rule: `1306_15`, `1306_197`, `1678_212`,
-  `1722_66`, `1738_180`, `2065_128`, `2128_34`, `2482_13`, `2639_73`,
-  `2639_117`, `2700_53`. Re-review them as one group under the value rule.
 - **Correct but too slow to gate.** `1501_224` (in `solutions-ungateable/`)
   agrees on every test it finishes and times out on 16. The corpus has no
   ruling on whether a timeout-only `differs` counts against a row.

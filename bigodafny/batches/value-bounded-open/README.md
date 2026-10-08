@@ -2,7 +2,7 @@
 
 11 rows. Each one's real cost depends on how **large** an input is, while its
 BigOBench label only counts how **many** inputs there are — and unlike the
-twenty in `solutions-proved/value-bounded/`, none has a verifying proof.
+22 in `solutions-proved/value-bounded/`, none has a verifying proof.
 
 There are no `.dfy` files here, because there is nothing proved to hold.
 `MANIFEST.jsonl` names each row, where it lives, the campaign that found it,

@@ -20,7 +20,7 @@ import opened Prelude
 method Solve(n: int, a_list: seq<int>, b_list: seq<int>) returns (output: string, ghost steps: nat)
   requires forall k :: 0 <= k < |a_list| ==> 0 <= a_list[k] < 0x1_0000_0000_0000_0000
   requires forall k :: 0 <= k < |b_list| ==> 0 <= b_list[k] < 0x1_0000_0000_0000_0000
-  ensures steps <= 2 * |a_list| + 2 * |b_list| + 3
+  ensures steps <= 2 * |a_list| + 2 * |b_list| + 3 + |output|
 {
   steps := 1;
   var f1 := 0;
@@ -48,5 +48,5 @@ method Solve(n: int, a_list: seq<int>, b_list: seq<int>) returns (output: string
     steps := steps + 2;
   }
   output := IntToString(f1 + f2);
-  steps := steps + 1;
+  steps := steps + 1 + |output|;
 }

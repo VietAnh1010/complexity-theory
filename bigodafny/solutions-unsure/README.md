@@ -11,9 +11,8 @@ and what a reviewer should check. The full verdict is in
 ## Why these were not decided
 
 - **Six wait on one cost-model question:** is a numeral token's width a size?
-  The brief charges `ParseInt` its argument's length; the proofs charge it 1,
-  as `IntToString` is. Width as a size makes each `O(n*m)`; a machine-word
-  token makes each `O(n)`.
+  The brief charges `ParseInt` its argument's length; the proofs charge it 1.
+  Width as a size makes each `O(n*m)`; a machine-word token makes each `O(n)`.
 - `1484_82`: the prefix loop walks a phone number's width, which the
   statement fixes; whether that width is a second size.
 - `2231_77`: the code rebuilds a list of distinct letters per letter change;

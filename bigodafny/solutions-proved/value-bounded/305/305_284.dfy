@@ -44,7 +44,7 @@ import opened Prelude
 method Solve(a: int, b: int, c_list: seq<int>, d_list: seq<int>) returns (output: string, ghost steps: nat)
   requires |c_list| > 0
   requires |d_list| > 0
-  ensures steps <= 2 * |c_list| + |d_list| + 3 * (if MinSeq(d_list) > MaxSeq(c_list) then MinSeq(d_list) - MaxSeq(c_list) else 0) + 6
+  ensures steps <= 2 * |c_list| + |d_list| + 3 * (if MinSeq(d_list) > MaxSeq(c_list) then MinSeq(d_list) - MaxSeq(c_list) else 0) + 6 + |output|
 {
   var p := MaxSeq(c_list);
   var q := MinSeq(d_list);
@@ -72,4 +72,5 @@ method Solve(a: int, b: int, c_list: seq<int>, d_list: seq<int>) returns (output
     }
   }
   assert x - p <= (if q > p then q - p else 0);
+  steps := steps + |output|;
 }

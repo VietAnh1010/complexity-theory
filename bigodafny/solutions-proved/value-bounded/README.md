@@ -1,6 +1,6 @@
 # `value-bounded/` — the label counts items, the code follows magnitudes
 
-**20 rows, each with a machine-checked proof.** Rows in the same category with
+**22 rows, each with a machine-checked proof.** Rows in the same category with
 **no** proof do not belong under a directory named `solutions-proved`; they are
 in `batches/value-bounded-open/`, which has its own README and manifest.
 
@@ -37,13 +37,13 @@ rows still live in `solutions/`, `solutions-disputed/` or wherever the
 partition puts them; `MANIFEST.jsonl` gives each one's `row` path. Nothing was
 taken out of the dataset.
 
-All twenty rows also sit in `solutions-disputed/`. Being here is
+All 22 rows also sit in `solutions-disputed/`. Being here is
 not the same as being disputed: this directory says *the proof carries a value
 term*, the disputed queue says *somebody should change the label*.
 
 ## The rows
 
-20 rows. `MANIFEST.jsonl` has each one's bound, where the row lives, and
+22 rows. `MANIFEST.jsonl` has each one's bound, where the row lives, and
 why its bound names a value. History: `../../CHANGELOG.md`.
 
 | row | label | found by |
@@ -68,18 +68,23 @@ why its bound names a value. History: `../../CHANGELOG.md`.
 | `704_351` | `O(1)` | prove-sample-3 |
 | `794_794` | `O(n)` | prove-sample-7 |
 | `810_131` | `O(n)` | prove-sample |
+| `2942_55` | `O(n)` | main agent, 2026-10-01 |
+| `305_284` | `O(n+m)` | main agent, 2026-10-01 |
 
 Three causes recur:
 
 - **A loop over a value.** `1580_12` loops until `b*i` reaches `a*c`;
   `794_794` loops `range(1, n)` where `n` is a per-test value, while the
-  label's `n` counts test cases.
+  label's `n` counts test cases; `305_284` searches `range(p, q)`, a
+  difference of input values.
 - **Output whose length is a value.** `1043_358` prints `"2" + "3" * (v - 1)`
   per test; `2254_6` prints a string of length `n_i`.
 - **Euclid's depth.** `1386_19`, `1386_38`, `1871_291`, `1915_158` and
   `1678_68` charge `Gcd` (or `GcdEx`) its recursion depth, a log of the
   values. Those bounds are loose: the running gcd only shrinks, so the depths
   telescope to `O(n + log max)`. The tighter bound still names a value.
+  `2942_55` computes `2**m` by squaring, a depth in each exponent's bit
+  length (`TokBits`).
 
 ## The failures do not transfer
 

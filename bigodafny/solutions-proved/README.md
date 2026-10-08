@@ -20,11 +20,12 @@ that also lives in one of those five:
 
 | the row also lives in | rows |
 |---|---|
-| `solutions/` | 276 |
-| `solutions-disputed/` | 44 |
+| `solutions/` | 264 |
+| `solutions-disputed/` | 52 |
+| `solutions-unsure/` | 4 |
 | `solutions-unscreened/` | 1 |
 
-44 proved rows sit against disputed rows, which is the point: a proved bound is
+52 proved rows sit against disputed rows, which is the point: a proved bound is
 the strongest possible input to that review. `checkverdicts.py` enforces it —
 an audit verdict that contradicts a machine-checked bound is rejected.
 

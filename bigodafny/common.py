@@ -10,7 +10,7 @@ OUT = ROOT / "out"     # generated snapshots nothing reads back; git-ignored
 BUILD = ROOT / ".build"
 SOLUTIONS = ROOT / "solutions"
 # --- The status partition -------------------------------------------------
-# These five are disjoint and cover all 640 dataset rows. A row is in exactly
+# These seven are disjoint and cover all 640 dataset rows. A row is in exactly
 # one of them, and which one says why it is not simply clean.
 #
 # Behaviourally valid, but the complexity label was never screened against the
@@ -45,9 +45,8 @@ UNSURE = ROOT / "solutions-unsure"
 
 # --- The proof overlay ----------------------------------------------------
 # NOT part of the partition: an instrumented *copy* of a row that also lives in
-# one of the five above. Complexity proved, not just tested: a ghost step
-# counter with a proved bound. (was solutions-verified/, which collided with
-# `dafny verify` -- that checks safety, this proves the label.)
+# one of the seven above. Complexity proved, not just tested: a ghost step
+# counter with a proved bound. `dafny verify` checks safety; this proves the label.
 PROVED = ROOT / "solutions-proved"
 # Rows whose proved bound depends on the MAGNITUDE of an input, not only on how
 # many inputs there are. Queued for review: BigOBench fitted its labels by

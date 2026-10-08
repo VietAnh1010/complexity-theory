@@ -51,7 +51,7 @@ also live above, so a row can exist twice with different preconditions.
 | directory | files | meaning |
 |---|---|---|
 | `solutions-proved/` | 321 | complexity **proved** via ghost step counter |
-| `solutions-proved/value-bounded/` | 20 | proved, but the bound names an input VALUE; queued for review |
+| `solutions-proved/value-bounded/` | 22 | proved, but the bound names an input VALUE; queued for review |
 | `experiments/proofs-blind/` | 15 | blind-arm experiment attempts; label withheld from the author. NOT dataset rows |
 
 Older notes use other directory names; `bigodafny/CHANGELOG.md` § Undated maps
@@ -171,7 +171,7 @@ Sub-skills: `bigodafny-translate`, `bigodafny-verify`, `bigodafny-prove`.
   same harness shows a *higher* ratio: the excess is constant overhead.
   **Always measure against a control**, never against a ratio of 2.0.
 - **BigOBench's `O(n*m)` is wrong when the loop body does not scan a row.**
-  Eight examined, six wrong. The wrong ones read `row[0]`, `row[1]`, up to
+  Nine examined, seven wrong. The wrong ones read `row[0]`, `row[1]`, up to
   `row[4]` and never walk a row, so width does not enter the cost. 40 rows still
   carry the label. `1855_50` shows the failure is not confined to that label: it
   is marked `O(n**2)` and is straight-line code.

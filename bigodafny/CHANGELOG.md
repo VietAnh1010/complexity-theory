@@ -10,6 +10,16 @@ data lines go to `old-record.jsonl` beside the file they came from.
 
 ## 2026-10-08
 
+- Rebased the output-length, Z3 and cleanup work onto the remote re-audit
+  (below, 2026-10-01). Z3 5.1.0 stays the pin; the remote's run had used
+  4.12.1, under which `1871_156` and `1972_295` still verify.
+- The five re-translated proofs (`514_140`, `1029_92`, `1029_119`, `2942_55`,
+  `305_284`) take the remote's code and were re-charged for output length;
+  their earlier re-charges of the old code were dropped with their
+  `old-record.jsonl` lines.
+- Campaign records merged per row and field. Where both sides set `revision`,
+  the output-length one is kept and the remote line is in the campaign's
+  `old-record.jsonl`.
 - `1871_156` and `1972_295` left `solutions-proved/`: their proofs time out
   under Z3 5.1.0 and the repair failed. Proofs in
   `batches/z3-upgrade/unresolved/`; `1871_156` filed in
@@ -61,6 +71,20 @@ data lines go to `old-record.jsonl` beside the file they came from.
 
 ## 2026-10-01
 
+- Naming rule: a label is the tight class and names each size it depends on.
+  `O(n)` over several scanned strings and `O(n**2)` over two different sizes
+  are `O(n*m)`. In `COMPLEXITY.md` and the audit brief.
+- Re-audit r4 under the naming rule: 166 rows re-judged
+  (`verdicts_r4*`, 8 overrides); 22 rows into `solutions-disputed/`, 4 out.
+- The 157 rows already in `solutions-disputed/` re-audited under r3 with their
+  old header stripped (`verdicts_r3d_*`): 138 `mismatch`, 12 released to
+  `solutions/`, 6 `unsure`; one override (`1484_26`).
+- New status directory `solutions-unsure/` for rows the audit could not
+  decide; every gate searches it. Partition: 291 / 127 / 202 / 8 / 5 / 3 / 4.
+- Five translations fixed to keep the Python's algorithm: `514_140` (`2**i`
+  by squaring), `1029_92`, `1029_119`, `1332_16` (bitwise ops through `bv64`),
+  `2942_55` (a map for the Python's dict); `305_284`'s search loop restored.
+  `2942_55` and `305_284` re-proved in `solutions-proved/value-bounded/`.
 - Label re-audit r3 of the 344 rows then in `solutions/`, under: input values
   are cost parameters, `IntToString` costs 1, `Gcd` costs Euclid's depth.
   288 `ok`, 45 `mismatch`, 11 `unsure`; the 45 moved to `solutions-disputed/`.

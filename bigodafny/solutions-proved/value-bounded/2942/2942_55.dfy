@@ -78,7 +78,7 @@ ghost function TokBits(t: seq<seq<string>>, k: nat): nat
 }
 
 method Solve(n: int, transactions: seq<seq<string>>) returns (output: string, ghost steps: nat)
-  ensures steps <= 20 * (if n > 0 then n else 0) + TokBits(transactions, if n > 0 then n else 0) + 10
+  ensures steps <= 20 * (if n > 0 then n else 0) + TokBits(transactions, if n > 0 then n else 0) + 10 + |output|
 {
   steps := 1;
   var s := n;
@@ -144,7 +144,7 @@ method Solve(n: int, transactions: seq<seq<string>>) returns (output: string, gh
   } else {
     output := IntToString(0);
   }
-  steps := steps + 2;
+  steps := steps + 2 + |output|;
 }
 
 // 2**e by squaring: depth log e, as Python's ** is one operation

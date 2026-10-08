@@ -58,7 +58,7 @@ The seven status directories partition the 640 rows:
 | `solutions-unverified/` | 3 | Behaviour-gated, but Dafny cannot prove safety or termination. |
 | `solutions-untranslated/` | 4 | Bare-float output has no practical exact Dafny specification. |
 
-`solutions-proved/` is an overlay, not an eighth status. It contains @PROOFS@
+`solutions-proved/` is an overlay, not an eighth status. It contains 321
 instrumented copies with machine-checked complexity bounds.
 
 ## Repository map

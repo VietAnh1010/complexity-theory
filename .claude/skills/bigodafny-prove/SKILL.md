@@ -197,10 +197,9 @@ statement. Record the disagreement; never adjust the proof to match the label.**
 
 ## Results so far
 
-304 rows in `solutions-proved/`, one file each; all verify, zero `assume`
+321 rows in `solutions-proved/`, one file each; all verify, zero `assume`
 (`data/complexity_proofs.jsonl`). **`bigodafny/summaries/proof_obstructions.md` lists what is NOT
-provable and why — read it before picking a row.** 164 rows are blocked on
-`decreases *` (19 rows) and unmeasured `set`/`map` costs (44). Behavioural equivalence is established by **emitted-Python identity**,
+provable and why — read it before picking a row.** Behavioural equivalence is established by **emitted-Python identity**,
 not by re-running tests — see the gate note below.
 
 **`O(n*m)`: read the loop body, not the input shape.** Nine examined, seven

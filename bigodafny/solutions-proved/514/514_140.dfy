@@ -103,7 +103,7 @@ lemma TwoLoops514(n: nat, K1: nat, K2: nat)
 method {:vcs_split_on_every_assert} Solve(n: int, total_score: int, scores: seq<int>) returns (output: string, ghost steps: nat)
   requires n >= 0
   requires |scores| == n
-  ensures steps <= 4 * NLogN(n) + 12 * n + 4
+  ensures steps <= 4 * NLogN(n) + 12 * n + 4 + |output|
 {
   var l := total_score;
   var p := scores;
@@ -178,7 +178,7 @@ method {:vcs_split_on_every_assert} Solve(n: int, total_score: int, scores: seq<
   TwoLoops514(n, K1, K2);
   assert steps <= 2 + 4 * NLogN(n) + 12 * n;
   output := IntToString(res) + "\n";
-  steps := steps + 2;
+  steps := steps + 2 + |output|;
 }
 
 // 2**e by squaring: depth log e, as Python's ** is one operation

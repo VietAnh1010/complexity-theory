@@ -36,7 +36,7 @@ method Solve(n: int, a_list: seq<int>, b_list: seq<int>) returns (output: string
   requires |b_list| == n
   requires forall k :: 0 <= k < n ==> 0 <= a_list[k] < 0x1_0000_0000_0000_0000
   requires forall k :: 0 <= k < n ==> 0 <= b_list[k] < 0x1_0000_0000_0000_0000
-  ensures steps <= 3 + (10 * n + 12) * n
+  ensures steps <= 3 + (10 * n + 12) * n + |output|
 {
   steps := 1;
   var maxi := 0;
@@ -70,5 +70,5 @@ method Solve(n: int, a_list: seq<int>, b_list: seq<int>) returns (output: string
       by { MulDistribAdd(l - 1, 10 * n + 12); }
   }
   output := IntToString(maxi);
-  steps := steps + 1;
+  steps := steps + 1 + |output|;
 }
