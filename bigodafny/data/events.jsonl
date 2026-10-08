@@ -598,3 +598,6 @@
 {"ts": "2026-10-08T15:28:32", "kind": "verify_all", "total": 304, "verified": 304, "unverified": 0, "termination_opt_out": 7, "kinds": {}}
 {"ts": "2026-10-08T15:46:02", "kind": "fetch", "path": ".cache/time_complexity_test_set.jsonl", "bytes": 82341933}
 {"ts": "2026-10-08T15:46:03", "kind": "extract", "rows": 640, "problems": 311, "nondet_hint": 118}
+{"ts": "2026-10-08T17:43:51", "kind": "validate", "dafny_version": "4.11.0", "tiers": ["public_tests", "private_tests"], "validated": 534, "valid": 533, "fail": 1, "build": 0, "error": 0}
+{"ts": "2026-10-08T18:04:32", "kind": "difftest", "agrees": 95, "untranslated": 4}
+{"ts": "2026-10-08T18:04:38", "kind": "dataset", "rows": 640, "problems": 311, "splits": {"strict": 534, "loose": 100, "unvalidatable": 6}}

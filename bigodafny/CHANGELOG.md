@@ -50,6 +50,11 @@ data lines go to `old-record.jsonl` beside the file they came from.
   `label_audit.py siblings` and `baseline.py --round-trip`; directory lists
   include `solutions-unsure/` and `solutions-ungateable/`; `label_audit.py`'s
   docstring describes the stipulated model.
+- Full `validate.py` run on the current tree: 533 of 534 strict rows valid,
+  `1738_180` fails as before, the five re-translated rows pass. The record now
+  matches what a plain run produces; the 4 ungateable rows and the 2
+  `unvalidatable` `1950` rows are no longer in it. Loose tier re-run: 99 rows
+  unchanged, `1332_16` agrees on 44 of 44 tests.
 - Python runs from a local `.venv` made with uv (git-ignored).
 - `requirements.txt` names `numpy`, which every row's `Input` dataclass imports;
   no doc had listed a Python dependency. README's Z3 pin corrected to 5.1.0.
