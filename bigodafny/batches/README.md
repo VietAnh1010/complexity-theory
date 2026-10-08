@@ -1,14 +1,14 @@
-# `batches/` — work manifests, one directory per campaign
+# `batches/` — one directory per campaign or migration
 
-A manifest is a list of `solution_id`s handed to a batch of agents. They are
-kept so a run is reproducible and so a claim about "wave 5" can be checked
-against what wave 5 actually contained.
+Each holds what a run was given and what came back: the brief, the rows handed
+out, the records the agents wrote, and the audit of them. They are kept so a
+claim about a run can be checked against what it actually contained.
 
 | directory | campaign | contents |
 |---|---|---|
 | `labelaudit/` | the label audit | `PROMPT.md`, `verdicts_NN.jsonl`, and `batch_NN.json` (git-ignored) |
 | `cost-axioms/` | `PLAN.md` — axiomatise collection cost; drop `array<T>` | plan only, no manifest |
-| `gate-audit/` | the seven `solutions/` rows with no passing gate result | control rows and script |
+| `gate-audit/` | the seven `solutions/` rows with no passing gate result | control results (`control.jsonl`) |
 | `prove-sample/`, `prove-sample-2/` … `prove-sample-8/` | bounded proof campaigns | see `CAMPAIGN_CONFIG.md` |
 | `value-bounded-open/` | value-bounded rows with no proof yet | `MANIFEST.jsonl` |
 | `z3-upgrade/` | repairing proofs that time out under Z3 5.1.0 | brief, trajectory, audit, attempts, transcripts |

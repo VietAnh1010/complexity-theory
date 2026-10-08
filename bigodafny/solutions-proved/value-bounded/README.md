@@ -68,8 +68,8 @@ why its bound names a value. History: `../../CHANGELOG.md`.
 | `704_351` | `O(1)` | prove-sample-3 |
 | `794_794` | `O(n)` | prove-sample-7 |
 | `810_131` | `O(n)` | prove-sample |
-| `2942_55` | `O(n)` | main agent, 2026-10-01 |
-| `305_284` | `O(n+m)` | main agent, 2026-10-01 |
+| `2942_55` | `O(n)` | main agent, re-translation |
+| `305_284` | `O(n+m)` | main agent, re-translation |
 
 Three causes recur:
 

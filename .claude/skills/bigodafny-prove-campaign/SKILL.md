@@ -140,7 +140,8 @@ reason written out, never inside a script.
 
 ### 6. Collect for the artifact
 
-Extend `bigodafny/collect.py` with the batch and re-run it into
+Add the batch to `BATCHES` in `bigodafny/prove_stats.py` and run it; it writes
+`data/prove_stats.md`, and `collect.py` folds the same figures into
 `out/artifact_data.json`. Report, at minimum:
 
 - drawn, proved, unresolved;
@@ -194,7 +195,7 @@ the refreshed `data/`. Push to the session's designated branch.
   project reported a crossover — `O(nlogn)` overtaking `O(n)` — and campaign 4
   did not reproduce it. Pooled over four campaigns `O(n)` is 86% and
   `O(nlogn)` 66%, the ordering campaign 1 found. Read
-  `campaign_series.by_label[...].pooled` in `out/artifact_data.json`, and
+  the pooled column of `data/prove_stats.md` (`by_label` in `out/prove_stats.json`), and
   treat a single cell's `p_vs_pooled` as noise unless the next campaign
   reproduces it.
 - **Obstacles generalise where rates do not.** `value-to-size` was named
@@ -252,7 +253,7 @@ the refreshed `data/`. Push to the session's designated branch.
   the batch's `old-record.jsonl` as `{"file", "superseded_on", "why",
   "record"}`. Campaign rates are then computed from `agent_outcome`: a row a
   bounded agent missed stays missed in its campaign's rate, however it was
-  closed later. `prove_stats.py`, `collect.py` and `dedupe.py` all read it that
+  closed later. `prove_stats.py` and `collect.py` both read it that
   way. The 2026-09-23 revision is the worked example: 48 rows, 157
   superseded lines, campaign rates unchanged.
 - **A normalised batch has one record per row and nothing else current.** Each

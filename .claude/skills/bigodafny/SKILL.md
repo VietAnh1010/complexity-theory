@@ -1,6 +1,6 @@
 ---
 name: bigodafny
-description: Orientation and state for the BigOBench Python-to-Dafny dataset in bigodafny/. Use when resuming work on that dataset, when asked about translating rows to Dafny, verifying them, proving complexity labels, or when any of solutions/, solutions-unscreened/, solutions-disputed/, solutions-unverified/, solutions-untranslated/, solutions-proved/ are involved. Read this before touching anything in bigodafny/.
+description: Orientation and state for the BigOBench Python-to-Dafny dataset in bigodafny/. Use when resuming work on that dataset, when asked about translating rows to Dafny, verifying them, proving complexity labels, or when any of solutions/, solutions-unscreened/, solutions-disputed/, solutions-unsure/, solutions-ungateable/, solutions-unverified/, solutions-untranslated/, solutions-proved/ are involved. Read this before touching anything in bigodafny/.
 ---
 
 # bigodafny — orientation
@@ -23,7 +23,8 @@ orientation.
 
 ```bash
 cd bigodafny && python3 dataset.py && cat data/stats.json
-for d in solutions solutions-unverified solutions-unscreened solutions-untranslated; do
+for d in solutions solutions-unscreened solutions-disputed solutions-unsure \
+         solutions-ungateable solutions-unverified solutions-untranslated solutions-proved; do
   printf "%-24s %s\n" "$d" "$(find $d -name '*.dfy' 2>/dev/null | wc -l)"
 done
 grep -rl 'TODO: translate' solutions --include='*.dfy' | wc -l   # stubs
@@ -75,11 +76,12 @@ benchmark and load-bearing for this dataset.
 | `proofs.py` | complexity **proved**; fails on any `assume` | `solutions-proved/` |
 | `precheck.py` | every added `requires` holds on real inputs | anything with `requires` |
 | `label_audit.py siblings` | same-problem rows converged despite different labels | everything |
-| `label_audit.py` | the label describes what the code costs | `solutions/` |
+| `label_audit.py` | the label describes what the code costs | `solutions/`, `solutions-disputed/` |
+| `baseline.py --round-trip` | a failing strict row is the harness's fault, not the translation's | rows `validate.py` fails |
 
 `callgraph.py` is a **measurement, not a gate**: it writes `data/call_depth.jsonl`,
 the longest acyclic chain from `Solve` per row, ghost declarations excluded.
-354 rows, depth 0–4, mean 1.97, 320 of them recursive. Use it to pick rows —
+291 rows (`solutions/`), depth 0–5, mean 2.02, 263 of them recursive. Use it to pick rows —
 depth 0–1 are self-contained and cheap to change; a deeper row pushes any
 edit through helper signatures.
 
@@ -152,8 +154,8 @@ Sub-skills: `bigodafny-translate`, `bigodafny-verify`, `bigodafny-prove`.
   that, every fact about a sequence's contents was lost across a sort and rows
   hand-wrote the same lemma over and over.
 - **Both remaining gates resolve a row to the wrong file.** `validate.py` and
-  `difftest.py` search `solutions/` first and take the first hit, so for a row that also sits in `solutions-proved/` they test the
-  uninstrumented original. `precheck.py` had the identical bug and was fixed
+  `difftest.py` search `solutions/` first and take the first hit, so for a row
+  that also sits in `solutions-proved/` they test the uninstrumented original. `precheck.py` had the identical bug and was fixed
   with `find_all()`; the fix never reached the other two. Use
   `validate.py --solutions-dir solutions-proved`, and for `loose` rows compare
   the emitted Python instead — identical compiled bytes beats a test sample.
@@ -172,6 +174,6 @@ Sub-skills: `bigodafny-translate`, `bigodafny-verify`, `bigodafny-prove`.
   **Always measure against a control**, never against a ratio of 2.0.
 - **BigOBench's `O(n*m)` is wrong when the loop body does not scan a row.**
   Nine examined, seven wrong. The wrong ones read `row[0]`, `row[1]`, up to
-  `row[4]` and never walk a row, so width does not enter the cost. 40 rows still
+  `row[4]` and never walk a row, so width does not enter the cost. 48 rows
   carry the label. `1855_50` shows the failure is not confined to that label: it
   is marked `O(n**2)` and is straight-line code.

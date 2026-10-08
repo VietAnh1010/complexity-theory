@@ -5,7 +5,7 @@ recorded gate result for each was negative or missing. This is what they turned
 out to be.
 
 The question the gates cannot answer on their own: **when `validate.py` says
-`fail`, is the translation wrong, or is the harness?** `control.py` answers it
+`fail`, is the translation wrong, or is the harness?** A control answers it
 by running the ORIGINAL PYTHON through the same `Input.from_str` round-trip the
 Dafny gets. Three outcomes, and only the third is the translation's fault:
 
@@ -92,7 +92,7 @@ test and marks a row **`unvalidatable`** when it raises, or when a `real`
 argument does not survive the float round-trip. It names exactly these six
 rows, with the same two causes, and has done since it was written.
 
-So `control.py` confirmed an existing classification; it did not discover one.
+So the control confirmed an existing classification; it did not discover one.
 Its worth is the per-test detail and the independent path to the same answer.
 
 The actual defect was in `sample.py`: it read `validation.jsonl` and
@@ -105,6 +105,6 @@ the split.
 
 | file | what it is |
 |---|---|
-| `control.py` | the Python-through-the-dataclass control; reads only |
-| `control.jsonl` | its per-row tally and per-test detail |
+| (control) | now `python3 baseline.py --round-trip SID...`; the one-off script was merged into it |
+| `control.jsonl` | the control's per-row tally and per-test detail |
 | `difftest_1501_224.json` | the re-measured loose-tier result |

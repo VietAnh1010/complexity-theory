@@ -49,7 +49,7 @@ run it. It is here for the other reason: the gate runs and cannot conclude.
 
 ## How this was established
 
-`batches/gate-audit/control.py` runs the **original Python** through the same
+`python3 baseline.py --round-trip SID...` runs the **original Python** through the same
 `Input.from_str` round-trip the Dafny gets. A gate runs one implementation, so
 it cannot tell a bad translation from a bad test; this can. For all four
 `validate.py` rows the Python fails in exactly the same places.

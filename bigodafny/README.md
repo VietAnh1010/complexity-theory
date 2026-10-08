@@ -41,7 +41,8 @@ There are two behaviour tiers:
 | `loose` | 100 | Compare the Dafny translation with the original Python. |
 
 The split is empirical: only 540 original Python programs reproduce the stored
-output byte-for-byte. The other 100 often have multiple accepted outputs, so a
+output byte-for-byte. Six of them are `unvalidatable`: the problem's own
+`Input.from_str` rejects their stored tests, so 534 are gated. The other 100 often have multiple accepted outputs, so a
 byte comparison would reject the original program itself.
 
 ## Current corpus shape
@@ -69,14 +70,19 @@ instrumented copies with machine-checked complexity bounds.
 | `prelude.dfy` | Shared helpers used by translations and proofs. |
 | `data/` | Generated corpus state, gate results, and analysis records. |
 | `batches/` | Campaign manifests, prompts, trajectories, and audit evidence. |
+| `out/` | Generated snapshots nothing reads back; git-ignored. |
 | `COMPLEXITY.md` | The stipulated cost model and proof approach. |
+| `CHANGELOG.md` | What changed in the corpus, its rules, or its tools, and when. |
 
 ## Toolchain
 
-The repository uses Dafny 4.11.0 and Z3 4.12.1. Typical commands are:
+The repository uses Dafny 4.11.0, Z3 5.1.0 and Python 3 with `numpy`
+(`requirements.txt`): every row's `Input` dataclass imports it. Typical commands
+are:
 
 ```bash
-# dafny and z3 on PATH
+# dafny and z3 on PATH; numpy in a local venv
+uv venv && uv pip install -r requirements.txt && source .venv/bin/activate
 # the build, in order
 python3 extract.py          # download BigOBench -> data/tasks.jsonl
 python3 signature.py        # dataclass -> Dafny Solve signatures
@@ -87,9 +93,11 @@ python3 dataset.py          # join everything -> dataset.jsonl, stats.json
 python3 selftest.py         # validate.py must report a wrong answer as fail, a build error as build
 python3 validate.py --only 1053_38
 python3 difftest.py --loose
+python3 verify_all.py       # dafny verify every translation -> data/verification.jsonl
 python3 proofs.py
 # derived data, after any change to the corpus
 python3 callgraph.py        # call depth per row -> data/call_depth.jsonl
+python3 prove_stats.py      # campaign statistics -> data/prove_stats.md
 python3 collect.py          # everything above, plus size and loop profile -> out/artifact_data.json
 ```
 

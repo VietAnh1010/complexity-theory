@@ -45,6 +45,23 @@ data lines go to `old-record.jsonl` beside the file they came from.
   status directory, not only `solutions/`, and compares with `autojunk=False`,
   which made the similarity order-independent: 87 candidate pairs, all 12
   quarantined rows among them.
+- Documentation sweep: `TODO.md` holds open items only; stale counts fixed
+  (strict gate, call graph, `O(n*m)` rows); `DOCS.md` and the skill list
+  `label_audit.py siblings` and `baseline.py --round-trip`; directory lists
+  include `solutions-unsure/` and `solutions-ungateable/`; `label_audit.py`'s
+  docstring describes the stipulated model.
+- Python runs from a local `.venv` made with uv (git-ignored).
+- `requirements.txt` names `numpy`, which every row's `Input` dataclass imports;
+  no doc had listed a Python dependency. README's Z3 pin corrected to 5.1.0.
+- `batches/gate-audit/control.py` merged into `baseline.py --round-trip`: the
+  original Python run on inputs passed through `Input.from_str`. Same tallies
+  as `control.jsonl` on its six rows.
+- `dedupe.py` merged into `prove_stats.py`: the deduplicated view is computed
+  from the draws it already loads; `data/campaign_dedup.json(l)` deleted.
+  Figures unchanged.
+- `collect.py` takes its campaign figures from `prove_stats.payload()` instead
+  of recomputing them per campaign, and no longer carries hand-typed notes
+  (campaign annotations, open decisions, a pinned Z3 version): 704 -> 321 lines.
 - `batches/output-length/transcripts/`: 32 per-run files concatenated into
   `pilot.jsonl`, `main.jsonl`, `fixup.jsonl`.
 - `features.py` moved from `experiments/` to the top level: `label_audit.py`

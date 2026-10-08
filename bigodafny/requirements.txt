@@ -1,0 +1,4 @@
+# Every row's Input dataclass (from BigOBench) imports numpy, so every gate that
+# marshals a stored test through Input.from_str needs it: validate.py,
+# difftest.py, precheck.py, baseline.py --round-trip.
+numpy

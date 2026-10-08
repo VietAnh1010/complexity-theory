@@ -27,7 +27,7 @@ for provenance, but they are not operational instructions.
 |---|---:|
 | Rows / problems | 640 / 311 |
 | Translated rows | 636 |
-| Strict behaviour gate | 529 valid, 3 failed, 2 parser-blocked |
+| Strict behaviour gate | 533 valid, 7 failed (the 4 ungateable rows, `1738_180`, `1950_45`, `1950_47`) |
 | Loose behaviour gate | 95 agree, 1 timeout-only unresolved, 4 untranslatable |
 | Clean `solutions/` rows | 291 |
 | Complexity proof files | 321, all verify without `assume` |
@@ -72,6 +72,8 @@ the others passed.
 | `precheck.py` | Do added preconditions accept the row's real inputs? |
 | `proofs.py` | Does an instrumented complexity proof verify without `assume`? |
 | `label_audit.py` / `checkverdicts.py` | Is a label-audit record well formed and consistent with proofs? |
+| `label_audit.py siblings` | Did two solutions of one problem converge although their labels differ? |
+| `baseline.py --round-trip` | Is a failing strict row the harness's fault rather than the translation's? |
 
 `solutions-ungateable/` exists for a different failure mode: the harness cannot
 produce evidence that the gate needs. It does not mean the translation is known
@@ -89,8 +91,9 @@ to be wrong.
 
 Collection costs are stipulated, not measured from the emitted Python. Sequence
 update, map update, and set insertion are charged O(1); sequence concatenation
-costs the length of its right operand; and a loop bounded by an input value is
-parameterized by that value. See `COMPLEXITY.md` for the complete model.
+costs the length of its right operand; a loop bounded by an input value is
+parameterized by that value; output costs one step per character; and a label
+names each size it depends on. See `COMPLEXITY.md` for the complete model.
 
 A record is only as current as the rules it was made under. `CHANGELOG.md`
 dates every rule change; check a record's date against it before reusing it.
@@ -99,8 +102,9 @@ dates every rule change; check a record's date against it before reusing it.
 
 `batches/prove-sample*` preserves what bounded agents did: manifests define the
 draw, `traj_*.jsonl` records attempts, `attempts/` keeps every attempt's
-`.dfy` that differs from the promoted proof, failed ones included, each unresolved record carries an `obstacle` code,
-and `label_relation.jsonl` records reviewed proof/label relationships. Campaigns
+`.dfy` that differs from the promoted proof (failed ones included), each
+unresolved record carries an `obstacle` code, and `label_relation.jsonl`
+records reviewed proof/label relationships. Campaigns
 1–8 predate `attempts/`: their failed attempts survive only as descriptions.
 Campaign 7 introduced `reads`, an ordered trace of material source, helper, and
 prelude declarations consulted during a proof.

@@ -89,8 +89,8 @@ that connect the counter to the input. Finally check the `ensures` bound and
 run `python3 proofs.py` to verify the overlay.
 
 A `decreases *` file may be safe on stored tests but has no termination argument
-for an all-input complexity proof. Such rows remain in `solutions-unverified/`
-until a real decreases measure is supplied.
+for an all-input complexity proof. Such a row cannot carry a proof until a real
+decreases measure is supplied.
 
 ## Why the backend is not the model
 
@@ -103,5 +103,5 @@ comparable; backend limitations stay in the record where they belong.
 
 `solutions-proved/` contains 321 checked proof files. It is an overlay: each
 proof also has a normal translated row in `solutions/`, `solutions-disputed/`,
-or `solutions-unscreened/`. The overlay proves the stated step bound; it does
+`solutions-unsure/` or `solutions-unscreened/`. The overlay proves the stated step bound; it does
 not certify the behaviour gate or the label audit.

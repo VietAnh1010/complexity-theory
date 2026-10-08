@@ -64,12 +64,9 @@ def dfy_files(root):
 def dfy_files_deep(root):
     """Every .dfy anywhere under root, at any depth.
 
-    The proof overlay grows variant subdirectories -- nlogn/, value-bounded/ --
-    and a flat listing misses them. When value-bounded/ was added this function
-    did not exist, the flat listing named only nlogn/ explicitly, and 12 rows
-    silently rejoined the pool as if unproved. Two of them were redrawn by
-    prove-sample-5. Enumerate the tree; do not maintain a list of subdirectory
-    names.
+    The proof overlay has subdirectories (value-bounded/), and a flat listing
+    misses them: it once let 12 proved rows rejoin the pool as if unproved.
+    Enumerate the tree; do not maintain a list of subdirectory names.
     """
     found = {}
     for dirpath, _, names in os.walk(root):

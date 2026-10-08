@@ -110,8 +110,7 @@ find solutions-unverified -name '*.dfy' | sed 's|.*/||; s|\.dfy||' | sort \
     - NEVER git add/commit/push. `git checkout --` on your own 20 files is
       allowed.
     - NEVER edit prelude.dfy, any *.py, or anything under data/, batches/,
-      summaries/, solutions/, solutions-unscreened/, solutions-proved/,
-      solutions-untranslated/.
+      summaries/, or any solutions*/ directory other than solutions-unverified/.
 
     # Report (concise)
     - how many of 20 now verify

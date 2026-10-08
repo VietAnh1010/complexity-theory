@@ -26,3 +26,6 @@
 
 # Demo agent runs; the published demo page holds what is shown from them.
 /demo/
+
+# Local Python environment: uv venv && uv pip install -r requirements.txt
+/.venv/

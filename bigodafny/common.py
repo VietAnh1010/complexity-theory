@@ -16,7 +16,6 @@ SOLUTIONS = ROOT / "solutions"
 # Behaviourally valid, but the complexity label was never screened against the
 # code: sibling-convergence candidates and set<T> users, quarantined before the
 # label audit ran and not part of its 506 rows. Quarantined, not deleted.
-# (was solutions-inexact/ -- "inexact" read as a claim about numbers.)
 UNSCREENED = ROOT / "solutions-unscreened"
 # Behaviourally valid, but `dafny verify` cannot discharge the obligations it
 # raises with no user specification at all -- a seq index, a division, a
@@ -29,8 +28,7 @@ UNTRANSLATED = ROOT / "solutions-untranslated"
 # not match what its Dafny costs; each file's header says which of the label or
 # the translation looks wrong. Awaiting manual review, so the rows are NOT
 # removed from the dataset -- every gate still runs on them and they still
-# carry a label. (was solutions-tofix/ -- under the cost axioms most of these
-# need no fix at all, so "tofix" overstated the verdict.)
+# carry a label.
 DISPUTED = ROOT / "solutions-disputed"
 # The gate cannot reach a verdict. Not "the translation failed" -- the stored
 # test data fails first, so there is no evidence to be had: a test the

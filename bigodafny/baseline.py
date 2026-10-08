@@ -7,14 +7,20 @@ the stored `output` is one accepted answer, not the only one.
 
 The result defines the `strict` split by measurement instead of by reading the
 problem statement for phrases like "print any of them".
+
+`--round-trip SID...` is the control for a failing `validate.py` row: each input
+first goes through the problem's own `Input.from_str`, as the Dafny's does.
+A test that raises there is `unparseable`; one that parses but no longer passes
+lost information in the dataclass. Either way the harness, not the
+translation, is at fault. Writes out/round_trip.jsonl.
 """
 from __future__ import annotations
-import argparse, json, subprocess, sys, tempfile
+import argparse, functools, json, subprocess, sys, tempfile
 from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
-from common import DATA, event, log, read_jsonl, write_jsonl
+from common import DATA, OUT, event, log, read_jsonl, write_jsonl
 
 RUNNER = r'''
 import json, signal, sys, io, os
@@ -48,12 +54,21 @@ json.dump(res, sys.stdout)
 '''
 
 
-def one(task):
+def one(task, round_trip=False):
     tests = [{"input": t["input"], "output": t["output"]}
              for k in ("public_tests", "private_tests")
              for t in task["tests"].get(k, [])]
     rec = {"solution_id": task["solution_id"], "problem_id": task["problem_id"],
            "n_tests": len(tests)}
+    if round_trip:
+        ns, kept = {}, []
+        for t in tests:
+            try:
+                exec(task["dataclass_code"], ns)
+                kept.append({**t, "input": repr(ns["Input"].from_str(t["input"]))})
+            except Exception:
+                pass
+        rec["unparseable"], tests = len(tests) - len(kept), kept
     if not tests:
         return {**rec, "python_status": "no-tests", "passed": 0}
     with tempfile.TemporaryDirectory() as d:
@@ -76,12 +91,20 @@ def one(task):
             else ("none" if c["pass"] == 0 else "partial")}
 
 
-def run(workers=8):
-    tasks = list(read_jsonl(DATA / "tasks.jsonl"))
+def run(workers=8, round_trip=None):
+    tasks = [t for t in read_jsonl(DATA / "tasks.jsonl")
+             if not round_trip or t["solution_id"] in round_trip]
     log(f"running {len(tasks)} original Python solutions against their own tests")
     with ProcessPoolExecutor(max_workers=workers) as ex:
-        rows = list(ex.map(one, tasks, chunksize=4))
+        rows = list(ex.map(functools.partial(one, round_trip=bool(round_trip)),
+                           tasks, chunksize=4))
     rows.sort(key=lambda r: (int(r["problem_id"]), r["solution_id"]))
+    if round_trip:
+        write_jsonl(OUT / "round_trip.jsonl", rows)
+        for r in rows:
+            log(f"  {r['solution_id']:10} pass {r['passed']:3}  unparseable "
+                f"{r['unparseable']:3}  of {r['n_tests']}")
+        return rows
     write_jsonl(DATA / "baseline.jsonl", rows)
     st = Counter(r["python_status"] for r in rows)
     log(f"python baseline: {dict(st)}")
@@ -93,4 +116,7 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser(prog="baseline.py")
     ap.add_argument("--workers", type=int, default=8,
                     help="rows run at the same time (default 8)")
-    run(workers=ap.parse_args().workers)
+    ap.add_argument("--round-trip", nargs="+", metavar="SID",
+                    help="run these rows' inputs through Input.from_str first")
+    a = ap.parse_args()
+    run(workers=a.workers, round_trip=a.round_trip)

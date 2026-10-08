@@ -1,30 +1,26 @@
-"""Assemble the evidence for a label audit, and act on the verdicts.
+"""Assemble the evidence for a label audit, act on the verdicts, find siblings.
 
 The question is whether a row's BigOBench complexity label describes what its
-Dafny actually costs, under the measured cost model in `COMPLEXITY.md`.
-
-Two stages, deliberately separated:
+Dafny costs, under the stipulated cost model in `COMPLEXITY.md`.
 
   `evidence`  deterministic. Extracts structural facts from each `.dfy` and
               pairs them with the label and the original Python. No model. Two
               runs produce byte-identical batches.
-  `apply`     takes agent verdicts and moves mismatching rows to
-              `solutions-disputed/`, one file per row, verdict recorded in the
-              header so a human reviewer needs nothing else open.
+  `apply`     takes agent verdicts and moves each row by verdict: `ok` to
+              `solutions/`, `mismatch` to `solutions-disputed/` with the verdict
+              in its header, `unsure` to `solutions-unsure/`.
+  `siblings`  same-problem rows whose Dafny converged although their labels
+              differ: one translation probably copied the other's algorithm.
 
-A mismatch has two very different causes and the audit must say which, because
-the repair differs:
+A mismatch has two causes, and the audit must say which, because the repair
+differs:
 
   cause=label        the PYTHON is not the labelled class either. BigOBench's
                      label is wrong; the translation is faithful.
-  cause=translation  the Python matches the label but the Dafny does not --
-                     the classic case is `s := s[i := v]` in a loop, O(1) in
-                     CPython and a full sequence copy in Dafny. Here the label
-                     is right about the program it was measured on and the
-                     TRANSLATION is the defect.
-
-93 rows carry that seq-update pattern, so without the distinction the review
-queue would be dominated by translation defects filed as label errors.
+  cause=translation  the Python matches the label but the Dafny does not: a
+                     replaced algorithm, a slice that is a view in Dafny and a
+                     copy in Python, or a library call reimplemented as a loop.
+                     The label is right; the TRANSLATION is the defect.
 """
 from __future__ import annotations
 import argparse, difflib, json, re, sys

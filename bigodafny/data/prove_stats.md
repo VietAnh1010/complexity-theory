@@ -52,9 +52,8 @@ population.
 
 The headline counts draw records. A row several campaigns drew is
 in it several times, and those are disproportionately the hard
-rows, since a repeat draw selects for failure. `dedupe.py` keeps
-one record per row — the most positive outcome — and writes the
-rest out as `superseded`.
+rows, since a repeat draw selects for failure. This view keeps
+one record per row, the most positive outcome.
 
 **281 of 329 distinct rows were proved by a bounded agent — 85%.** With the proofs the main agent made afterwards, 290 carry one now.
 

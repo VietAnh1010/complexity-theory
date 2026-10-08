@@ -102,5 +102,8 @@ corpus-wide record. `batches/README.md` documents known failures of this kind.
 ## Toolchain
 
 The reproducibility target is Dafny 4.11.0 with Z3 5.1.0; `proofs.py` records
-the Z3 it ran. Keep the version fixed for corpus-wide checks unless the task is
+the Z3 it ran. Python needs `numpy` (`requirements.txt`): every row's `Input`
+dataclass imports it, and without it every stored test fails to parse. It lives
+in `bigodafny/.venv` (`uv venv && uv pip install -r requirements.txt`); run the
+scripts with `.venv/bin/python`, not the system `python3`. Keep the version fixed for corpus-wide checks unless the task is
 explicitly a toolchain upgrade.
