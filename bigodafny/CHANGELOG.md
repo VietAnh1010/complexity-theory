@@ -25,6 +25,8 @@ data lines go to `old-record.jsonl` beside the file they came from.
   one-off scripts (`prep.py`, `promote.py`, `normalize.py`,
   `slim_transcripts.py`), `triage.json` and `proofs_run.log` deleted.
 - New rule in `CLAUDE.md`: delete one-off scripts when the task is done.
+- `bigodafny/.gitignore` now holds the project's ignore rules (moved from the
+  repository root); `demo/` is ignored and `visualization/` deleted.
 - New git-ignored `out/` (`common.OUT`) for generated files nothing reads back.
   Moved there: `artifact_data.json`, `prove_stats.json`, the three
   `*_summary.json`, `sibling_review.jsonl`.
