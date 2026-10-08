@@ -18,7 +18,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<string>) returns (output: string, ghost steps: nat)
-  ensures steps <= 4 * |a_list| + 3
+  ensures steps <= 4 * |a_list| + 3 + |output|
 {
   steps := 1;
   var h := ParseInts(a_list);
@@ -37,5 +37,6 @@ method Solve(n: int, a_list: seq<string>) returns (output: string, ghost steps: 
     steps := steps + 2;
   }
   output := IntToString(ans);
-  steps := steps + 1;
+  IntToStringDigits(ans);
+  steps := steps + |output|;
 }

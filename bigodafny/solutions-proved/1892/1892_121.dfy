@@ -54,7 +54,7 @@ lemma RemoveFirstLen(l: seq<int>, x: int)
 
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
   requires n <= |a_list|
-  ensures steps <= 2 * NLogN(|a_list|) + 7 * |a_list| + 6
+  ensures steps <= 2 * NLogN(|a_list|) + 7 * |a_list| + 6 + |output|
 {
   ghost var N := |a_list|;
   steps := 1;
@@ -85,7 +85,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
   if !flag1 || !flag2 {
     // JoinInts over N numbers: IntToString and its length are charged 1 each
     output := JoinInts(l, " ");
-    steps := steps + N + 1;
+    steps := steps + N + 1 + |output|;
   } else {
     // RemoveFirst is a recursive helper over the sequence: charged its length
     var rest := RemoveFirst(l, 2);
@@ -100,6 +100,6 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
     SortCostWithin(|rest|, N);
     var descending := Sort(rest, (x: int, y: int) => x > y);
     output := "2 1 " + JoinInts(descending, " ");
-    steps := steps + |descending| + 2;
+    steps := steps + |descending| + 2 + |output|;
   }
 }

@@ -60,7 +60,7 @@ lemma SumLenIntsSnoc(xs: seq<int>, extra: int)
 }
 
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
-  ensures steps <= 8 * |a_list| + 6
+  ensures steps <= 8 * |a_list| + 6 + |output|
 {
   var c1 := 0;
   var c2 := 0;
@@ -153,5 +153,5 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
   }
   SumLenIntsSingleDigit(ans);
   output := JoinInts(ans, " ");
-  steps := steps + SumLenInts(ans) + |ans| + 2;
+  steps := steps + |output| + |ans| + 2;
 }

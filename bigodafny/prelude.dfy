@@ -149,6 +149,79 @@ module Prelude {
     Join(seq(|xs|, i requires 0 <= i < |xs| => IntToString(xs[i])), sep)
   }
 
+  // ---- output length --------------------------------------------------------
+  // The cost model charges one step per character produced (COMPLEXITY.md).
+  // These give that count a name, so a proof can charge IntToString(x) its
+  // Digits(x) and Join its SumLen, and bound both by |output|.
+
+  // Characters IntToString(x) produces: its digits, plus one for a minus sign.
+  ghost function Digits(x: int): nat
+    decreases if x < 0 then 1 - x else x
+  {
+    if x < 0 then 1 + Digits(-x)
+    else if x < 10 then 1
+    else Digits(x / 10) + 1
+  }
+
+  lemma IntToStringDigits(x: int)
+    ensures |IntToString(x)| == Digits(x)
+    decreases if x < 0 then 1 - x else x
+  {
+    if x < 0 { IntToStringDigits(-x); }
+    else if x >= 10 { IntToStringDigits(x / 10); }
+  }
+
+  lemma DigitsMono(x: int, y: int)
+    requires 0 <= x <= y
+    ensures Digits(x) <= Digits(y)
+    decreases y
+  {
+    if x >= 10 { DigitsMono(x / 10, y / 10); }
+  }
+
+  ghost function SumLen(parts: seq<string>): nat
+    decreases |parts|
+  {
+    if |parts| == 0 then 0 else |parts[0]| + SumLen(parts[1..])
+  }
+
+  ghost function SumDigits(xs: seq<int>): nat
+    decreases |xs|
+  {
+    if |xs| == 0 then 0 else Digits(xs[0]) + SumDigits(xs[1..])
+  }
+
+  lemma JoinLen(parts: seq<string>, sep: string)
+    requires |parts| >= 1
+    ensures |Join(parts, sep)| == SumLen(parts) + (|parts| - 1) * |sep|
+    decreases |parts|
+  {
+    if |parts| > 1 {
+      JoinLen(parts[1..], sep);
+      assert (|parts| - 1) * |sep| == (|parts| - 2) * |sep| + |sep|;
+    }
+  }
+
+  lemma SumLenIntStrings(xs: seq<int>)
+    ensures SumLen(seq(|xs|, i requires 0 <= i < |xs| => IntToString(xs[i]))) == SumDigits(xs)
+    decreases |xs|
+  {
+    if |xs| > 0 {
+      var parts := seq(|xs|, i requires 0 <= i < |xs| => IntToString(xs[i]));
+      IntToStringDigits(xs[0]);
+      assert parts[1..] == seq(|xs| - 1, i requires 0 <= i < |xs| - 1 => IntToString(xs[1..][i]));
+      SumLenIntStrings(xs[1..]);
+    }
+  }
+
+  lemma JoinIntsLen(xs: seq<int>, sep: string)
+    requires |xs| >= 1
+    ensures |JoinInts(xs, sep)| == SumDigits(xs) + (|xs| - 1) * |sep|
+  {
+    JoinLen(seq(|xs|, i requires 0 <= i < |xs| => IntToString(xs[i])), sep);
+    SumLenIntStrings(xs);
+  }
+
   // ---- parsing ------------------------------------------------------------
 
   predicate IsSpace(c: char)

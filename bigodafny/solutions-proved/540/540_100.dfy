@@ -13,7 +13,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, k: int) returns (output: string, ghost steps: nat)
-  ensures steps <= 6
+  ensures steps <= 6 + |output|
 {
   steps := 1;
   if k % 2 != 0 {
@@ -21,5 +21,5 @@ method Solve(n: int, k: int) returns (output: string, ghost steps: nat)
   } else {
     output := IntToString((n - k + 2) / 2);
   }
-  steps := steps + 3;
+  steps := steps + 3 + |output|;
 }

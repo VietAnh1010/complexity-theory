@@ -52,7 +52,7 @@ lemma SortLength<T>(s: seq<T>, less: (T, T) -> bool)
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
   requires n == |a_list|
   requires n >= 1
-  ensures steps <= 2 * NLogN(n) + 2 * n + 4
+  ensures steps <= 2 * NLogN(n) + 2 * n + 4 + |output|
 {
   SortLength(a_list, (x: int, y: int) => x < y);
   SortCostNLogN(n);
@@ -81,5 +81,5 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
     }
     output := IntToString(res);
   }
-  steps := steps + 1;
+  steps := steps + 1 + |output|;
 }

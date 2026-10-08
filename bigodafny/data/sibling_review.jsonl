@@ -1,6 +1,0 @@
-{"a": "698_155", "a_complexity": "O(n)", "b": "698_43", "b_complexity": "O(n**2)", "dafny_similarity": 0.911, "problem_id": "698", "python_similarity": 0.026}
-{"a": "138_360", "a_complexity": "O(n)", "b": "138_449", "b_complexity": "O(n**2)", "dafny_similarity": 0.803, "problem_id": "138", "python_similarity": 0.036}
-{"a": "827_148", "a_complexity": "O(n**2)", "b": "827_40", "b_complexity": "O(nlogn)", "dafny_similarity": 0.819, "problem_id": "827", "python_similarity": 0.088}
-{"a": "2967_293", "a_complexity": "O(n*m)", "b": "2967_59", "b_complexity": "O(n+m)", "dafny_similarity": 0.859, "problem_id": "2967", "python_similarity": 0.125}
-{"a": "2870_46", "a_complexity": "O(n*m)", "b": "2870_71", "b_complexity": "O(n)", "dafny_similarity": 0.959, "problem_id": "2870", "python_similarity": 0.578}
-{"a": "2089_121", "a_complexity": "O(n*m)", "b": "2089_8", "b_complexity": "O(n)", "dafny_similarity": 0.988, "problem_id": "2089", "python_similarity": 0.892}

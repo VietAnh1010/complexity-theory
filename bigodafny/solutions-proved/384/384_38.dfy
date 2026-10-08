@@ -36,7 +36,7 @@ lemma SortLength<T>(s: seq<T>, less: (T, T) -> bool)
 }
 
 method Solve(v_0: int, v_1: seq<int>) returns (output: string, ghost steps: nat)
-  ensures steps <= 2 * |v_1| * (CeilLog2(|v_1|) + 1) + 6 * |v_1| + 10
+  ensures steps <= 2 * |v_1| * (CeilLog2(|v_1|) + 1) + 6 * |v_1| + 10 + |output|
 {
   steps := 1;
   SortCostTreeBound(|v_1|);
@@ -47,7 +47,7 @@ method Solve(v_0: int, v_1: seq<int>) returns (output: string, ghost steps: nat)
   steps := steps + |arr| + 1;
   if total % 2 == 1 {
     output := IntToString(total);
-    steps := steps + 1;
+    steps := steps + 1 + |output|;
   } else {
     var found := false;
     var ans := 0;
@@ -66,6 +66,6 @@ method Solve(v_0: int, v_1: seq<int>) returns (output: string, ghost steps: nat)
       steps := steps + 3;
     }
     output := if found then IntToString(ans) else "0";
-    steps := steps + 1;
+    steps := steps + 1 + |output|;
   }
 }

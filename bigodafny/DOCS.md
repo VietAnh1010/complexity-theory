@@ -15,6 +15,7 @@ Choose the path that matches the task.
 | Review a label | `COMPLEXITY.md`, `solutions-disputed/README.md`, and `batches/labelaudit/PROMPT.md` |
 | Write a complexity proof | `COMPLEXITY.md`, `solutions-proved/README.md`, and `batches/CAMPAIGN_CONFIG.md` |
 | Understand campaign results | `data/prove_stats.md` |
+| See what changed and when | `CHANGELOG.md` |
 | Read past work | `summaries/README.md` only after reading current documentation |
 
 The summaries and old campaign prompts are historical records. They are useful
@@ -28,22 +29,21 @@ for provenance, but they are not operational instructions.
 | Translated rows | 636 |
 | Strict behaviour gate | 529 valid, 3 failed, 2 parser-blocked |
 | Loose behaviour gate | 95 agree, 1 timeout-only unresolved, 4 untranslatable |
-| Clean `solutions/` rows | 291 |
-| Complexity proof files | 323, all verify without `assume` |
+| Clean `solutions/` rows | @SOL@ |
+| Complexity proof files | @PROOFS@, all verify without `assume` |
 | Bounded campaign results | 281 proved of 366 draws (77%) |
-| Distinct drawn rows with a proof now | 292 of 329 (89%) |
-| Label-audited rows | 506: 296 ok, 201 mismatch, 9 unsure (r4, 2026-10-01) |
+| Distinct drawn rows with a proof now | @DRAWN@ |
+| Label-audited rows | 506: 296 ok, 201 mismatch, 9 unsure |
 
 The status directories are the source of truth for a row's current state. Do
 not infer state from an old campaign result or commit message.
 
-`data/label_audit.jsonl` comes from re-audit r3 (2026-10-01) for every row in
-`solutions/` and `solutions-disputed/`, under the current rules: input values
-are cost parameters, `IntToString` is charged 1, a `Gcd` costs Euclid's depth.
-It moved 45 rows into the queue and released 12 from it. Re-audit r4 the
-same day re-judged 166 rows under the naming rule (a label names each size it
-depends on); it moved 22 into the queue and released 4. Only the 5
-`solutions-ungateable/` rows keep 2026-09-16 verdicts; every superseded line is
+`data/label_audit.jsonl` holds re-audit r3 verdicts for every row in
+`solutions/` and `solutions-disputed/`, revised by re-audit r4 under the naming
+rule (a label names each size it depends on). The rules applied: input values
+are cost parameters, `IntToString` costs 1, a `Gcd` costs Euclid's depth. Only
+the 5 `solutions-ungateable/` rows keep first-audit verdicts. Neither round
+charged output per character, as `COMPLEXITY.md` now does. Superseded lines are
 in `data/old-record.jsonl`.
 
 ## Status directories
@@ -92,14 +92,14 @@ update, map update, and set insertion are charged O(1); sequence concatenation
 costs the length of its right operand; and a loop bounded by an input value is
 parameterized by that value. See `COMPLEXITY.md` for the complete model.
 
-Older records may use the backend-derived cost model. The records remain, but
-they must not be reused as current guidance without checking their date.
+A record is only as current as the rules it was made under. `CHANGELOG.md`
+dates every rule change; check a record's date against it before reusing it.
 
 ## Campaign records
 
 `batches/prove-sample*` preserves what bounded agents did: manifests define the
 draw, `traj_*.jsonl` records attempts, `attempts/` keeps every attempt's
-`.dfy` including failed ones, each unresolved record carries an `obstacle` code,
+`.dfy` that differs from the promoted proof, failed ones included, each unresolved record carries an `obstacle` code,
 and `label_relation.jsonl` records reviewed proof/label relationships. Campaigns
 1–8 predate `attempts/`: their failed attempts survive only as descriptions.
 Campaign 7 introduced `reads`, an ordered trace of material source, helper, and

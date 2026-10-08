@@ -76,7 +76,7 @@ method Solve(a: int, b: int, c_list: seq<int>, d_list: seq<int>) returns (output
   requires |c_list| >= 1 && |d_list| >= 1
   ensures steps <= 2 * |c_list| * (CeilLog2(|c_list|) + 1)
                   + 2 * |d_list| * (CeilLog2(|d_list|) + 1)
-                  + 4 * AbsInt(SortInts(d_list)[0]) + 20
+                  + 4 * AbsInt(SortInts(d_list)[0]) + 19 + |output|
 {
   SortCostTreeBound(|c_list|);
   SortCostTreeBound(|d_list|);
@@ -110,5 +110,5 @@ method Solve(a: int, b: int, c_list: seq<int>, d_list: seq<int>) returns (output
   } else {
     output := IntToString(i);
   }
-  steps := steps + 2;
+  steps := steps + 1 + |output|;
 }

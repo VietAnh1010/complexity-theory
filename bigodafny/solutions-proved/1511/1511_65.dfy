@@ -25,7 +25,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(string_: string) returns (output: string, ghost steps: nat)
-  ensures steps <= 10 * |string_| + 5
+  ensures steps <= 10 * |string_| + 5 + |output|
 {
   var s := string_;
   var n := |s|;
@@ -49,5 +49,6 @@ method Solve(string_: string) returns (output: string, ghost steps: nat)
     steps := steps + 2;
   }
   output := IntToString(c);
-  steps := steps + 1;
+  IntToStringDigits(c);
+  steps := steps + |output|;
 }

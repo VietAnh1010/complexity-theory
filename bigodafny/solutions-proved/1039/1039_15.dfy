@@ -60,13 +60,13 @@ function ParseIntList(ss: seq<string>): seq<int>
 }
 
 
-method Solve(n_str: string, a_list_str: string) returns (output: string, ghost steps: nat)
+method {:isolate_assertions} Solve(n_str: string, a_list_str: string) returns (output: string, ghost steps: nat)
   requires var nums := ParseIntList(SplitWs(a_list_str));
            var n := ParseInt(n_str);
            n >= 0 && |nums| == n && forall k :: 0 <= k < |nums| ==> 1 <= nums[k] <= n
   ensures var n := ParseInt(n_str);
           n >= 0 &&
-          steps <= 5 * NLogN(n + 1) + 11 * n + |n_str| + |a_list_str| + 10
+          steps <= 5 * NLogN(n + 1) + 11 * n + |n_str| + |a_list_str| + |output| + 10
 {
   var n := ParseInt(n_str);
   var nums := ParseIntList(SplitWs(a_list_str));
@@ -149,5 +149,6 @@ method Solve(n_str: string, a_list_str: string) returns (output: string, ghost s
   SearchLoopWithin(N, N, N, 3, 4);
   assert steps <= base + 3 * NLogN(N) + 4 * N;
   output := IntToString(total);
-  steps := steps + 2;
+  IntToStringDigits(total);
+  steps := steps + 1 + |output|;
 }

@@ -50,7 +50,7 @@ import opened Prelude
 
 method Solve(n: int, data: seq<(int, int, int)>) returns (output: string, ghost steps: nat)
   requires forall k :: 0 <= k < |data| ==> data[k].0 >= 2 && 0 <= data[k].1 < data[k].2
-  ensures steps <= 20 * PrefixSum(seq(|data|, k requires 0 <= k < |data| => data[k].0), |data|) + 20 * |data| + 2
+  ensures steps <= 20 * PrefixSum(seq(|data|, k requires 0 <= k < |data| => data[k].0), |data|) + 20 * |data| + 2 + |output|
 {
   ghost var firsts := seq(|data|, k requires 0 <= k < |data| => data[k].0);
   steps := 1;
@@ -58,7 +58,7 @@ method Solve(n: int, data: seq<(int, int, int)>) returns (output: string, ghost 
   var t := 0;
   while t < |data|
     invariant 0 <= t <= |data|
-    invariant steps <= 1 + 20 * PrefixSum(firsts, t) + 20 * t
+    invariant steps <= 1 + 20 * PrefixSum(firsts, t) + 20 * t + |output|
     decreases |data| - t
   {
     var (nn, x, y) := data[t];
@@ -69,7 +69,7 @@ method Solve(n: int, data: seq<(int, int, int)>) returns (output: string, ghost 
       invariant i > 1 ==> |arr| >= 1
       invariant |arr| <= i - 1
       invariant forall k :: 0 <= k < |arr| ==> arr[k].1 > 0
-      invariant steps <= 1 + 20 * PrefixSum(firsts, t) + 20 * t + 6 * (i - 1)
+      invariant steps <= 1 + 20 * PrefixSum(firsts, t) + 20 * t + |output| + 6 * (i - 1)
       decreases nn - i
     {
       if (y - x) % i == 0 {
@@ -90,7 +90,7 @@ method Solve(n: int, data: seq<(int, int, int)>) returns (output: string, ghost 
     while j < |arr|
       invariant 1 <= j <= |arr|
       invariant best.1 > 0
-      invariant steps <= 1 + 20 * PrefixSum(firsts, t) + 20 * t + 6 * (nn - 1) + 3 * (j - 1)
+      invariant steps <= 1 + 20 * PrefixSum(firsts, t) + 20 * t + |output| + 6 * (nn - 1) + 3 * (j - 1)
       decreases |arr| - j
     {
       if arr[j].0 < best.0 || (arr[j].0 == best.0 && arr[j].1 < best.1) {
@@ -109,7 +109,8 @@ method Solve(n: int, data: seq<(int, int, int)>) returns (output: string, ghost 
       invariant step > 0
       invariant v == start + cnt3 * step
       invariant 0 <= cnt3 <= nn
-      invariant steps <= 1 + 20 * PrefixSum(firsts, t) + 20 * t + 9 * (nn - 1) + 2 * cnt3
+    invariant |vals| == cnt3
+      invariant steps <= 1 + 20 * PrefixSum(firsts, t) + 20 * t + |output| + 9 * (nn - 1) + 2 * cnt3
       decreases total - v
     {
       vals := vals + [v];
@@ -117,8 +118,11 @@ method Solve(n: int, data: seq<(int, int, int)>) returns (output: string, ghost 
       cnt3 := cnt3 + 1;
       steps := steps + 2;
     }
+    assert step * (nn - 1) >= 0 by { assert nn - 1 >= 1; }
+    assert |vals| >= 1;
+    JoinIntsLen(vals, " ");
     output := output + JoinInts(vals, " ") + "\n";
-    steps := steps + 20;
+    steps := steps + 20 + SumDigits(vals) + |vals|;
     assert PrefixSum(firsts, t + 1) == PrefixSum(firsts, t) + nn;
     t := t + 1;
   }

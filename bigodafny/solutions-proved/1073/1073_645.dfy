@@ -40,7 +40,7 @@ lemma FactorialStepsBound(a: int)
 
 method Solve(n: int) returns (output: string, ghost steps: nat)
   requires n >= 0
-  ensures steps <= 6 * n + 30
+  ensures steps <= 6 * n + 30 + |output|
 {
   steps := 1;
   var rawN := n + 1;
@@ -72,7 +72,8 @@ method Solve(n: int) returns (output: string, ghost steps: nat)
   steps := steps + 1;
 
   output := IntToString(FloorDiv(step, 2));
-  steps := steps + 2;
+  IntToStringDigits(FloorDiv(step, 2));
+  steps := steps + 1 + Digits(FloorDiv(step, 2));
 
   FactorialStepsBound(rawN);
   FactorialStepsBound(half - 1);

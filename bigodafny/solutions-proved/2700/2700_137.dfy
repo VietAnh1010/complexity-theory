@@ -35,7 +35,7 @@ import opened Prelude
 // argument. The whole method is O(1).
 method Solve(N: int, time: string) returns (output: string, ghost steps: nat)
   requires |time| == 5
-  ensures steps <= 30
+  ensures steps <= 30 + |output|
 {
   steps := 1;
   var h := ParseInt(time[0..2]);
@@ -80,5 +80,5 @@ method Solve(N: int, time: string) returns (output: string, ghost steps: nat)
   s := s + IntToString(m);
   steps := steps + 2;               // IntToString (1) + concat (1)
   output := s + "\n";
-  steps := steps + 1;
+  steps := steps + 1 + |output|;
 }

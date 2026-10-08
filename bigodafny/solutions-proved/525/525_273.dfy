@@ -47,7 +47,7 @@ method Solve(n: int, points: seq<seq<int>>) returns (output: string, ghost steps
   requires n >= 1
   requires |points| == n
   requires forall k :: 0 <= k < |points| ==> |points[k]| >= 2
-  ensures steps <= 10 * n + 8
+  ensures steps <= 10 * n + 8 + |output|
 {
   steps := 1;
   var p0 := points[0];
@@ -76,5 +76,6 @@ method Solve(n: int, points: seq<seq<int>>) returns (output: string, ghost steps
     steps := steps + 10;
   }
   output := IntToString(count) + "\n";
-  steps := steps + 2;
+  IntToStringDigits(count);
+  steps := steps + 2 + Digits(count);
 }

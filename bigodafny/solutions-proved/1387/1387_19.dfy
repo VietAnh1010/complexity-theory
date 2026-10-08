@@ -44,7 +44,7 @@ function MinInt1387a(a: int, b: int): int { if a < b then a else b }
 
 method Solve(n: int, k: int, s: string) returns (output: string, ghost steps: nat)
   requires n == |s|
-  ensures steps <= 8 * n + 2 * NLogN(n) + 12
+  ensures steps <= 8 * n + 2 * NLogN(n) + |output| + 12
 {
   var p := k - 1;
   var ans := 0;
@@ -82,7 +82,8 @@ method Solve(n: int, k: int, s: string) returns (output: string, ghost steps: na
     steps := steps + 1;
   } else if |sortedPos| == 1 {
     output := IntToString(ans + AbsInt(p - sortedPos[0]));
-    steps := steps + 3;
+    IntToStringDigits(ans + AbsInt(p - sortedPos[0]));
+    steps := steps + 2 + Digits(ans + AbsInt(p - sortedPos[0]));
   } else {
     var first := sortedPos[0];
     var last := sortedPos[|sortedPos|-1];
@@ -90,9 +91,13 @@ method Solve(n: int, k: int, s: string) returns (output: string, ghost steps: na
     var a2 := AbsInt(p - last);
     if a1 < a2 {
       output := IntToString(ans + a1 + (last - first));
+      IntToStringDigits(ans + a1 + (last - first));
+      steps := steps + Digits(ans + a1 + (last - first));
     } else {
       output := IntToString(ans + a2 + (last - first));
+      IntToStringDigits(ans + a2 + (last - first));
+      steps := steps + Digits(ans + a2 + (last - first));
     }
-    steps := steps + 6;
+    steps := steps + 5;
   }
 }

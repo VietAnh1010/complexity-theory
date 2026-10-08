@@ -19,7 +19,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
-  ensures steps <= 10 * |a_list| + 10
+  ensures steps <= 10 * |a_list| + 10 + |output|
 {
   steps := 1;
   var a0: seq<int> := [];
@@ -64,4 +64,5 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
     output := output + Join(lines, "\n") + "\n";
     steps := steps + |lines| + 1;
   }
+  steps := steps + |output|;
 }

@@ -29,9 +29,19 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+lemma SumLenAppend(a: seq<string>, x: string)
+  ensures SumLen(a + [x]) == SumLen(a) + |x|
+  decreases |a|
+{
+  if |a| > 0 {
+    assert (a + [x])[1..] == a[1..] + [x];
+    SumLenAppend(a[1..], x);
+  }
+}
+
 method Solve(n: int, matrix: seq<seq<int>>) returns (output: string, ghost steps: nat)
   requires forall k :: 0 <= k < |matrix| ==> |matrix[k]| >= 3
-  ensures steps <= 11 * |matrix| + 2
+  ensures steps <= 11 * |matrix| + 2 + 2 * |output|
 {
   steps := 1;
   var lines: seq<string> := [];
@@ -39,7 +49,7 @@ method Solve(n: int, matrix: seq<seq<int>>) returns (output: string, ghost steps
   while t < |matrix|
     invariant 0 <= t <= |matrix|
     invariant |lines| == t
-    invariant steps <= 10 * t + 1
+    invariant steps <= 10 * t + 1 + SumLen(lines)
     decreases |matrix| - t
   {
     var row := matrix[t];
@@ -49,10 +59,13 @@ method Solve(n: int, matrix: seq<seq<int>>) returns (output: string, ghost steps
     var mi := MinSeq([a, b, c]) + 1;
     var ma := MaxSeq([a, b, c]) - 1;
     var ans := if ma - mi >= 0 then 2 * (ma - mi) else 0;
+    IntToStringDigits(ans);
+    SumLenAppend(lines, IntToString(ans));
     lines := lines + [IntToString(ans)];
     t := t + 1;
-    steps := steps + 10;
+    steps := steps + 10 + Digits(ans);
   }
   output := Join(lines, "\n");
-  steps := steps + |lines| + 1;
+  if |lines| >= 1 { JoinLen(lines, "\n"); }
+  steps := steps + SumLen(lines) + |lines| + 1;
 }

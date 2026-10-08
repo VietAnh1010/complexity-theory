@@ -69,7 +69,7 @@ method Solve(a: int, b: int, c_list: seq<int>, d_list: seq<int>) returns (output
   requires b >= 1
   requires |d_list| == |c_list|
   requires CountOnesUpTo(d_list, |d_list|) == b
-  ensures steps <= 14 * |c_list| + 15
+  ensures steps <= 14 * |c_list| + 15 + |output|
 {
   steps := 1;
   CountOnesUpToLe(d_list, |d_list|);
@@ -140,5 +140,5 @@ method Solve(a: int, b: int, c_list: seq<int>, d_list: seq<int>) returns (output
     steps := steps + 6;
   }
   output := JoinInts(dArr, " ");
-  steps := steps + 3 * b + 1;
+  steps := steps + 3 * b + 1 + |output|;
 }

@@ -54,7 +54,7 @@ function Abs82(x: int): int
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
   requires n >= 0
   requires |a_list| == n
-  ensures steps <= 2 * NLogN(n) + 9 * n + 11
+  ensures steps <= 2 * NLogN(n) + 9 * n + 11 + |output|
 {
   SortCostNLogN(n);
   steps := 1 + SortCost(n);
@@ -81,4 +81,5 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
   steps := steps + 2;
   assert steps <= 2 * NLogN(n) + 9 * n + 11;
   output := IntToString(ans) + "\n";
+  steps := steps + |output|;
 }

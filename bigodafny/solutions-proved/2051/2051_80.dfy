@@ -27,7 +27,7 @@ import opened Prelude
 method Solve(n: int, k: int, numbers: seq<int>) returns (output: string, ghost steps: nat)
   requires n >= 1
   requires n == |numbers|
-  ensures steps <= 2 * n * (CeilLog2(n) + 1) + 8 * n + 10
+  ensures steps <= 2 * n * (CeilLog2(n) + 1) + 8 * n + 10 + |output|
 {
   var a := numbers;
   var mx := 0;
@@ -60,5 +60,6 @@ method Solve(n: int, k: int, numbers: seq<int>) returns (output: string, ghost s
     steps := steps + 3;
   }
   output := IntToString(n - lo);
-  steps := steps + 1;
+  IntToStringDigits(n - lo);
+  steps := steps + |output|;
 }

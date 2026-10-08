@@ -33,7 +33,7 @@ import opened Prelude
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
   requires n == |a_list|
   requires n >= 1
-  ensures steps <= 1 + n * (8 * n + 1) + 2
+  ensures steps <= 1 + n * (8 * n + 1) + 2 + |output|
 {
   var arr := a_list;
   steps := 1;
@@ -75,5 +75,5 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
   }
   var idx := n / 2;
   output := IntToString(arr[idx]);
-  steps := steps + 2;
+  steps := steps + 1 + |output|;
 }

@@ -14,9 +14,10 @@ file holds the map and the reasons.
 
 ## The entry point is `bigodafny/DOCS.md`
 
-It has the reading order, the current counts, the document map, and the cost
-model change that invalidates anything older than 2026-09-16. This skill is the
-working map; that file is the orientation.
+It has the reading order, the current counts and the document map.
+`bigodafny/CHANGELOG.md` dates every rule change; check a record's date against
+it before reusing it. This skill is the working map; that file is the
+orientation.
 
 ## Check state first, always
 
@@ -49,16 +50,12 @@ also live above, so a row can exist twice with different preconditions.
 
 | directory | files | meaning |
 |---|---|---|
-| `solutions-proved/` | 304 | complexity **proved** via ghost step counter |
-| `solutions-proved/value-bounded/` | 13 | proved, but the bound names an input VALUE; queued for review |
+| `solutions-proved/` | 321 | complexity **proved** via ghost step counter |
+| `solutions-proved/value-bounded/` | 20 | proved, but the bound names an input VALUE; queued for review |
 | `experiments/proofs-blind/` | 15 | blind-arm experiment attempts; label withheld from the author. NOT dataset rows |
 
-Renames, if you are reading older notes: `solutions-inexact/` →
-`solutions-unscreened/`, `solutions-tofix/` → `solutions-disputed/`,
-`solutions-verified/` → `solutions-proved/` (it collided with `dafny verify`,
-which checks safety), `solutions-nlogn/` → `solutions-proved/nlogn/` (removed
-2026-09-23 as duplicates),
-`solution-guessed-verified/` → `experiments/proofs-blind/`.
+Older notes use other directory names; `bigodafny/CHANGELOG.md` § Undated maps
+them to these.
 
 ## The one structural fact
 
@@ -79,11 +76,6 @@ benchmark and load-bearing for this dataset.
 | `precheck.py` | every added `requires` holds on real inputs | anything with `requires` |
 | `siblings.py` | same-problem rows converged despite different labels | everything |
 | `label_audit.py` | the label describes what the code costs | `solutions/` |
-
-When the cost model changed on 2026-09-16, rows moved between `solutions/` and
-`solutions-disputed/` from the per-row decision table in
-`batches/cost-axioms/refile_decisions.jsonl`. That was not a re-audit and formed
-no new opinion about any row.
 
 `callgraph.py` is a **measurement, not a gate**: it writes `data/call_depth.jsonl`,
 the longest acyclic chain from `Solve` per row, ghost declarations excluded.
@@ -165,20 +157,19 @@ Sub-skills: `bigodafny-translate`, `bigodafny-verify`, `bigodafny-prove`.
   with `find_all()`; the fix never reached the other two. Use
   `validate.py --solutions-dir solutions-proved`, and for `loose` rows compare
   the emitted Python instead — identical compiled bytes beats a test sample.
-- **The cost model is stipulated, not measured** — since 2026-09-16.
-  `s[i := v]`, `m[k := v]`, `s + [x]`, `s[a..b]` and set insertion are all
-  charged `1`, regardless of what the Python backend does with them.
-  `bigodafny/COMPLEXITY.md` § 1 is the authority; its appendix keeps every
-  measurement, because the backend's behaviour is still true and twice
-  load-bearing. **This closed the project's largest defect class** — 93 rows
-  filed as `translation` because a Dafny collection copies where CPython
-  assigns in place. Those rows have no defect. Anything you read that charges
-  `|s|` for a seq update predates the switch.
-- **`Join` is linear**, charged `SumLen(parts) + \|parts\|`. An earlier note
-  here called it superlinear; that was measurement overhead read as an
-  exponent, and a known-linear control shows a *higher* implied exponent than
-  `Join` does. **Always measure against a control**, never against a ratio of
-  2.0. The bad call blocked 164 rows and cost four agent runs.
+- **The cost model is stipulated, not measured.** `s[i := v]`, `m[k := v]`,
+  `s + [x]`, `s[a..b]` and set insertion are all charged `1`, regardless of
+  what the Python backend does with them. `bigodafny/COMPLEXITY.md` § 1 is the
+  authority. A Dafny collection that copies where CPython assigns in place is
+  not a defect. A record that charges `|s|` for a seq update is older than the
+  model.
+- **Output costs one step per character.** `IntToString(x)` costs `Digits(x)`;
+  an additive `|output|` term never counts against a label. `SumLen`,
+  `Digits` and `SumDigits` are in the prelude.
+- **`Join` is linear**, charged `SumLen(parts) + \|parts\|`. Timing ratios
+  near 2.2 per doubling look superlinear, but a known-linear control in the
+  same harness shows a *higher* ratio: the excess is constant overhead.
+  **Always measure against a control**, never against a ratio of 2.0.
 - **BigOBench's `O(n*m)` is wrong when the loop body does not scan a row.**
   Eight examined, six wrong. The wrong ones read `row[0]`, `row[1]`, up to
   `row[4]` and never walk a row, so width does not enter the cost. 40 rows still

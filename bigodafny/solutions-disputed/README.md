@@ -7,254 +7,66 @@ confidence and the evidence, so a reviewer needs nothing else open.
 
 Produced by `label_audit.py` from agent verdicts that passed `checkverdicts.py`,
 with every mismatch re-checked by the orchestrating session before the move.
-
-> Renamed from `solutions-tofix/`. "To fix" overstated the verdict: 118 of the
-> 152 rows need a **label** changed, not code. What is disputed is the label,
-> and that is what the name now says.
-
-## Re-audit r4: the naming rule (2026-10-01)
-
-A label must be the tight class and name each size it depends on
-(`COMPLEXITY.md`; brief § *Naming the sizes*). `O(n)` over several scanned
-strings and `O(n**2)` for two different sizes are mismatches; both are
-`O(n*m)`. 160 rows that the rule could affect were re-audited: those with a
-multi-string or nested signature, an `O(n**2)` label over two inputs, a
-two-variable label, or an `unsure` verdict. Verdicts:
-`batches/labelaudit/verdicts_r4*.jsonl`; 8 main-agent overrides in
-`verdicts_r4_overrides.jsonl`.
-
-- **In from `solutions/` (9):** `1414_23`, `1954_83`, `2962_1968` (`O(n**2)` on
-  two sizes); `2087_119`, `2235_384` (`O(n)` over scanned strings);
-  `1421_53`, `3060_1359` (`O(n+m)` where one size is paid); `1718_1166`
-  (sorts beside the `O(n*m)` loop); `2704_92` (a fixpoint per word).
-- **In from `solutions-unsure/` (13):** `305_284`, `380_112`, `577_509`,
-  `662_527`, `662_559`, `1177_9`, `1177_230`, `1272_115`, `1272_278`,
-  `1935_61`, `2193_70`, `2254_143`, `2436_325`.
-- **Out to `solutions/` (4):** `514_140`, `1029_92`, `1029_119`, `1332_16`,
-  re-translated so `**`, `|` and `&` are one operation, as in the Python.
-- Re-translated and still here: `2942_55` (a map for the Python's dict) and
-  `305_284` (the Python's search loop restored); both bounds carry a value
-  term, in `solutions-proved/value-bounded/`.
-- The 59 rows already here stay; true classes moved to the rule's names.
-
-## Re-audit r3 moved 45 rows in (2026-10-01)
-
-Every row then in `solutions/` (344) was re-audited under the current rules:
-input values are cost parameters, `IntToString` is charged 1, a `Gcd` costs
-Euclid's depth. Brief: `batches/labelaudit/PROMPT.md`; verdicts:
-`batches/labelaudit/verdicts_r3_*.jsonl`. 288 `ok`, 45 `mismatch`, 11 `unsure` (now in `solutions-unsure/`).
-
-- **Value terms the label omits, `cause: label` (26):** `281_12`, `305_76`, `342_86`, `514_90`, `794_794`, `1043_358`, `1263_2538`, `1364_161`, `1386_19`, `1386_38`, `1580_12`, `1626_179`, `1675_29`, `1678_68`, `1820_180`, `1861_16`, `1867_16`, `1871_156`, `1871_291`, `1915_158`, `2128_34`, `2254_6`, `2423_48`, `2819_926`, `2942_42`, `2942_55`.
-- **Translation (10):** `514_140`, `647_11`, `704_351`, `1029_119`, `1029_92`, `1332_16`, `1944_50`, `1948_388`, `2358_103`, `2358_421`. Mostly a Dafny `sqrt` search or a
-  bit-by-bit recursion where the Python makes one call.
-- **Other (9):** labels above the code's class: `88_200`, `888_6`, `1180_626`,
-  `2913_309`, `2913_484`; below it: `1306_126`, `1414_8`, `2282_437`; and
-  `2680_221`, a `harness` case (the Python's cost is parsing outside `Solve`).
-
-## Re-audit r3 of the queue itself (2026-10-01)
-
-The 157 rows already here were re-audited on the same brief, with their old
-review header stripped so the auditor never saw the verdict it was re-judging.
-Verdicts: `batches/labelaudit/verdicts_r3d_*.jsonl`, plus one main-agent
-override in `verdicts_r3_overrides.jsonl` (`1484_26`: the auditor treated a
-20-character cap as constant; its proof bounds it in the string length).
-
-- **138 `mismatch`** stay, with the header rewritten to the r3 verdict.
-- **12 `ok`** went back to `solutions/` without a header: `101_10`,
-  `952_116`, `966_134`, `966_54`, `1073_822`, `1303_8`, `1306_15`, `1414_23`,
-  `1467_233`, `1733_64`, `2282_1118`, `2482_13`. Each had been queued under a
-  rule since withdrawn: a statement cap making a loop constant, a seq update
-  charged as a copy, a peeling recursion charged as quadratic, or bignum
-  arithmetic charged above 1.
-- **6 `unsure`** moved to `solutions-unsure/`: `378_20`, `380_112`,
-  `662_559`, `1177_230`, `1177_9`, `2193_70`.
-- `1950_45` and `1950_47` keep their gate-audit header; they are here for a
-  translation defect, not a label question.
-
-The queue was then 183 `mismatch` and `1950_45`; r4 above gives the current count.
+History: `../CHANGELOG.md`.
 
 ## These rows are still in the dataset
 
-Quarantined, not removed. Every gate runs on them, they keep their labels, and
-they appear in `data/dataset.jsonl` like any other row. 45 of them also carry a
-machine-checked complexity proof in `solutions-proved/` — the strongest input a
-reviewer can have, and `checkverdicts.py` rejects any verdict that contradicts
-one.
+Quarantined, not removed. `solutions-disputed` is in the root list of
+`validate.py`, `difftest.py`, `precheck.py` and `proofs.py`; the rows keep
+their labels and appear in `data/dataset.jsonl`. 44 of them also carry a
+machine-checked proof in `solutions-proved/`, the strongest input a reviewer
+can have; `checkverdicts.py` rejects any verdict that contradicts one.
 
-## The queue was re-filed when the cost model changed
+## Where the verdicts come from
 
-`COMPLEXITY.md` § 1 charges `s[i := v]`, `m[k := v]` and set insertion `1`, by
-stipulation. A verdict filed `cause: translation` *solely* because a Dafny
-collection copies where CPython assigns in place is no longer a defect. The queue
-was re-filed on 2026-09-16 from a decision written per row in
-`batches/cost-axioms/refile_decisions.jsonl`:
+| rows | verdict source | rules it applied |
+|---|---|---|
+| 45 | re-audit r3, `batches/labelaudit/verdicts_r3_*.jsonl` | input values are cost parameters; `IntToString` costs 1; `Gcd` costs Euclid's depth |
+| 152 | the first audit, after the cost-model re-file | stipulated collection costs; a capped value is a constant |
+| 5 | no `mismatch` verdict | `810_131`, `1484_26`, `2607_90` (value-versus-size convention); `1950_45`, `1950_47` (translation audit) |
 
-| | |
-|---|---|
-| left the queue | 31 |
-| **joined** the queue | 5 |
-| stayed, re-classified | 3 |
-| net | 178 → 152 |
+Two rules have changed since some verdicts were made:
 
-**Five rows moved the other way, and the plan did not predict it.** `1622_305`,
-`1748_145`, `1367_88`, `2505_30` and `2854_107` were filed `ok` only because the
-old per-write copy charge reproduced their `O(n**2)` label by accident — each
-verdict says so in its own evidence, and says the Python is linear. Charge the
-write `1` and the Dafny agrees with the Python while both disagree with the
-label, so the label is what is wrong. An accidental agreement is not a passing
-grade, and a model change exposes it in both directions.
+- **Values.** `COMPLEXITY.md` counts a loop bounded by an input value. The
+  first audit treated a capped value as a constant, so its value-loop verdicts
+  may invert. See "Open questions".
+- **Output.** `IntToString(x)` now costs `Digits(x)`, and an additive
+  `|output|` term never counts against a label. A verdict that relies on
+  `IntToString` costing 1 where the string is not output (a digit sum, a
+  comparison) may need re-checking.
 
-Two rows that looked like clean returns were not. `1336_340` and `1981_62`
-replace the Python's `sort` with a linear pass, so removing the copy charge does
-not land them on their `O(nlogn)` labels — it drops them *below*, to `O(n)`.
-They keep `cause: translation` in the too-fast direction. `2188_371` narrowed
-from `both` to `label` for the same reason: its translation half dissolved, its
-label half did not.
+## Counts
 
-Every row that left the queue was re-gated: 26 strict rows `VALID`, 5 loose rows
-`agrees`, and every file touched still passes `dafny verify`.
+| cause | rows | what is wrong | repair |
+|---|---:|---|---|
+| `label` | 155 | the **Python** is not the labelled class either | fix the label |
+| `translation` | 39 | the Python matches its label; the **Dafny** does not | fix the translation |
+| `both` | 6 | neither matches | both |
+| `harness` | 2 | both are right; the dataset drew the boundary differently | document it |
 
-
-## The audit is complete — all 506 rows screened
-
-_As of 2026-09-16; the r3 sections above give the current verdicts._
-
-Every row in `solutions/` has a verdict. 506 screened; after the re-file above,
-347 `ok`, 152 `mismatch`, 7 `unsure`. The mismatches are here.
-
-| cause | rows | before the re-file | what the repair is |
-|---|---|---|---|
-| `label` | 118 | 112 | BigOBench's label is wrong; the translation is faithful. Fix the label. |
-| `translation` | 27 | 58 | The label is right about the Python. Fix the Dafny. |
-| `both` | 6 | 7 | Neither matches. Both need work. |
-| `harness` | 1 | 1 | Nothing is wrong. The dataset drew the measurement boundary elsewhere. Document it. |
-
-`translation` more than halved, which is the whole point of the re-file: most of
-that class was a container difference, not a defect. What is left is the four
-shapes `batches/labelaudit/PROMPT.md` names — a replaced algorithm, a slice that
-is a view in Dafny and a copy in Python, a concat rebuilt at every recursion
-level, and a library call reimplemented as a loop.
-
-Confidence on the mismatches: 108 high, 38 medium, 6 low.
-22 rows carry `translation_defect` — the Dafny is in a worse class than the
-Python — including three whose verdict is `ok`, where the label and the defect
-happen to agree. Those are in `solutions/`, not here. The flag was cleared on
-every row whose only "defect" was a copying collection.
-
-17 rows land on `other`: their true class is outside the eleven-string
-vocabulary (cubic, or a cost in a value rather than a size). Read `evidence` for
-the real class.
-
-### The one question the audit did not settle
-
-A recurring group of rows takes only scalars the problem statement caps, and
-loops a number of times that grows with the *value* of those scalars but not
-with the input's *size*. This audit followed the prompt's rule — a capped value
-is a constant — and filed them as label errors at O(1) or O(n).
-
-If BigOBench measured by scaling those values, the original labels are right and
-these findings invert. The rows are at least `1306_15`, `1306_197`, `1678_212`,
-`1722_66`, `1738_180`, `2065_128`, `2128_34`, `2482_13`, `2639_73`, `2639_117`
-and `2700_53`. **Decide the convention once, then re-file the group** — it is one
-judgement, not eleven.
-
-**One row makes the question concrete, and it is not in this queue.**
-`solutions/1501/1501_224.dfy` is labelled `O(n)`, its whole input is one
-integer n, and its loop runs about n/12 times. Its own tests supply n up to
-**10^12**.
-
-An earlier version of this section said neither implementation terminates and
-that no gate can run on the row. Both claims were wrong, and they came from a
-`difftest.py` budget bug rather than from the row. With the budget derived from
-the test count, the row reports:
-
-| | |
-|---|---|
-| comparable tests | 93 of 122 |
-| agree | 77 |
-| Dafny timed out where the Python finished | **16** |
-| Python timed out, nothing to compare | 29 |
-
-So the Python completes 93 of its own tests and the Dafny completes 77. The row
-is `differs`, and every disagreement is a timeout — **zero wrong answers**. The
-translation is correct wherever it finishes and slower than CPython on the same
-input, which is what a bignum loop costs once it goes through the Dafny runtime.
-
-That leaves the convention question intact and adds a second one:
-
-- **Size reading:** the label is wrong. One integer input, work exponential in
-  its length.
-- **Value reading:** the label is right, and the row is a correct translation
-  that the gate cannot certify because the emitted Python is too slow.
-
-The second question is new: the corpus has no tier for *correct but too slow to
-gate*. `differs` reads as a behavioural failure and this is not one.
-
-Still the user's call. The twelve rows move as a group, and `1501_224` needs a
-decision about what `differs`-by-timeout-only should mean.
-
-## The three causes, and why they need different repairs
-
-| cause | count | what is wrong | repair |
-|---|---|---|---|
-| `label` | 30 | the **Python** is not the labelled class either | fix the label |
-| `translation` | 15 | the Python matches its label; the **Dafny** does not | fix the translation |
-| `harness` | 1 | both are right; the dataset drew the boundary differently | neither — document it |
+Confidence: 120 high, 74 medium, 6 low; the two translation-audit rows carry
+none. 53 rows have `audited class: other`: the true cost is outside the
+eleven-class vocabulary (cubic, or a cost in a value), named in the evidence.
 
 `harness` is the subtle one. The Python reads stdin and pays to parse every
 input, and BigOBench profiled the whole script. The Dafny's `Solve` takes those
-inputs already parsed, so parsing sits outside the measured method. A Python
-that does `b = list(map(int, input().split()))` and then reads only `b[0]` is
-genuinely O(n+m) while its faithful Dafny is O(n). Nothing is wrong with either.
-
-## Recurring shapes
-
-- **A dimension that cannot vary.** `O(n*m)` where a `requires` pins row width
-  (`276_1206`) or the body reads only fixed positions (`171_82`, `89_463`,
-  `525_273`, `396_361`).
-- **A loop bounded by a literal constant.** `531_3456` and `531_3499` loop
-  `while i < 5`; `514_39` is bounded by 31. Labelled `O(n)` or worse, truly O(1).
-- **A seq update inside a loop.** `s := s[i := v]` copies the whole sequence in
-  Dafny and is O(1) in CPython, so the translation gains a factor of n
-  (`209_103`, `223_3085`, `85_141`, `85_71`).
-- **A dropped or added algorithm step.** `685_583`'s Python sorts and its Dafny
-  takes a maximum by linear scan; `348_21` emulates a Python `set` with a linear
-  scan.
-
-## Fields a reviewer should not over-trust
-
-`true_class` held up against every row in `solutions-proved/` that carries a
-machine-checked bound. **`cause` is softer** — it needs reasoning about the
-Python's data shapes, not just its syntax, and review already overturned it
-twice, in both directions (`685_583`, `396_361`). Three rows are `confidence:
-low` and are marked as such.
-
-`true_class: other` means the true cost is outside the dataset's eleven-class
-vocabulary — cubic, or a cost in a value rather than an input size. The class is
-named in the evidence.
-
-## These rows are still gated
-
-`solutions-disputed` is in the root list of `validate.py`, `difftest.py`,
-`precheck.py` and `proofs.py`, so the rows are still validated, still carry
-their labels, and still count in `dataset.py`. Moving a row queues it for
-review; it does not remove it from the dataset.
+inputs already parsed. A Python that does `b = list(map(int, input().split()))`
+and then reads only `b[0]` is genuinely O(n+m) while its faithful Dafny is
+O(n). Nothing is wrong with either.
 
 ## A `translation` row can be too FAST, and that is the worse defect
 
-Both directions land in the queue as `cause: translation`, and they need
-opposite repairs. The schema only names one of them — `translation_defect: true`
-marks the Dafny as *slower* — so the other direction has to be read off the
-verdict itself: `cause: translation` where the audited class is **better** than
-the stated label.
+Both directions land as `cause: translation`, and they need opposite repairs.
+`translation_defect: true` marks only the Dafny being *slower*; the other
+direction is `cause: translation` with the audited class **better** than the
+label.
 
     label O(nlogn) -> audited O(n)   the Dafny is faster than the Python
 
-That is not a win. `bigodafny/CLAUDE.md` § "Translate the algorithm, not just
-the behaviour" forbids it, and it is invisible to both gates: the tests pass
-because the output is right. The row then claims a complexity it does not run,
-which is the one thing the dataset exists to get right.
-
+That is not a win. `bigodafny/CLAUDE.md` § "Preserve the algorithm" forbids it,
+and both gates miss it: the output is right. Comparing header classes finds 12
+such rows: `1336_340`, `1366_102`, `1368_67`, `1470_325`, `1470_470`,
+`1981_62`, `2087_50`, `2394_182`, `641_25`, `647_11`, `669_107`, `894_85`.
 Confirmed by reading both sources:
 
 | row | what the Python does | what the Dafny does |
@@ -265,125 +77,56 @@ Confirmed by reading both sources:
 | `685_583` | `sorted(a)` then `a[-1]` | two linear maxima |
 
 **Repair: restore the Python's algorithm, do not change the label.** The label
-is correct about the program BigOBench measured. Putting the sort back is the
-fix; relabelling the row to match a faster translation would bake the defect in.
+is correct about the program BigOBench measured; relabelling to match a faster
+translation bakes the defect in. The ordinary direction, audited class *worse*
+than the label, is repaired the opposite way: change the data structure, keep
+the algorithm.
 
-Eight rows on record currently read this way. Check the direction before
-starting: `cause: translation` with the audited class *worse* than the label is
-the ordinary case in the table below, and its repair is the opposite one —
-change the data structure, keep the algorithm.
+A `seq` update is never a translation defect: `COMPLEXITY.md` § 1 charges
+`s[i := v]` 1, so a row whose only difference is a copying collection is `ok`.
+Do not rewrite it or reach for another container.
 
-## There is no repair for a seq-update `translation` row
+## Recurring shapes
 
-A `translation` row used to mean: the Python is O(n), the Dafny is O(n²),
-because `s := s[i := v]` copies. That class is closed.
-`batches/cost-axioms/PLAN.md` charges `s[i := v]` O(1) by stipulation, so the
-Dafny and the Python are in the same class and the row is `ok`. Do not rewrite
-it, and do not reach for another container.
+- **A dimension that cannot vary.** `O(n*m)` where a `requires` pins row width
+  (`276_1206`) or the body reads only fixed positions (`171_82`, `89_463`,
+  `525_273`, `396_361`).
+- **A loop bounded by a literal constant.** `531_3456` and `531_3499` loop
+  `while i < 5`; `514_39` is bounded by 31. Labelled `O(n)` or worse, truly O(1).
+- **A dropped or added algorithm step.** `685_583`'s Python sorts and its Dafny
+  takes a maximum by linear scan; `348_21` emulates a Python `set` with a linear
+  scan.
+- **A value the label omits.** The bound grows with an input's magnitude
+  (`810_131`: binary search over the value `a*b`; `2607_90`: a loop over
+  `hi - lo`). These change the label, never the code.
 
-The backend numbers are kept because they are still true of the artifact, and
-because two rows depend on them:
+## Fields a reviewer should not over-trust
 
-| n | `s := s[i := v]` | `array<T>` `a[i] := v` |
-|---|---|---|
-| 4k | 0.059s | 0.004s |
-| 8k | 0.204s | 0.003s |
-| 16k | 0.795s | 0.003s |
-| 32k | **3.374s** | **0.006s** |
-
-Ratios of 3.4 / 3.9 / 4.2 per doubling: quadratic in the backend, O(1) per
-update under the axioms. `solutions/2826_42` and `solutions/2128_34` write
-tables far too large for the backend to copy per update, so those two keep an
-`array<T>` and say so in a header comment. They are the corpus's only arrays.
-Everywhere else the corpus is `seq`-only.
-
-`Std.DynamicArray` was investigated as an alternative and is not used. It needs
-`--standard-libraries` on every build path (`validate.py`, `difftest.py`, the
-harness) and emits roughly a hundred `Std_*.py` files beside each row, in
-exchange for a cost the axioms already grant `seq`.
-
-**Both are backend facts, not charges.** Under the axioms `s + [x]` and
-`s[i := v]` are each charged `1`, with no side condition about reading the
-accumulator. `COMPLEXITY.md` § 1 is the model; its appendix is where these
-timings belong.
-
-## Four rows arrived on 2026-09-17, and they are a different kind of dispute
-
-`810_131`, `1484_26`, `2381_156`, `2607_90`.
-
-Every other row here is disputed because an audit read the code and disagreed
-with the label. These four are disputed because **a convention was decided**
-and the label fell on the other side of it.
-
-A loop bounded by an input *value* now counts: the value is a parameter of the
-bound, not a constant absorbed because the problem statement caps it. The
-reasoning is that a capped value hides a constant of roughly 30 to 60, and a
-label carrying a constant that size has stopped predicting growth, which is the
-only thing a label is for. `COMPLEXITY.md` § 1 states it in full.
-
-| row | label | class under the convention |
-|---|---|---|
-| `810_131` | `O(n)` | `O(n log v)` — binary search over the value `a*b` |
-| `1484_26` | `O(n)` | `O(n * L)` — string comparison costs per character |
-| `2381_156` | `O(1)` | `O(log n)` — `IntToString` costs the digit count |
-| `2607_90` | `O(n)` | `O(n + (hi - lo))` — loop range read from input values |
-
-**The translations are not at fault and their proofs are correct.** Each proof
-stays in `solutions-proved/` and states the bound with the value term in it.
-What is in dispute is only whether BigOBench's label describes that bound.
-
-Resolving these four means changing the label, never the code. That makes them
-the cleanest `cause: label` rows in the directory — the disagreement is fully
-explained and there is nothing to re-measure.
+`true_class` held up against every row in `solutions-proved/` that carries a
+machine-checked bound. **`cause` is softer**: it needs reasoning about the
+Python's data shapes, not just its syntax, and review has overturned it in both
+directions (`685_583`, `396_361`).
 
 ## Two rows are here for the code, not the label
 
-`1950/1950_45.dfy` and `1950/1950_47.dfy` carry a `TRANSLATION AUDIT` header
-rather than a `LABEL AUDIT` one. What is disputed is the translation.
-
+`1950/1950_45.dfy` and `1950/1950_47.dfy` carry a `TRANSLATION AUDIT` header.
 Their problem's `Input` dataclass types the coefficient as `float` while the
 inputs carry up to 100 significant digits, so 19 of 42 stored tests fail for
-the **original Python** too once routed through it. No translation can exceed
-23/42. The Dafny passes 7 and 19 of those 23, so there are at least 16 and 4
-genuine failures on top of the harness defect: both cap the fractional part at
-12 digits where the Python uses `Decimal`.
+the **original Python** too. No translation can exceed 23/42. The Dafny passes
+7 and 19 of those 23: both cap the fractional part at 12 digits where the
+Python uses `Decimal`.
 
-To leave, they need 23/23 on the runnable tests. The other 19 fail in the
-problem's own harness, so they then go to `solutions-ungateable/` with an entry
-in `data/gate_ungateable.jsonl` (which replaced `data/gate_exempt.jsonl` on
-2026-09-21). `batches/gate-audit/` has the evidence.
+To leave, they need 23/23 on the runnable tests; they then go to
+`solutions-ungateable/` with an entry in `data/gate_ungateable.jsonl`.
+`batches/gate-audit/` has the evidence.
 
-## `276/276_610.dfy` came from a proof, not an audit pass
+## Open questions
 
-Added 2026-09-22 by `prove-sample-4`. Its machine-checked bound is
-
-    steps <= 13 * n + BoundFor(abc_list[..min(n, |abc_list|)]) + 2
-
-where the `BoundFor` term is `IntToString`'s digit-length charge on the values
-the YES branch prints. That grows with the **magnitude** of the input numbers,
-while the `O(n)` label was fitted against the test-case count alone.
-
-Same shape as `2381_156`, moved here on 2026-09-17. The difference is the
-evidence: the earlier four moved on an audit verdict, this one on a proof that
-`proofs.py` re-verifies on every run.
-
-## Undone by this decision: `IntToString` charges 1
-
-**2026-09-22.** `COMPLEXITY.md` now charges `IntToString(x)` and
-`|IntToString(x)|` one step each. Two rows had been moved here on the strength
-of the old digit-count charge and nothing else:
-
-| row | moved here | basis |
-|---|---|---|
-| `2381_156` | 2026-09-17 | `IntToString` and `HexHelper` cost the digit count of n |
-| `276_610` | 2026-09-22 | `Join`'s `SumLen` over `IntToString` output |
-
-Under the new charge neither label omits anything, so **both went back to
-`solutions/`** with a `LABEL AUDIT WITHDRAWN` header naming what changed, and
-both left `solutions-proved/value-bounded/`. Both were then re-proved tight:
-`2381_156` at `steps <= 6` and `276_610` at `steps <= 24 * n + 2`, each
-confirming its label outright.
-
-No other row here rests on that charge; the four moved under the
-value-versus-size convention turn on loops bounded by input values, which the
-convention still counts.
+- **Capped-value rows filed as constant.** The first audit filed these as label
+  errors at O(1) or O(n) by treating a capped value as a constant, the
+  opposite of `COMPLEXITY.md`'s rule: `1306_15`, `1306_197`, `1678_212`,
+  `1722_66`, `1738_180`, `2065_128`, `2128_34`, `2482_13`, `2639_73`,
+  `2639_117`, `2700_53`. Re-review them as one group under the value rule.
+- **Correct but too slow to gate.** `1501_224` (in `solutions-ungateable/`)
+  agrees on every test it finishes and times out on 16. The corpus has no
+  ruling on whether a timeout-only `differs` counts against a row.

@@ -16,7 +16,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, s: string) returns (output: string, ghost steps: nat)
-  ensures steps <= 800 * |s| + 2200
+  ensures steps <= 700 * |s| + 2001 + |output|
 {
   steps := 1;
   var cur := s;
@@ -40,7 +40,7 @@ method Solve(n: int, s: string) returns (output: string, ghost steps: nat)
     i := i - 1;
   }
   output := cur + "\n";
-  steps := steps + 1;
+  steps := steps + |output|;
 }
 
 function RepeatGo(i: int): string

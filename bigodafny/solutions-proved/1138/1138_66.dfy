@@ -25,7 +25,7 @@ method Solve(n: int, m: int, data: seq<seq<int>>) returns (output: string, ghost
   requires n >= 0
   requires |data| == n
   requires forall k :: 0 <= k < |data| ==> |data[k]| >= 2
-  ensures steps <= 8 * n + 3
+  ensures steps <= 8 * n + |output| + 2
 {
   steps := 1;
   var w := 0;
@@ -47,5 +47,5 @@ method Solve(n: int, m: int, data: seq<seq<int>>) returns (output: string, ghost
     steps := steps + 8;
   }
   output := IntToString(w);
-  steps := steps + 1;
+  steps := steps + |output|;
 }

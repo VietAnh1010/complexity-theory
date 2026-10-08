@@ -58,7 +58,7 @@ The seven status directories partition the 640 rows:
 | `solutions-unverified/` | 3 | Behaviour-gated, but Dafny cannot prove safety or termination. |
 | `solutions-untranslated/` | 4 | Bare-float output has no practical exact Dafny specification. |
 
-`solutions-proved/` is an overlay, not an eighth status. It contains 323
+`solutions-proved/` is an overlay, not an eighth status. It contains @PROOFS@
 instrumented copies with machine-checked complexity bounds.
 
 ## Repository map
@@ -90,8 +90,7 @@ python3 difftest.py --loose
 python3 proofs.py
 # derived data, after any change to the corpus
 python3 callgraph.py        # call depth per row -> data/call_depth.jsonl
-python3 corpusstats.py      # size and loop profile -> data/corpus_stats.json
-python3 collect.py          # everything above -> data/artifact_data.json
+python3 collect.py          # everything above, plus size and loop profile -> out/artifact_data.json
 ```
 
 The complexity model is intentionally not a measurement of Dafny's Python

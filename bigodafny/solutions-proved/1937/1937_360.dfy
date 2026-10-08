@@ -14,7 +14,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(a: int, b: int, c: int) returns (output: string, ghost steps: nat)
-  ensures steps <= 8
+  ensures steps <= 8 + |output|
 {
   var bVal := a;
   var gVal := b;
@@ -28,5 +28,6 @@ method Solve(a: int, b: int, c: int) returns (output: string, ghost steps: nat)
   if nVal < m { m := nVal; }
   steps := steps + 1;
   output := IntToString(1 + m);
-  steps := steps + 2;
+  IntToStringDigits(1 + m);
+  steps := steps + 1 + |output|;
 }

@@ -69,7 +69,7 @@ lemma MulDistribAdd(a: int, c: int)
 
 // Label O(n**2). Each of the 2n+1 calls to CountPair costs O(n).
 method Solve(string_: string) returns (output: string, ghost steps: nat)
-  ensures steps <= 2 * |string_| * |string_| + 6 * |string_| + 5
+  ensures steps <= 2 * |string_| * |string_| + 6 * |string_| + 5 + |output|
 {
   var s := string_;
   var n := |s|;
@@ -109,5 +109,6 @@ method Solve(string_: string) returns (output: string, ghost steps: nat)
     i := i + 1;
   }
   output := IntToString(result);
-  steps := steps + 1;
+  IntToStringDigits(result);
+  steps := steps + |output|;
 }

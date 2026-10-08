@@ -15,12 +15,12 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(a: int, b: int) returns (output: string, ghost steps: nat)
-  ensures steps <= 8
+  ensures steps <= 6 + |output|
 {
   steps := 1;
   var mx := if a > b then a else b;
   var mn := if a < b then a else b;
   steps := steps + 2;
   output := IntToString(mx - 1) + " " + IntToString(mn);
-  steps := steps + 5;
+  steps := steps + 3 + |output|;
 }

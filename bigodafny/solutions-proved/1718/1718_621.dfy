@@ -39,7 +39,7 @@ method Solve(N1: int, list1: seq<int>, N2: int, list2: seq<int>) returns (output
   requires N1 <= |list1|
   requires N2 <= |list2|
   ensures steps <= 2 * NLogN(|list1|) + 2 * NLogN(|list2|)
-                 + 6 * (if N1 > 0 then N1 else 0) + 6 * (if N2 > 0 then N2 else 0) + 10
+                 + 6 * (if N1 > 0 then N1 else 0) + 6 * (if N2 > 0 then N2 else 0) + 10 + |output|
 {
   steps := 1;
   var a := SortInts(list1);
@@ -70,5 +70,5 @@ method Solve(N1: int, list1: seq<int>, N2: int, list2: seq<int>) returns (output
     steps := steps + 6;
   }
   output := IntToString(cnt);
-  steps := steps + 4;
+  steps := steps + 3 + |output|;
 }

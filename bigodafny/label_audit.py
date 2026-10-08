@@ -31,7 +31,6 @@ import argparse, json, re, sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-sys.path.insert(0, str(Path(__file__).resolve().parent / "experiments"))
 from collections import Counter                                    # noqa: E402
 from common import DATA, ROOT, SOLUTIONS, UNSURE, log, read_jsonl, write_jsonl  # noqa: E402
 from features import (class_risk, extract, split_file,                  # noqa: E402

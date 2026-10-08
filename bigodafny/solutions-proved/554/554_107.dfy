@@ -17,7 +17,7 @@ import opened Prelude
 
 method Solve(n: int, pairs: seq<(int, int)>) returns (output: string, ghost steps: nat)
   requires forall t :: 0 <= t < |pairs| ==> 1 <= pairs[t].0 <= 150 && 0 <= pairs[t].1 <= 9
-  ensures steps <= 6 * |pairs| + 2
+  ensures steps <= 6 * |pairs| + 2 * |output| + 2
 {
   steps := 1;
 
@@ -188,7 +188,7 @@ method Solve(n: int, pairs: seq<(int, int)>) returns (output: string, ghost step
     steps := steps + 6;
   }
   output := Join(results, "\n");
-  steps := steps + 1;
+  steps := steps + 2 * |output|;
 }
 
 function RowField107(row: (int, int, int, int, int, int, int, int, int, int), kv: int): int

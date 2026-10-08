@@ -136,7 +136,7 @@ method SolveOne(a: string) returns (ok: bool, ghost steps: nat)
 }
 
 method Solve(n: int, strings: seq<string>) returns (output: string, ghost steps: nat)
-  ensures steps <= 4 * SumLen(strings) + 34 * |strings| + 3
+  ensures steps <= 4 * SumLen(strings) + 34 * |strings| + 3 + |output|
 {
   steps := 1;
   var parts: seq<string> := [];
@@ -156,5 +156,5 @@ method Solve(n: int, strings: seq<string>) returns (output: string, ghost steps:
   }
   assert strings[..|strings|] == strings;
   output := Join(parts, "");
-  steps := steps + 2;
+  steps := steps + 2 + |output|;
 }

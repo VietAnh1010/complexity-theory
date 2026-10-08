@@ -21,7 +21,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
-  ensures steps <= 2 * |a_list| * (CeilLog2(|a_list|) + 1) + 5 * |a_list| + 6
+  ensures steps <= 2 * |a_list| * (CeilLog2(|a_list|) + 1) + 5 * |a_list| + 6 + |output|
 {
   var sorted := SortInts(a_list);
   SortCostTreeBound(|a_list|);
@@ -50,5 +50,5 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
     steps := steps + 3;
   }
   output := IntToString(maxCount);
-  steps := steps + 1;
+  steps := steps + 1 + |output|;
 }

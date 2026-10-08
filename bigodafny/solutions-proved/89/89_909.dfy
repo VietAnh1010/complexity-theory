@@ -37,7 +37,7 @@ method Solve(n: int, lists: seq<seq<int>>) returns (output: string, ghost steps:
   requires |lists| == n
   requires forall idx :: 0 <= idx < |lists| ==>
     |lists[idx]| >= 5 && lists[idx][2] != 0 && lists[idx][3] != 0
-  ensures steps <= 13 * n + 3
+  ensures steps <= 13 * n + 3 + |output|
 {
   steps := 1;
   var parts: seq<string> := [];
@@ -68,5 +68,5 @@ method Solve(n: int, lists: seq<seq<int>>) returns (output: string, ghost steps:
     steps := steps + 2;
   }
   output := Join(parts, "\n");
-  steps := steps + 2;
+  steps := steps + 2 + |output|;
 }

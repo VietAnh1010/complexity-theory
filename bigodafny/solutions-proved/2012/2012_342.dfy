@@ -22,7 +22,7 @@ import opened Prelude
 method Solve(n: int, k: int, pairs: seq<seq<int>>) returns (output: string, ghost steps: nat)
   requires |pairs| >= 1
   requires forall idx :: 0 <= idx < |pairs| ==> |pairs[idx]| == 2
-  ensures steps <= 4 * |pairs| + 3
+  ensures steps <= 4 * |pairs| + 3 + |output|
 {
   steps := 1;
   var a0 := pairs[0][0];
@@ -45,4 +45,6 @@ method Solve(n: int, k: int, pairs: seq<seq<int>>) returns (output: string, ghos
     steps := steps + 4;
   }
   output := IntToString(best);
+  IntToStringDigits(best);
+  steps := steps + Digits(best);
 }

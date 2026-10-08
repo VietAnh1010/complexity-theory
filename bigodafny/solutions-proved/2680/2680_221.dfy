@@ -13,7 +13,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, list1: seq<int>, list2: seq<int>) returns (output: string, ghost steps: nat)
-  ensures steps <= 20000
+  ensures steps <= 20000 + |output|
 {
   steps := 1;
   var a := list1;
@@ -43,5 +43,5 @@ method Solve(n: int, list1: seq<int>, list2: seq<int>) returns (output: string, 
   } else {
     output := JoinInts([k, 2], " ");
   }
-  steps := steps + 4;
+  steps := steps + 1 + |output|;
 }

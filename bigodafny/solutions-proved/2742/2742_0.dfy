@@ -31,7 +31,7 @@ import opened Prelude
 // runs at most N-1 iterations, exiting early via z.
 method Solve(N: int, values: seq<int>) returns (output: string, ghost steps: nat)
   requires N == |values|
-  ensures steps <= 2 * NLogN(|values|) + 5 * |values| + 5
+  ensures steps <= 2 * NLogN(|values|) + 5 * |values| + 5 + |output|
 {
   SortCostNLogN(|values|);
   steps := 1 + SortCost(|values|);
@@ -57,5 +57,5 @@ method Solve(N: int, values: seq<int>) returns (output: string, ghost steps: nat
   if z == 0 {
     output := IntToString(N) + "\n";
   }
-  steps := steps + 1;
+  steps := steps + 1 + |output|;
 }

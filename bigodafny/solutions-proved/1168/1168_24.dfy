@@ -29,7 +29,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, s: string) returns (output: string, ghost steps: nat)
-  ensures steps <= 6 * |s| + 3
+  ensures steps <= 6 * |s| + 3 + |output|
 {
   steps := 1;
   var t := 0;
@@ -58,9 +58,9 @@ method Solve(n: int, s: string) returns (output: string, ghost steps: nat)
   }
   if l != 0 {
     output := "-1";
-    steps := steps + 1;
+    steps := steps + |output|;
   } else {
     output := IntToString(t);
-    steps := steps + 1;
+    steps := steps + |output|;
   }
 }

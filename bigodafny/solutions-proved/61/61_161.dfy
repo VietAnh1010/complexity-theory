@@ -37,7 +37,7 @@ import opened Prelude
 method Solve(n: int, k: int, ignored_lines: seq<int>) returns (output: string, ghost steps: nat)
   requires n >= 1
   requires |ignored_lines| == n
-  ensures steps <= 2 * n * (CeilLog2(n) + 1) + n + 15
+  ensures steps <= 2 * n * (CeilLog2(n) + 1) + n + 15 + |output|
 {
   SortCostTreeBound(n);
   var a := SortInts(ignored_lines);
@@ -45,14 +45,14 @@ method Solve(n: int, k: int, ignored_lines: seq<int>) returns (output: string, g
   steps := 1 + SortCost(n) + |a|;
   if n == 1 {
     output := IntToString(k + a[0]) + " " + IntToString(k + a[0]) + "\n";
-    steps := steps + 4;
+    steps := steps + 4 + |output|;
   } else {
     var mx := k + a[n-1];
     var temp := a[n-1] * n;
     steps := steps + 3;
     if temp - sum >= k {
       output := IntToString(a[n-1]) + " " + IntToString(mx) + "\n";
-      steps := steps + 4;
+      steps := steps + 4 + |output|;
     } else {
       var m := k - (temp - sum);
       var mn := a[n-1] + (m / n);
@@ -62,7 +62,7 @@ method Solve(n: int, k: int, ignored_lines: seq<int>) returns (output: string, g
         steps := steps + 1;
       }
       output := IntToString(mn) + " " + IntToString(mx) + "\n";
-      steps := steps + 4;
+      steps := steps + 4 + |output|;
     }
   }
 }

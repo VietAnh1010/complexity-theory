@@ -60,10 +60,19 @@ time.
 | `multiset(s)` | `\|s\|` |
 | `multiset(a) == multiset(b)` | `\|a\|+\|b\|` |
 | `Join(parts, sep)` | `SumLen(parts) + \|parts\|` |
+| `IntToString(x)` | `Digits(x)` |
+| `JoinInts(xs, sep)` | `SumDigits(xs) + \|xs\|` |
 | a recursive prelude function over a seq or string | its length |
 | a helper call | the helper's own `steps` |
 
-**The 33 existing proofs predate this.** Several charge `|s|` where the table now
+**Output costs one step per character.** `SumLen`, `Digits`,
+`SumDigits` and the lemmas `IntToStringDigits`, `JoinLen`, `JoinIntsLen` are in
+the prelude. Bound printing by `|output|`: an additive `c * |output|` term never
+counts against the label, because every solution pays it. A `Digits` charge that
+never reaches the output is ordinary work. `COMPLEXITY.md` has the rule;
+`2831_71` still charges `IntToString` one unit.
+
+**Some proofs are older than this table.** Several charge `|s|` where the table
 charges `1`, so their bounds are sound but not tight, and a couple prove a
 quadratic the axioms would let you prove linear. Re-read a proof's charges before
 citing its bound as evidence about a label.
@@ -74,22 +83,18 @@ Overcharging puts a correct label out of reach and invents a disagreement — th
 old unconditional `|s|` append charge did exactly that. A reviewer should check
 the charges before checking the invariants.
 
-**Measure against a control, never against a ratio of 2.0.** `Join` was called
-superlinear here on ratios of ~2.2 per doubling. A known-linear control in the
-same harness gives 2.40/2.32/2.24 — higher. The excess was constant overhead.
-That call blocked 164 rows and sent four agent runs to a decline they did not
-need, and refusing to charge an operation felt like the safe choice while it was
-happening. It is not: an overcharge invents a false obstruction exactly as an
-undercharge invents a false bound. `171_82`, `89_463`, `2602_57` and `378_20`
-are provable and are where a next wave should start.
+**Measure against a control, never against a ratio of 2.0.** `Join` shows
+ratios of ~2.2 per doubling; a known-linear control in the same harness gives
+2.40/2.32/2.24 — higher. The excess is constant overhead. Refusing to charge an
+operation feels safe and is not: an overcharge invents a false obstruction
+exactly as an undercharge invents a false bound.
 
 Constants are free: the label is asymptotic, so `steps <= 7*n + 12` proves O(n).
 Do not tune constants to look tight — take whatever the invariant supports.
 
 ## Logarithmic bounds
 
-**Sorts and binary searches: call the prelude.** Since 2026-09-23 `prelude.dfy`
-carries the sort charge, its tight bound, and a binary-search potential, in a
+**Sorts and binary searches: call the prelude.** `prelude.dfy` carries the sort charge, its tight bound, and a binary-search potential, in a
 form that composes. Do not copy a `SortCost` or `CeilLog2` into a proof.
 
 | lemma | gives |
@@ -150,12 +155,8 @@ its own lemma took it to 2.8s. The prelude's `CostMulMono`, `CostMulMonoLeft`,
 | `GcdLeFirst`, `GcdLeSecond` | a gcd is at most a positive argument |
 | `MaxSeqBound(s)` | every element is at most `MaxSeq(s)` |
 
-`BitLen(v)` and `SumLog(s, n)` state the result. The five rows re-proved this
-way on 2026-09-30 (`1386_38`, `1871_291`, ...) are worked examples.
-
-`solutions-proved/nlogn/` once held tight companions for two rows whose base
-proofs were quadratic. Both base proofs are tight since 2026-09-23 and the
-directory was removed.
+`BitLen(v)` and `SumLog(s, n)` state the result. `1386_38`, `1386_19`,
+`1871_291` and `1915_158` are worked examples.
 
 ## Procedure
 
@@ -239,7 +240,7 @@ recursion-tree argument — the machinery is now cheap.
 `827_148` has no polynomial bound at all until values are capped: its inner
 catch-up loop is data-dependent. The proof takes the problem's stated
 `1 <= d_i <= 1000` as a precondition and folds the cap into the constant. The
-label assumes the same thing silently. That proof predates the rule below: a
+label assumes the same thing silently. That proof is an exception to the rule below: a
 precondition like this now goes into the row first, not into the proof.
 
 **A proof never adds or changes a `requires` on the row's own methods and
@@ -256,8 +257,8 @@ so it is charged against `SumLen(numbers)`. That term is real work, not slack.
 `validate.py` and `difftest.py` both search `solutions/` first and take the
 **first** hit. A proved row exists in two places and
 `solutions/` is scanned first, so a plain `validate.py --only <sid>` on a proved
-row tests the **uninstrumented original**. `precheck.py` had this bug, was fixed
-with `find_all()`, and the fix never reached the other two. Do not fix it here —
+row tests the **uninstrumented original**. `precheck.py` checks every copy with
+`find_all()`; the other two do not. Do not fix it here —
 an agent may not edit a gate it is judged by. Instead:
 
 - `python3 validate.py --solutions-dir solutions-proved --only <sid>` points
@@ -272,17 +273,14 @@ an agent may not edit a gate it is judged by. Instead:
 `data/<prefix>validation.jsonl` (default `partial_`), never the canonical
 `data/validation.jsonl`.
 
-## Charging: the correction that cost the most
+## Charging `Join` and appends
 
-`Join` is **linear**, `SumLen(parts) + |parts|`. The opposite was recorded
-first, from ratios read without a control, and it blocked 164 rows for a
-session. Per-line output is not blocked; `171_82`, `89_463`, `2602_57` and
-`378_20` are the best next targets.
+`Join` is **linear**, `SumLen(parts) + |parts|`, so per-line output is not
+blocked; `171_82`, `89_463`, `2602_57` and `378_20` have no proof yet and are
+good targets.
 
-The append side condition is gone with the axioms — `s + [x]` is charged `1`
-unconditionally now, so a proof no longer has to state that the accumulator is
-not indexed inside the loop. That condition was about the backend's lazy concat
-node, and the backend is no longer what the charges describe.
+`s + [x]` is charged `1` unconditionally; a proof need not state that the
+accumulator is not indexed inside the loop.
 
 ## When the bound carries an input value
 
@@ -293,7 +291,7 @@ before deciding; it has the procedure, the manifest format, and the three ways
 a row leaves.
 
 If the bound needs the sort's ORDER — "the last element after sorting is the
-largest" — the prelude has it as of 2026-09-22:
+largest" — the prelude has it:
 
 ```dafny
 IntLessIsTotalOrder();                  // discharges StrictTotalOrder for int

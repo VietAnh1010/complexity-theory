@@ -585,3 +585,11 @@
 {"ts": "2026-10-01T10:15:39", "kind": "assume_scan", "count": 1}
 {"ts": "2026-10-01T10:17:34", "kind": "dataset", "rows": 640, "problems": 311, "splits": {"strict": 534, "loose": 100, "unvalidatable": 6}}
 {"ts": "2026-10-01T10:19:49", "kind": "verify_all", "total": 304, "verified": 304, "unverified": 0, "termination_opt_out": 7, "kinds": {}}
+{"ts": "2026-10-07T16:44:23", "kind": "proofs", "verified": 309, "total": 323, "with_assume": 0}
+{"ts": "2026-10-07T16:44:23", "kind": "assume_scan", "count": 1}
+{"ts": "2026-10-07T18:01:38", "kind": "proofs", "verified": 321, "total": 323, "with_assume": 0}
+{"ts": "2026-10-07T18:01:38", "kind": "assume_scan", "count": 1}
+{"ts": "2026-10-08T13:17:00", "kind": "proofs", "verified": 321, "total": 321, "with_assume": 0}
+{"ts": "2026-10-08T13:17:00", "kind": "assume_scan", "count": 1}
+{"ts": "2026-10-08T13:21:41", "kind": "assume_scan", "count": 0}
+{"ts": "2026-10-08T13:22:56", "kind": "assume_scan", "count": 0}

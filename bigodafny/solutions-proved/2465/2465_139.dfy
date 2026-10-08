@@ -25,7 +25,7 @@ method Solve(t: int, n_list: seq<int>) returns (output: string, ghost steps: nat
   requires t >= 1
   requires |n_list| == t
   requires forall k :: 0 <= k < |n_list| ==> 0 <= n_list[k] < 0x40000000
-  ensures steps <= 30 * t + 10
+  ensures steps <= 30 * t + 2 * |output| + 10
 {
   steps := 1;
   var n := t;
@@ -91,7 +91,7 @@ method Solve(t: int, n_list: seq<int>) returns (output: string, ghost steps: nat
     steps := steps + 4;
   }
   output := Join(parts, " ") + "\n";
-  steps := steps + 12 * n + 2; // Join charge: each part is IntToString of a
+  steps := steps + 2 * |output| + 2; // Join charge: each part is IntToString of a
                                 // value < 2^30, so at most 10 digits; SumLen(parts)
                                 // <= 10n, plus |parts| = n for the Join charge itself.
 }

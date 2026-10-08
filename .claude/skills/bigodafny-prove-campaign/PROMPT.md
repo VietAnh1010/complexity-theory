@@ -65,7 +65,8 @@ unit of loop overhead per iteration.
 | `multiset(s)` | `\|s\|` |
 | `multiset(a) == multiset(b)` | `\|a\|+\|b\|` |
 | `Join(parts, sep)` | `SumLen(parts) + \|parts\|` |
-| `IntToString(x)`, and `\|IntToString(x)\|` | `1` |
+| `IntToString(x)` | `Digits(x)` |
+| `JoinInts(xs, sep)` | `SumDigits(xs) + \|xs\|` |
 | `Sort`, `SortInts`, `SortStrings` on k elements | `SortCost(k)` |
 | a recursive prelude function over a seq or string | its length |
 | a call to a helper | the helper's `steps` |
@@ -177,15 +178,27 @@ Before recording one, read the Python: if it sorts and your Dafny compares
 multisets, or if it multiplies numbers that grow past a machine word, the gap
 is the translation or the charge table, not the label. Say which.
 
-## `IntToString` is constant, and so is its result
+## Output costs one step per character
 
-Charge `1` for `IntToString(x)` and treat `|IntToString(x)|` as `1` too, so a
-`Join` over k digit strings costs k rather than the sum of their digits. A
-digit count is bounded at 19 in practice and the hidden constant stays small.
-`Join` still costs `SumLen(parts) + |parts|` for parts of unbounded length,
-such as input lines.
+Integer arithmetic costs `1` however large the value. Producing text costs one
+step per character: `IntToString(x)` costs `Digits(x)`, `Join(parts, sep)`
+costs `SumLen(parts) + |parts|`. All three, plus `SumDigits`, are prelude ghost
+functions; do not define your own.
 
-This is an exception to the next section and it is deliberately narrow.
+**Bound printing by `|output|`.** Every program that prints L characters pays L
+steps, so output length is a parameter of its own. Prove a bound of the form
+`steps <= f(n) + c * |output|` and compare only `f(n)` with the label. Link the
+charges to the output with the prelude lemmas:
+
+```dafny
+IntToStringDigits(x);   // |IntToString(x)| == Digits(x)
+JoinLen(parts, sep);    // |Join(parts, sep)| == SumLen(parts) + (|parts| - 1) * |sep|
+JoinIntsLen(xs, sep);   // |JoinInts(xs, sep)| == SumDigits(xs) + (|xs| - 1) * |sep|
+```
+
+An additive `|output|` term never makes a row looser. A term that multiplies it
+(`n * |output|`), or a `Digits` charge whose string never reaches the output (a
+digit sum, a string comparison), is ordinary work and counts against the label.
 
 ## Value versus size — a settled convention
 

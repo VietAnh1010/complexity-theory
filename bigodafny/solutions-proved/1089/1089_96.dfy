@@ -18,7 +18,7 @@ import opened Prelude
 
 method Solve(n: int, a: int, b: int) returns (output: string, ghost steps: nat)
   requires n >= 0
-  ensures steps <= 4 * n + 4
+  ensures steps <= 4 * n + 4 + |output|
 {
   var ans := 0;
   var i := 0;
@@ -33,5 +33,5 @@ method Solve(n: int, a: int, b: int) returns (output: string, ghost steps: nat)
     steps := steps + 4;
   }
   output := IntToString(ans);
-  steps := steps + 1;
+  steps := steps + 1 + |output|;
 }

@@ -21,8 +21,8 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, m: int) returns (output: string, ghost steps: nat)
-  ensures n >= 1 ==> steps <= 4 * n + 6
-  ensures n < 1 ==> steps <= 6
+  ensures n >= 1 ==> steps <= 4 * n + 6 + |output|
+  ensures n < 1 ==> steps <= 6 + |output|
 {
   steps := 1;
   if m == 0 {
@@ -31,7 +31,7 @@ method Solve(n: int, m: int) returns (output: string, ghost steps: nat)
     } else {
       output := "No solution";
     }
-    steps := steps + 1;
+    steps := steps + 1 + |output|;
   } else {
     var s := IntToString(m);
     steps := steps + 1;
@@ -50,6 +50,6 @@ method Solve(n: int, m: int) returns (output: string, ghost steps: nat)
       steps := steps + 3;
     }
     output := s;
-    steps := steps + 1;
+    steps := steps + 1 + |output|;
   }
 }

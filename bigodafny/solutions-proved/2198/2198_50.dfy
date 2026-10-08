@@ -23,7 +23,7 @@ import opened Prelude
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
   requires n >= 2
   requires |a_list| == n
-  ensures steps <= 6 * n + 10
+  ensures steps <= 6 * n + 10 + |output|
 {
   steps := 1;
   var d0 := 0;
@@ -49,5 +49,6 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
   assert i == n - 1;
   assert steps == 3 + (n - 2) * 6;
   output := IntToString(maxi);
-  steps := steps + 1;
+  IntToStringDigits(maxi);
+  steps := steps + |output|;
 }

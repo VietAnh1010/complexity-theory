@@ -30,7 +30,7 @@ method Solve(n: int, m: int, data: seq<seq<int>>) returns (output: string, ghost
   requires m != 0
   requires |data| == n
   requires forall i :: 0 <= i < n ==> |data[i]| >= 2
-  ensures steps <= 4 * n + 4
+  ensures steps <= 4 * n + 4 + |output|
 {
   steps := 1;
   var result := 0;
@@ -50,5 +50,5 @@ method Solve(n: int, m: int, data: seq<seq<int>>) returns (output: string, ghost
     steps := steps + 4;
   }
   output := IntToString(result);
-  steps := steps + 1;
+  steps := steps + 1 + |output|;
 }

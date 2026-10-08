@@ -20,7 +20,7 @@ method Solve(n: int, pairs: seq<seq<int>>) returns (output: string, ghost steps:
   requires n >= 0
   requires |pairs| == n
   requires forall idx :: 0 <= idx < |pairs| ==> |pairs[idx]| >= 2 && pairs[idx][1] != 0
-  ensures steps <= 9 * n + 3
+  ensures steps <= 9 * n + 3 + 2 * |output|
 {
   steps := 1;
   var parts: seq<string> := [];
@@ -40,5 +40,5 @@ method Solve(n: int, pairs: seq<seq<int>>) returns (output: string, ghost steps:
     steps := steps + 9;
   }
   output := Join(parts, "\n");
-  steps := steps + 2;
+  steps := steps + 2 + 2 * |output|;
 }

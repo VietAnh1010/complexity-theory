@@ -58,7 +58,7 @@ method Solve(v_0: int, v_1: string) returns (output: string, ghost steps: nat)
   requires forall k :: 0 <= k < v_0 ==> ParseInts(SplitWs(v_1))[k] == 1 || ParseInts(SplitWs(v_1))[k] == 2
   requires exists k :: 0 <= k < v_0 && ParseInts(SplitWs(v_1))[k] == 1
   requires exists k :: 0 <= k < v_0 && ParseInts(SplitWs(v_1))[k] == 2
-  ensures steps <= 2 * NLogN(v_0) + 8 * v_0 + 12
+  ensures steps <= 2 * NLogN(v_0) + 8 * v_0 + 12 + |output|
 {
   var n := v_0;
   steps := 1;
@@ -141,5 +141,5 @@ method Solve(v_0: int, v_1: string) returns (output: string, ghost steps: nat)
   SortCostWithin(|arregloacomodado|, n);
   assert |sorted| >= 1;
   output := IntToString(sorted[0]);
-  steps := steps + 2;
+  steps := steps + 2 + |output|;
 }

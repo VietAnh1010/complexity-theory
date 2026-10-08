@@ -66,7 +66,7 @@ method Solve(n: int, m: int, n_list: seq<int>, m_list: seq<int>) returns (output
   requires |n_list| >= n
   requires |m_list| >= m
   requires forall t :: 0 <= t < |m_list| ==> m_list[t] >= 1
-  ensures steps <= 4 * n + 3 * m + 2 * GapBits(n_list, n) + 6
+  ensures steps <= 4 * n + 3 * m + 2 * GapBits(n_list, n) + 6 + |output|
 {
   steps := 1;
   var g := AbsInt(n_list[1] - n_list[0]);
@@ -101,6 +101,9 @@ method Solve(n: int, m: int, n_list: seq<int>, m_list: seq<int>) returns (output
   }
   if found {
     output := "YES\n" + IntToString(n_list[0]) + " " + IntToString(idx + 1);
+    IntToStringDigits(n_list[0]);
+    IntToStringDigits(idx + 1);
+    steps := steps + Digits(n_list[0]) + Digits(idx + 1);
   } else {
     output := "NO";
   }

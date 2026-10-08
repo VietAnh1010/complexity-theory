@@ -29,15 +29,24 @@ import opened Prelude
 // ---- proof-only scaffolding for the complexity bound (see
 // solutions-proved/603/603_284.dfy for the same argument) ----------
 
-method Solve(n: int, k: int, pairs: seq<(int, int)>) returns (output: string, ghost steps: nat)
+lemma FinBound(n: nat, st: nat, sc: nat)
+  requires sc <= 2 * (n + 1) * (CeilLog2(n + 1) + 1) + 1
+  requires st <= 2 + sc + 4 * (n + 1)
+  ensures st + 1 <= 2 * (n + 1) * (CeilLog2(n + 1) + 1) + 5 * (n + 1) + 5
+{
+}
+
+method {:isolate_assertions} Solve(n: int, k: int, pairs: seq<(int, int)>) returns (output: string, ghost steps: nat)
   requires n >= 0 && n == |pairs|
-  ensures steps <= 2 * (n + 1) * (CeilLog2(n + 1) + 1) + 5 * (n + 1) + 5
+  ensures steps <= 2 * (n + 1) * (CeilLog2(n + 1) + 1) + 5 * (n + 1) + 5 + |output|
 {
   steps := 1;
   var arr := pairs + [(0, -1)];
   steps := steps + 1;
   ghost var m := |arr|;
-  SortCostTreeBound(m);
+  assert m == n + 1;
+  SortCostTreeBound(n + 1);
+  assert SortCost(m) <= 2 * (n + 1) * (CeilLog2(n + 1) + 1) + 1;
   steps := steps + SortCost(m);
   var sortedDesc := Sort(arr, (x: (int, int), y: (int, int)) => x.0 > y.0 || (x.0 == y.0 && x.1 > y.1));
   assert |sortedDesc| == m;
@@ -59,6 +68,9 @@ method Solve(n: int, k: int, pairs: seq<(int, int)>) returns (output: string, gh
     idx := idx + 1;
     steps := steps + 4;
   }
+  assert idx == m;
+  FinBound(n, steps, SortCost(m));
   output := IntToString(t);
-  steps := steps + 1;
+  IntToStringDigits(t);
+  steps := steps + Digits(t);
 }

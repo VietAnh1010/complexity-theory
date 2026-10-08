@@ -43,7 +43,7 @@ lemma SqMono(a: int, b: int)
 method Solve(n: int, pairs: seq<(int, int)>) returns (output: string, ghost steps: nat)
   requires |pairs| >= 1
   requires forall k :: 0 <= k < |pairs| ==> 1 <= pairs[k].0 <= 1000 && 1 <= pairs[k].1 <= 1000
-  ensures steps <= 10000 * |pairs| * |pairs| + 50000 * |pairs| + 600
+  ensures steps <= 10000 * |pairs| * |pairs| + 50000 * |pairs| + 600 + |output|
 {
   steps := 1;
   var last := pairs[0].0;
@@ -88,4 +88,5 @@ method Solve(n: int, pairs: seq<(int, int)>) returns (output: string, ghost step
   }
   SqMono(idx, |pairs|);
   output := IntToString(last) + "\n";
+  steps := steps + |output|;
 }

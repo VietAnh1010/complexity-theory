@@ -21,8 +21,8 @@ import opened Prelude
 method Solve(a: int, b: int, c: int) returns (output: string, ghost steps: nat)
   requires a >= 1
   requires b >= 1
-  ensures c >= 1 ==> steps <= 3 * c + 2
-  ensures c < 1 ==> steps <= 2
+  ensures c >= 1 ==> steps <= 3 * c + 1 + |output|
+  ensures c < 1 ==> steps <= 1 + |output|
 {
   steps := 1;
   var count := 0;
@@ -40,5 +40,6 @@ method Solve(a: int, b: int, c: int) returns (output: string, ghost steps: nat)
     steps := steps + 3;
   }
   output := IntToString(count);
-  steps := steps + 1;
+  IntToStringDigits(count);
+  steps := steps + |output|;
 }

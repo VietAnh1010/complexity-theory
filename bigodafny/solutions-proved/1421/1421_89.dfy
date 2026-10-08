@@ -44,7 +44,7 @@ lemma SortLen<T>(s: seq<T>, less: (T, T) -> bool)
 // pairs/output builders are O(n); JoinInts is charged a flat O(1) per element (IntToString's
 // digit-count growth is not the point of this row and is not tracked).
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
-  ensures steps <= 2 * NLogN(|a_list|) + 6 * |a_list| + 5
+  ensures steps <= 2 * NLogN(|a_list|) + 6 * |a_list| + 5 + |output|
 {
   var pairs := seq(|a_list|, i requires 0 <= i < |a_list| => (a_list[i], i));
   SortCostWithin(|pairs|, |a_list|);
@@ -58,6 +58,6 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
     output := "";
   } else {
     output := JoinInts(vals, "\n") + "\n";
-    steps := steps + 2 * |vals|;
+    steps := steps + |vals| + |output|;
   }
 }

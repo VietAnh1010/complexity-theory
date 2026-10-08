@@ -25,7 +25,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, k: int, numbers: seq<int>) returns (output: string, ghost steps: nat)
-  ensures steps <= 6 * |numbers| + 5
+  ensures steps <= 6 * |numbers| + 5 + |output|
 {
   var a := numbers;
   var x := 1000000000;
@@ -57,5 +57,6 @@ method Solve(n: int, k: int, numbers: seq<int>) returns (output: string, ghost s
     steps := steps + 1;
   }
   output := IntToString(counter);
-  steps := steps + 1;
+  IntToStringDigits(counter);
+  steps := steps + Digits(counter);
 }

@@ -25,7 +25,7 @@ import opened Prelude
 // solutions-proved/603/603_284.dfy for the same argument) ----------
 
 method Solve(n: int, ratings: seq<int>) returns (output: string, ghost steps: nat)
-  ensures steps <= 2 * |ratings| * (CeilLog2(|ratings|) + 1) + 5 * |ratings| + 5
+  ensures steps <= 2 * |ratings| * (CeilLog2(|ratings|) + 1) + 5 * |ratings| + 5 + |output|
 {
   steps := 1;
   SortCostTreeBound(|ratings|);
@@ -52,5 +52,6 @@ method Solve(n: int, ratings: seq<int>) returns (output: string, ghost steps: na
     steps := steps + 4;
   }
   output := IntToString(bLen / 2 + c);
-  steps := steps + 1;
+  IntToStringDigits(bLen / 2 + c);
+  steps := steps + |output|;
 }

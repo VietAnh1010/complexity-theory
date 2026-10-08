@@ -57,7 +57,7 @@ lemma SplitCharCount(s: string, sep: char)
 }
 
 method Solve(n: int, k: int, m: int, s: string) returns (output: string, ghost steps: nat)
-  ensures steps <= 2 * NLogN(|s| + 1) + 20 * (|s| + 1) + 40
+  ensures steps <= 2 * NLogN(|s| + 1) + 20 * (|s| + 1) + 40 + |output|
 {
   steps := 1;
   var a := k;
@@ -98,7 +98,7 @@ method Solve(n: int, k: int, m: int, s: string) returns (output: string, ghost s
     steps := steps + 6;
   }
   output := IntToString(total);
-  steps := steps + 1;
+  steps := steps + 1 + |output|;
 }
 
 

@@ -8,12 +8,9 @@ the disputed queue) and did not include these.
 So the name is a statement about process, not about the code. "Not screened"
 is not "wrong", and it is not "right" either. It is unknown.
 
-> Renamed from `solutions-inexact/`. "Inexact" read as a claim about numeric
-> precision, which was never what it meant.
-
 ## Why each row was pulled out
 
-Two screens ran before the audit existed, and both were coarse:
+Two coarse screens, both older than the label audit:
 
 - **Sibling convergence** — 12 rows, recorded in `data/quarantine.jsonl` and
   surfaced as `quarantine_reasons` in `data/dataset.jsonl`. Two solutions of
@@ -22,13 +19,11 @@ Two screens ran before the audit existed, and both were coarse:
   other's algorithm. `siblings.py` finds them; it does not say which is at
   fault.
 - **Container use** — 29 rows use `set<T>` or `map<K,V>` (22 and 11, with an
-  overlap). These were pulled when the cost model was read off the Dafny Python
-  backend, where both copy on write and turn a linear loop quadratic.
+  overlap). In the Dafny Python backend both copy on write.
 
-**The second screen no longer justifies a quarantine.** `COMPLEXITY.md` § 1
-charges set insertion and map update `1` by stipulation, so a row is no longer
-suspect merely for using them. Those rows are candidates to rejoin `solutions/`
-after a proper screening — they have not been screened, so they have not moved.
+**The second screen does not justify a quarantine.** `COMPLEXITY.md` § 1
+charges set insertion and map update `1`, so using them makes a row no more
+suspect. Those rows are candidates to rejoin `solutions/` once screened.
 
 ## What to do with this directory
 

@@ -61,7 +61,7 @@ method Comb(i: int, j: int) returns (r: int, ghost steps: nat)
 // numbers (Dafny ints are arbitrary precision) -- so Fact(i) costs O(i), and
 // Solve costs O(n), well inside the labelled O(n**2).
 method Solve(n: int) returns (output: string, ghost steps: nat)
-  ensures steps <= 2 * AbsInt(n) + 2 * AbsInt(n - 5) + 37
+  ensures steps <= 2 * AbsInt(n) + 2 * AbsInt(n - 5) + 37 + |output|
 {
   var ans := 1;
   var j := 0;
@@ -77,5 +77,5 @@ method Solve(n: int) returns (output: string, ghost steps: nat)
   var c, cSteps := Comb(n, 5);
   steps := steps + cSteps;
   output := IntToString(ans * c);
-  steps := steps + 1;
+  steps := steps + |output|;
 }

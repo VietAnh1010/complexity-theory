@@ -33,7 +33,7 @@ lemma DistribStep(a: nat, K: nat)
 { }
 
 method Solve(s: string) returns (output: string, ghost steps: nat)
-  ensures steps <= 8 * |s| * |s| + 30 * |s| + 20
+  ensures steps <= 8 * |s| * |s| + 30 * |s| + 20 + |output|
 {
   steps := 1;
   var n := |s|;
@@ -88,7 +88,8 @@ method Solve(s: string) returns (output: string, ghost steps: nat)
     steps := steps + 2;
   }
   output := IntToString(ans);
-  steps := steps + 1;
+  IntToStringDigits(ans);
+  steps := steps + 1 + Digits(ans);
   assert ii == n + 1;
-  assert steps <= 4 * n + 1 + (n + 1) * (7 * (n + 1) + 2) + 1;
+  assert steps <= 4 * n + 1 + (n + 1) * (7 * (n + 1) + 2) + 1 + Digits(ans);
 }

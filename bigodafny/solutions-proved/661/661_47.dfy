@@ -46,7 +46,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, s: string) returns (output: string, ghost steps: nat)
-  ensures steps <= 2 * NLogN(|s|) + 9 * |s| + 4
+  ensures steps <= 2 * NLogN(|s|) + 9 * |s| + |output| + 4
 {
   steps := 1;
   var a: seq<int> := [];
@@ -64,7 +64,7 @@ method Solve(n: int, s: string) returns (output: string, ghost steps: nat)
   }
   if |a| != |b| {
     output := "-1";
-    steps := steps + 1;
+    steps := steps + 1 + |output|;
   } else {
     var c: seq<int> := [];
     i := 0;
@@ -109,7 +109,7 @@ method Solve(n: int, s: string) returns (output: string, ghost steps: nat)
       steps := steps + 3;
     }
     output := IntToString(sum);
-    steps := steps + 2;
+    steps := steps + 2 + |output|;
   }
 }
 

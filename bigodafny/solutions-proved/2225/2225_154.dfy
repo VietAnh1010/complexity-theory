@@ -31,7 +31,7 @@ import opened Prelude
 method Solve(n: int, dimensions: seq<int>) returns (output: string, ghost steps: nat)
   requires n >= 1
   requires |dimensions| == n
-  ensures steps <= 2 * NLogN(n) + 2 * n + 6
+  ensures steps <= 2 * NLogN(n) + 2 * n + 6 + |output|
 {
   var l := dimensions;
   SortCostNLogN(n);
@@ -52,6 +52,7 @@ method Solve(n: int, dimensions: seq<int>) returns (output: string, ghost steps:
   }
   if n > 2 {
     output := "1\n" + IntToString(mi + 1) + "\n";
+    IntToStringDigits(mi + 1);
   } else if n == 2 {
     if l[0] == l[1] {
       output := "-1\n";
@@ -61,5 +62,5 @@ method Solve(n: int, dimensions: seq<int>) returns (output: string, ghost steps:
   } else {
     output := "-1\n";
   }
-  steps := steps + 3;
+  steps := steps + 3 + |output|;
 }

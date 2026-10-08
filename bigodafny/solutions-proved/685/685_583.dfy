@@ -50,12 +50,12 @@ import opened Prelude
 method Solve(n1: int, list1: seq<int>, n2: int, list2: seq<int>)
   returns (output: string, ghost steps: nat)
   requires |list1| > 0 && |list2| > 0
-  ensures steps <= 3 * |list1| + 3 * |list2| + 8
+  ensures steps <= 3 * |list1| + 3 * |list2| + 8 + |output|
 {
   var max1, s1 := Max685(list1);
   var max2, s2 := Max685(list2);
   output := IntToString(max1) + " " + IntToString(max2);
-  steps := s1 + s2 + 4;
+  steps := s1 + s2 + 4 + |output|;
 }
 
 method Max685(xs: seq<int>) returns (m: int, ghost steps: nat)

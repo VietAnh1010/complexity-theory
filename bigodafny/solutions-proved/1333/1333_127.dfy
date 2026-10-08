@@ -56,7 +56,7 @@ method Solve(n: int, intervals: seq<seq<int>>) returns (output: string, ghost st
   requires n >= 2
   requires n == |intervals|
   requires forall k :: 0 <= k < n ==> |intervals[k]| >= 2
-  ensures steps <= 4 * NLogN(n) + 2 + 5 * n + 10
+  ensures steps <= 4 * NLogN(n) + 2 + 5 * n + 10 + |output|
 {
 {
 
@@ -96,6 +96,7 @@ method Solve(n: int, intervals: seq<seq<int>>) returns (output: string, ghost st
   }
   steps := steps + 3;
   output := IntToString(ans);
-  steps := steps + 1;
+  IntToStringDigits(ans);
+  steps := steps + |output|;
 }
 }

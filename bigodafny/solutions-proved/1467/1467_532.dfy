@@ -56,13 +56,16 @@ method Solve(N: int) returns (output: string, ghost steps: nat)
   steps := 1;
   if N <= 9 {
     output := IntToString(N);
-    steps := steps + 1;
+    IntToStringDigits(N);
+    steps := steps + Digits(N);
   } else if N <= 189 {
     var num := FloorDiv(N - 10, 2) + 10;
     var mod := FloorMod(N - 10, 2);
     steps := steps + 2;
     var s := IntToString(num);
-    steps := steps + 1;
+    IntToStringDigits(num);
+    DigitsMono(num, 999);
+    steps := steps + Digits(num);
     DigitsAtLeast2(num);
     output := [s[mod]];
     steps := steps + 1;
@@ -71,7 +74,9 @@ method Solve(N: int) returns (output: string, ghost steps: nat)
     var mod := FloorMod(N - 10 - 180, 3);
     steps := steps + 2;
     var s := IntToString(num);
-    steps := steps + 1;
+    IntToStringDigits(num);
+    DigitsMono(num, 999);
+    steps := steps + Digits(num);
     DigitsAtLeast3(num);
     output := [s[mod]];
     steps := steps + 1;

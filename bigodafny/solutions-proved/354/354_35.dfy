@@ -15,7 +15,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(a: int, b: int, c: int) returns (output: string, ghost steps: nat)
-  ensures steps <= 6
+  ensures steps <= |output| + 3
 {
   steps := 1;
   var m := (a - 1) * (2 * b + 1);
@@ -23,5 +23,7 @@ method Solve(a: int, b: int, c: int) returns (output: string, ghost steps: nat)
   var n := a * c;
   steps := steps + 1;
   output := IntToString(m) + " " + IntToString(n);
-  steps := steps + 3;
+  IntToStringDigits(m);
+  IntToStringDigits(n);
+  steps := steps + Digits(m) + Digits(n) + 1;
 }

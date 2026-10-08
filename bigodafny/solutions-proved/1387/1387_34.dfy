@@ -28,7 +28,7 @@ function MinInt1387b(a: int, b: int): int { if a < b then a else b }
 
 method Solve(n: int, k: int, s: string) returns (output: string, ghost steps: nat)
   requires n == |s|
-  ensures steps <= 10 * n + 20
+  ensures steps <= 10 * n + 20 + |output|
 {
   steps := 1;
   var half := n / 2;
@@ -54,7 +54,7 @@ method Solve(n: int, k: int, s: string) returns (output: string, ghost steps: na
   }
   if stepsv != 0 {
     output := IntToString(stepsv + right - left + MinInt1387b(AbsInt(p-left), AbsInt(right-p)));
-    steps := steps + 6;
+    steps := steps + 5 + |output|;
   } else {
     output := "0";
     steps := steps + 1;

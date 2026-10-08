@@ -80,6 +80,23 @@ lemma SumPosSnocFrom(s: seq<int>, from: nat, upto: nat)
   }
 }
 
+lemma SumLenAppend(a: seq<string>, x: string)
+  ensures SumLen(a + [x]) == SumLen(a) + |x|
+  decreases |a|
+{
+  if |a| > 0 {
+    assert (a + [x])[1..] == a[1..] + [x];
+    SumLenAppend(a[1..], x);
+  }
+}
+
+lemma RepeatLen1(c: string, k: nat)
+  requires |c| == 1
+  ensures |Repeat(c, k)| == k
+{
+  if k > 0 { RepeatLen1(c, k - 1); }
+}
+
 lemma ConsecProdNonneg(m: int)
   ensures m * (m + 1) >= 0
 {
@@ -100,12 +117,15 @@ method Solve(n: int, numbers: seq<int>) returns (output: string, ghost steps: na
   while qi < n
     invariant 0 <= qi <= n
     invariant steps <= 1 + qi * 500000 + SumPos(numbers, 0, qi)
+    invariant |lines| == qi
+    invariant lineLenSum == SumLen(lines)
     invariant lineLenSum <= qi * 500000 + SumPos(numbers, 0, qi)
     decreases n - qi
   {
     SumPosSnoc(numbers, qi);
     var t := numbers[qi];
     if t == 1 {
+      SumLenAppend(lines, "1337");
       lines := lines + ["1337"];
       lineLenSum := lineLenSum + 4;
       steps := steps + 2;
@@ -139,6 +159,9 @@ method Solve(n: int, numbers: seq<int>) returns (output: string, ghost steps: na
       var ans := "1" + Repeat("3", threesN) + Repeat("1", onesN) + "337";
       steps := steps + threesN + onesN + 4;
       lineLenSum := lineLenSum + threesN + onesN + 4;
+      RepeatLen1("3", threesN);
+      RepeatLen1("1", onesN);
+      SumLenAppend(lines, ans);
       lines := lines + [ans];
       steps := steps + 1;
     }
@@ -147,5 +170,6 @@ method Solve(n: int, numbers: seq<int>) returns (output: string, ghost steps: na
   assert qi == n;
   assert lineLenSum <= n * 500000 + SumPos(numbers, 0, n);
   output := Join(lines, "\n");
-  steps := steps + lineLenSum + n + 1;
+  if |lines| >= 1 { JoinLen(lines, "\n"); }
+  steps := steps + |output| + 1;
 }

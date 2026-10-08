@@ -59,13 +59,25 @@ lemma SortLength<T>(s: seq<T>, less: (T, T) -> bool)
   }
 }
 
+lemma SumLenSnoc(p: seq<string>, x: string)
+  ensures SumLen(p + [x]) == SumLen(p) + |x|
+  decreases |p|
+{
+  if |p| == 0 {
+    assert p + [x] == [x];
+  } else {
+    assert (p + [x])[1..] == p[1..] + [x];
+    SumLenSnoc(p[1..], x);
+  }
+}
+
 method Solve(a: int, b: int, c_list: seq<int>, d_list: seq<int>) returns (output: string, ghost steps: nat)
   requires a >= 1
   requires b >= 0
   requires a <= |c_list|
   requires b <= |d_list|
   requires forall k :: 0 <= k < b ==> d_list[k] >= 1 && d_list[k] <= PrefixSum1180(c_list, a)
-  ensures steps <= 2 * NLogN(b) + 2 * a + 10 * b + 15
+  ensures steps <= 2 * NLogN(b) + 2 * a + 10 * b + 15 + 2 * |output|
 {
   var dorms := c_list[..a];
   var lroom := d_list[..b];
@@ -108,13 +120,19 @@ method Solve(a: int, b: int, c_list: seq<int>, d_list: seq<int>) returns (output
   var i := 0;
   while i < |sorted_lst|
     invariant 0 <= i <= |sorted_lst|
-    invariant steps <= 2 * (l_left + d_left) + 1 + SortCost(|lst|) + 5 * i
+    invariant steps <= 2 * (l_left + d_left) + 1 + SortCost(|lst|) + 5 * i + SumLen(lines)
+    invariant |lines| == i
     decreases |sorted_lst| - i
   {
+    ghost var ln := IntToString(sorted_lst[i].0) + " " + IntToString(sorted_lst[i].1);
+    IntToStringDigits(sorted_lst[i].0);
+    IntToStringDigits(sorted_lst[i].1);
+    SumLenSnoc(lines, ln);
     lines := lines + [IntToString(sorted_lst[i].0) + " " + IntToString(sorted_lst[i].1)];
     i := i + 1;
-    steps := steps + 5;
+    steps := steps + 5 + |ln|;
   }
   output := Join(lines, "\n");
-  steps := steps + 1;
+  steps := steps + SumLen(lines) + |lines|;
+  if |lines| >= 1 { JoinLen(lines, "\n"); }
 }

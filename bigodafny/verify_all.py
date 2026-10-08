@@ -15,7 +15,7 @@ from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
-from common import (DATA, UNSCREENED, ROOT, SOLUTIONS, UNGATEABLE, UNSURE, event, log, write_json,
+from common import (DATA, OUT, UNSCREENED, ROOT, SOLUTIONS, UNGATEABLE, UNSURE, event, log, write_json,
                     write_jsonl)
 
 DAFNY = "dafny"   # on PATH; dafny finds z3 on PATH itself
@@ -81,7 +81,7 @@ def run(dirs, workers=8, move=False):
     optout = sum(1 for r in rows if r.get("termination_opt_out"))
     summary = {"total": len(rows), "verified": ok, "unverified": len(rows) - ok,
                "termination_opt_out": optout, "kinds": dict(kinds.most_common())}
-    write_json(DATA / "verification_summary.json", summary)
+    write_json(OUT / "verification_summary.json", summary)
     event("verify_all", **summary)
     log(f"verified {ok}/{len(rows)}  ({optout} use `decreases *`, so their "
         f"termination is not proved)")

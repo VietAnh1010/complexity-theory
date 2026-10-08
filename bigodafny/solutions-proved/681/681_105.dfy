@@ -35,13 +35,13 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(a: int, b: int) returns (output: string, ghost steps: nat)
-  ensures steps <= 4 * (if a > 0 then a else 0) + 4 * (if b > 0 then b else 0) + 10
+  ensures steps <= 4 * (if a > 0 then a else 0) + 4 * (if b > 0 then b else 0) + 10 + |output|
 {
   steps := 1;
   var mod := 1000000007;
   if a - b > 1 || b - a > 1 {
     output := IntToString(0);
-    steps := steps + 2;
+    steps := steps + 2 + |output|;
   } else {
     var mn := if a < b then a else b;
     var fact := 1;
@@ -61,6 +61,6 @@ method Solve(a: int, b: int) returns (output: string, ghost steps: nat)
     } else {
       output := IntToString((fact * fact % mod) * (mn + 1) % mod);
     }
-    steps := steps + 3;
+    steps := steps + 3 + |output|;
   }
 }

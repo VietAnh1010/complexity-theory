@@ -6,11 +6,12 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(number: int) returns (output: string, ghost steps: nat)
-  ensures steps <= 6
+  ensures steps <= 6 + |output|
 {
   var ans := number / 5;
   var r := number % 5;
   if r != 0 { ans := ans + 1; }
   output := IntToString(ans) + "\n";
-  steps := 6;
+  steps := 6 + Digits(ans);
+  IntToStringDigits(ans);
 }

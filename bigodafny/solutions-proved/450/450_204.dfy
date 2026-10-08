@@ -12,7 +12,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(s: string) returns (output: string, ghost steps: nat)
-  ensures steps <= 8
+  ensures steps <= 8 + |output|
 {
   steps := 1;
   // |s|, *2, -1: three constant-cost int ops. IntToString and its result
@@ -20,5 +20,5 @@ method Solve(s: string) returns (output: string, ghost steps: nat)
   // length of their right operand, which is 1 (IntToString's result) and
   // 1 ("\n") respectively.
   output := "3 L 2 R 2 R " + IntToString(|s| * 2 - 1) + "\n";
-  steps := steps + 6;
+  steps := steps + 3 + |output|;
 }

@@ -29,7 +29,7 @@ lemma AbsIntTriangle(a: int, b: int)
 }
 
 method Solve(n: int) returns (output: string, ghost steps: nat)
-  ensures steps <= 24 * AbsInt(n) + 250
+  ensures steps <= 24 * AbsInt(n) + 249 + |output|
 {
   var c5, s5 := C2286(n, 5);
   var c6, s6 := C2286(n, 6);
@@ -38,7 +38,7 @@ method Solve(n: int) returns (output: string, ghost steps: nat)
   AbsIntTriangle(n, 6);
   AbsIntTriangle(n, 7);
   output := IntToString(c5 + c6 + c7);
-  steps := s5 + s6 + s7 + 3;   // two additions (2) + IntToString (1)
+  steps := s5 + s6 + s7 + 2 + |output|;   // two additions (2) + IntToString (|output|)
 }
 
 method C2286(n: int, k: int) returns (r: int, ghost steps: nat)

@@ -20,13 +20,13 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string, ghost steps: nat)
   requires n >= 1
-  ensures steps <= 4 * n + 4
+  ensures steps <= 4 * n + 4 + |output|
 {
   var total := 1;
   steps := 1;
   if n == 1 {
     output := IntToString(total);
-    steps := steps + 1;
+    steps := steps + 1 + |output|;
   } else {
     var i := 1;
     ghost var base1 := steps;
@@ -41,6 +41,6 @@ method Solve(n: int) returns (output: string, ghost steps: nat)
       steps := steps + 4;
     }
     output := IntToString(total);
-    steps := steps + 1;
+    steps := steps + 1 + |output|;
   }
 }

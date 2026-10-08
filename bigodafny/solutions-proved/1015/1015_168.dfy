@@ -30,7 +30,7 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string, ghost steps: nat)
   requires n >= 1
-  ensures steps <= 6 * n + 4
+  ensures steps <= 6 * n + 4 + |output|
 {
   steps := 1;
   if n % 2 == 0 {
@@ -62,6 +62,6 @@ method Solve(n: int) returns (output: string, ghost steps: nat)
     ghost var joined := partA + partB;
     steps := steps + |partB|;
     output := "YES\n" + JoinInts(partA + partB, " ");
-    steps := steps + |joined| + 1;
+    steps := steps + |output|;
   }
 }

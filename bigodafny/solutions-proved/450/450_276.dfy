@@ -33,15 +33,15 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(s: string) returns (output: string, ghost steps: nat)
-  ensures steps <= 4 * |s| + 8
+  ensures steps <= 4 * |s| + |output| + 8
 {
   IsPalinCostBound(s, 0, |s| - 1);
   if IsPalindrome(s) {
     output := "0\n";
-    steps := IsPalinCost(s, 0, |s| - 1) + 1;
+    steps := IsPalinCost(s, 0, |s| - 1) + |output|;
   } else {
     output := "3\n" + "R " + IntToString(|s| - 1) + "\n" + "L " + IntToString(|s|) + "\n" + "L 2\n";
-    steps := IsPalinCost(s, 0, |s| - 1) + 4;
+    steps := IsPalinCost(s, 0, |s| - 1) + |output| + 3;
   }
 }
 

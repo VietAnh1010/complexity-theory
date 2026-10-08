@@ -24,7 +24,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, coordinates: seq<int>) returns (output: string, ghost steps: nat)
-  ensures steps <= 6 * |coordinates| + 3
+  ensures steps <= 6 * |coordinates| + 2 + |output|
 {
   var di: map<int, int> := map[0 := 0];
   var k := 1;
@@ -48,5 +48,6 @@ method Solve(n: int, coordinates: seq<int>) returns (output: string, ghost steps
     steps := steps + 6;
   }
   output := IntToString(q);
-  steps := steps + 1;
+  IntToStringDigits(q);
+  steps := steps + Digits(q);
 }

@@ -31,14 +31,14 @@ import opened Prelude
 // large `output` has already grown.
 method Solve(n: int, grid: seq<seq<int>>) returns (output: string, ghost steps: nat)
   requires forall k :: 0 <= k < |grid| ==> |grid[k]| >= 4
-  ensures steps <= 15 * |grid| + 5
+  ensures steps <= 15 * |grid| + 5 + |output|
 {
   output := "";
   var i := 0;
   steps := 1;
   while i < |grid|
     invariant 0 <= i <= |grid|
-    invariant steps <= 15 * i + 1
+    invariant steps <= 15 * i + 1 + |output|
     decreases |grid| - i
   {
     var row := grid[i];
@@ -47,18 +47,19 @@ method Solve(n: int, grid: seq<seq<int>>) returns (output: string, ghost steps: 
     var l2 := row[2];
     var r2 := row[3];
     steps := steps + 4;
+    ghost var ol := |output|;
     if l1 != l2 {
       output := output + IntToString(l1) + " " + IntToString(l2) + "\n";
-      steps := steps + 4;
+      steps := steps + 4 + (|output| - ol);
     } else if l1 != r2 {
       output := output + IntToString(l1) + " " + IntToString(r2) + "\n";
-      steps := steps + 4;
+      steps := steps + 4 + (|output| - ol);
     } else if r1 != l2 {
       output := output + IntToString(r1) + " " + IntToString(l2) + "\n";
-      steps := steps + 4;
+      steps := steps + 4 + (|output| - ol);
     } else if r1 != r2 {
       output := output + IntToString(r1) + " " + IntToString(r2) + "\n";
-      steps := steps + 4;
+      steps := steps + 4 + (|output| - ol);
     } else {
       steps := steps + 1;
     }

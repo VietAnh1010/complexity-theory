@@ -31,7 +31,7 @@ import opened Prelude
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
   requires |a_list| == n + 1
   requires n >= 0
-  ensures steps <= 15 * n + 20
+  ensures steps <= 15 * n + 20 + |output|
 {
   steps := 1;
   var arr := a_list;
@@ -76,9 +76,9 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
   }
   if r != -1 && i >= n - 1 {
     output := IntToString(l + 1) + " " + IntToString(r) + "\n";
-    steps := steps + 4;
+    steps := steps + 4 + |output|;
   } else {
     output := "0 0\n";
-    steps := steps + 1;
+    steps := steps + 1 + |output|;
   }
 }

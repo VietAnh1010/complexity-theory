@@ -22,14 +22,14 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(a: int, b: int, c: int, d_list: seq<int>) returns (output: string, ghost steps: nat)
-  ensures steps <= 4 * |d_list| + 10
+  ensures steps <= 4 * |d_list| + 10 + |output|
 {
   steps := 1;
   var x := b;
   var y := c;
   if x > y {
     output := IntToString(|d_list|);
-    steps := steps + 2;
+    steps := steps + 2 + |output|;
   } else {
     var num := 0;
     var i := 0;
@@ -45,6 +45,6 @@ method Solve(a: int, b: int, c: int, d_list: seq<int>) returns (output: string, 
       steps := steps + 3;
     }
     output := IntToString((num + 1) / 2);
-    steps := steps + 2;
+    steps := steps + 2 + |output|;
   }
 }

@@ -40,7 +40,7 @@ lemma HalfBound(n: int)
 }
 
 method Solve(number: int) returns (output: string, ghost steps: nat)
-  ensures steps <= 2 * AbsInt(number) + 30
+  ensures steps <= 2 * AbsInt(number) + 30 + |output|
 {
   var n := number;
   var a := 1;
@@ -88,5 +88,5 @@ method Solve(number: int) returns (output: string, ghost steps: nat)
     assert steps <= 2 * AbsInt(n) + 20;
   }
   output := IntToString(a) + "  " + IntToString(b);
-  steps := steps + 3;
+  steps := steps + 3 + |output|;
 }

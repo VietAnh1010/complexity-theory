@@ -48,7 +48,7 @@ method Solve(a: int, b: int, c: int, d_list: seq<int>) returns (output: string, 
   requires a <= |d_list|
   requires b >= 0
   requires c >= 0
-  ensures steps <= 2 + (|d_list| + 4) * (|d_list| + 2)
+  ensures steps <= 2 + (|d_list| + 4) * (|d_list| + 2) + |output|
 {
   steps := 1;
   var n := a;
@@ -95,5 +95,5 @@ method Solve(a: int, b: int, c: int, d_list: seq<int>) returns (output: string, 
   } else {
     output := "";
   }
-  steps := steps + 1;
+  steps := steps + |output|;
 }

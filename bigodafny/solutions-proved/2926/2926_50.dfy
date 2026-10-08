@@ -30,7 +30,7 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string, ghost steps: nat)
   requires n >= 0
-  ensures steps <= 8 * n + 500
+  ensures steps <= 8 * n + 500 + 2 * |output|
 {
   steps := 1;
   var primes := [2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,
@@ -63,6 +63,10 @@ method Solve(n: int) returns (output: string, ghost steps: nat)
     steps := steps + 3;
     var lines := seq(n, k requires 0 <= k < n => IntToString(l1[k]));
     output := Join(lines, "\n") + "\n";
-    steps := steps + 4 * n + 2;
+    ghost var sd := SumDigits(l1);
+    SumLenIntStrings(l1);
+    JoinLen(lines, "\n");
+    assert |output| == sd + n;
+    steps := steps + 3 * n + 2 + sd;
   }
 }

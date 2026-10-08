@@ -19,7 +19,7 @@ import opened Prelude
 method Solve(N: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
   requires N >= 0
   requires forall k :: 0 <= k < |a_list| ==> 1 <= a_list[k] <= N
-  ensures steps <= 5 * N + 4 * |a_list| + 10
+  ensures steps <= 5 * N + 4 * |a_list| + 10 + |output|
 {
   steps := 1;
   var l := seq(N + 1, _ => 0);
@@ -59,5 +59,5 @@ method Solve(N: int, a_list: seq<int>) returns (output: string, ghost steps: nat
     steps := steps + 3;
   }
   output := IntToString(minVal);
-  steps := steps + 1;
+  steps := steps + |output|;
 }

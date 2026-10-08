@@ -34,7 +34,7 @@ import opened Prelude
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
   requires n >= 2
   requires n <= |a_list|
-  ensures steps <= 2 * NLogN(n) + 20 * n + 20
+  ensures steps <= 2 * NLogN(n) + 20 * n + 20 + |output|
 {
   steps := 1;
   var b: seq<int> := [];
@@ -71,5 +71,6 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
   SortCostWithin(|c|, n);
   var result := if sortedC[0] < 0 then sortedC[n-2] - sortedC[0] else sortedC[n-2];
   output := IntToString(result);
-  steps := steps + 5;
+  IntToStringDigits(result);
+  steps := steps + 5 + Digits(result);
 }

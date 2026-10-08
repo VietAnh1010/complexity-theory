@@ -29,7 +29,7 @@ import opened Prelude
 // fails to establish at i = 0 when n < 0, so the guard is the same
 // `i > 0 ==> i <= n` form solutions-proved/2012/2012_399.dfy uses.
 method Solve(n: int, transactions: seq<seq<string>>) returns (output: string, ghost steps: nat)
-  ensures steps <= 4050 * (if n > 0 then n else 0) + 5
+  ensures steps <= 4050 * (if n > 0 then n else 0) + |output| + 5
 {
   steps := 2;
   var d: seq<int> := seq(2009, _ => 0);
@@ -69,5 +69,5 @@ method Solve(n: int, transactions: seq<seq<string>>) returns (output: string, gh
   }
   assert i == (if n > 0 then n else 0);
   output := IntToString(ans);
-  steps := steps + 1;
+  steps := steps + |output|;
 }

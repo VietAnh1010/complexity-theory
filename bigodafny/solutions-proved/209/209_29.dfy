@@ -41,7 +41,7 @@ lemma MulMonoLeft(a: int, b: int, c: int)
 {}
 
 method Solve(N: int, numbers: seq<int>) returns (output: string, ghost steps: nat)
-  ensures steps <= 3 + (12 * |numbers| + 6) * (|numbers| + 1)
+  ensures steps <= 3 + (12 * |numbers| + 6) * (|numbers| + 1) + |output|
 {
   steps := 1;
   var a := numbers;
@@ -109,5 +109,5 @@ method Solve(N: int, numbers: seq<int>) returns (output: string, ghost steps: na
   assert (12 * |numbers| + 6) * outerCnt <= (12 * |numbers| + 6) * (|numbers| + 1)
     by { MulMonoLeft(outerCnt, |numbers| + 1, 12 * |numbers| + 6); }
   output := IntToString(ans);
-  steps := steps + 1;
+  steps := steps + 1 + |output|;
 }

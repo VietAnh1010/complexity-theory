@@ -47,6 +47,15 @@ lemma MulMonoRight(x: nat, p: nat, q: nat)
   ensures x * p <= x * q
 { }
 
+lemma CntBound(b: int, cnt: int, it: int, val: int, ac: int)
+  requires b >= 1 && cnt >= 0
+  requires it == cnt + 2 && val == b * (it - 1) && val <= ac + b
+  ensures cnt <= ac
+{
+  assert b * (cnt + 1) == b * cnt + b;
+  assert b * cnt >= cnt by { MulMonoRight(cnt, 1, b); }
+}
+
 method Solve(a: int, b: int, c: int) returns (output: string, ghost steps: nat)
   requires b >= 1
   requires a >= 0
@@ -78,6 +87,7 @@ method Solve(a: int, b: int, c: int) returns (output: string, ghost steps: nat)
   // The loop only continues while val < a*c, and val grows by exactly b
   // (>= 1) each iteration, so cnt (the iteration count) is bounded by
   // roughly a*c/b -- loosely, by a*c itself since b >= 1.
+  CntBound(b, cnt, it, val, a * c);
   assert cnt <= a * c + 1;
   var l := 0;
   var h := |res| - 1;

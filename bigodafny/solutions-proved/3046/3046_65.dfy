@@ -35,7 +35,7 @@ ghost function TotalLenUpTo(rows: seq<seq<int>>, k: nat): nat
 }
 
 method Solve(n: int, m: int, v_3: seq<seq<int>>) returns (output: string, ghost steps: nat)
-  ensures steps <= 6 * |v_3| + 2 * TotalLenUpTo(v_3, |v_3|) + 3
+  ensures steps <= 6 * |v_3| + 2 * TotalLenUpTo(v_3, |v_3|) + 2 + |output|
 {
   steps := 1;
   var l := 0;
@@ -66,5 +66,6 @@ method Solve(n: int, m: int, v_3: seq<seq<int>>) returns (output: string, ghost 
     steps := steps + 6;
   }
   output := IntToString(l);
-  steps := steps + 2;
+  IntToStringDigits(l);
+  steps := steps + 1 + |output|;
 }

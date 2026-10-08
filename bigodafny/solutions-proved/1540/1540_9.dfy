@@ -24,7 +24,7 @@ import opened Prelude
 
 method Solve(n: int, a: int, b: int, numbers: seq<int>) returns (output: string, ghost steps: nat)
   requires 0 <= a <= |numbers|
-  ensures steps <= 2 * |numbers| + 5
+  ensures steps <= 2 * |numbers| + |output| + 5
 {
   var keep := |numbers| - a;
   var nominal := 0;
@@ -42,5 +42,5 @@ method Solve(n: int, a: int, b: int, numbers: seq<int>) returns (output: string,
   var total := nominal + a * b;
   steps := steps + 2;
   output := IntToString(total);
-  steps := steps + 1;
+  steps := steps + |output|;
 }

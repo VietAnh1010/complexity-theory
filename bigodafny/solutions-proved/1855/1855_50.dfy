@@ -59,7 +59,7 @@ import opened Prelude
 // names a growth rate no part of the code exhibits. Both come from BigOBench
 // fitting a curve to profiling runs of a program with nothing to profile.
 method Solve(hour: string, minute: string) returns (output: string, ghost steps: nat)
-  ensures steps <= |hour| + |minute| + 12
+  ensures steps <= |hour| + |minute| + 12 + |output|
 {
   var h := ParseInt(hour);
   var m := ParseInt(minute);
@@ -68,5 +68,5 @@ method Solve(hour: string, minute: string) returns (output: string, ghost steps:
   var firstStr := if num % 2 == 0 then IntToString(half) + ".0" else IntToString(half) + ".5";
   var second := m * 6;
   output := firstStr + " " + IntToString(second);
-  steps := |hour| + |minute| + 12;
+  steps := |hour| + |minute| + 12 + |output|;
 }

@@ -6,16 +6,13 @@ against what wave 5 actually contained.
 
 | directory | campaign | contents |
 |---|---|---|
-| `wave1/` … `wave7/` | translation | `.txt`, one sid per line |
-| `loose/`, `loose2/` | translating the loose tier | `.txt` |
-| `verify/`, `verify2/`, `verify3/` | discharging safety obligations | `.txt` |
 | `labelaudit/` | the label audit | `PROMPT.md`, `verdicts_NN.jsonl`, and `batch_NN.json` (git-ignored) |
 | `cost-axioms/` | `PLAN.md` — axiomatise collection cost; drop `array<T>` | plan only, no manifest |
-| `stdlib-migration/` | `PROMPT.md` — move `prelude.dfy` call sites to `Std` | prompt only, not yet run |
-| `verify-sample/` | a 50-row probe of the unverified backlog | manifest, trajectory |
 | `gate-audit/` | the seven `solutions/` rows with no passing gate result | control rows and script |
 | `prove-sample/`, `prove-sample-2/` … `prove-sample-8/` | bounded proof campaigns | see `CAMPAIGN_CONFIG.md` |
 | `value-bounded-open/` | value-bounded rows with no proof yet | `MANIFEST.jsonl` |
+| `z3-upgrade/` | repairing proofs that time out under Z3 5.1.0 | brief, trajectory, audit, attempts, transcripts |
+| `output-length/` | re-charging proofs for one step per output character | brief, trajectory, audit, attempts, transcripts |
 
 ## `labelaudit/` is the one that is not just manifests
 

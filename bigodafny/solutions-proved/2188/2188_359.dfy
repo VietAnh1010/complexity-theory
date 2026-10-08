@@ -115,7 +115,7 @@ method Solve(n: int, a_list: seq<int>, b_list: seq<int>) returns (output: string
   requires n >= 1
   requires |a_list| == n
   requires |b_list| == n
-  ensures steps <= 4 * n * (CeilLog2(n) + 1) + 10 * n + 8
+  ensures steps <= 4 * n * (CeilLog2(n) + 1) + 10 * n + 8 + |output|
 {
   steps := 1;
   var aPairs: seq<(int,int)> := [];
@@ -180,5 +180,6 @@ method Solve(n: int, a_list: seq<int>, b_list: seq<int>) returns (output: string
     steps := steps + 3;
   }
   output := IntToString(maxi);
-  steps := steps + 1;
+  IntToStringDigits(maxi);
+  steps := steps + Digits(maxi);
 }

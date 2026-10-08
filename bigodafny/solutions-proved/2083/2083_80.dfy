@@ -67,7 +67,7 @@ method Solve(a: int, b: int, c_list: seq<int>, d: string) returns (output: strin
   requires |c_list| == a
   requires |d| == a
   requires b >= 0
-  ensures steps <= (2 * CeilLog2(a) + 12) * a + 3
+  ensures steps <= (2 * CeilLog2(a) + 12) * a + 3 + |output|
 {
   var n := a;
   var k := b;
@@ -115,5 +115,5 @@ method Solve(a: int, b: int, c_list: seq<int>, d: string) returns (output: strin
     FinalBound(base1, K, CeilLog2(n), iOld, j, SortCost(|p|), c);
   }
   output := IntToString(t);
-  steps := steps + 1;
+  steps := steps + 1 + |output|;
 }

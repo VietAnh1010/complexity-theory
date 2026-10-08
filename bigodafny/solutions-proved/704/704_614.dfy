@@ -30,7 +30,7 @@ import opened Prelude
 
 method Solve(a: int, b: int) returns (output: string, ghost steps: nat)
   requires a >= 0
-  ensures steps <= 6 * a + 5
+  ensures steps <= 6 * a + 2 + |output|
 {
   steps := 1;
   var cnt := 0;
@@ -57,6 +57,7 @@ method Solve(a: int, b: int) returns (output: string, ghost steps: nat)
       steps := steps + 4;   // 5*i (1) + hrs+ans (1) + comparison (1) + i+1 (1)
     }
     output := IntToString(cnt);
-    steps := steps + 1;
+    IntToStringDigits(cnt);
+    steps := steps + |output|;
   }
 }

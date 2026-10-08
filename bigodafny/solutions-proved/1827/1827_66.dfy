@@ -65,7 +65,7 @@ lemma LowbitDepthBound(v: int)
 
 method Solve(a: int, b: int) returns (output: string, ghost steps: nat)
   ensures var L := if b > 0 then b else 0;
-          steps <= 3 * NLogN(L) + 9 * L + 10
+          steps <= 3 * NLogN(L) + 9 * L + 10 + |output|
 {
   var s := a;
   var l := b;
@@ -117,9 +117,12 @@ method Solve(a: int, b: int) returns (output: string, ghost steps: nat)
   }
   if s == 0 {
     output := IntToString(|ll|) + "\n" + JoinInts(ll, " ");
-    steps := steps + |ll| + 4;
+    IntToStringDigits(|ll|);
+    if |ll| >= 1 { JoinIntsLen(ll, " "); }
+    steps := steps + Digits(|ll|) + SumDigits(ll) + |ll| + 4;
   } else {
     output := IntToString(-1);
-    steps := steps + 1;
+    IntToStringDigits(-1);
+    steps := steps + Digits(-1);
   }
 }

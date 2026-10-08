@@ -35,7 +35,7 @@ import opened Prelude
 // two slices, concatenation and sequence equality are each O(n), charged
 // as such since seq `==` isn't in the fixed-cost table rows.
 
-method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
+method {:isolate_assertions} Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
   requires n == |a_list|
   requires n >= 1
   ensures steps <= 2 * n * (CeilLog2(n) + 1) + 8 * n + |output| + 10

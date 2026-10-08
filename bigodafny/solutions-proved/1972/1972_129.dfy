@@ -20,7 +20,7 @@ import opened Prelude
 // not a function of a or b or c -- a fixed constant, so O(1). |li| <= 100 too,
 // so the final Join is bounded by a constant regardless of a, b, c.
 method Solve(a: int, b: int, c: int) returns (output: string, ghost steps: nat)
-  ensures steps <= 700
+  ensures steps <= 700 + |output|
 {
   steps := 1;
   var li: seq<int> := [];
@@ -42,9 +42,9 @@ method Solve(a: int, b: int, c: int) returns (output: string, ghost steps: nat)
   }
   if |li| == 0 {
     output := "-1\n";
-    steps := steps + 1;
+    steps := steps + 1 + |output|;
   } else {
     output := JoinInts(li, " ") + "\n";
-    steps := steps + (2 * |li| + 1) + 1;   // JoinInts: |li| IntToString calls (1 each) + Join cost |li|-ish + final concat
+    steps := steps + (2 * |li| + 1) + 1 + |output|;   // JoinInts: |li| IntToString calls (1 each) + Join cost |li|-ish + final concat
   }
 }

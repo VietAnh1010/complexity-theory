@@ -41,7 +41,7 @@ method Solve(n: int) returns (output: string, ghost steps: nat)
   // 91 of 212 stored inputs exceed it; every one of those raises IndexError
   // in the row's own Python, so there is no behaviour there to reproduce.
   requires 1 <= n <= 10001
-  ensures steps <= 3 * 2778 + 3
+  ensures steps <= 6 * 2778 + 13000 + |output|
 {
   steps := 1;
   var parts: seq<string> := [];
@@ -50,17 +50,22 @@ method Solve(n: int) returns (output: string, ghost steps: nat)
     invariant 1 <= x <= 2778
     invariant |parts| == x - 1
     invariant forall k :: 0 <= k < |parts| ==> |parts[k]| == DigitBand(k + 1)
-    invariant steps <= 3 * (x - 1) + 1
+    invariant steps <= 6 * (x - 1) + 1
     decreases 2778 - x
   {
     IntToStringLen(x);
+    IntToStringDigits(x);
+    assert |IntToString(x)| <= 4 by { assert 1 <= x < 2778; }
+    assert Digits(x) <= 4;
     parts := parts + [IntToString(x)];
+    steps := steps + 2 + Digits(x);
     x := x + 1;
-    steps := steps + 3;
   }
   LenOf1To2777(parts);
+  JoinLen(parts, "");
+  steps := steps + SumLen(parts) + |parts|;
   var s := Join(parts, "");
   assert |s| == 10001;
   output := [s[n - 1]] + "\n";
-  steps := steps + 2;
+  steps := steps + 2 + |output|;
 }

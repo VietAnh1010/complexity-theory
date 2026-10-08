@@ -37,13 +37,13 @@
 include "../../prelude.dfy"
 import opened Prelude
 
-method Solve(n: int, intervals: seq<seq<int>>) returns (output: string, ghost steps: nat)
+method {:isolate_assertions} Solve(n: int, intervals: seq<seq<int>>) returns (output: string, ghost steps: nat)
   requires n >= 2
   requires n == |intervals|
   requires forall k :: 0 <= k < n ==> |intervals[k]| >= 2
   requires forall k :: 0 <= k < n ==> intervals[k][1] < 10000000000
   requires exists k :: 0 <= k < n && intervals[k][0] > -1
-  ensures steps <= 19 * n + 20
+  ensures steps <= 19 * n + 20 + |output|
 {
 {
 
@@ -86,7 +86,9 @@ method Solve(n: int, intervals: seq<seq<int>>) returns (output: string, ghost st
   steps := steps + |r_1| + |l_1| + |r_2| + |l_2|;
   var best := if opt1 > opt2 then opt1 else opt2;
   var ans := if best > 0 then best else 0;
+  assert steps <= 19 * n + 19;
   output := IntToString(ans);
-  steps := steps + 1;
+  IntToStringDigits(ans);
+  steps := steps + Digits(ans);
 }
 }

@@ -23,7 +23,7 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string, ghost steps: nat)
   requires n >= 0
-  ensures steps <= 4 * n + 6
+  ensures steps <= 4 * n + 2 + |output|
 {
   steps := 1;
   var a := 1;
@@ -48,7 +48,8 @@ method Solve(n: int) returns (output: string, ghost steps: nat)
   }
   if found {
     output := IntToString(ans) + " " + IntToString(ans) + "\n";
-    steps := steps + 3;   // two IntToString (1 each) + concat (1)
+    IntToStringDigits(ans);
+    steps := steps + |output|;
   } else {
     output := "-1\n";
     steps := steps + 1;

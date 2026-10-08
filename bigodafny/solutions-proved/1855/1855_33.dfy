@@ -26,7 +26,7 @@ import opened Prelude
 // the input format, the whole row is straight-line and O(1).
 method Solve(hour: string, minute: string) returns (output: string, ghost steps: nat)
   requires |hour| == 2 && |minute| == 2
-  ensures steps <= 20
+  ensures steps <= 20 + |output|
 {
   steps := 1;
   var h := 12 - (ParseInt(hour) % 12);
@@ -38,5 +38,5 @@ method Solve(hour: string, minute: string) returns (output: string, ghost steps:
   var firstStr := if num % 2 == 0 then IntToString(half) + ".0" else IntToString(half) + ".5";
   var second := (m * 6) % 360;
   output := firstStr + " " + IntToString(second);
-  steps := steps + 5;
+  steps := steps + 5 + |output|;
 }

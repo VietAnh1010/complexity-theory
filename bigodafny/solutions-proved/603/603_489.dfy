@@ -26,7 +26,7 @@ import opened Prelude
 
 method Solve(n: int, numbers: seq<int>) returns (output: string, ghost steps: nat)
   requires |numbers| > 0
-  ensures steps <= 5 * |numbers| + 5
+  ensures steps <= 5 * |numbers| + 5 + |output|
 {
   var mn := numbers[0];
   var mx := numbers[0];
@@ -45,5 +45,5 @@ method Solve(n: int, numbers: seq<int>) returns (output: string, ghost steps: na
   var diff := mx - mn + 1;
   var x := if diff < n then 0 else diff - n;
   output := IntToString(x);
-  steps := steps + 3;
+  steps := steps + 3 + |output|;
 }

@@ -76,7 +76,7 @@ lemma QuadInductive(n: nat)
 // recurses once on a strictly shorter seq. Sum_{k=0}^{n} O(k) = O(n**2).
 method Reduce(petals: seq<int>) returns (result: string, ghost steps: nat)
   decreases |petals|
-  ensures steps <= 9 * |petals| * |petals| + 12 * |petals| + 8
+  ensures steps <= 9 * |petals| * |petals| + 12 * |petals| + 8 + |result|
 {
   steps := 1;
   if |petals| == 0 {
@@ -88,7 +88,8 @@ method Reduce(petals: seq<int>) returns (result: string, ghost steps: nat)
   steps := steps + |petals|;
   if s % 2 == 1 {
     result := IntToString(s);
-    steps := steps + 1;
+    IntToStringDigits(s);
+    steps := steps + Digits(s);
     return;
   }
   var hasOdd := false;
@@ -145,7 +146,7 @@ method Reduce(petals: seq<int>) returns (result: string, ghost steps: nat)
 }
 
 method Solve(v_0: int, v_1: seq<int>) returns (output: string, ghost steps: nat)
-  ensures steps <= 9 * |v_1| * |v_1| + 12 * |v_1| + 9
+  ensures steps <= 9 * |v_1| * |v_1| + 12 * |v_1| + 9 + |output|
 {
   output, steps := Reduce(v_1);
   steps := steps + 1;

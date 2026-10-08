@@ -33,13 +33,16 @@ method Solve(s: string) returns (output: string, ghost steps: nat)
   AllSameFromCost(s, 0);
   if !IsPalindrome269b(s) {
     output := IntToString(|s|);
-    steps := (|s| / 2) + |output| + 3;
+    IntToStringDigits(|s|);
+    steps := (|s| / 2) + Digits(|s|) + 3;
   } else if AllSameChar269b(s) {
     output := IntToString(0);
-    steps := (|s| / 2) + |s| + |output| + 4;
+    IntToStringDigits(0);
+    steps := (|s| / 2) + |s| + Digits(0) + 4;
   } else {
     output := IntToString(|s| - 1);
-    steps := (|s| / 2) + |s| + |output| + 4;
+    IntToStringDigits(|s| - 1);
+    steps := (|s| / 2) + |s| + Digits(|s| - 1) + 4;
   }
 }
 

@@ -33,7 +33,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
-  ensures steps <= 3 * |a_list| + 4
+  ensures steps <= 3 * |a_list| + 4 + |output|
 {
   steps := 1;
   var mx := -1;
@@ -67,5 +67,5 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
   } else {
     output := IntToString(mx - mn) + " " + IntToString(maxf * minf);
   }
-  steps := steps + 3;
+  steps := steps + 3 + |output|;
 }

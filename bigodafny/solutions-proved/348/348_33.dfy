@@ -43,7 +43,7 @@ lemma MulDistribAdd(a: int, c: int)
 
 method Solve(n: int, v_list: seq<seq<int>>) returns (output: string, ghost steps: nat)
   requires forall k :: 0 <= k < |v_list| ==> |v_list[k]| >= 3
-  ensures steps <= (10 * |v_list| + 10) * |v_list| + 10
+  ensures steps <= (10 * |v_list| + 10) * |v_list| + 10  + |output|
 {
   steps := 1;
   var start: seq<int> := [];
@@ -85,5 +85,5 @@ method Solve(n: int, v_list: seq<seq<int>>) returns (output: string, ghost steps
       by { MulDistribAdd(idx - 1, 10 * |v_list| + 10); }
   }
   output := IntToString(if ans1 < ans2 then ans1 else ans2);
-  steps := steps + 1;
+  steps := steps + 1 + |output|;
 }

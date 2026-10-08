@@ -28,7 +28,7 @@ import opened Prelude
 
 method Solve(a: int, b: int) returns (output: string, ghost steps: nat)
   requires a >= 1
-  ensures steps <= 30 * a + 20
+  ensures steps <= 30 * a + 20 + |output|
 {
   steps := 1;
   var n := a;
@@ -57,9 +57,9 @@ method Solve(a: int, b: int) returns (output: string, ghost steps: nat)
   }
   if k > f + 1 || h == 1 {
     output := "-1\n";
-    steps := steps + 1;
+    steps := steps + 1 + |output|;
   } else {
     output := Join(parts, " ") + (if |parts| > 0 then " " else "") + IntToString(h) + "\n";
-    steps := steps + 3 * |parts| + 3;
+    steps := steps + 3 * |parts| + 3 + |output|;
   }
 }

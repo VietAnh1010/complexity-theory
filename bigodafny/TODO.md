@@ -81,15 +81,9 @@ when done.
       (`solutions-unscreened/README.md` now passes it).
 - [ ] `label_audit.py apply` handles rows in `solutions/` and
       `solutions-disputed/` only; auditing `solutions-unscreened/` needs it extended.
-- [ ] `label_audit.py` imports `features` from the archived `experiments/`.
 
 ## Gates (not for an agent whose work they judge)
 
-- [ ] `proofs.py`'s corpus `assume` scan matches comments: it flags the word
-      in `2854_107`'s audit header. Skip `//` text, or accept the false hit.
-
-- [x] Remove the `solutions-proved/nlogn/` remnants: `PROVED_NLOGN` in
-      `common.py`, `proofs.py`, `precheck.py`; `tight_variant` in `collect.py`.
 - [x] `experiments/selftest_grade.py` imports `INEXACT`, `NLOGN`, `VERIFIED`,
       which `common.py` no longer defines; it fails on import. Won't fix:
       `experiments/` is archived (its README says so).
@@ -106,15 +100,11 @@ when done.
 - [x] `solutions-disputed/README.md` exit rule still names
       `data/gate_exempt.jsonl`, replaced by `data/gate_ungateable.jsonl` on
       2026-09-21. Restated (also in the two `1950` headers and `gate-audit/`).
-- [x] Six proofs cited deleted `solutions-proved/nlogn/` files; repointed.
 - [x] Skills hardcoded container paths; now relative, with `dafny` and `z3`
       taken from PATH.
-- [x] `verify-sample/baseline.py` (one-off, superseded by `verify_all.py`) and
-      `verify-sample/AGENT_PROMPT.md` (duplicate of the verify skill's brief)
-      removed, with `baseline.jsonl` (duplicated by `trajectory.jsonl`).
 - [x] `label_relation.jsonl` ad-hoc flags: `reason_rewritten` (c4),
       `redrawn_already_proved` (c5), `relation_superseded` (c1, c4), `resolved`
-      (c2). Fold into the `revision` scheme; `provestats.py` reads `resolved`.
+      (c2). Fold into the `revision` scheme; `prove_stats.py` reads `resolved`.
 - [x] Campaign 1 records predate `relation` and use `agrees_with_label`; the
       reviewed relation is only in `label_relation.jsonl`. Now true of every
       campaign by design: every proved row has a reviewed line there.

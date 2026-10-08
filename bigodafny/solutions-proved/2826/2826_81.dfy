@@ -69,7 +69,7 @@ method BisectLeft(arr: seq<int>, lo0: int, hi0: int, v: int) returns (r: int, gh
 
 method Solve(n: int, pairs: seq<seq<int>>) returns (output: string, ghost steps: nat)
   ensures var nn := if n > 0 then n else 0;
-          steps <= 5 * NLogN(nn + 1) + 20 * nn + 30
+          steps <= 5 * NLogN(nn + 1) + 20 * nn + 30 + |output|
 {
   var nn := if n > 0 then n else 0;
   var m := nn + 1;
@@ -158,5 +158,5 @@ method Solve(n: int, pairs: seq<seq<int>>) returns (output: string, ghost steps:
     steps := steps + 2;
   }
   output := IntToString(n - best);
-  steps := steps + 2;
+  steps := steps + 2 + |output|;
 }

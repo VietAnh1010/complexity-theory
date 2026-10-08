@@ -27,7 +27,7 @@ import opened Prelude
 method Solve(n: int, k: int) returns (output: string, ghost steps: nat)
   requires 1 <= k <= n
   requires n % 2 == 0
-  ensures steps <= 3 * n + 6
+  ensures steps <= 3 * n + 6 + |output|
 {
 
   var a := k;
@@ -62,5 +62,6 @@ method Solve(n: int, k: int) returns (output: string, ghost steps: nat)
     }
   }
   output := IntToString(i);
-  steps := steps + 1;
+  IntToStringDigits(i);
+  steps := steps + |output|;
 }

@@ -92,6 +92,11 @@ lemma IterCost(c: int, x: int, l: int, r: int, l0: int, m: int)
   CeilLog2Monotone(l + 1, l0 + 1);
 }
 
+lemma MulSwap(k: int, n: int, e: int)
+  requires k == e
+  ensures k * n == n * e
+{}
+
 // Each Gcd call costs Euclid's recursion depth, GcdSteps: at most
 // 2 * BitLen(max) + 2 on (current, arr[i]) (GcdStepsBound), and at most
 // 2 * BitLen(lcm) + 3 on (lcm, running) (GcdStepsBoundFirst). lcm starts at
@@ -100,7 +105,7 @@ method {:isolate_assertions} Solve(n: int, a_list: seq<int>) returns (output: st
   requires |a_list| >= 2
   requires forall v :: v in a_list ==> v >= 1
   ensures steps <= |a_list| * (10 + 4 * BitLen(MaxSeq(a_list)) + 2 * BitLen(a_list[0] * a_list[1]))
-                   + 2 * BitLen(MaxSeq(a_list)) + 7
+                   + 2 * BitLen(MaxSeq(a_list)) + 7 + |output|
 {
   steps := 1;
   var arr := a_list;
@@ -147,7 +152,9 @@ method {:isolate_assertions} Solve(n: int, a_list: seq<int>) returns (output: st
   }
   CostMulMono(K, |arr| - 2, |arr|);
   assert steps <= 6 + 2 * L + K * |arr|;
+  MulSwap(K, |arr|, 10 + 4 * L + 2 * P);
   assert K * |arr| == |a_list| * (10 + 4 * L + 2 * P);
   output := IntToString(lcm);
-  steps := steps + 1;
+  IntToStringDigits(lcm);
+  steps := steps + Digits(lcm);
 }

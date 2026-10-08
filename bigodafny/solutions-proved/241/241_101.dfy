@@ -27,11 +27,12 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
   requires n >= 1 && n == |a_list|
-  ensures steps <= 2 * n * (CeilLog2(n) + 1) + 4 * n + 10
+  ensures steps <= 2 * n * (CeilLog2(n) + 1) + 4 * n + 10 + |output|
 {
   if n == 1 {
     output := IntToString(a_list[0]);
-    steps := 2;
+    IntToStringDigits(a_list[0]);
+    steps := 1 + |output|;
   } else {
     SortCostTreeBound(n);
     steps := 1 + SortCost(n);
@@ -57,7 +58,8 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
       steps := steps + (n - i) + i + 1;
     }
     output := IntToString(ans);
-    steps := steps + 1;
+    IntToStringDigits(ans);
+    steps := steps + |output|;
   }
 }
 

@@ -1,14 +1,12 @@
 # `solutions-proved/` — the complexity label, machine-checked
 
-323 files, one per row. All verify, none contains an `assume`;
+321 files, one per row. All verify, none contains an `assume`;
 `proofs.py` re-checks every one from scratch and records the result in
 `data/complexity_proofs.jsonl`.
 
-> Renamed from `solutions-verified/`. "Verified" is what `dafny verify` does,
-> and that checks **safety** — indices, division, termination. These files
-> check something else: that the row's **complexity label** is honest. The old
-> name put them in a false pair with `solutions-unverified/`, which is about
-> safety and always was.
+"Proved", not "verified": `dafny verify` checks **safety** (indices, division,
+termination), and `solutions-unverified/` is about safety. These files check
+that the row's **complexity label** is honest.
 
 ## This is an overlay, not a status
 
@@ -22,11 +20,11 @@ that also lives in one of those five:
 
 | the row also lives in | rows |
 |---|---|
-| `solutions/` | 307 |
-| `solutions-disputed/` | 15 |
+| `solutions/` | 276 |
+| `solutions-disputed/` | 44 |
 | `solutions-unscreened/` | 1 |
 
-15 proved rows sit against disputed rows, which is the point: a proved bound is
+44 proved rows sit against disputed rows, which is the point: a proved bound is
 the strongest possible input to that review. `checkverdicts.py` enforces it —
 an audit verdict that contradicts a machine-checked bound is rejected.
 
@@ -46,8 +44,8 @@ how a row leaves.
 
 The charge for a sort, `SortCost`, and its tight bound live in `prelude.dfy`
 with a binary-search potential beside them (`SortCostNLogN`, `SortCostWithin`,
-`SearchPot`, `BisectStep`, `SearchLoopWithin`). No proof here copies them any
-more except `2188_359`, which keeps local opaque copies because its `Solve`
+`SearchPot`, `BisectStep`, `SearchLoopWithin`). No proof here copies them
+except `2188_359`, which keeps local opaque copies because its `Solve`
 times out against the prelude's non-opaque `SortCost`.
 
 ## How a proof is written
@@ -56,20 +54,16 @@ times out against the prelude's non-opaque `SortCost`.
 convention. In outline: copy the row in, add a `ghost var steps` incremented at
 every charged operation, state `ensures steps <= <bound>`, and prove it.
 
-The charges come from `COMPLEXITY.md`, which under
-`batches/cost-axioms/PLAN.md` **stipulates** collection costs rather than
-measuring the Dafny Python backend. A proof written before that switch may
-charge `|s|` for a `seq` update where the axioms now charge 1; the bound is
-still sound, just no longer tight.
+The charges come from `COMPLEXITY.md`, which **stipulates** collection costs
+rather than measuring the Dafny Python backend. Some proofs still charge `|s|`
+for a `seq` update where the model charges 1; the bound is sound, just not
+tight.
 
 ## Same code as the row
 
 A proof may add only ghost code: the proof and its row must compile to the same
-Python. The campaign `audit.py` checks this for every drawn row. On 2026-09-29,
-the main agent fixed 19 proofs that failed it: non-ghost temporaries and counters
-made ghost, and the row's own statements restored. Bounds did not change.
-`1077_84` was rewritten on the row's recursive `Factorial`. `2496_30` (caps
-added to three loop conditions) still differs and is under review.
+Python. The campaign `audit.py` checks this for every drawn row. `2496_30`
+(caps added to three loop conditions) still differs and is under review.
 
 A proof never adds or changes a `requires` on the row's own code; a needed
 precondition goes into the row first. `audit.py` checks this too.
@@ -81,6 +75,6 @@ precondition goes into the row first. `audit.py` checks this too.
 
 ## Current scope
 
-The overlay has 323 proof files. The relation to the label is recorded beside
+The overlay has 321 proof files. The relation to the label is recorded beside
 each row in the campaign records; a proof may confirm the label, expose a
 structural cost the label omits, or be tighter for a documented model reason.

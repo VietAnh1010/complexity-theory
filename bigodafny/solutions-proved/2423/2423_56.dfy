@@ -34,7 +34,7 @@ method Solve(n: int, k: int, pairs: seq<(int, int)>) returns (output: string, gh
   requires n <= |pairs|
   requires n >= 0
   requires forall t :: 0 <= t < |pairs| ==> 0 <= pairs[t].0 < 3010
-  ensures steps <= 2 * n + 28000
+  ensures steps <= 2 * n + 28000 + |output|
 {
   var l: seq<int> := [];
   var z := 0;
@@ -88,5 +88,5 @@ method Solve(n: int, k: int, pairs: seq<(int, int)>) returns (output: string, gh
     steps := steps + 8;
   }
   output := IntToString(ans);
-  steps := steps + 1;
+  steps := steps + 1 + |output|;
 }

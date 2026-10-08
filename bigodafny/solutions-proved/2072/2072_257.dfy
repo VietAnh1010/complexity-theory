@@ -22,7 +22,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(s: string) returns (output: string, ghost steps: nat)
-  ensures steps <= 12 * |s| + 30
+  ensures steps <= 12 * |s| + |output| + 30
 {
   steps := 1;
   var n := |s|;
@@ -78,5 +78,10 @@ method Solve(s: string) returns (output: string, ghost steps: nat)
     steps := steps + 4;
   }
   output := IntToString(countR) + " " + IntToString(countB) + " " + IntToString(countY) + " " + IntToString(countG);
-  steps := steps + 8;
+  IntToStringDigits(countR);
+  IntToStringDigits(countB);
+  IntToStringDigits(countY);
+  IntToStringDigits(countG);
+  steps := steps + Digits(countR) + Digits(countB) + Digits(countY) + Digits(countG) + 8;
+  assert |output| == Digits(countR) + Digits(countB) + Digits(countY) + Digits(countG) + 3;
 }

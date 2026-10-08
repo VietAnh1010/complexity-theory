@@ -23,7 +23,7 @@ import opened Prelude
 
 method Solve(a: int, b: int, c: int) returns (output: string, ghost steps: nat)
   requires b >= 1
-  ensures steps <= 10
+  ensures steps <= 10 + |output|
 {
   steps := 1;
   var t := a * c;
@@ -31,10 +31,10 @@ method Solve(a: int, b: int, c: int) returns (output: string, ghost steps: nat)
   if FloorMod(t, b) == 0 {
     steps := steps + 1;
     output := IntToString(FloorDiv(t, b) - c);
-    steps := steps + 2;
+    steps := steps + 2 + |output|;
   } else {
     steps := steps + 1;
     output := IntToString(FloorDiv(t, b) - c + 1);
-    steps := steps + 3;
+    steps := steps + 3 + |output|;
   }
 }

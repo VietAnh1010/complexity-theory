@@ -35,11 +35,11 @@ lemma MulDistribAdd(a: int, c: int)
 // |chains| <= x <= n; each inner scan is therefore O(n), and there are n
 // outer iterations. SplitWs is charged a flat O(1) per call (line length is
 // not the point of this row).
-method Solve(n: int, handles: seq<string>) returns (output: string, ghost steps: nat)
+method {:isolate_assertions} Solve(n: int, handles: seq<string>) returns (output: string, ghost steps: nat)
   // every line is "old new": two whitespace-separated tokens
   requires 1 <= n <= |handles|
   requires forall k :: 0 <= k < |handles| ==> |SplitWs(handles[k])| >= 2
-  ensures steps <= 4 * n * n + 6 * n + 6
+  ensures steps <= 4 * n * n + 6 * n + 6 + 2 * |output|
 {
   steps := 1;
   var first := SplitWs(handles[0]);
@@ -83,12 +83,16 @@ method Solve(n: int, handles: seq<string>) returns (output: string, ghost steps:
     steps := steps + 1;
   }
   var lines: seq<string> := [IntToString(|chains|)];
+  IntToStringDigits(|chains|);
+  ghost var d0 := Digits(|chains|);
+  steps := steps + d0;
   var k := 0;
   while k < |chains|
     invariant 0 <= k <= |chains|
     invariant forall y :: 0 <= y < |chains| ==> |chains[y]| >= 2
     invariant |chains| <= n
-    invariant steps <= 1 + (n - 1) * (4 * n + 2) + 2 * k + 2
+    invariant steps <= 1 + (n - 1) * (4 * n + 2) + 2 * k + 2 + d0
+    invariant d0 == Digits(|chains|) && |lines| >= 1 && |lines[0]| == d0
     decreases |chains| - k
   {
     var chain := chains[k];
@@ -97,5 +101,7 @@ method Solve(n: int, handles: seq<string>) returns (output: string, ghost steps:
     steps := steps + 2;
   }
   output := Join(lines, "\n");
-  steps := steps + 1;
+  JoinLen(lines, "\n");
+  assert SumLen(lines) >= |lines[0]|;
+  steps := steps + |output| + 1;
 }

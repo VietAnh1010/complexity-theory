@@ -16,7 +16,7 @@ import opened Prelude
 
 method Solve(N: int, M: int) returns (output: string, ghost steps: nat)
   requires N >= 2
-  ensures steps <= 6
+  ensures steps <= 6 + |output|
 {
   var AA := N - 1;
   var BB := M - 1;
@@ -24,5 +24,6 @@ method Solve(N: int, M: int) returns (output: string, ghost steps: nat)
   var result := FloorDiv(BB + AA - 1, AA);
   steps := steps + 1;
   output := IntToString(result);
-  steps := steps + 1;
+  IntToStringDigits(result);
+  steps := steps + |output|;
 }

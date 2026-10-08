@@ -7,7 +7,7 @@ import opened Prelude
 
 method Solve(n: int, queries: seq<seq<int>>) returns (output: string, ghost steps: nat)
   requires forall k :: 0 <= k < |queries| ==> |queries[k]| >= 3
-  ensures steps <= 8 * |queries| + 3
+  ensures steps <= 8 * |queries| + 3 + 2 * |output|
 {
   steps := 1;
   var answer: seq<int> := [];
@@ -28,7 +28,9 @@ method Solve(n: int, queries: seq<seq<int>>) returns (output: string, ghost step
     steps := steps + 6;
   }
   var parts := seq(|answer|, j requires 0 <= j < |answer| => IntToString(answer[j]));
-  steps := steps + |answer|;
+  SumLenIntStrings(answer);
+  steps := steps + SumDigits(answer);
   output := if |parts| == 0 then "" else Join(parts, "\n") + "\n";
-  steps := steps + |parts| + 1;
+  if |parts| > 0 { JoinLen(parts, "\n"); }
+  steps := steps + SumLen(parts) + |parts| + 1;
 }

@@ -42,7 +42,7 @@ import opened Prelude
 // times. Both are charged at n, which dominates.
 method Solve(a: int, b: int, c: int) returns (output: string, ghost steps: nat)
   requires a >= 0
-  ensures steps <= 7 * a + 10
+  ensures steps <= 7 * a + 10 + |output|
 {
   steps := 1;
   var n := a;
@@ -92,5 +92,5 @@ method Solve(a: int, b: int, c: int) returns (output: string, ghost steps: nat)
   }
   assert steps <= 5 * n + 2 + 2 * n;
   output := IntToString(ans);
-  steps := steps + 1;
+  steps := steps + 1 + |output|;
 }

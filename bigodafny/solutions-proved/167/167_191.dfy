@@ -19,7 +19,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int) returns (output: string, ghost steps: nat)
-  ensures steps <= 4
+  ensures steps <= 1 + |output|
 {
   if n < 5 || n % 2 == 0 {
     output := "NO";
@@ -27,6 +27,7 @@ method Solve(n: int) returns (output: string, ghost steps: nat)
   } else {
     var y := (n - 3) / 2;
     output := "1 " + IntToString(y);
-    steps := 4;
+    IntToStringDigits(y);
+    steps := 1 + |output|;
   }
 }

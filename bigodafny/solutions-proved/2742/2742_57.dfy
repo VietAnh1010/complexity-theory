@@ -19,10 +19,10 @@ import opened Prelude
 // Label O(n) -- agrees. `SumSeq` recurses once per element, so it is charged
 // |values|, and nothing else in the row depends on the input size.
 method Solve(N: int, values: seq<int>) returns (output: string, ghost steps: nat)
-  ensures steps <= |values| + 6
+  ensures steps <= |values| + 5 + |output|
 {
   var ans := FloorDiv(N * (N + 1), 2);
   ans := ans - SumSeq(values);
   output := IntToString(ans) + "\n";
-  steps := |values| + 6;
+  steps := |values| + 5 + |output|;
 }

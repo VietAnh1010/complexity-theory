@@ -87,7 +87,7 @@ lemma CeilLog2MonotoneUse(m: nat, n: nat)
 method Solve(a: int, b: int, string_: string) returns (output: string, ghost steps: nat)
   requires b >= 1
   requires |string_| >= 1
-  ensures steps <= 2 * |string_| * (CeilLog2(|string_|) + 1) + 8 * |string_| + 15
+  ensures steps <= 2 * |string_| * (CeilLog2(|string_|) + 1) + 8 * |string_| + 15 + |output|
 {
   steps := 1;
   var k := b;
@@ -152,5 +152,5 @@ method Solve(a: int, b: int, string_: string) returns (output: string, ghost ste
   q := q + [c];
   steps := steps + 1;
   output := IntToString(MaxSeq(q));
-  steps := steps + 1;
+  steps := steps + 1 + |output|;
 }

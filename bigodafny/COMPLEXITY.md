@@ -10,7 +10,8 @@ Java backend. BigOBench labels were measured from CPython, so backend timings
 and labels are different evidence.
 
 Charge one unit for integer arithmetic and comparisons, sequence indexing and
-length, and one unit of loop overhead per iteration.
+length, and one unit of loop overhead per iteration. Charge one unit for every
+character a string operation produces.
 
 | operation | charge |
 |---|---:|
@@ -23,8 +24,9 @@ length, and one unit of loop overhead per iteration.
 | set iteration | `|s|` |
 | `multiset(s)` | `|s|` |
 | multiset equality | `|a| + |b|` |
-| `Join(parts, sep)` | `SumLen(parts) + |parts|` |
-| `IntToString(x)` and its result length | 1 |
+| `Join(parts, sep)`, `sep` a source literal | `SumLen(parts) + |parts|` |
+| `IntToString(x)` | `Digits(x)` |
+| `JoinInts(xs, sep)`, `sep` a source literal | `SumDigits(xs) + |xs|` |
 | recursive sequence/string helpers | argument length |
 | sorting k items | `SortCost(k)`; prove it with `SortCostNLogN` |
 | helper calls | the helper's `steps` |
@@ -34,18 +36,31 @@ length, and one unit of loop overhead per iteration.
 `array<T>` is absent from the corpus. The two files that retain arrays explain
 why in their headers; that is a backend note, not a different charge table.
 
-### Three decisions that often cause confusion
+### Decisions that often cause confusion
 
 **Input values are parameters.** A loop bounded by an input value costs in that
 value (`O(v)` or `O(log v)`), even when the problem statement caps it. Hiding a
 30- or 60-iteration loop as constant would make the label useless as a growth
 description.
 
-**`IntToString` is a narrow exception.** Decimal conversion and the returned
-string are charged one unit because their length is bounded by the machine-word
-inputs used here. This does not make a value-bounded loop constant.
+**Integers are words; characters are not.** Arithmetic on an `int` costs one
+unit however large the value, an idealised machine. Turning an `int` into text
+costs one unit per character produced, `Digits(x)`, exactly as building any
+other string does. So a value's size is free to compute with and paid for when
+written out. Where the idealisation is visibly false (integers that outgrow a
+machine word), record `tighter-costmodel`.
 
-**A label names each size it depends on** (2026-10-01). A label variable is one
+**Output length is its own parameter.** Every program that prints L characters
+pays at least L steps, so output length bounds every possible solution from
+below. Write an output term as `|output|` (prelude: `IntToStringDigits`,
+`JoinLen`, `JoinIntsLen`), and compare only the rest of the bound with the
+label: `steps <= 2 * NLogN(n) + 3 * |output| + 5` confirms `O(nlogn)`. An
+additive `|output|` term never makes a row looser. A term that multiplies it
+(`n * |output|`) or a `Digits` charge that never reaches the output (a digit sum,
+a string comparison) is ordinary work and counts. If `|output|` dominates the
+bound, say so in `relation_reason`.
+
+**A label names each size it depends on.** A label variable is one
 size: one list's length, one string's length, or one input value. A label must
 be the tight class in those sizes, in both directions.
 
@@ -86,7 +101,7 @@ comparable; backend limitations stay in the record where they belong.
 
 ## Current proof overlay
 
-`solutions-proved/` contains 304 checked proof files. It is an overlay: each
+`solutions-proved/` contains 321 checked proof files. It is an overlay: each
 proof also has a normal translated row in `solutions/`, `solutions-disputed/`,
 or `solutions-unscreened/`. The overlay proves the stated step bound; it does
 not certify the behaviour gate or the label audit.

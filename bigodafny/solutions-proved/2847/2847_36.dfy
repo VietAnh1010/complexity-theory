@@ -54,7 +54,7 @@ lemma CaptureExists(x: int, y: int, s: int)
 }
 
 method Solve(a0: int, b0: int) returns (output: string, ghost steps: nat)
-  ensures steps <= 12 * (if AbsInt(a0) > AbsInt(b0) then AbsInt(a0) else AbsInt(b0)) + 15
+  ensures steps <= 12 * (if AbsInt(a0) > AbsInt(b0) then AbsInt(a0) else AbsInt(b0)) + 15 + |output|
 {
   steps := 0;
   var x := a0; var y := b0;
@@ -102,5 +102,6 @@ method Solve(a0: int, b0: int) returns (output: string, ghost steps: nat)
   }
   if k < 1 { k := 1; }
   output := IntToString(k - 1);
-  steps := steps + 2;
+  IntToStringDigits(k - 1);
+  steps := steps + 2 + Digits(k - 1);
 }

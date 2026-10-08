@@ -51,7 +51,7 @@ import opened Prelude
 method Solve(n: int, k: int, ignored_lines: seq<int>) returns (output: string, ghost steps: nat)
   requires n >= 1
   requires |ignored_lines| == n
-  ensures steps <= 2 * |ignored_lines| + 12
+  ensures steps <= 2 * |ignored_lines| + 12 + |output|
 {
   var l := ignored_lines;
   var mz := MaxSeq(l);
@@ -70,5 +70,5 @@ method Solve(n: int, k: int, ignored_lines: seq<int>) returns (output: string, g
     if mz < x { mn := x + z1; } else { mn := mz; }
   }
   output := IntToString(mn) + " " + IntToString(mx) + "\n";
-  steps := |l| + |l| + 12;
+  steps := |l| + |l| + 12 + |output|;
 }

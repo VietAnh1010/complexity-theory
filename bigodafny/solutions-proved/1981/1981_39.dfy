@@ -26,7 +26,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
   requires |a_list| == n
   // Python wraps a negative subscript; 152 occur across the stored tests.
   requires forall k :: 0 <= k < n ==> -n <= a_list[k] - 1 < n
-  ensures steps <= 8 * n + 3
+  ensures steps <= 8 * n + 3 + |output|
 {
   steps := 1;
   var a := seq(n, i requires 0 <= i < n => i*40000+1);
@@ -45,5 +45,5 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
     steps := steps + 4;
   }
   output := JoinInts(a, " ") + "\n" + JoinInts(b, " ") + "\n";
-  steps := steps + |a| + |b| + 2;
+  steps := steps + |a| + |b| + 2 + |output|;
 }

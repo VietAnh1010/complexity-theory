@@ -158,7 +158,7 @@ method Solve(n: int, k: int, pairs: seq<(int, int)>) returns (output: string, gh
   requires n <= |pairs|
   requires n >= 0
   ensures steps <= 2 * |pairs| * (CeilLog2(|pairs|) + 1)
-                 + 12 * OuterTrips(pairs) + 2 * n + 21
+                 + 12 * OuterTrips(pairs) + 2 * n + 21 + |output|
 {
   ghost var less := (x: (int, int), y: (int, int)) => x.0 < y.0 || (x.0 == y.0 && x.1 < y.1);
   assert StrictTotalOrder(less);
@@ -224,5 +224,5 @@ method Solve(n: int, k: int, pairs: seq<(int, int)>) returns (output: string, gh
   assert steps <= base + 12 * OuterTrips(pairs) + 2 * n;
 
   output := IntToString(r);
-  steps := steps + 1;
+  steps := steps + 1 + |output|;
 }

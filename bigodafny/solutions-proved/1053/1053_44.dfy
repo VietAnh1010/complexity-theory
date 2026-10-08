@@ -51,7 +51,7 @@ lemma SortLength<T>(s: seq<T>, less: (T, T) -> bool)
 
 method Solve(N: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
   requires |a_list| == N
-  ensures steps <= 2 * |a_list| * (CeilLog2(|a_list|) + 1) + 5 * |a_list| + 12
+  ensures steps <= 2 * |a_list| * (CeilLog2(|a_list|) + 1) + 5 * |a_list| + 12 + |output|
 {
   var pairs := seq(|a_list|, i requires 0 <= i < |a_list| => (a_list[i], i));
   SortCostTreeBound(|pairs|);
@@ -81,5 +81,5 @@ method Solve(N: int, a_list: seq<int>) returns (output: string, ghost steps: nat
   }
   if b > maxD { maxD := b; }
   output := IntToString(N - maxD);
-  steps := steps + 1;
+  steps := steps + |output|;
 }

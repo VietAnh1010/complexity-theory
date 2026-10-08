@@ -42,7 +42,7 @@ import opened Prelude
 method Solve(n: int, pairs: seq<(int, int)>) returns (output: string, ghost steps: nat)
   requires |pairs| == n
   requires n >= 1
-  ensures steps <= 2 * n * (CeilLog2(n) + 1) + 10 * n + 10
+  ensures steps <= 2 * n * (CeilLog2(n) + 1) + 10 * n + 10 + |output|
 {
   SortCostTreeBound(n);
   steps := 1 + SortCost(n);
@@ -77,7 +77,7 @@ method Solve(n: int, pairs: seq<(int, int)>) returns (output: string, ghost step
     steps := steps + 8;
   }
   output := IntToString(ans);
-  steps := steps + 1;
+  steps := steps + 1 + |output|;
 }
 
 lemma MergeLen1560<T>(a: seq<T>, b: seq<T>, less: (T, T) -> bool)

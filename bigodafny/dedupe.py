@@ -32,7 +32,7 @@ set answers it without double-counting.
 NOT for: comparing campaigns to each other. Attributing a row to the campaign
 that PROVED it credits the later campaign with a row an earlier one failed,
 which flatters late campaigns and penalises early ones. Per-campaign rates
-belong to the raw records, split fresh-versus-repeat -- `provestats.py` keeps
+belong to the raw records, split fresh-versus-repeat -- `prove_stats.py` keeps
 that table and this pass does not touch it.
 
 Reads only. No trajectory is edited: a later judgement about recorded data

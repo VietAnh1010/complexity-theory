@@ -66,7 +66,7 @@ method T(b0In: int, b1In: int, prIn: int) returns (p0: int, p1: int, ghost steps
 
 method Solve(a: int, b: int) returns (output: string, ghost steps: nat)
   requires a >= 1 && b >= 1
-  ensures steps <= 12 * (a + b) + 8
+  ensures steps <= 12 * (a + b) + 8 + |output|
 {
   steps := 1;
   var v1p0, v1p1, s1 := T(a - 1, b, 0);
@@ -77,5 +77,5 @@ method Solve(a: int, b: int) returns (output: string, ghost steps: nat)
   } else {
     output := IntToString(v2p0) + " " + IntToString(v2p1);
   }
-  steps := steps + 4;
+  steps := steps + 4 + |output|;
 }

@@ -17,7 +17,7 @@ from __future__ import annotations
 import collections, difflib, json, re, sys
 from pathlib import Path
 
-from common import DATA, SOLUTIONS, log, read_jsonl, write_jsonl
+from common import DATA, OUT, SOLUTIONS, log, read_jsonl, write_jsonl
 
 THRESHOLD = 0.80
 
@@ -63,7 +63,7 @@ def scan(threshold=THRESHOLD):
                              "dafny_similarity": round(d, 3),
                              "python_similarity": round(p, 3)})
     hits.sort(key=lambda h: (h["python_similarity"], -h["dafny_similarity"]))
-    write_jsonl(DATA / "sibling_review.jsonl", hits)
+    write_jsonl(OUT / "sibling_review.jsonl", hits)
     log(f"sibling candidates: {len(hits)} pairs over "
         f"{len({h['problem_id'] for h in hits})} problems")
     log(f"  rows involved: {len({h['a'] for h in hits} | {h['b'] for h in hits})}")

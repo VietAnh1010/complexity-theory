@@ -15,7 +15,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int) returns (output: string, ghost steps: nat)
-  ensures steps <= 20
+  ensures steps <= 20 + |output|
 {
   steps := 1;
   var numinator5 := n * (n - 1) * (n - 2) * (n - 3) * (n - 4);
@@ -24,5 +24,6 @@ method Solve(n: int) returns (output: string, ghost steps: nat)
     + numinator5 * (n - 5) * (n - 6) / 5040;
   steps := steps + 8;
   output := IntToString(result);
-  steps := steps + 1;
+  IntToStringDigits(result);
+  steps := steps + |output|;
 }

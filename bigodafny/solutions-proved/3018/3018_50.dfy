@@ -23,7 +23,7 @@ import opened Prelude
 
 // MinSeq is a recursive prelude function over a_list: charged its length.
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
-  ensures steps <= 6 * |a_list| + 10
+  ensures steps <= 6 * |a_list| + 10 + |output|
 {
   steps := 1;
   if |a_list| == 0 {
@@ -49,7 +49,9 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
   }
   if key {
     result := IntToString(c);
+    IntToStringDigits(c);
   }
   steps := steps + 1;
   output := result;
+  steps := steps + |output|;
 }

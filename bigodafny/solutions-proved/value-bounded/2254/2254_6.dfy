@@ -54,7 +54,7 @@ method Solve(n: int, pairs: seq<seq<int>>) returns (output: string, ghost steps:
   // k is an alphabet size: at least 1 (it is a divisor) and at most 26
   requires forall k :: 0 <= k < |pairs| ==> 1 <= pairs[k][1] <= 26
   requires forall k :: 0 <= k < |pairs| ==> pairs[k][0] >= 0
-  ensures n >= 0 ==> steps <= 40 * n + 3 * SumFirst(pairs, n) + 4
+  ensures n >= 0 ==> steps <= 40 * n + 3 * SumFirst(pairs, n) + 4 + |output|
 {
   steps := 1;
   var parts: seq<string> := [];
@@ -96,5 +96,5 @@ method Solve(n: int, pairs: seq<seq<int>>) returns (output: string, ghost steps:
     steps := steps + 2 * nn + 3;
   }
   output := Join(parts, "\n");
-  steps := steps + 2;
+  steps := steps + 2 + |output|;
 }

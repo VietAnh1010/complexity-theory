@@ -47,7 +47,7 @@ ghost function FuelInit(b: int): nat
 }
 
 method Solve(a: int, b: int) returns (output: string, ghost steps: nat)
-  ensures steps <= 2 * FuelInit(b) + 10
+  ensures steps <= 2 * FuelInit(b) + 10 + |output|
 {
   steps := 1;
   var timeToSolve := 240 - b;
@@ -69,5 +69,6 @@ method Solve(a: int, b: int) returns (output: string, ghost steps: nat)
   var ans := if m > a then a else m;
   steps := steps + 1;
   output := IntToString(ans);
-  steps := steps + 1;
+  IntToStringDigits(ans);
+  steps := steps + Digits(ans);
 }

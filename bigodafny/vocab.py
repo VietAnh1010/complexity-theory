@@ -1,6 +1,6 @@
 """The closed vocabularies of the proof campaigns' relation records.
 
-One definition, read by audit.py (which enforces it), provestats.py and
+One definition, read by audit.py (which enforces it), prove_stats.py and
 collect.py (which print it). The campaign skill and brief repeat the table for
 readers; change it here first.
 

@@ -123,7 +123,7 @@ lemma FinalBound(N: nat, P: nat, Q: nat, sp: nat, sn: nat, r: nat, spanTotal: na
 method {:vcs_split_on_every_assert} Solve(n: int, m: int, data_list: seq<seq<int>>) returns (output: string, ghost steps: nat, ghost r_final: nat, ghost span_total: nat)
   requires m >= 0
   requires forall k :: 0 <= k < |data_list| ==> |data_list[k]| >= 2
-  ensures steps <= 4 * NLogN(|data_list|) + 20 * |data_list| + 3 * r_final + 6 * span_total + 20
+  ensures steps <= 4 * NLogN(|data_list|) + 20 * |data_list| + 3 * r_final + 6 * span_total + 20 + |output|
 {
   var pos: seq<(int,int)> := [];
   var neg: seq<(int,int)> := [];
@@ -224,7 +224,7 @@ method {:vcs_split_on_every_assert} Solve(n: int, m: int, data_list: seq<seq<int
   }
   ans := ans + best;
   output := IntToString(ans) + "\n";
-  steps := steps + 2;
+  steps := steps + 2 + |output|;
   FinalBound(|data_list|, |pos|, |neg|, SortCost(|pos|), SortCost(|neg|), r, spanTotal);
-  assert steps <= 4 * NLogN(|data_list|) + 20 * |data_list| + 3 * r_final + 6 * span_total + 20;
+  assert steps <= 4 * NLogN(|data_list|) + 20 * |data_list| + 3 * r_final + 6 * span_total + 20 + |output|;
 }

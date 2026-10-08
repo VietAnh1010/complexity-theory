@@ -16,7 +16,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int) returns (output: string, ghost steps: nat)
-  ensures steps <= 15
+  ensures steps <= 15 + |output|
 {
   steps := 1;
   var arr := [105, 135, 165, 189, 195];
@@ -32,5 +32,6 @@ method Solve(n: int) returns (output: string, ghost steps: nat)
     steps := steps + 2;
   }
   output := IntToString(cnt);
-  steps := steps + 1;
+  IntToStringDigits(cnt);
+  steps := steps + Digits(cnt);
 }

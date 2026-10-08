@@ -27,12 +27,13 @@ import opened Prelude
 
 method Solve(n: int, pairs: seq<(int, int)>) returns (output: string, ghost steps: nat)
   requires |pairs| == n
-  ensures steps <= 8 * n + 6
+  ensures steps <= 8 * n + 5 + |output|
 {
   steps := 1;
   var trees := pairs;
   var felled := if n < 2 then n else 2;
-  steps := steps + 1;
+  IntToStringDigits(felled);
+  steps := steps + Digits(felled);
   var i := 1;
   while i < n - 1
     invariant 1 <= i
@@ -61,5 +62,6 @@ method Solve(n: int, pairs: seq<(int, int)>) returns (output: string, ghost step
     assert steps <= 8 * 1 - 6;
   }
   output := IntToString(felled);
-  steps := steps + 1;
+  IntToStringDigits(felled);
+  steps := steps + Digits(felled);
 }

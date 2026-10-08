@@ -28,14 +28,14 @@ lemma MulDistribAdd(i: int, K: int)
   ensures (i + 1) * K == i * K + K
 {}
 
-method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
+method {:isolate_assertions} Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
   requires n == |a_list|
   // Loose scaffold: each outer step is bounded by the full inner range
   // `size` (== n*(n+1)/2, itself O(n**2)), not by the amortized argument
   // (each index of l2 fills at most once, so total inner work across all
   // outer iterations is also O(n**2)) that would give a tight O(n**2)
   // bound directly. This proof did not attempt that tighter argument.
-  ensures steps <= 2 + (3 * (n * (n + 1) / 2) + 10) * n
+  ensures steps <= 2 + (3 * (n * (n + 1) / 2) + 10) * n + |output|
 {
   steps := 1;
   var size := n * (n + 1) / 2;
@@ -83,5 +83,6 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
       by { MulDistribAdd(i - 1, BOUND); }
   }
   output := IntToString(cost);
-  steps := steps + 1;
+  IntToStringDigits(cost);
+  steps := steps + Digits(cost);
 }

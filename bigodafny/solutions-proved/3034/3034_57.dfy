@@ -30,7 +30,7 @@ lemma SortLength<T>(s: seq<T>, less: (T, T) -> bool)
 }
 
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
-  ensures steps <= 2 * |a_list| * (CeilLog2(|a_list|) + 1) + 8 * |a_list| + 10
+  ensures steps <= 2 * |a_list| * (CeilLog2(|a_list|) + 1) + 8 * |a_list| + 10 + |output|
 {
   steps := 1;
   var y := a_list;
@@ -41,7 +41,8 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
   }
   if n == 1 {
     output := IntToString(y[0]);
-    steps := steps + 1;
+    IntToStringDigits(y[0]);
+    steps := steps + |output|;
     return;
   }
   var even := 0;
@@ -62,7 +63,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
   }
   if even == 0 || odd == 0 {
     output := JoinInts(y, " ");
-    steps := steps + |y| + 1;
+    steps := steps + |output| + 1;
     return;
   }
   SortCostTreeBound(|y|);
@@ -82,12 +83,12 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
   }
   if i >= |sorted| || |sorted| < 2 {
     output := JoinInts(sorted, " ");
-    steps := steps + |sorted| + 1;
+    steps := steps + |output| + 1;
     return;
   }
   var t := sorted[i];
   sorted := sorted[i := sorted[1]];
   sorted := sorted[1 := t];
   output := JoinInts(sorted, " ");
-  steps := steps + 2 + |sorted| + 1;
+  steps := steps + 2 + |output| + 1;
 }

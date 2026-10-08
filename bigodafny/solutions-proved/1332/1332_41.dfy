@@ -44,7 +44,7 @@ method Solve(n: int, k: int, a_list: seq<int>) returns (output: string, ghost st
   // Python does p.index(k), which raises ValueError when k is absent, so this
   // excludes no input Python answers.
   requires exists c :: 0 <= c < n && a_list[c] == k
-  ensures steps <= 4 * n + 8
+  ensures steps <= 4 * n + 8 + |output|
 {
   steps := 1;
   var m := k;
@@ -109,5 +109,6 @@ method Solve(n: int, k: int, a_list: seq<int>) returns (output: string, ghost st
     steps := steps + 4;
   }
   output := IntToString(ans) + "\n";
-  steps := steps + 2;
+  IntToStringDigits(ans);
+  steps := steps + |output|;
 }

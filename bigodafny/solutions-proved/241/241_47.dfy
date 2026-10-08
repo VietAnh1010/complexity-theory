@@ -27,12 +27,12 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
   requires n >= 1 && n == |a_list|
-  ensures steps <= 10 * n + 10
+  ensures steps <= 10 * n + 10 + |output|
 {
   steps := 1;
   if n == 1 {
     output := IntToString(a_list[0]);
-    steps := steps + 1;
+    steps := steps + |output|;
   } else {
     var allPos := true;
     var allNeg := true;
@@ -71,7 +71,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
       ans := total;
     }
     output := IntToString(ans);
-    steps := steps + 1;
+    steps := steps + |output|;
   }
 }
 

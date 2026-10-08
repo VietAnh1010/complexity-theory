@@ -49,10 +49,11 @@ function HexHelper(s: string): int
 
 method Solve(n: int) returns (output: string, ghost steps: nat)
   requires n >= 0
-  ensures steps <= 6
+  ensures steps <= 2 * Digits(n) + 4 + |output|
 {
   var s := IntToString(n);
+  IntToStringDigits(n);
   var result := HexHelper(s) - 1;
   output := IntToString(result);
-  steps := 6;
+  steps := 2 * Digits(n) + 4 + |output|;
 }

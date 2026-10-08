@@ -40,6 +40,16 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+lemma SumLenAppend(xs: seq<string>, p: string)
+  ensures SumLen(xs + [p]) == SumLen(xs) + |p|
+  decreases |xs|
+{
+  if |xs| > 0 {
+    assert (xs + [p])[1..] == xs[1..] + [p];
+    SumLenAppend(xs[1..], p);
+  }
+}
+
 function Min2(a: int, b: int): int { if a < b then a else b }
 
 // The charged length of one output part. Both branches are constants under
@@ -55,7 +65,7 @@ ghost const PART_CHARGE: nat := 10
 method Solve(n: int, abc_list: seq<seq<int>>) returns (output: string, ghost steps: nat)
   requires forall r :: r in abc_list ==> |r| == 3
   requires n >= 0
-  ensures steps <= 24 * n + 2
+  ensures steps <= 24 * n + 2 + 3 * |output|
 {
   var parts: seq<string> := [];
   var i := 0;
@@ -65,7 +75,7 @@ method Solve(n: int, abc_list: seq<seq<int>>) returns (output: string, ghost ste
     invariant 0 <= i <= n
     invariant i <= |abc_list|
     invariant |parts| == i
-    invariant steps <= base1 + 12 * i
+    invariant steps <= base1 + 12 * i + 2 * SumLen(parts)
     decreases n - i
   {
     var row := abc_list[i];
@@ -73,16 +83,24 @@ method Solve(n: int, abc_list: seq<seq<int>>) returns (output: string, ghost ste
     var y := row[1];
     var z := row[2];
     if x != y && y != z && x != z {
+      SumLenAppend(parts, "NO\n");
       parts := parts + ["NO\n"];
     } else if x == y && x != z && x == Min2(x, z) {
+      SumLenAppend(parts, "NO\n");
       parts := parts + ["NO\n"];
     } else if y == z && y != x && y == Min2(y, x) {
+      SumLenAppend(parts, "NO\n");
       parts := parts + ["NO\n"];
     } else if x == z && x != y && x == Min2(y, z) {
+      SumLenAppend(parts, "NO\n");
       parts := parts + ["NO\n"];
     } else {
       var mn := MinSeq(row);
       var mx := MaxSeq(row);
+      ghost var part := "YES\n" + IntToString(mn) + " " + IntToString(mn) + " " + IntToString(mx) + "\n";
+      IntToStringDigits(mn); IntToStringDigits(mx);
+      SumLenAppend(parts, part);
+      steps := steps + Digits(mn) + Digits(mn) + Digits(mx);
       parts := parts + ["YES\n" + IntToString(mn) + " " + IntToString(mn) + " " + IntToString(mx) + "\n"];
     }
     i := i + 1;
@@ -91,5 +109,6 @@ method Solve(n: int, abc_list: seq<seq<int>>) returns (output: string, ghost ste
   output := Join(parts, "");
   // Join costs (charged length of the parts) + |parts|; each part is charged
   // PART_CHARGE, so this is (PART_CHARGE + 1) * |parts|, and |parts| == i <= n.
-  steps := steps + (PART_CHARGE + 1) * |parts| + 1;
+  if |parts| >= 1 { JoinLen(parts, ""); }
+  steps := steps + SumLen(parts) + |parts| + 1;
 }

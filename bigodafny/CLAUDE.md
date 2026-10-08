@@ -63,9 +63,35 @@ For proof campaigns, trajectory records are append-only evidence. Do not edit
 old attempts to make the history look cleaner. Use the current campaign schema,
 including `reads` where required.
 
-**Keep every proof attempt, including failed ones.** Each attempt's `.dfy` is
-saved to `batches/<campaign>/attempts/<pid>/<sid>.<n>.dfy` and never deleted.
-Only `solutions-proved/` is limited to verified proofs.
+**Keep every proof attempt that differs from the promoted proof.** Each
+attempt's `.dfy` is saved to `batches/<campaign>/attempts/<pid>/<sid>.<n>.dfy`
+during the run, failed ones included. After the audit and promotion, delete
+only the attempt identical (ignoring the `include` line) to the proof now in
+`solutions-proved/`, and point the audit's `final` field at that proof. Only
+`solutions-proved/` is limited to verified proofs.
+
+## Write documentation in the present tense
+
+State documents (`DOCS.md`, `COMPLEXITY.md`, this file, the `solutions*/README.md`
+files, the skills) say what is true now. No "renamed from", "since <date>",
+"N rows arrived on <date>", or "an earlier version said". When something
+changes, update the state document in place and add one dated bullet to
+`CHANGELOG.md`. A campaign's run record belongs in `batches/<campaign>/README.md`;
+superseded data lines belong in `old-record.jsonl`.
+
+## Delete one-off scripts when the task is done
+
+A script written for one migration, campaign or repair (sampling, slicing,
+promoting, normalizing, slimming transcripts) is deleted before the work is
+committed. It encodes the corpus as it was that day and will not run correctly
+once the corpus moves on, so keeping it "for reproducibility" reproduces
+nothing. Record what it did in the batch README, in prose. Keep its outputs
+only if a record needs them; do not leave per-slice inputs or scratch files
+behind. Only tools the project runs again belong in the tree.
+
+Generated files that no script reads back (summaries, dashboard payloads,
+scratch output) go to `out/`, which is git-ignored (`common.OUT`). `data/`
+holds only records that a script or a person reads.
 
 ## Shared outputs
 
@@ -75,5 +101,6 @@ corpus-wide record. `batches/README.md` documents known failures of this kind.
 
 ## Toolchain
 
-The reproducibility target is Dafny 4.11.0 with Z3 4.12.1. Keep the version
-fixed for corpus-wide checks unless the task is explicitly a toolchain upgrade.
+The reproducibility target is Dafny 4.11.0 with Z3 5.1.0; `proofs.py` records
+the Z3 it ran. Keep the version fixed for corpus-wide checks unless the task is
+explicitly a toolchain upgrade.

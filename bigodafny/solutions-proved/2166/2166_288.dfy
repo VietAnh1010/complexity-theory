@@ -23,7 +23,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, k: int, numbers: seq<int>) returns (output: string, ghost steps: nat)
-  ensures steps <= 2 * |numbers| * (CeilLog2(|numbers|) + 1) + 4 * |numbers| + 7
+  ensures steps <= 2 * |numbers| * (CeilLog2(|numbers|) + 1) + 4 * |numbers| + 7 + |output|
 {
   SortCostTreeBound(|numbers|);
   steps := 1 + SortCost(|numbers|);
@@ -47,6 +47,7 @@ method Solve(n: int, k: int, numbers: seq<int>) returns (output: string, ghost s
       steps := steps + 4;
     }
     output := IntToString(FloorDiv(count, 3));
-    steps := steps + 3;
+    IntToStringDigits(FloorDiv(count, 3));
+    steps := steps + 2 + |output|;
   }
 }

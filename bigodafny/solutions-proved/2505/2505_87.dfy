@@ -23,7 +23,7 @@ method Solve(n: int, coordinates: seq<seq<int>>) returns (output: string, ghost 
   requires |coordinates| >= 1
   requires n <= |coordinates[0]|
   requires n >= 0
-  ensures steps <= 2 * |coordinates[0]| * (CeilLog2(|coordinates[0]|) + 1) + 3 * n + 4
+  ensures steps <= 2 * |coordinates[0]| * (CeilLog2(|coordinates[0]|) + 1) + 3 * n + 3 + |output|
 {
   var arr := SortInts(coordinates[0]);
   SortCostTreeBound(|coordinates[0]|);
@@ -44,5 +44,6 @@ method Solve(n: int, coordinates: seq<seq<int>>) returns (output: string, ghost 
     steps := steps + 3;
   }
   output := IntToString(cnt + 1);
-  steps := steps + 1;
+  IntToStringDigits(cnt + 1);
+  steps := steps + |output|;
 }

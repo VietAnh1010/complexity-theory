@@ -19,7 +19,7 @@ import opened Prelude
 method Solve(n: int, a: int, b: int, numbers: seq<int>) returns (output: string, ghost steps: nat)
   requires |numbers| == n
   requires 0 <= a <= n
-  ensures steps <= 2 * n * (CeilLog2(n) + 1) + 3 * n + 6
+  ensures steps <= 2 * n * (CeilLog2(n) + 1) + 3 * n + |output| + 6
 {
   SortCostTreeBound(n);
   steps := 1 + SortCost(n);
@@ -39,5 +39,5 @@ method Solve(n: int, a: int, b: int, numbers: seq<int>) returns (output: string,
   }
   total := total + a * b;
   output := IntToString(total);
-  steps := steps + 4;
+  steps := steps + |output| + 3;
 }

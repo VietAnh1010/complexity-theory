@@ -6,6 +6,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 CACHE = ROOT / ".cache"
 DATA = ROOT / "data"
+OUT = ROOT / "out"     # generated snapshots nothing reads back; git-ignored
 BUILD = ROOT / ".build"
 SOLUTIONS = ROOT / "solutions"
 # --- The status partition -------------------------------------------------
@@ -64,6 +65,17 @@ SOURCE_URL = ("https://huggingface.co/datasets/facebook/BigOBench/"
 SOURCE_NAME = "time_complexity_test_set.jsonl"
 
 DAFNY_VERSION = "4.11.0"
+
+
+def z3_version():
+    """The Z3 that `dafny` will find on PATH, as `z3 --version` reports it."""
+    import subprocess
+    try:
+        out = subprocess.run(["z3", "--version"], capture_output=True, text=True).stdout
+    except FileNotFoundError:
+        return None
+    parts = out.split()
+    return parts[2] if len(parts) > 2 else out.strip() or None
 
 
 def log(m):

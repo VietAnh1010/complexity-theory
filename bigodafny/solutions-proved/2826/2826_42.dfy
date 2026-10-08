@@ -48,7 +48,7 @@ import opened Prelude
 // large". The only loop scaled by the input is the `pairs` fill, length n.
 // steps is therefore C + 4*n for a fixed C, i.e. O(n).
 method Solve(n: int, pairs: seq<seq<int>>) returns (output: string, ghost steps: nat)
-  ensures steps <= 10 * 1000004 + 5 * |pairs| + 50
+  ensures steps <= 10 * 1000004 + 5 * |pairs| + 50 + |output|
 {
   steps := 1;
   var size := 1000004;
@@ -125,5 +125,6 @@ method Solve(n: int, pairs: seq<seq<int>>) returns (output: string, ghost steps:
   }
   assert steps <= base4 + 2 * size;
   output := IntToString(n - best);
-  steps := steps + 1;
+  IntToStringDigits(n - best);
+  steps := steps + |output|;
 }

@@ -29,7 +29,7 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
   requires n >= 1 && n == |a_list|
-  ensures steps <= 7 * n + 10
+  ensures steps <= 7 * n + 10 + |output|
 {
   steps := 1;
   var index := 0;
@@ -59,5 +59,5 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
     result := IntToString(r);
   }
   output := result;
-  steps := steps + 3;
+  steps := steps + 2 + |output|;
 }

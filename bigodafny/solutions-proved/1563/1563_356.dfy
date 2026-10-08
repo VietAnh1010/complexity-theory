@@ -23,7 +23,7 @@ method Solve(n: int, m: int, values: seq<int>) returns (output: string, ghost st
   // computes an answer for.
   requires forall k :: 0 <= k < |values| ==> values[k] != 0
   requires exists k :: 0 <= k < |values| && FloorMod(m, values[k]) == 0 && values[k] > 0
-  ensures steps <= 5 * |values| + 4
+  ensures steps <= 5 * |values| + 4 + |output|
 {
   steps := 1;
   var best := 0;
@@ -43,5 +43,5 @@ method Solve(n: int, m: int, values: seq<int>) returns (output: string, ghost st
   }
   assert best > 0;
   output := IntToString(FloorDiv(m, best));
-  steps := steps + 3;
+  steps := steps + 3 + |output|;
 }

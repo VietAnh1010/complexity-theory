@@ -22,7 +22,7 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string, ghost steps: nat)
   requires n >= 1
-  ensures steps <= 8 * n + 5
+  ensures steps <= 8 * n + 5 + |output|
 {
   steps := 1;
   var a := 1;
@@ -45,5 +45,5 @@ method Solve(n: int) returns (output: string, ghost steps: nat)
     steps := steps + 2;
   }
   output := IntToString(a + b);
-  steps := steps + 1;
+  steps := steps + |output|;
 }

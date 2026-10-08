@@ -153,7 +153,9 @@ def contracts(text):
         # the header runs to the body's opening brace (not an attribute's)
         m = re.search(r"\{(?!:)", text[d.end():])
         header = text[d.end():d.end() + m.start()] if m else ""
-        parts = re.split(r"\b(requires|ensures|decreases|reads|modifies)\b", header)
+        # a clause keyword starts its line; `requires` also appears inside
+        # lambdas (`seq(n, k requires 0 <= k < n => ...)`) and is not a clause there
+        parts = re.split(r"(?m)^\s*(requires|ensures|decreases|reads|modifies)\b", header)
         out[d.group(1)] = sorted(" ".join(parts[i + 1].split())
                                  for i in range(1, len(parts) - 1, 2)
                                  if parts[i] == "requires")

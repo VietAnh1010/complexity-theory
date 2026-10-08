@@ -19,6 +19,13 @@
 include "../../../prelude.dfy"
 import opened Prelude
 
+lemma SqGe(s: int)
+  requires s >= 0
+  ensures s <= s * s
+{
+  if s > 0 { assert s * s == s + s * (s - 1); assert s * (s - 1) >= 0; }
+}
+
 method Solve(n: int) returns (output: string, ghost steps: nat)
   requires n >= 0
   ensures steps <= 32 * n + 5
@@ -32,6 +39,7 @@ method Solve(n: int) returns (output: string, ghost steps: nat)
     invariant steps <= 4 * s + 1
     decreases target - s
   {
+    SqGe(s);
     s := s + 1;
     steps := steps + 4;
   }

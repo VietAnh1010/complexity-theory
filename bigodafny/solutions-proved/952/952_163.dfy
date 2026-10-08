@@ -60,7 +60,7 @@ import opened Prelude
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
   requires n == |a_list|
   requires n >= 1
-  ensures steps <= 2 * NLogN(n) + 20 * n + 15
+  ensures steps <= 2 * NLogN(n) + 20 * n + 15 + |output|
 {
   steps := 1;
   var sortedVals := SortInts(a_list);
@@ -192,5 +192,5 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
   SortCostNLogN(n);
   assert steps <= 2 * NLogN(n) + 17 * n + 3;
   output := IntToString(res) + "\n" + JoinInts(parts, " ") + "\n";
-  steps := steps + 4;
+  steps := steps + 4 + |output|;
 }

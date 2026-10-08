@@ -36,7 +36,7 @@ import opened Prelude
 
 method Solve(a: int, b: int, c: int, d_list: seq<int>) returns (output: string, ghost steps: nat)
   requires a >= 0
-  ensures steps <= 2 * |d_list| * (CeilLog2(|d_list|) + 1) + 3 * a + 10
+  ensures steps <= 2 * |d_list| * (CeilLog2(|d_list|) + 1) + 3 * a + 10 + |output|
 {
   steps := 1;
   var n := a;
@@ -62,5 +62,5 @@ method Solve(a: int, b: int, c: int, d_list: seq<int>) returns (output: string, 
   } else {
     output := IntToString((countA % 2) + (countA / 2));
   }
-  steps := steps + 3;
+  steps := steps + 2 + |output|;
 }

@@ -23,7 +23,7 @@ import opened Prelude
 // same shape: min(a[:i]) and max(a[:i]) inside the loop.
 method Solve(n: int, numbers: seq<int>) returns (output: string, ghost steps: nat)
   requires n <= |numbers|
-  ensures steps <= 3 * n * n + 4 * n + 7   // +7, not +3: n may be negative here
+  ensures steps <= 3 * n * n + 4 * n + 7 + |output|   // +7, not +3: n may be negative here
                                             // and 3n²+4n+c dips to c-1 at n = -1
 {
   steps := 1;
@@ -47,5 +47,5 @@ method Solve(n: int, numbers: seq<int>) returns (output: string, ghost steps: na
         == 3 * i0 * i0 + 4 * i0 - 6 + 3 * i0 + 4 + (3 * i0 + 3);
   }
   output := IntToString(c);
-  steps := steps + 2;
+  steps := steps + 2 + |output|;
 }

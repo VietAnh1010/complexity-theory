@@ -38,7 +38,7 @@ import opened Prelude
 // bounded constant: O(n*m) with m = O(1) collapses to O(n).
 method Solve(n: int, pairs: seq<seq<string>>) returns (output: string, ghost steps: nat)
   requires forall k :: 0 <= k < |pairs| ==> |pairs[k]| >= 2
-  ensures steps <= 4 * |pairs| + 10
+  ensures steps <= 4 * |pairs| + 10 + |output|
 {
   steps := 1;
   var l := 0;
@@ -57,5 +57,5 @@ method Solve(n: int, pairs: seq<seq<string>>) returns (output: string, ghost ste
   var t1 := if l < n - l then l else n - l;
   var t2 := if p < n - p then p else n - p;
   output := IntToString(t1 + t2);
-  steps := steps + 5;
+  steps := steps + 5 + |output|;
 }

@@ -24,7 +24,7 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string, ghost steps: nat)
   requires n >= 0
-  ensures steps <= 4 * n * n + 16 * n + 6
+  ensures steps <= 4 * n * n + 16 * n + 6 + |output|
 {
   var l := [1, 1];
   var i := 2;
@@ -79,7 +79,7 @@ method Solve(n: int) returns (output: string, ghost steps: nat)
   assert outer == n;
   NSquareBound(n);
   output := Join(parts, "");
-  steps := steps + |parts| + 2;
+  steps := steps + |parts| + |output| + 2;
 }
 
 lemma NSquareBound(n: int)

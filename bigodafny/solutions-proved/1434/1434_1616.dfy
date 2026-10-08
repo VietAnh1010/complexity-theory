@@ -26,7 +26,7 @@ function ContainsInt1434a(xs: seq<int>, v: int): bool
 }
 
 method Solve(values: seq<int>) returns (output: string, ghost steps: nat)
-  ensures steps <= 2 + (|values| + 1) * (|values| + 3)
+  ensures steps <= 2 + (|values| + 1) * (|values| + 3) + |output|
 {
   steps := 1;
   ghost var ibase := steps;
@@ -54,5 +54,5 @@ method Solve(values: seq<int>) returns (output: string, ghost steps: nat)
   }
   CostMulMonoLeft(i, |values| + 1, K);
   output := IntToString(count);
-  steps := steps + 1;
+  steps := steps + 1 + |output|;
 }

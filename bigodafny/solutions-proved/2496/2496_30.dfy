@@ -52,7 +52,7 @@ lemma SortLength<T>(s: seq<T>, less: (T, T) -> bool)
 // FormatG9 is bounded by literal constants in its own code (1000, 9, 2), not
 // by n: it formats one already-computed real. Its cost is O(1).
 method FormatG9(value: real) returns (s: string, ghost steps: nat)
-  ensures steps <= 6100
+  ensures steps <= 6120 + 2 * |s|
 {
   steps := 1;
   if value == 0.0 {
@@ -96,6 +96,8 @@ method FormatG9(value: real) returns (s: string, ghost steps: nat)
     steps := steps + 2;
   }
   var digitStr := IntToString(digits);
+  ghost var extra: nat := |digitStr|;
+  ghost var dl := extra;
   IntToStringNonEmpty(digits);
   steps := steps + 1;
   var padIter := 0;
@@ -103,6 +105,7 @@ method FormatG9(value: real) returns (s: string, ghost steps: nat)
     invariant 0 <= padIter <= 9
     invariant |digitStr| >= 1
     invariant steps <= padIter + 6015
+    invariant |digitStr| >= extra
     decreases 9 - padIter
   {
     digitStr := "0" + digitStr;
@@ -116,6 +119,8 @@ method FormatG9(value: real) returns (s: string, ghost steps: nat)
     invariant 1 <= trimEnd <= |digitStr|
     invariant 0 <= trimIter <= 20
     invariant steps <= trimIter + 6025
+    invariant trimEnd + trimIter >= |digitStr|
+    invariant |digitStr| >= extra
     decreases 20 - trimIter
   {
     trimEnd := trimEnd - 1;
@@ -132,11 +137,14 @@ method FormatG9(value: real) returns (s: string, ghost steps: nat)
     var expSign := if e < 0 then "-" else "+";
     var expAbs := if e < 0 then -e else e;
     var expStr := IntToString(expAbs);
+    extra := extra + |expStr|;
+    ghost var e0 := |expStr|;
     steps := steps + 5;
     var expIter := 0;
     while |expStr| < 2 && expIter < 2
       invariant 0 <= expIter <= 2
       invariant steps <= expIter + 6052
+      invariant |expStr| >= e0
       decreases 2 - expIter
     {
       expStr := "0" + expStr;
@@ -144,6 +152,8 @@ method FormatG9(value: real) returns (s: string, ghost steps: nat)
       steps := steps + 1;
     }
     body := mantissa + "e" + expSign + expStr;
+    assert |body| >= |trimmed| + e0;
+    assert extra == dl + e0;
     steps := steps + 1;
   } else if e >= 0 {
     var intLen := e + 1;
@@ -152,18 +162,22 @@ method FormatG9(value: real) returns (s: string, ghost steps: nat)
     } else {
       body := trimmed[..intLen] + "." + trimmed[intLen..];
     }
+    assert |body| >= |trimmed|;
     steps := steps + 2;
   } else {
     body := "0." + Repeat("0", -e - 1) + trimmed;
+    assert |body| >= |trimmed|;
     steps := steps + 2;
   }
   s := (if neg then "-" else "") + body;
-  steps := steps + 1;
+  assert |s| >= |body|;
+  assert dl <= |trimmed| + 20;
+  steps := steps + 1 + extra;
 }
 
 method Solve(n: int, a_list: seq<real>) returns (output: string, ghost steps: nat)
   requires |a_list| == n
-  ensures steps <= 4 * NLogN(n) + 2 + 5 * n + 6110
+  ensures steps <= 4 * NLogN(n) + 2 + 5 * n + 6110 + 120 + 3 * |output|
 {
   steps := 1;
   SortCostNLogN(n);
@@ -213,6 +227,6 @@ method Solve(n: int, a_list: seq<real>) returns (output: string, ghost steps: na
     var res, fsteps := FormatG9(a * b);
     steps := steps + fsteps;
     output := res + "\n";
-    steps := steps + 1;
+    steps := steps + 1 + |output|;
   }
 }

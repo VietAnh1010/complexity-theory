@@ -40,7 +40,7 @@ method Solve(n: int, edges: seq<seq<int>>) returns (output: string, ghost steps:
   requires |edges| == n
   requires forall k :: 0 <= k < n ==> |edges[k]| >= 2
   requires forall k :: 0 <= k < n ==> 1 <= edges[k][0] <= n && 1 <= edges[k][1] <= n
-  ensures steps <= 7 * n + 10
+  ensures steps <= 7 * n + 10 + |output|
 {
   steps := 1;
   if n == 3 {
@@ -86,6 +86,6 @@ method Solve(n: int, edges: seq<seq<int>>) returns (output: string, ghost steps:
     }
     var res := ans[..n];
     output := JoinInts(res, " ") + "\n";
-    steps := steps + n + 1;
+    steps := steps + |output|;
   }
 }

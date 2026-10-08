@@ -10,7 +10,7 @@ import argparse, json, subprocess, sys
 from collections import Counter
 from pathlib import Path
 
-from common import (BUILD, DAFNY_VERSION, DATA, UNSCREENED, PRELUDE, SOLUTIONS,
+from common import (BUILD, DAFNY_VERSION, DATA, OUT, UNSCREENED, PRELUDE, SOLUTIONS,
                     UNVERIFIED, PROVED, event, log, read_jsonl, write_json,
                     write_jsonl, DISPUTED, ROOT, UNSURE)
 
@@ -266,7 +266,7 @@ def validate(only=None, per_test=30, batch_timeout=900, solutions_dir=None,
     summary = {"dafny_version": DAFNY_VERSION, "tiers": list(tiers),
                "validated": len(rows), **{k: tally[k] for k in
                ("valid", "fail", "build", "error")}}
-    write_json(DATA / f"{out_prefix}validation_summary.json", summary)
+    write_json(OUT / f"{out_prefix}validation_summary.json", summary)
     event("validate", **summary)
     log(f"summary: {dict(tally)}")
     return rows

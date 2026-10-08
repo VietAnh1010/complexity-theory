@@ -18,7 +18,7 @@ from collections import Counter
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 
-from common import (DATA, event, log, read_jsonl, write_json, write_jsonl,
+from common import (DATA, OUT, event, log, read_jsonl, write_json, write_jsonl,
                     DISPUTED, UNGATEABLE, UNSURE)
 from validate import build_one, conv_expr, HARNESS
 from common import BUILD, UNSCREENED, SOLUTIONS, UNVERIFIED, PROVED
@@ -204,7 +204,7 @@ def run(sids, tiers=("public_tests", "private_tests"), workers=6):
     partial.unlink(missing_ok=True)
 
     st = Counter(r["status"] for r in rows)
-    write_json(DATA / "difftest_summary.json",
+    write_json(OUT / "difftest_summary.json",
                {"this_run": dict(st),
                 "all_rows": dict(Counter(r["status"] for r in allrows))})
     event("difftest", **st)

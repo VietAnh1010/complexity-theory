@@ -58,7 +58,7 @@ lemma NMonoBound(i: int, m: int, K: int)
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
   requires n == |a_list|
   requires n >= 1
-  ensures steps <= 2 * |a_list| * (CeilLog2(|a_list|) + 1) + 6 * |a_list| + 12
+  ensures steps <= 2 * |a_list| * (CeilLog2(|a_list|) + 1) + 6 * |a_list| + 12 + |output|
 {
   SortLength(a_list, (x: int, y: int) => x < y);
   var s := SortInts(a_list);
@@ -81,7 +81,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
     steps := steps + 4;
   }
   output := IntToString(ans);
-  steps := steps + 1;
+  steps := steps + |output|;
   NMonoBound(i, n, 4);
-  assert steps <= base1 + 4 * n + 1;
+  assert steps <= base1 + 4 * n + |output|;
 }

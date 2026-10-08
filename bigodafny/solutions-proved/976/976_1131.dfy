@@ -42,7 +42,7 @@ function ParseInt(s: string): int
 // value lookup / insert), then one pass draining its key set: each
 // iteration removes one key, so it also runs |d.Keys| <= |a_list| times.
 method Solve(n: int, a_list: seq<string>) returns (output: string, ghost steps: nat)
-  ensures steps <= 4 * |a_list| + 3
+  ensures steps <= 4 * |a_list| + |output| + 3
 {
   steps := 1;
   var d: map<int, int> := map[];
@@ -77,5 +77,6 @@ method Solve(n: int, a_list: seq<string>) returns (output: string, ghost steps: 
     steps := steps + 1;
   }
   output := IntToString(maxn);
-  steps := steps + 1;
+  IntToStringDigits(maxn);
+  steps := steps + Digits(maxn);
 }

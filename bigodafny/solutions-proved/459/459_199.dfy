@@ -30,7 +30,7 @@ import opened Prelude
 
 method Solve(a: int, b: int) returns (output: string, ghost steps: nat)
   requires a >= 0 && b >= 0
-  ensures steps <= a + b + 2
+  ensures steps <= a + b + 2 + |output|
 {
   var n := a;
   var m := b;
@@ -57,5 +57,6 @@ method Solve(a: int, b: int) returns (output: string, ghost steps: nat)
     }
   }
   output := IntToString(t) + "\n";
-  steps := steps + 1;
+  IntToStringDigits(t);
+  steps := steps + 1 + Digits(t);
 }

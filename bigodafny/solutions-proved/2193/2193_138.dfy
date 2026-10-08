@@ -27,7 +27,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
-  ensures steps <= 7 * |a_list| + 8
+  ensures steps <= 7 * |a_list| + 8 + |output|
 {
   steps := 1;
   var one := 0;
@@ -50,5 +50,5 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
   var mx := MaxSeq([one, two, three]);
   steps := steps + 3;
   output := IntToString(one + two + three - mx);
-  steps := steps + 1;
+  steps := steps + 1 + |output|;
 }

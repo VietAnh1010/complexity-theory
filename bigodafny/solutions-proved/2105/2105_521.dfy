@@ -29,7 +29,7 @@ method Solve(v_0: int, v_1: string) returns (output: string, ghost steps: nat)
   requires |ParseInts(SplitWs(v_1))| == v_0
   requires exists k :: 0 <= k < v_0 && ParseInts(SplitWs(v_1))[k] == 1
   requires exists k :: 0 <= k < v_0 && ParseInts(SplitWs(v_1))[k] == 2
-  ensures steps <= 10 * v_0 + 15
+  ensures steps <= 10 * v_0 + 15 + |output|
 {
   var n := v_0;
   steps := 1;
@@ -88,5 +88,5 @@ method Solve(v_0: int, v_1: string) returns (output: string, ghost steps: nat)
   assert |ans| >= 1;
   assert |ans| <= n;
   output := IntToString(MaxSeq(ans) * 2);
-  steps := steps + |ans| + 2;
+  steps := steps + |ans| + 2 + |output|;
 }

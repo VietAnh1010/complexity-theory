@@ -41,7 +41,7 @@ ghost function TotalLenUpTo(rows: seq<seq<int>>, k: nat): nat
 }
 
 method Solve(n: int, pairs_list: seq<seq<int>>) returns (output: string, ghost steps: nat)
-  ensures steps <= 4 * |pairs_list| + 3 * TotalLenUpTo(pairs_list, |pairs_list|) + 4
+  ensures steps <= 4 * |pairs_list| + 3 * TotalLenUpTo(pairs_list, |pairs_list|) + 4  + |output|
 {
   steps := 1;
   var a: seq<int> := [];
@@ -73,5 +73,5 @@ method Solve(n: int, pairs_list: seq<seq<int>>) returns (output: string, ghost s
     steps := steps + 4;
   }
   output := IntToString(count);
-  steps := steps + 2;
+  steps := steps + 1 + |output|;
 }

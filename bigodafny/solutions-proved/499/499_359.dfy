@@ -34,7 +34,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
-  ensures steps <= 4 * |a_list| + 4
+  ensures steps <= 4 * |a_list| + 4 + |output|
 {
   steps := 1;
   var answer := 0;
@@ -70,7 +70,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
   } else {
     output := IntToString(answer) + "\n";
   }
-  steps := steps + 3;
+  steps := steps + 3 + |output|;
 }
 
 function Abs359(x: int): int

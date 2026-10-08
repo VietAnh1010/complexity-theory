@@ -14,7 +14,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int) returns (output: string, ghost steps: nat)
-  ensures steps <= 20
+  ensures steps <= 20 + |output|
 {
   steps := 1;
   var part1 := FloorDiv(n * (n + 1) * (n + 2) * (n + 3) * (n + 4), 120);
@@ -22,5 +22,5 @@ method Solve(n: int) returns (output: string, ghost steps: nat)
   var part2 := FloorDiv(n * (n + 1) * (n + 2), 6);
   steps := steps + 6;
   output := IntToString(part1 * part2);
-  steps := steps + 1;
+  steps := steps + |output|;
 }

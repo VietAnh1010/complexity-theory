@@ -23,7 +23,7 @@ function FormatLenAndElems(l: seq<int>): string
 
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
   requires |a_list| >= 3
-  ensures steps <= 2 * |a_list| * (CeilLog2(|a_list|) + 1) + 4 * |a_list| + 20
+  ensures steps <= 2 * |a_list| * (CeilLog2(|a_list|) + 1) + 4 * |a_list| + 20 + |output|
 {
   SortCostTreeBound(|a_list|);
   steps := 1 + SortCost(|a_list|);
@@ -42,5 +42,5 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
   }
   steps := steps + 3;
   output := FormatLenAndElems(b) + "\n" + FormatLenAndElems(c) + "\n" + FormatLenAndElems(a);
-  steps := steps + |b| + |c| + |a| + 6;
+  steps := steps + |b| + |c| + |a| + 6 + |output|;
 }

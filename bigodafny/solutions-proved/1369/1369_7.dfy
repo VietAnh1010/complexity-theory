@@ -10,7 +10,7 @@ method Solve(n: int, a: int, b: int, s: string) returns (output: string, ghost s
   requires b >= 0
   requires n == |s|
   requires a <= n
-  ensures steps <= 6 * n + 5 * a + 3
+  ensures steps <= 6 * n + 5 * a + 3 + 2 * |output|
 {
   steps := 1;
   var N := n;
@@ -82,5 +82,5 @@ method Solve(n: int, a: int, b: int, s: string) returns (output: string, ghost s
     steps := steps + 2;
   }
   output := Join(parts, "\n");
-  steps := steps + |parts| + 1;
+  steps := steps + |parts| + 1 + 2 * |output|;
 }

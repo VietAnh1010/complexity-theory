@@ -29,11 +29,6 @@ import opened Prelude
 // each a single recursion over a prefix of the cell), so each iteration is
 // charged its cell's length, per the "recursive function over a string"
 // row of the charge table.
-ghost function SumLen(xs: seq<string>): nat
-{
-  if |xs| == 0 then 0 else |xs[0]| + SumLen(xs[1..])
-}
-
 lemma SumLenSnoc(xs: seq<string>, extra: string)
   ensures SumLen(xs + [extra]) == SumLen(xs) + |extra|
   decreases |xs|
@@ -100,7 +95,7 @@ function ParseInt(s: string): int
 
 
 method Solve(n: int, strings: seq<string>) returns (output: string, ghost steps: nat)
-  ensures steps <= 41 * SumLen(strings) + 41 * |strings| + 3
+  ensures steps <= 41 * SumLen(strings) + 41 * |strings| + 3 + |output|
 {
   steps := 1;
   var lines: seq<string> := [];
@@ -151,5 +146,5 @@ method Solve(n: int, strings: seq<string>) returns (output: string, ghost steps:
   assert strings[..idx] == strings;
   assert steps <= 1 + 40 * SumLen(strings) + 40 * |strings|;
   output := Join(lines, "\n");
-  steps := steps + SumLen(strings) + |strings| + 2;
+  steps := steps + SumLen(strings) + |strings| + 2 + |output|;
 }

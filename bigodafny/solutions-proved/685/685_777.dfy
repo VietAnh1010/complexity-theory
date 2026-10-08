@@ -32,10 +32,13 @@ import opened Prelude
 // independent, which is exactly what the label's two terms say.
 method Solve(n1: int, list1: seq<int>, n2: int, list2: seq<int>)
   returns (output: string, ghost steps: nat)
-  ensures steps <= |list1| + |list2| + 8
+  ensures steps <= |list1| + |list2| + 8 + |output|
 {
   var maxA := if |list1| == 0 then -1 else MaxSeq(list1);
   var maxB := if |list2| == 0 then -1 else MaxSeq(list2);
   output := IntToString(maxA) + " " + IntToString(maxB);
   steps := |list1| + |list2| + 8;
+  IntToStringDigits(maxA);
+  IntToStringDigits(maxB);
+  steps := steps + |output|;
 }

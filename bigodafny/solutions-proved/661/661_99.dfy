@@ -27,7 +27,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, s: string) returns (output: string, ghost steps: nat)
-  ensures steps <= 8 * |s| + 10
+  ensures steps <= 8 * |s| + 10 + |output|
 {
   steps := 1;
   var countOpen, s1 := CountChar661b(s, '(');
@@ -35,7 +35,7 @@ method Solve(n: int, s: string) returns (output: string, ghost steps: nat)
   steps := steps + s1 + s2;
   if countOpen != countClose {
     output := "-1";
-    steps := steps + 1;
+    steps := steps + |output|;
   } else {
     var openC := 0;
     var closeC := 0;
@@ -57,7 +57,7 @@ method Solve(n: int, s: string) returns (output: string, ghost steps: nat)
       steps := steps + 3;
     }
     output := IntToString(count);
-    steps := steps + 1;
+    steps := steps + |output|;
   }
 }
 

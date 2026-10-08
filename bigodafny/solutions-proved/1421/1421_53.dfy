@@ -20,7 +20,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
   requires n >= 0
   requires n <= |a_list|
   requires forall k :: 0 <= k < n ==> -n <= a_list[k] - 1 < n
-  ensures steps <= 4 * n + 2
+  ensures steps <= 4 * n + 2 + |output|
 {
   steps := 1;
   var b := seq(n, i => 0);
@@ -36,5 +36,6 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
     steps := steps + 3;
   }
   output := JoinInts(b, " ");
-  steps := steps + |b| + 1;
+  if |b| >= 1 { JoinIntsLen(b, " "); }
+  steps := steps + SumDigits(b) + |b| + 1;
 }

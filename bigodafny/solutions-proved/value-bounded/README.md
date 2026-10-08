@@ -1,6 +1,6 @@
 # `value-bounded/` — the label counts items, the code follows magnitudes
 
-**23 rows, each with a machine-checked proof.** Rows in the same category with
+**20 rows, each with a machine-checked proof.** Rows in the same category with
 **no** proof do not belong under a directory named `solutions-proved`; they are
 in `batches/value-bounded-open/`, which has its own README and manifest.
 
@@ -26,8 +26,7 @@ Two different things are both called "input size":
 | **value** | how large those items are |
 
 BigOBench fitted its labels by profiling, which treats a capped value as
-constant. `COMPLEXITY.md` § 1 decides the opposite, by the 2026-09-17
-convention: a loop bounded by an input value is not constant, and the value
+constant. `COMPLEXITY.md` § 1 decides the opposite: a loop bounded by an input value is not constant, and the value
 enters the bound as its own parameter. So the two disagree here by
 construction, and this directory is where that disagreement is collected.
 
@@ -38,27 +37,62 @@ rows still live in `solutions/`, `solutions-disputed/` or wherever the
 partition puts them; `MANIFEST.jsonl` gives each one's `row` path. Nothing was
 taken out of the dataset.
 
-All twenty-three proved rows also sit in `solutions-disputed/`: `810_131`,
-`1484_26` and `2607_90` moved there on 2026-09-17, eighteen with the label
-re-audit r3 on 2026-10-01, which applies the value rule, and `2942_55` and
-`305_284` with their re-translations the same day. Being here is
+All twenty rows also sit in `solutions-disputed/`. Being here is
 not the same as being disputed: this directory says *the proof carries a value
 term*, the disputed queue says *somebody should change the label*.
+
+## The rows
+
+20 rows. `MANIFEST.jsonl` has each one's bound, where the row lives, and
+why its bound names a value. History: `../../CHANGELOG.md`.
+
+| row | label | found by |
+|---|---|---|
+| `1043_358` | `O(n)` | prove-sample-7 |
+| `1386_19` | `O(nlogn)` | prove-sample-2, prove-sample-5 |
+| `1386_38` | `O(n)` | prove-sample-2 |
+| `1484_26` | `O(n)` | prove-sample |
+| `1580_12` | `O(n+m)` | prove-sample-6 |
+| `1678_68` | `O(1)` | prove-sample-7 rerun |
+| `1820_180` | `O(n)` | prove-sample-4 |
+| `1867_16` | `O(n)` | prove-sample-3 |
+| `1871_291` | `O(n)` | prove-sample |
+| `1915_158` | `O(n+m)` | prove-sample |
+| `1948_388` | `O(1)` | prove-sample-4, prove-sample-6 (failed then closed) |
+| `2128_34` | `O(n**2)` | prove-sample |
+| `2254_6` | `O(n)` | prove-sample |
+| `2358_421` | `O(n)` | prove-sample-4 |
+| `2423_48` | `O(nlogn)` | prove-sample-3, prove-sample-4 (failed both) |
+| `2607_90` | `O(n)` | prove-sample |
+| `305_76` | `O(nlogn+mlogm)` | prove-sample-3 |
+| `704_351` | `O(1)` | prove-sample-3 |
+| `794_794` | `O(n)` | prove-sample-7 |
+| `810_131` | `O(n)` | prove-sample |
+
+Three causes recur:
+
+- **A loop over a value.** `1580_12` loops until `b*i` reaches `a*c`;
+  `794_794` loops `range(1, n)` where `n` is a per-test value, while the
+  label's `n` counts test cases.
+- **Output whose length is a value.** `1043_358` prints `"2" + "3" * (v - 1)`
+  per test; `2254_6` prints a string of length `n_i`.
+- **Euclid's depth.** `1386_19`, `1386_38`, `1871_291`, `1915_158` and
+  `1678_68` charge `Gcd` (or `GcdEx`) its recursion depth, a log of the
+  values. Those bounds are loose: the running gcd only shrinks, so the depths
+  telescope to `O(n + log max)`. The tighter bound still names a value.
 
 ## The failures do not transfer
 
 That is the finding, and it lives in `batches/value-bounded-open/`, where the
-seven rows with no proof are listed with what each would need. Six rows, six
-different pieces of arithmetic; nothing carries from one to the next.
+rows with no proof are listed with what each would need. Each needs different
+arithmetic; nothing carries from one to the next.
 
 Contrast `O(nlogn)`. Sorting was hard once; somebody wrote the `CeilLog2`
-recursion-tree argument, it went into the corpus, and later rows copied it —
-three did exactly that in `prove-sample-4`. One payment, many rows.
+recursion-tree argument, it went into the prelude, and later rows reuse it. One
+payment, many rows.
 
 The single exception was `2423_48`, which needed a fact about the prelude
-rather than its own lemma. `SortIsSorted` and `SortLastIsMax` went into
-`prelude.dfy` on 2026-09-22 and the row was proved the same day, after failing
-in two campaigns. Its proof uses the new lemma in four lines:
+rather than its own lemma (`SortLastIsMax`):
 
 ```dafny
 SortLastIsMax(pairs, less);       // last element is >= every element
@@ -66,9 +100,6 @@ SortKeepsElems(pairs, less);      // and is itself one of them
 MaxFirstBounds(pairs);            // so its .0 is the largest first component
 MaxFirstAttained(pairs);
 ```
-
-One prelude lemma, one row. The other six in `batches/value-bounded-open/` were
-untouched by it — they need their own arithmetic.
 
 ## How a row gets in
 
@@ -92,6 +123,7 @@ A reviewer decides one of:
    and the reasoning; the row leaves this directory.
 3. **The proof is just loose** — a tighter bound exists that does not carry the
    value term. Prove it; the row leaves.
+4. **The proof stops verifying** — it leaves for `batches/value-bounded-open/`.
 
 Nothing leaves by having the convention relaxed for one row.
 
@@ -99,96 +131,5 @@ Nothing leaves by having the convention relaxed for one row.
 
 | file | what it is |
 |---|---|
-| `MANIFEST.jsonl` | every row: status, label, bound, where the row lives, why |
+| `MANIFEST.jsonl` | every row: label, bound, where the row lives, why |
 | `<pid>/<sid>.dfy` | the proof, with a `VALUE-BOUNDED` header |
-
-## Two rows left on 2026-09-22
-
-`2381_156` and `276_610` were here because their proofs charged `IntToString`
-by the digit count of the printed value. `COMPLEXITY.md` now charges
-`IntToString(x)` and `|IntToString(x)|` one step each, so neither label omits
-anything and neither row is structural. Both returned to `solutions/` and their
-proofs to `solutions-proved/<pid>/`, recorded `looser-slack`.
-
-Both were then **re-proved tight** on the same day, so neither carries a digit
-term any more:
-
-    2381_156   steps <= 6              O(1),  confirms
-    276_610    steps <= 24 * n + 2     O(n),  confirms
-
-`276_610`'s proof charges each output part a constant `PART_CHARGE` instead of
-measuring `SumLen`, which is what keeps `Join` from reintroducing the digit
-count. Neither file defines a digit-counting ghost function any more, and that
-is deliberate: one would put back exactly the term the charge decision removed.
-
-Nothing else here rests on that charge: the other twelve turn on loops bounded
-by input values, which the value-versus-size convention still counts.
-
-## Two rows arrived on 2026-09-23
-
-`prove-sample-7` filed `1043_358` and `794_794`, taking the directory to
-thirteen.
-
-    1043_358   8*|a_list| + 3*SumAbsPrefix(a_list,|a_list|) + 10   O(n)
-    794_794    20*PrefixSum(firsts,|data|) + 20*|data| + 2         O(n)
-
-Both are the plainest form of the pattern. `1043_358` prints
-`"2" + "3" * (v - 1)` once per test case, so the work per test is the input
-value `v`. `794_794` loops `range(1, n)` and then prints `n` numbers, where `n`
-is a per-test value read by `int(input())` — while the label's `n` counts test
-cases. The two `n`s are different quantities, and only one of them is in the
-label.
-
-Both proofs were replaced on 2026-09-29 by campaign 7's rerun proofs, whose
-bounds are shown above (`firsts[k]` is `data[k].0`). The relation is unchanged.
-
-## One row arrived on 2026-09-24
-
-`1678_68` (label `O(1)`) was filed when campaign 7's rerun proof replaced its
-overlay proof:
-
-    1678_68    rows + 15                                        O(1)
-
-The row's `GcdEx` is recursive in the Python too. The earlier proof charged it
-one step and proved 15. The rerun charges its recursion depth, as the charge
-table does for any helper, and that depth grows with the input value `rows`.
-The bound is loose: Euclid's depth is logarithmic.
-
-## Two rows arrived on 2026-09-30
-
-The relation review of every proved row found two more:
-
-    2254_6     40*n + 3*SumFirst(pairs, n) + 4                  O(n)
-    1580_12    8*(a*c) + 8*b + |output| + 20                    O(n+m)
-
-`2254_6` prints a string of length `n_i`, an input value, for each test.
-`1580_12` loops until `b*i` reaches `a*c`, a product of input values.
-
-## Five rows arrived on 2026-09-30, from the Gcd charge
-
-Their proofs had charged each `Gcd` call one step. The charge table charges a
-helper its own steps, so they were re-proved charging Euclid's depth,
-`GcdSteps` (prelude, with `GcdStepsBound`):
-
-    1386_38    5*a + 2*SumLog(b_list, a) + |b_list| + 4                O(n)
-    1386_19    sort + 5*a + 2*a*BitLen(MaxSeq(b_list)) + 6             O(nlogn)
-    1871_156   sort + |a_list|*(10 + 4*BitLen(max) + 2*BitLen(max*max)) + ...   O(nlogn)
-    1871_291   |a_list|*(10 + 4*BitLen(max) + 2*BitLen(a0*a1)) + ...  O(n)
-    1915_158   4*n + 3*m + 2*GapBits(n_list, n) + 6                   O(n+m)
-
-`BitLen(v)` is the bit length of `v`, so each adds a log-of-value term. The
-bounds are loose: the running gcd only shrinks, so the depths telescope to
-`O(n + log max)` in total. That tighter bound still names a value.
-
-## Two rows arrived on 2026-10-01, from re-translations
-
-`2942_55`'s translation stored wins in a 2009-slot table the Python's dict
-lacks; that literal capped the `2**m` loop. It now uses a map and computes
-`2**m` by squaring, charged its depth. `305_284`'s translation replaced the
-Python's `for x in range(p, q)` search with a closed form; the loop is back.
-
-    2942_55    20*n + TokBits(transactions, n) + 10                   O(n)
-    305_284    2|c| + |d| + 3*(q - p) + 6                            O(n+m)
-
-`TokBits` sums the exponents' bit lengths: O(n log max m). `q - p` is
-`min(wrong) - max(right)`, a difference of input values.

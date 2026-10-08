@@ -72,7 +72,7 @@ function CountOnesUpTo(s: seq<int>, k: nat): nat
 method Solve(a: int, b: int, c_list: seq<int>, d_list: seq<int>) returns (output: string, ghost steps: nat)
   requires |d_list| == |c_list|
   requires CountOnesUpTo(d_list, |d_list|) >= 1
-  ensures steps <= 7 * NLogN(|c_list|) + 12 * |c_list| + 10
+  ensures steps <= 7 * NLogN(|c_list|) + 12 * |c_list| + 11 + |output|
 {
   ghost var n := |c_list|;
   var passengers: seq<int> := [];
@@ -124,9 +124,10 @@ method Solve(a: int, b: int, c_list: seq<int>, d_list: seq<int>) returns (output
   assert |taxisSorted| <= n;
   assert |passengersSorted| <= n;
   SearchLoopWithin(|passengersSorted|, |taxisSorted|, n, 3, 7);
-  // JoinInts over |answer| numbers: IntToString and its length are charged 1
+  assert |answer| >= 1;
   output := JoinInts(answer, " ");
-  steps := steps + |answer| + 3;
+  JoinIntsLen(answer, " ");
+  steps := steps + SumDigits(answer) + |answer| + 3;
 }
 
 method BinarySearch(arr: seq<int>, target: int) returns (ghost steps: nat, idx: int)

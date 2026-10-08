@@ -28,7 +28,7 @@ import opened Prelude
 
 method Solve(n: int, arrows: string) returns (output: string, ghost steps: nat)
   requires 0 <= n <= |arrows|
-  ensures steps <= 5 * n + 5
+  ensures steps <= 5 * n + 5 + |output|
 {
   var begin := true;
   var counter := 0;
@@ -52,5 +52,6 @@ method Solve(n: int, arrows: string) returns (output: string, ghost steps: nat)
     steps := steps + 5;
   }
   output := IntToString(ans + counter);
-  steps := steps + 2;
+  IntToStringDigits(ans + counter);
+  steps := steps + 1 + |output|;
 }

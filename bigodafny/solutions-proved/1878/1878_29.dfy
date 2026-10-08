@@ -31,7 +31,7 @@ import opened Prelude
 method Solve(N: int, queries: seq<(string, int, string)>) returns (output: string, ghost steps: nat)
   requires N >= 0
   requires |queries| >= N
-  ensures steps <= 5 * N + 3
+  ensures steps <= 5 * N + 3 + |output|
 {
   steps := 1;
   var u := -2000000000;
@@ -58,5 +58,5 @@ method Solve(N: int, queries: seq<(string, int, string)>) returns (output: strin
     steps := steps + 5;
   }
   output := if u > v then "Impossible" else IntToString(u);
-  steps := steps + 2;
+  steps := steps + 2 + |output|;
 }

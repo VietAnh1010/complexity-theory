@@ -32,7 +32,7 @@ import opened Prelude
 // Label O(n). One pass over `numbers`, constant work per element.
 method Solve(n: int, numbers: seq<int>) returns (output: string, ghost steps: nat)
   requires |numbers| >= 1
-  ensures steps <= 5 * |numbers| + 6
+  ensures steps <= 5 * |numbers| + |output| + 6
 {
   steps := 1;
   if n == 1 {
@@ -61,6 +61,7 @@ method Solve(n: int, numbers: seq<int>) returns (output: string, ghost steps: na
       steps := steps + 5;
     }
     output := IntToString(count);
-    steps := steps + 1;
+    IntToStringDigits(count);
+    steps := steps + Digits(count);
   }
 }

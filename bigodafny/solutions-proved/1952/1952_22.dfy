@@ -25,7 +25,7 @@ import opened Prelude
 
 // Label O(n). One pass over s, constant work per character.
 method Solve(s: string) returns (output: string, ghost steps: nat)
-  ensures steps <= 5 * |s| + 4
+  ensures steps <= 5 * |s| + 4 + |output|
 {
   steps := 1;
   var x1 := 0;
@@ -49,5 +49,5 @@ method Solve(s: string) returns (output: string, ghost steps: nat)
   var x4 := if x1 > x2 then x1 else x2;
   var x5 := if x3 > x4 then x3 else x4;
   output := IntToString(x5);
-  steps := steps + 2;
+  steps := steps + 2 + |output|;
 }

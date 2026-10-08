@@ -28,7 +28,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, binary_string: string) returns (output: string, ghost steps: nat)
-  ensures steps <= 4 * |binary_string| + 3
+  ensures steps <= 4 * |binary_string| + 3 + |output|
 {
   var counter := 0;
   var result := 0;
@@ -50,5 +50,5 @@ method Solve(n: int, binary_string: string) returns (output: string, ghost steps
     steps := steps + 4;
   }
   output := IntToString(result);
-  steps := steps + 1;
+  steps := steps + 1 + |output|;
 }

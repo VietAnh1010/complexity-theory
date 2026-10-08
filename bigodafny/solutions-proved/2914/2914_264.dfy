@@ -33,7 +33,7 @@ import opened Prelude
 // answers a non-positive n perfectly well (the loop never runs) and a
 // precondition would exclude inputs it handles -- the mistake 1254_187 carried.
 method Solve(n: int, intervals: seq<seq<int>>, value: int) returns (output: string, ghost steps: nat)
-  ensures steps <= 7 * (if n > 0 then n else 0) + 3
+  ensures steps <= 7 * (if n > 0 then n else 0) + 3 + |output|
 {
   steps := 2;
   output := "";
@@ -56,4 +56,5 @@ method Solve(n: int, intervals: seq<seq<int>>, value: int) returns (output: stri
     i := i + 1;
     steps := steps + 7;
   }
+  steps := steps + |output|;
 }

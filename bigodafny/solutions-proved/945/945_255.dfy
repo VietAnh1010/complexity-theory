@@ -37,7 +37,7 @@ ghost function Log2(x: nat): nat
 
 method Solve(n: int) returns (output: string, ghost steps: nat)
   requires n >= 1
-  ensures steps <= 4 * Log2(n) + 8
+  ensures steps <= 4 * Log2(n) + 8 + |output|
 {
   steps := 1;
   var m := n;
@@ -61,5 +61,5 @@ method Solve(n: int) returns (output: string, ghost steps: nat)
     steps := steps + 4;
   }
   output := IntToString(bacteria) + "\n";
-  steps := steps + 3;
+  steps := steps + 3 + |output|;
 }

@@ -95,7 +95,7 @@ lemma ShareLe(c: nat, v: nat)
   assert (c / v) * v <= c;
 }
 
-method Solve(v_0: int, v_1: string) returns (output: string, ghost steps: nat)
+method {:isolate_assertions} Solve(v_0: int, v_1: string) returns (output: string, ghost steps: nat)
   requires 1 <= v_0 <= 1000
   ensures steps <= 2 * NLogN(|v_1|) + 12 * |v_1| + 10
 {

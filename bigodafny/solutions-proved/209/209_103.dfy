@@ -17,7 +17,7 @@ import opened Prelude
 
 method Solve(N: int, numbers: seq<int>) returns (output: string, ghost steps: nat)
   requires N == |numbers|
-  ensures steps <= 2 * NLogN(N) + 4 * N + 5
+  ensures steps <= 2 * NLogN(N) + 4 * N + 5 + |output|
 {
   steps := 1;
   var a := Sort(numbers, (x, y) => x > y);
@@ -53,5 +53,5 @@ method Solve(N: int, numbers: seq<int>) returns (output: string, ghost steps: na
   SortCostNLogN(N);
   assert steps <= 2 * NLogN(N) + 4 * N + 2;
   output := IntToString(total);
-  steps := steps + 3;
+  steps := steps + 2 + |output|;
 }

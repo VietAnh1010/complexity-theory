@@ -141,7 +141,7 @@ reason written out, never inside a script.
 ### 6. Collect for the artifact
 
 Extend `bigodafny/collect.py` with the batch and re-run it into
-`data/artifact_data.json`. Report, at minimum:
+`out/artifact_data.json`. Report, at minimum:
 
 - drawn, proved, unresolved;
 - proved rate **per label class** — the rate is not flat, and the split is the
@@ -176,6 +176,11 @@ the refreshed `data/`. Push to the session's designated branch.
   every failed row from those campaigns has a description of its attempts but
   not the Dafny. `audit.py` fails a campaign whose brief requires this if an
   unresolved row has no saved attempt.
+- **After promotion, prune only the duplicate.** Once the audit has passed and
+  a proof is promoted, delete the attempt identical to it (ignoring the
+  `include` line); the promoted proof is that copy. Keep every attempt that
+  differs. Run `audit.py` before pruning: afterwards it counts fewer kept
+  attempts than `attempts_used` for the promoted rows.
 - **`why_failed` names an obstacle**, not "ran out of attempts". Which
   invariant would not hold; which multiplication the solver refused. Codes used
   so far: `value-to-size`, `z3-nonlinear`, `invariant-gap`, `decreases-star`,
@@ -189,7 +194,7 @@ the refreshed `data/`. Push to the session's designated branch.
   project reported a crossover — `O(nlogn)` overtaking `O(n)` — and campaign 4
   did not reproduce it. Pooled over four campaigns `O(n)` is 86% and
   `O(nlogn)` 66%, the ordering campaign 1 found. Read
-  `campaign_series.by_label[...].pooled` in `data/artifact_data.json`, and
+  `campaign_series.by_label[...].pooled` in `out/artifact_data.json`, and
   treat a single cell's `p_vs_pooled` as noise unless the next campaign
   reproduces it.
 - **Obstacles generalise where rates do not.** `value-to-size` was named
@@ -247,7 +252,7 @@ the refreshed `data/`. Push to the session's designated branch.
   the batch's `old-record.jsonl` as `{"file", "superseded_on", "why",
   "record"}`. Campaign rates are then computed from `agent_outcome`: a row a
   bounded agent missed stays missed in its campaign's rate, however it was
-  closed later. `provestats.py`, `collect.py` and `dedupe.py` all read it that
+  closed later. `prove_stats.py`, `collect.py` and `dedupe.py` all read it that
   way. The 2026-09-23 revision is the worked example: 48 rows, 157
   superseded lines, campaign rates unchanged.
 - **A normalised batch has one record per row and nothing else current.** Each

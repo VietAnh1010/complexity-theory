@@ -17,8 +17,8 @@ import opened Prelude
 
 // Label O(1) -- agrees. Straight-line arithmetic on three scalars.
 method Solve(n: int, a: int, b: int) returns (output: string, ghost steps: nat)
-  ensures steps <= 5
+  ensures steps <= 5 + |output|
 {
   output := IntToString(if n - a < b + 1 then n - a else b + 1);
-  steps := 5;
+  steps := 5 + |output|;
 }

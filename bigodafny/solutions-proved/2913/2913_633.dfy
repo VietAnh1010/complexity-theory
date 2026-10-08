@@ -12,14 +12,14 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int) returns (output: string, ghost steps: nat)
-  ensures steps <= 10
+  ensures steps <= 10 + |output|
 {
   steps := 1;
   if n == 1 {
     output := "-1\n";
-    steps := steps + 1;
+    steps := steps + |output|;
   } else {
     output := IntToString(n - n % 2) + " " + IntToString(2) + "\n";
-    steps := steps + 5;
+    steps := steps + |output| + 3;
   }
 }

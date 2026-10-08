@@ -109,7 +109,7 @@ lemma SumLenBound(xs: seq<string>, x: string)
 method Solve(n: int, numbers: seq<string>) returns (output: string, ghost steps: nat)
   requires |numbers| == n
   requires n >= 1
-  ensures steps <= 2 * NLogN(n) + 2 * n + 2 * SumLen(numbers) + 6
+  ensures steps <= 2 * NLogN(n) + 2 * n + 2 * SumLen(numbers) + 6 + |output|
 {
   SortCostNLogN(n);
   steps := 1 + SortCost(n);
@@ -144,5 +144,5 @@ method Solve(n: int, numbers: seq<string>) returns (output: string, ghost steps:
   assert i <= |first| <= SumLen(numbers);
   assert steps <= 1 + SortCost(n) + 2 * SumLen(numbers);
   assert SortCost(n) <= 2 * NLogN(n) + 1;
-  steps := steps + 1;
+  steps := steps + 1 + |output|;
 }

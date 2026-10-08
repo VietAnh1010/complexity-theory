@@ -22,7 +22,7 @@ import opened Prelude
 method Solve(n: int, k: int, pairs: seq<(int, int)>) returns (output: string, ghost steps: nat)
   // Python takes max(s, f+t) pairwise and folds with max, which is just
   // max(s, max over pairs of f+t).
-  ensures steps <= 5 * |pairs| + 3
+  ensures steps <= 5 * |pairs| + 3 + |output|
 {
   steps := 1;
   var best := k;
@@ -38,5 +38,6 @@ method Solve(n: int, k: int, pairs: seq<(int, int)>) returns (output: string, gh
     steps := steps + 5;
   }
   output := IntToString(best) + "\n";
-  steps := steps + 2;
+  IntToStringDigits(best);
+  steps := steps + |output|;
 }

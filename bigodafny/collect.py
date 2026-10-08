@@ -2,15 +2,16 @@
 
 Everything an artifact would display is computed here from the records on
 disk, so no number in the artifact is ever typed by hand. Re-run it after any
-sweep; it reads and never writes outside data/artifact_data.json.
+sweep; it writes only out/artifact_data.json (git-ignored).
 """
 from __future__ import annotations
-import json, re, subprocess
+import json, re, statistics, subprocess
 from vocab import RELATIONS
 from collections import Counter
 from pathlib import Path
 
-from common import PROVED
+from common import PROVED, OUT, SOLUTIONS
+from features import extract, split_file, strip_comments
 
 HERE = Path(__file__).resolve().parent
 DATA = HERE / "data"
@@ -239,7 +240,7 @@ def agent_view(d, traj, rel):
 def prove_sample(manifest, traj, rel, depth, meta=None):
     """The proof campaign: did a bounded agent close the complexity label?
 
-    Unlike the verification sample there is no tool that settles this -- a
+    Unlike safety verification there is no tool that settles this -- a
     bound has to be written. So the interesting number is not the success
     rate but WHY a row did not close, which is why `obstacles` is tabulated
     from the free-text reason rather than from a status field.
@@ -316,12 +317,131 @@ def prove_sample(manifest, traj, rel, depth, meta=None):
     }
 
 
+PY_LINE = re.compile(r"^// ?(.*)$")
+
+
+def python_loc(header):
+    """Lines of the original Python, which each header quotes verbatim.
+
+    The block opens with `// --- Python ---...` and closes with a plain rule
+    line, so the opener has to be matched on its own -- a single `-{20,}`
+    pattern misses it and silently returns zero for every row.
+    """
+    inside, n = False, 0
+    for line in header.splitlines():
+        if not inside and re.match(r"^//\s*-+\s*Python\s*-+", line):
+            inside = True
+            continue
+        if inside:
+            if re.match(r"^//\s*-{20,}\s*$", line):
+                break
+            m = PY_LINE.match(line)
+            if m and m.group(1).strip():
+                n += 1
+    return n
+
+
+def loc(code):
+    return sum(1 for l in code.splitlines() if l.strip())
+
+
+def pct(xs, p):
+    xs = sorted(xs)
+    return xs[min(len(xs) - 1, int(round(p / 100 * (len(xs) - 1))))]
+
+
+def corpus_stats(ds, depth):
+    """Structural profile of solutions/: Dafny body size with comments
+    stripped (each header quotes the Python verbatim), loops, call depth."""
+    rows = []
+    for f in sorted(SOLUTIONS.rglob("*.dfy")):
+        text = f.read_text(encoding="utf-8")
+        header, body_raw = split_file(text)
+        body = strip_comments(body_raw)
+        ft = extract(text)
+        sid = f.stem
+        d = depth.get(sid, {})
+        rows.append({
+            "solution_id": sid,
+            "label": (ds.get(sid) or {}).get("time_complexity_inferred"),
+            "dafny_loc": loc(body),
+            "python_loc": python_loc(header),
+            "loops": ft["loops"],
+            "loop_depth": ft["loop_depth"],
+            "data_dependent_loops": ft["data_dependent_loops"],
+            "recursive_helpers": ft["recursive_helpers"],
+            "seq_args": ft["seq_args"],
+            "call_depth": d.get("longest_chain"),
+            "reachable": d.get("reachable"),
+            "own_decls": d.get("own_decls"),
+            "prelude_calls": d.get("prelude_calls") or [],
+        })
+
+    dl = [r["dafny_loc"] for r in rows]
+    pl = [r["python_loc"] for r in rows if r["python_loc"]]
+    ratio = [r["dafny_loc"] / r["python_loc"]
+             for r in rows if r["python_loc"] and r["dafny_loc"]]
+
+    def dist(key):
+        return dict(sorted(Counter(r[key] for r in rows).items(),
+                           key=lambda kv: (kv[0] is None, kv[0])))
+
+    out = {
+        "scope": "solutions/", "rows": len(rows),
+        "dafny_loc": {
+            "total": sum(dl), "mean": round(statistics.mean(dl), 1),
+            "median": statistics.median(dl), "min": min(dl), "max": max(dl),
+            "p90": pct(dl, 90), "p99": pct(dl, 99),
+        },
+        "python_loc": {
+            "total": sum(pl), "mean": round(statistics.mean(pl), 1),
+            "median": statistics.median(pl), "min": min(pl), "max": max(pl),
+        },
+        "expansion": {
+            "median_dafny_over_python": round(statistics.median(ratio), 2),
+            "mean": round(statistics.mean(ratio), 2),
+            "rows_smaller_in_dafny": sum(1 for x in ratio if x < 1),
+        },
+        "loops": {
+            "distribution": dist("loops"),
+            "loopless_rows": sum(1 for r in rows if r["loops"] == 0),
+            "max": max(r["loops"] for r in rows),
+        },
+        "loop_depth": {
+            "distribution": dist("loop_depth"),
+            "nested": sum(1 for r in rows if r["loop_depth"] >= 2),
+        },
+        "data_dependent_loops": {
+            "distribution": dist("data_dependent_loops"),
+            "rows_with_any": sum(1 for r in rows if r["data_dependent_loops"]),
+        },
+        "call_depth": {
+            "distribution": dist("call_depth"),
+            "median": statistics.median(r["call_depth"] for r in rows),
+            "mean": round(statistics.mean(r["call_depth"] for r in rows), 2),
+        },
+        "recursive_helpers": {
+            "rows_with_own_recursion": sum(1 for r in rows if r["recursive_helpers"]),
+        },
+        "own_decls": dist("own_decls"),
+        "prelude": {
+            "frequency": dict(Counter(
+                fn for r in rows for fn in r["prelude_calls"]).most_common()),
+            "rows_using_none": sum(1 for r in rows if not r["prelude_calls"]),
+            "median_per_row": statistics.median(
+                len(r["prelude_calls"]) for r in rows),
+        },
+        "labels": dict(Counter(r["label"] for r in rows).most_common()),
+        "rows_detail": rows,
+    }
+    return out
+
+
 def main():
     ds = {r["solution_id"]: r for r in jsonl(DATA / "dataset.jsonl")}
     ver = {r["solution_id"]: r for r in jsonl(DATA / "verification.jsonl")}
     depth = {r["sid"]: r for r in jsonl(DATA / "call_depth.jsonl")}
     stats = json.loads((DATA / "stats.json").read_text())
-    manifest = jsonl(HERE / "batches/verify-sample/manifest.jsonl")
     pv_manifest = jsonl(HERE / "batches/prove-sample/manifest.jsonl")
     pv_traj = [r for f in sorted((HERE / "batches/prove-sample").glob("traj_*.jsonl"))
                for r in jsonl(f)]
@@ -381,19 +501,6 @@ def main():
     # without saying so overstates the guarantee.
     fully = [s for s, r in ver.items()
              if r["verified"] and not r.get("termination_opt_out")]
-
-    sample = []
-    for m in manifest:
-        s = m["solution_id"]
-        v, d = ver.get(s, {}), depth.get(s, {})
-        sample.append({
-            "solution_id": s, "label": m["label"], "split": m["split"],
-            "gate": m["gate"], "verified": v.get("verified"),
-            "termination_opt_out": v.get("termination_opt_out", False),
-            "attempts_used": 0, "outcome": "verified-unedited",
-            "call_depth": d.get("longest_chain"),
-            "recursive": d.get("recursive"),
-        })
 
     pv = prove_sample(pv_manifest, pv_traj, pv_rel, depth)
     pv2 = prove_sample(p2_manifest, p2_traj, p2_rel, depth,
@@ -496,20 +603,6 @@ def main():
                 r["kind"] for r in ver.values() if not r["verified"])),
         },
 
-        "sample": {
-            "question": "were the 106 unrecorded rows failing, or never run?",
-            "answer": "never run",
-            "seed": 20260916, "drawn": len(manifest), "pool": 105,
-            "frame": "solutions/, no verification record, non-empty label",
-            "excluded": {"1196_51": "does not pass its gate"},
-            "bounds": {"attempts_per_row": 3, "seconds_per_row": 300},
-            "attempts_consumed": 0,
-            "agents_spawned": 0,
-            "labels": dict(Counter(m["label"] for m in manifest).most_common()),
-            "rows": sorted(sample, key=lambda r: (int(r["solution_id"].split("_")[0]),
-                                                  r["solution_id"])),
-        },
-
         "prove_sample": pv,
         "prove_sample_2": pv2,
         "prove_sample_3": pv3,
@@ -545,8 +638,7 @@ def main():
         },
 
         "callgraph": callgraph(depth),
-        "corpus_stats": (json.loads((DATA / "corpus_stats.json").read_text())
-                         if (DATA / "corpus_stats.json").exists() else None),
+        "corpus_stats": corpus_stats(ds, depth),
 
         "open_decisions": [
             "DECIDED 2026-09-17: value counts as a parameter. COMPLEXITY.md § 1.",
@@ -570,14 +662,13 @@ def main():
         ],
     }
 
-    out = DATA / "artifact_data.json"
+    out = OUT / "artifact_data.json"
+    OUT.mkdir(exist_ok=True)
     out.write_text(json.dumps(payload, indent=2) + "\n")
     v = payload["verification"]
     print(f"wrote {out.relative_to(HERE)}")
     print(f"  verification: {v['verified']}/{v['total']} verified, "
           f"{v['fully_verified_incl_termination']} incl. termination")
-    print(f"  sample: {payload['sample']['drawn']} rows, "
-          f"{payload['sample']['attempts_consumed']} attempts consumed")
     p6 = payload["prove_sample_6"]
     print(f"  proofs-6: {p6['proved']} proved / {p6['attempted']} attempted "
           f"of {p6['drawn']} drawn, pool {p6['pool']}")

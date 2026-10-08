@@ -32,7 +32,7 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
   requires 0 <= n <= |a_list|
-  ensures steps <= 10 * n + 20
+  ensures steps <= 10 * n + 20 + |output|
 {
   steps := 1;
   var count1 := 0;
@@ -67,6 +67,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
     steps := steps + count1;
   }
   assert |ans| <= n;
+  if |ans| >= 1 { JoinIntsLen(ans, " "); }
   output := JoinInts(ans, " ");
-  steps := steps + 3 * |ans| + 1;
+  steps := steps + 3 * |ans| + 1 + SumDigits(ans);
 }

@@ -99,30 +99,38 @@ ghost function SumQueryCost(pairs: seq<seq<int>>, upto: nat): nat
 
 method Solve(n: int, pairs: seq<seq<int>>) returns (output: string, ghost steps: nat)
   requires forall k :: 0 <= k < |pairs| ==> |pairs[k]| >= 2 && pairs[k][0] >= 0 && pairs[k][1] >= 0
-  ensures steps <= 8 * SumQueryCost(pairs, |pairs|) + 10 * |pairs| + 2
+  ensures steps <= 8 * SumQueryCost(pairs, |pairs|) + 10 * |pairs| + 2 + |output|
 {
   steps := 1;
   output := "";
   var idx := 0;
   while idx < |pairs|
     invariant 0 <= idx <= |pairs|
-    invariant steps <= 8 * SumQueryCost(pairs, idx) + 10 * idx + 1
+    invariant steps <= 8 * SumQueryCost(pairs, idx) + 10 * idx + 1 + |output|
     decreases |pairs| - idx
   {
     var a := pairs[idx][0];
     var b := pairs[idx][1];
     if a == b {
+      IntToStringDigits(2 * a - 2);
       output := output + IntToString(2 * a - 2) + "\n";
+      steps := steps + Digits(2 * a - 2);
       steps := steps + 6;
     } else {
       var t, tsteps := IntSqrt(a * b);
       steps := steps + tsteps;
       if t * t >= a * b {
-        output := output + IntToString(2 * t - 3) + "\n";
+        IntToStringDigits(2 * t - 3);
+      output := output + IntToString(2 * t - 3) + "\n";
+      steps := steps + Digits(2 * t - 3);
       } else if t * (t + 1) >= a * b {
-        output := output + IntToString(2 * t - 2) + "\n";
+        IntToStringDigits(2 * t - 2);
+      output := output + IntToString(2 * t - 2) + "\n";
+      steps := steps + Digits(2 * t - 2);
       } else {
-        output := output + IntToString(2 * t - 1) + "\n";
+        IntToStringDigits(2 * t - 1);
+      output := output + IntToString(2 * t - 1) + "\n";
+      steps := steps + Digits(2 * t - 1);
       }
       steps := steps + 6;
     }

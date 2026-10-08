@@ -38,7 +38,7 @@ function FormatLenAndElems(l: seq<int>): string
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
   // the problem guarantees a valid three-way split, which needs a negative
   requires exists k :: 0 <= k < |a_list| && a_list[k] < 0
-  ensures steps <= 9 * |a_list| + 20
+  ensures steps <= 9 * |a_list| + 20 + |output|
 {
   steps := 1;
   var a: seq<int> := [];
@@ -77,5 +77,5 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
     steps := steps + 2;
   }
   output := FormatLenAndElems(a) + "\n" + FormatLenAndElems(b) + "\n" + FormatLenAndElems(c);
-  steps := steps + |a| + |b| + |c| + 6;
+  steps := steps + |output| + 6;
 }

@@ -54,7 +54,7 @@ lemma CeilLog2Monotone(m: nat, n: nat)
 
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
   requires |a_list| > 0
-  ensures steps <= 2 * |a_list| + 2 * CeilLog2(1000000000000) + 12
+  ensures steps <= 2 * |a_list| + 2 * CeilLog2(1000000000000) + 12 + |output|
 {
   steps := 1;
   var m := MaxSeq(a_list);
@@ -82,5 +82,6 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
     steps := steps + 2;
   }
   output := IntToString(beg + 1);
-  steps := steps + 1;
+  IntToStringDigits(beg + 1);
+  steps := steps + |output|;
 }

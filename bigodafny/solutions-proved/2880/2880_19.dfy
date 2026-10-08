@@ -27,7 +27,7 @@ import opened Prelude
 // counts as its own parameter, per COMPLEXITY.md's value-vs-size convention.
 method Solve(n: int) returns (output: string, ghost steps: nat)
   requires n >= 0
-  ensures steps <= 2 * n + 15
+  ensures steps <= 2 * n + |output| + 15
 {
   steps := 1;
   var a := n;
@@ -60,5 +60,6 @@ method Solve(n: int) returns (output: string, ghost steps: nat)
   assert steps <= base1 + 2 * cnt;
   assert |parts| <= cnt + 1;
   output := Join(parts, "");
-  steps := steps + |parts| + 2;
+  if |parts| >= 1 { JoinLen(parts, ""); }
+  steps := steps + SumLen(parts) + |parts| + 2;
 }

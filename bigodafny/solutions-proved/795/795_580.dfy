@@ -30,16 +30,17 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, numbers: seq<int>) returns (output: string, ghost steps: nat)
-  ensures steps <= 6 * |numbers| + 1
+  ensures steps <= 6 * |numbers| + 1 + |output|
 {
   output := "";
   steps := 1;
   var t := 0;
   while t < |numbers|
     invariant 0 <= t <= |numbers|
-    invariant steps <= 6 * t + 1
+    invariant steps <= 6 * t + 1 + |output|
     decreases |numbers| - t
   {
+    ghost var before := |output|;
     var v := numbers[t];
     if v % 3 == 0 {
       output := output + IntToString(v / 3) + " 0 0\n";
@@ -57,6 +58,7 @@ method Solve(n: int, numbers: seq<int>) returns (output: string, ghost steps: na
       }
     }
     t := t + 1;
-    steps := steps + 6;
+    assert |output| >= before;
+    steps := steps + 6 + (|output| - before);
   }
 }

@@ -25,7 +25,7 @@ import opened Prelude
 method Solve(n: int, k: int, d: int, binary_list: seq<string>) returns (output: string, ghost steps: nat)
   requires 0 <= k <= n
   requires n <= |binary_list|
-  ensures steps <= 5 * n + 3
+  ensures steps <= 5 * n + 2 + |output|
 {
   steps := 1;
   var c := 0;
@@ -49,5 +49,6 @@ method Solve(n: int, k: int, d: int, binary_list: seq<string>) returns (output: 
     steps := steps + 5;
   }
   output := IntToString(c);
-  steps := steps + 1;
+  IntToStringDigits(c);
+  steps := steps + Digits(c);
 }

@@ -25,7 +25,7 @@ import opened Prelude
 
 method Solve(a: int, b: int, c: int) returns (output: string, ghost steps: nat)
   requires c >= 0
-  ensures steps <= 5 * c + 10
+  ensures steps <= 5 * c + |output| + 10
 {
   steps := 1;
   var bLim := a;
@@ -45,5 +45,5 @@ method Solve(a: int, b: int, c: int) returns (output: string, ghost steps: nat)
     steps := steps + 4;
   }
   output := IntToString(res);
-  steps := steps + 1;
+  steps := steps + |output|;
 }

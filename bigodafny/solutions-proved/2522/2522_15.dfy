@@ -17,7 +17,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int) returns (output: string, ghost steps: nat)
-  ensures steps <= 10
+  ensures steps <= 6 + |output|
 {
   steps := 1;
   if n == 1 {
@@ -27,6 +27,7 @@ method Solve(n: int) returns (output: string, ghost steps: nat)
     var result := FloorDiv(12 * (n - 1) * n, 2) + 1;
     steps := steps + 5;
     output := IntToString(result);
-    steps := steps + 1;
+    IntToStringDigits(result);
+    steps := steps + Digits(result);
   }
 }

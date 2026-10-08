@@ -30,7 +30,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, k: int, m: int, s: string) returns (output: string, ghost steps: nat)
-  ensures steps <= 14 * |s| + 16
+  ensures steps <= 14 * |s| + 16 + |output|
 {
 
   var a := k;
@@ -66,7 +66,7 @@ method Solve(n: int, k: int, m: int, s: string) returns (output: string, ghost s
     steps := steps + 10;   // indexing, len, parity/comparisons, two Min calls, two subtractions, increment -- generously bounded
   }
   output := IntToString(tot - a - b);
-  steps := steps + 2;
+  steps := steps + 2 + |output|;
 }
 
 function Min(x: int, y: int): int { if x < y then x else y }

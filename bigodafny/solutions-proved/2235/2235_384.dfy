@@ -29,7 +29,7 @@ ghost function TotalLen(strs: seq<string>, k: nat): nat
 method Solve(t: int, n_list: seq<int>, s_list: seq<string>) returns (output: string, ghost steps: nat)
   requires t <= |s_list|
   requires t >= 0
-  ensures steps <= 5 * TotalLen(s_list, t) + 10 * t + 10
+  ensures steps <= 5 * TotalLen(s_list, t) + 10 * t + 10 + |output|
 {
   steps := 1;
   var lines: seq<string> := [];
@@ -58,7 +58,9 @@ method Solve(t: int, n_list: seq<int>, s_list: seq<string>) returns (output: str
     steps := steps + 4;
   }
   output := Join(lines, "\n");
-  steps := steps + |lines| + 1;
   assert |lines| == t;
-  assert steps <= 5 * TotalLen(s_list, t) + 4 * t + 1 + t + 1;
+  if t >= 1 { JoinLen(lines, "\n"); }
+  steps := steps + SumLen(lines) + |lines| + 1;
+  assert SumLen(lines) <= |output|;
+  assert steps <= 5 * TotalLen(s_list, t) + 4 * t + 1 + |output| + t + 1;
 }

@@ -54,7 +54,7 @@ method Log2Floor(x: int) returns (k: int, ghost steps: nat)
 
 method Solve(a: int, b: int, c: int) returns (output: string, ghost steps: nat)
   requires a >= 1
-  ensures steps <= 9 * a + 10
+  ensures steps <= 9 * a + 6 + |output|
 {
   steps := 1;
   var nn := a;
@@ -73,5 +73,5 @@ method Solve(a: int, b: int, c: int) returns (output: string, ghost steps: nat)
   var towels := a * c;
   steps := steps + 3;
   output := IntToString(bottles) + " " + IntToString(towels);
-  steps := steps + 3;
+  steps := steps + 1 + |output|;
 }

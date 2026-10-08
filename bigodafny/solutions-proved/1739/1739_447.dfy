@@ -21,20 +21,20 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(number: int) returns (output: string, ghost steps: nat)
-  ensures steps <= 6
+  ensures steps <= 6 + |output|
 {
   steps := 1;
   if number % 4 == 0 {
     var x := number / 2;
     output := IntToString(x - 1) + " " + IntToString(x + 1);
-    steps := steps + 3;
+    steps := steps + 3 + |output|;
   } else if number % 4 == 2 {
     var x := number / 2;
     output := IntToString(x - 2) + " " + IntToString(x + 2);
-    steps := steps + 3;
+    steps := steps + 3 + |output|;
   } else {
     var x := number / 2;
     output := IntToString(x) + " " + IntToString(x + 1);
-    steps := steps + 3;
+    steps := steps + 3 + |output|;
   }
 }

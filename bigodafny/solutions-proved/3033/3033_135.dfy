@@ -35,7 +35,7 @@ import opened Prelude
 // T(k) = T(k/2) + T(k-k/2) + k recurrence, bounded O(k log k) -- precedent
 // solutions-proved/1871/1871_156.dfy. The scan loop is linear and dominated.
 
-method Solve(n: int, edges_list: seq<int>) returns (output: string, ghost steps: nat)
+method {:isolate_assertions} Solve(n: int, edges_list: seq<int>) returns (output: string, ghost steps: nat)
   ensures steps <= 2 * |edges_list| * (CeilLog2(|edges_list|) + 1) + 8 * |edges_list| + |output| + 10
 {
   steps := 1;

@@ -21,7 +21,7 @@ import opened Prelude
 
 method Solve(a: int, b: int) returns (output: string, ghost steps: nat)
   requires a >= 1
-  ensures steps <= 2 * a * (CeilLog2(a) + 1) + 2 * a + 5
+  ensures steps <= 2 * a * (CeilLog2(a) + 1) + 2 * a + 5 + |output|
 {
   var n := a;
   var l := b;
@@ -35,5 +35,5 @@ method Solve(a: int, b: int) returns (output: string, ghost steps: nat)
   var total := SumSeq(sorted[1..]);
   steps := steps + n;
   output := IntToString(total);
-  steps := steps + 1;
+  steps := steps + |output|;
 }

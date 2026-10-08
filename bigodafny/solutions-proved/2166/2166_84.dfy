@@ -23,7 +23,7 @@ import opened Prelude
 
 // Label O(n) -- agrees. One pass, constant work per element.
 method Solve(n: int, k: int, numbers: seq<int>) returns (output: string, ghost steps: nat)
-  ensures steps <= 5 * |numbers| + 4
+  ensures steps <= 5 * |numbers| + 4 + |output|
 {
   steps := 1;
   var count := 0;
@@ -38,5 +38,6 @@ method Solve(n: int, k: int, numbers: seq<int>) returns (output: string, ghost s
     steps := steps + 5;
   }
   output := IntToString(FloorDiv(count, 3));
-  steps := steps + 3;
+  IntToStringDigits(FloorDiv(count, 3));
+  steps := steps + 3 + Digits(FloorDiv(count, 3));
 }

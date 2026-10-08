@@ -11,7 +11,7 @@ the proof is the stronger statement.
 from __future__ import annotations
 import re, subprocess, sys
 
-from common import (DAFNY_VERSION, DATA, UNSCREENED, SOLUTIONS, UNVERIFIED,
+from common import (DAFNY_VERSION, z3_version, DATA, UNSCREENED, SOLUTIONS, UNVERIFIED,
                     PROVED, event, log, read_jsonl, write_jsonl, DISPUTED,
                     UNGATEABLE, UNSURE)
 
@@ -78,7 +78,7 @@ def scan_assumes():
             continue
         for f in sorted(d.rglob("*.dfy")):
             for i, line in enumerate(f.read_text(encoding="utf-8").splitlines(), 1):
-                if re.search(r"\bassume\b", line):
+                if re.search(r"\bassume\b", line.split("//")[0]):
                     hits.append((str(f), i, line.strip()))
     for path, i, line in hits:
         log(f"  ASSUME {path}:{i}  {line}")
@@ -93,6 +93,7 @@ def run():
     # value-bounded/ is nested inside solutions-proved/, so one rglob reaches
     # both; listing the two roots separately would double-count.
     files = sorted(PROVED.rglob("*.dfy")) if PROVED.exists() else []
+    Z3 = z3_version()
     for p in files:
         sid = p.stem
         text = p.read_text(encoding="utf-8")
@@ -109,6 +110,7 @@ def run():
             "verified": ok,
             "assume_count": assumes,
             "dafny_version": DAFNY_VERSION,
+            "z3_version": Z3,
             "verifier_output": out.strip().splitlines()[-1] if out.strip() else "",
         })
         log(f"  {sid:>10}  {'VERIFIED' if ok else 'FAILED  '}  "

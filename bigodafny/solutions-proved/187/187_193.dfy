@@ -22,12 +22,12 @@ import opened Prelude
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
   requires n == |a_list|
   requires n >= 1
-  ensures steps <= 2 * n * (CeilLog2(n) + 1) + 6
+  ensures steps <= 2 * n * (CeilLog2(n) + 1) + |output| + 6
 {
   SortCostTreeBound(n);
   steps := 1 + SortCost(n);
   var sorted := SortInts(a_list);
   var idx := if n % 2 == 0 then n / 2 - 1 else n / 2;
   output := IntToString(sorted[idx]);
-  steps := steps + 4;
+  steps := steps + 4 + |output|;
 }

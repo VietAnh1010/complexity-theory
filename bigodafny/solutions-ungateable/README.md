@@ -34,21 +34,15 @@ Dafny's parameters:
 `python-failed` (the row's own Python does not finish, so there is nothing to
 compare against), 93 are comparable, **77 agree and 0 disagree**, and the
 remaining 16 time out. `differs` is the status because `difftest.py` requires
-`agree == comparable`.
-
-Re-measured 2026-09-21 — 39 minutes for the one row — and it reproduced the
-stored record exactly. The record was current, not stale.
+`agree == comparable`. A full re-run takes about 39 minutes.
 
 ## The pipeline's own word for four of them is `unvalidatable`
 
 `dataset.py`'s `parser_ok` already marks the four `validate.py` rows
 `unvalidatable`: it runs the problem's own `from_str` over every stored test
 and fails a row when it raises, or when a `real` argument does not survive the
-float round-trip. That classification predates this directory.
-
-What it did not have was a place to put such a row. They sat in `solutions/`,
-which claims the gate said yes, while `dataset.jsonl` said no gate applied.
-This directory closes that gap.
+float round-trip. This directory is where such a row lives, instead of
+`solutions/`, which would claim the gate said yes.
 
 `1501_224` is not `unvalidatable` — its split is `loose` and `difftest.py` can
 run it. It is here for the other reason: the gate runs and cannot conclude.

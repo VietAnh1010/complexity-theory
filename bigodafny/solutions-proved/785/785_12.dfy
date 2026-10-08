@@ -18,7 +18,7 @@ import opened Prelude
 
 method Solve(n: int, numbers: seq<int>) returns (output: string, ghost steps: nat)
   requires n >= 1
-  ensures steps <= 10 * |numbers| + 10 * n + 10
+  ensures steps <= 10 * |numbers| + 10 * n + |output| + 10
 {
   steps := 1;
   var tmp := seq(n+1, _ => 0);
@@ -51,5 +51,5 @@ method Solve(n: int, numbers: seq<int>) returns (output: string, ghost steps: na
     steps := steps + 4;
   }
   output := IntToString(n - mx);
-  steps := steps + 2;
+  steps := steps + |output| + 1;
 }

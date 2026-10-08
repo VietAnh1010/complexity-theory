@@ -41,7 +41,7 @@ method Solve(n_nodes: int, n_edges: int, edges: seq<seq<int>>) returns (output: 
   requires n_edges >= 0
   requires |edges| == n_edges
   requires forall i :: 0 <= i < n_edges ==> |edges[i]| >= 2 && edges[i][0] >= edges[i][1] >= 1
-  ensures steps <= 10 * n_edges + 10
+  ensures steps <= 10 * n_edges + 10 + |output|
 {
   steps := 1;
   var n := n_nodes - 1;
@@ -52,7 +52,7 @@ method Solve(n_nodes: int, n_edges: int, edges: seq<seq<int>>) returns (output: 
     } else {
       output := "-1\n";
     }
-    steps := steps + 1;
+    steps := steps + 1 + |output|;
   } else {
     var minAps := 0;
     var maxAps := 100000;
@@ -86,9 +86,10 @@ method Solve(n_nodes: int, n_edges: int, edges: seq<seq<int>>) returns (output: 
     steps := steps + 2;
     if minFloor == maxFloor {
       output := IntToString(minFloor + 1) + "\n";
+      IntToStringDigits(minFloor + 1);
     } else {
       output := "-1\n";
     }
-    steps := steps + 2;
+    steps := steps + 2 + |output|;
   }
 }

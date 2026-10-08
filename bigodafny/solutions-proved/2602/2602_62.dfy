@@ -18,7 +18,7 @@ import opened Prelude
 // exception, |IntToString(x)| is charged 1, so Join over these parts costs
 // |parts| rather than the sum of their digit counts.
 method Solve(N: int, pairs_list: seq<seq<int>>) returns (output: string, ghost steps: nat)
-  ensures steps <= 10 * |pairs_list| + 5
+  ensures steps <= 10 * |pairs_list| + 5 + |output|
 {
   var parts: seq<string> := [];
   var i := 0;
@@ -36,5 +36,6 @@ method Solve(N: int, pairs_list: seq<seq<int>>) returns (output: string, ghost s
     steps := steps + 6;
   }
   output := Join(parts, "\n") + "\n";
-  steps := steps + 2 * |parts| + 2;
+  if |parts| >= 1 { JoinLen(parts, "\n"); }
+  steps := steps + SumLen(parts) + 2 * |parts| + 2;
 }

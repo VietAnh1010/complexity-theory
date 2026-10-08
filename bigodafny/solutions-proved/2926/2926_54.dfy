@@ -46,9 +46,19 @@ lemma MulDistribAdd(a: int, c: int)
   ensures (a + 1) * c == a * c + c
 {}
 
+lemma SumLenAppend(a: seq<string>, x: string)
+  ensures SumLen(a + [x]) == SumLen(a) + |x|
+  decreases |a|
+{
+  if |a| > 0 {
+    assert (a + [x])[1..] == a[1..] + [x];
+    SumLenAppend(a[1..], x);
+  }
+}
+
 method Solve(n: int) returns (output: string, ghost steps: nat)
   requires n >= 0
-  ensures steps <= 6 * n * n + 6 * n + 4500000
+  ensures steps <= 6 * n * n + 6 * n + 4500000 + 2 * |output|
 {
   steps := 1;
   var isprime: seq<bool> := seq(2003, _ => true);
@@ -107,14 +117,15 @@ method Solve(n: int) returns (output: string, ghost steps: nat)
 
   if n == 2 {
     output := "-1";
-    steps := steps + 1;
+    steps := steps + 1 + |output|;
   } else {
     var lines: seq<string> := [];
     var ii := 0;
     ghost var iibase := steps;
     while ii < n
       invariant 0 <= ii <= n
-      invariant steps <= iibase + (6 * n + 6) * ii
+      invariant |lines| == ii
+      invariant steps <= iibase + (6 * n + 6) * ii + SumLen(lines)
       decreases n - ii
     {
       var val := 1;
@@ -131,14 +142,17 @@ method Solve(n: int) returns (output: string, ghost steps: nat)
         jj := jj + 1;
         steps := steps + 6;
       }
+      IntToStringDigits(val);
+      SumLenAppend(lines, IntToString(val));
       lines := lines + [IntToString(val)];
-      steps := steps + 2;
+      steps := steps + 2 + |IntToString(val)|;
       ii := ii + 1;
       assert (ii - 1 + 1) * (6 * n + 6) == (ii - 1) * (6 * n + 6) + (6 * n + 6)
         by { MulDistribAdd(ii - 1, 6 * n + 6); }
       steps := steps + 1;
     }
     output := Join(lines, "\n");
-    steps := steps + 1;
+    if |lines| > 0 { JoinLen(lines, "\n"); }
+    steps := steps + SumLen(lines) + |lines| + 1;
   }
 }

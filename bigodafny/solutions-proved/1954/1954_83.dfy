@@ -22,7 +22,7 @@ import opened Prelude
 
 method Solve(a: int, b: int) returns (output: string, ghost steps: nat)
   requires a >= 0 && b >= 0
-  ensures steps <= 4 * a * b + 3
+  ensures steps <= 4 * a * b + 2 + |output|
 {
   steps := 1;
   var cnt := 0;
@@ -49,5 +49,6 @@ method Solve(a: int, b: int) returns (output: string, ghost steps: nat)
     i := i + 1;
   }
   output := IntToString(cnt);
-  steps := steps + 2;
+  IntToStringDigits(cnt);
+  steps := steps + 1 + Digits(cnt);
 }

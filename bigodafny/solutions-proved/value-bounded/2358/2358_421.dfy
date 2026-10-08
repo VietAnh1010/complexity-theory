@@ -46,7 +46,7 @@ ghost function SumPos(s: seq<int>, upto: nat): nat
 }
 
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
-  ensures steps <= 2 + 10 * |a_list| + 2 * SumPos(a_list, |a_list|)
+  ensures steps <= 1 + 10 * |a_list| + 2 * SumPos(a_list, |a_list|) + |output|
 {
   steps := 1;
   var maxim := -1000000;
@@ -71,7 +71,8 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
     steps := steps + 4;
   }
   output := IntToString(maxim);
-  steps := steps + 1;
+  IntToStringDigits(maxim);
+  steps := steps + |output|;
 }
 
 method IntSqrt2358b(x: int) returns (r: int, ghost steps: nat)

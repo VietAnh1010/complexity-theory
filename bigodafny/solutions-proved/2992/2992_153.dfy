@@ -46,7 +46,7 @@ lemma SortLength<T>(s: seq<T>, less: (T, T) -> bool)
 }
 
 method Solve(n: int, k: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
-  ensures steps <= 2 * |a_list| * (CeilLog2(|a_list|) + 1) + 5 * |a_list| + 8
+  ensures steps <= 2 * |a_list| * (CeilLog2(|a_list|) + 1) + 5 * |a_list| + 8 + |output|
 {
   var c: seq<(int, int, int)> := [];
   var i := 0;
@@ -75,5 +75,5 @@ method Solve(n: int, k: int, a_list: seq<int>) returns (output: string, ghost st
   } else {
     output := IntToString(0);
   }
-  steps := steps + 2;
+  steps := steps + 2 + |output|;
 }

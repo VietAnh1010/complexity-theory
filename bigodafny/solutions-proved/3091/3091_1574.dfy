@@ -20,7 +20,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, pairs_list: seq<seq<int>>) returns (output: string, ghost steps: nat)
-  ensures steps <= 6 * |pairs_list| + 5
+  ensures steps <= 6 * |pairs_list| + 5 + |output|
 {
   steps := 1;
   var count := 0;
@@ -43,5 +43,6 @@ method Solve(n: int, pairs_list: seq<seq<int>>) returns (output: string, ghost s
     steps := steps + 5;
   }
   output := IntToString(count);
-  steps := steps + 1;
+  IntToStringDigits(count);
+  steps := steps + |output|;
 }

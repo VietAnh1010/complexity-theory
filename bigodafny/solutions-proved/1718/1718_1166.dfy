@@ -41,7 +41,7 @@ lemma ProdSplit1718(a: nat, b: nat)
 method Solve(N1: int, list1: seq<int>, N2: int, list2: seq<int>) returns (output: string, ghost steps: nat)
   requires 0 <= N1 <= |list1|
   requires 0 <= N2 <= |list2|
-  ensures steps <= 2 * NLogN(|list1|) + 2 * NLogN(|list2|) + 4 * N1 * N2 + 3 * N1 + N2 + 6
+  ensures steps <= 2 * NLogN(|list1|) + 2 * NLogN(|list2|) + 4 * N1 * N2 + 3 * N1 + N2 + 6 + |output|
 {
   var boys := SortInts(list1);
   var girls := SortInts(list2);
@@ -84,5 +84,5 @@ method Solve(N1: int, list1: seq<int>, N2: int, list2: seq<int>) returns (output
   }
   ProdSplit1718(N1, N2);
   output := IntToString(cnt);
-  steps := steps + 2;
+  steps := steps + 2 + |output|;
 }

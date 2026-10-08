@@ -39,7 +39,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(string_: string) returns (output: string, ghost steps: nat)
-  ensures steps <= 3 * |string_| + 3
+  ensures steps <= 3 * |string_| + |output| + 3
 {
   steps := 1;
   var s := string_;
@@ -81,5 +81,5 @@ method Solve(string_: string) returns (output: string, ghost steps: nat)
     steps := steps + 3;
   }
   output := IntToString(count);
-  steps := steps + 2;
+  steps := steps + |output| + 1;
 }

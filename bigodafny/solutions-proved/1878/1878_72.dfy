@@ -88,7 +88,7 @@ lemma TwoSortBound(a: nat, b: nat, N: nat)
 method Solve(N: int, queries: seq<(string, int, string)>) returns (output: string, ghost steps: nat)
   requires N >= 0
   requires |queries| >= N
-  ensures steps <= 2 * N * (CeilLog2(N) + 1) + 6 * N + 15
+  ensures steps <= 2 * N * (CeilLog2(N) + 1) + 6 * N + 15 + |output|
 {
   steps := 1;
   var less: seq<int> := [];
@@ -137,5 +137,5 @@ method Solve(N: int, queries: seq<(string, int, string)>) returns (output: strin
   } else {
     output := "Impossible";
   }
-  steps := steps + 2;
+  steps := steps + 2 + |output|;
 }

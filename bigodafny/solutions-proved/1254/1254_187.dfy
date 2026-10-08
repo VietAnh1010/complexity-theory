@@ -34,8 +34,8 @@ lemma SqMono(a: int, b: int)
 // directory. The bound is now stated for every n. n*n + 12*n + 70 has negative
 // discriminant, so it is positive everywhere, and its minimum of 34 at n = -6
 // still covers the 10 steps the method takes when the loop never runs.
-method Solve(n: int) returns (output: string, ghost steps: nat)
-  ensures steps <= n * n + 12 * n + 70
+method {:isolate_assertions} Solve(n: int) returns (output: string, ghost steps: nat)
+  ensures steps <= n * n + 12 * n + |output| + 70
 {
   steps := 1;
   var x := 0;
@@ -46,7 +46,7 @@ method Solve(n: int) returns (output: string, ghost steps: nat)
     invariant steps <= i * i + 4 * i + 5
     decreases n - i
   {
-    var iOld := i;
+    ghost var iOld := i;
     var s0 := steps;
     var c := 0;
     var j := 1;
@@ -73,4 +73,6 @@ method Solve(n: int) returns (output: string, ghost steps: nat)
     assert (n + 6) * (n + 6) >= 0;    // hence n*n + 12*n + 70 >= 34 >= steps
   }
   output := IntToString(x);
+  IntToStringDigits(x);
+  steps := steps + 1 + |output|;
 }

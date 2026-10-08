@@ -20,9 +20,6 @@ complexity label is right. The directory that proves labels is
 `solutions-proved/`, and the two are independent: a row can be safety-verified
 with an unproved label, or carry a proved label while sitting here.
 
-> This directory keeps its name. Its sibling `solutions-verified/` was renamed
-> to `solutions-proved/` precisely because it meant the other thing.
-
 ## Getting a row out
 
 `.claude/skills/bigodafny-verify/SKILL.md` is the procedure. In short: add the

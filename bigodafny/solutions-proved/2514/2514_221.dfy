@@ -35,7 +35,7 @@ import opened Prelude
 method Solve(a: int, b: int, c_list: seq<int>) returns (output: string, ghost steps: nat)
   requires |c_list| >= 1
   requires a >= 1
-  ensures steps <= 2 * NLogN(|c_list|) + 8 * |c_list| + 20
+  ensures steps <= 2 * NLogN(|c_list|) + 8 * |c_list| + 20 + |output|
 {
   steps := 1;
   var arr := Sort(c_list, (x: int, y: int) => x > y);
@@ -48,7 +48,7 @@ method Solve(a: int, b: int, c_list: seq<int>) returns (output: string, ghost st
   steps := steps + |c_list|;
   if b > total {
     output := "-1";
-    steps := steps + 1;
+    steps := steps + 1 + |output|;
   } else {
     var i := 0;
     while i < |arr| && su < b
@@ -70,6 +70,6 @@ method Solve(a: int, b: int, c_list: seq<int>) returns (output: string, ghost st
     } else {
       output := IntToString(kk);
     }
-    steps := steps + 3;
+    steps := steps + 3 + |output|;
   }
 }

@@ -46,7 +46,7 @@ method Solve(n: int, intervals: seq<seq<int>>) returns (output: string, ghost st
   requires forall k :: 0 <= k < |intervals| ==> |intervals[k]| >= 2
   requires n >= 1
   ensures steps <= 6 * n + 400 +
-    4 * (if intervals[0][1] > intervals[0][0] then intervals[0][1] - intervals[0][0] else 0)
+    4 * (if intervals[0][1] > intervals[0][0] then intervals[0][1] - intervals[0][0] else 0) + |output|
 {
   steps := 1;
   var a := seq(100, _ => 0);
@@ -99,13 +99,13 @@ method Solve(n: int, intervals: seq<seq<int>>) returns (output: string, ghost st
     steps := steps + 4;
   }
   output := IntToString(ans);
-  steps := steps + 1;
+  steps := steps + 1 + |output|;
   if ra > la {
     assert t == ra;
-    assert steps <= 6 * n - 5 + 3 * 99 + 4 * (ra - la) + 1;
+    assert steps <= 6 * n - 5 + 3 * 99 + 4 * (ra - la) + 1 + |output|;
   } else {
     assert t == la;
-    assert steps <= 6 * n - 5 + 3 * 99 + 1;
+    assert steps <= 6 * n - 5 + 3 * 99 + 1 + |output|;
   }
-  assert steps <= 6 * n - 5 + 3 * 99 + 4 * (if ra > la then ra - la else 0) + 1;
+  assert steps <= 6 * n - 5 + 3 * 99 + 4 * (if ra > la then ra - la else 0) + 1 + |output|;
 }

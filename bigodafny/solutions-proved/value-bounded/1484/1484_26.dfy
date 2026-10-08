@@ -62,7 +62,7 @@ lemma DistribStep(idx: int, m: int)
 method Solve(n: int, numbers: seq<string>) returns (output: string, ghost steps: nat)
   requires |numbers| == n
   requires n >= 1
-  ensures steps <= 6 * |numbers| * MaxLen(numbers) + 4 * MaxLen(numbers) + 6
+  ensures steps <= 6 * |numbers| * MaxLen(numbers) + 4 * MaxLen(numbers) + 6 + |output|
 {
   steps := 1;
   var best := numbers[0];
@@ -99,6 +99,7 @@ method Solve(n: int, numbers: seq<string>) returns (output: string, ghost steps:
     steps := steps + 4;
   }
   output := IntToString(i);
-  steps := steps + 1;
+  IntToStringDigits(i);
+  steps := steps + Digits(i);
   DistribStep(|numbers|, MaxLen(numbers));
 }

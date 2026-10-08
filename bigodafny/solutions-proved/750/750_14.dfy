@@ -29,8 +29,18 @@ lemma SortLength<T>(s: seq<T>, less: (T, T) -> bool)
   }
 }
 
-method Solve(n: int, data_points: seq<(int, int)>) returns (output: string, ghost steps: nat)
-  ensures steps <= 4 * |data_points| * (CeilLog2(|data_points|) + 1) + 24 * |data_points| + 12
+lemma Tail(n: int, C: int, S: int, st: int)
+  requires S <= 2 * n * (C + 1) + 1
+  requires st <= 1 + 2 * n + 2 * S + 20 * n + 2
+  ensures st <= 4 * n * (C + 1) + 22 * n + 5
+{
+  var p := n * (C + 1);
+  assert 2 * n * (C + 1) == 2 * p;
+  assert 4 * n * (C + 1) == 4 * p;
+}
+
+method {:isolate_assertions} Solve(n: int, data_points: seq<(int, int)>) returns (output: string, ghost steps: nat)
+  ensures steps <= 4 * |data_points| * (CeilLog2(|data_points|) + 1) + 24 * |data_points| + 12 + |output|
 {
   steps := 1;
   var aArr := seq(|data_points|, i requires 0 <= i < |data_points| => data_points[i].0 + data_points[i].1);
@@ -93,8 +103,8 @@ method Solve(n: int, data_points: seq<(int, int)>) returns (output: string, ghos
   assert steps <= stepsBeforeB + 10 * |bSorted| + 1;
   assert SortCost(|data_points|) <= 2 * |data_points| * (CeilLog2(|data_points|) + 1) + 1;
   assert steps <= 1 + 2 * |data_points| + 2 * SortCost(|data_points|) + 20 * |data_points| + 2;
-  assert 2 * SortCost(|data_points|) <= 4 * |data_points| * (CeilLog2(|data_points|) + 1) + 2;
-  assert steps <= 4 * |data_points| * (CeilLog2(|data_points|) + 1) + 22 * |data_points| + 5;
+  Tail(|data_points|, CeilLog2(|data_points|), SortCost(|data_points|), steps);
   output := IntToString(res);
-  steps := steps + 1;
+  IntToStringDigits(res);
+  steps := steps + Digits(res) + 1;
 }

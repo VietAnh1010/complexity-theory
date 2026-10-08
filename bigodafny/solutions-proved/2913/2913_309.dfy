@@ -32,7 +32,7 @@ lemma DistribStep(a: int, c: int)
 {}
 
 method Solve(n: int) returns (output: string, ghost steps: nat)
-  ensures steps <= (if n > 0 then n else 0) * (4 * (if n > 0 then n else 0) + 6) + 10
+  ensures steps <= (if n > 0 then n else 0) * (4 * (if n > 0 then n else 0) + 6) + 10 + |output|
 {
   steps := 1;
   var flag := false;
@@ -72,5 +72,5 @@ method Solve(n: int) returns (output: string, ghost steps: nat)
   } else {
     output := "-1\n";
   }
-  steps := steps + 2;
+  steps := steps + 2 + |output|;
 }
