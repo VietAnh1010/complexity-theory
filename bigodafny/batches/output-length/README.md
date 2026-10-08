@@ -24,7 +24,7 @@ cause confusion" is the rule; the prelude adds `Digits`, `SumLen`, `SumDigits`,
 | `attempts/<pid>/<sid>.<n>.dfy` | every attempt that differs from the promoted proof |
 | `traj.jsonl` | one record per row, written by the agents; pilot, main, fixup slices in order |
 | `audit.jsonl` | the promotion audit of each record, same order |
-| `transcripts/<slice>.jsonl` | each agent run's transcript, slimmed to messages, tool calls and results |
+| `transcripts/{pilot,main,fixup}.jsonl` | the agent runs' transcripts, slimmed to messages, tool calls and results; one file per phase, runs in slice order, each opening with "Your slice is `<slice>`" |
 
 A promoted row's new proof sits at its old path in `solutions-proved/`. Its
 superseded records go to `old-record.jsonl` beside the file they came from:

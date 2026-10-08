@@ -27,12 +27,13 @@ the repair differs:
 queue would be dominated by translation defects filed as label errors.
 """
 from __future__ import annotations
-import argparse, json, re, sys
+import argparse, difflib, json, re, sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from collections import Counter                                    # noqa: E402
-from common import DATA, ROOT, SOLUTIONS, UNSURE, log, read_jsonl, write_jsonl  # noqa: E402
+from common import (DATA, OUT, ROOT, SOLUTIONS, UNGATEABLE, UNSCREENED, UNSURE,  # noqa: E402
+                    UNVERIFIED, log, read_jsonl, write_jsonl)
 from features import (class_risk, extract, split_file,                  # noqa: E402
                       strip_comments, accumulator_read_in_loop)
 
@@ -255,6 +256,50 @@ def apply(verdicts_path, dry_run=False):
     return moves
 
 
+def siblings(threshold=0.80):
+    """Same-problem rows whose Dafny converged although their labels differ.
+
+    Two solutions of one problem exist because their labels differ. If their
+    Dafny is near-identical while their Python is not, one translation probably
+    copied the other's algorithm: the tests pass and the label is wrong for the
+    code. Candidates for review, written to out/sibling_review.jsonl.
+    """
+    def norm(text, dafny):
+        if dafny and "method Solve(" in text:
+            text = text.split("method Solve(", 1)[1]
+        return re.sub(r"\s+", " ", re.sub(r"//.*" if dafny else r"#.*", "", text)).strip()
+
+    tasks = {t["solution_id"]: t for t in read_jsonl(DATA / "tasks.jsonl")}
+    rows = {}
+    for d in (SOLUTIONS, UNSCREENED, DISPUTED, UNSURE, UNGATEABLE, UNVERIFIED):
+        for f in d.rglob("*.dfy"):
+            if "TODO: translate" not in (text := f.read_text(encoding="utf-8")):
+                rows[f.stem] = norm(text, True)
+    by_pid = {}
+    for sid in rows:
+        by_pid.setdefault(tasks[sid]["problem_id"], []).append(sid)
+    hits = []
+    for pid, sids in by_pid.items():
+        for i, a in enumerate(sids):
+            for b in sids[i + 1:]:
+                la, lb = (tasks[s]["time_complexity_inferred"] for s in (a, b))
+                d = difflib.SequenceMatcher(None, rows[a], rows[b], autojunk=False).ratio()
+                if la == lb or d <= threshold:
+                    continue
+                py = difflib.SequenceMatcher(None, norm(tasks[a]["solution_code"], False),
+                                             norm(tasks[b]["solution_code"], False)).ratio()
+                hits.append({"problem_id": pid, "a": a, "b": b, "a_complexity": la,
+                             "b_complexity": lb, "dafny_similarity": round(d, 3),
+                             "python_similarity": round(py, 3)})
+    hits.sort(key=lambda h: (h["python_similarity"], -h["dafny_similarity"]))
+    write_jsonl(OUT / "sibling_review.jsonl", hits)
+    log(f"sibling candidates: {len(hits)} pairs over {len(rows)} rows; lowest Python similarity first")
+    for h in hits:
+        log(f"  py={h['python_similarity']:.2f} dfy={h['dafny_similarity']:.2f}  "
+            f"{h['a']} [{h['a_complexity']}] vs {h['b']} [{h['b_complexity']}]")
+    return hits
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -270,8 +315,11 @@ if __name__ == "__main__":
     a2 = sub.add_parser("apply")
     a2.add_argument("verdicts")
     a2.add_argument("--dry-run", action="store_true")
+    sub.add_parser("siblings")
     a = ap.parse_args()
     if a.cmd == "evidence":
         evidence(a.limit, a.only, a.batch_size, a.prefix, ROOT / a.dir)
+    elif a.cmd == "siblings":
+        siblings()
     else:
         apply(a.verdicts, a.dry_run)

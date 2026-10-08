@@ -596,3 +596,5 @@
 {"ts": "2026-10-08T15:25:43", "kind": "proofs", "verified": 321, "total": 321, "with_assume": 0}
 {"ts": "2026-10-08T15:25:44", "kind": "assume_scan", "count": 0}
 {"ts": "2026-10-08T15:28:32", "kind": "verify_all", "total": 304, "verified": 304, "unverified": 0, "termination_opt_out": 7, "kinds": {}}
+{"ts": "2026-10-08T15:46:02", "kind": "fetch", "path": ".cache/time_complexity_test_set.jsonl", "bytes": 82341933}
+{"ts": "2026-10-08T15:46:03", "kind": "extract", "rows": 640, "problems": 311, "nondet_hint": 118}

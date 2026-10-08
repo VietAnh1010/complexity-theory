@@ -16,7 +16,7 @@ Two coarse screens, both older than the label audit:
   surfaced as `quarantine_reasons` in `data/dataset.jsonl`. Two solutions of
   one problem carry different labels but converged to near-identical Dafny.
   At least one of the two must be mislabelled, or one translation replaced the
-  other's algorithm. `siblings.py` finds them; it does not say which is at
+  other's algorithm. `label_audit.py siblings` finds them; it does not say which is at
   fault.
 - **Container use** — 29 rows use `set<T>` or `map<K,V>` (22 and 11, with an
   overlap). In the Dafny Python backend both copy on write.

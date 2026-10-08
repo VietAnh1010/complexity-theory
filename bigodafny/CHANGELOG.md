@@ -41,6 +41,12 @@ data lines go to `old-record.jsonl` beside the file they came from.
   Moved there: `artifact_data.json`, `prove_stats.json`, the three
   `*_summary.json`, `sibling_review.jsonl`.
 - `corpusstats.py` merged into `collect.py`; `data/corpus_stats.json` deleted.
+- `siblings.py` merged into `label_audit.py siblings`. It now scans every
+  status directory, not only `solutions/`, and compares with `autojunk=False`,
+  which made the similarity order-independent: 87 candidate pairs, all 12
+  quarantined rows among them.
+- `batches/output-length/transcripts/`: 32 per-run files concatenated into
+  `pilot.jsonl`, `main.jsonl`, `fixup.jsonl`.
 - `features.py` moved from `experiments/` to the top level: `label_audit.py`
   and `collect.py` import it. The archived `experiments/` scripts that import
   it no longer find it.

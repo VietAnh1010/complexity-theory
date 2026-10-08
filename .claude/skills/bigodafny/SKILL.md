@@ -74,7 +74,7 @@ benchmark and load-bearing for this dataset.
 | `verify_all.py` | memory-safe for all inputs, no spec needed | everything |
 | `proofs.py` | complexity **proved**; fails on any `assume` | `solutions-proved/` |
 | `precheck.py` | every added `requires` holds on real inputs | anything with `requires` |
-| `siblings.py` | same-problem rows converged despite different labels | everything |
+| `label_audit.py siblings` | same-problem rows converged despite different labels | everything |
 | `label_audit.py` | the label describes what the code costs | `solutions/` |
 
 `callgraph.py` is a **measurement, not a gate**: it writes `data/call_depth.jsonl`,
