@@ -10,6 +10,10 @@ data lines go to `old-record.jsonl` beside the file they came from.
 
 ## 2026-10-13
 
+- `selftest.py` folded into `validate.py --self-test`; `checkverdicts.py`
+  into `label_audit.py check`, which `apply` now runs first and refuses on.
+  Dropped `checkverdicts.py`'s proof cross-check: it printed proved bounds and
+  rejected nothing, though three docs said it rejected contradicting verdicts.
 - `batches/labelaudit/`: the 62 per-batch verdict files merged into one per
   round, in the order applied: `verdicts_r1-r2.jsonl`, `verdicts_r3.jsonl`
   (with `r3_fix`, `r3d_*`, overrides), `verdicts_r4.jsonl` (with `r4d`, `r4s`,

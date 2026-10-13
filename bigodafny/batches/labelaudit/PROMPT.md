@@ -271,10 +271,10 @@ accidental. Omit the field entirely when the translation is faithful.
 
 ## Your output is machine-checked
 
-`checkverdicts.py` validates every line against the schema above and
-cross-checks any row that has a machine-checked proof in the repository. A batch
-with schema violations is discarded unread, and a verdict that contradicts a
-proof is treated as evidence the auditor is unreliable. Getting the vocabulary
+`label_audit.py check` validates every line against the schema above. A
+batch with schema violations is discarded unread. A reviewer also reads your
+verdict beside any machine-checked proof of the row, and a verdict that
+contradicts a proof is treated as evidence the auditor is unreliable. Getting the vocabulary
 and the evidence right is not formatting: it is what makes the batch usable.
 
 ## Rules

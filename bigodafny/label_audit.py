@@ -6,6 +6,10 @@ Dafny costs, under the stipulated cost model in `COMPLEXITY.md`.
   `evidence`  deterministic. Extracts structural facts from each `.dfy` and
               pairs them with the label and the original Python. No model. Two
               runs produce byte-identical batches.
+  `check`     rejects a malformed verdict file: a class outside the label
+              vocabulary, a mismatch with no cause, evidence too short for a
+              reviewer to check. It never repairs a verdict. `apply` runs it
+              first and refuses a file that fails.
   `apply`     takes agent verdicts and moves each row by verdict: `ok` to
               `solutions/`, `mismatch` to `solutions-disputed/` with the verdict
               in its header, `unsure` to `solutions-unsure/`.
@@ -190,11 +194,75 @@ def header(v, t, text):
         rule="-" * 68)
 
 
+# The verdict schema. A cheap auditor once returned true_class "1", "n2" and
+# "n+m_variant" and three-word evidence; a summary reads "6 mismatches" either
+# way, so the schema is checked mechanically. "other" keeps a row outside the
+# eleven label classes expressible instead of forcing a wrong class.
+CLASSES = {"O(1)", "O(logn)", "O(n)", "O(n**2)", "O(n**2+m**2)", "O(n*m)",
+           "O(n+m)", "O(n+m)log(n+m)", "O(n+mlogm)", "O(nlogn)",
+           "O(nlogn+mlogm)", "other"}
+VERDICTS = {"ok", "mismatch", "unsure"}
+CAUSES = {"label", "translation", "harness", "both", ""}
+CONFIDENCE = {"high", "medium", "low"}
+MIN_EVIDENCE_WORDS = 12
+
+
+def check(path, batch_path=None):
+    """Schema violations in a verdict file, as (line, sid, message)."""
+    rows, bad = [], []
+    for i, line in enumerate(Path(path).read_text(encoding="utf-8").splitlines(), 1):
+        if not line.strip():
+            continue
+        try:
+            rows.append((i, json.loads(line)))
+        except json.JSONDecodeError as e:
+            bad.append((i, "?", f"not JSON: {e}"))
+    for i, r in rows:
+        sid, tc = r.get("sid", "?"), r.get("true_class")
+        def err(msg):
+            bad.append((i, sid, msg))
+        if r.get("verdict") not in VERDICTS:
+            err(f"verdict {r.get('verdict')!r} not in {sorted(VERDICTS)}")
+        if tc not in CLASSES:
+            err(f"true_class {tc!r} is not a label class or 'other'")
+        if r.get("cause") not in CAUSES:
+            err(f"cause {r.get('cause')!r} not in {sorted(CAUSES)}")
+        if r.get("confidence") not in CONFIDENCE:
+            err(f"confidence {r.get('confidence')!r} not in {sorted(CONFIDENCE)}")
+        words = len((r.get("evidence") or "").split())
+        if words < MIN_EVIDENCE_WORDS:
+            err(f"evidence is {words} words (min {MIN_EVIDENCE_WORDS})")
+        if r.get("verdict") == "mismatch":
+            if tc == r.get("label") and tc != "other":
+                err("verdict is mismatch but true_class equals the label")
+            if not r.get("cause"):
+                err("mismatch with no cause")
+        if not isinstance(r.get("translation_defect", False), bool):
+            err("translation_defect must be true or false")
+        if r.get("verdict") == "ok" and tc != r.get("label"):
+            err(f"verdict ok but true_class {tc!r} != label {r.get('label')!r}")
+    if batch_path:
+        expected = {r["sid"] for r in json.loads(Path(batch_path).read_text())}
+        seen = {r.get("sid") for _, r in rows}
+        if expected - seen:
+            bad.append((0, "-", f"missing: {sorted(expected - seen)[:8]}"))
+        if seen - expected:
+            bad.append((0, "-", f"not in batch: {sorted(seen - expected)[:8]}"))
+    for i, sid, msg in bad:
+        log(f"  REJECT line {i} {sid}: {msg}")
+    counts = Counter(r.get("verdict") for _, r in rows)
+    log(f"{Path(path).name}: {len(rows)} verdicts {dict(counts)}; "
+        f"{len(bad)} schema violation(s)")
+    return bad
+
+
 def apply(verdicts_path, dry_run=False):
     """Put each audited row where its verdict says: ok -> solutions/ (no
     header), mismatch -> solutions-disputed/, unsure -> solutions-unsure/ (both
     with the review header), from whichever of the three it is in now. A row
     queued by a translation audit is not a label question: it stays put."""
+    if check(verdicts_path):
+        raise SystemExit("apply: verdict file fails `check`; nothing moved")
     verdicts = [json.loads(l) for l in
                 Path(verdicts_path).read_text(encoding="utf-8").splitlines()
                 if l.strip()]
@@ -308,6 +376,10 @@ if __name__ == "__main__":
     e.add_argument("--dir", default="solutions",
                    help="row directory to audit (default solutions; "
                         "solutions-disputed re-audits the queue, header stripped)")
+    c = sub.add_parser("check")
+    c.add_argument("verdicts")
+    c.add_argument("--batch", help="the evidence batch it answers; every row "
+                                   "must have exactly one verdict")
     a2 = sub.add_parser("apply")
     a2.add_argument("verdicts")
     a2.add_argument("--dry-run", action="store_true")
@@ -317,5 +389,7 @@ if __name__ == "__main__":
         evidence(a.limit, a.only, a.batch_size, a.prefix, ROOT / a.dir)
     elif a.cmd == "siblings":
         siblings()
+    elif a.cmd == "check":
+        sys.exit(1 if check(a.verdicts, a.batch) else 0)
     else:
         apply(a.verdicts, a.dry_run)

@@ -26,8 +26,9 @@ that also lives in one of those five:
 | `solutions-unscreened/` | 1 |
 
 52 proved rows sit against disputed rows, which is the point: a proved bound is
-the strongest possible input to that review. `checkverdicts.py` enforces it —
-an audit verdict that contradicts a machine-checked bound is rejected.
+the strongest possible input to that review. No tool compares a verdict with
+a proved bound: `proved_bound` is a Dafny expression, not a class, so a
+reviewer reads the two side by side.
 
 Consequence for any tool that walks the corpus: a row can exist in two places
 at once, with **different preconditions**, because a proof is where a new

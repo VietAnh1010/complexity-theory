@@ -61,8 +61,15 @@ in `data/old-record.jsonl`.
 
 ## The gates
 
-A gate answers one narrowly defined question. Passing one does not imply that
-the others passed.
+A gate is a script that checks every row, and its result decides which status
+directory the row belongs in. For example, a row stays in `solutions/` only if
+it prints the right output (`validate.py`, or `difftest.py` for a loose row)
+and `dafny verify` accepts it (`verify_all.py`). A row that prints the right
+output but fails `dafny verify` goes to `solutions-unverified/`; a row whose
+label the audit disputes goes to `solutions-disputed/`.
+
+Each gate answers one narrowly defined question. Passing one does not imply
+that the others passed.
 
 | Tool | Question |
 |---|---|
@@ -71,7 +78,7 @@ the others passed.
 | `dafny verify` / `verify_all.py` | Are the stated safety and termination obligations discharged? |
 | `precheck.py` | Do added preconditions accept the row's real inputs? |
 | `proofs.py` | Does an instrumented complexity proof verify without `assume`? |
-| `label_audit.py` / `checkverdicts.py` | Is a label-audit record well formed and consistent with proofs? |
+| `label_audit.py check` | Is a label-audit verdict file well formed? |
 | `label_audit.py siblings` | Did two solutions of one problem converge although their labels differ? |
 | `baseline.py --round-trip` | Is a failing strict row the harness's fault rather than the translation's? |
 

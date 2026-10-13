@@ -5,7 +5,7 @@
 full original body with a header naming the audited class, the cause, the
 confidence and the evidence, so a reviewer needs nothing else open.
 
-Produced by `label_audit.py` from agent verdicts that passed `checkverdicts.py`,
+Produced by `label_audit.py apply` from agent verdicts that passed `label_audit.py check`,
 with every mismatch re-checked by the orchestrating session before the move.
 History: `../CHANGELOG.md`.
 
@@ -15,7 +15,7 @@ Quarantined, not removed. `solutions-disputed` is in the root list of
 `validate.py`, `difftest.py`, `precheck.py` and `proofs.py`; the rows keep
 their labels and appear in `data/dataset.jsonl`. 52 of them also carry a
 machine-checked proof in `solutions-proved/`, the strongest input a reviewer
-can have; `checkverdicts.py` rejects any verdict that contradicts one.
+can have. No tool compares the verdict with the proof; the reviewer does.
 
 ## Where the verdicts come from
 

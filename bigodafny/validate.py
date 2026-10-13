@@ -6,11 +6,11 @@ ran and printed the wrong thing), `timeout`/`error` (it did not finish or threw)
 Collapsing those into one number would hide which half of the pipeline broke.
 """
 from __future__ import annotations
-import argparse, json, subprocess, sys
+import argparse, json, shutil, subprocess, sys, tempfile
 from collections import Counter
 from pathlib import Path
 
-from common import (BUILD, DAFNY_VERSION, DATA, OUT, UNSCREENED, SOLUTIONS,
+from common import (BUILD, DAFNY_VERSION, DATA, OUT, PRELUDE, UNSCREENED, SOLUTIONS,
                     UNVERIFIED, PROVED, log, read_jsonl, write_json,
                     write_jsonl, DISPUTED, ROOT, UNSURE)
 
@@ -271,6 +271,49 @@ def validate(only=None, per_test=30, batch_timeout=900, solutions_dir=None,
     return rows
 
 
+# --self-test borrows one known-good row and breaks it in the two ways that
+# matter. A gate only ever run on correct input is untested: if a wrong answer
+# came back `build`, or a build error `fail`, the failure counts would mean
+# nothing. The row moves between directories as audits reclassify it, so look
+# wherever it currently lives.
+GATE_ROW = ("5", "5_100")
+GATE_CASES = (
+    ("wrong", "fail", ('output := IntToString(m) + "\\n";',
+                       'output := IntToString(m + 1) + "\\n";')),
+    ("broken", "build", ("var m, k := n, 1;", "var m, k := n, ;")),
+)
+
+
+def self_test():
+    pid, sid = GATE_ROW
+    src = next((r / pid / f"{sid}.dfy" for r in
+                (SOLUTIONS, DISPUTED, UNSCREENED, UNVERIFIED, UNSURE)
+                if (r / pid / f"{sid}.dfy").exists()), None)
+    if src is None:
+        raise SystemExit(f"test row {sid} is in no solutions* directory")
+    bad = 0
+    for name, want, (old, new) in GATE_CASES:
+        with tempfile.TemporaryDirectory() as d:
+            # Mirror the tree: the row's `include "../../prelude.dfy"` must resolve.
+            shutil.copy(PRELUDE, Path(d) / "prelude.dfy")
+            dst = Path(d) / "solutions" / pid
+            dst.mkdir(parents=True)
+            (dst / f"{sid}.dfy").write_text(
+                src.read_text(encoding="utf-8").replace(old, new), encoding="utf-8")
+            rows = validate(only={sid}, solutions_dir=dst.parent,
+                            out_prefix=f"self_test_{name}_")
+        got = rows[0]["status"] if rows else "no-rows"
+        bad += got != want
+        log(f"{'ok  ' if got == want else 'FAIL'} {name}: expected {want!r}, got {got!r}")
+    # The unmodified row must still be valid, or the two cases prove nothing.
+    rows = validate(only={sid}, out_prefix="self_test_control_")
+    got = rows[0]["status"] if rows else "no-rows"
+    bad += got != "valid"
+    log(f"{'ok  ' if got == 'valid' else 'FAIL'} control: expected 'valid', got {got!r}")
+    log("SELF-TEST PASSED" if not bad else f"SELF-TEST FAILED ({bad})")
+    return 1 if bad else 0
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="validate.py")
     ap.add_argument("--only", nargs="*", help="solution_ids to validate "
@@ -282,7 +325,12 @@ def main(argv=None):
                          "(default partial_)")
     ap.add_argument("--solutions-dir", help="look for rows only in this directory "
                     "(a spot check: never writes the canonical record)")
+    ap.add_argument("--self-test", action="store_true",
+                    help="test validate.py itself: a wrong answer must come back fail, "
+                         "a compile error build, the untouched row valid")
     a = ap.parse_args(argv)
+    if a.self_test:
+        return self_test()
     validate(only=set(a.only) if a.only else None,
              per_test=a.time_limit_per_test, out_prefix=a.out_prefix,
              solutions_dir=a.solutions_dir)

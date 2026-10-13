@@ -83,22 +83,30 @@ are:
 ```bash
 # dafny and z3 on PATH; numpy in a local venv
 uv venv && uv pip install -r requirements.txt && source .venv/bin/activate
-# the build, in order
-python3 extract.py          # download BigOBench -> data/tasks.jsonl
-python3 signature.py        # dataclass -> Dafny Solve signatures
-python3 scaffold.py         # .dfy stubs; never overwrites a real body
-python3 baseline.py         # original Python vs its own tests (--workers N)
-python3 dataset.py          # join everything -> dataset.jsonl, stats.json
-# gates
-python3 selftest.py         # validate.py must report a wrong answer as fail, a build error as build
-python3 validate.py --only 1053_38
-python3 difftest.py --loose
+# build, in order (once, or when BigOBench changes)
+python3 extract.py          # download BigOBench -> data/tasks.jsonl (git-ignored)
+python3 signature.py        # dataclass -> Dafny Solve signatures -> data/signatures.jsonl
+python3 scaffold.py         # .dfy stubs for untranslated rows; never overwrites a real body
+python3 baseline.py         # original Python vs its own tests -> data/baseline.jsonl (--workers N)
+python3 dataset.py          # join everything -> data/dataset.jsonl, data/stats.json
+# gates: each answers one question (DOCS.md, "The gates")
+python3 validate.py --self-test       # validate.py itself: wrong answer -> fail, compile error -> build
+python3 validate.py --only 1053_38   # strict rows: stored output?
+python3 difftest.py --loose          # loose rows: same output as the Python?
 python3 verify_all.py       # dafny verify every translation -> data/verification.jsonl
-python3 proofs.py
-# derived data, after any change to the corpus
+python3 precheck.py SID...    # added `requires` accept every stored input?
+python3 proofs.py           # every complexity proof verifies, no assume -> data/complexity_proofs.jsonl
+# label audit
+python3 label_audit.py evidence   # batches for an auditor -> out/labelaudit/
+python3 label_audit.py check FILE # reject a malformed verdict file (apply runs it too)
+python3 label_audit.py apply FILE # move rows by verdict -> data/label_audit.jsonl
+python3 label_audit.py siblings   # same-problem rows whose labels differ
+# reports
+python3 prove_stats.py      # proof-campaign statistics -> data/prove_stats.md
 python3 callgraph.py        # call depth per row -> out/call_depth.jsonl
-python3 prove_stats.py      # campaign statistics -> data/prove_stats.md
-python3 collect.py          # everything above, plus size and loop profile -> out/artifact_data.json
+python3 collect.py          # dashboard payload -> out/artifact_data.json (run callgraph.py first)
+# libraries, never run directly: common.py (paths, IO), features.py (static
+# facts from a .dfy), vocab.py (campaign record vocabularies)
 ```
 
 The complexity model is intentionally not a measurement of Dafny's Python
