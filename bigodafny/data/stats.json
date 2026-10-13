@@ -20,9 +20,10 @@
     "partial": 73
   },
   "quarantine_reasons": {
-    "sibling-convergence": 12
+    "set-build-quadratic": 22,
+    "sibling-convergence": 109
   },
-  "quarantined": 12,
+  "quarantined": 127,
   "rows": 640,
   "safety_failure": {},
   "safety_verified": 304,

@@ -48,8 +48,9 @@ Open items only. When one is done, delete it and add a line to `CHANGELOG.md`.
 - [ ] `label_audit.py apply` only finds rows in `solutions/`,
       `solutions-disputed/` and `solutions-unsure/`. Auditing
       `solutions-unscreened/` needs it extended.
-- [ ] `label_audit.py siblings` lists 87 candidate pairs; only the 12 rows in
-      `data/quarantine.jsonl` were ever reviewed.
+- [ ] `label_audit.py siblings` lists 87 candidate pairs over 157 rows. 109 of
+      them are quarantined for `sibling-convergence` in
+      `solutions-unscreened/` and were never label-audited. Review the pairs.
 
 ## Gates (an agent must not change a gate that judges its own work)
 

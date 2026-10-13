@@ -5,14 +5,14 @@ labels are neither known wrong nor known right.
 
 ## Why they were set aside
 
-They were quarantined before the label audit existed, on two screens:
+They were quarantined before the label audit existed. `data/quarantine.jsonl`
+gives each row's reasons:
 
-- **Sibling convergence** (`data/quarantine.jsonl`). `label_audit.py
-  siblings` finds such pairs.
-- **Using sets or maps**, because Dafny's Python output copies them on write.
-  That screen no longer applies: `COMPLEXITY.md` charges them 1.
-
-Many rows have no recorded reason at all (`STATUS.md`).
+- `sibling-convergence`: the row converged with a sibling that has a different
+  label. `label_audit.py siblings` finds such pairs.
+- `set-build-quadratic`: the row builds a `set` in a loop, which Dafny's Python
+  output copies on every insert. This reason no longer applies:
+  `COMPLEXITY.md` charges set insertion 1.
 
 ## Emptying it
 

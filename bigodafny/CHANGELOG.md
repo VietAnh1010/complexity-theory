@@ -10,6 +10,11 @@ data lines go to `old-record.jsonl` beside the file they came from.
 
 ## 2026-10-13
 
+- `data/quarantine.jsonl` restored to all 127 `solutions-unscreened/` rows. A
+  2026-09-07 run (`a56cfcf`) rewrote it with only its 12 new entries, dropping
+  115 rows' reasons while the rows stayed quarantined; the reasons are merged
+  back from the file's three committed versions. `dataset.jsonl` and
+  `stats.json` re-derived: only the quarantine fields changed.
 - `validate.py` and `difftest.py` no longer search `solutions-proved/`: they
   found a row's proof copy before the row itself when the row sat in
   `solutions-disputed/`, `solutions-unsure/` or `solutions-ungateable/`, so

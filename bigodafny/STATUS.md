@@ -70,8 +70,8 @@ Source: `data/label_audit.jsonl`.
 
 `solutions-unsure/`: 6 of the 8 wait on the `ParseInt` charge.
 
-`solutions-unscreened/`: 12 rows quarantined for sibling convergence; 29 use
-`set` or `map` (22 `set`, 11 `map`); 86 have no recorded reason.
+`solutions-unscreened/` (source `data/quarantine.jsonl`): all 127 quarantined;
+`sibling-convergence` 109, `set-build-quadratic` 22 (4 rows have both).
 
 ## Proofs
 
