@@ -10,8 +10,7 @@ them against the parsed test inputs. Shapes it cannot translate are reported as
 `unchecked` -- they need reading, not guessing.
 """
 from __future__ import annotations
-import json, re, subprocess, sys
-from pathlib import Path
+import re, subprocess, sys
 
 from common import (DATA, UNSCREENED, SOLUTIONS, UNVERIFIED, PROVED,
                     log, read_jsonl, write_jsonl, DISPUTED, UNGATEABLE,

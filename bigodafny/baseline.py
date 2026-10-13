@@ -20,7 +20,7 @@ from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
-from common import DATA, OUT, event, log, read_jsonl, write_jsonl
+from common import DATA, OUT, log, read_jsonl, write_jsonl
 
 RUNNER = r'''
 import json, signal, sys, io, os
@@ -108,7 +108,6 @@ def run(workers=8, round_trip=None):
     write_jsonl(DATA / "baseline.jsonl", rows)
     st = Counter(r["python_status"] for r in rows)
     log(f"python baseline: {dict(st)}")
-    event("baseline", **st)
     return rows
 
 

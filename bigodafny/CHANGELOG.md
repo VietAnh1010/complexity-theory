@@ -17,6 +17,21 @@ data lines go to `old-record.jsonl` beside the file they came from.
   per row matches `data/label_audit.jsonl` for all 506 rows. Dropped
   `verdicts_r2.jsonl` (80 lines identical to `verdicts_01`–`04`) and
   `old-PROMPT.md`. File names in the bullets below are the pre-merge names.
+- `callgraph.py` writes `out/call_depth.jsonl` (git-ignored) and drops its
+  partial-run guard; `collect.py` reads it from there. `data/call_depth.jsonl`
+  removed: only the artifact payload read it.
+- Removed code only `experiments/` used: `score()`, `difficulty_static()`,
+  `drift()` and its append helpers from `features.py`; the unused `EXPORT`
+  from `dataset.py`. `experiments/` is archived: `aggregate.py` no longer
+  imports; `select.py` already did not.
+- Removed `common.event()` and `data/events.jsonl`: a per-run summary log no
+  script or doc read. The two warnings only it carried (`extract.py` rows with
+  missing fields, `signature.py` dataclasses that differ within a problem) now
+  go to stderr. Unused imports dropped across the scripts.
+- Scratch output moved to `out/`: `validate.py` spot checks
+  (`out/<prefix>validation.jsonl`), `difftest.py`'s resume checkpoint, and
+  `label_audit.py evidence` batches (`out/labelaudit/`). `.gitignore` cut from
+  12 rules to 5; `evidence --only` output (`reaudit_NN.json`) was not ignored.
 
 ## 2026-10-08
 

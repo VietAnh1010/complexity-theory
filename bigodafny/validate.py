@@ -10,8 +10,8 @@ import argparse, json, subprocess, sys
 from collections import Counter
 from pathlib import Path
 
-from common import (BUILD, DAFNY_VERSION, DATA, OUT, UNSCREENED, PRELUDE, SOLUTIONS,
-                    UNVERIFIED, PROVED, event, log, read_jsonl, write_json,
+from common import (BUILD, DAFNY_VERSION, DATA, OUT, UNSCREENED, SOLUTIONS,
+                    UNVERIFIED, PROVED, log, read_jsonl, write_json,
                     write_jsonl, DISPUTED, ROOT, UNSURE)
 
 DAFNY = "dafny"   # on PATH; dafny finds z3 on PATH itself
@@ -259,15 +259,14 @@ def validate(only=None, per_test=30, batch_timeout=900, solutions_dir=None,
     if not out_prefix and (only or solutions_dir):
         out_prefix = "partial_"
     if out_prefix:
-        log(f"spot check: writing data/{out_prefix}validation.jsonl, not the "
+        log(f"spot check: writing out/{out_prefix}validation.jsonl, not the "
             "canonical data/validation.jsonl")
 
-    write_jsonl(DATA / f"{out_prefix}validation.jsonl", rows)
+    write_jsonl((OUT if out_prefix else DATA) / f"{out_prefix}validation.jsonl", rows)
     summary = {"dafny_version": DAFNY_VERSION, "tiers": list(tiers),
                "validated": len(rows), **{k: tally[k] for k in
                ("valid", "fail", "build", "error")}}
     write_json(OUT / f"{out_prefix}validation_summary.json", summary)
-    event("validate", **summary)
     log(f"summary: {dict(tally)}")
     return rows
 
@@ -279,7 +278,7 @@ def main(argv=None):
     ap.add_argument("--time-limit-per-test", type=int, default=30,
                     help="seconds per test (default 30)")
     ap.add_argument("--out-prefix", default="",
-                    help="name the spot-check output data/<prefix>validation.jsonl "
+                    help="name the spot-check output out/<prefix>validation.jsonl "
                          "(default partial_)")
     ap.add_argument("--solutions-dir", help="look for rows only in this directory "
                     "(a spot check: never writes the canonical record)")

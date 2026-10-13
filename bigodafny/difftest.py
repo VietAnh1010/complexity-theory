@@ -18,7 +18,7 @@ from collections import Counter
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 
-from common import (DATA, OUT, event, log, read_jsonl, write_json, write_jsonl,
+from common import (DATA, OUT, log, read_jsonl, write_json, write_jsonl,
                     DISPUTED, UNGATEABLE, UNSURE)
 from validate import build_one, conv_expr, HARNESS
 from common import BUILD, UNSCREENED, SOLUTIONS, UNVERIFIED, PROVED
@@ -169,7 +169,8 @@ def run(sids, tiers=("public_tests", "private_tests"), workers=6):
     # Resume: rows already in the partial file are not re-run. One slow row
     # used to block everything behind it, because ex.map yields in order --
     # as_completed reports each row the moment it lands instead.
-    partial = DATA / "difftest_partial.jsonl"
+    OUT.mkdir(exist_ok=True)
+    partial = OUT / "difftest_partial.jsonl"
     rows, done = [], set()
     if partial.exists():
         for line in partial.read_text(encoding="utf-8").splitlines():
@@ -207,7 +208,6 @@ def run(sids, tiers=("public_tests", "private_tests"), workers=6):
     write_json(OUT / "difftest_summary.json",
                {"this_run": dict(st),
                 "all_rows": dict(Counter(r["status"] for r in allrows))})
-    event("difftest", **st)
     log(f"result: {dict(st)}  (file now holds {len(allrows)} rows)")
     return rows
 

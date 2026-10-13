@@ -201,7 +201,7 @@ def main():
     p = payload()
     write_json(OUT / "prove_stats.json", p)
     (DATA / "prove_stats.md").write_text(render(p))
-    print(f"wrote data/prove_stats.md and out/prove_stats.json")
+    print("wrote data/prove_stats.md and out/prove_stats.json")
     print(f"  {p['proved']}/{p['drawn']} proved "
           f"({p['rate']:.0%}) over {p['campaigns']} campaigns")
 

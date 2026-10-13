@@ -10,10 +10,9 @@ leaves it alone.
 """
 from __future__ import annotations
 import sys
-from pathlib import Path
 
 from common import (DATA, UNSCREENED, SOLUTIONS, UNTRANSLATED, UNVERIFIED,
-                    PROVED, DISPUTED, UNGATEABLE, UNSURE, event, log, read_jsonl)
+                    PROVED, DISPUTED, UNGATEABLE, UNSURE, log, read_jsonl)
 
 STUB_BODY = '  output := ""; // TODO: translate the Python above\n'
 
@@ -80,7 +79,6 @@ def scaffold(force=False):
 
     log(f"stubs: {made} written, {kept} left alone, {skipped} skipped "
         f"(no usable signature)")
-    event("scaffold", written=made, kept=kept, skipped=skipped)
     return made
 
 

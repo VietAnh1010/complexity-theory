@@ -11,7 +11,7 @@ from __future__ import annotations
 import ast
 from collections import Counter
 
-from common import DATA, event, log, read_jsonl, write_jsonl
+from common import DATA, log, read_jsonl, write_jsonl
 
 SCALARS = {"int": "int", "str": "string", "float": "real", "bool": "bool"}
 
@@ -163,7 +163,7 @@ def build():
     for t in tasks:
         prev = by_problem.get(t["problem_id"])
         if prev is not None and prev["dataclass_code"] != t["dataclass_code"]:
-            event("dataclass_differs_within_problem", problem_id=t["problem_id"])
+            log(f"  dataclass differs within problem {t['problem_id']}")
         by_problem.setdefault(t["problem_id"], t)
 
     out = []
@@ -177,7 +177,6 @@ def build():
     for s in out:
         if s["status"] == "unmappable":
             log(f"  unmappable {s['problem_id']} {s['problem_name']}: {s['reason']}")
-    event("signatures", ok=st["ok"], unmappable=st["unmappable"], total=len(out))
     return out
 
 

@@ -10,12 +10,12 @@ A failure here is not a failing test. It means the translation may fault on an
 input outside the stored set, and nothing in the test gate would notice.
 """
 from __future__ import annotations
-import argparse, re, subprocess, sys
+import argparse, re, subprocess
 from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
-from common import (DATA, OUT, UNSCREENED, ROOT, SOLUTIONS, UNGATEABLE, UNSURE, event, log, write_json,
+from common import (DATA, OUT, UNSCREENED, ROOT, SOLUTIONS, UNGATEABLE, UNSURE, log, write_json,
                     write_jsonl)
 
 DAFNY = "dafny"   # on PATH; dafny finds z3 on PATH itself
@@ -82,7 +82,6 @@ def run(dirs, workers=8, move=False):
     summary = {"total": len(rows), "verified": ok, "unverified": len(rows) - ok,
                "termination_opt_out": optout, "kinds": dict(kinds.most_common())}
     write_json(OUT / "verification_summary.json", summary)
-    event("verify_all", **summary)
     log(f"verified {ok}/{len(rows)}  ({optout} use `decreases *`, so their "
         f"termination is not proved)")
     for k, n in kinds.most_common():

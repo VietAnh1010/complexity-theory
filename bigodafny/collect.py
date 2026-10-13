@@ -250,7 +250,7 @@ def corpus_stats(ds, depth):
 def main():
     ds = {r["solution_id"]: r for r in jsonl(DATA / "dataset.jsonl")}
     ver = {r["solution_id"]: r for r in jsonl(DATA / "verification.jsonl")}
-    depth = {r["sid"]: r for r in jsonl(DATA / "call_depth.jsonl")}
+    depth = {r["sid"]: r for r in jsonl(OUT / "call_depth.jsonl")}
     stats = json.loads((DATA / "stats.json").read_text())
     campaigns = prove_stats.payload()
     # the bounded agents' draws, joined to call depth for the difficulty table

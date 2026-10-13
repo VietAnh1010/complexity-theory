@@ -79,13 +79,6 @@ def log(m):
     print(f"[{time.strftime('%H:%M:%S')}] {m}", file=sys.stderr, flush=True)
 
 
-def event(kind, **f):
-    DATA.mkdir(parents=True, exist_ok=True)
-    rec = {"ts": time.strftime("%Y-%m-%dT%H:%M:%S"), "kind": kind, **f}
-    with (DATA / "events.jsonl").open("a", encoding="utf-8") as fh:
-        fh.write(json.dumps(rec, ensure_ascii=False) + "\n")
-
-
 def read_jsonl(path):
     with Path(path).open(encoding="utf-8") as fh:
         for line in fh:

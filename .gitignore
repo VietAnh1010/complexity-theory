@@ -2,12 +2,10 @@
 .cache/
 
 # Downloaded papers. Notes and quotes are committed; the PDFs are not.
-papers/pdf/
 *.pdf
 
 # Atomic-write temporaries
 *.tmp
-*.jsonl.tmp
 
 __pycache__/
 *.pyc

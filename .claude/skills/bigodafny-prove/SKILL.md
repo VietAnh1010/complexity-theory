@@ -269,7 +269,7 @@ an agent may not edit a gate it is judged by. Instead:
   it, and its own Python fails the same comparison.
 
 `validate.py --only` and `--solutions-dir` are spot checks: they write
-`data/<prefix>validation.jsonl` (default `partial_`), never the canonical
+`out/<prefix>validation.jsonl` (default `partial_`), never the canonical
 `data/validation.jsonl`.
 
 ## Charging `Join` and appends

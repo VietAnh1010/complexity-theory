@@ -6,7 +6,7 @@ claim about a run can be checked against what it actually contained.
 
 | directory | campaign | contents |
 |---|---|---|
-| `labelaudit/` | the label audit | `PROMPT.md`, one `verdicts_*.jsonl` per round, and `batch_NN.json` (git-ignored) |
+| `labelaudit/` | the label audit | `PROMPT.md`, one `verdicts_*.jsonl` per round |
 | `cost-axioms/` | `PLAN.md` — axiomatise collection cost; drop `array<T>` | plan only, no manifest |
 | `gate-audit/` | the seven `solutions/` rows with no passing gate result | control results (`control.jsonl`) |
 | `prove-sample/`, `prove-sample-2/` … `prove-sample-8/` | bounded proof campaigns | see `CAMPAIGN_CONFIG.md` |
@@ -24,9 +24,9 @@ claim about a run can be checked against what it actually contained.
   judgements, not a copy of the corpus.
 - `verdicts_19.rejected.jsonl` — r1 batch 19 as first returned; the schema gate
   refused it. Kept as the record of a rejection.
-- `batch_NN.json` — **git-ignored**. Each embeds a full `.dfy` and its Python,
-  so they are 1.4M of content already committed elsewhere. Regenerate with
-  `python3 label_audit.py evidence`.
+- The evidence batches an auditor reads are not here: `python3 label_audit.py
+  evidence` writes them to `out/labelaudit/batch_NN.json` (git-ignored). Each
+  embeds a full `.dfy` and its Python, content already committed elsewhere.
 
 The rounds. Each re-audit re-judges rows under the rules in force; `data/label_audit.jsonl`
 holds the latest verdict per row.
@@ -47,9 +47,8 @@ whole file with that subset unless someone stopped it. Four did:
 |---|---|---|
 | `label_audit.py evidence --only` | a numbered `batch_NN.json` | writes `reaudit_NN.json` unless `--prefix` says otherwise |
 | `difftest.py --only` | `data/difftest.jsonl` — it held 5 rows for a tier of 100 | merges by `solution_id` |
-| `validate.py --only` | `data/validation.jsonl` — 532 rows | any `--only` or `--solutions-dir` run writes `data/<prefix>validation.jsonl` (default `partial_`) |
+| `validate.py --only` | `data/validation.jsonl` — 532 rows | any `--only` or `--solutions-dir` run writes `out/<prefix>validation.jsonl` (default `partial_`) |
 | `precheck.py SID...` | `data/precondition_check.jsonl` — it held one row's clauses | merges, replacing only the rows re-checked |
 
-`callgraph.py --only/--limit` was guarded the same way before it could bite.
 If you add a tool that takes a subset and writes a shared file, assume it has
 this bug until you have checked.

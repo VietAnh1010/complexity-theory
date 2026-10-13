@@ -1,13 +1,5 @@
 """Static features of a translated row, computed from the Dafny source alone.
 
-Used for two different jobs, and the separation matters:
-
-  * `score()` picks the 100 examples. It may use the complexity label, because
-    stratifying across rare classes is a sampling decision, not a measurement.
-  * `difficulty_static()` must NOT use the label. It is declared before any
-    agent runs and is later compared against measured difficulty; if the label
-    leaked into it, that comparison would be circular.
-
 Nothing here calls a model. Re-running on the same tree gives the same numbers.
 """
 from __future__ import annotations
@@ -94,40 +86,6 @@ def _loop_nesting(code):
     return maxd, count, guards
 
 
-# `x := x + [e]` / `x := x + ys` where x is a seq. Never `i := i + 1`: `1` is a
-# word character, and the first version of this counted integer accumulators as
-# appends, inflating the affected row count from 21 to 30.
-APPEND_RE = re.compile(r"\b(\w+)\s*:=\s*\1\s*\+\s*(\[|[A-Za-z_]\w*\b(?!\s*\())")
-
-
-def _loop_bodies(code):
-    for m in re.finditer(r"\bwhile\b", code):
-        i = code.find("{", m.end())
-        if i < 0:
-            continue
-        d, j = 0, i
-        while j < len(code):
-            if code[j] == "{":
-                d += 1
-            elif code[j] == "}":
-                d -= 1
-                if d == 0:
-                    break
-            j += 1
-        yield code[i:j]
-
-
-def seq_appends_in_loops(body):
-    """Sites where a loop grows a seq by concatenation -- O(len) each time."""
-    n = 0
-    for seg in _loop_bodies(body):
-        for a in APPEND_RE.finditer(seg):
-            if a.group(2) == "[" or re.search(
-                    r"\b%s\s*:\s*(seq|string)" % re.escape(a.group(2)), body):
-                n += 1
-    return n
-
-
 def accumulator_read_in_loop(body):
     """Is a seq accumulator READ by index inside the loop that appends to it?
 
@@ -152,7 +110,7 @@ def accumulator_read_in_loop(body):
         # multiplies the flatten. 794_794 appends in an inner loop and reads the
         # finished sequence in a sibling loop under the same outer loop: that is
         # one flatten per outer iteration, not one per append, and taking the
-        # outer block would call it drift.
+        # outer block would flag it.
         inner = min(holding, key=len)
         live = _strip_ghost(inner)
         # `|name|` is free; `name[...]` is what forces the flatten.
@@ -215,52 +173,6 @@ def class_risk(body):
             "class_risk": seq_update or set_build}
 
 
-def drift(body, python_src):
-    """Does the translation's asymptotic shape differ from its Python's?
-
-    This is not a proof, it is a flag, and it exists because the pilot found
-    the distinction the hard way. An agent that proves a bound proves it about
-    the DAFNY. When the Dafny and the Python differ in shape, the proof says
-    nothing about BigOBench's label, which was measured on the Python -- so a
-    "refuted label" may be nothing of the kind.
-
-    Two shapes seen in the pilot, in opposite directions:
-      * `seq2 := seq2 + [x]` in a loop where the Python used `list.append`,
-        AND the loop reads an element of the accumulator. See below.
-      * `multiset(a) != multiset(b)` where the Python used `sorted(a) != sorted(b)`.
-        A class faster -- linear against n log n, measured, not assumed.
-
-    The append rule was wrong until it was measured. Dafny's Python backend
-    builds a LAZY concatenation node, so `s := s + [x]` is O(1) amortised --
-    the same as `list.append` -- and there is no drift. The cost lands on
-    whoever forces the node: an element read `s[i]` flattens it, and only then
-    is the loop quadratic. Taking `|s|` does not flatten.
-
-        append only     n=8k .053s  16k .067s  32k .095s  64k .149s
-        append + s[i]   n=8k .126s  16k .365s  32k 1.725s 64k 7.876s
-
-    So `drift_slower` now requires a read of the accumulator inside the
-    appending loop. The old unconditional rule flagged six pilot1 runs whose
-    agents then charged the append |s| and landed on a spurious quadratic --
-    an overcharge invents a disagreement exactly as an undercharge invents a
-    proof. `COMPLEXITY.md` carries the full convention.
-    """
-    py_sorts = bool(re.search(r"\bsorted\s*\(|\.sort\s*\(", python_src))
-    dfy_sorts = bool(re.search(r"\bSort(?:Ints|Strings)?\s*\(", body))
-    py_append = bool(re.search(r"\.append\s*\(|\+= *\[", python_src))
-    appends = seq_appends_in_loops(body)
-    flattened = accumulator_read_in_loop(body)
-    return {
-        "seq_append_in_loop": appends,
-        "accumulator_read_in_loop": flattened,
-        "drift_slower": bool(appends and py_append and flattened),
-        "drift_sort": py_sorts != dfy_sorts,
-        "py_sorts": py_sorts,
-        "dfy_sorts": dfy_sorts,
-        "dfy_multiset": bool(re.search(r"\bmultiset\s*\(", body)),
-    }
-
-
 def extract(text):
     header, code = split_file(text)
     body = strip_comments(code)
@@ -295,33 +207,3 @@ def extract(text):
         "helpers": len(re.findall(r"\n\s*(?:function|method|lemma)\s+", body)),
     }
 
-
-def difficulty_static(f):
-    """1..5, declared before the run. Label-free by construction.
-
-    The weights say what this project has found hard, in order: a log factor
-    needs the CeilLog2 recursion-tree argument; a data-dependent guard may have
-    no bound at all; nesting is where quadratic claims live.
-    """
-    s = 0
-    s += 2 if f["sorts"] else 0
-    s += 2 if f["data_dependent_loops"] else 0
-    s += 1 if f["recursive_helpers"] else 0
-    s += {0: 0, 1: 0, 2: 1}.get(f["loop_depth"], 2)
-    s += 1 if f["sets_maps"] else 0
-    s += 1 if f["body_lines"] > 60 else 0
-    return max(1, min(5, 1 + s // 2))
-
-
-def score(f, label_rarity):
-    """Interestingness. Higher is a more informative example to spend an agent on."""
-    s = 0.0
-    s += 3.0 if f["loop_depth"] >= 2 else 0.0
-    s += 3.0 if f["sorts"] else 0.0
-    s += 3.0 if f["data_dependent_loops"] else 0.0
-    s += 2.0 if f["recursive_helpers"] else 0.0
-    s += 2.0 if f["sets_maps"] else 0.0
-    s += 2.0 if f["seq_args"] >= 2 else 0.0
-    s += f["body_lines"] / 40.0
-    s += 4.0 * label_rarity
-    return round(s, 3)

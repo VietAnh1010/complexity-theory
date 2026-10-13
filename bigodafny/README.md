@@ -96,7 +96,7 @@ python3 difftest.py --loose
 python3 verify_all.py       # dafny verify every translation -> data/verification.jsonl
 python3 proofs.py
 # derived data, after any change to the corpus
-python3 callgraph.py        # call depth per row -> data/call_depth.jsonl
+python3 callgraph.py        # call depth per row -> out/call_depth.jsonl
 python3 prove_stats.py      # campaign statistics -> data/prove_stats.md
 python3 collect.py          # everything above, plus size and loop profile -> out/artifact_data.json
 ```

@@ -42,7 +42,7 @@ AUDIT_HEADER = re.compile(r"\A// LABEL AUDIT --.*?\n// -{68}\n\n?", re.S)
 
 def strip_header(text):
     return AUDIT_HEADER.sub("", text, count=1)
-BATCHES = ROOT / "batches" / "labelaudit"
+BATCHES = OUT / "labelaudit"
 
 # Prelude functions whose cost is linear in their argument, not constant. An
 # audit that treats these as O(1) will call a linear row constant.

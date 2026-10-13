@@ -12,7 +12,7 @@ from __future__ import annotations
 import re, subprocess, sys
 
 from common import (DAFNY_VERSION, z3_version, DATA, UNSCREENED, SOLUTIONS, UNVERIFIED,
-                    PROVED, event, log, read_jsonl, write_jsonl, DISPUTED,
+                    PROVED, log, read_jsonl, write_jsonl, DISPUTED,
                     UNGATEABLE, UNSURE)
 
 DAFNY = "dafny"   # on PATH; dafny finds z3 on PATH itself
@@ -83,7 +83,6 @@ def scan_assumes():
     for path, i, line in hits:
         log(f"  ASSUME {path}:{i}  {line}")
     log(f"assume scan: {len(hits)} occurrence(s) across the corpus")
-    event("assume_scan", count=len(hits))
     return hits
 
 
@@ -120,7 +119,6 @@ def run():
     n_ok = sum(r["verified"] for r in rows)
     n_assume = sum(1 for r in rows if r["assume_count"])
     log(f"proofs: {n_ok}/{len(rows)} verify; {n_assume} contain `assume`")
-    event("proofs", verified=n_ok, total=len(rows), with_assume=n_assume)
     return rows
 
 

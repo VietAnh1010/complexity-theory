@@ -5,10 +5,9 @@ file, and re-running must produce a byte-identical tasks.jsonl.
 """
 from __future__ import annotations
 import re, subprocess, sys
-from collections import Counter
 
-from common import (CACHE, DATA, SOURCE_NAME, SOURCE_URL, event, log,
-                    read_jsonl, write_jsonl, ROOT)
+from common import (CACHE, DATA, SOURCE_NAME, SOURCE_URL, log,
+                    read_jsonl, write_jsonl)
 
 # Descriptions that permit more than one correct output. Byte-diff validation
 # rejects correct translations of these, so they are split out rather than
@@ -38,7 +37,6 @@ def fetch(force=False):
     log(f"downloading {SOURCE_URL}")
     subprocess.run(["curl", "-sS", "-L", "--fail", SOURCE_URL, "-o", str(dest)],
                    check=True)
-    event("fetch", path=str(dest.relative_to(ROOT)), bytes=dest.stat().st_size)
     log(f"fetched {dest.stat().st_size} bytes")
     return dest
 
@@ -52,8 +50,7 @@ def extract():
     for r in rows:
         missing = [k for k in KEEP if k not in r]
         if missing:
-            event("row_missing_fields", solution_id=r.get("solution_id"),
-                  missing=missing)
+            log(f"  skipping {r.get('solution_id')}: missing {missing}")
             continue
         t = {k: r[k] for k in KEEP}
         # Verified upstream over all 640 rows; assert rather than recompute, so
@@ -82,7 +79,6 @@ def extract():
 
     probs = {t["problem_id"] for t in tasks}
     hinted = sum(t["nondet_hint"] for t in tasks)
-    event("extract", rows=len(tasks), problems=len(probs), nondet_hint=hinted)
     log(f"wrote {out}: {len(tasks)} rows over {len(probs)} problems")
     log(f"  nondet_hint set on {hinted} rows (a hint, not the split)")
     return tasks

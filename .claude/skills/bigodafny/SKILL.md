@@ -79,7 +79,7 @@ benchmark and load-bearing for this dataset.
 | `label_audit.py` | the label describes what the code costs | `solutions/`, `solutions-disputed/` |
 | `baseline.py --round-trip` | a failing strict row is the harness's fault, not the translation's | rows `validate.py` fails |
 
-`callgraph.py` is a **measurement, not a gate**: it writes `data/call_depth.jsonl`,
+`callgraph.py` is a **measurement, not a gate**: it writes `out/call_depth.jsonl` (git-ignored),
 the longest acyclic chain from `Solve` per row, ghost declarations excluded.
 291 rows (`solutions/`), depth 0–5, mean 2.02, 263 of them recursive. Use it to pick rows —
 depth 0–1 are self-contained and cheap to change; a deeper row pushes any
@@ -116,7 +116,7 @@ original Python fails a byte-diff against it. Use `difftest.py` there.
   reference-Python budget from 30s to 10s inside an otherwise-real fix; slow rows
   would have dropped out of the comparison, passing more rows by checking fewer.
 - **A subset run never replaces a shared record.** `validate.py --only` or
-  `--solutions-dir` always writes `data/<prefix>validation.jsonl` (default
+  `--solutions-dir` always writes `out/<prefix>validation.jsonl` (default
   `partial_`); only a full run writes `data/validation.jsonl`. Once, an
   unguarded `--only` left that file holding 4 rows instead of 529.
 - **A row's file is its status.** Move it; do not annotate and leave it.

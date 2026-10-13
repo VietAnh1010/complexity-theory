@@ -18,14 +18,8 @@ Only `strict` is scored by byte-diff.
 from __future__ import annotations
 from collections import Counter
 
-from common import (DAFNY_VERSION, DATA, UNSCREENED, UNTRANSLATED, PROVED,
-                    event, log, read_jsonl, write_json, write_jsonl)
-
-EXPORT = ("problem_id", "solution_id", "problem_name", "split", "nondet_hint",
-          "time_complexity_inferred", "time_curve_coefficient", "n_tests",
-          "python_status", "python_pass_rate", "dafny_signature",
-          "dafny_status", "dafny_gate", "dafny_tests_passed",
-          "dafny_tests_total")
+from common import (DAFNY_VERSION, DATA, UNTRANSLATED, PROVED,
+                    log, read_jsonl, write_json, write_jsonl)
 
 
 def parser_ok(task, sig=None):
@@ -163,7 +157,6 @@ def build():
             if r["split"] == "strict").most_common()),
     }
     write_json(DATA / "stats.json", stats)
-    event("dataset", **{k: stats[k] for k in ("rows", "problems", "splits")})
     log(f"dataset: {len(rows)} rows over {stats['problems']} problems")
     log(f"  splits: {dict(split)}")
     log(f"  dafny:  {stats['dafny_status']}")

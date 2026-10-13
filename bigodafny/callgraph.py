@@ -34,7 +34,7 @@ import argparse, json, re, sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import DATA, ROOT, SOLUTIONS, log, write_jsonl      # noqa: E402
+from common import OUT, ROOT, SOLUTIONS, log, write_jsonl      # noqa: E402
 
 # A declaration header. Dafny lets `function`, `method`, `predicate` and `lemma`
 # carry modifiers (`ghost`, `opaque`, `least`, `twostate`) and attributes
@@ -255,16 +255,7 @@ def run(limit=None, only=None, out=None):
         if limit and len(rows) >= limit:
             break
 
-    # As in validate.py: a `--only`/`--limit` run writes a scratch file, so the
-    # canonical per-row depth record is never a subset of itself. `--out` still
-    # overrides, for when a subset IS what you want written somewhere.
-    if out is None:
-        partial = bool(only or limit)
-        out = DATA / ("partial_call_depth.jsonl" if partial
-                      else "call_depth.jsonl")
-        if partial:
-            log("partial run: writing data/partial_call_depth.jsonl, not the"
-                " canonical data/call_depth.jsonl")
+    out = out or OUT / "call_depth.jsonl"
     write_jsonl(out, rows)
 
     ok = [r for r in rows if r["status"] == "ok"]
