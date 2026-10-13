@@ -41,7 +41,7 @@ both runs under the test harness and carries a machine-checked proof.
 
 ## The charging convention
 
-**`bigodafny/COMPLEXITY.md` § 1 is the authority; this is the summary.** The
+**`bigodafny/COMPLEXITY.md` § The model is the authority; this is the summary.** The
 charges are **stipulated**, not read off Dafny's Python backend — the labels
 were measured on CPython, so a backend-derived model compared two unrelated
 implementations.

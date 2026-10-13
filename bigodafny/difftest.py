@@ -21,7 +21,7 @@ from pathlib import Path
 from common import (DATA, OUT, log, read_jsonl, write_json, write_jsonl,
                     DISPUTED, UNGATEABLE, UNSURE)
 from validate import build_one, conv_expr, HARNESS
-from common import BUILD, UNSCREENED, SOLUTIONS, UNVERIFIED, PROVED
+from common import BUILD, UNSCREENED, SOLUTIONS, UNVERIFIED
 
 PY_RUNNER = r'''
 import json, signal, sys, io
@@ -90,7 +90,7 @@ def python_outputs(task, tests):
 
 
 def find(sid, pid):
-    for r in (SOLUTIONS, UNVERIFIED, UNSCREENED, PROVED, DISPUTED, UNGATEABLE, UNSURE):
+    for r in (SOLUTIONS, UNVERIFIED, UNSCREENED, DISPUTED, UNGATEABLE, UNSURE):
         p = r / pid / f"{sid}.dfy"
         if p.exists():
             return p

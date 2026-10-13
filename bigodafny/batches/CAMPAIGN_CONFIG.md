@@ -1,9 +1,7 @@
-# Campaign configuration: what the pooled numbers mean
+# Proof campaigns: reading the combined numbers
 
-Eight proof campaigns ran between 2026-09-16 and 2026-09-24. Each drew 50 rows
-except campaign 5, which has 48 counted rows after two already-proved rows were
-removed, and campaign 8, which took the last 18 never-drawn rows. The campaigns did not use one fixed configuration, so their pooled
-numbers need context.
+Eight campaigns ran from 2026-09-16 to 2026-09-24. Their settings differed, so
+read these notes before combining their numbers.
 
 | campaign | date | draw |
 |---|---|---:|
@@ -16,36 +14,29 @@ numbers need context.
 | `prove-sample-7` | 2026-09-23 | 50 |
 | `prove-sample-8` | 2026-09-24 | 18 |
 
-## Differences that matter
+Campaign 5 counts 48 after removing two rows already proved; campaign 8 took
+all 18 rows never drawn before.
 
-- Campaigns 1–7 all charged sequence updates as one unit.
-- The value-versus-size rule was added in campaign 2: input values remain
-  parameters of a bound.
-- The `tighter-costmodel` and `tighter-translation` relations were added in
-  campaign 3.
-- `IntToString` became a one-unit operation in campaigns 6 and 7.
-- Campaign 7 is the first fresh-only draw (`--exclude-drawn`) and the first to
-  request `reads` traces. The rule was added during the run; the 30 rows that
-  finished without one were rerun on 2026-09-24 with the newer prelude, so all
-  50 have traces but two configurations are mixed. Its README separates them.
-- Campaign 8 drew the whole remaining fresh pool, 18 rows, so it is a census
-  rather than a sample. It is the first campaign whose brief included the
-  prelude's sort-cost and binary-search lemmas from the start.
+## What changed between campaigns
 
-## How to compare campaigns
+- Every campaign charged a sequence update 1.
+- From 2: an input value counts as a size.
+- From 3: the relations `tighter-costmodel` and `tighter-translation` were added.
+- From 6: `IntToString` costs 1. Campaigns 1–5 gave no rule for it.
+- 7: only rows never drawn before (`--exclude-drawn`). Mid-run it started
+  requiring `reads` traces (the declarations the agent read, in order), so 30
+  rows were re-run on 2026-09-24. Its README separates the two settings.
+- 8: drew all 18 rows never drawn before, so it is not a sample. Its
+  instructions had the prelude's sort and binary-search lemmas from the start.
 
-Plain draws increasingly re-selected rows that had already failed. Their raw
-rates therefore fell from 84% in campaign 1 to 60% in campaign 6 even though
-the agent budget did not change. Compare fresh-row rates, or compare campaign 7
-with campaign 1; do not read the raw sequence as a learning curve.
+## Comparing
 
-Proof bounds were also normalised after `proofs.py` changed on 2026-09-22.
-Older records preserve the agent's original result; current files may contain a
-later hand-tightened proof. The two should not be mixed in one rate.
-
-## Reading campaign records
-
-The campaign README gives the bounded-agent result. `old-record.jsonl` keeps
-superseded versions. A later proof or changed relation does not rewrite what the
-agent achieved under its budget. `data/prove_stats.md` is the generated summary;
-use it for current totals and the README for experimental caveats.
+- Later draws kept re-drawing rows that had failed, so the raw rate fell from
+  84% to 60% with the same budget. Compare fresh-row rates, or campaign 7 with
+  campaign 1.
+- `proofs.py` changed on 2026-09-22 and bounds were rewritten in a common form.
+  Old records keep the agent's result; current files may hold a proof
+  tightened later by hand. Don't mix them in one rate.
+- A campaign's README gives what the agent achieved within budget;
+  `old-record.jsonl` keeps replaced versions. `data/prove_stats.md` has the
+  current totals.

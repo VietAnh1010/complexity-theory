@@ -1,17 +1,15 @@
 # Complexity model and proof guide
 
-This file answers one question: what work does a proof count, and how does a
-Dafny file prove an upper bound for that work?
+What a proof counts as work, and how a Dafny file proves a bound on it.
 
 ## The model
 
-The model is stipulated. It is not a timing claim about Dafny's Python, C#, or
-Java backend. BigOBench labels were measured from CPython, so backend timings
-and labels are different evidence.
+Costs are fixed by rule, not timed. Dafny's Python output may copy a sequence
+on every update, but the model charges 1: timing a backend would tie every
+verdict to one compiler and language.
 
-Charge one unit for integer arithmetic and comparisons, sequence indexing and
-length, and one unit of loop overhead per iteration. Charge one unit for every
-character a string operation produces.
+Charge 1 for integer arithmetic and comparison, a sequence index or length,
+each loop iteration, and each character a string operation produces.
 
 | operation | charge |
 |---|---:|
@@ -24,84 +22,83 @@ character a string operation produces.
 | set iteration | `|s|` |
 | `multiset(s)` | `|s|` |
 | multiset equality | `|a| + |b|` |
-| `Join(parts, sep)`, `sep` a source literal | `SumLen(parts) + |parts|` |
+| `Join(parts, sep)`, `sep` a string literal | `SumLen(parts) + |parts|` |
 | `IntToString(x)` | `Digits(x)` |
-| `JoinInts(xs, sep)`, `sep` a source literal | `SumDigits(xs) + |xs|` |
+| `ParseInt(s)` | undecided: 1 or `|s|` (`solutions-unsure/README.md`) |
+| `JoinInts(xs, sep)`, `sep` a string literal | `SumDigits(xs) + |xs|` |
 | recursive sequence/string helpers | argument length |
 | sorting k items | `SortCost(k)`; prove it with `SortCostNLogN` |
 | helper calls | the helper's `steps` |
 | recursive helpers used for Python `**` | recursion depth |
 | `Gcd(a, b)` (Python `math.gcd` or a Euclid loop) | `GcdSteps(a, b)`; bound it with `GcdStepsBound` |
 
-`array<T>` is absent from the corpus. The two files that retain arrays explain
-why in their headers; that is a backend note, not a different charge table.
+The model has no `array<T>`. `2128_34` and `2826_42` use arrays; their
+headers explain why.
 
-### Decisions that often cause confusion
+### Rules people often get wrong
 
-**Input values are parameters.** A loop bounded by an input value costs in that
-value (`O(v)` or `O(log v)`), even when the problem statement caps it. Hiding a
-30- or 60-iteration loop as constant would make the label useless as a growth
-description.
+**An input value is a size.** A loop bounded by an input value costs `O(v)` or
+`O(log v)`, even when the problem caps `v`. A 60-step loop is not "constant".
 
-**Integers are words; characters are not.** Arithmetic on an `int` costs one
-unit however large the value, an idealised machine. Turning an `int` into text
-costs one unit per character produced, `Digits(x)`, exactly as building any
-other string does. So a value's size is free to compute with and paid for when
-written out. Where the idealisation is visibly false (integers that outgrow a
-machine word), record `tighter-costmodel`.
+**Numbers are free to compute with, not to print.** `int` arithmetic costs 1
+at any size. Turning an `int` into text costs 1 per digit (`Digits(x)`). Where
+that is unrealistic (integers beyond a machine word), record
+`tighter-costmodel`.
 
-**Output length is its own parameter.** Every program that prints L characters
-pays at least L steps, so output length bounds every possible solution from
-below. Write an output term as `|output|` (prelude: `IntToStringDigits`,
-`JoinLen`, `JoinIntsLen`), and compare only the rest of the bound with the
-label: `steps <= 2 * NLogN(n) + 3 * |output| + 5` confirms `O(nlogn)`. An
-additive `|output|` term never makes a row looser. A term that multiplies it
-(`n * |output|`) or a `Digits` charge that never reaches the output (a digit sum,
-a string comparison) is ordinary work and counts. If `|output|` dominates the
-bound, say so in `relation_reason`.
+**Output length is its own size.** Printing L characters takes L steps under
+any algorithm. Write that part as `|output|` (prelude: `IntToStringDigits`,
+`JoinLen`, `JoinIntsLen`) and compare only the rest with the label:
+`steps <= 2 * NLogN(n) + 3 * |output| + 5` confirms `O(nlogn)`.
 
-**A label names each size it depends on.** A label variable is one
-size: one list's length, one string's length, or one input value. A label must
-be the tight class in those sizes, in both directions.
+- An added `|output|` term never counts against the label.
+- `n * |output|`, or `Digits` for text never printed, is normal work.
+- If `|output|` is the largest term, say so in `relation_reason`.
 
-- `O(n)` over n strings that are each scanned is wrong, even though the cost is
-  linear in the total text. It is `O(n*m)`.
-- `O(n**2)` is one size squared. Two different sizes multiplied are `O(n*m)`.
+**The naming rule: a label names every size it depends on.** Each variable is
+one list's length, one string's length, or one input value, and the class is
+the tightest one.
+
+- Scanning n strings is `O(n*m)`, not `O(n)`.
+- `O(n**2)` is one size squared; two different sizes give `O(n*m)`.
 
 `batches/labelaudit/PROMPT.md` § *Naming the sizes* has the full table.
 
 ## What a proof means
 
-A proof adds a ghost `steps` counter, increments it for every charged action,
-and states an upper bound such as `steps <= 2 * |a| + 2`. Dafny verifies that
-postcondition for every input satisfying the method's preconditions. Ghost code
-is erased from generated programs, so the same file remains runnable.
+A proof adds a ghost `steps` counter, adds to it at every charged action, and
+states a bound such as `steps <= 2 * |a| + 2`. Dafny checks it for every input
+the `requires` allow. Ghost code is removed at compile time, so the file still
+runs. If the bound disagrees with the label, record why; never weaken the
+proof to fit.
 
-The bound is an upper bound, not a timing measurement. It is only as honest as
-the charge table. If it and the BigOBench label differ, record the reason; do
-not weaken the proof to make the label fit.
+A proof says nothing about whether the row passes its tests or its label is
+right.
+
+## Proof relations
+
+How a proved bound compares with the label. The bound is an upper bound, so it
+lands in the label's class, above it, or below it:
+
+| Relation | The bound is… | because… |
+|---|---|---|
+| `confirms` | in the label's class | |
+| `looser-slack` | above | the proof is loose; a tighter one wasn't tried |
+| `looser-structural` | above | the Python really pays a cost the label leaves out, usually a loop over an input value |
+| `looser-costmodel` | above | the model charges more than CPython pays |
+| `looser-translation` | above | the Dafny does work the Python doesn't |
+| `tighter-costmodel` | below | the model charges less than CPython pays, usually `int` arithmetic on huge values |
+| `tighter-translation` | below | the Dafny does less work than the Python |
+| `tighter-label` | below | the Python does no more either: the label is too high |
+
+`vocab.py` is the source of this list. In a campaign trajectory record,
+`relation_reason` explains a row's relation in words.
 
 ## Reading a proof
 
-Start at `Solve` and list its loops and helper calls. For each one, identify
-its size parameter and charge. Then read the invariants and `decreases` clause
-that connect the counter to the input. Finally check the `ensures` bound and
-run `python3 proofs.py` to verify the overlay.
+1. Start at `Solve`; list its loops and helper calls.
+2. For each, find the size it depends on and its charge.
+3. Read the invariants and `decreases` clauses tying the counter to the input.
+4. Check the `ensures` bound; run `python3 proofs.py`.
 
-A `decreases *` file may be safe on stored tests but has no termination argument
-for an all-input complexity proof. Such a row cannot carry a proof until a real
-decreases measure is supplied.
-
-## Why the backend is not the model
-
-Dafny's Python translation may copy a sequence on update, while the stipulated
-model charges that update one unit. Measuring a backend would make verdicts
-depend on compiler version and language. The stipulated model keeps proofs
-comparable; backend limitations stay in the record where they belong.
-
-## Current proof overlay
-
-`solutions-proved/` contains 321 checked proof files. It is an overlay: each
-proof also has a normal translated row in `solutions/`, `solutions-disputed/`,
-`solutions-unsure/` or `solutions-unscreened/`. The overlay proves the stated step bound; it does
-not certify the behaviour gate or the label audit.
+A row with `decreases *` cannot carry a proof: nothing shows it stops on every
+input.

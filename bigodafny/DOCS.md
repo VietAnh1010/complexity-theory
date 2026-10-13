@@ -1,121 +1,93 @@
 # Working on BigODafny
 
-BigODafny is self-contained under this directory. The repository root also has
-an unrelated paper-mining project; do not mix its files or assumptions with
-this corpus.
+Everything for BigODafny is in this directory. The paper-mining project at the
+repository root is unrelated.
 
 ## Start here
 
-Choose the path that matches the task.
-
-| Task | Read |
+| To… | Read |
 |---|---|
-| Understand the dataset | `README.md` |
-| Change a translation or status | `CLAUDE.md`, then the affected `solutions*/README.md` |
-| Review a label | `COMPLEXITY.md`, `solutions-disputed/README.md`, and `batches/labelaudit/PROMPT.md` |
-| Write a complexity proof | `COMPLEXITY.md`, `solutions-proved/README.md`, and `batches/CAMPAIGN_CONFIG.md` |
-| Understand campaign results | `data/prove_stats.md` |
-| See what changed and when | `CHANGELOG.md` |
-| Read past work | `summaries/README.md` only after reading current documentation |
+| understand the dataset and its directories | `README.md` |
+| change a translation or move a row | `CLAUDE.md`, then each affected directory's `README.md` |
+| review a label | `COMPLEXITY.md`, `solutions-disputed/README.md`, `batches/labelaudit/PROMPT.md` |
+| write a proof | `COMPLEXITY.md`, `solutions-proved/README.md`, `batches/CAMPAIGN_CONFIG.md` |
+| see counts and results | `STATUS.md`; campaigns: `data/prove_stats.md` |
+| see what changed | `CHANGELOG.md` |
 
-The summaries and old campaign prompts are historical records. They are useful
-for provenance, but they are not operational instructions.
+`summaries/` and old campaign prompts are history, not instructions.
 
-## Current state
+## Terms defined by this project
 
-| Item | Current value |
-|---|---:|
-| Rows / problems | 640 / 311 |
-| Translated rows | 636 |
-| Strict behaviour gate | 533 valid, 7 failed (the 4 ungateable rows, `1738_180`, `1950_45`, `1950_47`) |
-| Loose behaviour gate | 95 agree, 1 timeout-only unresolved, 4 untranslatable |
-| Clean `solutions/` rows | 291 |
-| Complexity proof files | 321, all verify without `assume` |
-| Bounded campaign results | 281 proved of 366 draws (77%) |
-| Distinct drawn rows with a proof now | 290 of 329 (88%) |
-| Label-audited rows | 506: 296 ok, 201 mismatch, 9 unsure |
+Standard terms (ghost code, `decreases *`, test harness) are used in their
+usual sense. These have a meaning specific to this project:
 
-The status directories are the source of truth for a row's current state. Do
-not infer state from an old campaign result or commit message.
-
-`data/label_audit.jsonl` holds re-audit r3 verdicts for every row in
-`solutions/` and `solutions-disputed/`, revised by re-audit r4 under the naming
-rule (a label names each size it depends on). The rules applied: input values
-are cost parameters, `IntToString` costs 1, a `Gcd` costs Euclid's depth. Only
-the 5 `solutions-ungateable/` rows keep first-audit verdicts. Neither round
-charged output per character, as `COMPLEXITY.md` now does. Superseded lines are
-in `data/old-record.jsonl`.
-
-## Status directories
-
-| Directory | Meaning |
+| Term | Meaning |
 |---|---|
-| `solutions/` | Behaviour-gated, safety-verified, and screened against its label. |
-| `solutions-unscreened/` | Behaviour-gated but not yet audited for label accuracy. |
-| `solutions-disputed/` | A review queue for label, translation, or harness questions. |
-| `solutions-unsure/` | Gated and verified; the label audit returned `unsure`. |
-| `solutions-ungateable/` | The available evidence cannot support a normal behaviour verdict. |
-| `solutions-unverified/` | A behaviour-gated translation with unproved safety obligations. |
-| `solutions-untranslated/` | A row that cannot be represented faithfully enough to gate. |
-| `solutions-proved/` | Instrumented proof copies; an overlay on the directories above. |
+| row | one Python solution and its Dafny translation. Its id (`solution_id`) starts with its problem's id: `1950_45` is a solution to problem `1950` |
+| label | BigOBench's time complexity for the row's Python, one of eleven classes: `O(1)`, `O(logn)`, `O(n)`, `O(nlogn)`, `O(n**2)`, `O(n*m)`, `O(n+m)`, `O(n+mlogm)`, `O(nlogn+mlogm)`, `O(n+m)log(n+m)`, `O(n**2+m**2)` |
+| strict / loose (tier) | a strict row is tested against its stored output; a loose row against what its original Python prints (`README.md`) |
+| unvalidatable | a strict row whose tests the problem's own `Input.from_str` rejects, so `validate.py` cannot run them |
+| status directory | one of the seven `solutions*` directories a row sits in; `solutions-proved/` is not one |
+| gate | a script that decides whether a row passes a check; a failed gate keeps the row out of `solutions/` |
+| verified / proved | verified: `dafny verify` accepts the row (safety). Proved: a copy in `solutions-proved/` has a checked complexity bound |
+| label audit | an AI auditor reads a row and returns a verdict on its label: `ok`, `mismatch` or `unsure`, with the class it thinks is right (`true_class`) |
+| round (r1–r4) | one pass of the label audit under the rules of its day (`batches/README.md`) |
+| main agent | the Claude session that runs an audit or campaign and reviews its agents' output |
+| override | a verdict the main agent replaced after review; its `auditor` field starts with `main agent` |
+| file header | a comment block at the top of a row's file recording a review: `LABEL AUDIT`, `TRANSLATION AUDIT`, `GATE INAPPLICABLE`, `VALUE-BOUNDED` |
+| sibling | another solution to the same problem. Sibling convergence: two siblings with different labels whose Dafny is nearly identical |
+| quarantine | setting a row aside for review without removing it from the dataset (`data/quarantine.jsonl`) |
+| naming rule | a label names every size it depends on (`COMPLEXITY.md`) |
+| value-bounded | a row whose cost depends on how large an input value is, not only on how many inputs there are (`solutions-proved/value-bounded/`) |
+| campaign | a batch run in which agents try to prove rows' labels under a fixed time and attempt budget |
+| draw / fresh row | the rows a campaign picks to attempt; a fresh row is one no earlier campaign drew |
+| obstacle | the coded reason a campaign row stayed unproved |
+| relation | how a proved bound compares with the label, e.g. `confirms` (`COMPLEXITY.md` § Proof relations) |
+| `audit.py` | the campaign checker, in `.claude/skills/bigodafny-prove-campaign/scripts/` |
+
+## Counts
+
+All counts are in `STATUS.md`.
+
+A row's directory is its current state; don't infer it from old records.
+Label verdicts are in `data/label_audit.jsonl`. A row with a failing gate stays
+out of `solutions/` whatever its label verdict.
 
 ## The gates
 
-A gate is a script that checks every row, and its result decides which status
-directory the row belongs in. For example, a row stays in `solutions/` only if
-it prints the right output (`validate.py`, or `difftest.py` for a loose row)
-and `dafny verify` accepts it (`verify_all.py`). A row that prints the right
-output but fails `dafny verify` goes to `solutions-unverified/`; a row whose
-label the audit disputes goes to `solutions-disputed/`.
+A gate decides whether a row passes one check. A row stays in `solutions/` only
+if it passes its test gate (`validate.py`, or `difftest.py` for a loose row)
+and `dafny verify` (`verify_all.py`). A row that passes its tests but fails
+`dafny verify` goes to `solutions-unverified/`. Passing one gate says nothing
+about the others.
 
-Each gate answers one narrowly defined question. Passing one does not imply
-that the others passed.
+| Gate | Question | Runs on |
+|---|---|---|
+| `validate.py` | Does a strict row print the stored output? | every status directory except `solutions-ungateable/` and `solutions-untranslated/` |
+| `difftest.py --loose` | Does a loose row print what the original Python prints? | every status directory except `solutions-untranslated/` |
+| `verify_all.py` | Does `dafny verify` pass (indexes in range, no division by zero, loops and recursion end)? | `solutions/`, `solutions-unsure/`, `solutions-ungateable/` (`--unscreened` adds that directory) |
+| `precheck.py SID...` | Does every added `requires` accept the row's real inputs? | the rows named |
+| `proofs.py` | Does each complexity proof verify, without `assume`? | `solutions-proved/` |
 
-| Tool | Question |
+`validate.py` statuses: `valid`, `fail` (wrong output), `build` (Dafny would
+not compile), `timeout`, `error`.
+
+Other checks, which move no rows:
+
+| Script | Question |
 |---|---|
-| `validate.py` | Does a strict row match BigO(Bench)'s stored output? |
-| `difftest.py --loose` | Does a loose row match its original Python program? |
-| `dafny verify` / `verify_all.py` | Are the stated safety and termination obligations discharged? |
-| `precheck.py` | Do added preconditions accept the row's real inputs? |
-| `proofs.py` | Does an instrumented complexity proof verify without `assume`? |
-| `label_audit.py check` | Is a label-audit verdict file well formed? |
-| `label_audit.py siblings` | Did two solutions of one problem converge although their labels differ? |
-| `baseline.py --round-trip` | Is a failing strict row the harness's fault rather than the translation's? |
+| `label_audit.py check` | Is a verdict file well formed? |
+| `label_audit.py siblings` | Did two siblings converge despite different labels? |
+| `baseline.py --round-trip` | Is a failing strict row the harness's fault? |
 
-`solutions-ungateable/` exists for a different failure mode: the harness cannot
-produce evidence that the gate needs. It does not mean the translation is known
-to be wrong.
+## Rules
 
-## Rules that protect the corpus
+`CLAUDE.md`. Records follow the rules of their day; `CHANGELOG.md` dates every
+rule change, so check it before reusing an old record.
 
-1. Trust tool output, not visual inspection.
-2. Preserve the source algorithm, not just its output.
-3. Do not change a gate while your work is being judged by it.
-4. Treat subset commands that write shared JSONL as dangerous until verified.
-5. Preserve failures and rejected work as records with an explanation.
+## Proof campaigns
 
-## Complexity model
-
-Collection costs are stipulated, not measured from the emitted Python. Sequence
-update, map update, and set insertion are charged O(1); sequence concatenation
-costs the length of its right operand; a loop bounded by an input value is
-parameterized by that value; output costs one step per character; and a label
-names each size it depends on. See `COMPLEXITY.md` for the complete model.
-
-A record is only as current as the rules it was made under. `CHANGELOG.md`
-dates every rule change; check a record's date against it before reusing it.
-
-## Campaign records
-
-`batches/prove-sample*` preserves what bounded agents did: manifests define the
-draw, `traj_*.jsonl` records attempts, `attempts/` keeps every attempt's
-`.dfy` that differs from the promoted proof (failed ones included), each
-unresolved record carries an `obstacle` code, and `label_relation.jsonl`
-records reviewed proof/label relationships. Campaigns
-1–8 predate `attempts/`: their failed attempts survive only as descriptions.
-Campaign 7 introduced `reads`, an ordered trace of material source, helper, and
-prelude declarations consulted during a proof.
-
-Campaign configurations and data formats changed over time. Read
-`batches/CAMPAIGN_CONFIG.md` before pooling campaign numbers. `data/prove_stats.md`
-is the normalized summary.
+`batches/prove-sample*`: what each campaign drew (manifest), every attempt
+(`traj_*.jsonl`, with an `obstacle` code when unresolved), and each proof's
+relation to its label (`label_relation.jsonl`). Settings changed between
+campaigns; read `batches/CAMPAIGN_CONFIG.md` before combining numbers.

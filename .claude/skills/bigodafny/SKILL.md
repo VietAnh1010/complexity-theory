@@ -161,7 +161,7 @@ Sub-skills: `bigodafny-translate`, `bigodafny-verify`, `bigodafny-prove`.
   the emitted Python instead — identical compiled bytes beats a test sample.
 - **The cost model is stipulated, not measured.** `s[i := v]`, `m[k := v]`,
   `s + [x]`, `s[a..b]` and set insertion are all charged `1`, regardless of
-  what the Python backend does with them. `bigodafny/COMPLEXITY.md` § 1 is the
+  what the Python backend does with them. `bigodafny/COMPLEXITY.md` § The model is the
   authority. A Dafny collection that copies where CPython assigns in place is
   not a defect. A record that charges `|s|` for a seq update is older than the
   model.

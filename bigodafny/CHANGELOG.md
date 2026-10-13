@@ -10,6 +10,29 @@ data lines go to `old-record.jsonl` beside the file they came from.
 
 ## 2026-10-13
 
+- `validate.py` and `difftest.py` no longer search `solutions-proved/`: they
+  found a row's proof copy before the row itself when the row sat in
+  `solutions-disputed/`, `solutions-unsure/` or `solutions-ungateable/`, so
+  those rows were tested through the copy. 11 loose rows re-run (all agree);
+  `validate.py` re-run in full.
+- Docs: glossary limited to terms this project defines; gate definition
+  corrected, with the directories each gate covers; `verify_all.py` does not
+  sweep `solutions-disputed/` or `solutions-unscreened/`; `TODO.md` content no
+  longer copied into other docs (`CLAUDE.md` § Counts).
+- `STATUS.md`: every corpus count in one file, checked against `data/`. Other
+  docs no longer carry counts (`CLAUDE.md` rule). Corrected on the way:
+  `validate.py` has 1 failing row (`1738_180`), not 7; the 6 `unvalidatable`
+  rows are not run.
+- Docs rewritten in plainer words (`DOCS.md`, `README.md`, `CLAUDE.md`,
+  `COMPLEXITY.md`, `TODO.md`, every `solutions*/README.md`, `batches/README.md`,
+  `CAMPAIGN_CONFIG.md`). Stale facts fixed: `signature.py` maps all 311
+  problems; `apply` cannot yet move `solutions-unscreened/` rows; the partition
+  has seven directories; `solutions-proved/README.md` lists all three proofs
+  that compile to different Python; the `§ 1` links to `COMPLEXITY.md`.
+- Docs: a glossary in `DOCS.md`; proof relations defined in `COMPLEXITY.md`.
+  Counts corrected against `data/`: proved labels `O(nlogn)` 67 and `O(logn)` 1;
+  disputed causes (34 `translation`, 1 blank) and confidence (101/96/5); the
+  `1950` rows do carry label verdicts.
 - `selftest.py` folded into `validate.py --self-test`; `checkverdicts.py`
   into `label_audit.py check`, which `apply` now runs first and refuses on.
   Dropped `checkverdicts.py`'s proof cross-check: it printed proved bounds and

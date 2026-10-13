@@ -1,87 +1,62 @@
 # BigODafny
 
-BigODafny is a Python-to-Dafny translation corpus built from BigO(Bench)'s
-`time_complexity_test_set`. It contains 640 competitive-programming solutions.
-Each row keeps the complexity label inferred by BigO(Bench) for the original
-Python program.
+Python solutions to competitive-programming problems, translated into Dafny.
+They come from BigOBench's `time_complexity_test_set`; each keeps BigOBench's
+complexity label for the original Python. Read [DOCS.md](DOCS.md) before
+changing anything; it defines the project's terms.
 
-Read [DOCS.md](DOCS.md) before working on the corpus. It explains the current
-state, the status directories, the gates, and which documents are authoritative.
+## A row
 
-## What a row contains
-
-Most source solutions are stdin scripts, not functions. BigO(Bench) supplies an
-`Input` dataclass for each problem; BigODafny turns that dataclass into the
-Dafny entry point:
+Each problem's `Input` dataclass becomes the Dafny entry point
+(`signature.py`):
 
 ```dafny
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 ```
 
-`signature.py` performs that conversion. It maps 309 of 311 problems. The two
-unmappable dataclasses use an untyped `list`, so the project records them as
-unmappable instead of guessing an element type.
+The harness compiles the Dafny to Python, builds `Solve`'s arguments with the
+problem's own `Input.from_str`, and compares what it prints:
 
-## Behaviour checking
-
-The normal harness compiles a Dafny row to Python, calls `Solve` with values
-created by BigO(Bench)'s own `Input.from_str`, and compares stdout.
-
-```text
-stored input -> Input.from_str -> Solve(...) -> translated Python stdout
-                                         |
-                                   compare with stored output
-```
-
-There are two behaviour tiers:
-
-| Tier | Rows | Check |
-|---|---:|---|
-| `strict` | 540 | Compare against the stored output. |
-| `loose` | 100 | Compare the Dafny translation with the original Python. |
-
-The split is empirical: only 540 original Python programs reproduce the stored
-output byte-for-byte. Six of them are `unvalidatable`: the problem's own
-`Input.from_str` rejects their stored tests, so 534 are gated. The other 100 often have multiple accepted outputs, so a
-byte comparison would reject the original program itself.
-
-## Current corpus shape
-
-The seven status directories partition the 640 rows:
-
-| Directory | Rows | Meaning |
-|---|---:|---|
-| `solutions/` | 291 | Behaviour-gated, safety-verified, and label-screened. |
-| `solutions-unscreened/` | 127 | Behaviour-gated but not label-audited. |
-| `solutions-disputed/` | 202 | The audit found a label or translation concern. |
-| `solutions-unsure/` | 8 | Gated and verified; the label audit could not decide. |
-| `solutions-ungateable/` | 5 | The normal behaviour gate cannot reach a reliable verdict. |
-| `solutions-unverified/` | 3 | Behaviour-gated, but Dafny cannot prove safety or termination. |
-| `solutions-untranslated/` | 4 | Bare-float output has no practical exact Dafny specification. |
-
-`solutions-proved/` is an overlay, not an eighth status. It contains 321
-instrumented copies with machine-checked complexity bounds.
-
-## Repository map
-
-| Path | Purpose |
+| Kind | Compared with |
 |---|---|
-| `solutions*/` | Dafny corpus, grouped by current status. |
-| `prelude.dfy` | Shared helpers used by translations and proofs. |
-| `data/` | Generated corpus state, gate results, and analysis records. |
-| `batches/` | Campaign manifests, prompts, trajectories, and audit evidence. |
-| `out/` | Generated snapshots nothing reads back; git-ignored. |
-| `COMPLEXITY.md` | The stipulated cost model and proof approach. |
-| `CHANGELOG.md` | What changed in the corpus, its rules, or its tools, and when. |
+| `strict` | the stored output |
+| `loose` | what the original Python prints |
+
+A row is strict when its original Python, run on the stored input text,
+prints the stored output exactly. The rest are loose: they often have several
+correct answers. A few strict rows are `unvalidatable`: the Python reads the
+input text itself, but the harness must parse it with `Input.from_str`, and
+`from_str` rejects their tests.
+
+## Where the rows are
+
+Each row is in exactly one of these (counts: `STATUS.md`):
+
+| Directory | The row… |
+|---|---|
+| `solutions/` | passes its tests and `dafny verify`; the label audit found no problem |
+| `solutions-unscreened/` | passes its tests; not yet label-audited or swept by `dafny verify` |
+| `solutions-disputed/` | has a label or translation problem to review; not swept by `dafny verify` |
+| `solutions-unsure/` | passes its tests and `dafny verify`; the label audit could not decide |
+| `solutions-ungateable/` | cannot get a reliable test verdict |
+| `solutions-unverified/` | passes its tests but fails `dafny verify` |
+| `solutions-untranslated/` | prints a bare float, which Dafny cannot reproduce exactly |
+
+`solutions-proved/` holds copies of rows with a machine-checked
+complexity bound added; the rows themselves stay above.
+
+Also here: `prelude.dfy` (shared helpers), `data/` (gate results and records),
+`batches/` (campaign and audit records), `out/` (generated, git-ignored),
+`COMPLEXITY.md` (the cost model), `STATUS.md` (all counts), `CHANGELOG.md`.
 
 ## Toolchain
 
-The repository uses Dafny 4.11.0, Z3 5.1.0 and Python 3 with `numpy`
-(`requirements.txt`): every row's `Input` dataclass imports it. Typical commands
-are:
+Dafny 4.11.0, Z3 5.1.0, and Python 3 with `numpy` (`requirements.txt`; every
+row's `Input` dataclass imports it). The scripts, grouped by job:
 
 ```bash
-# dafny and z3 on PATH; numpy in a local venv
+# dafny and z3 on PATH; numpy in a local venv. With the venv active,
+# `python3` below is the venv's Python.
 uv venv && uv pip install -r requirements.txt && source .venv/bin/activate
 # build, in order (once, or when BigOBench changes)
 python3 extract.py          # download BigOBench -> data/tasks.jsonl (git-ignored)
@@ -90,8 +65,8 @@ python3 scaffold.py         # .dfy stubs for untranslated rows; never overwrites
 python3 baseline.py         # original Python vs its own tests -> data/baseline.jsonl (--workers N)
 python3 dataset.py          # join everything -> data/dataset.jsonl, data/stats.json
 # gates: each answers one question (DOCS.md, "The gates")
-python3 validate.py --self-test       # validate.py itself: wrong answer -> fail, compile error -> build
-python3 validate.py --only 1053_38   # strict rows: stored output?
+python3 validate.py --self-test       # test validate.py itself (statuses: DOCS.md)
+python3 validate.py                   # strict rows: stored output? (--only SID... for a spot check into out/)
 python3 difftest.py --loose          # loose rows: same output as the Python?
 python3 verify_all.py       # dafny verify every translation -> data/verification.jsonl
 python3 precheck.py SID...    # added `requires` accept every stored input?
@@ -109,6 +84,3 @@ python3 collect.py          # dashboard payload -> out/artifact_data.json (run c
 # facts from a .dfy), vocab.py (campaign record vocabularies)
 ```
 
-The complexity model is intentionally not a measurement of Dafny's Python
-backend. It is a stipulated, implementation-independent model described in
-[COMPLEXITY.md](COMPLEXITY.md).

@@ -1,36 +1,29 @@
-# `solutions-unsure/` — the label audit could not decide
+# `solutions-unsure/`: the label check could not decide
 
-8 rows. Each passed its behaviour gate and `dafny verify`, like a row in
-`solutions/`. The difference is the label: the audit returned `unsure`, so the
-label is neither confirmed nor disputed.
+Rows that pass their tests and `dafny verify`, where the audit answered
+`unsure`.
+Each file's header gives the candidate class, evidence, and what to check.
+Verdicts: `data/label_audit.jsonl` (from `batches/labelaudit/verdicts_r4.jsonl`).
 
-Each file starts with the audit's header: the candidate class, the evidence,
-and what a reviewer should check. The full verdict is in
-`data/label_audit.jsonl`; the batch file is `batches/labelaudit/verdicts_r4.jsonl`.
+## Why
 
-## Why these were not decided
+- **Most:** is an input number's digit count a size? The audit prompt charges
+  `ParseInt` its text length; the proofs charge 1. Digits as a size gives
+  `O(n*m)`; one machine word gives `O(n)`.
+- `1484_82`: is a phone number's fixed width a second size?
+- `2231_77`: `O(n)` only if the 26-letter alphabet is constant, which no
+  `requires` says.
 
-- **Six wait on one cost-model question:** is a numeral token's width a size?
-  The brief charges `ParseInt` its argument's length; the proofs charge it 1.
-  Width as a size makes each `O(n*m)`; a machine-word token makes each `O(n)`.
-- `1484_82`: the prefix loop walks a phone number's width, which the
-  statement fixes; whether that width is a second size.
-- `2231_77`: the code rebuilds a list of distinct letters per letter change;
-  `O(n)` only if the 26-letter alphabet is constant, which no `requires` says.
+## Leaving
 
-## How a row leaves
+A reviewer decides:
 
-A reviewer reads the header and decides:
+- **Label right:** move the row to `solutions/` and drop the header.
+- **Label wrong:** move it to `solutions-disputed/`, keep the header, and set
+  the class.
 
-- the label matches: move the file to `solutions/` and drop the header;
-- it does not: move it to `solutions-disputed/`, keep the header, set the class.
-
-Record the decision in `data/label_audit.jsonl` (the old line to
-`data/old-record.jsonl`). `label_audit.py apply` does the move for a verdicts
-file. Every gate still runs here: `validate.py`, `difftest.py`,
-`verify_all.py` and `precheck.py` include this directory.
-
-## Rows
+Record the decision in `data/label_audit.jsonl`, moving the old line to
+`data/old-record.jsonl`. `label_audit.py apply` makes the move.
 
 | row | label | candidate | open question |
 |---|---|---|---|
