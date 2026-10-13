@@ -22,14 +22,14 @@ else, anywhere. Do not modify any `.dfy`. Do not run `dafny`.
 > before it read "same rank under different names" as `ok`.
 
 > **Re-audit r3, 2026-10-01.** Three rules changed after the 2026-09-16 audit,
-> and every `verdicts_NN.jsonl` here predates them:
+> and every verdict in `verdicts_r1-r2.jsonl` predates them:
 > **input values are cost parameters** (2026-09-17), **`IntToString` is charged
 > 1** (2026-09-22), and **a `Gcd` call costs Euclid's depth** (2026-09-30).
 > `bigodafny/COMPLEXITY.md` is the authority. § *Value terms* below is the
 > rule that changes the most verdicts.
 
-> **This table changed on 2026-09-16.** Every `verdicts_*.jsonl` file in this
-> directory — all 25 — was filed against a table read off Dafny's Python
+> **This table changed on 2026-09-16.** Every verdict in `verdicts_r1-r2.jsonl`
+> was filed against a table read off Dafny's Python
 > backend, in which `s[i := v]`, `m[k := v]` and set insertion were all linear. They are `1` now. Do not compare a verdict
 > from an earlier batch against one filed under this table without checking
 > which model it used. `bigodafny/COMPLEXITY.md` has the full model and the

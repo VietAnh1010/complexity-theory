@@ -6,7 +6,7 @@ label is neither confirmed nor disputed.
 
 Each file starts with the audit's header: the candidate class, the evidence,
 and what a reviewer should check. The full verdict is in
-`data/label_audit.jsonl`; the batch files are `batches/labelaudit/verdicts_r4*`.
+`data/label_audit.jsonl`; the batch file is `batches/labelaudit/verdicts_r4.jsonl`.
 
 ## Why these were not decided
 

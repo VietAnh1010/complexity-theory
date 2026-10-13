@@ -20,12 +20,12 @@ can have; `checkverdicts.py` rejects any verdict that contradicts one.
 ## Where the verdicts come from
 
 Every row carries a verdict from re-audit r3 or r4
-(`batches/labelaudit/verdicts_r3*`, `verdicts_r4*`; main-agent overrides in
-`verdicts_r3_overrides.jsonl` and `verdicts_r4_overrides.jsonl`):
+(`batches/labelaudit/verdicts_r3.jsonl`, `verdicts_r4.jsonl`; main-agent
+overrides are the lines whose `auditor` starts `main agent`):
 
 | rows | round | rules |
 |---:|---|---|
-| 94 | r3, re-audit of the queue itself (`verdicts_r3d_*`) | input values are cost parameters; `IntToString` costs 1; `Gcd` costs Euclid's depth |
+| 94 | r3, re-audit of the queue itself (`auditor` `labelaudit-r3d-*`) | input values are cost parameters; `IntToString` costs 1; `Gcd` costs Euclid's depth |
 | 26 | r3, rows moved in from `solutions/` | the same |
 | 82 | r4 | r3's rules plus the naming rule: a label names each size it depends on |
 

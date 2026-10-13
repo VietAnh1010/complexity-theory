@@ -8,6 +8,16 @@ change lands, update them and add a bullet here.
 A campaign's own run record stays in `batches/<campaign>/README.md`. Superseded
 data lines go to `old-record.jsonl` beside the file they came from.
 
+## 2026-10-13
+
+- `batches/labelaudit/`: the 62 per-batch verdict files merged into one per
+  round, in the order applied: `verdicts_r1-r2.jsonl`, `verdicts_r3.jsonl`
+  (with `r3_fix`, `r3d_*`, overrides), `verdicts_r4.jsonl` (with `r4d`, `r4s`,
+  `r4u`, overrides). `auditor` still names each line's batch. The last line
+  per row matches `data/label_audit.jsonl` for all 506 rows. Dropped
+  `verdicts_r2.jsonl` (80 lines identical to `verdicts_01`–`04`) and
+  `old-PROMPT.md`. File names in the bullets below are the pre-merge names.
+
 ## 2026-10-08
 
 - Rebased the output-length, Z3 and cleanup work onto the remote re-audit
