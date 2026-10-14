@@ -55,10 +55,6 @@ Open items only. When one is done, delete it and add a line to `CHANGELOG.md`.
       `generated_tests` inputs, all of which crash the original Python too
       (`py-fails`, a pass by the rules). Check whether the statement allows
       `a < 0`, or whether those 4 inputs are out of spec.
-- [ ] `85_141` (`CountOnesUpTo`) and `1180_626` (`PrefixSum1180`) call row
-      helpers in a `requires`, so `precheck.py` cannot evaluate them. Both hold
-      on all real inputs, checked by hand. Rewrite them over prelude helpers
-      (`SumSeq` for `1180_626`); row and proof copy together.
 - [ ] `1039_146` (`solutions-unscreened/`) does not verify: map domain at the
       `left[v]` update in its second loop. Unscreened rows are only verified
       with `verify_all.py --unscreened`; run it once.

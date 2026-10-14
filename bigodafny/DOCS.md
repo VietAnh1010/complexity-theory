@@ -66,7 +66,7 @@ about the others.
 | `validate.py` | Does a strict row print the stored output? | every status directory except `solutions-ungateable/` and `solutions-untranslated/` |
 | `difftest.py --loose` | Does a loose row print what the original Python prints? | every status directory except `solutions-ungateable/` and `solutions-untranslated/` (`--only` reaches any row) |
 | `verify_all.py` | Does `dafny verify` pass (indexes in range, no division by zero, loops and recursion end)? | `solutions/`, `solutions-unsure/`, `solutions-ungateable/` (`--unscreened` adds that directory) |
-| `precheck.py SID...` | Does every added `requires` accept the row's real inputs? | the rows named |
+| `precheck.py SID...` | Does every `requires` accept the row's real inputs? Dafny compiles and evaluates each clause | the rows named; `--all` every row with one |
 | `proofs.py` | Does each complexity proof verify, without `assume`? | `solutions-proved/` and `prelude.dfy` |
 
 `validate.py` statuses: `valid`, `fail` (wrong output), `build` (Dafny would

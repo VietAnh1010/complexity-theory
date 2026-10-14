@@ -21,9 +21,7 @@ the row there, and leave the original in place.
 - Strict rows: `validate.py`. Loose rows: `difftest.py --loose`.
 - Passing tests shows behaviour, not safety or complexity.
 - Run `precheck.py` whenever a fix adds a `requires`.
-- Write a `requires` over the parameters and prelude helpers only: no `var`
-  binding, no helper defined in the row. `precheck.py` cannot evaluate either,
-  and an unevaluated clause is not a pass.
+- No `var` binding inside a `requires`: state the clause over the parameters.
 - Never weaken a gate to make the row under review pass.
 - A test outside a limit the problem statement sets is bogus. Add the limit to
   `data/constraints.jsonl`, quoting the statement; the gates skip such tests

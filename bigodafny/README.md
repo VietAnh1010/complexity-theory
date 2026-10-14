@@ -69,7 +69,7 @@ python3 validate.py --self-test       # test validate.py itself (statuses: DOCS.
 python3 validate.py                   # strict rows: stored output? (--only SID... for a spot check into out/)
 python3 difftest.py --loose          # loose rows: same output as the Python?
 python3 verify_all.py       # dafny verify every translation -> data/verification.jsonl
-python3 precheck.py SID...    # added `requires` accept every stored input?
+python3 precheck.py SID...    # every `requires` accepts every stored input? (--all)
 python3 proofs.py           # every complexity proof verifies, no assume -> data/complexity_proofs.jsonl
 # label audit
 python3 label_audit.py evidence   # batches for an auditor -> out/labelaudit/

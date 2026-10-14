@@ -91,9 +91,7 @@ find solutions-unverified -name '*.dfy' | sed 's|.*/||; s|\.dfy||' | sort \
       the Python and description in the file header. The parent checks every
       added precondition against every stored test input and reverts ones that
       fail.
-    - Write each `requires` over the parameters and prelude helpers only: no
-      `var` binding and no helper defined in the row. `precheck.py` cannot
-      evaluate either, so the clause would go unchecked.
+    - No `var` binding inside a `requires`: state it over the parameters.
     - Do not change the algorithm, the signature, or any computed value.
     - `decreases *` only where termination genuinely is not structural. It makes
       Dafny accept a loop without proving termination -- last resort, not first.
@@ -146,8 +144,8 @@ python3 validate.py --only $(cat $B | tr '\n' ' ') --out-prefix audit_
 python3 difftest.py --only <the loose ids among them>
 ```
 
-`precheck.py` translates each Dafny `requires` into Python and evaluates it
-against every stored input.
+`precheck.py` compiles each `requires` with Dafny, as its own method, and runs
+it on every stored input: any clause Dafny can compile is checked.
 
 **The rule.** A precondition must not exclude an input the original Python
 *answers*. Excluding an input the Python itself *crashes on* is fine — the row's

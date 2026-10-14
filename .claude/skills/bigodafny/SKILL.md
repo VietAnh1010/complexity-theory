@@ -91,8 +91,8 @@ real inputs — they were wrong there, not merely unproven, and two waves had
 recorded that as "the data is out of spec". `Prelude.PyIndex` is the fix.
 
 `precheck.py` prints five counters. `ok` and `VIOLATED` are verdicts;
-`unchecked` (shape did not translate) and `no-data` (translated, then raised on
-every input) both mean **not checked**. `py-fails` means the clause only
+`unchecked` (Dafny could not compile the clause) and `no-data` (compiled, then
+raised on every input) both mean **not checked**. `py-fails` means the clause only
 excludes inputs the row's own Python also crashes on, which is a pass. Treating
 `unchecked`/`no-data` as passes is how a gate stops gating — it happened, and
 hid four real violations.
@@ -146,11 +146,9 @@ Sub-skills: `bigodafny-translate`, `bigodafny-verify`, `bigodafny-prove`.
 - Asking for verification **while translating** gets 97.5%; retrofitting later
   also reached 97.5%, but only after the rows were written.
 - **A gate with a bug is worse than no gate**, because it reports success.
-  `precheck.py` had four: it swallowed `//` comments into the clause, rewrote
-  char literals like `'A'` into field lookups (producing false VIOLATIONs), hid
-  its own `no-data` count, and could not translate `exists`, element
-  quantifiers, or the prelude helpers. 29 of 444 clauses were passing without
-  ever being evaluated, and six genuinely bad preconditions were invisible.
+  `precheck.py` had four, all in its hand-written Dafny-to-Python translation:
+  29 of 444 clauses passed without ever being evaluated, and six genuinely bad
+  preconditions were invisible. It now has Dafny compile each clause instead.
 - `Sort` now carries permutation lemmas (`SortKeepsElems` and friends). Before
   that, every fact about a sequence's contents was lost across a sort and rows
   hand-wrote the same lemma over and over.

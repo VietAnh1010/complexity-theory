@@ -10,6 +10,14 @@ data lines go to `old-record.jsonl` beside the file they came from.
 
 ## 2026-10-14
 
+- `precheck.py` has Dafny evaluate each `requires`: the row copy gains one
+  compiled method per clause, built with `dafny translate py` and run on every
+  stored input. The Dafny-to-Python translation is gone, so row helpers,
+  `var`, slices and sums are checked. `--all` covers every row with a
+  `requires` plus every row in the record; a `{:attr} Solve(` header is now
+  found (`1039_15`'s proof copy was skipped). Full run: 848 clauses over 307
+  rows in 211 s, 844 `ok`, 0 violated, 0 unchecked; `85_141` and `1180_626`
+  now `ok`. The no-row-helper rule is dropped; no `var` in a `requires` stays.
 - `2742_0` re-proved without the `requires N == |values|` its proof copy had
   added (false on every real input). The loop runs at most `|values| + 1`
   times whatever `N` is; same bound.
