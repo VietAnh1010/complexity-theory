@@ -21,7 +21,7 @@ Source: `data/stats.json`, `data/dataset.jsonl`.
 | Strict rows tested by `validate.py` | 536 |
 | Strict rows that cannot be tested (`unvalidatable`) | 6: `1196_100`, `1196_51`, `1578_481`, `1578_724`, `1950_45`, `1950_47` |
 | Loose rows | 98 |
-| Problems with stated limits in `data/constraints.jsonl` | 4 (1501, 577, 827, 1254) |
+| Problems with stated limits in `data/constraints.jsonl` | 5 (1501, 577, 827, 1254, 1276) |
 | Stored tests skipped as outside those limits (public + private) | 48 per 1501 row |
 
 ## Directories

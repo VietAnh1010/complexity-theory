@@ -51,10 +51,6 @@ Open items only. When one is done, delete it and add a line to `CHANGELOG.md`.
 
 ## Gates (an agent must not change a gate that judges its own work)
 
-- [ ] `1276_62` (`solutions-disputed/`): `requires a >= 0` fails on 4
-      `generated_tests` inputs, all of which crash the original Python too
-      (`py-fails`, a pass by the rules). Check whether the statement allows
-      `a < 0`, or whether those 4 inputs are out of spec.
 - [ ] `1039_146` (`solutions-unscreened/`) does not verify: map domain at the
       `left[v]` update in its second loop. Unscreened rows are only verified
       with `verify_all.py --unscreened`; run it once.
@@ -63,6 +59,6 @@ Open items only. When one is done, delete it and add a line to `CHANGELOG.md`.
       (1,500 s), `2231_77` (420 s).
 - [ ] `2254_6` and `2128_34` count as proved in campaign 1 though over budget.
       Decide whether to count them as unresolved.
-- [ ] `data/constraints.jsonl` covers 4 problems (1501, 577, 827, 1254). The
-      other 307 count every test; transcribe their limits to find more bogus
+- [ ] `data/constraints.jsonl` covers 5 problems (1501, 577, 827, 1254, 1276).
+      The other 306 count every test; transcribe their limits to find more bogus
       tests.

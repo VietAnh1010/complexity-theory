@@ -10,6 +10,10 @@ data lines go to `old-record.jsonl` beside the file they came from.
 
 ## 2026-10-14
 
+- Problem 1276's limits (`1 <= N <= 10^9`, `2 <= K <= 100`) added to
+  `data/constraints.jsonl`: 18 of its 100 generated tests break them. The 4
+  that violated `1276_62`'s `requires a >= 0` (negative N) were among them;
+  the clause is now `ok`. No other gate runs 1276's generated tests.
 - `precheck.py` has Dafny evaluate each `requires`: the row copy gains one
   compiled method per clause, built with `dafny translate py` and run on every
   stored input. The Dafny-to-Python translation is gone, so row helpers,
