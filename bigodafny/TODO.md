@@ -64,8 +64,3 @@ Open items only. When one is done, delete it and add a line to `CHANGELOG.md`.
       Refresh its record once (`difftest.py --only 1501_224`; the stored one
       predates the 2026-10-08 run), then skip `solutions-ungateable/` as
       `validate.py` does. Needs the user's go-ahead.
-
-## Environment
-
-- [ ] The cloud environment still runs Z3 4.12.1. Upgrade it to 5.1.0, or its
-      proof runs will disagree with local ones.

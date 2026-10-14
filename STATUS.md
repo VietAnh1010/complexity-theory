@@ -64,7 +64,7 @@ Separate deliverable in `bigodafny/`, built from BigOBench's
 | safety verified | 304 (`solutions/`, `solutions-unsure/`, `solutions-ungateable/`; `verify_all.py`) |
 | complexity proved | 323 files, all verify, zero `assume` |
 | label audit | 506 screened: 296 `ok`, 201 `mismatch`, 9 `unsure` |
-| Dafny / Z3 | 4.11.0 / 4.12.1 |
+| Dafny / Z3 | 4.11.0 / 5.1.0 (local and cloud) |
 
 **Rows are partitioned by status**, one directory each, each with a `README.md`:
 `solutions/` 291, `solutions-unscreened/` 127, `solutions-disputed/` 202,

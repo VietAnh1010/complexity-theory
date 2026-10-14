@@ -10,6 +10,7 @@ data lines go to `old-record.jsonl` beside the file they came from.
 
 ## 2026-10-14
 
+- The cloud environment runs Z3 5.1.0, matching the local pin.
 - `dataset.py` stops on a missing `numpy` instead of marking every row
   `unvalidatable`: outside `.venv` it had rewritten `dataset.jsonl` with all
   640 rows in that split. The bigodafny skill's state check activates `.venv`.
