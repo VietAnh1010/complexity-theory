@@ -8,6 +8,12 @@ change lands, update them and add a bullet here.
 A campaign's own run record stays in `batches/<campaign>/README.md`. Superseded
 data lines go to `old-record.jsonl` beside the file they came from.
 
+## 2026-10-14
+
+- `dataset.py` stops on a missing `numpy` instead of marking every row
+  `unvalidatable`: outside `.venv` it had rewritten `dataset.jsonl` with all
+  640 rows in that split. The bigodafny skill's state check activates `.venv`.
+
 ## 2026-10-13
 
 - `data/quarantine.jsonl` restored to all 127 `solutions-unscreened/` rows. A

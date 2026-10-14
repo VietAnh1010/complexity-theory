@@ -38,6 +38,8 @@ def parser_ok(task, sig=None):
     try:
         exec(compile(task["dataclass_code"], "<dc>", "exec"), ns)
         f = ns["Input"].from_str
+    except ImportError:
+        raise  # no numpy: outside .venv. Not a row fact; must not become one.
     except Exception:
         return False
     has_real = bool(sig and sig.get("status") == "ok"
