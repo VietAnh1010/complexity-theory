@@ -27,10 +27,10 @@ include "../../prelude.dfy"
 import opened Prelude
 
 // Label O(nlogn), confirmed. The sort is charged SortCost and bounded by the
-// prelude's SortCostNLogN, the tight recursion-tree argument. The loop itself
-// runs at most N-1 iterations, exiting early via z.
+// prelude's SortCostNLogN, the tight recursion-tree argument. The loop runs at
+// most |values| + 1 iterations whatever N is: once i reaches |arr|, the else
+// branch sets z and the loop exits. No `requires`, as in the row.
 method Solve(N: int, values: seq<int>) returns (output: string, ghost steps: nat)
-  requires N == |values|
   ensures steps <= 2 * NLogN(|values|) + 5 * |values| + 5 + |output|
 {
   SortCostNLogN(|values|);
@@ -41,8 +41,9 @@ method Solve(N: int, values: seq<int>) returns (output: string, ghost steps: nat
   var i := 0;
   output := "";
   while i < N - 1 && z == 0
-    invariant 0 <= i <= N
-    invariant steps <= 1 + SortCost(|values|) + 2 * i + 2
+    invariant 0 <= i <= |arr| + 1
+    invariant z == 0 ==> i <= |arr|
+    invariant steps <= 1 + SortCost(|values|) + 2 * i
     decreases (if N - 1 - i > 0 then N - 1 - i else 0)
   {
     if i < |arr| && arr[i] == i + 1 {

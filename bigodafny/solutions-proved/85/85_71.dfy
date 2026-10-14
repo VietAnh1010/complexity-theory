@@ -69,9 +69,17 @@ function CountOnesUpTo(s: seq<int>, k: nat): nat
   if k == 0 then 0 else CountOnesUpTo(s, k - 1) + (if s[k - 1] == 1 then 1 else 0)
 }
 
+lemma CountOnesPos(s: seq<int>, k: nat, j: nat)
+  requires j < k <= |s| && s[j] == 1
+  ensures CountOnesUpTo(s, k) >= 1
+  decreases k
+{
+  if j < k - 1 { CountOnesPos(s, k - 1, j); }
+}
+
 method Solve(a: int, b: int, c_list: seq<int>, d_list: seq<int>) returns (output: string, ghost steps: nat)
   requires |d_list| == |c_list|
-  requires CountOnesUpTo(d_list, |d_list|) >= 1
+  requires exists k :: 0 <= k < |d_list| && d_list[k] == 1
   ensures steps <= 7 * NLogN(|c_list|) + 12 * |c_list| + 11 + |output|
 {
   ghost var n := |c_list|;
@@ -96,6 +104,8 @@ method Solve(a: int, b: int, c_list: seq<int>, d_list: seq<int>) returns (output
     i := i + 1;
     steps := steps + 3;
   }
+  ghost var j :| 0 <= j < |d_list| && d_list[j] == 1;
+  CountOnesPos(d_list, |d_list|, j);
   var passengersSorted := SortInts(passengers);
   var taxisSorted := SortInts(taxis);
   steps := steps + SortCost(|passengers|) + SortCost(|taxis|);

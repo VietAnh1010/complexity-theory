@@ -43,7 +43,7 @@ Source: the tree.
 
 | Gate | Source | Result |
 |---|---|---|
-| `validate.py` | `data/validation.jsonl` | 536 rows: 535 `valid`, 1 `fail` (`1738_180`) |
+| `validate.py` | `data/validation.jsonl` | 536 rows: all `valid` |
 | `difftest.py --loose` | `data/difftest.jsonl` | 98 loose rows: 94 `agrees`, 4 `untranslated`; also keeps the last loose run of the two 1501 rows, now strict |
 | `verify_all.py` | `data/verification.jsonl` | 303 rows (`solutions/`, `solutions-unsure/`, `solutions-ungateable/`): all verify; 296 without `decreases *` |
 | `proofs.py` | `data/complexity_proofs.jsonl` | 321 proofs: all verify, 0 `assume` |

@@ -2,9 +2,8 @@
   "complexity_proved": 321,
   "dafny_status": {
     "agrees": 94,
-    "fail": 1,
     "untranslated": 10,
-    "valid": 535
+    "valid": 536
   },
   "dafny_version": "4.11.0",
   "problems": 311,

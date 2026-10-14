@@ -10,11 +10,23 @@ data lines go to `old-record.jsonl` beside the file they came from.
 
 ## 2026-10-14
 
+- `2742_0` re-proved without the `requires N == |values|` its proof copy had
+  added (false on every real input). The loop runs at most `|values| + 1`
+  times whatever `N` is; same bound.
+- `precheck.py` run on the 197 rows whose `Solve` `requires` had never been
+  checked: 471 clauses `ok`, 1 `py-fails`; `2742_0`'s proof copy violates on
+  every input; `85_141` and `1180_626` unchecked (row helpers). See `TODO.md`.
+- No `var` and no row-defined helper in a `requires` (`CLAUDE.md`, the verify and
+  translate skills): `precheck.py` cannot evaluate them. `85_71`'s clause
+  rewritten as `exists k :: ... d_list[k] == 1`; it holds on all real inputs.
+- `1738_180` stops its inner scan at the first match, as Python's `in` does.
+  Its one timeout (`a = b = 1, z = 10^4`) passes; 32/32.
 - `validate.py` and `proofs.py` check rows in parallel; both ran one row at a
   time. Every gate's `--workers` defaults to `common.WORKERS` (8); the
   per-script defaults had been 6 or 8, never measured.
-  `proofs.py` re-checks a failure alone before recording it: load made
-  `1582_118` and `2913_309` time out, and both verify alone.
+  `proofs.py` and `validate.py` re-check a failure alone before recording it:
+  load timed out `1582_118` and `2913_309` (proofs) and `577_509` and
+  `1738_180` (tests), and all four pass alone.
 - The nine rows with their own `ParseInt`/`ParseIntFrom` (and four proof copies)
   use the prelude's. Prelude `ParseInt` now ensures a non-negative result
   unless the text starts with `-`. The three `1039` files use `ParseInts` for

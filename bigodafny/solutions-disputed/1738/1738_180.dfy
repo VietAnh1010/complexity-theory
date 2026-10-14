@@ -84,7 +84,8 @@ method Solve(a: int, b: int, c: int) returns (output: string)
   {
     var found := false;
     var k := 0;
-    while k < |test|
+    // Python's `in` stops at the first match.
+    while k < |test| && !found
       invariant 0 <= k <= |test|
       decreases |test| - k
     {

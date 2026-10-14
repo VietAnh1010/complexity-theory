@@ -60,7 +60,8 @@ Give each agent: its manifest path, a unique validation prefix, and this body.
     - invariant |buf| == i   (Dafny forgets a seq's length across a loop)
     - forall k :: 0 <= k < |xs| ==> |xs[k]| >= 2   (nested input shape)
     NEVER `assume`. Unverified beats a hollow proof. Every `requires` is checked
-    by the parent against all stored inputs and reverted if it fails.
+    by the parent against all stored inputs and reverted if it fails. Write it
+    over the parameters and prelude helpers only: no `var`, no row helper.
 
     PRELUDE (already `import opened`; do not reimplement)
         FloorDiv FloorMod IntToString Join JoinInts SplitWs

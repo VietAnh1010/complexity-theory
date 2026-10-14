@@ -91,6 +91,9 @@ find solutions-unverified -name '*.dfy' | sed 's|.*/||; s|\.dfy||' | sort \
       the Python and description in the file header. The parent checks every
       added precondition against every stored test input and reverts ones that
       fail.
+    - Write each `requires` over the parameters and prelude helpers only: no
+      `var` binding and no helper defined in the row. `precheck.py` cannot
+      evaluate either, so the clause would go unchecked.
     - Do not change the algorithm, the signature, or any computed value.
     - `decreases *` only where termination genuinely is not structural. It makes
       Dafny accept a loop without proving termination -- last resort, not first.

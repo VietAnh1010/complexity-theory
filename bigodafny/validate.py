@@ -251,15 +251,23 @@ def validate(only=None, per_test=30, batch_timeout=900, solutions_dir=None,
 
     jobs = [(t, dfy, sigs[t["problem_id"]], tiers, per_test, batch_timeout,
              out_prefix) for t, dfy in targets]
-    rows, tally = [], Counter()
+    rows = []
     # Rows are independent; map keeps them in target order.
     with ProcessPoolExecutor(max_workers=workers) as ex:
         for rec in ex.map(check_one, jobs):
-            rows.append(rec); tally[rec["status"]] += 1
+            rows.append(rec)
             log(f"  {rec['solution_id']:>10}  {rec['status'].upper():<6} "
                 + (f"{rec['tests_passed']}/{rec['tests_total']} tests"
                    if "tests_total" in rec else (rec.get("error") or "").splitlines()[0][:80]
                    if rec.get("error") else ""))
+    # Parallel load can push a test past its time limit (577_509, 1738_180
+    # pass alone). Re-check every non-valid row alone; only that result counts.
+    for i, rec in enumerate(rows):
+        if rec["status"] != "valid":
+            log(f"  {rec['solution_id']:>10}  {rec['status']} under load; re-checking alone")
+            rows[i] = check_one(jobs[i])
+            log(f"  {rec['solution_id']:>10}  alone: {rows[i]['status'].upper()}")
+    tally = Counter(r["status"] for r in rows)
 
     # A partial run must never replace the canonical record: one
     # `validate.py --only X` once left data/validation.jsonl holding a single
