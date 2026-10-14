@@ -136,7 +136,15 @@ def write_json(path, obj):
 _SPEC, _FROM_STR = None, {}
 
 
-def in_spec(task, test_input):
+def spec_tests(task, tiers):
+    """The row's tests in `tiers` that keep the stated limits, as (tier, test)
+    pairs, and how many were skipped."""
+    all_ = [(k, t) for k in tiers for t in task["tests"].get(k, [])]
+    kept = [(k, t) for k, t in all_ if _in_spec(task, t["input"])]
+    return kept, len(all_) - len(kept)
+
+
+def _in_spec(task, test_input):
     global _SPEC
     if _SPEC is None:
         p = DATA / "constraints.jsonl"

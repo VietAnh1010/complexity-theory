@@ -19,7 +19,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 
 from common import (WORKERS, DATA, OUT, log, read_jsonl, write_json, write_jsonl,
-                    DISPUTED, UNGATEABLE, UNSURE, in_spec)
+                    DISPUTED, UNGATEABLE, UNSURE, spec_tests)
 from validate import build_one, conv_expr, HARNESS
 from common import BUILD, UNSCREENED, SOLUTIONS, UNVERIFIED
 
@@ -106,11 +106,8 @@ def one(args):
     rec = {"solution_id": sid, "problem_id": t["problem_id"]}
     if dfy is None or "TODO: translate" in dfy.read_text(encoding="utf-8"):
         return {**rec, "status": "untranslated"}
-    tests = [{"input": x["input"], "output": x["output"]}
-             for k in tiers for x in t["tests"].get(k, [])]
-    oos = len(tests)
-    tests = [x for x in tests if in_spec(t, x["input"])]
-    oos -= len(tests)
+    kept, oos = spec_tests(t, tiers)
+    tests = [{"input": x["input"], "output": x["output"]} for _, x in kept]
     if oos:
         rec["tests_out_of_spec"] = oos
     if not tests:

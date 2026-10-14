@@ -14,7 +14,7 @@ file holds the map and the reasons.
 
 ## The entry point is `bigodafny/DOCS.md`
 
-It has the reading order, the current counts and the document map.
+It has the reading order and the document map; counts are in `STATUS.md`.
 `bigodafny/CHANGELOG.md` dates every rule change; check a record's date against
 it before reusing it. This skill is the working map; that file is the
 orientation.
@@ -34,26 +34,27 @@ The directory a row sits in *is* its classification. Never infer status from
 memory or from an earlier message.
 
 **A partition.** These seven are disjoint and cover all 640 rows; each has a
-`README.md` stating what it means and how a row leaves it.
+`README.md` stating what it means and how a row leaves it. Counts are in
+`bigodafny/STATUS.md`.
 
-| directory | rows | meaning |
-|---|---|---|
-| `solutions/` | 297 | valid, `dafny verify` clean, label screened and unsuspected |
-| `solutions-unscreened/` | 127 | valid; the label was never screened (sibling reuse or `set<T>`) |
-| `solutions-disputed/` | 203 | valid; the audit says the label does not match the code |
-| `solutions-unsure/` | 2 | valid and verified; the label audit could not decide |
-| `solutions-ungateable/` | 4 | the gate cannot reach a verdict; the stored test data fails first |
-| `solutions-unverified/` | 3 | valid; safety obligations not discharged |
-| `solutions-untranslated/` | 4 | will not be translated; each file states why |
+| directory | meaning |
+|---|---|
+| `solutions/` | valid, `dafny verify` clean, label screened and unsuspected |
+| `solutions-unscreened/` | valid; the label was never screened (sibling reuse or `set<T>`) |
+| `solutions-disputed/` | valid; the audit says the label does not match the code |
+| `solutions-unsure/` | valid and verified; the label audit could not decide |
+| `solutions-ungateable/` | the gate cannot reach a verdict; the stored test data fails first |
+| `solutions-unverified/` | valid; safety obligations not discharged |
+| `solutions-untranslated/` | will not be translated; each file states why |
 
 **An overlay.** Not part of the partition — instrumented *copies* of rows that
 also live above, so a row can exist twice with different preconditions.
 
-| directory | files | meaning |
-|---|---|---|
-| `solutions-proved/` | 321 | complexity **proved** via ghost step counter |
-| `solutions-proved/value-bounded/` | 22 | proved, but the bound names an input VALUE; queued for review |
-| `experiments/proofs-blind/` | 15 | blind-arm experiment attempts; label withheld from the author. NOT dataset rows |
+| directory | meaning |
+|---|---|
+| `solutions-proved/` | complexity **proved** via ghost step counter |
+| `solutions-proved/value-bounded/` | proved, but the bound names an input VALUE; queued for review |
+| `experiments/proofs-blind/` | blind-arm experiment attempts; label withheld from the author. NOT dataset rows |
 
 Older notes use other directory names; `bigodafny/CHANGELOG.md` § Undated maps
 them to these.
@@ -70,8 +71,8 @@ benchmark and load-bearing for this dataset.
 
 | tool | question | applies to |
 |---|---|---|
-| `validate.py` | matches BigOBench's **stored** output | 536 `strict` rows |
-| `difftest.py` | matches **its own Python** | 98 `loose` rows |
+| `validate.py` | matches BigOBench's **stored** output | `strict` rows |
+| `difftest.py` | matches **its own Python** | `loose` rows |
 | `verify_all.py` | memory-safe for all inputs, no spec needed | everything |
 | `proofs.py` | complexity **proved**; fails on any `assume` | `solutions-proved/`, `prelude.dfy` |
 | `precheck.py` | every added `requires` holds on real inputs | anything with `requires` |
@@ -81,8 +82,7 @@ benchmark and load-bearing for this dataset.
 
 `callgraph.py` is a **measurement, not a gate**: it writes `out/call_depth.jsonl` (git-ignored),
 the longest acyclic chain from `Solve` per row, ghost declarations excluded.
-291 rows (`solutions/`), depth 0–5, mean 2.02, 263 of them recursive. Use it to pick rows —
-depth 0–1 are self-contained and cheap to change; a deeper row pushes any
+Use it to pick rows: depth 0–1 are self-contained and cheap to change; a deeper row pushes any
 edit through helper signatures.
 
 **Before an unproven obligation, ask whether the TRANSLATION is wrong.** Python
@@ -131,8 +131,9 @@ Sub-skills: `bigodafny-translate`, `bigodafny-verify`, `bigodafny-prove`.
 
 ## Findings that change how you work
 
-- Only **542/640** original Python solutions match their own stored output (on tests inside the stated limits).
-  That is the ceiling for byte-diff.
+- Not every original Python solution matches its own stored output; those
+  that do are the `strict` split and the ceiling for byte-diff
+  (`bigodafny/STATUS.md`).
 - Three defects give **correct output, wrong complexity, green tests**, and no
   gate but reading the diff catches them: doubly-recursive min/max
   (`T(n)=2T(n-1)`), sibling reuse, and `set<T>` built in a loop (measured
@@ -140,7 +141,8 @@ Sub-skills: `bigodafny-translate`, `bigodafny-verify`, `bigodafny-prove`.
 - Two O(n·m) labels were **proved wrong** — the `m` named nothing that varies.
 - BigOBench's tests can violate their own problems' stated limits (1501's
   private tests reach 10¹² against `k ≤ 10000`). Such tests are bogus: quote
-  the limit into `data/constraints.jsonl` and the gates skip them. Its dataclass disagrees with what the Python reads
+  the limit into `data/constraints.jsonl` and the gates skip them.
+- BigOBench's dataclass disagrees with what the Python reads
   (4 known cases). Read `.build/<prefix>_<SID>/dataclass.py` before assuming
   your logic is at fault.
 - Asking for verification **while translating** gets 97.5%; retrofitting later
@@ -152,12 +154,10 @@ Sub-skills: `bigodafny-translate`, `bigodafny-verify`, `bigodafny-prove`.
 - `Sort` now carries permutation lemmas (`SortKeepsElems` and friends). Before
   that, every fact about a sequence's contents was lost across a sort and rows
   hand-wrote the same lemma over and over.
-- **Both remaining gates resolve a row to the wrong file.** `validate.py` and
-  `difftest.py` search `solutions/` first and take the first hit, so for a row
-  that also sits in `solutions-proved/` they test the uninstrumented original. `precheck.py` had the identical bug and was fixed
-  with `find_all()`; the fix never reached the other two. Use
-  `validate.py --solutions-dir solutions-proved`, and for `loose` rows compare
-  the emitted Python instead — identical compiled bytes beats a test sample.
+- **`validate.py` and `difftest.py` test the row, never its proof copy.** To
+  test a proof copy, use `validate.py --solutions-dir solutions-proved`; for a
+  `loose` row compare the emitted Python instead — identical compiled bytes
+  beats a test sample.
 - **`dafny verify` skips included files.** A proof reports 0 errors while a
   prelude lemma it calls does not verify; three Gcd lemmas sat that way after
   the Z3 5.1.0 upgrade. `proofs.py` verifies the prelude; after editing the
@@ -177,6 +177,5 @@ Sub-skills: `bigodafny-translate`, `bigodafny-verify`, `bigodafny-prove`.
   **Always measure against a control**, never against a ratio of 2.0.
 - **BigOBench's `O(n*m)` is wrong when the loop body does not scan a row.**
   Nine examined, seven wrong. The wrong ones read `row[0]`, `row[1]`, up to
-  `row[4]` and never walk a row, so width does not enter the cost. 48 rows
-  carry the label. `1855_50` shows the failure is not confined to that label: it
+  `row[4]` and never walk a row, so width does not enter the cost. `1855_50` shows the failure is not confined to that label: it
   is marked `O(n**2)` and is straight-line code.

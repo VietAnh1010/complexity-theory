@@ -59,18 +59,6 @@ lemma SortLength<T>(s: seq<T>, less: (T, T) -> bool)
   }
 }
 
-lemma SumLenSnoc(p: seq<string>, x: string)
-  ensures SumLen(p + [x]) == SumLen(p) + |x|
-  decreases |p|
-{
-  if |p| == 0 {
-    assert p + [x] == [x];
-  } else {
-    assert (p + [x])[1..] == p[1..] + [x];
-    SumLenSnoc(p[1..], x);
-  }
-}
-
 method Solve(a: int, b: int, c_list: seq<int>, d_list: seq<int>) returns (output: string, ghost steps: nat)
   requires a >= 1
   requires b >= 0

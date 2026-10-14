@@ -29,16 +29,6 @@ import opened Prelude
 // each a single recursion over a prefix of the cell), so each iteration is
 // charged its cell's length, per the "recursive function over a string"
 // row of the charge table.
-lemma SumLenSnoc(xs: seq<string>, extra: string)
-  ensures SumLen(xs + [extra]) == SumLen(xs) + |extra|
-  decreases |xs|
-{
-  if |xs| == 0 {
-  } else {
-    assert (xs + [extra])[1..] == xs[1..] + [extra];
-    SumLenSnoc(xs[1..], extra);
-  }
-}
 
 function FirstDigitIndex(s: string, i: nat): nat
   requires i <= |s|

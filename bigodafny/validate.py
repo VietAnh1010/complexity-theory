@@ -13,7 +13,7 @@ from pathlib import Path
 
 from common import (WORKERS, BUILD, DAFNY_VERSION, DATA, OUT, PRELUDE, UNSCREENED, SOLUTIONS,
                     UNVERIFIED, log, read_jsonl, write_json,
-                    write_jsonl, DISPUTED, ROOT, UNSURE, in_spec)
+                    write_jsonl, DISPUTED, ROOT, UNSURE, spec_tests)
 
 DAFNY = "dafny"   # on PATH; dafny finds z3 on PATH itself
 
@@ -126,11 +126,8 @@ def build_one(dfy: Path, workdir: Path):
 
 
 def run_tests(task, sig, pydir, workdir, tiers, per_test, batch_timeout):
-    tests = []
-    for tier in tiers:
-        for t in task["tests"].get(tier, []):
-            if in_spec(task, t["input"]):
-                tests.append({"input": t["input"], "output": t["output"], "tier": tier})
+    tests = [{"input": t["input"], "output": t["output"], "tier": k}
+             for k, t in spec_tests(task, tiers)[0]]
     if not tests:
         return [], "no tests in the requested tiers"
 
@@ -190,7 +187,7 @@ def check_one(job):
         return {**rec, "status": "error", "error": err}
 
     c = Counter(r["status"] for r in res)
-    oos = sum(not in_spec(t, x["input"]) for k in tiers for x in t["tests"].get(k, []))
+    oos = spec_tests(t, tiers)[1]
     if oos:
         rec["tests_out_of_spec"] = oos
     rec.update(status="valid" if c["pass"] == len(res) else "fail",
@@ -256,10 +253,9 @@ def validate(only=None, per_test=30, batch_timeout=900, solutions_dir=None,
     with ProcessPoolExecutor(max_workers=workers) as ex:
         for rec in ex.map(check_one, jobs):
             rows.append(rec)
-            log(f"  {rec['solution_id']:>10}  {rec['status'].upper():<6} "
-                + (f"{rec['tests_passed']}/{rec['tests_total']} tests"
-                   if "tests_total" in rec else (rec.get("error") or "").splitlines()[0][:80]
-                   if rec.get("error") else ""))
+            detail = (f"{rec['tests_passed']}/{rec['tests_total']} tests"
+                      if "tests_total" in rec else rec["error"][:80])
+            log(f"  {rec['solution_id']:>10}  {rec['status'].upper():<6} {detail}")
     # Parallel load can push a test past its time limit (577_509, 1738_180
     # pass alone). Re-check every non-valid row alone; only that result counts.
     for i, rec in enumerate(rows):

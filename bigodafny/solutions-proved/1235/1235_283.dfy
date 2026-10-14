@@ -31,22 +31,6 @@
 include "../../prelude.dfy"
 import opened Prelude
 
-ghost function SumLen(xs: seq<string>): nat
-{
-  if |xs| == 0 then 0 else |xs[0]| + SumLen(xs[1..])
-}
-
-lemma SumLenSnoc(xs: seq<string>, extra: string)
-  ensures SumLen(xs + [extra]) == SumLen(xs) + |extra|
-  decreases |xs|
-{
-  if |xs| == 0 {
-  } else {
-    assert (xs + [extra])[1..] == xs[1..] + [extra];
-    SumLenSnoc(xs[1..], extra);
-  }
-}
-
 lemma SumLenBoundBy(xs: seq<string>, c: nat)
   requires forall k :: 0 <= k < |xs| ==> |xs[k]| <= c
   ensures SumLen(xs) <= c * |xs|

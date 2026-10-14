@@ -50,21 +50,6 @@ import opened Prelude
 // SortInts([cntA,cntB,cntC]) sorts a fixed-length-3 sequence -- O(1). Each of
 // SolveOne's two scans is linear in |a|; Solve's outer loop sums those over
 // `strings`, giving the honest additive bound over the total input length.
-ghost function SumLen(xs: seq<string>): nat
-{
-  if |xs| == 0 then 0 else |xs[0]| + SumLen(xs[1..])
-}
-
-lemma SumLenSnoc(xs: seq<string>, extra: string)
-  ensures SumLen(xs + [extra]) == SumLen(xs) + |extra|
-  decreases |xs|
-{
-  if |xs| == 0 {
-  } else {
-    assert (xs + [extra])[1..] == xs[1..] + [extra];
-    SumLenSnoc(xs[1..], extra);
-  }
-}
 
 method SolveOne(a: string) returns (ok: bool, ghost steps: nat)
   ensures steps <= 4 * |a| + 30

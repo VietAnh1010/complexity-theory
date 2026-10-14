@@ -33,21 +33,6 @@ import opened Prelude
 // Every emitted line has length between 12 ("Ya Ya Ya Ya\n") and 24
 // ("Tidak Tidak Tidak Tidak\n"): a constant independent of the input, so
 // SumLen(parts) is O(|matrices|), which is what Join's charge needs.
-ghost function SumLen(xs: seq<string>): nat
-{
-  if |xs| == 0 then 0 else |xs[0]| + SumLen(xs[1..])
-}
-
-lemma SumLenSnoc(xs: seq<string>, extra: string)
-  ensures SumLen(xs + [extra]) == SumLen(xs) + |extra|
-  decreases |xs|
-{
-  if |xs| == 0 {
-  } else {
-    assert (xs + [extra])[1..] == xs[1..] + [extra];
-    SumLenSnoc(xs[1..], extra);
-  }
-}
 
 method Solve(n: int, matrices: seq<seq<int>>) returns (output: string, ghost steps: nat)
   requires forall i :: 0 <= i < |matrices| ==> |matrices[i]| >= 4

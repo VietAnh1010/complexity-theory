@@ -10,73 +10,55 @@ data lines go to `old-record.jsonl` beside the file they came from.
 
 ## 2026-10-14
 
-- Problem 1276's limits (`1 <= N <= 10^9`, `2 <= K <= 100`) added to
-  `data/constraints.jsonl`: 18 of its 100 generated tests break them. The 4
-  that violated `1276_62`'s `requires a >= 0` (negative N) were among them;
-  the clause is now `ok`. No other gate runs 1276's generated tests.
-- `precheck.py` has Dafny evaluate each `requires`: the row copy gains one
-  compiled method per clause, built with `dafny translate py` and run on every
-  stored input. The Dafny-to-Python translation is gone, so row helpers,
-  `var`, slices and sums are checked. `--all` covers every row with a
-  `requires` plus every row in the record; a `{:attr} Solve(` header is now
-  found (`1039_15`'s proof copy was skipped). Full run: 848 clauses over 307
-  rows in 211 s, 844 `ok`, 0 violated, 0 unchecked; `85_141` and `1180_626`
-  now `ok`. The no-row-helper rule is dropped; no `var` in a `requires` stays.
+- Input and output each count once and are excluded from the class, like
+  `|output|` (`COMPLEXITY.md`). One read: find each token's boundaries, then
+  convert it (a numeral in any base, prelude or hand-written); one write:
+  format, assemble, `Join`. Any further pass is work. `ParseInt` and `SplitWs`
+  cost `|s|`. Eight proofs that charged parsing as a constant or not at all
+  are re-charged (`2015_175`, `2105_248`, `2105_521`, `2217_247`, `378_91`,
+  `976_1131`, `2942_42`, `2942_55`); the audit prompt follows, `IntToString`
+  at its digit count included.
+- Verdicts re-filed under that rule (`batches/labelaudit/verdicts_io-rule*.jsonl`):
+  `378_91`, `976_1131`, `966_134`, `2854_30`, `1047_26` to `solutions/`;
+  `378_20` to `solutions-disputed/` (`O(n*m)` label, `O(n)` code); `1047_641`
+  re-filed as `other` (a second boundary scan, a prepend-built column).
+- Tests outside a limit the problem statement sets are bogus: the test gates,
+  `baseline.py` and `precheck.py` skip them and record the count. Limits live
+  in `data/constraints.jsonl`, quoted from the statement: 1501, 577, 827,
+  1254, 1276. 48 of 1501's 122 tests reach `k = 10^12` against `k <= 10000`;
+  both 1501 rows turn `strict` and `1501_224` passes 74/74, leaving
+  `solutions-ungateable/`. 18 of 1276's generated tests break its limits.
+- `precheck.py` has Dafny evaluate each `requires`: one compiled method per
+  clause, built with `dafny translate py` and run on every stored input. The
+  Dafny-to-Python translation is gone. `--all` covers every row with a
+  `requires` and every recorded row; a `{:attr} Solve(` header is found.
+  Full run: 848 clauses over 307 rows, 0 violated, 0 unchecked; 197 of those
+  rows had never been checked.
+- No `var` binding inside a `requires` (`CLAUDE.md`, verify and translate
+  skills). `85_71`'s clause is now `exists k :: ... d_list[k] == 1`;
+  `1039_15`'s is written without `var`.
 - `2742_0` re-proved without the `requires N == |values|` its proof copy had
-  added (false on every real input). The loop runs at most `|values| + 1`
-  times whatever `N` is; same bound.
-- `precheck.py` run on the 197 rows whose `Solve` `requires` had never been
-  checked: 471 clauses `ok`, 1 `py-fails`; `2742_0`'s proof copy violates on
-  every input; `85_141` and `1180_626` unchecked (row helpers). See `TODO.md`.
-- No `var` and no row-defined helper in a `requires` (`CLAUDE.md`, the verify and
-  translate skills): `precheck.py` cannot evaluate them. `85_71`'s clause
-  rewritten as `exists k :: ... d_list[k] == 1`; it holds on all real inputs.
-- `1738_180` stops its inner scan at the first match, as Python's `in` does.
-  Its one timeout (`a = b = 1, z = 10^4`) passes; 32/32.
-- `validate.py` and `proofs.py` check rows in parallel; both ran one row at a
-  time. Every gate's `--workers` defaults to `common.WORKERS` (8); the
-  per-script defaults had been 6 or 8, never measured.
-  `proofs.py` and `validate.py` re-check a failure alone before recording it:
-  load timed out `1582_118` and `2913_309` (proofs) and `577_509` and
-  `1738_180` (tests), and all four pass alone.
-- The nine rows with their own `ParseInt`/`ParseIntFrom` (and four proof copies)
-  use the prelude's. Prelude `ParseInt` now ensures a non-negative result
-  unless the text starts with `-`. The three `1039` files use `ParseInts` for
-  their `ParseIntList`; `1039_15`'s `requires` is written without `var` so
-  `precheck.py` can check it (3/3 `ok`; it had never been checked).
-- Tests outside a limit the problem statement sets are bogus: `validate.py`,
-  `difftest.py`, `baseline.py` and `precheck.py` skip them and record the
-  count. Limits live in `data/constraints.jsonl`, quoted from the statement,
-  for 1501, 577, 827, 1254. 48 of 1501's 122 tests (up to `k = 10^12` against
-  `k <= 10000`) drop out; both 1501 rows' Python is now exact, so they turn
-  `strict`, and `1501_224` passes 74/74 and leaves `solutions-ungateable/`.
+  added, false on every real input; same bound.
+- `1738_180` stops its inner scan at the first match, as Python's `in` does;
+  its one timeout is gone, 32/32.
+- The nine rows with their own `ParseInt`/`ParseIntFrom` (and four proof
+  copies) use the prelude's, which now ensures a non-negative result unless
+  the text starts with `-`; the `1039` files use `ParseInts`. Seven proofs
+  drop local copies of `SumLen`/`SumLenSnoc`, now in the prelude.
+- `validate.py` and `proofs.py` check rows in parallel; every gate's
+  `--workers` defaults to `common.WORKERS` (8). Both re-check a failure alone
+  before recording it: load timed out `1582_118`, `2913_309`, `577_509` and
+  `1738_180`, and all pass alone.
 - `common.write_jsonl(..., key=)` archives every replaced or dropped line in
-  `old-record.jsonl`; every `data/` record writer passes its key. They used to
-  overwrite the line (`label_audit.py apply` included).
-- Input and output each count once: one read (find token boundaries, convert
-  each token) and one write (format, assemble, join). Any further pass is
-  work, e.g. a separate format check or a string built by prepending.
-  `1047_641` re-filed as `other` (`verdicts_io-rule-3.jsonl`).
-- Reading the input includes hand-written tokenizers and numeral parsers in any
-  base, not only the prelude's. `1047_26` (cell names, base-26 columns) moves
-  to `solutions/` (`verdicts_io-rule-2.jsonl`).
-- Input length is its own size, excluded like `|output|` (`COMPLEXITY.md`).
-  `ParseInt` and `SplitWs` cost `|s|`; parsing `Solve`'s own arguments goes in
-  an input term (`|s|`, `SumLen`, `SumLen2`). Eight proofs that charged a parse
-  as a constant or not at all are re-charged: `2015_175`, `2105_248`,
-  `2105_521`, `2217_247`, `378_91`, `976_1131`, `2942_42`, `2942_55`. The audit
-  prompt's table follows, including `IntToString` at its digit count.
-- The six unsure rows waiting on `ParseInt` re-filed
-  (`batches/labelaudit/verdicts_io-rule.jsonl`): `378_91`, `976_1131`,
-  `966_134`, `2854_30` to `solutions/`; `378_20` to `solutions-disputed/`
-  (`O(n*m)` label, `O(n)` code); `1047_26` stays, on a new question.
+  `old-record.jsonl`; every `data/` record writer passes its key.
 - `GcdStepsBound`, `GcdStepsBoundFirst` and `GcdLeFirst` did not verify under
   Z3 5.1.0, unnoticed because `dafny verify` skips included files. Fixed with
   `SmallMod` and `ModUpper`; `proofs.py` now verifies the prelude.
 - The cloud environment runs Z3 5.1.0, matching the local pin.
+- The bigodafny skill no longer carries counts (they live in `STATUS.md`), and
+  drops a finding fixed on 2026-10-13 (gates testing a row's proof copy).
 - `dataset.py` stops on a missing `numpy` instead of marking every row
-  `unvalidatable`: outside `.venv` it had rewritten `dataset.jsonl` with all
-  640 rows in that split. The bigodafny skill's state check activates `.venv`.
+  `unvalidatable`. The bigodafny skill's state check activates `.venv`.
 
 ## 2026-10-13
 

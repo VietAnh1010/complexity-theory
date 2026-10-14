@@ -23,21 +23,6 @@ import opened Prelude
 
 // Each emitted piece is a single-character string ("A" or "G"), so
 // SumLen(pieces) == |pieces|, which is what Join's charge needs.
-ghost function SumLen(xs: seq<string>): nat
-{
-  if |xs| == 0 then 0 else |xs[0]| + SumLen(xs[1..])
-}
-
-lemma SumLenSnoc(xs: seq<string>, extra: string)
-  ensures SumLen(xs + [extra]) == SumLen(xs) + |extra|
-  decreases |xs|
-{
-  if |xs| == 0 {
-  } else {
-    assert (xs + [extra])[1..] == xs[1..] + [extra];
-    SumLenSnoc(xs[1..], extra);
-  }
-}
 
 method Solve(n: int, pairs: seq<seq<int>>) returns (output: string, ghost steps: nat)
   requires 0 <= n <= |pairs|

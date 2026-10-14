@@ -28,21 +28,6 @@ function CountChar(s: string, c: char): int
 
 // CountChar and Repeat(t, |t|) each cost |t|; the honest per-row cost is the
 // row's own length, not O(1), so the total is additive over the row lengths.
-ghost function SumLen(xs: seq<string>): nat
-{
-  if |xs| == 0 then 0 else |xs[0]| + SumLen(xs[1..])
-}
-
-lemma SumLenSnoc(xs: seq<string>, extra: string)
-  ensures SumLen(xs + [extra]) == SumLen(xs) + |extra|
-  decreases |xs|
-{
-  if |xs| == 0 {
-  } else {
-    assert (xs + [extra])[1..] == xs[1..] + [extra];
-    SumLenSnoc(xs[1..], extra);
-  }
-}
 
 lemma SumLenPrefixLe(xs: seq<string>, k: nat)
   requires k <= |xs|

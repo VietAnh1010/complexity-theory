@@ -19,7 +19,7 @@ from concurrent.futures import ProcessPoolExecutor
 
 from common import (WORKERS, BUILD, DATA, UNSCREENED, SOLUTIONS, UNVERIFIED,
                     PROVED, PRELUDE, log, read_jsonl, write_jsonl, DISPUTED,
-                    UNGATEABLE, PROVED_VALUE, UNSURE, in_spec)
+                    UNGATEABLE, PROVED_VALUE, UNSURE, spec_tests)
 from validate import build_one, conv_expr
 
 # solutions-proved/ was missing here, so the twelve
@@ -163,8 +163,10 @@ def check_file(job):
     clauses = requires_of(head) if params is not None else []
     if not clauses:
         return []
+    pairs, oos = spec_tests(t, ("public_tests", "private_tests", "generated_tests"))
+    kept = [(k, x["input"]) for k, x in pairs]
     recs = [{"solution_id": sid, "root": root, "clause": c,
-             "holds": 0, "violated": 0, "error": 0, "out_of_spec": 0}
+             "holds": 0, "violated": 0, "error": 0, "out_of_spec": oos}
             for c in clauses]
 
     work = BUILD / f"precheck_{root}_{sid}"
@@ -181,16 +183,6 @@ def check_file(job):
     if err:
         return [{**r, "status": "unchecked", "error_text": err[:300]} for r in recs]
 
-    tests = [(k, x["input"]) for k in ("public_tests", "private_tests",
-                                       "generated_tests")
-             for x in t["tests"].get(k, [])]
-    kept = []
-    for k, inp in tests:
-        if in_spec(t, inp):
-            kept.append((k, inp))
-        else:
-            for r in recs:
-                r["out_of_spec"] += 1
     (work / "dataclass.py").write_text(t["dataclass_code"], encoding="utf-8")
     (work / "tests.json").write_text(json.dumps([inp for _, inp in kept]),
                                      encoding="utf-8")

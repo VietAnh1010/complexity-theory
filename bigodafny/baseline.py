@@ -20,7 +20,7 @@ from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
-from common import WORKERS, DATA, OUT, log, read_jsonl, write_jsonl, in_spec
+from common import WORKERS, DATA, OUT, log, read_jsonl, write_jsonl, spec_tests
 
 RUNNER = r'''
 import json, signal, sys, io, os
@@ -55,12 +55,8 @@ json.dump(res, sys.stdout)
 
 
 def one(task, round_trip=False):
-    tests = [{"input": t["input"], "output": t["output"]}
-             for k in ("public_tests", "private_tests")
-             for t in task["tests"].get(k, [])]
-    oos = len(tests)
-    tests = [t for t in tests if in_spec(task, t["input"])]
-    oos -= len(tests)
+    kept, oos = spec_tests(task, ("public_tests", "private_tests"))
+    tests = [{"input": t["input"], "output": t["output"]} for _, t in kept]
     rec = {"solution_id": task["solution_id"], "problem_id": task["problem_id"],
            "n_tests": len(tests)}
     if oos:
