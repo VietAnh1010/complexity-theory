@@ -310,8 +310,8 @@
 {"errored": 0, "failed": 0, "n_tests": 48, "passed": 48, "problem_id": "1470", "python_status": "exact", "solution_id": "1470_470", "timeout": 0}
 {"errored": 0, "failed": 0, "n_tests": 13, "passed": 13, "problem_id": "1484", "python_status": "exact", "solution_id": "1484_26", "timeout": 0}
 {"errored": 0, "failed": 0, "n_tests": 13, "passed": 13, "problem_id": "1484", "python_status": "exact", "solution_id": "1484_82", "timeout": 0}
-{"errored": 48, "failed": 0, "n_tests": 122, "passed": 74, "problem_id": "1501", "python_status": "partial", "solution_id": "1501_177", "timeout": 0}
-{"errored": 0, "failed": 0, "n_tests": 122, "passed": 91, "problem_id": "1501", "python_status": "partial", "solution_id": "1501_224", "timeout": 31}
+{"errored": 0, "failed": 0, "n_tests": 74, "passed": 74, "problem_id": "1501", "python_status": "exact", "solution_id": "1501_177", "tests_out_of_spec": 48, "timeout": 0}
+{"errored": 0, "failed": 0, "n_tests": 74, "passed": 74, "problem_id": "1501", "python_status": "exact", "solution_id": "1501_224", "tests_out_of_spec": 48, "timeout": 0}
 {"errored": 0, "failed": 0, "n_tests": 7, "passed": 7, "problem_id": "1511", "python_status": "exact", "solution_id": "1511_65", "timeout": 0}
 {"errored": 0, "failed": 0, "n_tests": 7, "passed": 7, "problem_id": "1511", "python_status": "exact", "solution_id": "1511_9", "timeout": 0}
 {"errored": 0, "failed": 0, "n_tests": 11, "passed": 11, "problem_id": "1540", "python_status": "exact", "solution_id": "1540_206", "timeout": 0}

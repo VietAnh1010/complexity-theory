@@ -28,7 +28,6 @@ differs:
 """
 from __future__ import annotations
 import argparse, difflib, json, re, sys
-from datetime import date
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -311,17 +310,9 @@ def apply(verdicts_path, dry_run=False):
         # place. The moved rows are its `mismatch` verdicts; no second file.
         path = DATA / "label_audit.jsonl"
         old = {r["sid"]: r for r in read_jsonl(path)} if path.exists() else {}
-        # A replaced verdict is history, not garbage: archive it first.
-        with (DATA / "old-record.jsonl").open("a", encoding="utf-8") as fh:
-            for v in verdicts:
-                if v["sid"] in old and old[v["sid"]] != v:
-                    fh.write(json.dumps({
-                        "file": path.name,
-                        "superseded_on": date.today().isoformat(),
-                        "why": f"re-filed by {Path(verdicts_path).name}",
-                        "record": old[v["sid"]]}) + "\n")
         old.update({r["sid"]: r for r in verdicts})
-        write_jsonl(path, list(old.values()))
+        write_jsonl(path, list(old.values()), key="sid",
+                    why=f"re-filed by {Path(verdicts_path).name}")
         log(f"audit trail: {len(old)} verdicts on record")
     log("apply: " + ", ".join(f"{a} -> {b}: {n}" for (a, b), n in sorted(moves.items()))
         + f"; {kept} unchanged"

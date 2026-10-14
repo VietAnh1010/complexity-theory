@@ -1,0 +1,4 @@
+{"check": "1 <= i.n <= 1000 and all(1 <= x <= 10**9 for x in i.numbers_list) and sum(i.numbers_list) <= 10**9", "problem_id": "577", "quote": "The first line contains a single integer t (1≤ t≤ 1000) ... Each test case contains a single integer n (1≤ n≤ 10^9) ... It is guaranteed that the sum of n over all test cases does not exceed 10^9."}
+{"check": "1 <= i.n <= 1000 and all(1 <= s <= 1000 and 1 <= d <= 1000 for s, d in i.pairs)", "problem_id": "827", "quote": "First line contains an integer n — number of doctors (1 ≤ n ≤ 1000). Next n lines contain two numbers si and di (1 ≤ si, di ≤ 1000)."}
+{"check": "1 <= i.n <= 200", "problem_id": "1254", "quote": "N is an integer between 1 and 200 (inclusive)."}
+{"check": "1 <= i.n <= 10000", "problem_id": "1501", "quote": "The first and only line contains integer k (1 ≤ k ≤ 10000) — the position to process (1-based index)."}

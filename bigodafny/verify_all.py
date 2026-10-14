@@ -74,7 +74,7 @@ def run(dirs, workers=8, move=False):
     with ProcessPoolExecutor(max_workers=workers) as ex:
         rows = list(ex.map(one, files, chunksize=1))
     rows.sort(key=lambda r: (int(r["solution_id"].split("_")[0]), r["solution_id"]))
-    write_jsonl(DATA / "verification.jsonl", rows)
+    write_jsonl(DATA / "verification.jsonl", rows, key="solution_id")
 
     ok = sum(r["verified"] for r in rows)
     kinds = Counter(r["kind"] for r in rows if not r["verified"])

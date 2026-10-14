@@ -19,7 +19,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 
 from common import (DATA, OUT, log, read_jsonl, write_json, write_jsonl,
-                    DISPUTED, UNGATEABLE, UNSURE)
+                    DISPUTED, UNGATEABLE, UNSURE, in_spec)
 from validate import build_one, conv_expr, HARNESS
 from common import BUILD, UNSCREENED, SOLUTIONS, UNVERIFIED
 
@@ -108,6 +108,11 @@ def one(args):
         return {**rec, "status": "untranslated"}
     tests = [{"input": x["input"], "output": x["output"]}
              for k in tiers for x in t["tests"].get(k, [])]
+    oos = len(tests)
+    tests = [x for x in tests if in_spec(t, x["input"])]
+    oos -= len(tests)
+    if oos:
+        rec["tests_out_of_spec"] = oos
     if not tests:
         return {**rec, "status": "no-tests"}
 
@@ -201,7 +206,7 @@ def run(sids, tiers=("public_tests", "private_tests"), workers=6):
     merged.update({r["solution_id"]: r for r in rows})
     allrows = sorted(merged.values(),
                      key=lambda r: (int(r["problem_id"]), r["solution_id"]))
-    write_jsonl(out, allrows)
+    write_jsonl(out, allrows, key="solution_id")
     partial.unlink(missing_ok=True)
 
     st = Counter(r["status"] for r in rows)

@@ -38,11 +38,11 @@ memory or from an earlier message.
 
 | directory | rows | meaning |
 |---|---|---|
-| `solutions/` | 296 | valid, `dafny verify` clean, label screened and unsuspected |
+| `solutions/` | 297 | valid, `dafny verify` clean, label screened and unsuspected |
 | `solutions-unscreened/` | 127 | valid; the label was never screened (sibling reuse or `set<T>`) |
 | `solutions-disputed/` | 203 | valid; the audit says the label does not match the code |
 | `solutions-unsure/` | 2 | valid and verified; the label audit could not decide |
-| `solutions-ungateable/` | 5 | the gate cannot reach a verdict; the stored test data fails first |
+| `solutions-ungateable/` | 4 | the gate cannot reach a verdict; the stored test data fails first |
 | `solutions-unverified/` | 3 | valid; safety obligations not discharged |
 | `solutions-untranslated/` | 4 | will not be translated; each file states why |
 
@@ -70,8 +70,8 @@ benchmark and load-bearing for this dataset.
 
 | tool | question | applies to |
 |---|---|---|
-| `validate.py` | matches BigOBench's **stored** output | 534 `strict` rows |
-| `difftest.py` | matches **its own Python** | 100 `loose` rows |
+| `validate.py` | matches BigOBench's **stored** output | 536 `strict` rows |
+| `difftest.py` | matches **its own Python** | 98 `loose` rows |
 | `verify_all.py` | memory-safe for all inputs, no spec needed | everything |
 | `proofs.py` | complexity **proved**; fails on any `assume` | `solutions-proved/`, `prelude.dfy` |
 | `precheck.py` | every added `requires` holds on real inputs | anything with `requires` |
@@ -131,15 +131,16 @@ Sub-skills: `bigodafny-translate`, `bigodafny-verify`, `bigodafny-prove`.
 
 ## Findings that change how you work
 
-- Only **540/640** original Python solutions match their own stored output.
+- Only **542/640** original Python solutions match their own stored output (on tests inside the stated limits).
   That is the ceiling for byte-diff.
 - Three defects give **correct output, wrong complexity, green tests**, and no
   gate but reading the diff catches them: doubly-recursive min/max
   (`T(n)=2T(n-1)`), sibling reuse, and `set<T>` built in a loop (measured
   O(n²) in Dafny's Python backend).
 - Two O(n·m) labels were **proved wrong** — the `m` named nothing that varies.
-- BigOBench's generated tests violate their own problems' stated constraints
-  (3 known cases), and its dataclass disagrees with what the Python reads
+- BigOBench's tests can violate their own problems' stated limits (1501's
+  private tests reach 10¹² against `k ≤ 10000`). Such tests are bogus: quote
+  the limit into `data/constraints.jsonl` and the gates skip them. Its dataclass disagrees with what the Python reads
   (4 known cases). Read `.build/<prefix>_<SID>/dataclass.py` before assuming
   your logic is at fault.
 - Asking for verification **while translating** gets 97.5%; retrofitting later

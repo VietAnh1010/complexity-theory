@@ -56,8 +56,6 @@ Open items only. When one is done, delete it and add a line to `CHANGELOG.md`.
       (1,500 s), `2231_77` (420 s).
 - [ ] `2254_6` and `2128_34` count as proved in campaign 1 though over budget.
       Decide whether to count them as unresolved.
-- [ ] `1501_224` (`solutions-ungateable/`): `difftest.py --loose` re-runs it
-      every time, about 39 minutes of timeouts for a result that cannot change.
-      Refresh its record once (`difftest.py --only 1501_224`; the stored one
-      predates the 2026-10-08 run), then skip `solutions-ungateable/` as
-      `validate.py` does. Needs the user's go-ahead.
+- [ ] `data/constraints.jsonl` covers 4 problems (1501, 577, 827, 1254). The
+      other 307 count every test; transcribe their limits to find more bogus
+      tests.

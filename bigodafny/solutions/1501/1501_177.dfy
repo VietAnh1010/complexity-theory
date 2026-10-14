@@ -1,6 +1,6 @@
 // 1177_A. Digits Sequence (Easy Edition)  (problem 1501, solution 1501_177)
 // time complexity: O(1)
-// python exact-diff baseline: partial
+// python exact-diff baseline: exact
 //
 // Reproduce the Python program's entire stdout in `output`.
 //

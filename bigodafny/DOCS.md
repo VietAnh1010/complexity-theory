@@ -72,6 +72,11 @@ about the others.
 `validate.py` statuses: `valid`, `fail` (wrong output), `build` (Dafny would
 not compile), `timeout`, `error`.
 
+The test gates and `baseline.py` skip tests outside a limit the problem
+statement sets, listed with the quoted statement in `data/constraints.jsonl`,
+and record how many as `tests_out_of_spec` (`out_of_spec` in `precheck.py`).
+A problem with no entry counts every test.
+
 Other checks, which move no rows:
 
 | Script | Question |

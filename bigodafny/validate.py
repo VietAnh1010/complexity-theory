@@ -12,7 +12,7 @@ from pathlib import Path
 
 from common import (BUILD, DAFNY_VERSION, DATA, OUT, PRELUDE, UNSCREENED, SOLUTIONS,
                     UNVERIFIED, log, read_jsonl, write_json,
-                    write_jsonl, DISPUTED, ROOT, UNSURE)
+                    write_jsonl, DISPUTED, ROOT, UNSURE, in_spec)
 
 DAFNY = "dafny"   # on PATH; dafny finds z3 on PATH itself
 
@@ -128,7 +128,8 @@ def run_tests(task, sig, pydir, workdir, tiers, per_test, batch_timeout):
     tests = []
     for tier in tiers:
         for t in task["tests"].get(tier, []):
-            tests.append({"input": t["input"], "output": t["output"], "tier": tier})
+            if in_spec(task, t["input"]):
+                tests.append({"input": t["input"], "output": t["output"], "tier": tier})
     if not tests:
         return [], "no tests in the requested tiers"
 
@@ -243,6 +244,9 @@ def validate(only=None, per_test=30, batch_timeout=900, solutions_dir=None,
             continue
 
         c = Counter(r["status"] for r in res)
+        oos = sum(not in_spec(t, x["input"]) for k in tiers for x in t["tests"].get(k, []))
+        if oos:
+            rec["tests_out_of_spec"] = oos
         rec.update(status="valid" if c["pass"] == len(res) else "fail",
                    tests_total=len(res), tests_passed=c["pass"],
                    tests_failed=c["fail"], tests_timeout=c["timeout"],
@@ -262,7 +266,8 @@ def validate(only=None, per_test=30, batch_timeout=900, solutions_dir=None,
         log(f"spot check: writing out/{out_prefix}validation.jsonl, not the "
             "canonical data/validation.jsonl")
 
-    write_jsonl((OUT if out_prefix else DATA) / f"{out_prefix}validation.jsonl", rows)
+    write_jsonl((OUT if out_prefix else DATA) / f"{out_prefix}validation.jsonl", rows,
+                key=None if out_prefix else "solution_id")
     summary = {"dafny_version": DAFNY_VERSION, "tiers": list(tiers),
                "validated": len(rows), **{k: tally[k] for k in
                ("valid", "fail", "build", "error")}}

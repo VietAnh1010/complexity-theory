@@ -1,9 +1,8 @@
 # `solutions-ungateable/`: no test verdict is possible
 
 Rows not known to be wrong or right. The evidence a gate needs does not
-exist: for most, the stored tests are broken; for `1501_224`, the tests that
-would settle it time out. Each file's `GATE INAPPLICABLE` header repeats
-its entry in `data/gate_ungateable.jsonl`.
+exist: the stored tests are broken. Each file's `GATE INAPPLICABLE` header
+repeats its entry in `data/gate_ungateable.jsonl`.
 
 ## `validate.py` rows: broken tests
 
@@ -24,16 +23,10 @@ Every test that can run, passes. The rest are rejected by the problem's own
 `baseline.py --round-trip` shows the original Python fails in exactly the same
 places, so the tests are at fault, not the translation.
 
-## `difftest.py` row: timeouts
-
-`1501_224` (loose): of 122 tests, 29 have no Python result to compare; of the
-other 93, **77 agree, 0 disagree, 16 time out**. `difftest.py` needs all
-comparable tests to agree, so it reports `differs`. A re-run takes ~39 minutes.
-
 ## Getting out
 
 1. **Fixed tests:** if BigOBench corrects them, re-run the gate.
-2. **A ruling on timeouts:** `1501_224` needs a decision on whether a timeout
-   counts against a row. Still open.
+2. **A stated limit:** if the broken tests break a limit the problem statement
+   sets, add it to `data/constraints.jsonl`; the gates then skip those tests.
 
 Never loosen a gate to let a row out.

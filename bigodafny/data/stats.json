@@ -1,23 +1,22 @@
 {
   "complexity_proved": 321,
   "dafny_status": {
-    "agrees": 95,
-    "differs": 1,
+    "agrees": 94,
     "fail": 1,
     "untranslated": 10,
-    "valid": 533
+    "valid": 535
   },
   "dafny_version": "4.11.0",
   "problems": 311,
   "problems_per_split": {
-    "loose": 59,
-    "strict": 270,
+    "loose": 58,
+    "strict": 271,
     "unvalidatable": 3
   },
   "python_status": {
-    "exact": 540,
+    "exact": 542,
     "none": 27,
-    "partial": 73
+    "partial": 71
   },
   "quarantine_reasons": {
     "set-build-quadratic": 22,
@@ -26,19 +25,19 @@
   "quarantined": 127,
   "rows": 640,
   "safety_failure": {},
-  "safety_verified": 304,
+  "safety_verified": 303,
   "signature_status": {
     "ok": 640
   },
   "splits": {
-    "loose": 100,
-    "strict": 534,
+    "loose": 98,
+    "strict": 536,
     "unvalidatable": 6
   },
   "strict_by_complexity": {
-    "O(1)": 40,
+    "O(1)": 41,
     "O(logn)": 5,
-    "O(n)": 214,
+    "O(n)": 215,
     "O(n**2)": 98,
     "O(n**2+m**2)": 3,
     "O(n*m)": 38,

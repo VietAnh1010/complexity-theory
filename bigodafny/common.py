@@ -86,10 +86,26 @@ def read_jsonl(path):
                 yield json.loads(line)
 
 
-def write_jsonl(path, rows):
-    """Atomic, and with sorted keys so re-running is byte-identical."""
+def write_jsonl(path, rows, key=None, why=None):
+    """Atomic, and with sorted keys so re-running is byte-identical.
+
+    With `key` (a field, or a tuple of fields, naming a line), every line this
+    write replaces or drops is appended to old-record.jsonl beside the file
+    first. Records are history; a rewrite must never be the only copy."""
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
+    if key and path.exists():
+        k = (lambda r: tuple(r.get(f) for f in key)) if isinstance(key, tuple) \
+            else (lambda r: r.get(key))
+        new = {k(r): r for r in rows}
+        with (path.parent / "old-record.jsonl").open("a", encoding="utf-8") as fh:
+            for r in read_jsonl(path):
+                if new.get(k(r)) != r:
+                    fh.write(json.dumps({
+                        "file": path.name,
+                        "superseded_on": time.strftime("%Y-%m-%d"),
+                        "why": why or f"rewritten by {Path(sys.argv[0]).name}",
+                        "record": r}, ensure_ascii=False) + "\n")
     tmp = path.with_suffix(path.suffix + ".tmp")
     with tmp.open("w", encoding="utf-8") as fh:
         for r in rows:
@@ -106,3 +122,38 @@ def write_json(path, obj):
                    encoding="utf-8")
     os.replace(tmp, path)
     return path
+
+
+# --- Tests outside the problem's stated limits ------------------------------
+# BigOBench ships tests that break the limits their own problem statement sets
+# (1501: `1 <= k <= 10000`, tests up to 10**12). The code was written for the
+# stated limits, so such a test is bogus and no gate counts it. Only a limit
+# quoted from the statement in data/constraints.jsonl excludes a test; with no
+# entry, every test counts. Callers record how many they skipped.
+_SPEC, _FROM_STR = None, {}
+
+
+def in_spec(task, test_input):
+    global _SPEC
+    if _SPEC is None:
+        p = DATA / "constraints.jsonl"
+        _SPEC = ({r["problem_id"]: r["check"] for r in read_jsonl(p)}
+                 if p.exists() else {})
+    pid = task["problem_id"]
+    if pid not in _SPEC:
+        return True
+    if pid not in _FROM_STR:
+        ns = {}
+        exec(compile(task["dataclass_code"], "<dc>", "exec"), ns)  # needs numpy
+        _FROM_STR[pid] = ns["Input"].from_str
+    try:
+        i = _FROM_STR[pid](test_input)
+    except Exception:
+        return True     # unparseable is the gates' own business, not a limit
+    if eval(_SPEC[pid], {}, {"i": i}):
+        return True
+    # The public tests are the statement's own examples.
+    if any(t["input"] == test_input for t in task["tests"].get("public_tests", [])):
+        raise SystemExit(f"constraints.jsonl: problem {pid}'s check rejects "
+                         "a statement example; the check is wrong")
+    return False

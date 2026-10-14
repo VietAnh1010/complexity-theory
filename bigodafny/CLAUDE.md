@@ -22,6 +22,9 @@ the row there, and leave the original in place.
 - Passing tests shows behaviour, not safety or complexity.
 - Run `precheck.py` whenever a fix adds a `requires`.
 - Never weaken a gate to make the row under review pass.
+- A test outside a limit the problem statement sets is bogus. Add the limit to
+  `data/constraints.jsonl`, quoting the statement; the gates skip such tests
+  and count them. Never infer a limit from where the code fails.
 
 ## Proofs
 
@@ -90,6 +93,10 @@ Generated files nothing reads back go to `out/` (git-ignored, `common.OUT`).
 
 Before replacing a corpus-wide record, check its row count: a run on a subset
 of rows can overwrite it (`batches/README.md` § The `--only` trap).
+
+A script writing a `data/` record passes `key=` to `common.write_jsonl`, which
+archives every replaced or dropped line in `old-record.jsonl`. Never move
+record lines by hand.
 
 ## Toolchain
 

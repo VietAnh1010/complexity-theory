@@ -10,6 +10,15 @@ data lines go to `old-record.jsonl` beside the file they came from.
 
 ## 2026-10-14
 
+- Tests outside a limit the problem statement sets are bogus: `validate.py`,
+  `difftest.py`, `baseline.py` and `precheck.py` skip them and record the
+  count. Limits live in `data/constraints.jsonl`, quoted from the statement,
+  for 1501, 577, 827, 1254. 48 of 1501's 122 tests (up to `k = 10^12` against
+  `k <= 10000`) drop out; both 1501 rows' Python is now exact, so they turn
+  `strict`, and `1501_224` passes 74/74 and leaves `solutions-ungateable/`.
+- `common.write_jsonl(..., key=)` archives every replaced or dropped line in
+  `old-record.jsonl`; every `data/` record writer passes its key. They used to
+  overwrite the line (`label_audit.py apply` included).
 - Input and output each count once: one read (find token boundaries, convert
   each token) and one write (format, assemble, join). Any further pass is
   work, e.g. a separate format check or a string built by prepending.
@@ -17,8 +26,6 @@ data lines go to `old-record.jsonl` beside the file they came from.
 - Reading the input includes hand-written tokenizers and numeral parsers in any
   base, not only the prelude's. `1047_26` (cell names, base-26 columns) moves
   to `solutions/` (`verdicts_io-rule-2.jsonl`).
-- `label_audit.py apply` and `proofs.py` archive each line they replace in
-  `data/old-record.jsonl`; they used to overwrite it.
 - Input length is its own size, excluded like `|output|` (`COMPLEXITY.md`).
   `ParseInt` and `SplitWs` cost `|s|`; parsing `Solve`'s own arguments goes in
   an input term (`|s|`, `SumLen`, `SumLen2`). Eight proofs that charged a parse

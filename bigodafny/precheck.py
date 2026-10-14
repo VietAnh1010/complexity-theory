@@ -14,7 +14,7 @@ import re, subprocess, sys
 
 from common import (DATA, UNSCREENED, SOLUTIONS, UNVERIFIED, PROVED,
                     log, read_jsonl, write_jsonl, DISPUTED, UNGATEABLE,
-                    PROVED_VALUE, UNSURE)
+                    PROVED_VALUE, UNSURE, in_spec)
 from signature import input_fields
 
 # solutions-proved/ was missing here, so the twelve
@@ -368,13 +368,16 @@ def run(sids):
               expr = to_python(c)
               rec = {"solution_id": sid, "root": p.parent.parent.name,
                    "clause": c, "expr": expr,
-                     "holds": 0, "violated": 0, "error": 0}
+                     "holds": 0, "violated": 0, "error": 0, "out_of_spec": 0}
               if expr is None:
                   rec["status"] = "unchecked"
                   rows.append(rec); continue
               offenders, by_tier = [], {}
               for k in ("public_tests", "private_tests", "generated_tests"):
                   for tst in t["tests"].get(k, []):
+                      if not in_spec(t, tst["input"]):
+                          rec["out_of_spec"] += 1
+                          continue
                       try:
                           I = ns["Input"].from_str(tst["input"])
                           val = eval(expr, {"len": len, "all": all, "any": any,
@@ -428,7 +431,7 @@ def run(sids):
     merged = [r for r in prior if r.get("solution_id") not in checked] + rows
     merged.sort(key=lambda r: (r.get("solution_id", ""), r.get("root", ""),
                                r.get("clause", "")))
-    write_jsonl(out, merged)
+    write_jsonl(out, merged, key=("solution_id", "root", "clause"))
     log(f"precondition_check.jsonl now holds {len(merged)} clause(s) over "
         f"{len({r.get('solution_id') for r in merged})} row(s)")
     bad = [r for r in rows if r["status"] == "violated"]

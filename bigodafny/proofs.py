@@ -9,8 +9,7 @@ over profiling runs; a proved bound holds for every input. Where they conflict,
 the proof is the stronger statement.
 """
 from __future__ import annotations
-import json, re, subprocess, sys
-from datetime import date
+import re, subprocess, sys
 
 from common import (DAFNY_VERSION, z3_version, DATA, UNSCREENED, SOLUTIONS, UNVERIFIED,
                     PROVED, PRELUDE, log, read_jsonl, write_jsonl, DISPUTED,
@@ -116,17 +115,7 @@ def run():
         log(f"  {sid:>10}  {'VERIFIED' if ok else 'FAILED  '}  "
             f"label={rows[-1]['label']}  bound={rows[-1]['proved_bound']}"
             + ("  ASSUMES!" if assumes else ""))
-    path = DATA / "complexity_proofs.jsonl"
-    # A replaced line is history: archive it before the rewrite drops it.
-    old = {r["solution_id"]: r for r in read_jsonl(path)} if path.exists() else {}
-    with (DATA / "old-record.jsonl").open("a", encoding="utf-8") as fh:
-        for r in rows:
-            if r["solution_id"] in old and old[r["solution_id"]] != r:
-                fh.write(json.dumps({"file": path.name,
-                                     "superseded_on": date.today().isoformat(),
-                                     "why": "re-verified by proofs.py",
-                                     "record": old[r["solution_id"]]}) + "\n")
-    write_jsonl(path, rows)
+    write_jsonl(DATA / "complexity_proofs.jsonl", rows, key="solution_id")
     n_ok = sum(r["verified"] for r in rows)
     n_assume = sum(1 for r in rows if r["assume_count"])
     log(f"proofs: {n_ok}/{len(rows)} verify; {n_assume} contain `assume`")

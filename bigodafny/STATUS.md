@@ -17,10 +17,12 @@ Source: `data/stats.json`, `data/dataset.jsonl`.
 | Rows | 640 |
 | Problems | 311, all with a mapped `Solve` signature |
 | Translated rows | 636 (the 4 in `solutions-untranslated/` are not) |
-| Original Python reproduces its stored output exactly | 540 |
-| Strict rows tested by `validate.py` | 534 |
+| Original Python reproduces its stored output exactly | 542 |
+| Strict rows tested by `validate.py` | 536 |
 | Strict rows that cannot be tested (`unvalidatable`) | 6: `1196_100`, `1196_51`, `1578_481`, `1578_724`, `1950_45`, `1950_47` |
-| Loose rows | 100 |
+| Loose rows | 98 |
+| Problems with stated limits in `data/constraints.jsonl` | 4 (1501, 577, 827, 1254) |
+| Stored tests skipped as outside those limits (public + private) | 48 per 1501 row |
 
 ## Directories
 
@@ -28,11 +30,11 @@ Source: the tree.
 
 | Directory | Rows |
 |---|---:|
-| `solutions/` | 296 |
+| `solutions/` | 297 |
 | `solutions-unscreened/` | 127 |
 | `solutions-disputed/` | 203 |
 | `solutions-unsure/` | 2 |
-| `solutions-ungateable/` | 5 |
+| `solutions-ungateable/` | 4 |
 | `solutions-unverified/` | 3 |
 | `solutions-untranslated/` | 4 |
 | `solutions-proved/` (copies) | 321, of which 22 in `value-bounded/` |
@@ -41,9 +43,9 @@ Source: the tree.
 
 | Gate | Source | Result |
 |---|---|---|
-| `validate.py` | `data/validation.jsonl` | 534 rows: 533 `valid`, 1 `fail` (`1738_180`) |
-| `difftest.py --loose` | `data/difftest.jsonl` | 100 rows: 95 `agrees`, 1 `differs` (`1501_224`, timeouts only), 4 `untranslated` |
-| `verify_all.py` | `data/verification.jsonl` | 304 rows (`solutions/`, `solutions-unsure/`, `solutions-ungateable/`): all verify; 297 without `decreases *` |
+| `validate.py` | `data/validation.jsonl` | 536 rows: 535 `valid`, 1 `fail` (`1738_180`) |
+| `difftest.py --loose` | `data/difftest.jsonl` | 98 loose rows: 94 `agrees`, 4 `untranslated`; also keeps the last loose run of the two 1501 rows, now strict |
+| `verify_all.py` | `data/verification.jsonl` | 303 rows (`solutions/`, `solutions-unsure/`, `solutions-ungateable/`): all verify; 296 without `decreases *` |
 | `proofs.py` | `data/complexity_proofs.jsonl` | 321 proofs: all verify, 0 `assume` |
 
 Rows in `solutions/` using `decreases *`: 7.
@@ -54,7 +56,7 @@ Source: `data/label_audit.jsonl`.
 
 | Verdict | Rows | Where they are |
 |---|---:|---|
-| `ok` | 301 | `solutions/` 296, `solutions-ungateable/` 4, `solutions-disputed/` 1 |
+| `ok` | 301 | `solutions/` 297, `solutions-ungateable/` 3, `solutions-disputed/` 1 |
 | `mismatch` | 202 | `solutions-disputed/` |
 | `unsure` | 3 | `solutions-unsure/` 2, `solutions-ungateable/` 1 |
 

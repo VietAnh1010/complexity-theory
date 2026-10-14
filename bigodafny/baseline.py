@@ -20,7 +20,7 @@ from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
-from common import DATA, OUT, log, read_jsonl, write_jsonl
+from common import DATA, OUT, log, read_jsonl, write_jsonl, in_spec
 
 RUNNER = r'''
 import json, signal, sys, io, os
@@ -58,8 +58,13 @@ def one(task, round_trip=False):
     tests = [{"input": t["input"], "output": t["output"]}
              for k in ("public_tests", "private_tests")
              for t in task["tests"].get(k, [])]
+    oos = len(tests)
+    tests = [t for t in tests if in_spec(task, t["input"])]
+    oos -= len(tests)
     rec = {"solution_id": task["solution_id"], "problem_id": task["problem_id"],
            "n_tests": len(tests)}
+    if oos:
+        rec["tests_out_of_spec"] = oos
     if round_trip:
         ns, kept = {}, []
         for t in tests:
@@ -105,7 +110,7 @@ def run(workers=8, round_trip=None):
             log(f"  {r['solution_id']:10} pass {r['passed']:3}  unparseable "
                 f"{r['unparseable']:3}  of {r['n_tests']}")
         return rows
-    write_jsonl(DATA / "baseline.jsonl", rows)
+    write_jsonl(DATA / "baseline.jsonl", rows, key="solution_id")
     st = Counter(r["python_status"] for r in rows)
     log(f"python baseline: {dict(st)}")
     return rows
