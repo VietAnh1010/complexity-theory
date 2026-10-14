@@ -219,8 +219,11 @@ if __name__ == "__main__":
     ap.add_argument("--workers", type=int, default=6)
     a = ap.parse_args()
     if a.loose:
+        # Like validate.py, the sweep skips solutions-ungateable/: no run can
+        # change those verdicts. `--only` still re-runs one.
         ids = [r["solution_id"] for r in read_jsonl(DATA / "dataset.jsonl")
-               if r["split"] == "loose"]
+               if r["split"] == "loose" and not (
+                   UNGATEABLE / r["problem_id"] / f"{r['solution_id']}.dfy").exists()]
     else:
         ids = a.only or []
     if not ids:

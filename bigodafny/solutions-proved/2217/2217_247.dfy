@@ -39,20 +39,27 @@ method {:isolate_assertions} Solve(n: int, handles: seq<string>) returns (output
   // every line is "old new": two whitespace-separated tokens
   requires 1 <= n <= |handles|
   requires forall k :: 0 <= k < |handles| ==> |SplitWs(handles[k])| >= 2
-  ensures steps <= 4 * n * n + 6 * n + 6 + 2 * |output|
+  ensures steps <= 4 * n * n + 6 * n + SumLen(handles) + 6 + 2 * |output|
 {
   steps := 1;
   var first := SplitWs(handles[0]);
+  // reading the input: each line once
+  steps := steps + |handles[0]|;
+  assert handles[..1] == [] + [handles[0]];
+  SumLenSnoc([], handles[0]);
   var chains: seq<seq<string>> := [ [first[0], first[1]] ];
   var x := 1;
   while x < n
     invariant 0 <= x <= n
     invariant forall y :: 0 <= y < |chains| ==> |chains[y]| >= 2
     invariant |chains| <= x
-    invariant steps <= 1 + (x - 1) * (4 * n + 2)
+    invariant steps <= 1 + (x - 1) * (4 * n + 2) + SumLen(handles[..x])
     decreases n - x
   {
     var s := SplitWs(handles[x]);
+    steps := steps + |handles[x]|;
+    assert handles[..x + 1] == handles[..x] + [handles[x]];
+    SumLenSnoc(handles[..x], handles[x]);
     var f := false;
     var y := 0;
     while y < |chains| && !f
@@ -60,7 +67,7 @@ method {:isolate_assertions} Solve(n: int, handles: seq<string>) returns (output
       invariant forall z :: 0 <= z < |chains| ==> |chains[z]| >= 2
       invariant |chains| <= x
       invariant |chains| <= n
-      invariant steps <= 1 + (x - 1) * (4 * n + 2) + 1 + 4 * y
+      invariant steps <= 1 + (x - 1) * (4 * n + 2) + SumLen(handles[..x + 1]) + 1 + 4 * y
       decreases |chains| - y
     {
       var chain := chains[y];
@@ -91,7 +98,7 @@ method {:isolate_assertions} Solve(n: int, handles: seq<string>) returns (output
     invariant 0 <= k <= |chains|
     invariant forall y :: 0 <= y < |chains| ==> |chains[y]| >= 2
     invariant |chains| <= n
-    invariant steps <= 1 + (n - 1) * (4 * n + 2) + 2 * k + 2 + d0
+    invariant steps <= 1 + (n - 1) * (4 * n + 2) + SumLen(handles[..n]) + 2 * k + 2 + d0
     invariant d0 == Digits(|chains|) && |lines| >= 1 && |lines[0]| == d0
     decreases |chains| - k
   {
@@ -100,6 +107,7 @@ method {:isolate_assertions} Solve(n: int, handles: seq<string>) returns (output
     k := k + 1;
     steps := steps + 2;
   }
+  SumLenPrefix(handles, n);
   output := Join(lines, "\n");
   JoinLen(lines, "\n");
   assert SumLen(lines) >= |lines[0]|;

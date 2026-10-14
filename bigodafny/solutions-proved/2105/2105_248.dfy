@@ -58,12 +58,12 @@ method Solve(v_0: int, v_1: string) returns (output: string, ghost steps: nat)
   requires forall k :: 0 <= k < v_0 ==> ParseInts(SplitWs(v_1))[k] == 1 || ParseInts(SplitWs(v_1))[k] == 2
   requires exists k :: 0 <= k < v_0 && ParseInts(SplitWs(v_1))[k] == 1
   requires exists k :: 0 <= k < v_0 && ParseInts(SplitWs(v_1))[k] == 2
-  ensures steps <= 2 * NLogN(v_0) + 8 * v_0 + 12 + |output|
+  ensures steps <= 2 * NLogN(v_0) + 8 * v_0 + |v_1| + 12 + |output|
 {
   var n := v_0;
   steps := 1;
   var tipos := ParseInts(SplitWs(v_1));
-  steps := steps + 3;
+  steps := steps + 3 + |v_1|;  // reading the input: one pass over v_1
   if tipos[n - 1] == 1 {
     tipos := tipos + [2];
   } else if tipos[n - 1] == 2 {
@@ -95,7 +95,7 @@ method Solve(v_0: int, v_1: string) returns (output: string, ghost steps: nat)
     invariant |arreglorepetidos| >= 1 || (forall j :: 0 <= j < n && j <= i ==> tipos[j] == tipos[0])
     invariant i == n ==> |arreglorepetidos| >= 2
     invariant |arreglorepetidos| <= i
-    invariant steps == 6 + 4 * i
+    invariant steps == 6 + |v_1| + 4 * i
     decreases n - i
   {
     if tipos[i] == 1 {
@@ -123,7 +123,7 @@ method Solve(v_0: int, v_1: string) returns (output: string, ghost steps: nat)
   while m < |arreglorepetidos| - 1
     invariant 0 <= m <= |arreglorepetidos| - 1
     invariant |arregloacomodado| == m
-    invariant steps == 6 + 4 * n + 3 * m
+    invariant steps == 6 + |v_1| + 4 * n + 3 * m
     decreases |arreglorepetidos| - 1 - m
   {
     if arreglorepetidos[m] <= arreglorepetidos[m + 1] {

@@ -55,8 +55,9 @@ Everything else costs what the table says:
 | `multiset(s)` | O(\|s\|) | one pass |
 | `multiset(a) == multiset(b)` | O(\|a\|+\|b\|) | a **linear** permutation test |
 | `Join`, `JoinInts` | O(total output length) | linear |
-| `SumSeq`, `MaxSeq`, `MinSeq`, `ParseInt`, `SplitWs`, `ReplaceAll`, `Repeat` | O(length of the argument) | recursive over the sequence/string |
-| `IntToString(x)`, `\|IntToString(x)\|` | O(1) | machine-word values; this does NOT make a value-bounded loop constant |
+| `SumSeq`, `MaxSeq`, `MinSeq`, `ReplaceAll`, `Repeat` | O(length of the argument) | recursive over the sequence/string |
+| reading `Solve`'s own arguments: `SplitWs`, `ParseInt`, `ParseInts`, or a hand-written tokenizer or numeral parser in any base | O(input length) | the one read never counts toward the class; any further pass does |
+| `IntToString(x)`, `\|IntToString(x)\|` | O(digits of x) | printed text is output length: never counts toward the class; this does NOT make a value-bounded loop constant |
 | `Gcd(a, b)` (or a Euclid loop) | O(log min(a, b)) | Euclid's depth: a VALUE term |
 | a recursive helper for Python `**` | its recursion depth | O(e) or O(log e) in the exponent VALUE |
 | `SortInts`, `SortStrings`, `Sort` | O(k log k) | merge sort |
@@ -97,6 +98,12 @@ rows at its peak — and it no longer exists. If your evidence for `cause:
 Compare the label against the tight class of the **Dafny**, in the input sizes
 the signature exposes.
 
+- Reading the input once and writing the output once are excluded: `n`
+  numbers read as strings is `O(n)`, not `O(n*m)`. One read = find token
+  boundaries, then convert each token (a numeral in any base). One write =
+  format each value, assemble lines, join. Every other pass is work: a
+  separate format check, re-scanning a token, prepending output one
+  character at a time (`c + acc`).
 - A label naming a dimension the code never scans is wrong. `O(n*m)` on a body
   that reads `row[0]` and `row[1]` and never walks a row is O(n): row width does
   not enter the cost.

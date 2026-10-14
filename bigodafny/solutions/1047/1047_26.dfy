@@ -1,36 +1,3 @@
-// LABEL AUDIT -- queued for manual review, not a decision.
-//
-//   stated label   : O(n)
-//   audited class  : O(n*m)
-//   cause          : unclear
-//   confidence     : low
-//   auditor        : main agent, override of labelaudit-r4-u01
-//
-//   Which of the label or the translation is at fault was not determined
-//   by the audit.
-//
-//   evidence:
-//     Override of labelaudit-r4-u01's mismatch: each cell string (e.g.
-//     R23C55) encodes two machine-word numbers, and FirstDigitIndex,
-//     DigitRunLen, ParseInt and LettersToNum walk it; whether that width
-//     is a size is the open ParseInt question, so the verdict waits on it.
-//
-//   how this label could be wrong, and what to check:
-//     The verdict turns on whether a numeral token's width is a size. The
-//     brief charges ParseInt its argument's length; the proofs (378_91,
-//     976_1131) charge it 1, as IntToString is. Settle the ParseInt charge
-//     in COMPLEXITY.md, then re-file: width as a size gives O(n*m), a
-//     machine-word token gives O(n).
-//
-//   structural facts (deterministic, from label_audit.py):
-//     {"body_lines": 85, "data_dependent_loops": 0, "decreases_star":
-//     false, "linear_prelude_calls": ["IntToString", "Join", "ParseInt",
-//     "ParseIntFrom"], "loop_depth": 1, "loops": 1, "recursive_helpers":
-//     6, "seq_append_read_in_same_loop": false, "seq_args": 1,
-//     "seq_update_in_loop": false, "set_build_in_loop": false, "sorts":
-//     [], "uses_map": false, "uses_multiset": false, "uses_set": false}
-// --------------------------------------------------------------------
-
 // 1_B. Spreadsheets  (problem 1047, solution 1047_26)
 // time complexity: O(n)
 // python exact-diff baseline: exact

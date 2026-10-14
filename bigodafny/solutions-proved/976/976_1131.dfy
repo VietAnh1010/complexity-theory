@@ -42,7 +42,7 @@ function ParseInt(s: string): int
 // value lookup / insert), then one pass draining its key set: each
 // iteration removes one key, so it also runs |d.Keys| <= |a_list| times.
 method Solve(n: int, a_list: seq<string>) returns (output: string, ghost steps: nat)
-  ensures steps <= 4 * |a_list| + |output| + 3
+  ensures steps <= 4 * |a_list| + SumLen(a_list) + |output| + 3
 {
   steps := 1;
   var d: map<int, int> := map[];
@@ -50,10 +50,14 @@ method Solve(n: int, a_list: seq<string>) returns (output: string, ghost steps: 
   while i < |a_list|
     invariant 0 <= i <= |a_list|
     invariant |d.Keys| <= i
-    invariant steps <= 3 * i + 1
+    invariant steps <= 3 * i + 1 + SumLen(a_list[..i])
     decreases |a_list| - i
   {
     var a := ParseInt(a_list[i]);
+    // reading the input: each token once
+    steps := steps + |a_list[i]|;
+    assert a_list[..i + 1] == a_list[..i] + [a_list[i]];
+    SumLenSnoc(a_list[..i], a_list[i]);
     if a in d {
       d := d[a := d[a] + 1];
     } else {
@@ -63,12 +67,13 @@ method Solve(n: int, a_list: seq<string>) returns (output: string, ghost steps: 
     i := i + 1;
     steps := steps + 3;
   }
+  assert a_list[..|a_list|] == a_list;
   var maxn := 0;
   var keys := d.Keys;
   while keys != {}
     invariant keys <= d.Keys
     invariant |keys| <= |a_list|
-    invariant steps <= 3 * |a_list| + 1 + (|a_list| - |keys|)
+    invariant steps <= 3 * |a_list| + 1 + SumLen(a_list) + (|a_list| - |keys|)
     decreases |keys|
   {
     var k :| k in keys;

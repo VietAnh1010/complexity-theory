@@ -1,29 +1,28 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n**2)
-//   audited class  : O(n*m)
+//   audited class  : other
 //   cause          : label
-//   confidence     : medium
-//   auditor        : labelaudit-r4-d01
+//   confidence     : high
+//   auditor        : io-rule-2026-10-14
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Solve loops over the n strings once, and per string runs
-//     IsRCFormat/DigitRunEnd, ParseInt and ColToLetters or the letter
-//     scan, each linear in that string's length, so each of n strings is
-//     scanned a constant number of times: O(n*m), not O(n**2). The Python
-//     re.search plus per-character loops pays the same. Short-string
-//     concatenation in ColToLetters is quadratic in letters per string but
-//     those are bounded by the string length.
+//     One pass over the n cells, but two kinds of work beyond the one read
+//     and one write. IsRCFormat scans each cell to pick its format, then
+//     DigitRunEnd finds the same boundaries again: a second pass, O(m) per
+//     cell for cell length m. ColToLetters prepends each letter (letter +
+//     acc copies acc), so a k-letter column costs about k*k/2 with k
+//     growing as log of the column VALUE. Class O(n*m + n*log^2 C), not a
+//     label class; never O(n**2).
 //
 //   how this label could be wrong, and what to check:
-//     The label squares one size, but the work is n coordinate strings,
-//     each scanned a few times. Check the loop `while idx < |strings|`: it
-//     runs once per string, and everything inside (DigitRunEnd, ParseInt,
-//     the alpha scan, ColToLetters) works on one short string, so the cost
-//     is n strings times string length.
+//     The label squares n, but no step pairs two cells. Check the loop
+//     `while idx < |strings|`: per cell it does a second boundary scan and
+//     a prepend-built column string, both bounded by that cell's own text
+//     and column value.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 76, "data_dependent_loops": 1, "decreases_star":

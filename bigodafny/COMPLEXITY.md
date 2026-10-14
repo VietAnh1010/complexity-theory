@@ -24,7 +24,7 @@ each loop iteration, and each character a string operation produces.
 | multiset equality | `|a| + |b|` |
 | `Join(parts, sep)`, `sep` a string literal | `SumLen(parts) + |parts|` |
 | `IntToString(x)` | `Digits(x)` |
-| `ParseInt(s)` | undecided: 1 or `|s|` (`solutions-unsure/README.md`) |
+| `ParseInt(s)`, `SplitWs(s)` | `|s|`; `ParseInts(xs)` costs `SumLen(xs)` |
 | `JoinInts(xs, sep)`, `sep` a string literal | `SumDigits(xs) + |xs|` |
 | recursive sequence/string helpers | argument length |
 | sorting k items | `SortCost(k)`; prove it with `SortCostNLogN` |
@@ -51,8 +51,30 @@ any algorithm. Write that part as `|output|` (prelude: `IntToStringDigits`,
 `steps <= 2 * NLogN(n) + 3 * |output| + 5` confirms `O(nlogn)`.
 
 - An added `|output|` term never counts against the label.
+- Writing is done once: format each value (`IntToString`, a hand-written
+  base conversion that appends), assemble lines, `Join`. Anything beyond that
+  is work: building a string by prepending (`c + acc` copies `acc` every
+  step), or text built and thrown away.
 - `n * |output|`, or `Digits` for text never printed, is normal work.
 - If `|output|` is the largest term, say so in `relation_reason`.
+
+**Input length is its own size too.** Reading the input text costs one step per
+character under any algorithm. Reading `Solve`'s own arguments goes in an
+input term: `|s|` for a `string`,
+`SumLen(xs)` for a `seq<string>`, `SumLen2(rows)` for a `seq<seq<string>>`.
+`steps <= 4 * |a_list| + SumLen(a_list) + |output| + 3` confirms `O(n)`.
+
+- An added input term never counts against the label.
+- Reading is done once: find each token's boundaries, then convert the token
+  (a numeral in any base), with prelude helpers (`SplitWs`, `ParseInt`,
+  `ParseInts`) or hand-written ones. Split-then-parse is that one read. A cell
+  name like `BC23` read as column 55, row 23 is reading.
+- Anything beyond that one read is work: a separate pass to check a token's
+  format, finding the same boundaries twice, reading a token again in a loop.
+- Searching, comparing or counting over argument strings is normal work, and
+  is `O(n*m)` under the naming rule.
+- Whether a row parses at all is BigOBench's choice of `Input` field type
+  (`List[str]` or `List[int]`), so the parse must not decide the class.
 
 **The naming rule: a label names every size it depends on.** Each variable is
 one list's length, one string's length, or one input value, and the class is

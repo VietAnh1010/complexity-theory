@@ -1,26 +1,25 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n*m)
-//   audited class  : O(n*m)
-//   cause          : unclear
-//   confidence     : low
-//   auditor        : main agent, override of labelaudit-r4-u01
+//   audited class  : O(n)
+//   cause          : label
+//   confidence     : high
+//   auditor        : io-rule-2026-10-14
 //
-//   Which of the label or the translation is at fault was not determined
-//   by the audit.
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Override of labelaudit-r4-u01's ok, which rests only on charging
-//     ParseInt per character of each numeral token; the pairs rows are
-//     short numerals and no other construct walks a width, so the class
-//     depends on the open ParseInt charge.
+//     Two passes over pairs with O(1) map work each; the only width walked
+//     is ParseInt reading each input token once, which is input length and
+//     excluded, and no row is ever scanned beyond its first two tokens.
+//     The sibling 378_91 has the same loops and a proof of O(n).
 //
 //   how this label could be wrong, and what to check:
-//     The verdict turns on whether a numeral token's width is a size. The
-//     brief charges ParseInt its argument's length; the proofs (378_91,
-//     976_1131) charge it 1, as IntToString is. Settle the ParseInt charge
-//     in COMPLEXITY.md, then re-file: width as a size gives O(n*m), a
-//     machine-word token gives O(n).
+//     The label names m, but nothing walks a pair beyond reading its two
+//     tokens. Check both loops in Solve: each does O(1) map work per pair
+//     after one ParseInt. If you count token width as work rather than
+//     input, the label stands.
 //
 //   structural facts (deterministic, from label_audit.py):
 //     {"body_lines": 48, "data_dependent_loops": 0, "decreases_star":

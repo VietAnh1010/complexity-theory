@@ -9,10 +9,11 @@ over profiling runs; a proved bound holds for every input. Where they conflict,
 the proof is the stronger statement.
 """
 from __future__ import annotations
-import re, subprocess, sys
+import json, re, subprocess, sys
+from datetime import date
 
 from common import (DAFNY_VERSION, z3_version, DATA, UNSCREENED, SOLUTIONS, UNVERIFIED,
-                    PROVED, log, read_jsonl, write_jsonl, DISPUTED,
+                    PROVED, PRELUDE, log, read_jsonl, write_jsonl, DISPUTED,
                     UNGATEABLE, UNSURE)
 
 DAFNY = "dafny"   # on PATH; dafny finds z3 on PATH itself
@@ -115,7 +116,17 @@ def run():
         log(f"  {sid:>10}  {'VERIFIED' if ok else 'FAILED  '}  "
             f"label={rows[-1]['label']}  bound={rows[-1]['proved_bound']}"
             + ("  ASSUMES!" if assumes else ""))
-    write_jsonl(DATA / "complexity_proofs.jsonl", rows)
+    path = DATA / "complexity_proofs.jsonl"
+    # A replaced line is history: archive it before the rewrite drops it.
+    old = {r["solution_id"]: r for r in read_jsonl(path)} if path.exists() else {}
+    with (DATA / "old-record.jsonl").open("a", encoding="utf-8") as fh:
+        for r in rows:
+            if r["solution_id"] in old and old[r["solution_id"]] != r:
+                fh.write(json.dumps({"file": path.name,
+                                     "superseded_on": date.today().isoformat(),
+                                     "why": "re-verified by proofs.py",
+                                     "record": old[r["solution_id"]]}) + "\n")
+    write_jsonl(path, rows)
     n_ok = sum(r["verified"] for r in rows)
     n_assume = sum(1 for r in rows if r["assume_count"])
     log(f"proofs: {n_ok}/{len(rows)} verify; {n_assume} contain `assume`")
@@ -125,5 +136,11 @@ def run():
 if __name__ == "__main__":
     rows = run()
     hits = scan_assumes()
+    # `dafny verify` on a proof does not verify what it includes, so the
+    # prelude's lemmas are checked here or nowhere.
+    pre = subprocess.run([DAFNY, "verify", str(PRELUDE)],
+                         capture_output=True, text=True, timeout=1200)
+    pre_ok = pre.returncode == 0
+    log(f"prelude: {(pre.stdout + pre.stderr).strip().splitlines()[-1]}")
     sys.exit(0 if (all(r["verified"] and not r["assume_count"] for r in rows)
-                   and not hits) else 1)
+                   and not hits and pre_ok) else 1)

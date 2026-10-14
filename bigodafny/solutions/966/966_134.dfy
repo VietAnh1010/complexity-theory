@@ -1,38 +1,3 @@
-// LABEL AUDIT -- queued for manual review, not a decision.
-//
-//   stated label   : O(n)
-//   audited class  : O(n*m)
-//   cause          : unclear
-//   confidence     : low
-//   auditor        : labelaudit-r4-s01
-//
-//   Which of the label or the translation is at fault was not determined
-//   by the audit.
-//
-//   evidence:
-//     The loop over the n rows calls ParseInt on values[i][0] and
-//     values[i][1], costing the token length each, plus MaxSeq/MinSeq on n
-//     items. Under the naming rule n strings each scanned once is O(n*m),
-//     but the tokens are decimal numerals of at most 5 characters and n is
-//     at most 4.
-//
-//   how this label could be wrong, and what to check:
-//     The label O(n) assumes numeral parsing is free. Check whether
-//     ParseInt (recursing once per character via ParseIntFrom) should be
-//     charged as the token width m; if so the label should be O(n*m). If
-//     the dataset treats numeral digit count as a constant, O(n) stands.
-//     Same question as 378_91.
-//
-//   structural facts (deterministic, from label_audit.py):
-//     {"body_lines": 40, "data_dependent_loops": 0, "decreases_star":
-//     false, "linear_prelude_calls": ["IntToString", "MaxSeq", "MinSeq",
-//     "ParseInt", "ParseIntFrom"], "loop_depth": 1, "loops": 1,
-//     "recursive_helpers": 2, "seq_append_read_in_same_loop": false,
-//     "seq_args": 1, "seq_update_in_loop": false, "set_build_in_loop":
-//     false, "sorts": [], "uses_map": false, "uses_multiset": false,
-//     "uses_set": false}
-// --------------------------------------------------------------------
-
 // 596_A. Wilbur and Swimming Pool  (problem 966, solution 966_134)
 // time complexity: O(n)
 // python exact-diff baseline: exact

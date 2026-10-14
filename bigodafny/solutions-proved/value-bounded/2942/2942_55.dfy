@@ -78,7 +78,7 @@ ghost function TokBits(t: seq<seq<string>>, k: nat): nat
 }
 
 method Solve(n: int, transactions: seq<seq<string>>) returns (output: string, ghost steps: nat)
-  ensures steps <= 20 * (if n > 0 then n else 0) + TokBits(transactions, if n > 0 then n else 0) + 10 + |output|
+  ensures steps <= 20 * (if n > 0 then n else 0) + TokBits(transactions, if n > 0 then n else 0) + SumLen2(transactions) + 10 + |output|
 {
   steps := 1;
   var s := n;
@@ -92,16 +92,26 @@ method Solve(n: int, transactions: seq<seq<string>>) returns (output: string, gh
     invariant 0 <= i
     invariant i <= (if s > 0 then s else 0)
     invariant |sums| == (if s > 0 then s else 0)
-    invariant steps <= base1 + 20 * i + TokBits(transactions, i)
+    invariant steps <= base1 + 20 * i + TokBits(transactions, i) + SumLen2(transactions[..(if i <= |transactions| then i else |transactions|)])
     decreases s - i
   {
     ghost var s0 := steps;
+    ghost var read := SumLen2(transactions[..(if i <= |transactions| then i else |transactions|)]);
+    ghost var tok := 0;
+    if i < |transactions| {
+      assert transactions[..i + 1] == transactions[..i] + [transactions[i]];
+      SumLen2Snoc(transactions[..i], transactions[i]);
+    }
     ghost var bits := if i < |transactions| && |transactions[i]| >= 2
                       then BitLen(ParseInt(transactions[i][1])) else 0;
     if i < |transactions| && |transactions[i]| >= 2 {
       var kind := transactions[i][0];
       var m := ParseInt(transactions[i][1]);
       steps := steps + 3;
+      // reading the input: each token once
+      tok := |transactions[i][1]|;
+      steps := steps + tok;
+      SumLenElem(transactions[i], 1);
       if kind == "win" {
         a := a[m := i];
         steps := steps + 1;
@@ -136,9 +146,10 @@ method Solve(n: int, transactions: seq<seq<string>>) returns (output: string, gh
     }
     i := i + 1;
     steps := steps + 1;
-    assert steps <= s0 + 20 + bits;
+    assert steps <= s0 + 20 + bits + tok;
     assert TokBits(transactions, i) == TokBits(transactions, i - 1) + bits;
   }
+  SumLen2Prefix(transactions, if i <= |transactions| then i else |transactions|);
   if s > 0 {
     output := IntToString(sums[s - 1]);
   } else {

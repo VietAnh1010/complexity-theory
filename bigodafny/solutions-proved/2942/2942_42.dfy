@@ -29,7 +29,7 @@ import opened Prelude
 // fails to establish at i = 0 when n < 0, so the guard is the same
 // `i > 0 ==> i <= n` form solutions-proved/2012/2012_399.dfy uses.
 method Solve(n: int, transactions: seq<seq<string>>) returns (output: string, ghost steps: nat)
-  ensures steps <= 4050 * (if n > 0 then n else 0) + |output| + 5
+  ensures steps <= 4050 * (if n > 0 then n else 0) + SumLen2(transactions) + |output| + 5
 {
   steps := 2;
   var d: seq<int> := seq(2009, _ => 0);
@@ -39,20 +39,28 @@ method Solve(n: int, transactions: seq<seq<string>>) returns (output: string, gh
     invariant 0 <= i
     invariant i > 0 ==> i <= n
     invariant |d| == 2009
-    invariant steps <= 4050 * i + 4
+    invariant steps <= 4050 * i + 4 + SumLen2(transactions[..(if i <= |transactions| then i else |transactions|)])
     decreases n - i
   {
+    ghost var read := SumLen2(transactions[..(if i <= |transactions| then i else |transactions|)]);
+    if i < |transactions| {
+      assert transactions[..i + 1] == transactions[..i] + [transactions[i]];
+      SumLen2Snoc(transactions[..i], transactions[i]);
+    }
     steps := steps + 34;
     if i < |transactions| && |transactions[i]| >= 2 {
       var kind := transactions[i][0];
       var x := ParseInt(transactions[i][1]);
+      // reading the input: each token once
+      steps := steps + |transactions[i][1]|;
+      SumLenElem(transactions[i], 1);
       if 0 <= x < |d| {
         if kind == "win" {
           var p := 1;
           var e := 0;
           while e < x
             invariant 0 <= e <= x
-            invariant steps <= 4050 * i + 38 + 2 * e
+            invariant steps <= 4050 * i + 38 + 2 * e + read + SumLen(transactions[i])
             decreases x - e
           {
             p := p * 2;
@@ -68,6 +76,7 @@ method Solve(n: int, transactions: seq<seq<string>>) returns (output: string, gh
     i := i + 1;
   }
   assert i == (if n > 0 then n else 0);
+  SumLen2Prefix(transactions, if i <= |transactions| then i else |transactions|);
   output := IntToString(ans);
   steps := steps + |output|;
 }

@@ -18,12 +18,12 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<string>) returns (output: string, ghost steps: nat)
-  ensures steps <= 4 * |a_list| + 3 + |output|
+  ensures steps <= 3 * |a_list| + SumLen(a_list) + 3 + |output|
 {
   steps := 1;
   var h := ParseInts(a_list);
-  // ParseInts: one constant-cost ParseInt call per token.
-  steps := steps + |a_list| + 1;
+  // reading the input: ParseInts costs the text it reads
+  steps := steps + SumLen(a_list) + 1;
   var ans := 0;
   var i := 0;
   ghost var ibase := steps;

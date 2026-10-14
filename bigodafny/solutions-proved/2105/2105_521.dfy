@@ -29,12 +29,12 @@ method Solve(v_0: int, v_1: string) returns (output: string, ghost steps: nat)
   requires |ParseInts(SplitWs(v_1))| == v_0
   requires exists k :: 0 <= k < v_0 && ParseInts(SplitWs(v_1))[k] == 1
   requires exists k :: 0 <= k < v_0 && ParseInts(SplitWs(v_1))[k] == 2
-  ensures steps <= 10 * v_0 + 15 + |output|
+  ensures steps <= 10 * v_0 + |v_1| + 15 + |output|
 {
   var n := v_0;
   steps := 1;
   var a := ParseInts(SplitWs(v_1));
-  steps := steps + 3;
+  steps := steps + 3 + |v_1|;  // reading the input: one pass over v_1
   var b: seq<int> := [];
   var k := 0;
   var c := a[0];

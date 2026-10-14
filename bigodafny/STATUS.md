@@ -2,7 +2,7 @@
 
 Every count about the corpus, in one file (`CLAUDE.md` § Counts).
 
-Last checked against `data/` and the tree: 2026-10-13.
+Last checked against `data/` and the tree: 2026-10-14.
 
 To refresh: re-run the scripts that write each source (`README.md` § Toolchain),
 then read the numbers off the sources named in each section. Campaign
@@ -28,10 +28,10 @@ Source: the tree.
 
 | Directory | Rows |
 |---|---:|
-| `solutions/` | 291 |
+| `solutions/` | 296 |
 | `solutions-unscreened/` | 127 |
-| `solutions-disputed/` | 202 |
-| `solutions-unsure/` | 8 |
+| `solutions-disputed/` | 203 |
+| `solutions-unsure/` | 2 |
 | `solutions-ungateable/` | 5 |
 | `solutions-unverified/` | 3 |
 | `solutions-untranslated/` | 4 |
@@ -46,7 +46,7 @@ Source: the tree.
 | `verify_all.py` | `data/verification.jsonl` | 304 rows (`solutions/`, `solutions-unsure/`, `solutions-ungateable/`): all verify; 297 without `decreases *` |
 | `proofs.py` | `data/complexity_proofs.jsonl` | 321 proofs: all verify, 0 `assume` |
 
-Rows in `solutions/` using `decreases *`: 6.
+Rows in `solutions/` using `decreases *`: 7.
 
 ## Label audit
 
@@ -54,21 +54,21 @@ Source: `data/label_audit.jsonl`.
 
 | Verdict | Rows | Where they are |
 |---|---:|---|
-| `ok` | 296 | `solutions/` 291, `solutions-ungateable/` 4, `solutions-disputed/` 1 |
-| `mismatch` | 201 | `solutions-disputed/` |
-| `unsure` | 9 | `solutions-unsure/` 8, `solutions-ungateable/` 1 |
+| `ok` | 301 | `solutions/` 296, `solutions-ungateable/` 4, `solutions-disputed/` 1 |
+| `mismatch` | 202 | `solutions-disputed/` |
+| `unsure` | 3 | `solutions-unsure/` 2, `solutions-ungateable/` 1 |
 
-`solutions-disputed/` (202 rows):
+`solutions-disputed/` (203 rows):
 
 | Item | Count |
 |---|---|
-| Round, by `auditor` field (an override counts in the round it overrides) | r3: 120, r4: 82 |
-| Cause | `label` 159, `translation` 34, `both` 5, `harness` 3, none 1 (`1950_45`) |
-| Confidence | high 101, medium 96, low 5 |
-| `true_class: other` | 74 |
+| Round, by `auditor` field (an override counts in the round it overrides) | r3: 120, r4: 81, io-rule: 2 |
+| Cause | `label` 160, `translation` 34, `both` 5, `harness` 3, none 1 (`1950_45`) |
+| Confidence | high 103, medium 95, low 5 |
+| `true_class: other` | 75 |
 | With a proof in `solutions-proved/` | 52 |
 
-`solutions-unsure/`: 6 of the 8 wait on the `ParseInt` charge.
+`solutions-unsure/`: 2 rows, each on its own question (`solutions-unsure/README.md`).
 
 `solutions-unscreened/` (source `data/quarantine.jsonl`): all 127 quarantined;
 `sibling-convergence` 109, `set-build-quadratic` 22 (4 rows have both).
@@ -79,9 +79,9 @@ Source: `data/complexity_proofs.jsonl`, the tree.
 
 | Row is in | Proofs |
 |---|---:|
-| `solutions/` | 264 |
+| `solutions/` | 267 |
 | `solutions-disputed/` | 52 |
-| `solutions-unsure/` | 4 |
+| `solutions-unsure/` | 1 |
 | `solutions-unscreened/` | 1 |
 
 Labels proved: `O(n)` 150 · `O(nlogn)` 67 · `O(n**2)` 40 · `O(1)` 32 ·

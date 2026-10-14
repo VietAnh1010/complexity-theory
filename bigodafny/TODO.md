@@ -42,9 +42,6 @@ Open items only. When one is done, delete it and add a line to `CHANGELOG.md`.
 
 ## Labels
 
-- [ ] Decide what `ParseInt` costs. The audit prompt charges a number its digit
-      count; the proofs charge it 1. Six `unsure` rows wait on this
-      (`solutions-unsure/README.md`).
 - [ ] `label_audit.py apply` only finds rows in `solutions/`,
       `solutions-disputed/` and `solutions-unsure/`. Auditing
       `solutions-unscreened/` needs it extended.

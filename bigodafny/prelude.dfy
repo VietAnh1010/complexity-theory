@@ -185,6 +185,69 @@ module Prelude {
     if |parts| == 0 then 0 else |parts[0]| + SumLen(parts[1..])
   }
 
+  lemma SumLenSnoc(parts: seq<string>, s: string)
+    ensures SumLen(parts + [s]) == SumLen(parts) + |s|
+    decreases |parts|
+  {
+    if |parts| > 0 {
+      assert (parts + [s])[1..] == parts[1..] + [s];
+      SumLenSnoc(parts[1..], s);
+    }
+  }
+
+  lemma SumLenElem(parts: seq<string>, k: nat)
+    requires k < |parts|
+    ensures |parts[k]| <= SumLen(parts)
+    decreases |parts|
+  {
+    if k > 0 { SumLenElem(parts[1..], k - 1); }
+  }
+
+  lemma SumLenPrefix(parts: seq<string>, k: nat)
+    requires k <= |parts|
+    ensures SumLen(parts[..k]) <= SumLen(parts)
+    decreases |parts| - k
+  {
+    if k < |parts| {
+      assert parts[..k + 1] == parts[..k] + [parts[k]];
+      SumLenSnoc(parts[..k], parts[k]);
+      SumLenPrefix(parts, k + 1);
+    } else {
+      assert parts[..k] == parts;
+    }
+  }
+
+  // The input length of a `seq<seq<string>>` argument (COMPLEXITY.md).
+  ghost function SumLen2(rows: seq<seq<string>>): nat
+    decreases |rows|
+  {
+    if |rows| == 0 then 0 else SumLen(rows[0]) + SumLen2(rows[1..])
+  }
+
+  lemma SumLen2Snoc(rows: seq<seq<string>>, r: seq<string>)
+    ensures SumLen2(rows + [r]) == SumLen2(rows) + SumLen(r)
+    decreases |rows|
+  {
+    if |rows| > 0 {
+      assert (rows + [r])[1..] == rows[1..] + [r];
+      SumLen2Snoc(rows[1..], r);
+    }
+  }
+
+  lemma SumLen2Prefix(rows: seq<seq<string>>, k: nat)
+    requires k <= |rows|
+    ensures SumLen2(rows[..k]) <= SumLen2(rows)
+    decreases |rows| - k
+  {
+    if k < |rows| {
+      assert rows[..k + 1] == rows[..k] + [rows[k]];
+      SumLen2Snoc(rows[..k], rows[k]);
+      SumLen2Prefix(rows, k + 1);
+    } else {
+      assert rows[..k] == rows;
+    }
+  }
+
   ghost function SumDigits(xs: seq<int>): nat
     decreases |xs|
   {
@@ -719,6 +782,21 @@ module Prelude {
     if b == 0 then 1 else 1 + GcdSteps(b, a % b)
   }
 
+  lemma SmallMod(a: int, b: int)
+    requires 0 <= a < b
+    ensures a % b == a
+  {}
+
+  lemma ModUpper(b: int, r: int)
+    requires 0 < r <= b < 2 * r
+    ensures b % r == b - r
+  {
+    var q := b / r;
+    assert b == q * r + b % r && 0 <= b % r < r;
+    if q >= 2 { assert q * r >= 2 * r by { assert (q - 2) * r >= 0; } }
+    else if q <= 0 { assert q * r <= 0 by { assert (-q) * r >= 0; } }
+  }
+
   lemma GcdStepsBound(a: int, b: int)
     requires a >= 0 && b >= 0
     ensures GcdSteps(a, b) <= 2 * CeilLog2(b + 1) + 2
@@ -729,10 +807,7 @@ module Prelude {
       if r1 > 0 {
         var r2 := b % r1;
         // r2 < b / 2: either r1 is at most half of b, or b % r1 == b - r1
-        if 2 * r1 > b {
-          assert b / r1 == 1;
-          assert r2 == b - r1;
-        }
+        if 2 * r1 > b { ModUpper(b, r1); }
         assert 2 * r2 < b;
         GcdStepsBound(r1, r2);
         assert r2 + 1 <= (b + 2) / 2;
@@ -767,7 +842,7 @@ module Prelude {
       var r := a % b;
       assert GcdSteps(a, b) == 1 + GcdSteps(b, r);
       if a < b {
-        assert r == a;
+        SmallMod(a, b);
       } else {
         assert r < b <= a;
       }
@@ -794,7 +869,7 @@ module Prelude {
       if b <= a {
         GcdLeSecond(a, b);
       } else {
-        assert a % b == a;
+        SmallMod(a, b);
         GcdLeSecond(b, a);
       }
     }

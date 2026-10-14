@@ -10,6 +10,28 @@ data lines go to `old-record.jsonl` beside the file they came from.
 
 ## 2026-10-14
 
+- Input and output each count once: one read (find token boundaries, convert
+  each token) and one write (format, assemble, join). Any further pass is
+  work, e.g. a separate format check or a string built by prepending.
+  `1047_641` re-filed as `other` (`verdicts_io-rule-3.jsonl`).
+- Reading the input includes hand-written tokenizers and numeral parsers in any
+  base, not only the prelude's. `1047_26` (cell names, base-26 columns) moves
+  to `solutions/` (`verdicts_io-rule-2.jsonl`).
+- `label_audit.py apply` and `proofs.py` archive each line they replace in
+  `data/old-record.jsonl`; they used to overwrite it.
+- Input length is its own size, excluded like `|output|` (`COMPLEXITY.md`).
+  `ParseInt` and `SplitWs` cost `|s|`; parsing `Solve`'s own arguments goes in
+  an input term (`|s|`, `SumLen`, `SumLen2`). Eight proofs that charged a parse
+  as a constant or not at all are re-charged: `2015_175`, `2105_248`,
+  `2105_521`, `2217_247`, `378_91`, `976_1131`, `2942_42`, `2942_55`. The audit
+  prompt's table follows, including `IntToString` at its digit count.
+- The six unsure rows waiting on `ParseInt` re-filed
+  (`batches/labelaudit/verdicts_io-rule.jsonl`): `378_91`, `976_1131`,
+  `966_134`, `2854_30` to `solutions/`; `378_20` to `solutions-disputed/`
+  (`O(n*m)` label, `O(n)` code); `1047_26` stays, on a new question.
+- `GcdStepsBound`, `GcdStepsBoundFirst` and `GcdLeFirst` did not verify under
+  Z3 5.1.0, unnoticed because `dafny verify` skips included files. Fixed with
+  `SmallMod` and `ModUpper`; `proofs.py` now verifies the prelude.
 - The cloud environment runs Z3 5.1.0, matching the local pin.
 - `dataset.py` stops on a missing `numpy` instead of marking every row
   `unvalidatable`: outside `.venv` it had rewritten `dataset.jsonl` with all

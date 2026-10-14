@@ -38,10 +38,10 @@ memory or from an earlier message.
 
 | directory | rows | meaning |
 |---|---|---|
-| `solutions/` | 291 | valid, `dafny verify` clean, label screened and unsuspected |
+| `solutions/` | 296 | valid, `dafny verify` clean, label screened and unsuspected |
 | `solutions-unscreened/` | 127 | valid; the label was never screened (sibling reuse or `set<T>`) |
-| `solutions-disputed/` | 202 | valid; the audit says the label does not match the code |
-| `solutions-unsure/` | 8 | valid and verified; the label audit could not decide |
+| `solutions-disputed/` | 203 | valid; the audit says the label does not match the code |
+| `solutions-unsure/` | 2 | valid and verified; the label audit could not decide |
 | `solutions-ungateable/` | 5 | the gate cannot reach a verdict; the stored test data fails first |
 | `solutions-unverified/` | 3 | valid; safety obligations not discharged |
 | `solutions-untranslated/` | 4 | will not be translated; each file states why |
@@ -73,7 +73,7 @@ benchmark and load-bearing for this dataset.
 | `validate.py` | matches BigOBench's **stored** output | 534 `strict` rows |
 | `difftest.py` | matches **its own Python** | 100 `loose` rows |
 | `verify_all.py` | memory-safe for all inputs, no spec needed | everything |
-| `proofs.py` | complexity **proved**; fails on any `assume` | `solutions-proved/` |
+| `proofs.py` | complexity **proved**; fails on any `assume` | `solutions-proved/`, `prelude.dfy` |
 | `precheck.py` | every added `requires` holds on real inputs | anything with `requires` |
 | `label_audit.py siblings` | same-problem rows converged despite different labels | everything |
 | `label_audit.py` | the label describes what the code costs | `solutions/`, `solutions-disputed/` |
@@ -159,6 +159,10 @@ Sub-skills: `bigodafny-translate`, `bigodafny-verify`, `bigodafny-prove`.
   with `find_all()`; the fix never reached the other two. Use
   `validate.py --solutions-dir solutions-proved`, and for `loose` rows compare
   the emitted Python instead — identical compiled bytes beats a test sample.
+- **`dafny verify` skips included files.** A proof reports 0 errors while a
+  prelude lemma it calls does not verify; three Gcd lemmas sat that way after
+  the Z3 5.1.0 upgrade. `proofs.py` verifies the prelude; after editing the
+  prelude, run `dafny verify prelude.dfy` yourself.
 - **The cost model is stipulated, not measured.** `s[i := v]`, `m[k := v]`,
   `s + [x]`, `s[a..b]` and set insertion are all charged `1`, regardless of
   what the Python backend does with them. `bigodafny/COMPLEXITY.md` § The model is the

@@ -52,7 +52,9 @@ lemma ParseIntFromCost(s: string, i: nat, acc: int)
 
 method Solve(n: int, pairs: seq<seq<string>>) returns (output: string, ghost steps: nat)
   requires forall k :: 0 <= k < |pairs| ==> |pairs[k]| >= 2
-  ensures steps <= 8 * |pairs| + |output| + 6
+  // Each pair's tokens are read once (column 0 in the first loop, column 1 in
+  // the second); the 2 is slack from bounding one column by its whole row.
+  ensures steps <= 8 * |pairs| + 2 * SumLen2(pairs) + |output| + 6
 {
   var ct: map<int, int> := map[];
   var idx := 0;
@@ -60,30 +62,40 @@ method Solve(n: int, pairs: seq<seq<string>>) returns (output: string, ghost ste
   ghost var base1 := steps;
   while idx < |pairs|
     invariant 0 <= idx <= |pairs|
-    invariant steps <= base1 + 4 * idx
+    invariant steps <= base1 + 4 * idx + SumLen2(pairs[..idx])
     decreases |pairs| - idx
   {
     var x := ParseInt(pairs[idx][0]);
+    // reading the input: each token once
+    steps := steps + |pairs[idx][0]|;
+    SumLenElem(pairs[idx], 0);
     if x in ct {
       ct := ct[x := ct[x] + 1];
     } else {
       ct := ct[x := 1];
     }
+    assert pairs[..idx + 1] == pairs[..idx] + [pairs[idx]];
+    SumLen2Snoc(pairs[..idx], pairs[idx]);
     idx := idx + 1;
     steps := steps + 4;
   }
+  assert pairs[..|pairs|] == pairs;
   var lines: seq<string> := [];
   idx := 0;
   ghost var base2 := steps;
   while idx < |pairs|
     invariant 0 <= idx <= |pairs|
     invariant |lines| == idx
-    invariant steps <= base2 + 4 * idx
+    invariant steps <= base2 + 4 * idx + SumLen2(pairs[..idx])
     decreases |pairs| - idx
   {
     var y := ParseInt(pairs[idx][1]);
+    steps := steps + |pairs[idx][1]|;
+    SumLenElem(pairs[idx], 1);
     var c := if y in ct then ct[y] else 0;
     lines := lines + [IntToString((n - 1) + c) + " " + IntToString((n - 1) - c)];
+    assert pairs[..idx + 1] == pairs[..idx] + [pairs[idx]];
+    SumLen2Snoc(pairs[..idx], pairs[idx]);
     idx := idx + 1;
     steps := steps + 4;
   }
