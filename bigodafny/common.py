@@ -55,6 +55,9 @@ PROVED = ROOT / "solutions-proved"
 PROVED_VALUE = PROVED / "value-bounded"
 
 PRELUDE = ROOT / "prelude.dfy"
+# Parallel jobs for every gate that checks rows independently. One number, so a
+# timeout seen under one gate is not an artifact of a different load in another.
+WORKERS = 8
 
 # The one upstream file this pipeline reads. Pinned by name, not by "latest".
 SOURCE_URL = ("https://huggingface.co/datasets/facebook/BigOBench/"

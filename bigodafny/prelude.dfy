@@ -675,6 +675,7 @@ module Prelude {
   // Hand-written in 9 translations before this was centralized.
 
   function ParseInt(s: string): int
+    ensures |s| == 0 || s[0] != '-' ==> ParseInt(s) >= 0
   {
     if |s| == 0 then 0
     else if s[0] == '-' then -ParseIntFrom(s, 1, 0)
@@ -683,6 +684,7 @@ module Prelude {
   }
 
   function ParseIntFrom(s: string, i: nat, acc: int): int
+    ensures acc >= 0 ==> ParseIntFrom(s, i, acc) >= 0
     decreases |s| - i
   {
     if i >= |s| then acc

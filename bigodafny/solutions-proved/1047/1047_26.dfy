@@ -75,25 +75,6 @@ function NumToLetters(n: int): string
   else NumToLetters(n / 26) + ["ABCDEFGHIJKLMNOPQRSTUVWXYZ"[n % 26 - 1]]
 }
 
-function ParseIntFrom(s: string, i: nat, acc: int): int
-  requires 0 <= i <= |s|
-  requires acc >= 0
-  requires forall k :: i <= k < |s| ==> '0' <= s[k] <= '9'
-  ensures ParseIntFrom(s, i, acc) >= 0
-  decreases |s| - i
-{
-  if i == |s| then acc
-  else ParseIntFrom(s, i + 1, acc * 10 + (s[i] as int - '0' as int))
-}
-
-function ParseInt(s: string): int
-  requires forall k :: 0 <= k < |s| ==> '0' <= s[k] <= '9'
-  ensures ParseInt(s) >= 0
-{
-  ParseIntFrom(s, 0, 0)
-}
-
-
 method Solve(n: int, strings: seq<string>) returns (output: string, ghost steps: nat)
   ensures steps <= 41 * SumLen(strings) + 41 * |strings| + 3 + |output|
 {

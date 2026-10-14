@@ -7,10 +7,11 @@ Collapsing those into one number would hide which half of the pipeline broke.
 """
 from __future__ import annotations
 import argparse, json, shutil, subprocess, sys, tempfile
+from concurrent.futures import ProcessPoolExecutor
 from collections import Counter
 from pathlib import Path
 
-from common import (BUILD, DAFNY_VERSION, DATA, OUT, PRELUDE, UNSCREENED, SOLUTIONS,
+from common import (WORKERS, BUILD, DAFNY_VERSION, DATA, OUT, PRELUDE, UNSCREENED, SOLUTIONS,
                     UNVERIFIED, log, read_jsonl, write_json,
                     write_jsonl, DISPUTED, ROOT, UNSURE, in_spec)
 
@@ -169,8 +170,39 @@ def run_tests(task, sig, pydir, workdir, tiers, per_test, batch_timeout):
 TIERS = ("public_tests", "private_tests")
 
 
+def check_one(job):
+    t, dfy, sig, tiers, per_test, batch_timeout, out_prefix = job
+    sid = t["solution_id"]
+    work = BUILD / (out_prefix + sid)
+    work.mkdir(parents=True, exist_ok=True)
+    rec = {"solution_id": sid, "problem_id": t["problem_id"],
+           "problem_name": t["problem_name"],
+           "time_complexity_inferred": t["time_complexity_inferred"],
+           "dafny_version": DAFNY_VERSION, "dfy_path": str(dfy.relative_to(ROOT) if dfy.is_relative_to(ROOT)
+                            else dfy)}
+
+    pydir, err = build_one(dfy, work)
+    if err:
+        return {**rec, "status": "build", "error": err}
+
+    res, err = run_tests(t, sig, pydir, work, tiers, per_test, batch_timeout)
+    if err:
+        return {**rec, "status": "error", "error": err}
+
+    c = Counter(r["status"] for r in res)
+    oos = sum(not in_spec(t, x["input"]) for k in tiers for x in t["tests"].get(k, []))
+    if oos:
+        rec["tests_out_of_spec"] = oos
+    rec.update(status="valid" if c["pass"] == len(res) else "fail",
+               tests_total=len(res), tests_passed=c["pass"],
+               tests_failed=c["fail"], tests_timeout=c["timeout"],
+               tests_error=c["error"],
+               first_failure=next((r for r in res if r["status"] != "pass"), None))
+    return rec
+
+
 def validate(only=None, per_test=30, batch_timeout=900, solutions_dir=None,
-             out_prefix=""):
+             out_prefix="", workers=WORKERS):
     tiers = TIERS
     tasks = {t["solution_id"]: t for t in read_jsonl(DATA / "tasks.jsonl")}
     sigs = {s["problem_id"]: s for s in read_jsonl(DATA / "signatures.jsonl")}
@@ -217,43 +249,17 @@ def validate(only=None, per_test=30, batch_timeout=900, solutions_dir=None,
     log(f"validating {len(targets)} solutions "
         f"(tiers={'+'.join(tiers)}, per-test {per_test}s)")
 
+    jobs = [(t, dfy, sigs[t["problem_id"]], tiers, per_test, batch_timeout,
+             out_prefix) for t, dfy in targets]
     rows, tally = [], Counter()
-    for t, dfy in targets:
-        sid = t["solution_id"]
-        sig = sigs[t["problem_id"]]
-        work = BUILD / (out_prefix + sid)
-        work.mkdir(parents=True, exist_ok=True)
-        rec = {"solution_id": sid, "problem_id": t["problem_id"],
-               "problem_name": t["problem_name"],
-               "time_complexity_inferred": t["time_complexity_inferred"],
-               "dafny_version": DAFNY_VERSION, "dfy_path": str(dfy.relative_to(ROOT) if dfy.is_relative_to(ROOT)
-                                else dfy)}
-
-        pydir, err = build_one(dfy, work)
-        if err:
-            rec.update(status="build", error=err)
-            rows.append(rec); tally["build"] += 1
-            log(f"  {sid:>10}  BUILD FAILED")
-            continue
-
-        res, err = run_tests(t, sig, pydir, work, tiers, per_test, batch_timeout)
-        if err:
-            rec.update(status="error", error=err)
-            rows.append(rec); tally["error"] += 1
-            log(f"  {sid:>10}  HARNESS ERROR  {err.splitlines()[0][:80] if err else ''}")
-            continue
-
-        c = Counter(r["status"] for r in res)
-        oos = sum(not in_spec(t, x["input"]) for k in tiers for x in t["tests"].get(k, []))
-        if oos:
-            rec["tests_out_of_spec"] = oos
-        rec.update(status="valid" if c["pass"] == len(res) else "fail",
-                   tests_total=len(res), tests_passed=c["pass"],
-                   tests_failed=c["fail"], tests_timeout=c["timeout"],
-                   tests_error=c["error"],
-                   first_failure=next((r for r in res if r["status"] != "pass"), None))
-        rows.append(rec); tally[rec["status"]] += 1
-        log(f"  {sid:>10}  {rec['status'].upper():<6} {c['pass']}/{len(res)} tests")
+    # Rows are independent; map keeps them in target order.
+    with ProcessPoolExecutor(max_workers=workers) as ex:
+        for rec in ex.map(check_one, jobs):
+            rows.append(rec); tally[rec["status"]] += 1
+            log(f"  {rec['solution_id']:>10}  {rec['status'].upper():<6} "
+                + (f"{rec['tests_passed']}/{rec['tests_total']} tests"
+                   if "tests_total" in rec else (rec.get("error") or "").splitlines()[0][:80]
+                   if rec.get("error") else ""))
 
     # A partial run must never replace the canonical record: one
     # `validate.py --only X` once left data/validation.jsonl holding a single
@@ -330,6 +336,7 @@ def main(argv=None):
                          "(default partial_)")
     ap.add_argument("--solutions-dir", help="look for rows only in this directory "
                     "(a spot check: never writes the canonical record)")
+    ap.add_argument("--workers", type=int, default=WORKERS)
     ap.add_argument("--self-test", action="store_true",
                     help="test validate.py itself: a wrong answer must come back fail, "
                          "a compile error build, the untouched row valid")
@@ -338,7 +345,7 @@ def main(argv=None):
         return self_test()
     validate(only=set(a.only) if a.only else None,
              per_test=a.time_limit_per_test, out_prefix=a.out_prefix,
-             solutions_dir=a.solutions_dir)
+             solutions_dir=a.solutions_dir, workers=a.workers)
     return 0
 
 

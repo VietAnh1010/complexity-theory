@@ -39,37 +39,18 @@
 include "../../prelude.dfy"
 import opened Prelude
 
-function ParseIntFrom(s: string, i: nat, acc: int): int
-  requires 0 <= i <= |s|
-  decreases |s| - i
-{
-  if i == |s| then acc
-  else ParseIntFrom(s, i + 1, acc * 10 + (s[i] as int - '0' as int))
-}
-
-function ParseInt(s: string): int
-{
-  if |s| > 0 && s[0] == '-' then -ParseIntFrom(s, 1, 0)
-  else ParseIntFrom(s, 0, 0)
-}
-
-function ParseIntList(ss: seq<string>): seq<int>
-  decreases |ss|
-{
-  if |ss| == 0 then [] else [ParseInt(ss[0])] + ParseIntList(ss[1..])
-}
-
 
 method {:isolate_assertions} Solve(n_str: string, a_list_str: string) returns (output: string, ghost steps: nat)
-  requires var nums := ParseIntList(SplitWs(a_list_str));
-           var n := ParseInt(n_str);
-           n >= 0 && |nums| == n && forall k :: 0 <= k < |nums| ==> 1 <= nums[k] <= n
+  requires ParseInt(n_str) >= 0
+  requires |ParseInts(SplitWs(a_list_str))| == ParseInt(n_str)
+  requires forall k :: 0 <= k < |ParseInts(SplitWs(a_list_str))| ==>
+             1 <= ParseInts(SplitWs(a_list_str))[k] <= ParseInt(n_str)
   ensures var n := ParseInt(n_str);
           n >= 0 &&
           steps <= 5 * NLogN(n + 1) + 11 * n + |n_str| + |a_list_str| + |output| + 10
 {
   var n := ParseInt(n_str);
-  var nums := ParseIntList(SplitWs(a_list_str));
+  var nums := ParseInts(SplitWs(a_list_str));
   // reading the input: each parse is linear in the string it reads
   steps := 1 + |n_str| + |a_list_str|;
   ghost var N: nat := n + 1;

@@ -25,20 +25,6 @@
 include "../../prelude.dfy"
 import opened Prelude
 
-function ParseIntFrom(s: string, i: nat, acc: int): int
-  requires 0 <= i <= |s|
-  decreases |s| - i
-{
-  if i == |s| then acc
-  else ParseIntFrom(s, i + 1, acc * 10 + (s[i] as int - '0' as int))
-}
-
-function ParseInt(s: string): int
-{
-  if |s| > 0 && s[0] == '-' then -ParseIntFrom(s, 1, 0)
-  else ParseIntFrom(s, 0, 0)
-}
-
 method Solve(n: int, pairs: seq<seq<string>>) returns (output: string)
   requires forall k :: 0 <= k < |pairs| ==> |pairs[k]| >= 2
 {

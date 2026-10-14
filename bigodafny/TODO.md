@@ -51,6 +51,14 @@ Open items only. When one is done, delete it and add a line to `CHANGELOG.md`.
 
 ## Gates (an agent must not change a gate that judges its own work)
 
+- [ ] `85_71`: `requires CountOnesUpTo(d_list, |d_list|) >= 1` was never
+      checked on real inputs; `precheck.py` cannot translate the row's own
+      helper (status `unchecked`).
+- [ ] `precheck.py` cannot translate `var x := e; ...` in a `requires`. No row
+      uses it now; a new one would be `no-data`, not a pass.
+- [ ] `1039_146` (`solutions-unscreened/`) does not verify: map domain at the
+      `left[v]` update in its second loop. Unscreened rows are only verified
+      with `verify_all.py --unscreened`; run it once.
 - [ ] `audit.py` does not flag runs over budget. Known ones: `2128_34`
       (4 attempts, 480 s), `1582_118` and `2254_6` (4 attempts), `2704_92`
       (1,500 s), `2231_77` (420 s).

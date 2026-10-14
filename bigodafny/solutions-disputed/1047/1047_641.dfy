@@ -145,15 +145,6 @@ predicate IsRCFormat(s: string)
     j > i + 1 && j == |s|))
 }
 
-function ParseIntFrom(s: string, i: nat, acc: int): int
-  requires i <= |s|
-  decreases |s| - i
-{
-  if i == |s| then acc else ParseIntFrom(s, i + 1, acc * 10 + (s[i] as int - '0' as int))
-}
-
-function ParseInt(s: string): int { ParseIntFrom(s, 0, 0) }
-
 function ColToLetters(col: int, acc: string): string
   decreases col
 {

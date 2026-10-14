@@ -18,7 +18,7 @@ from collections import Counter
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 
-from common import (DATA, OUT, log, read_jsonl, write_json, write_jsonl,
+from common import (WORKERS, DATA, OUT, log, read_jsonl, write_json, write_jsonl,
                     DISPUTED, UNGATEABLE, UNSURE, in_spec)
 from validate import build_one, conv_expr, HARNESS
 from common import BUILD, UNSCREENED, SOLUTIONS, UNVERIFIED
@@ -164,7 +164,7 @@ def init(tasks, sigs):
     one.tasks, one.sigs = tasks, sigs
 
 
-def run(sids, tiers=("public_tests", "private_tests"), workers=6):
+def run(sids, tiers=("public_tests", "private_tests"), workers=WORKERS):
     tasks = {t["solution_id"]: t for t in read_jsonl(DATA / "tasks.jsonl")}
     sigs = {s["problem_id"]: s for s in read_jsonl(DATA / "signatures.jsonl")}
     log(f"differential-testing {len(sids)} rows against their own Python")
@@ -220,8 +220,8 @@ def run(sids, tiers=("public_tests", "private_tests"), workers=6):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--only", nargs="*")
+    ap.add_argument("--workers", type=int, default=WORKERS)
     ap.add_argument("--loose", action="store_true", help="all loose rows")
-    ap.add_argument("--workers", type=int, default=6)
     a = ap.parse_args()
     if a.loose:
         # Like validate.py, the sweep skips solutions-ungateable/: no run can

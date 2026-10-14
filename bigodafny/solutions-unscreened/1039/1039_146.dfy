@@ -27,30 +27,10 @@
 include "../../prelude.dfy"
 import opened Prelude
 
-function ParseIntFrom(s: string, i: nat, acc: int): int
-  requires 0 <= i <= |s|
-  decreases |s| - i
-{
-  if i == |s| then acc
-  else ParseIntFrom(s, i + 1, acc * 10 + (s[i] as int - '0' as int))
-}
-
-function ParseInt(s: string): int
-{
-  if |s| > 0 && s[0] == '-' then -ParseIntFrom(s, 1, 0)
-  else ParseIntFrom(s, 0, 0)
-}
-
-function ParseIntList(ss: seq<string>): seq<int>
-  decreases |ss|
-{
-  if |ss| == 0 then [] else [ParseInt(ss[0])] + ParseIntList(ss[1..])
-}
-
 
 method Solve(n_str: string, a_list_str: string) returns (output: string)
 {
-  var nums := ParseIntList(SplitWs(a_list_str));
+  var nums := ParseInts(SplitWs(a_list_str));
   var left: map<int, int> := map[];
   var i := 0;
   while i < |nums|

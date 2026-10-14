@@ -10,8 +10,9 @@ the proof is the stronger statement.
 """
 from __future__ import annotations
 import re, subprocess, sys
+from concurrent.futures import ThreadPoolExecutor
 
-from common import (DAFNY_VERSION, z3_version, DATA, UNSCREENED, SOLUTIONS, UNVERIFIED,
+from common import (WORKERS, DAFNY_VERSION, z3_version, DATA, UNSCREENED, SOLUTIONS, UNVERIFIED,
                     PROVED, PRELUDE, log, read_jsonl, write_jsonl, DISPUTED,
                     UNGATEABLE, UNSURE)
 
@@ -86,14 +87,13 @@ def scan_assumes():
     return hits
 
 
-def run():
+def run(workers=WORKERS):
     ds = {r["solution_id"]: r for r in read_jsonl(DATA / "dataset.jsonl")}
-    rows = []
     # value-bounded/ is nested inside solutions-proved/, so one rglob reaches
     # both; listing the two roots separately would double-count.
     files = sorted(PROVED.rglob("*.dfy")) if PROVED.exists() else []
     Z3 = z3_version()
-    for p in files:
+    def check(p):
         sid = p.stem
         text = p.read_text(encoding="utf-8")
         r = subprocess.run([DAFNY, "verify", str(p)],
@@ -102,7 +102,7 @@ def run():
         ok = r.returncode == 0 and "0 errors" in out
         # A proof that leans on `assume` proves nothing. Count them.
         assumes = len(re.findall(r"\bassume\b", text))
-        rows.append({
+        row = {
             "solution_id": sid,
             "label": ds.get(sid, {}).get("time_complexity_inferred"),
             "proved_bound": bound_of(text),
@@ -111,10 +111,20 @@ def run():
             "dafny_version": DAFNY_VERSION,
             "z3_version": Z3,
             "verifier_output": out.strip().splitlines()[-1] if out.strip() else "",
-        })
+        }
         log(f"  {sid:>10}  {'VERIFIED' if ok else 'FAILED  '}  "
-            f"label={rows[-1]['label']}  bound={rows[-1]['proved_bound']}"
+            f"label={row['label']}  bound={row['proved_bound']}"
             + ("  ASSUMES!" if assumes else ""))
+        return row
+    # One dafny process per proof, independent; map keeps file order.
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        rows = list(ex.map(check, files))
+    # Parallel load can push a proof past Z3's time limit (1582_118 verifies in
+    # 19 s alone). Re-check each failure alone; only that verdict is recorded.
+    for i, r in enumerate(rows):
+        if not r["verified"]:
+            log(f"  {r['solution_id']:>10}  failed under load; re-checking alone")
+            rows[i] = check(files[i])
     write_jsonl(DATA / "complexity_proofs.jsonl", rows, key="solution_id")
     n_ok = sum(r["verified"] for r in rows)
     n_assume = sum(1 for r in rows if r["assume_count"])

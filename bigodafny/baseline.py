@@ -20,7 +20,7 @@ from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
-from common import DATA, OUT, log, read_jsonl, write_jsonl, in_spec
+from common import WORKERS, DATA, OUT, log, read_jsonl, write_jsonl, in_spec
 
 RUNNER = r'''
 import json, signal, sys, io, os
@@ -96,7 +96,7 @@ def one(task, round_trip=False):
             else ("none" if c["pass"] == 0 else "partial")}
 
 
-def run(workers=8, round_trip=None):
+def run(workers=WORKERS, round_trip=None):
     tasks = [t for t in read_jsonl(DATA / "tasks.jsonl")
              if not round_trip or t["solution_id"] in round_trip]
     log(f"running {len(tasks)} original Python solutions against their own tests")
@@ -118,8 +118,8 @@ def run(workers=8, round_trip=None):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(prog="baseline.py")
-    ap.add_argument("--workers", type=int, default=8,
-                    help="rows run at the same time (default 8)")
+    ap.add_argument("--workers", type=int, default=WORKERS,
+                    help="rows run at the same time")
     ap.add_argument("--round-trip", nargs="+", metavar="SID",
                     help="run these rows' inputs through Input.from_str first")
     a = ap.parse_args()

@@ -10,6 +10,16 @@ data lines go to `old-record.jsonl` beside the file they came from.
 
 ## 2026-10-14
 
+- `validate.py` and `proofs.py` check rows in parallel; both ran one row at a
+  time. Every gate's `--workers` defaults to `common.WORKERS` (8); the
+  per-script defaults had been 6 or 8, never measured.
+  `proofs.py` re-checks a failure alone before recording it: load made
+  `1582_118` and `2913_309` time out, and both verify alone.
+- The nine rows with their own `ParseInt`/`ParseIntFrom` (and four proof copies)
+  use the prelude's. Prelude `ParseInt` now ensures a non-negative result
+  unless the text starts with `-`. The three `1039` files use `ParseInts` for
+  their `ParseIntList`; `1039_15`'s `requires` is written without `var` so
+  `precheck.py` can check it (3/3 `ok`; it had never been checked).
 - Tests outside a limit the problem statement sets are bogus: `validate.py`,
   `difftest.py`, `baseline.py` and `precheck.py` skip them and record the
   count. Limits live in `data/constraints.jsonl`, quoted from the statement,

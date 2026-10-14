@@ -15,7 +15,7 @@ from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
-from common import (DATA, OUT, UNSCREENED, ROOT, SOLUTIONS, UNGATEABLE, UNSURE, log, write_json,
+from common import (WORKERS, DATA, OUT, UNSCREENED, ROOT, SOLUTIONS, UNGATEABLE, UNSURE, log, write_json,
                     write_jsonl)
 
 DAFNY = "dafny"   # on PATH; dafny finds z3 on PATH itself
@@ -67,7 +67,7 @@ def one(path_str):
             "detail": "" if ok else (errs[0][:200] if errs else out.strip()[-200:])}
 
 
-def run(dirs, workers=8, move=False):
+def run(dirs, workers=WORKERS, move=False):
     files = [str(f) for d in dirs for f in sorted(d.rglob("*.dfy"))
              if "TODO: translate" not in f.read_text(encoding="utf-8")]
     log(f"verifying {len(files)} translations across {len(dirs)} directories")
@@ -107,7 +107,7 @@ def run(dirs, workers=8, move=False):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--move", action="store_true")
-    ap.add_argument("--workers", type=int, default=8)
+    ap.add_argument("--workers", type=int, default=WORKERS)
     ap.add_argument("--unscreened", action="store_true",
                     help="also verify solutions-unscreened/")
     a = ap.parse_args()

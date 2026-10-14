@@ -20,6 +20,9 @@
 {"clause": "n >= 0", "error": 0, "expr": "I.n >= 0", "holds": 111, "root": "solutions-proved", "solution_id": "1029_92", "status": "ok", "violated": 0}
 {"clause": "|a_list| == n", "error": 0, "expr": "len(I.a_list) == I.n", "holds": 111, "root": "solutions-proved", "solution_id": "1029_92", "status": "ok", "violated": 0}
 {"clause": "|b_list| == n", "error": 0, "expr": "len(I.b_list) == I.n", "holds": 111, "root": "solutions-proved", "solution_id": "1029_92", "status": "ok", "violated": 0}
+{"clause": "ParseInt(n_str) >= 0", "error": 0, "expr": "int(I.n_str) >= 0", "holds": 81, "out_of_spec": 0, "root": "solutions", "solution_id": "1039_15", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |ParseInts(SplitWs(a_list_str))| ==> 1 <= ParseInts(SplitWs(a_list_str))[k] <= ParseInt(n_str)", "error": 0, "expr": "all((1 <= [int(_t) for _t in (I.a_list_str).split()][k] <= int(I.n_str)) for k in range(0, (len([int(_t) for _t in (I.a_list_str).split()]))))", "holds": 81, "out_of_spec": 0, "root": "solutions", "solution_id": "1039_15", "status": "ok", "violated": 0}
+{"clause": "|ParseInts(SplitWs(a_list_str))| == ParseInt(n_str)", "error": 0, "expr": "len([int(_t) for _t in (I.a_list_str).split()]) == int(I.n_str)", "holds": 81, "out_of_spec": 0, "root": "solutions", "solution_id": "1039_15", "status": "ok", "violated": 0}
 {"clause": "N >= 0", "error": 0, "expr": "I.N >= 0", "holds": 42, "root": "solutions", "solution_id": "1053_38", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |a_list| ==> 1 <= a_list[k] <= N", "error": 0, "expr": "all((1 <= I.a_list[k] <= I.N) for k in range(len(I.a_list)))", "holds": 42, "root": "solutions", "solution_id": "1053_38", "status": "ok", "violated": 0}
 {"clause": "N >= 0", "error": 0, "expr": "I.N >= 0", "holds": 42, "root": "solutions-proved", "solution_id": "1053_38", "status": "ok", "violated": 0}
