@@ -42,8 +42,8 @@ public static class Cli {
             throw new ArgumentException($"unknown argument {option}");
         }
       }
-      if (annotate.Enabled.Except(Annotate.Rules).FirstOrDefault() is { } unknown) {
-        throw new ArgumentException($"unknown rule {unknown}; rules: {string.Join(", ", Annotate.Rules)}");
+      if (annotate.Enabled.Except(Annotate.Rules.Keys).FirstOrDefault() is { } unknown) {
+        throw new ArgumentException($"unknown rule {unknown}; rules: {string.Join(", ", Annotate.Rules.Keys)}");
       }
       return await RunAnnotate(src, dst, annotate);
     }

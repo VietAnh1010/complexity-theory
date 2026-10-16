@@ -27,7 +27,12 @@ public class Annotate {
   public string Counter = "steps";
   /// The cost rules to enable, by name: `enable=functions,seq`.
   public readonly HashSet<string> Enabled = [];
-  public static readonly string[] Rules = ["functions", "seq", "arrays"];
+  /// Each rule's name and constructor; a rule's argument is the counter name.
+  public static readonly Dictionary<string, Func<string, ICostRule>> Rules = new() {
+    ["functions"] = counter => new FunctionsRule(counter),
+    ["seq"] = _ => new SeqRule(),
+    ["arrays"] = _ => new ArraysRule(),
+  };
 
   readonly Dictionary<(int, int), INode> resolvedByRange = new();
   readonly Dictionary<(int, int), INode> parsedByRange = new();
@@ -45,8 +50,8 @@ public class Annotate {
     // Only expressions: CostModel copies them, and a right-hand side shares its
     // range with the ExprRhs around it.
     IndexByRange(parsedByRange, [.. parsedMethods, .. parsedFunctions], n => n is Expression);
-    var functions = new FunctionsRule(Counter);
-    costs = new CostModel(parsedByRange, Enabled.Select(name => RuleFor(name, functions)).ToList());
+    var rules = Enabled.Select(name => Rules[name](Counter)).ToList();
+    costs = new CostModel(parsedByRange, rules);
 
     foreach (var method in parsedMethods) {
       if (Declares(method, Counter)) {
@@ -54,22 +59,13 @@ public class Annotate {
       }
       annotatedMethods.Add(method.Name);
     }
-    if (Enabled.Contains("functions")) {
-      functions.AddCostFunctions(parsedFunctions, costs,
-        Ast.Members(parsedProgram.DefaultModuleDef).Select(m => m.Name).ToHashSet(),
-        f => (Function)resolvedByRange[Ast.Range(f)]);
-    }
+    rules.OfType<FunctionsRule>().SingleOrDefault()?.AddCostFunctions(parsedFunctions, costs,
+      Ast.Members(parsedProgram.DefaultModuleDef).Select(m => m.Name).ToHashSet(),
+      f => (Function)resolvedByRange[Ast.Range(f)]);
     foreach (var method in parsedMethods) {
       AddCounter(method);
     }
   }
-
-  static ICostRule RuleFor(string name, FunctionsRule functions) => name switch {
-    "functions" => functions,
-    "seq" => new SeqRule(),
-    "arrays" => new ArraysRule(),
-    _ => throw new ArgumentException($"unknown rule {name}"),
-  };
 
   void AddCounter(Method method) {
     var o = method.Origin;
@@ -155,53 +151,24 @@ public class Annotate {
   }
 
   /// What a statement's own expressions cost, its nested statements excluded.
-  Cost OwnCost(Statement s) {
-    var c = new Cost();
-    if (s.IsGhost) {
-      return c;
-    }
-    switch (s) {
-      case VarDeclStmt { Assign: null }:
-        return c;
-      case VarDeclStmt { Assign: var assign }:
-        return OwnCost(assign);
-      case VarDeclPattern p:
-        return costs.Of(p.RHS);
-      case WhileStmt or BlockStmt or BreakOrContinueStmt:
-        return c;   // a loop's guard is charged per iteration, in the body
-      case AssignStatement assign:
-        foreach (var r in assign.ResolvedStatements ?? []) {
-          if (r is SingleAssignStmt single) {
-            if (single.Lhs.Resolved is not IdentifierExpr) {
-              c.Add(costs.Of(single.Lhs));   // an indexed lhs, `a[i] := ..`
-            }
-            c.Add(costs.OfRhs(single.Rhs));
-          } else if (r is CallStmt call) {
-            AddAll(c, call.Args);
-          }
-        }
-        return c;
-      case IfStmt i:
-        return costs.Of(i.Guard);
-      case ForLoopStmt f:
-        AddAll(c, [f.Start, f.End]);
-        return c;
-      case ReturnStmt r:
-        AddAll(c, (r.Rhss ?? []).OfType<ExprRhs>().Select(rhs => rhs.Expr));
-        return c;
-      case PrintStmt p:
-        AddAll(c, p.Args);
-        return c;
-      default:
-        throw new Unsupported(s, s.GetType().Name);
-    }
-  }
-
-  void AddAll(Cost c, IEnumerable<Expression> es) {
-    foreach (var e in es) {
-      c.Add(costs.Of(e));
-    }
-  }
+  /// A loop's guard is charged per iteration, in the body.
+  Cost OwnCost(Statement s) => s switch {
+    { IsGhost: true } or VarDeclStmt { Assign: null } or WhileStmt or BlockStmt or BreakOrContinueStmt => new Cost(),
+    VarDeclStmt { Assign: var assign } => OwnCost(assign),
+    VarDeclPattern p => costs.Of(p.RHS),
+    AssignStatement assign => Cost.Sum((assign.ResolvedStatements ?? []).Select(r => r switch {
+      // an indexed lhs, `a[i] := ..`, costs its index
+      SingleAssignStmt single => Cost.Sum([single.Lhs.Resolved is IdentifierExpr ? new Cost() : costs.Of(single.Lhs),
+                                           costs.OfRhs(single.Rhs)]),
+      CallStmt call => costs.OfAll(call.Args),
+      _ => throw new Unsupported(r, r.GetType().Name),
+    })),
+    IfStmt i => costs.Of(i.Guard),
+    ForLoopStmt f => costs.OfAll([f.Start, f.End]),
+    ReturnStmt r => Cost.Sum((r.Rhss ?? []).Select(costs.OfRhs)),
+    PrintStmt p => costs.OfAll(p.Args),
+    _ => throw new Unsupported(s, s.GetType().Name),
+  };
 
   /// The method a resolved statement calls, if it is a call.
   static string CalleeOf(Statement s) {
