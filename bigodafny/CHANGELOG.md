@@ -8,6 +8,22 @@ change lands, update them and add a bullet here.
 A campaign's own run record stays in `batches/<campaign>/README.md`. Superseded
 data lines go to `old-record.jsonl` beside the file they came from.
 
+## 2026-10-16
+
+- A function the row defines costs its cost function `F_steps`: same
+  parameters, `requires` and `decreases`, body the cost of `F`'s body
+  (`COMPLEXITY.md`). Replaces "recursive sequence/string helpers: argument
+  length". Existing proofs keep their class: for a helper that recurses once
+  per element with constant work, argument length is within a constant factor
+  of `F_steps`. `fuzzing/` `annotate enable=functions` generates `F_steps`.
+- `seq(n, f)` costs `n` plus each `f(i)`'s cost (`COMPLEXITY.md`); the table
+  had no entry for it.
+- `COMPLEXITY.md` charges arrays (`new T[n]` costs `n`), `let` and lambdas. It said the model had no arrays and two rows
+  used them; 17 rows allocate arrays.
+- `531_3456` and `1722_66`: a `forall`/`exists` helper is now a recursive scan
+  with early exit, as their Python is; `annotate` refuses quantifiers in
+  compiled code. Both still pass `validate.py`, `dafny verify`, `precheck.py`.
+
 ## 2026-10-14
 
 - Input and output each count once and are excluded from the class, like

@@ -156,6 +156,7 @@ function Digits1722_66(i: int): seq<int>
 }
 
 function ContainsInt1722_66(xs: seq<int>, v: int): bool
+  decreases |xs|
 {
-  exists k :: 0 <= k < |xs| && xs[k] == v
+  |xs| > 0 && (xs[0] == v || ContainsInt1722_66(xs[1..], v))
 }

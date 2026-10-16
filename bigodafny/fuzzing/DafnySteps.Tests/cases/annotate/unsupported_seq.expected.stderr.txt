@@ -1,0 +1,1 @@
+unsupported_seq.dfy: line 4: seq(n, f) is not in the cost model (use enable=seq)

@@ -1,9 +1,4 @@
 
-function Twice(x: int): int
-{
-  2 * x
-}
-
 method Solve(n: int) returns (output: int, ghost steps: nat)
 {
   steps := 0;
@@ -13,8 +8,8 @@ method Solve(n: int) returns (output: int, ghost steps: nat)
   ghost var s1: nat;
   output, s1 := Helper(a + 1);
   steps := steps + s1;
-  steps := steps + 2;
-  output := output + Twice(n);
+  steps := steps + 1;
+  output := output + n;
 }
 
 method Helper(x: int) returns (r: int, ghost steps: nat)

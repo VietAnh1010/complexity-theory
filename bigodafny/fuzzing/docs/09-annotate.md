@@ -1,4 +1,4 @@
-# 9. annotate (`Annotate.cs`, `CostModel.cs`)
+# 9. annotate (`Annotate.cs`, `CostModel.cs`, `CostRules.cs`)
 
 Adds a ghost `steps` counter to a row that has none. Costs follow
 `bigodafny/COMPLEXITY.md`.
@@ -6,12 +6,30 @@ Adds a ghost `steps` counter to a row that has none. Costs follow
 ## Usage
 
 ```bash
-DafnySteps/bin/Release/net10.0/DafnySteps annotate IN.dfy OUT.dfy [counter=NAME]
+DafnySteps/bin/Release/net10.0/DafnySteps annotate IN.dfy OUT.dfy [counter=NAME] [enable=functions,seq,arrays]
 ```
 
-- Prints a note on stderr for each cost that `COMPLEXITY.md` does not define.
-- Exits with 1 if IN is missing, has errors, or already has a variable named `steps`.
+- By default it charges only what `COMPLEXITY.md`'s table covers.
+- Any other code stops it with an error that names the code and its line.
+- `enable=` turns on extra rules for code outside the table (below).
+- Exits with 1 if IN is missing, has errors, contains code it cannot charge,
+  or already has a variable named `steps`.
 - The output states no bound on `steps`. Adding the bound and its loop invariants is the proof's job.
+
+## Rules
+
+| Rule | Charges |
+|---|---|
+| `functions` | a call `F(x)` to the row's own function: `F_steps(x)` |
+| `seq` | `seq(n, i => e)`: `(1 + k) * n` if `e` costs a constant `k`; else `n + SumSeq(seq(n, i => <cost of e>))` |
+| `arrays` | `new T[n]`: `n`; `new T[n, m]`: `n * m`; `new T[n](i => e)`: as `seq`; `new T[] [a, b]`: as a display |
+
+For `functions`, `annotate` adds `ghost function F_steps` after each function
+`F` in the file, with `F`'s parameters, `requires` and `decreases`. Its body is
+the cost of `F`'s body; a recursive call costs `F_steps` again.
+
+To add a rule: write a class implementing `ICostRule` in `CostRules.cs`, and
+add its name to `Annotate.Rules` and `Annotate.RuleFor`.
 
 ## What it adds to each method
 
@@ -21,18 +39,24 @@ DafnySteps/bin/Release/net10.0/DafnySteps annotate IN.dfy OUT.dfy [counter=NAME]
 - After a `while`: the cost of the last, false condition.
 - After a call to another method in the file: that method's `steps`.
 
-## Costs (`CostModel.Of`)
+## Costs without rules (`CostModel.Of`)
 
 | Expression | Cost |
 |---|---|
 | literal, variable | 0 |
 | operator, index, update | 1 + operands |
 | `a && b`, `a \|\| b` | 1 + a, + b only if b is evaluated |
+| `if c then x else y` | 1 + c + the branch taken |
+| `var x := e; body` | e + body |
+| `var (a, b) := e;` | e |
+| a lambda | 0; its body is charged where it is called |
+| `assert P; e` | e |
 | `s + t` on sequences | operands + `\|t\|` |
 | `[a, b, c]` | elements + 1 per element |
 | `m.Keys`, `m.Values` | `\|m\|` |
 | prelude function | as in `COMPLEXITY.md`, e.g. `IntToString(x)` costs `Digits(x)` |
-| the row's own function, comprehension, lambda | 1, with a note |
+| `forall`/`exists` in compiled code | error; write a loop instead |
+| anything else | error |
 
 ## Example
 

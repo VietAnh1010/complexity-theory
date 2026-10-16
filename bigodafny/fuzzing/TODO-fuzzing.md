@@ -42,9 +42,20 @@ Prototype, in development. Nothing here is a gate. `CHANGELOG.md`, `DOCS.md`,
 - [x] `annotate`: counter, charges per COMPLEXITY.md, call steps via a ghost lhs
 - [ ] `annotate` drops comments: the printer does not keep them, so a row's
       header (the Python source) is lost
-- [ ] `annotate` charges a row's own functions 1 each, and `seq(n, f)` only `n`;
-      each such charge is reported as a note
-- [ ] `annotate`: AlternativeStmt, match statements, `:-` calls not charged
+- [x] `annotate` stops on code outside the cost model; `enable=functions,seq`
+      adds rules for row functions (`F_steps`) and `seq(n, i => e)`
+- [x] Rule `arrays`; `let`, lambdas, tuple patterns, `assert P; e` in the table.
+      A quantifier in compiled code is an error; `531_3456` and `1722_66` now
+      recurse instead. With `enable=functions,seq,arrays`, 629 of 636 rows annotate.
+- [ ] `var x :| P` stops `annotate` (5 rows). Decide per kind:
+      - int-range search (`1453_483`, `1332_41`): rewrite as a loop, like the
+        quantifiers, or charge it as a loop over the range?
+      - pick from a set, `var x :| x in gg` (`976_1131`, `960_63`, `960_36`):
+        cost 1, or `|gg|`? Under `|gg|`, a loop that empties a set by picking
+        looks quadratic.
+- [ ] Rows `2128_34`, `2826_42`: headers may still say the model has no arrays;
+      `COMPLEXITY.md` now charges them.
+- [ ] `annotate`: AlternativeStmt, match statements, `:-` calls stop it (no rule yet)
 - [ ] `stepfuzz.py`: default size mixes lengths and values; use `--measure`
 - [ ] `TraceBound` is `true` when Solve has no `ensures` (annotated rows)
 - [ ] Decide what to gather from a trace. The consumer is an LLM agent, so a
@@ -55,5 +66,5 @@ Prototype, in development. Nothing here is a gate. `CHANGELOG.md`, `DOCS.md`,
       hit: `--trace` costs one Python call pair per event (`5_100`: 1.2 s
       untraced, 9.1 s traced, 14M events). A compiled stride was rejected as
       too complicated.
-- [ ] `annotate` refuses a row that already declares `steps` (`1387_34`);
+- [ ] `annotate` refuses a row that already declares `steps` (`1387_34`, `1336_157`);
       `counter=NAME` works, but `steptrace.py` has no `--counter` yet

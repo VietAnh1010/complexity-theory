@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
 # Run deghost and annotate on one row; write inputs and outputs to demo/<problem>/.
-#   scripts/demo.sh SID [--run]
+#   scripts/demo.sh SID [--run] [enable=functions,seq,arrays]
 # deghost runs on the row's proof copy (solutions-proved/), annotate on the
 # row itself; a missing input skips that pass. --run also runs steptrace.py on
-# both, keeping each one's summary.
+# both, keeping each one's summary. Other options go to annotate.
 set -euo pipefail
 cd "$(dirname "$0")/.."                       # fuzzing/
-sid=${1:?usage: scripts/demo.sh SID [--run]}
-run=${2:-}
+sid=${1:?usage: scripts/demo.sh SID [--run] [enable=functions,seq,arrays]}
+shift
+run=
+options=()
+for a in "$@"; do
+  if [[ $a == --run ]]; then run=--run; else options+=("$a"); fi
+done
 pid=${sid%%_*}
 out=demo/$pid
 tool=DafnySteps/bin/Release/net10.0/DafnySteps
@@ -34,8 +39,7 @@ fi
 if [[ -n $plain ]]; then
   echo "annotate  $plain"
   cp "$plain" "$out/$sid.plain.dfy"
-  $tool annotate "$plain" "$out/$sid.annotate.dfy" 2> "$out/$sid.annotate.notes.txt"
-  echo "          $(wc -l < "$out/$sid.annotate.notes.txt") notes"
+  $tool annotate "$plain" "$out/$sid.annotate.dfy" "${options[@]}"
   dafny resolve "$out/$sid.annotate.dfy" | tail -1
 else
   echo "annotate  skipped: no row $sid"

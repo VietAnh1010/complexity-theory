@@ -28,7 +28,7 @@ An input that breaks it shows the guess is too low.
 
 | Step | Tool | Status |
 |---|---|---|
-| add a ghost counter | `DafnySteps annotate` | works; some costs are charged 1 with a note (09) |
+| add a ghost counter | `DafnySteps annotate` | works; stops on code outside the cost model unless a rule is enabled (09) |
 | make it run | `DafnySteps deghost` | works |
 | run on stored tests | `steptrace.py --dfy FILE` | works on any file |
 | fuzz | `stepfuzz.py --dfy FILE` | works on any file |
@@ -70,7 +70,7 @@ scripts/demo.sh 2286_319 --run              # annotate, deghost and steptrace on
 One round of the loop on row `2286_319`:
 
 ```bash
-DafnySteps/bin/Release/net10.0/DafnySteps annotate ../solutions/2286/2286_319.dfy counted.dfy
+DafnySteps/bin/Release/net10.0/DafnySteps annotate ../solutions/2286/2286_319.dfy counted.dfy enable=functions,seq,arrays
 python3 steptrace.py 2286_319 --dfy counted.dfy    # steps on each stored test
 python3 stepfuzz.py 2286_319 --dfy counted.dfy     # costliest input for each size
 ```

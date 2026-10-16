@@ -15,8 +15,9 @@
 // - for a call `x := M(..)` to an annotated method, a ghost lhs `s<k>` that
 //   receives M's steps, added to `steps` after the call.
 //
-// The output resolves but does not verify: invariants and the bound are the
-// proof's work. A charge the model does not cover is recorded in Notes.
+// The output states no bound on the counter; that is the proof's work.
+// Code the model does not cover stops the pass (Unsupported) unless a rule
+// for it is enabled (CostRules.cs).
 using Microsoft.Dafny;
 using DafnyProgram = Microsoft.Dafny.Program;
 
@@ -24,7 +25,9 @@ namespace DafnySteps;
 
 public class Annotate {
   public string Counter = "steps";
-  public readonly List<string> Notes = [];
+  /// The cost rules to enable, by name: `enable=functions,seq`.
+  public readonly HashSet<string> Enabled = [];
+  public static readonly string[] Rules = ["functions", "seq", "arrays"];
 
   readonly Dictionary<(int, int), INode> resolvedByRange = new();
   readonly Dictionary<(int, int), INode> parsedByRange = new();
@@ -37,9 +40,13 @@ public class Annotate {
   public void Apply(DafnyProgram resolvedProgram, DafnyProgram parsedProgram, Uri file) {
     var resolvedMethods = MethodsOf(resolvedProgram, file);
     var parsedMethods = MethodsOf(parsedProgram, file);
-    IndexByRange(resolvedByRange, resolvedMethods);
-    IndexByRange(parsedByRange, parsedMethods);
-    costs = new CostModel(parsedByRange, Notes);
+    var parsedFunctions = FunctionsOf(parsedProgram, file);
+    IndexByRange(resolvedByRange, [.. resolvedMethods, .. FunctionsOf(resolvedProgram, file)]);
+    // Only expressions: CostModel copies them, and a right-hand side shares its
+    // range with the ExprRhs around it.
+    IndexByRange(parsedByRange, [.. parsedMethods, .. parsedFunctions], n => n is Expression);
+    var functions = new FunctionsRule(Counter);
+    costs = new CostModel(parsedByRange, Enabled.Select(name => RuleFor(name, functions)).ToList());
 
     foreach (var method in parsedMethods) {
       if (Declares(method, Counter)) {
@@ -47,10 +54,22 @@ public class Annotate {
       }
       annotatedMethods.Add(method.Name);
     }
+    if (Enabled.Contains("functions")) {
+      functions.AddCostFunctions(parsedFunctions, costs,
+        Ast.Members(parsedProgram.DefaultModuleDef).Select(m => m.Name).ToHashSet(),
+        f => (Function)resolvedByRange[Ast.Range(f)]);
+    }
     foreach (var method in parsedMethods) {
       AddCounter(method);
     }
   }
+
+  static ICostRule RuleFor(string name, FunctionsRule functions) => name switch {
+    "functions" => functions,
+    "seq" => new SeqRule(),
+    "arrays" => new ArraysRule(),
+    _ => throw new ArgumentException($"unknown rule {name}"),
+  };
 
   void AddCounter(Method method) {
     var o = method.Origin;
@@ -70,8 +89,7 @@ public class Annotate {
       } else if (resolvedByRange.GetValueOrDefault(Ast.Range(s)) is Statement resolved) {
         ChargeStatement(s, resolved, body);
       } else {
-        Notes.Add($"line {Ast.Line(s)}: no resolved statement for {s.GetType().Name}; not charged");
-        body.Add(s);
+        throw new Unsupported(s, $"{s.GetType().Name} with no resolved statement");
       }
     }
     block.Body.Clear();
@@ -123,8 +141,7 @@ public class Annotate {
         assign.Lhss.Add(new NameSegment(o, temp, null));
         break;
       default:
-        Notes.Add($"line {Ast.Line(call)}: call to {callee} in a {call.GetType().Name}; its steps are not added");
-        return;
+        throw new Unsupported(call, $"call to {callee} in a {call.GetType().Name}");
     }
     body.Add(AddToCounter(o, new NameSegment(o, temp, null)));
   }
@@ -144,9 +161,12 @@ public class Annotate {
       return c;
     }
     switch (s) {
-      case VarDeclStmt { Assign: AssignStatement assign }:
+      case VarDeclStmt { Assign: null }:
+        return c;
+      case VarDeclStmt { Assign: var assign }:
         return OwnCost(assign);
-      case VarDeclStmt:
+      case VarDeclPattern p:
+        return costs.Of(p.RHS);
       case WhileStmt or BlockStmt or BreakOrContinueStmt:
         return c;   // a loop's guard is charged per iteration, in the body
       case AssignStatement assign:
@@ -155,11 +175,7 @@ public class Annotate {
             if (single.Lhs.Resolved is not IdentifierExpr) {
               c.Add(costs.Of(single.Lhs));   // an indexed lhs, `a[i] := ..`
             }
-            if (single.Rhs is ExprRhs rhs) {
-              c.Add(costs.Of(rhs.Expr));
-            } else if (single.Rhs is not HavocRhs) {
-              Notes.Add($"line {Ast.Line(s)}: {single.Rhs.GetType().Name} not charged");
-            }
+            c.Add(costs.OfRhs(single.Rhs));
           } else if (r is CallStmt call) {
             AddAll(c, call.Args);
           }
@@ -177,8 +193,7 @@ public class Annotate {
         AddAll(c, p.Args);
         return c;
       default:
-        Notes.Add($"line {Ast.Line(s)}: {s.GetType().Name} not charged");
-        return c;
+        throw new Unsupported(s, s.GetType().Name);
     }
   }
 
@@ -206,10 +221,15 @@ public class Annotate {
     Ast.Members(program.DefaultModuleDef).OfType<Method>()
       .Where(m => m is not Lemma && !m.IsGhost && m.Body != null && m.Origin.Uri == file).ToList();
 
-  static void IndexByRange(Dictionary<(int, int), INode> index, IEnumerable<INode> roots) {
+  static List<Function> FunctionsOf(DafnyProgram program, Uri file) =>
+    Ast.Members(program.DefaultModuleDef).OfType<Function>()
+      .Where(f => !f.IsGhost && f.Body != null && f.Origin.Uri == file).ToList();
+
+  static void IndexByRange(Dictionary<(int, int), INode> index, IEnumerable<INode> roots,
+                           Func<INode, bool> keep = null) {
     foreach (var root in roots) {
       // Ancestors come first, so a range keeps its outermost node.
-      foreach (var node in Ast.Descendants(root).Prepend(root)) {
+      foreach (var node in Ast.Descendants(root).Prepend(root).Where(keep ?? (_ => true))) {
         index.TryAdd(Ast.Range(node), node);
       }
     }

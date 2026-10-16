@@ -1,0 +1,1 @@
+unsupported_array.dfy: line 4: new array is not in the cost model (use enable=arrays)

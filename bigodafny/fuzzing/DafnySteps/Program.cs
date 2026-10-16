@@ -2,9 +2,9 @@
 //   DafnySteps deghost IN.dfy OUT.dfy [trace] [contracts] [counter=steps] [points=P.json]
 // prints the deghosted program (included files inlined) so it can be read and
 // tested; the plugin (Plugin.cs) applies the same pass inside `dafny`.
-//   DafnySteps annotate IN.dfy OUT.dfy [counter=steps]
-// prints IN with a ghost step counter added (Annotate.cs); notes on charges
-// the cost model does not cover go to stderr.
+//   DafnySteps annotate IN.dfy OUT.dfy [counter=steps] [enable=functions,seq,arrays]
+// prints IN with a ghost step counter added (Annotate.cs). Code the cost model
+// does not cover is an error, unless `enable=` names a rule for it (CostRules.cs).
 using System.Text.Json;
 using Microsoft.Dafny;
 
@@ -28,13 +28,28 @@ public static class Cli {
   }
 
   public static async Task<int> Main(string[] args) {
-    if (args is ["annotate", var src, var dst, ..]) {
-      return await RunAnnotate(src, dst, args.Skip(3).Select(a => a.Split('=', 2)) is var kv
-        && kv.FirstOrDefault(x => x[0] == "counter") is [_, var c] ? c : "steps");
+    if (args is ["annotate", var src, var dst, .. var options]) {
+      var annotate = new Annotate();
+      foreach (var option in options) {
+        switch (option.Split('=', 2)) {
+          case ["counter", var name]:
+            annotate.Counter = name;
+            break;
+          case ["enable", var names]:
+            annotate.Enabled.UnionWith(names.Split(','));
+            break;
+          default:
+            throw new ArgumentException($"unknown argument {option}");
+        }
+      }
+      if (annotate.Enabled.Except(Annotate.Rules).FirstOrDefault() is { } unknown) {
+        throw new ArgumentException($"unknown rule {unknown}; rules: {string.Join(", ", Annotate.Rules)}");
+      }
+      return await RunAnnotate(src, dst, annotate);
     }
     if (args is not ["deghost", var input, var output, ..]) {
       Console.Error.WriteLine("usage: DafnySteps deghost IN.dfy OUT.dfy [trace] [contracts] [counter=steps] [points=P.json]\n"
-                              + "       DafnySteps annotate IN.dfy OUT.dfy [counter=steps]");
+                              + "       DafnySteps annotate IN.dfy OUT.dfy [counter=steps] [enable=functions,seq,arrays]");
       return 2;
     }
     var program = await Ast.Load(input, resolve: false);
@@ -52,14 +67,13 @@ public static class Cli {
     return 0;
   }
 
-  static async Task<int> RunAnnotate(string input, string output, string counter) {
+  static async Task<int> RunAnnotate(string input, string output, Annotate pass) {
     var resolved = await Ast.Load(input, resolve: true);
     var parsed = resolved == null ? null : await Ast.Load(input, resolve: false);
     if (parsed == null) {
       return 1;
     }
     var file = new Uri(Path.GetFullPath(input));
-    var pass = new Annotate { Counter = counter };
     try {
       pass.Apply(resolved, parsed, file);
     } catch (InvalidOperationException e) {
@@ -77,9 +91,6 @@ public static class Cli {
       wr.WriteLine();
       new Printer(wr, parsed.Options, PrintModes.Everything)
         .PrintTopLevelDecls(parsed.Compilation, parsed.DefaultModuleDef.TopLevelDecls, 0, null);
-    }
-    foreach (var n in pass.Notes) {
-      Console.Error.WriteLine($"{input}: {n}");
     }
     return 0;
   }

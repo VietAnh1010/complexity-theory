@@ -65,7 +65,7 @@ method Solve(matrix: seq<seq<int>>) returns (output: string)
     decreases 5 - i
   {
     var r := matrix[i];
-    if AllSame3456(r) {
+    if AllSame3456(r, 0) {
       row := row + 1;
     } else {
       col := IndexOf1From3456(r, 0) + 1;
@@ -76,9 +76,12 @@ method Solve(matrix: seq<seq<int>>) returns (output: string)
   output := IntToString(Abs3456(3 - row) + Abs3456(3 - col)) + "\n";
 }
 
-function AllSame3456(r: seq<int>): bool
+// Every r[j], j >= k, equals r[0].
+function AllSame3456(r: seq<int>, k: nat): bool
+  requires k <= |r|
+  decreases |r| - k
 {
-  forall k :: 0 <= k < |r| ==> r[k] == r[0]
+  k == |r| || (r[k] == r[0] && AllSame3456(r, k + 1))
 }
 
 function IndexOf1From3456(r: seq<int>, i: int): int

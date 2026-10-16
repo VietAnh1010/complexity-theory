@@ -16,6 +16,10 @@ each loop iteration, and each character a string operation produces.
 | sequence index, length, update, append | 1 |
 | sequence concatenation `s + t` | `|t|` |
 | sequence slice `s[a..b]` | 1 (a view) |
+| `seq(n, f)` | `n`, plus the cost of each `f(i)`, `0 <= i < n` |
+| array `new T[n]`, `new T[n, m]` | `n`, `n * m`; `new T[n](f)` as `seq(n, f)`; index, update, `Length` 1 |
+| `var x := e; body` | `e` plus `body` |
+| a lambda | 0 where written; its body is charged where it is called |
 | map lookup, membership, update, length | 1 |
 | `Keys`, `Values`, `Items` | `|m|` |
 | set membership and insertion | 1 |
@@ -26,14 +30,15 @@ each loop iteration, and each character a string operation produces.
 | `IntToString(x)` | `Digits(x)` |
 | `ParseInt(s)`, `SplitWs(s)` | `|s|`; `ParseInts(xs)` costs `SumLen(xs)` |
 | `JoinInts(xs, sep)`, `sep` a string literal | `SumDigits(xs) + |xs|` |
-| recursive sequence/string helpers | argument length |
+| a function `F` the row defines | `F_steps(args)`: a ghost function with `F`'s parameters, `requires` and `decreases`, whose body is the cost of `F`'s body; a recursive call costs `F_steps` |
 | sorting k items | `SortCost(k)`; prove it with `SortCostNLogN` |
 | helper calls | the helper's `steps` |
 | recursive helpers used for Python `**` | recursion depth |
 | `Gcd(a, b)` (Python `math.gcd` or a Euclid loop) | `GcdSteps(a, b)`; bound it with `GcdStepsBound` |
 
-The model has no `array<T>`. `2128_34` and `2826_42` use arrays; their
-headers explain why.
+A proof may charge a function call more coarsely, e.g. its argument length
+for a helper that recurses once per element and does constant work each time.
+That charge is within a constant factor of `F_steps`, so the class is the same.
 
 ### Rules people often get wrong
 

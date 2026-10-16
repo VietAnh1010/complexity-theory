@@ -1,0 +1,1 @@
+unsupported_function.dfy: line 10: call to CountZeros is not in the cost model (use enable=functions)
