@@ -1,78 +1,59 @@
 // deghost: make a ghost step counter compiled, so it runs.
 //
-// Works on the parse tree, before resolution, so the same pass serves the CLI
-// (parse, transform, print) and the plugin (transform in PreResolve, then
-// Dafny resolves and compiles). The resolver checks the result: if the pass
-// leaves a ghost value flowing into compiled code, Dafny reports an error.
+// The pass runs on the parse tree, before resolution, so the CLI (parse,
+// transform, print) and the plugin (transform, then Dafny resolves and
+// compiles) share it. If the pass leaves a ghost value flowing into compiled
+// code, the resolver reports an error; the pass never hides one.
 //
 // What becomes compiled:
-// - every out-parameter named <counter> of a compiled method;
-// - every variable whose value flows into a compiled counter: a right-hand
-//   side assigned to it, a guard enclosing that assignment, a call argument
-//   bound to a counter in-parameter;
-// - for a call `x, s := M(..)` with `s` a counter, M's out-parameter at s's
-//   position (it becomes a counter of M);
-// - every ghost function such a flow calls, and the ghost functions those call.
+// - each out-parameter named <Counter> of a compiled method;
+// - each variable whose value flows into something compiled: the right-hand
+//   side of an assignment to it, the guards around that assignment, and the
+//   argument passed for a compiled in-parameter;
+// - for a call `x, s := M(..)` where `s` is compiled, M's out-parameter in
+//   the same position;
+// - each ghost function called by such a flow, and the ghost functions it calls.
 //
-// Names are matched before resolution, per method: a variable is identified
-// by its name within its method. Shadowing two variables of one name makes
-// both compiled; if that is wrong, the resolver rejects the program.
-//
-// With trace on, a `print <id>, <counter>;` follows each assignment to a
-// counter and opens each loop body of a method with a counter. Each id is a
-// Point in `Points`.
+// Variables are matched by name within their method: the pass runs before
+// resolution, so there are no resolved variables yet.
 using System.Reflection;
 using Microsoft.Dafny;
 
 namespace DafnySteps;
 
+/// A trace point: `print Id, steps;` inserted at Line:Col of Method.
 public record Point(int Id, string Method, int Line, int Col, string Kind);
 
 public class Deghost {
   public string Counter = "steps";
+  /// Insert a trace point after each counter update and at each loop head.
   public bool Trace;
+  /// Add TraceRequires and TraceBound, Solve's contract as compiled methods.
   public bool Contracts;
   public readonly List<Point> Points = [];
 
-  Dictionary<string, List<Method>> methods;
-  Dictionary<string, List<Function>> functions;
-  readonly HashSet<(Method, string)> counters = [];
-  readonly HashSet<Function> compiled = [];
+  Dictionary<string, List<Method>> methodsByName;
+  Dictionary<string, List<Function>> functionsByName;
+  readonly Dictionary<Method, HashSet<string>> variablesOf = [];
+  readonly HashSet<(Method Method, string Variable)> compiledVariables = [];
+  readonly HashSet<Function> compiledFunctions = [];
 
   public void Apply(ModuleDefinition root) {
     var members = Ast.Members(root).ToList();
-    var ms = members.OfType<Method>().Where(m => m is not Lemma && !m.IsGhost && m.Body != null).ToList();
-    methods = ms.GroupBy(m => m.Name).ToDictionary(g => g.Key, g => g.ToList());
-    functions = members.OfType<Function>().GroupBy(f => f.Name).ToDictionary(g => g.Key, g => g.ToList());
+    var methods = members.OfType<Method>()
+      .Where(m => m is not Lemma && !m.IsGhost && m.Body != null).ToList();
+    var solve = methods.FirstOrDefault(m => m.Name == "Solve");
+    methodsByName = methods.GroupBy(m => m.Name).ToDictionary(g => g.Key, g => g.ToList());
+    functionsByName = members.OfType<Function>().GroupBy(f => f.Name).ToDictionary(g => g.Key, g => g.ToList());
+    foreach (var method in methods) {
+      variablesOf[method] = VariableNames(method);
+    }
 
-    foreach (var m in ms) {
-      if (m.Outs.Any(o => o.Name == Counter)) {
-        counters.Add((m, Counter));
-      }
-    }
-    var solve = ms.FirstOrDefault(m => m.Name == "Solve");
-    if (Contracts && solve != null) {
-      foreach (var e in solve.Req.Concat(solve.Ens)) {
-        DependFunctions(e.E);
-      }
-    }
-    while (Step(ms)) { }
-
-    foreach (var (m, name) in counters) {
-      foreach (var f in m.Ins.Concat(m.Outs).Where(f => f.Name == name)) {
-        f.IsGhost = false;
-      }
-      foreach (var v in Locals(m).Where(v => v.Name == name)) {
-        v.IsGhost = false;
-      }
-    }
-    var isGhost = typeof(MemberDecl).GetField("isGhost", BindingFlags.NonPublic | BindingFlags.Instance)!;
-    foreach (var f in compiled) {
-      isGhost.SetValue(f, false);
-    }
+    FindCompiledCode(methods, Contracts ? solve : null);
+    MakeCompiled();
     if (Trace) {
-      foreach (var m in ms.Where(m => counters.Contains((m, Counter)) && m.Outs.Any(o => o.Name == Counter))) {
-        InsertTrace(m);
+      foreach (var method in methods.Where(HasCounter)) {
+        InsertTracePoints(method);
       }
     }
     if (Contracts && solve != null) {
@@ -80,157 +61,218 @@ public class Deghost {
     }
   }
 
-  /// One round of the flow analysis; true if anything was added.
-  bool Step(List<Method> ms) {
-    var before = counters.Count + compiled.Count;
-    foreach (var m in ms) {
-      var vars = m.Ins.Concat(m.Outs).Select(f => f.Name).Concat(Locals(m).Select(v => v.Name)).ToHashSet();
-      Walk(m.Body, [], (s, guards) => {
-        if (s is not AssignStatement a) {
-          return;
-        }
-        var call = a.Rhss.Count == 1 && a.Rhss[0] is ExprRhs er && Ast.CalleeName(er.Expr) is { } n
-                   && methods.TryGetValue(n, out var callees) ? (er.Expr as ApplySuffix, callees) : (null, null);
-        for (var i = 0; i < a.Lhss.Count; i++) {
-          var lhs = LhsName(a.Lhss[i]);
-          if (lhs == null || !counters.Contains((m, lhs))) {
-            continue;
-          }
-          if (call.Item1 != null) {
-            foreach (var c in call.callees.Where(c => i < c.Outs.Count)) {
-              counters.Add((c, c.Outs[i].Name));
-            }
-          } else if (i < a.Rhss.Count && a.Rhss[i] is ExprRhs r) {
-            Depend(m, vars, r.Expr);
-          }
-          foreach (var g in guards) {
-            Depend(m, vars, g);
-          }
-        }
-        if (call.Item1 != null) {
-          var args = call.Item1.Bindings.ArgumentBindings;
-          foreach (var c in call.callees) {
-            for (var j = 0; j < Math.Min(args.Count, c.Ins.Count); j++) {
-              if (counters.Contains((c, c.Ins[j].Name))) {
-                Depend(m, vars, args[j].Actual);
-              }
-            }
-          }
-        }
-      });
-    }
-    foreach (var f in compiled.ToList()) {
-      DependFunctions(f.Body);
-    }
-    return counters.Count + compiled.Count > before;
-  }
+  // ---- Analysis: what must become compiled --------------------------------
 
-  void Depend(Method m, HashSet<string> vars, Expression e) {
-    foreach (var name in Ast.NamesIn(e)) {
-      if (vars.Contains(name)) {
-        counters.Add((m, name));
+  void FindCompiledCode(List<Method> methods, Method contractsOf) {
+    foreach (var method in methods.Where(m => m.Outs.Any(o => o.Name == Counter))) {
+      compiledVariables.Add((method, Counter));
+    }
+    if (contractsOf != null) {
+      foreach (var clause in contractsOf.Req.Concat(contractsOf.Ens)) {
+        MarkCalledFunctions(clause.E);
       }
     }
-    DependFunctions(e);
+    while (AnalysisRound(methods)) { }
   }
 
-  void DependFunctions(Expression e) {
-    foreach (var name in Ast.NamesIn(e)) {
-      if (functions.TryGetValue(name, out var fs)) {
-        foreach (var f in fs.Where(f => f.IsGhost)) {
-          compiled.Add(f);
+  /// One pass over every method; true if it marked anything new.
+  bool AnalysisRound(List<Method> methods) {
+    var before = compiledVariables.Count + compiledFunctions.Count;
+    foreach (var method in methods) {
+      foreach (var (assignment, guards) in Assignments(method.Body, [])) {
+        VisitAssignment(method, assignment, guards);
+      }
+    }
+    foreach (var function in compiledFunctions.ToList()) {
+      MarkCalledFunctions(function.Body);
+    }
+    return compiledVariables.Count + compiledFunctions.Count > before;
+  }
+
+  void VisitAssignment(Method method, AssignStatement assignment, List<Expression> guards) {
+    var call = MethodCall(assignment);
+    var callees = call == null ? [] : methodsByName[Ast.CalleeName(call)];
+
+    for (var i = 0; i < assignment.Lhss.Count; i++) {
+      if (!compiledVariables.Contains((method, LhsName(assignment.Lhss[i])))) {
+        continue;
+      }
+      if (call != null) {
+        // `x, s := M(..)`: M's out-parameter at s's position is compiled too.
+        foreach (var callee in callees.Where(c => i < c.Outs.Count)) {
+          compiledVariables.Add((callee, callee.Outs[i].Name));
+        }
+      } else if (i < assignment.Rhss.Count && assignment.Rhss[i] is ExprRhs rhs) {
+        MarkFlowInto(method, rhs.Expr);
+      }
+      foreach (var guard in guards) {
+        MarkFlowInto(method, guard);
+      }
+    }
+
+    // An argument passed for a compiled in-parameter is compiled too.
+    if (call != null) {
+      var args = call.Bindings.ArgumentBindings;
+      foreach (var callee in callees) {
+        for (var j = 0; j < Math.Min(args.Count, callee.Ins.Count); j++) {
+          if (compiledVariables.Contains((callee, callee.Ins[j].Name))) {
+            MarkFlowInto(method, args[j].Actual);
+          }
         }
       }
     }
   }
 
-  static string LhsName(Expression e) => e switch {
+  /// Mark the variables of `method` and the functions that `e` mentions.
+  void MarkFlowInto(Method method, Expression e) {
+    foreach (var name in Ast.NamesIn(e).Where(variablesOf[method].Contains)) {
+      compiledVariables.Add((method, name));
+    }
+    MarkCalledFunctions(e);
+  }
+
+  void MarkCalledFunctions(Expression e) {
+    foreach (var name in Ast.NamesIn(e)) {
+      foreach (var function in functionsByName.GetValueOrDefault(name, []).Where(f => f.IsGhost)) {
+        compiledFunctions.Add(function);
+      }
+    }
+  }
+
+  /// The call `M(..)` if the assignment's right-hand side is a method call.
+  ApplySuffix MethodCall(AssignStatement assignment) {
+    if (assignment.Rhss is [ExprRhs { Expr: ApplySuffix call }]
+        && Ast.CalleeName(call) is { } name && methodsByName.ContainsKey(name)) {
+      return call;
+    }
+    return null;
+  }
+
+  /// Each assignment below `s`, with the if and while guards around it.
+  static IEnumerable<(AssignStatement, List<Expression>)> Assignments(Statement s, List<Expression> guards) {
+    if (s == null) {
+      yield break;
+    }
+    if (s is AssignStatement assignment) {
+      yield return (assignment, guards);
+    }
+    var (children, guard) = s switch {
+      IfStmt i => (new[] { i.Thn, i.Els }, i.Guard),
+      WhileStmt w => (new Statement[] { w.Body }, w.Guard),
+      _ => (s.PreResolveSubStatements.ToArray(), null),
+    };
+    var inner = guard == null ? guards : [.. guards, guard];
+    foreach (var child in children) {
+      foreach (var found in Assignments(child, inner)) {
+        yield return found;
+      }
+    }
+  }
+
+  static HashSet<string> VariableNames(Method method) =>
+    method.Ins.Concat(method.Outs).Select(f => f.Name)
+      .Concat(Locals(method).Select(v => v.Name)).ToHashSet();
+
+  static IEnumerable<LocalVariable> Locals(Method method) =>
+    Ast.Descendants(method.Body).OfType<VarDeclStmt>().SelectMany(d => d.Locals);
+
+  static string LhsName(Expression lhs) => lhs switch {
     NameSegment s => s.Name,
     IdentifierExpr i => i.Name,
     _ => null,
   };
 
-  static IEnumerable<LocalVariable> Locals(Method m) =>
-    Ast.Descendants(m.Body).OfType<VarDeclStmt>().SelectMany(d => d.Locals);
+  // ---- Rewriting -------------------------------------------------------
 
-  /// Visit every statement with the guards of the ifs and loops enclosing it.
-  static void Walk(Statement s, List<Expression> guards, Action<Statement, List<Expression>> visit) {
-    if (s == null) {
-      return;
+  void MakeCompiled() {
+    foreach (var (method, name) in compiledVariables) {
+      foreach (var formal in method.Ins.Concat(method.Outs).Where(f => f.Name == name)) {
+        formal.IsGhost = false;
+      }
+      foreach (var local in Locals(method).Where(v => v.Name == name)) {
+        local.IsGhost = false;
+      }
     }
-    visit(s, guards);
-    switch (s) {
-      case IfStmt i:
-        var gi = i.Guard == null ? guards : [.. guards, i.Guard];
-        Walk(i.Thn, gi, visit);
-        Walk(i.Els, gi, visit);
-        break;
-      case WhileStmt w:
-        Walk(w.Body, w.Guard == null ? guards : [.. guards, w.Guard], visit);
-        break;
-      default:
-        foreach (var c in s.PreResolveSubStatements) {
-          Walk(c, guards, visit);
-        }
-        break;
+    // MemberDecl.IsGhost has no setter; set its protected backing field.
+    var isGhost = typeof(MemberDecl).GetField("isGhost", BindingFlags.NonPublic | BindingFlags.Instance)!;
+    foreach (var function in compiledFunctions) {
+      isGhost.SetValue(function, false);
     }
   }
 
-  void InsertTrace(Method m) {
-    var blocks = Ast.Descendants(m.Body).OfType<BlockStmt>().Prepend(m.Body).ToList();
-    foreach (var b in blocks) {
+  bool HasCounter(Method method) => method.Outs.Any(o => o.Name == Counter);
+
+  void InsertTracePoints(Method method) {
+    var blocks = Ast.Descendants(method.Body).OfType<BlockStmt>().Prepend(method.Body).ToList();
+    foreach (var block in blocks) {
       var body = new List<Statement>();
-      foreach (var s in b.Body) {
+      foreach (var s in block.Body) {
         body.Add(s);
-        if (s is OneBodyLoopStmt { Body: { } lb }) {
-          lb.Body.Insert(0, TracePoint(m, s, "loop"));
+        if (s is OneBodyLoopStmt { Body: { } loopBody }) {
+          loopBody.Body.Insert(0, TracePoint(method, s, "loop"));
         }
-        if (s is AssignStatement a && a.Lhss.Any(l => LhsName(l) == Counter)
-            || s is VarDeclStmt d && d.Locals.Any(v => v.Name == Counter)) {
-          body.Add(TracePoint(m, s, "update"));
+        if (AssignsCounter(s)) {
+          body.Add(TracePoint(method, s, "update"));
         }
       }
-      b.Body.Clear();
-      b.Body.AddRange(body);
+      block.Body.Clear();
+      block.Body.AddRange(body);
     }
   }
 
-  PrintStmt TracePoint(Method m, Statement at, string kind) {
+  bool AssignsCounter(Statement s) => s switch {
+    AssignStatement a => a.Lhss.Any(lhs => LhsName(lhs) == Counter),
+    VarDeclStmt d => d.Locals.Any(v => v.Name == Counter),
+    _ => false,
+  };
+
+  /// `print <id>, steps;`, recorded in Points.
+  PrintStmt TracePoint(Method method, Statement at, string kind) {
     var id = Points.Count;
-    var c = at.Origin.Center;
-    Points.Add(new Point(id, m.Name, c.line, c.col, kind));
-    return new PrintStmt(at.Origin, [new LiteralExpr(at.Origin, id), new NameSegment(at.Origin, Counter, null)]);
+    var where = at.Origin.Center;
+    Points.Add(new Point(id, method.Name, where.line, where.col, kind));
+    var o = at.Origin;
+    return new PrintStmt(o, [new LiteralExpr(o, id), new NameSegment(o, Counter, null)]);
   }
 
-  /// `TraceRequires(ins) returns (ok)` and `TraceBound(ins, outs) returns (ok)`:
-  /// Solve's requires and ensures as compiled checks, beside Solve. Only
-  /// compiled outs are passed; an ensures clause naming a ghost out is skipped.
+  // ---- Contract checks -------------------------------------------------
+
+  /// Add `TraceRequires(ins)` and `TraceBound(ins, outs)` beside Solve. Each
+  /// returns whether Solve's requires (ensures) hold. TraceBound takes only
+  /// the compiled outs, and skips an ensures clause that names a ghost out.
   void AddContractChecks(Method solve) {
-    var cls = (TopLevelDeclWithMembers)solve.EnclosingClass
-              ?? throw new InvalidOperationException("Solve has no enclosing class");
     var ghostOuts = solve.Outs.Where(f => f.IsGhost).Select(f => f.Name).ToHashSet();
-    var ens = solve.Ens.Where(c => !Ast.NamesIn(c.E).Any(ghostOuts.Contains)).ToList();
-    cls.Members.Add(Check(solve, "TraceRequires", solve.Req, []));
-    cls.Members.Add(Check(solve, "TraceBound", ens, solve.Outs.Where(f => !f.IsGhost)));
+    var ensures = solve.Ens.Where(c => !Ast.NamesIn(c.E).Any(ghostOuts.Contains)).ToList();
+    var compiledOuts = solve.Outs.Where(f => !f.IsGhost).ToList();
+
+    var cls = (TopLevelDeclWithMembers)solve.EnclosingClass;
+    cls.Members.Add(CheckMethod(solve, "TraceRequires", solve.Ins, solve.Req));
+    cls.Members.Add(CheckMethod(solve, "TraceBound", [.. solve.Ins, .. compiledOuts], ensures));
     cls.SetMembersBeforeResolution();
   }
 
-  static Method Check(Method solve, string name, List<AttributedExpression> clauses, IEnumerable<Formal> outs) {
+  /// method <name>(<params>) returns (ok: bool) {
+  ///   ok := false;
+  ///   if c1 { if c2 { .. ok := true; } }
+  /// }
+  /// Nested ifs, not one `&&` chain: the printer drops the parentheses that
+  /// would keep a clause's own `&&` grouped, so the CLI's printed program
+  /// would group differently from the plugin's AST.
+  static Method CheckMethod(Method solve, string name, List<Formal> parameters, List<AttributedExpression> clauses) {
     var cloner = new Cloner();
     var o = solve.Origin;
-    var ins = solve.Ins.Concat(outs)
-      .Select(f => new Formal(f.Origin, f.Name, cloner.CloneType(f.SyntacticType), true, false, null, null)).ToList();
-    // `if c1 { if c2 { .. ok := true; } }`: clauses evaluated in order, each
-    // only when the ones before hold. Nested statements, not one `&&` chain,
-    // so the printed program groups as the AST does.
-    Statement body = new AssignStatement(o, [new NameSegment(o, "ok", null)], [new ExprRhs(new LiteralExpr(o, true))]);
-    for (var i = clauses.Count - 1; i >= 0; i--) {
-      body = new IfStmt(o, false, cloner.CloneExpr(clauses[i].E), new BlockStmt(o, [body]), null);
+    var ins = parameters.Select(f =>
+      new Formal(f.Origin, f.Name, cloner.CloneType(f.SyntacticType), true, false, null, null)).ToList();
+    var ok = new Formal(o, "ok", Microsoft.Dafny.Type.Bool, false, false, null, null);
+
+    Statement check = Ast.Assign(o, "ok", new LiteralExpr(o, true));
+    foreach (var clause in Enumerable.Reverse(clauses)) {
+      check = new IfStmt(o, false, cloner.CloneExpr(clause.E), new BlockStmt(o, [check]), null);
     }
-    var init = new AssignStatement(o, [new NameSegment(o, "ok", null)], [new ExprRhs(new LiteralExpr(o, false))]);
+    var body = new BlockStmt(o, [Ast.Assign(o, "ok", new LiteralExpr(o, false)), check]);
+
     return new Method(o, new Name(o, name), null, false, false, [], ins, [], [],
       new Specification<FrameExpression>([], null), new Specification<Expression>([], null),
-      [new Formal(o, "ok", Microsoft.Dafny.Type.Bool, false, false, null, null)],
-      new Specification<FrameExpression>([], null), new BlockStmt(o, [init, body]), null);
+      [ok], new Specification<FrameExpression>([], null), body, null);
   }
 }

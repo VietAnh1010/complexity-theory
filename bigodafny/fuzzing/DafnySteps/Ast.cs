@@ -95,4 +95,14 @@ public static class Ast {
   }
 
   public static int Line(INode n) => n.Origin.Center.line;
+
+  /// A node's source range, as (start, end) token positions.
+  public static (int, int) Range(INode n) {
+    var r = n.Origin.EntireRangeWithFallback;
+    return (r.StartToken.pos, r.EndToken.pos);
+  }
+
+  /// `name := rhs;`
+  public static AssignStatement Assign(IOrigin o, string name, Expression rhs) =>
+    new(o, [new NameSegment(o, name, null)], [new ExprRhs(rhs)]);
 }
