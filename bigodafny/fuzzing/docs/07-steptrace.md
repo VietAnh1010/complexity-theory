@@ -1,35 +1,40 @@
 # 7. steptrace.py
 
-Runs a row's step counter on inputs.
+Runs a row with a ghost `steps` counter on inputs, records `steps`, and checks
+the bound in `Solve`'s `ensures`. By default it runs the row's proof copy in
+`solutions-proved/`; `--dfy` runs any other file, such as `annotate`'s output.
 
 ## Usage
 
 ```bash
 python3 steptrace.py SID                 # every stored test of the row
-python3 steptrace.py SID --input FILE    # one input
-python3 steptrace.py SID --dfy FILE      # another .dfy, e.g. annotate's output
+python3 steptrace.py SID --input FILE    # one input from a file
+python3 steptrace.py SID --dfy FILE      # a different .dfy, e.g. annotate's output
 python3 steptrace.py SID --trace         # also steps at each program point
 ```
 
-Writes `out/trace/<SID>.jsonl`.
+Results go to `out/trace/<SID>.jsonl`.
 
-## Steps
+## How it works
 
-1. Compile the proof copy with the `deghost` plugin into `.build/trace_<SID>*/`.
-   If the contract checks fail to compile, compile again without them.
-2. Start `harness.py` there: one long-lived Python process that runs `Solve`.
-3. For each input: parse it with the row's `Input.from_str`, check
-   `TraceRequires`, run `Solve`, check `TraceBound`.
+1. Compiles the file to Python with the `deghost` plugin, into `.build/trace_<SID>*/`.
+   If the `contracts` checks do not compile, it compiles again without them.
+2. Starts `harness.py`, one Python process that stays open and runs `Solve`.
+3. For each input: parses it with the row's `Input.from_str`, checks
+   `TraceRequires`, runs `Solve`, checks `TraceBound`.
 
-## Result status
+## Status of each run
 
 | Status | Meaning |
 |---|---|
-| `ok` | ran; `steps` recorded |
-| `requires` | the input is outside the proof's `requires` |
+| `ok` | finished; `steps` recorded |
+| `requires` | the input breaks the proof's `requires` |
 | `parse` | `Input.from_str` failed |
-| `timeout` | over the time limit (default 30 s) |
-| `error` | `Solve` raised |
+| `timeout` | took longer than the limit (30 s by default) |
+| `error` | `Solve` raised an exception |
 
-- `bound_ok: false` means the compiled counter exceeded the proved bound: a `deghost` bug.
-- `--trace` is slow: every trace point is two Python calls.
+- `bound_ok: false`: `steps` exceeded the bound in `ensures`.
+  - For a guessed bound: the guess is too low.
+  - For a verified proof: a `deghost` bug, since the compiled `steps` should match the proof's.
+- With no `ensures`, `bound_ok` is always true.
+- `--trace` is slow: every trace point costs two Python calls.

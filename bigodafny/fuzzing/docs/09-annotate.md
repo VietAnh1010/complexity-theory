@@ -1,6 +1,7 @@
-# 9. Annotate (`Annotate.cs`, `CostModel.cs`)
+# 9. annotate (`Annotate.cs`, `CostModel.cs`)
 
-Adds a ghost step counter to a plain row, charged per `bigodafny/COMPLEXITY.md`.
+Adds a ghost `steps` counter to a row that has none. Costs follow
+`bigodafny/COMPLEXITY.md`.
 
 ## Usage
 
@@ -8,34 +9,35 @@ Adds a ghost step counter to a plain row, charged per `bigodafny/COMPLEXITY.md`.
 DafnySteps/bin/Release/net10.0/DafnySteps annotate IN.dfy OUT.dfy [counter=NAME]
 ```
 
-- Notes go to stderr: each charge the model does not cover.
-- Exit 1 when IN is missing, does not resolve, or already declares the counter.
-- The output resolves but does not verify; invariants are still the prover's work.
+- Prints a note on stderr for each cost that `COMPLEXITY.md` does not define.
+- Exits with 1 if IN is missing, has errors, or already has a variable named `steps`.
+- The output states no bound on `steps`. Adding the bound and its loop invariants is the proof's job.
 
-## What it adds
+## What it adds to each method
 
-- `ghost steps: nat` as an out-parameter, and `steps := 0;` first.
+- An out-parameter `ghost steps: nat`, set to 0 at the start.
 - `steps := steps + <cost>;` before each statement that costs something.
-- In each loop body: 1, plus the guard for a `while`; after a `while`, the last guard.
-- After a call to another annotated method: that method's steps.
+- At the start of each loop body: 1, plus the condition's cost for a `while`.
+- After a `while`: the cost of the last, false condition.
+- After a call to another method in the file: that method's `steps`.
 
-## Charges (`CostModel.Of`)
+## Costs (`CostModel.Of`)
 
 | Expression | Cost |
 |---|---|
 | literal, variable | 0 |
 | operator, index, update | 1 + operands |
-| `a && b`, `a \|\| b` | 1 + a + b only when b runs |
+| `a && b`, `a \|\| b` | 1 + a, + b only if b is evaluated |
 | `s + t` on sequences | operands + `\|t\|` |
 | `[a, b, c]` | elements + 1 per element |
 | `m.Keys`, `m.Values` | `\|m\|` |
-| prelude function | `COMPLEXITY.md`'s charge, e.g. `IntToString(x)` → `Digits(x)` |
-| row's own function, comprehension, lambda | 1, with a note |
+| prelude function | as in `COMPLEXITY.md`, e.g. `IntToString(x)` costs `Digits(x)` |
+| the row's own function, comprehension, lambda | 1, with a note |
 
 ## Example
 
 ```dafny
-// before                              // after
+// input                               // output
 method C(n: int, k: int)               method C(n: int, k: int)
   returns (r: int)                       returns (r: int, ghost steps: nat)
 {                                      {
@@ -50,4 +52,4 @@ method C(n: int, k: int)               method C(n: int, k: int)
 }                                      }
 ```
 
-The row's comments, including its Python source, are lost.
+Comments in the row, including its Python source, are not kept.

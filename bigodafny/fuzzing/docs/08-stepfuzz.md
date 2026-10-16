@@ -1,30 +1,34 @@
 # 8. stepfuzz.py
 
-For each input size, searches for the input with the largest `steps`.
+Finds, for each input size, the input with the largest `steps`.
+
+By default it runs the row's proof copy in `solutions-proved/`; `--dfy` runs
+any other file, such as `annotate`'s output.
 
 ## Usage
 
 ```bash
-python3 stepfuzz.py SID [--iters N] [--seconds S] [--measure EXPR]
+python3 stepfuzz.py SID [--dfy FILE] [--iters N] [--seconds S] [--measure EXPR]
 ```
 
-- `--measure`: the size, as a Python expression over the parsed input `i` (`"len(i.a)"`).
-- Default size: each list's or string's length plus each int that is not a length.
-- Writes `out/fuzz/<SID>.json`.
+- `--measure` sets the input size: a Python expression over the parsed input `i`, e.g. `"len(i.a)"`.
+- Default size: the length of each list and string, plus each int that is not a length.
+- Results go to `out/fuzz/<SID>.json`.
 
-## Search
+## How it works
 
-1. Learn the input's shape from the stored tests: value ranges, alphabets,
-   and length relations such as `n == len(a)`.
-2. Group inputs by size, two buckets per doubling; each keeps its costliest input.
-3. Repeat: take a bucket's input, mutate it (grow, shrink, sort, reverse, …),
-   restore the length relations, keep it if it costs more than its bucket's.
+1. Reads the stored tests to learn the input format: value ranges, characters
+   used, and length rules such as `n == len(a)`.
+2. Sorts inputs into size groups, two per doubling of size. Each group keeps its costliest input.
+3. Repeats: copies a group's input, changes it (longer, shorter, sorted,
+   reversed, …), fixes the length rules, and keeps it if it costs more.
 
-A new input is dropped if it does not parse back to the same value, is larger
-than every stored test, breaks the problem's limits, or fails `TraceRequires`.
+A new input is discarded if it does not parse back to the same value, is
+larger than every stored test, breaks the problem's limits, or fails
+`TraceRequires`.
 
 ## Output
 
-- Per bucket: size, best stored test's steps, best fuzzed steps, their ratio.
-- `*` marks a bucket where a fuzzed input won.
-- `fit_*`: growth classes ranked by how well `c·f(size) + d` fits the steps.
+- One line per size group: size, best stored test's `steps`, best new input's `steps`, ratio.
+- `*` marks a group where a new input beat every stored test.
+- `fit_*` lists growth classes, best first, by how well `c·f(size) + d` matches `steps`.

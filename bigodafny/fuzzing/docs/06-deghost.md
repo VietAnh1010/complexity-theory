@@ -1,7 +1,7 @@
-# 6. Deghost (`Deghost.cs`)
+# 6. deghost (`Deghost.cs`)
 
-Makes a ghost step counter compiled, so it runs. `steptrace.py` applies it
-as a Dafny plugin; the CLI prints the result so you can read it.
+Turns the ghost `steps` counter into compiled code, so it runs. `steptrace.py`
+uses it as a Dafny plugin. The CLI writes the result to a file for reading.
 
 ## Usage
 
@@ -11,26 +11,27 @@ DafnySteps/bin/Release/net10.0/DafnySteps deghost IN.dfy OUT.dfy [trace] [contra
 
 | Argument | Effect |
 |---|---|
-| `trace` | add `print <id>, steps;` after each update of `steps` and at each loop head |
-| `contracts` | add `TraceRequires` and `TraceBound`: `Solve`'s `requires` and `ensures` as compiled checks |
-| `points=P.json` | write each trace point's id, method, line and kind |
+| `trace` | adds `print <id>, steps;` after each change to `steps` and at the start of each loop body |
+| `contracts` | adds `TraceRequires` and `TraceBound`, which check `Solve`'s `requires` and `ensures` at run time |
+| `points=P.json` | writes the id, method, line and kind of each `print` added by `trace` |
 
 ## What becomes compiled
 
-Starting from each method's out-parameter `steps`, repeated until nothing changes:
+`deghost` starts with each method's out-parameter `steps` and repeats until
+nothing new is added:
 
-- a variable assigned to something compiled;
-- the `if`/`while` guards around that assignment;
-- for `x, s := M(..)` with `s` compiled: `M`'s out-parameter in `s`'s position;
-- an argument passed for a compiled parameter;
+- a variable whose value is assigned to compiled code;
+- the `if` and `while` conditions around that assignment;
+- in `x, s := M(..)` with `s` compiled: `M`'s out-parameter in the same position;
+- an argument passed to a compiled parameter;
 - a ghost function used by any of these, and the functions it calls.
 
-Variables are matched by name within a method.
+Variables are matched by name inside one method.
 
 ## Example
 
 ```dafny
-// before                              // after `deghost ... trace`
+// input                               // output of `deghost ... trace`
 method F(x: int)                       method F(x: int)
   returns (p: int, ghost steps: nat)     returns (p: int, steps: nat)
 {                                      {
@@ -45,5 +46,5 @@ method F(x: int)                       method F(x: int)
 }                                      }
 ```
 
-- `TraceBound` skips an `ensures` that names a ghost output.
-- With no `ensures`, `TraceBound` always returns true.
+- `TraceBound` leaves out an `ensures` that mentions a ghost out-parameter.
+- If `Solve` has no `ensures`, `TraceBound` always returns true.

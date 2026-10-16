@@ -1,37 +1,40 @@
-# 3. Inside `dafny`
+# 3. What `dafny` does with a file
 
 ```
-parse → [plugin] → resolve → verify → compile
+parse → plugins → resolve → verify → compile
 ```
 
 ## Parse
 
-- Produces a syntax tree; names are still plain strings (`NameSegment`).
-- `x := M(a)` is an `AssignStatement`; nothing yet says whether `M` is a method or a function.
+- Reads the text into a syntax tree.
+- Names are only strings (`NameSegment`); they do not point to declarations yet.
+- In `x := M(a)`, Dafny does not yet know whether `M` is a method or a function.
 
 ## Resolve
 
-- Links each name to its declaration and assigns types.
-- Fills extra fields on the same nodes:
+- Connects each name to its declaration and gives every expression a type.
+- Stores the results in extra fields on the same nodes:
 
-| Field | Meaning |
+| Field | Contents |
 |---|---|
-| `Expression.Resolved` | the expression after desugaring |
-| `BinaryExpr.ResolvedOp` | the typed operator: int `Add` vs sequence `Concat` |
+| `Expression.Resolved` | the expression after Dafny rewrites it |
+| `BinaryExpr.ResolvedOp` | the exact operator, e.g. int `Add` or sequence `Concat` |
 | `AssignStatement.ResolvedStatements` | plain assignments, or a `CallStmt` for a method call |
 
-- Rejects compiled code that reads a ghost value.
+- Reports an error when compiled code reads a ghost value.
 
 ## Verify
 
-- Skipped here (`--no-verify`); `proofs.py` verifies the proofs.
+- Proves the program correct with Z3.
+- The tools here skip it (`--no-verify`); `proofs.py` verifies the proofs.
 
 ## Compile
 
-- `dafny translate py` writes Python. Ghost code is erased.
+- `dafny translate py` writes Python.
+- Ghost code is deleted.
 
-## Ghost
+## Ghost code
 
-- Ghost is a flag on a declaration: a parameter, a local, a function.
-- `deghost` clears flags before resolution, so the resolver checks its work.
-- A variable `deghost` misses gives a resolver error, not a wrong program.
+- Each parameter, local variable and function has a ghost flag.
+- `deghost` clears flags before resolution, so the resolver checks the result.
+- If `deghost` misses a variable, Dafny reports an error; the program is never silently wrong.

@@ -1,21 +1,27 @@
-# fuzzing/ — running ghost step counters
+# fuzzing/
 
-A prototype, not a gate. Open work is in `TODO-fuzzing.md`.
+Tools for finding a step bound for a row. A prototype; open work is in
+`TODO-fuzzing.md`.
 
-A proof copy in `solutions-proved/` counts work in a ghost `steps`. Compiling
-erases ghost code, so the counter never runs. The code here makes it run.
+The loop:
+
+1. `annotate` adds a ghost step counter `steps` to the row, with no bound.
+2. `deghost` makes `steps` compiled code, so it runs.
+3. The fuzzer runs it on many inputs and records `steps` for each input size.
+4. An LLM reads those numbers and guesses a bound; the bound goes into the row as an `ensures`.
+5. Repeat from 2 until the bound is good enough. Each run also checks the current bound.
 
 Read `docs/` in order:
 
-| File | Topic |
+| File | Contents |
 |---|---|
-| `01-overview.md` | the tools, layout, data flow, quick start |
+| `01-overview.md` | the loop, tools, files, quick start |
 | `02-dafny-setup.md` | the Dafny install and how `DafnySteps` uses it |
-| `03-dafny-pipeline.md` | parse, resolve, verify, compile; ghost code |
-| `04-dafny-plugins.md` | the plugin API, source ranges, the printer |
-| `05-dafny-python.md` | Dafny's Python output |
-| `06-deghost.md` | ghost counter → compiled counter |
-| `07-steptrace.md` | running a counter on inputs |
-| `08-stepfuzz.md` | searching for costly inputs |
-| `09-annotate.md` | plain row → row with a ghost counter |
-| `10-outputs-debugging.md` | outputs, tests, debugging |
+| `03-dafny-pipeline.md` | what `dafny` does with a file; ghost code |
+| `04-dafny-plugins.md` | plugins, source ranges, the printer |
+| `05-dafny-python.md` | the Python that Dafny generates |
+| `06-deghost.md` | `deghost`: make `steps` compiled |
+| `07-steptrace.md` | `steptrace.py`: run `steps` on inputs |
+| `08-stepfuzz.md` | `stepfuzz.py`: find inputs with large `steps` |
+| `09-annotate.md` | `annotate`: add `steps` to a row |
+| `10-outputs-debugging.md` | output files, tests, common problems |

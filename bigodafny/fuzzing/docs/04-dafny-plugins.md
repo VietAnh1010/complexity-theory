@@ -1,25 +1,25 @@
-# 4. Plugins and printing
+# 4. Plugins, source ranges, the printer
 
-## The plugin API
+## Plugins
 
-- `dafny ... --plugin "DafnySteps.dll,trace contracts"` loads the DLL.
-- Text after the comma is split on spaces and passed to the plugin as arguments.
-- Dafny calls the plugin's `PreResolve` before resolution; `Plugin.cs` runs `deghost` there.
-- The arguments are the same as the CLI's (06).
-- The Dafny Reference Manual documents the API ("Plugins to Dafny") as experimental.
+- `dafny ... --plugin "DafnySteps.dll,trace contracts"` loads a plugin.
+- Dafny splits the text after the comma on spaces and passes the words to the plugin.
+- Dafny calls the plugin's `PreResolve` before resolution. `Plugin.cs` runs `deghost` there.
+- The plugin takes the same arguments as the `deghost` CLI (06).
+- The Dafny Reference Manual describes plugins in "Plugins to Dafny" and marks them experimental.
 
 ## Source ranges
 
-- Every node records the source text it came from (`Origin`).
-- `annotate` loads a file twice; equal ranges identify the same node in both trees.
+- Every node stores the position of its source text (`Origin`).
+- `annotate` loads a file twice. Two nodes with the same position are the same code.
 
 ## The printer
 
-- `Printer` turns a tree back into Dafny source.
-- It prints a parsed tree; a resolved tree would print resolver output too.
-- Comments are lost.
+- `Printer` writes a syntax tree back out as Dafny source.
+- Print a parsed tree. A resolved tree prints Dafny's rewrites too.
+- Comments are not printed.
 
 ## The prelude
 
-- Rows `include "../../prelude.dfy"`.
-- `deghost` prints the prelude inline; `annotate` keeps the `include`.
+- Every row starts with `include "../../prelude.dfy"`.
+- `deghost` copies the whole prelude into its output; `annotate` keeps the `include` line.

@@ -1,54 +1,79 @@
 # 1. Overview
 
-## The tools
+## The loop
 
-| Tool | Question it answers |
+```
+row.dfy                            the row: no step counter
+   │  annotate
+   ▼
+row with ghost steps               no bound yet
+   │  deghost
+   ▼
+row with compiled steps            Solve returns (output, steps)
+   │  stepfuzz.py / steptrace.py
+   ▼
+steps per input size               statistics
+   │  LLM guesses a bound
+   ▼
+row with ghost steps + ensures     the guessed bound
+   │  deghost → fuzz → LLM → …
+   ▼
+repeat until the bound is good enough
+```
+
+From the second round on, every run checks the current bound (`TraceBound`).
+An input that breaks it shows the guess is too low.
+
+## Status of each step
+
+| Step | Tool | Status |
+|---|---|---|
+| add a ghost counter | `DafnySteps annotate` | works; some costs are charged 1 with a note (09) |
+| make it run | `DafnySteps deghost` | works |
+| run on stored tests | `steptrace.py --dfy FILE` | works on any file |
+| fuzz | `stepfuzz.py --dfy FILE` | works on any file |
+| guess a bound | LLM | not built |
+| check the bound | `TraceBound` | works; always true when there is no `ensures` |
+
+## Tools
+
+| Tool | Purpose |
 |---|---|
-| `steptrace.py` | What is `steps` on each input? Does the proved bound hold? |
-| `stepfuzz.py` | For each input size, which input makes `steps` largest? |
-| `DafnySteps deghost` | Which program does `steptrace.py` compile? (06) |
-| `DafnySteps annotate` | Where does a step counter go in a plain row, and what does each statement cost? (09) |
+| `DafnySteps annotate` | Adds a ghost `steps` counter to a row (09) |
+| `DafnySteps deghost` | Turns `steps` into compiled code; `steptrace.py` uses it as a plugin (06) |
+| `steptrace.py` | Runs the row on inputs, records `steps`, checks the bound (07) |
+| `stepfuzz.py` | Finds, for each input size, the input with the largest `steps` (08) |
 
-## Layout
+## Files
 
 ```
 fuzzing/
-  steptrace.py          run one row's counter on inputs
-  stepfuzz.py           search for costly inputs; uses steptrace.py
-  scripts/demo.sh       deghost + annotate (+ steptrace) on one row -> demo/<problem>/
-  DafnySteps/           C#: the deghost and annotate passes, as a CLI and a Dafny plugin
-  DafnySteps.Tests/     golden tests for DafnySteps
-  Directory.Build.props where the Dafny install is
-  TODO-fuzzing.md       open items
+  steptrace.py          runs a row's counter on inputs
+  stepfuzz.py           searches for costly inputs; uses steptrace.py
+  scripts/demo.sh       runs annotate, deghost and steptrace on one row -> demo/<problem>/
+  DafnySteps/           C# code for annotate and deghost; a CLI and a Dafny plugin
+  DafnySteps.Tests/     tests for DafnySteps
+  Directory.Build.props path to the Dafny install
+  TODO-fuzzing.md       open work
 ```
-
-## Data flow
-
-```
-solutions-proved/P/SID.dfy           proof copy: ghost steps, proved bound
-   │  dafny translate py, with DafnySteps as a plugin: steps becomes compiled
-   ▼
-.build/trace_SID_t/out-py/           Python; Solve(..) returns (output, steps)
-   │  steptrace.py runs it on each input
-   ▼
-out/trace/SID.jsonl                  steps per input
-out/fuzz/SID.json                    stepfuzz.py: costliest input per size
-```
-
-`annotate` is separate: it gives a plain row a ghost counter.
 
 ## Quick start
 
-From `bigodafny/fuzzing/`, with `bigodafny/.venv` active:
+Run from `bigodafny/fuzzing/`, with `bigodafny/.venv` active:
 
 ```bash
-dotnet build -c Release DafnySteps          # after every .cs edit
-dotnet test DafnySteps.Tests                # golden tests
-scripts/demo.sh 2286_319 --run              # both passes and both traces on one row
-python3 steptrace.py 1011_368               # steps on each stored test
-python3 steptrace.py 1011_368 --trace       # plus steps at each program point
-python3 stepfuzz.py 1011_368 --iters 300    # costliest input per size
+dotnet build -c Release DafnySteps          # rebuild after every .cs edit
+dotnet test DafnySteps.Tests                # run the tests
+scripts/demo.sh 2286_319 --run              # annotate, deghost and steptrace on one row
 ```
 
-`steptrace.py` builds `DafnySteps` only when it is missing. After a `.cs` edit,
-rebuild it yourself.
+One round of the loop on row `2286_319`:
+
+```bash
+DafnySteps/bin/Release/net10.0/DafnySteps annotate ../solutions/2286/2286_319.dfy counted.dfy
+python3 steptrace.py 2286_319 --dfy counted.dfy    # steps on each stored test
+python3 stepfuzz.py 2286_319 --dfy counted.dfy     # costliest input for each size
+```
+
+`steptrace.py` builds `DafnySteps` only if it is missing. After editing a
+`.cs` file, rebuild it yourself.

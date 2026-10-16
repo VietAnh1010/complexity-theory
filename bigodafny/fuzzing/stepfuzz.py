@@ -306,9 +306,9 @@ def bucket(m, res):
     return int(math.floor(math.log2(m + 1) * res))
 
 
-def fuzz(sid, measure=None, iters=2000, seconds=None, res=2, seed=0, timeout=5):
+def fuzz(sid, measure=None, iters=2000, seconds=None, res=2, seed=0, timeout=5, dfy=None):
     rng = random.Random(seed)
-    r = Runner(sid)
+    r = Runner(sid, dfy=dfy)
     for n in r.notes:
         log(f"{sid}: {n}")
     parsed = []
@@ -386,7 +386,7 @@ def fuzz(sid, measure=None, iters=2000, seconds=None, res=2, seed=0, timeout=5):
     elites = sorted(archive.values(), key=lambda e: e["measure"])
     seeds = sorted(seeds_best.values(), key=lambda e: e["measure"])
     return {
-        "solution_id": sid, "label": r.task["time_complexity_inferred"],
+        "solution_id": sid, "dfy": dfy, "label": r.task["time_complexity_inferred"],
         "measure": measure or "default: sizes a label may name", "max_measure": max_m,
         "iters": it + 1, "seconds": round(time.time() - t0, 1), "stats": dict(stats),
         "ties": {k: list(v) for k, v in shape.ties.items()}, "linked": shape.linked,
@@ -404,8 +404,9 @@ def main(argv=None):
     ap.add_argument("--seconds", type=float)
     ap.add_argument("--res", type=int, default=2, help="buckets per doubling of size")
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--dfy", help="the .dfy to run (default: the row's proof copy)")
     a = ap.parse_args(argv)
-    rep = fuzz(a.sid, a.measure, a.iters, a.seconds, a.res, a.seed)
+    rep = fuzz(a.sid, a.measure, a.iters, a.seconds, a.res, a.seed, dfy=a.dfy)
     seed_by = {bucket(e["measure"], a.res): e for e in rep["seed_best"]}
     print(f"{a.sid}  label {rep['label']}  measure: {rep['measure']}")
     print(f"{'size':>8} {'seed steps':>11} {'fuzz steps':>11} {'gain':>6}")
