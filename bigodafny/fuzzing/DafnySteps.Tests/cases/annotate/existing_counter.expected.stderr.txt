@@ -1,0 +1,1 @@
+existing_counter.dfy: Solve already declares steps; pick another counter name

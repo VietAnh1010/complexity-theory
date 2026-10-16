@@ -54,8 +54,8 @@ public static class Cli {
 
   static async Task<int> RunAnnotate(string input, string output, string counter) {
     var resolved = await Ast.Load(input, resolve: true);
-    var parsed = await Ast.Load(input, resolve: false);
-    if (resolved == null || parsed == null) {
+    var parsed = resolved == null ? null : await Ast.Load(input, resolve: false);
+    if (parsed == null) {
       return 1;
     }
     var file = new Uri(Path.GetFullPath(input));
@@ -72,8 +72,11 @@ public static class Cli {
         wr.WriteLine($"include \"{Path.GetRelativePath(dir, inc.IncludedFilename.LocalPath)}\"");
       }
       // Print only the input file's declarations; its includes stay includes.
+      // PrintTopLevelDecls, not Ast.Print: no `// dafny` header after the includes.
       parsed.DefaultModuleDef.SourceDecls.RemoveAll(d => d.Origin.Uri != file);
-      Ast.Print(parsed, wr);
+      wr.WriteLine();
+      new Printer(wr, parsed.Options, PrintModes.Everything)
+        .PrintTopLevelDecls(parsed.Compilation, parsed.DefaultModuleDef.TopLevelDecls, 0, null);
     }
     foreach (var n in pass.Notes) {
       Console.Error.WriteLine($"{input}: {n}");

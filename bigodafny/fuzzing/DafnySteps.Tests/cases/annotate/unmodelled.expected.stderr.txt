@@ -1,0 +1,2 @@
+unmodelled.dfy: line 4: seq(n, f) charged n; f's own cost not counted
+unmodelled.dfy: line 5: SetComprehension charged 1

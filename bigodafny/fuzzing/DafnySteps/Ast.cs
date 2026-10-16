@@ -20,6 +20,9 @@ public static class Ast {
                      new Uri(Path.GetFullPath(file)), Token.Cli)) {
       files.Add(df);
     }
+    if (reporter.HasErrors) {
+      return null;   // e.g. the file does not exist
+    }
     var (program, err) = resolve
       ? await DafnyMain.ParseCheck(TextReader.Null, files, file, options)
       : await DafnyMain.Parse(files, file, options);

@@ -1,15 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <!-- Built against the Dafny the toolchain runs (README.md pins 4.11.0), from
-       the dotnet tool install, so the AST is the one `dafny` itself parses. -->
+  <!-- References the installed Dafny's DLLs: ../Directory.Build.props. -->
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <DafnyDir>$(HOME)/.dotnet/tools/.store/dafny/4.11.0/dafny/4.11.0/tools/net8.0/any</DafnyDir>
-    <NoWarn>$(NoWarn);MSB3277</NoWarn>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="$(DafnyDir)/*.dll" Exclude="$(DafnyDir)/Dafny.dll" Private="true" />
-  </ItemGroup>
 </Project>

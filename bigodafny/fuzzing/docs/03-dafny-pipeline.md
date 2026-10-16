@@ -1,49 +1,37 @@
-# 3. The pipeline inside `dafny`
+# 3. Inside `dafny`
 
 ```
-parse → [plugin PreResolve] → resolve + type-check → verify (Boogie → Z3) → compile
+parse → [plugin] → resolve → verify → compile
 ```
 
 ## Parse
 
-- The output is a syntax tree. Names are unresolved strings.
-- A name is a `NameSegment`; `M.x` is an `ExprDotName`.
-- `x := M(a)` is an `AssignStatement` whose right side is an `ApplySuffix`.
-- At this stage nothing says whether `M` is a method or a function.
-- Children: `INode.PreResolveChildren`. `Ast.Descendants` walks these.
+- Produces a syntax tree; names are still plain strings (`NameSegment`).
+- `x := M(a)` is an `AssignStatement`; nothing yet says whether `M` is a method or a function.
 
 ## Resolve
 
 - Links each name to its declaration and assigns types.
-- Resolution fills extra fields on the same nodes:
+- Fills extra fields on the same nodes:
 
 | Field | Meaning |
 |---|---|
-| `Expression.Resolved` | the expression after desugaring, e.g. `IdentifierExpr`, `FunctionCallExpr` |
+| `Expression.Resolved` | the expression after desugaring |
 | `BinaryExpr.ResolvedOp` | the typed operator: int `Add` vs sequence `Concat` |
-| `AssignStatement.ResolvedStatements` | `SingleAssignStmt`s, or a `CallStmt` for a method call |
-| `CallStmt.Method`, `FunctionCallExpr.Function` | the called declaration |
+| `AssignStatement.ResolvedStatements` | plain assignments, or a `CallStmt` for a method call |
 
-- Children: `INode.Children`.
-- The resolver also enforces ghost rules (below).
+- Rejects compiled code that reads a ghost value.
 
 ## Verify
 
-- Dafny translates to Boogie, which sends verification conditions to Z3.
-- The tools here skip it with `--no-verify`; `proofs.py` verifies proofs.
+- Skipped here (`--no-verify`); `proofs.py` verifies the proofs.
 
 ## Compile
 
-- `dafny translate py` writes Python; `--include-runtime` adds the `_dafny` package.
-- Ghost code is erased here: ghost variables, lemmas, `assert`, invariants, contracts.
+- `dafny translate py` writes Python. Ghost code is erased.
 
-## Ghost versus compiled
+## Ghost
 
-- Ghost is a flag on a declaration:
-  - `Formal.IsGhost` (a parameter),
-  - `LocalVariable.IsGhost`,
-  - `MemberDecl.IsGhost` (a function or method).
-- The resolver rejects compiled code that reads a ghost value.
-- Deghost clears flags before resolution, so the resolver checks its work.
-- A variable the pass misses yields a resolver error, not a wrong program.
-- `MemberDecl.IsGhost` has no setter; `Deghost.MakeCompiled` sets the private field `isGhost` by reflection.
+- Ghost is a flag on a declaration: a parameter, a local, a function.
+- `deghost` clears flags before resolution, so the resolver checks its work.
+- A variable `deghost` misses gives a resolver error, not a wrong program.

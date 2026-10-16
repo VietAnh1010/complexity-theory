@@ -1,3 +1,6 @@
 DafnySteps/bin/
 DafnySteps/obj/
 demo/
+DafnySteps.Tests/bin/
+DafnySteps.Tests/obj/
+*.actual.*
