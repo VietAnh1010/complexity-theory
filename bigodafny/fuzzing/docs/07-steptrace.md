@@ -43,3 +43,26 @@ Results go to `out/trace/<SID>.jsonl`.
 - `--trace` is slow: every trace point costs two Python calls.
   `--trace LINE,..` compiles only the points on those lines; the others cost nothing.
 - `--log FILE` writes one line per event, `test point steps`, up to 100,000 events.
+
+## Screening proofs for loose bounds
+
+A proof in `solutions-proved/` can be a class looser than its code: it holds, but
+`steps` grows slower than the bound. This finds such proofs from stored tests only.
+
+1. Run every verified proof on its stored tests; each writes `out/trace/<SID>.jsonl`
+   with `steps` and `bound` per test (about 9 minutes for 321 proofs, 4 at a time):
+   ```bash
+   python3 -c "import json; [print(json.loads(l)['solution_id']) for l in open('../data/complexity_proofs.jsonl')]" \
+     | xargs -P 4 -I{} python3 steptrace.py {} > /dev/null
+   ```
+2. Per proof, keep the costliest test in each doubling of `bound`, and fit
+   `log(steps)` against `log(bound)` over those tests. Skip a proof with fewer than
+   4 such tests or a bound range under 16x: its tests cannot tell.
+3. A slope well below 1 (say under 0.8) means `steps` grows slower than the bound.
+4. Read the flagged rows' Python. Most flags are tests that exit early or never
+   reach the worst case (`1015_168` gets only even `n`); those proofs are fine.
+   The rest are loose: prove the tight class and replace the copy.
+
+On 2026-10-20 this rated 163 of 321 proofs, flagged 21, and 5 were loose (`5_100`,
+`1011_368`, `2913_484`, `1820_180`, `2586_20`; `bigodafny/CHANGELOG.md`).
+Run it again after new proofs land.
