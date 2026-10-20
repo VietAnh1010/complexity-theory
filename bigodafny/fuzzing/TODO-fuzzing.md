@@ -69,6 +69,9 @@ Prototype, in development. Nothing here is a gate. `CHANGELOG.md`, `DOCS.md`,
       hit: `--trace` costs one Python call pair per event (`5_100`: 1.2 s
       untraced, 9.1 s traced, 14M events). A compiled stride was rejected as
       too complicated.
+- [x] `experiments/fuzz/run.py`: runs a generator's inputs (`GRID`, `FAMILIES`)
+      untraced; per grid point, the costliest input's steps, bound,
+      steps / bound, and loop-head hits from a loops-only rerun
 - [ ] Alternative, not explored: a per-call breakdown. A point's hit count sums
       over every call of its method, so it hides which call is costly when a
       helper runs on different sizes (`Fac2286(n)` and `Fac2286(k)`). Would
