@@ -1,6 +1,11 @@
 """Stage rows for blind agents: one directory per row, outside the repository.
 
-    python3 experiments/fuzz/stage.py ROOT SID [SID ...]
+    python3 experiments/fuzz/stage.py [--arm prove|code|runs] ROOT SID [SID ...]
+
+The arm picks the brief. `prove` (default): `BRIEF.md`, guess, measure and
+prove. `code`: `GUESS.md`, name the class from the code alone; no wrappers,
+and the hook denies Bash. `runs`: `GUESS.md`, name the class with `fuzz` and
+`trace` at hand; no proof.
 
 ROOT/<sid>/ gets `annotate`'s output as `row.dfy` (Python header, no label),
 a copy of the prelude, the problem statement, `BRIEF.md` filled in, and two
@@ -40,6 +45,26 @@ log="$here/events-$(basename "$1" .dfy)-$(basename "$2" .txt).tsv"
 cd {fuzzing}
 exec {py} steptrace.py {sid} --dfy "$here/$1" --input "$here/$2" --trace "$3" --log "$log"
 """
+# Fill-ins for GUESS.md, per arm.
+GUESS = {
+    "code": {"RULE": "- Do not run anything. Use Read, Glob and Grep; the hook denies Bash.",
+             "FILES": "", "TASK": "Work from the code alone."},
+    "runs": {"RULE": "- Start every Bash command with `cd {{DIR}} &&`.",
+             "FILES": "| `fuzz` | `./fuzz FILE.dfy gen.py [--per N]`: runs your generator's inputs on FILE, prints a table |\n"
+                      "| `trace` | `./trace FILE.dfy INPUT.txt LINE,LINE`: runs one input, logs `steps` at those source lines |",
+             "TASK": """You can run the program. Write `gen.py`:
+```python
+GRID = [{"n": 8}, {"n": 16}, ...]       # sizes, one dict per table row
+FAMILIES = {"random": f, ...}           # f(rng, **sizes) -> input text, as on stdin
+```
+Stay inside the statement's limits. `./fuzz row.dfy gen.py` prints, per grid row, the
+costliest input's `steps` and how often the busiest loops ran. To test a candidate bound E,
+copy `row.dfy` to `round-k.dfy`, add `ensures steps <= E` to `Solve`, and run
+`./fuzz round-k.dfy gen.py`: it also prints E and `steps / E`. A ratio that falls as sizes grow
+means E is a looser class than the code; a flat ratio means the class fits; `BOUND BROKEN`
+means E is too low. Write families for the inputs you think cost most, not only random ones.
+Run `./fuzz` at least once and at most 3 times, and base your answer on what it shows as well as on the code."""},
+}
 
 
 def find_row(sid):
@@ -50,7 +75,7 @@ def find_row(sid):
     raise SystemExit(f"{sid}: no row")
 
 
-def stage(root, sid, task):
+def stage(root, sid, task, arm="prove"):
     d = root / sid
     d.mkdir(parents=True, exist_ok=False)
     p = subprocess.run([str(TOOL), "annotate", str(find_row(sid)), str(d / "row.dfy"),
@@ -62,8 +87,11 @@ def stage(root, sid, task):
     (d / "row.dfy").write_text(row)
     shutil.copy(PRELUDE, d / "prelude.dfy")
     (d / "statement.txt").write_text(task["description"], encoding="utf-8")
-    (d / "BRIEF.md").write_text((HERE / "BRIEF.md").read_text().replace("{{DIR}}", str(d)))
-    for name, text in (("fuzz", FUZZ), ("trace", TRACE)):
+    brief = (HERE / ("BRIEF.md" if arm == "prove" else "GUESS.md")).read_text()
+    for key, text in GUESS.get(arm, {}).items():
+        brief = brief.replace("{{" + key + "}}", text)
+    (d / "BRIEF.md").write_text(brief.replace("{{DIR}}", str(d)))
+    for name, text in (("fuzz", FUZZ), ("trace", TRACE)) if arm != "code" else ():
         (d / name).write_text(text.format(py=PY, run=HERE / "run.py", sid=sid, fuzzing=FUZZING))
         (d / name).chmod((d / name).stat().st_mode | stat.S_IXUSR)
 
@@ -76,14 +104,17 @@ def stage(root, sid, task):
 
 def main(argv=None):
     argv = sys.argv[1:] if argv is None else argv
-    if len(argv) < 2:
+    arm = "prove"
+    if argv[:1] == ["--arm"]:
+        arm, argv = argv[1], argv[2:]
+    if arm not in ("prove", "code", "runs") or len(argv) < 2:
         raise SystemExit(__doc__)
     root = Path(argv[0]).resolve()
     if FUZZING.parents[1] in root.parents:
         raise SystemExit(f"{root} is inside the repository; stage outside it")
     tasks = {t["solution_id"]: t for t in read_jsonl(DATA / "tasks.jsonl")}
     for sid in argv[1:]:
-        stage(root, sid, tasks[sid])
+        stage(root, sid, tasks[sid], arm)
         print(f"staged {root / sid}")
 
 

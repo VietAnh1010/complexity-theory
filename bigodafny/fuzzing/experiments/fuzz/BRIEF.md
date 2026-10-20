@@ -5,6 +5,7 @@ Your working directory is `{{DIR}}`. Everything you need is in it.
 ## Rules
 
 - Start every Bash command with `cd {{DIR}} &&`. Read and write files only in this directory.
+  Write files with the Write tool, not shell heredocs, and check each write landed.
 - Do not look for the answer anywhere else: no other directory, no git, no web. A hook denies
   such calls and logs them, and a logged attempt voids the result.
 - Do not change what the program computes. A proof may add only ghost code: lemmas, ghost
@@ -53,7 +54,8 @@ as an expression over measures of `Solve`'s inputs (lengths, values, counts). Th
    the constant or use `AbsInt` if needed, but keep the class. If the class you measured cannot
    be proved, you may prove a looser one; say so.
 
-Budget: at most 5 rounds and 6 proof attempts.
+Budget: at most 3 rounds and 3 proof attempts. After the third failed attempt, stop:
+record the proof as `unresolved` with the obstacle and write `record.json`.
 
 ## Report
 
