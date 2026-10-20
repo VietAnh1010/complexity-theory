@@ -41,3 +41,9 @@ method TraceBound(n: int, a: seq<int>, output: int, steps: nat)
     }
   }
 }
+
+method TraceBoundValue(n: int, a: seq<int>, output: int, steps: nat)
+    returns (bound: int)
+{
+  bound := Bound(n);
+}

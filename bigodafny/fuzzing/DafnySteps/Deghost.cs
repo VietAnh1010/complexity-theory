@@ -30,7 +30,8 @@ public class Deghost {
   public bool Trace;
   /// Source lines that get trace points; null: every line.
   public HashSet<int> TraceLines;
-  /// Add TraceRequires and TraceBound, Solve's contract as compiled methods.
+  /// Add TraceRequires and TraceBound, Solve's contract as compiled methods,
+  /// and TraceBoundValue, the value of its step bound.
   public bool Contracts;
   public readonly List<Point> Points = [];
 
@@ -225,7 +226,7 @@ public class Deghost {
     }
   }
 
-  bool Selected(Statement s) => TraceLines == null || TraceLines.Contains(s.Origin.Center.line);
+  bool Selected(Statement s) => TraceLines == null || TraceLines.Contains(Ast.Line(s));
 
   bool AssignsCounter(Statement s) => s switch {
     AssignStatement a => a.Lhss.Any(lhs => LhsName(lhs) == Counter),
@@ -247,6 +248,8 @@ public class Deghost {
   /// Add `TraceRequires(ins)` and `TraceBound(ins, outs)` beside Solve. Each
   /// returns whether Solve's requires (ensures) hold. TraceBound takes only
   /// the compiled outs, and skips an ensures clause that names a ghost out.
+  /// For the first `ensures <Counter> <= E`, also `TraceBoundValue(ins, outs)`,
+  /// which returns E.
   void AddContractChecks(Method solve) {
     var ghostOuts = solve.Outs.Where(f => f.IsGhost).Select(f => f.Name).ToHashSet();
     var ensures = solve.Ens.Where(c => !Ast.NamesIn(c.E).Any(ghostOuts.Contains)).ToList();
@@ -255,6 +258,14 @@ public class Deghost {
     var cls = (TopLevelDeclWithMembers)solve.EnclosingClass;
     cls.Members.Add(CheckMethod(solve, "TraceRequires", solve.Ins, solve.Req));
     cls.Members.Add(CheckMethod(solve, "TraceBound", [.. solve.Ins, .. compiledOuts], ensures));
+    var bound = ensures.Select(c => c.E).OfType<BinaryExpr>()
+      .FirstOrDefault(b => b.Op == BinaryExpr.Opcode.Le && LhsName(b.E0) == Counter);
+    if (bound != null) {
+      var o = solve.Origin;
+      var value = new Formal(o, "bound", Microsoft.Dafny.Type.Int, false, false, null, null);
+      cls.Members.Add(NewMethod(solve, "TraceBoundValue", [.. solve.Ins, .. compiledOuts], value,
+        Ast.Assign(o, "bound", new Cloner().CloneExpr(bound.E1))));
+    }
     cls.SetMembersBeforeResolution();
   }
 
@@ -268,18 +279,23 @@ public class Deghost {
   static Method CheckMethod(Method solve, string name, List<Formal> parameters, List<AttributedExpression> clauses) {
     var cloner = new Cloner();
     var o = solve.Origin;
-    var ins = parameters.Select(f =>
-      new Formal(f.Origin, f.Name, cloner.CloneType(f.SyntacticType), true, false, null, null)).ToList();
     var ok = new Formal(o, "ok", Microsoft.Dafny.Type.Bool, false, false, null, null);
 
     Statement check = Ast.Assign(o, "ok", new LiteralExpr(o, true));
     foreach (var clause in Enumerable.Reverse(clauses)) {
       check = new IfStmt(o, false, cloner.CloneExpr(clause.E), new BlockStmt(o, [check]), null);
     }
-    var body = new BlockStmt(o, [Ast.Assign(o, "ok", new LiteralExpr(o, false)), check]);
+    return NewMethod(solve, name, parameters, ok, Ast.Assign(o, "ok", new LiteralExpr(o, false)), check);
+  }
 
+  /// method <name>(<parameters>) returns (<result>) { <body> }
+  static Method NewMethod(Method solve, string name, List<Formal> parameters, Formal result, params Statement[] body) {
+    var cloner = new Cloner();
+    var o = solve.Origin;
+    var ins = parameters.Select(f =>
+      new Formal(f.Origin, f.Name, cloner.CloneType(f.SyntacticType), true, false, null, null)).ToList();
     return new Method(o, new Name(o, name), null, false, false, [], ins, [], [],
       new Specification<FrameExpression>([], null), new Specification<Expression>([], null),
-      [ok], new Specification<FrameExpression>([], null), body, null);
+      [result], new Specification<FrameExpression>([], null), new BlockStmt(o, [.. body]), null);
   }
 }

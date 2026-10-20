@@ -1,5 +1,6 @@
 // TraceRequires and TraceBound compile Solve's contract. An ensures naming a
 // ghost out (extra) is left out of TraceBound; Bound becomes compiled.
+// TraceBoundValue returns the right-hand side of `steps <= Bound(n)`.
 ghost function Bound(n: nat): nat { 2 * n + 1 }
 
 method Solve(n: int, a: seq<int>) returns (output: int, ghost steps: nat, ghost extra: nat)

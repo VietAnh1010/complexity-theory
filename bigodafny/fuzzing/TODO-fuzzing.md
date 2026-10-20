@@ -58,6 +58,8 @@ Prototype, in development. Nothing here is a gate. `CHANGELOG.md`, `DOCS.md`,
 - [ ] `annotate`: AlternativeStmt, match statements, `:-` calls stop it (no rule yet)
 - [ ] `stepfuzz.py`: default size mixes lengths and values; use `--measure`
 - [ ] `TraceBound` is `true` when Solve has no `ensures` (annotated rows)
+- [x] `TraceBoundValue`: the value of `E` in the first `ensures steps <= E`;
+      `steptrace.py` records it as `bound`
 - [ ] Decide what to gather from a trace. The consumer is an LLM agent, so a
       log with an event per hit (millions of lines) is useless. Now: per
       point, hit count and min/max/last steps. `--trace LINE,..` compiles only

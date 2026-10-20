@@ -38,6 +38,8 @@ Results go to `out/trace/<SID>.jsonl`.
   - For a guessed bound: the guess is too low.
   - For a verified proof: a `deghost` bug, since the compiled `steps` should match the proof's.
 - With no `ensures`, `bound_ok` is always true.
+- `bound`: the value of `E` in the first `ensures steps <= E`; absent when there is none.
+  `steps / bound` falling as the input grows means the bound is loose.
 - `--trace` is slow: every trace point costs two Python calls.
   `--trace LINE,..` compiles only the points on those lines; the others cost nothing.
 - `--log FILE` writes one line per event, `test point steps`, up to 100,000 events.

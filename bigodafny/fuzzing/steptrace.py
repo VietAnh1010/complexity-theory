@@ -14,7 +14,8 @@ point costs nothing at run time. `--log FILE` writes each event, up to
 
 The plugin also compiles Solve's contract: `TraceRequires` rejects an input
 the proof does not cover; `TraceBound` checks each run against every
-`ensures`, the step bound among them. A run over its proved bound means the
+`ensures`, the step bound among them; `TraceBoundValue` gives the bound's
+value, so `steps / bound` shows how tight it is. A run over its proved bound means the
 compiled counter does not count what the proof counts. If the contract does
 not compile (a ghost-only predicate), the build is retried without it.
 
@@ -165,6 +166,8 @@ for line in sys.stdin:
                 hits.clear()
                 lg, LOG = LOG, None     # TraceBound's prints are not events
                 res["bound_ok"] = bool(module_.default__.TraceBound({args}, *outs))
+                if hasattr(module_.default__, "TraceBoundValue"):
+                    res["bound"] = int(module_.default__.TraceBoundValue({args}, *outs))
                 LOG = lg
     except _Timeout:
         res = {{"status": "timeout"}}
@@ -250,7 +253,7 @@ def main(argv=None):
             del rec["hits"]
         recs.append(rec)
         print(f"test {k:>3}  {res['status']:<8} steps={res.get('steps')}  "
-              f"input_len={len(text)}  bound_ok={res.get('bound_ok', '-')}")
+              f"input_len={len(text)}  bound={res.get('bound', '-')}  bound_ok={res.get('bound_ok', '-')}")
     r.close()
     if a.trace is not None and recs and "points" in recs[-1]:
         print(f"\npoints, last test ({len(texts[-1])} chars):")
