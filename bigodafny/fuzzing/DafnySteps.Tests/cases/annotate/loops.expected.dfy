@@ -1,3 +1,5 @@
+// A while body: 1 plus the guard per iteration; after the loop, the guard's
+// failing evaluation. A for body: 1 per iteration.
 
 method Solve(a: seq<int>) returns (output: int, ghost steps: nat)
 {

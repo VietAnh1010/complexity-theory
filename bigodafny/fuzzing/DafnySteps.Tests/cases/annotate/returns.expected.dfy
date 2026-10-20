@@ -1,3 +1,4 @@
+// A return statement returns the counter too.
 
 method Solve(n: int) returns (output: int, ghost steps: nat)
 {

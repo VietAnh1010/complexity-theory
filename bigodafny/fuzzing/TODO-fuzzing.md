@@ -40,8 +40,8 @@ Prototype, in development. Nothing here is a gate. `CHANGELOG.md`, `DOCS.md`,
       contract compiled as `TraceRequires`/`TraceBound`
 - [x] `steptrace.py` builds through the plugin; regex code removed
 - [x] `annotate`: counter, charges per COMPLEXITY.md, call steps via a ghost lhs
-- [ ] `annotate` drops comments: the printer does not keep them, so a row's
-      header (the Python source) is lost
+- [x] `annotate` keeps the row's header comment (the Python source), minus the
+      label line; the printer still drops every other comment
 - [x] `annotate` stops on code outside the cost model; `enable=functions,seq`
       adds rules for row functions (`F_steps`) and `seq(n, i => e)`
 - [x] Rule `arrays`; `let`, lambdas, tuple patterns, `assert P; e` in the table.
