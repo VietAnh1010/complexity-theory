@@ -8,6 +8,9 @@ everything flowing into it compiled, on Dafny's own AST, before resolution;
 With `--trace`, the plugin also inserts `print <point>, steps;` after each
 assignment to `steps` and at each loop head; the harness captures those prints.
 Points are listed in `points.json` by line and column of the proof's source.
+`--trace LINE,..` inserts points on those source lines only; an unselected
+point costs nothing at run time. `--log FILE` writes each event, up to
+`LOG_CAP`, as `test point steps`.
 
 The plugin also compiles Solve's contract: `TraceRequires` rejects an input
 the proof does not cover; `TraceBound` checks each run against every
@@ -30,6 +33,7 @@ from validate import conv_expr
 TOOL = Path(__file__).resolve().parent / "DafnySteps"
 DLL = TOOL / "bin" / "Release" / "net10.0" / "DafnySteps.dll"
 TIERS = ("public_tests", "private_tests", "generated_tests")
+LOG_CAP = 100_000                # events in a --log file; more makes it too large
 
 
 def find_proof(sid):
@@ -48,24 +52,25 @@ def plugin():
     return DLL
 
 
-def build(sid, trace=False, dfy=None):
+def build(sid, trace=None, dfy=None):
     """Compile `dfy` (default: the row's proof copy) with the counter compiled.
-    -> (pydir, points, has_contracts, notes)."""
+    `trace`: None, "" (every point) or "LINE,..". -> (pydir, points, has_contracts, notes)."""
     other = dfy is not None
     dfy = Path(dfy) if other else find_proof(sid)
-    work = BUILD / f"trace_{sid}{'_t' if trace else ''}{'_file' if other else ''}"
+    work = BUILD / f"trace_{sid}{'' if trace is None else '_t'}{'_file' if other else ''}"
     work.mkdir(parents=True, exist_ok=True)
     points_path = work / "points.json"
     notes = []
     for contracts in (True, False):
-        args = " ".join(["trace"] * trace + ["contracts"] * contracts
+        args = " ".join([f"trace={trace}" if trace else "trace"] * (trace is not None)
+                        + ["contracts"] * contracts
                         + [f"points={points_path}"])
         p = subprocess.run(["dafny", "translate", "py", str(dfy), "--no-verify",
                             "--include-runtime", "--output", str(work / "out"),
                             "--plugin", f"{plugin()},{args}"],
                            capture_output=True, text=True, timeout=300)
         if p.returncode == 0 and (work / "out-py" / "module_.py").exists():
-            points = json.loads(points_path.read_text()) if trace else []
+            points = [] if trace is None else json.loads(points_path.read_text())
             src = dfy.read_text(encoding="utf-8").split("\n")
             for pt in points:
                 pt["src"] = src[pt["Line"] - 1].strip()[:80]
@@ -92,8 +97,9 @@ def _mkreal(x):
 _ns = {{}}
 exec(compile(open({dcpath!r}, encoding="utf-8").read(), "dataclass", "exec"), _ns)
 Input = _ns["Input"]
-KEEP = {keep}
-hits, events, pending = {{}}, [], []
+LOG = open({log!r}, "w") if {log!r} else None
+hits, pending = {{}}, []
+test, logged = -1, 0
 
 
 def _print(v):
@@ -105,6 +111,7 @@ def _print(v):
 
 
 def _hit(pid, s):
+    global logged
     h = hits.get(pid)
     if h is None:
         hits[pid] = h = [0, s, s, s]
@@ -112,8 +119,9 @@ def _hit(pid, s):
     h[3] = s
     if s < h[1]: h[1] = s
     if s > h[2]: h[2] = s
-    if len(events) < KEEP:
-        events.append((pid, s))
+    if LOG and logged < {cap}:
+        LOG.write(f"{{test}}\\t{{pid}}\\t{{s}}\\n")
+        logged += 1
 
 
 _dafny.print = _print         # the only prints in the copy are trace points
@@ -133,9 +141,12 @@ def _alarm(signum, frame):
 
 
 signal.signal(signal.SIGALRM, _alarm)
+if LOG:
+    LOG.write("test\\tpoint\\tsteps\\n")
 for line in sys.stdin:
     req = json.loads(line)
-    hits.clear(); events.clear(); pending.clear()
+    test += 1
+    hits.clear(); pending.clear()
     res = {{}}
     signal.alarm(req.get("timeout", 30))
     try:
@@ -149,11 +160,12 @@ for line in sys.stdin:
             outs = module_.default__.Solve({args})
             steps = outs[1]
             res = {{"status": "ok", "steps": int(steps), "output_len": len(outs[0]),
-                    "hits": {{str(k): v for k, v in hits.items()}},
-                    "events": events[:]}}
+                    "hits": {{str(k): v for k, v in hits.items()}}, "logged": logged}}
             if {has_bound}:
                 hits.clear()
+                lg, LOG = LOG, None     # TraceBound's prints are not events
                 res["bound_ok"] = bool(module_.default__.TraceBound({args}, *outs))
+                LOG = lg
     except _Timeout:
         res = {{"status": "timeout"}}
     except _Unparsed as e:
@@ -170,7 +182,7 @@ for line in sys.stdin:
 class Runner:
     """A long-lived Python process running one row's counter on input texts."""
 
-    def __init__(self, sid, trace=False, keep=0, dfy=None):
+    def __init__(self, sid, trace=None, log=None, dfy=None):
         self.sid = sid
         tasks = {t["solution_id"]: t for t in read_jsonl(DATA / "tasks.jsonl")}
         self.task = tasks[sid]
@@ -182,7 +194,8 @@ class Runner:
         args = ", ".join(conv_expr(p["dafny_type"], f'inp.{p["py_name"]}')
                          for p in sig["params"])
         (work / "harness.py").write_text(HARNESS.format(
-            pydir=str(pydir), dcpath=str(work / "dataclass.py"), keep=keep,
+            pydir=str(pydir), dcpath=str(work / "dataclass.py"),
+            log=str(Path(log).resolve()) if log else "", cap=LOG_CAP,
             args=args, has_req=contracts, has_bound=contracts), encoding="utf-8")
         self.proc = subprocess.Popen([sys.executable, str(work / "harness.py")],
                                      stdin=subprocess.PIPE, stdout=subprocess.PIPE,
@@ -220,10 +233,11 @@ def main(argv=None):
     ap.add_argument("sid")
     ap.add_argument("--input", help="file holding one input text (default: the row's tests)")
     ap.add_argument("--dfy", help="the .dfy to run (default: the row's proof copy)")
-    ap.add_argument("--trace", action="store_true", help="record steps at each program point")
-    ap.add_argument("--keep", type=int, default=0, help="also keep the first N (point, steps) events")
+    ap.add_argument("--trace", nargs="?", const="", metavar="LINE,..",
+                    help="record steps at each program point, or only on these source lines")
+    ap.add_argument("--log", help=f"with --trace: write each event to this file, up to {LOG_CAP}")
     a = ap.parse_args(argv)
-    r = Runner(a.sid, trace=a.trace, keep=a.keep, dfy=a.dfy)
+    r = Runner(a.sid, trace=a.trace, log=a.log, dfy=a.dfy)
     for n in r.notes:
         log(f"{a.sid}: {n}")
     texts = [Path(a.input).read_text()] if a.input else r.seeds()
@@ -231,19 +245,22 @@ def main(argv=None):
     for k, text in enumerate(texts):
         res = r.run(text)
         rec = {"solution_id": a.sid, "test": k, "input_len": len(text), **res}
-        if a.trace and res["status"] == "ok":
+        if a.trace is not None and res["status"] == "ok":
             rec["points"] = report(r, res)
             del rec["hits"]
         recs.append(rec)
         print(f"test {k:>3}  {res['status']:<8} steps={res.get('steps')}  "
               f"input_len={len(text)}  bound_ok={res.get('bound_ok', '-')}")
     r.close()
-    if a.trace and recs and "points" in recs[-1]:
+    if a.trace is not None and recs and "points" in recs[-1]:
         print(f"\npoints, last test ({len(texts[-1])} chars):")
         for p in recs[-1]["points"]:
             print(f"  L{p['Line']:<4} {p['Kind']:<6} hits={p['hits']:<7} "
                   f"steps {p['min']}..{p['max']}  {p['src']}")
     write_jsonl(OUT / "trace" / f"{a.sid}.jsonl", recs)
+    if a.log:
+        n = max([x.get("logged", 0) for x in recs], default=0)
+        log(f"{n} events{' (cap reached)' if n >= LOG_CAP else ''} -> {a.log}")
     log(f"{Counter(x['status'] for x in recs)}; bound broken on "
         f"{sum(x.get('bound_ok') is False for x in recs)} -> out/trace/{a.sid}.jsonl")
     return 0

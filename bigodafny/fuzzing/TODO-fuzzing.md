@@ -60,11 +60,16 @@ Prototype, in development. Nothing here is a gate. `CHANGELOG.md`, `DOCS.md`,
 - [ ] `TraceBound` is `true` when Solve has no `ensures` (annotated rows)
 - [ ] Decide what to gather from a trace. The consumer is an LLM agent, so a
       log with an event per hit (millions of lines) is useless. Now: per
-      point, hit count and min/max/last steps, plus the first `--keep` events.
+      point, hit count and min/max/last steps. `--trace LINE,..` compiles only
+      the points on those lines; `--log FILE` writes events, capped at 10^5.
       Open: what an agent needs (e.g. steps per loop iteration, against the
       invariant's bound), and how to gather it without paying one print per
       hit: `--trace` costs one Python call pair per event (`5_100`: 1.2 s
       untraced, 9.1 s traced, 14M events). A compiled stride was rejected as
       too complicated.
+- [ ] Alternative, not explored: a per-call breakdown. A point's hit count sums
+      over every call of its method, so it hides which call is costly when a
+      helper runs on different sizes (`Fac2286(n)` and `Fac2286(k)`). Would
+      record, per point, steps at each call's exit, grouped by call.
 - [ ] `annotate` refuses a row that already declares `steps` (`1387_34`, `1336_157`);
       `counter=NAME` works, but `steptrace.py` has no `--counter` yet

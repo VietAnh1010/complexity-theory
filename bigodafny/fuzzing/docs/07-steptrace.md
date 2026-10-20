@@ -11,6 +11,7 @@ python3 steptrace.py SID                 # every stored test of the row
 python3 steptrace.py SID --input FILE    # one input from a file
 python3 steptrace.py SID --dfy FILE      # a different .dfy, e.g. annotate's output
 python3 steptrace.py SID --trace         # also steps at each program point
+python3 steptrace.py SID --trace 37,42 --log ev.tsv   # only points on lines 37, 42; log each event
 ```
 
 Results go to `out/trace/<SID>.jsonl`.
@@ -38,3 +39,5 @@ Results go to `out/trace/<SID>.jsonl`.
   - For a verified proof: a `deghost` bug, since the compiled `steps` should match the proof's.
 - With no `ensures`, `bound_ok` is always true.
 - `--trace` is slow: every trace point costs two Python calls.
+  `--trace LINE,..` compiles only the points on those lines; the others cost nothing.
+- `--log FILE` writes one line per event, `test point steps`, up to 100,000 events.

@@ -28,6 +28,8 @@ public class Deghost {
   public string Counter = "steps";
   /// Insert a trace point after each counter update and at each loop head.
   public bool Trace;
+  /// Source lines that get trace points; null: every line.
+  public HashSet<int> TraceLines;
   /// Add TraceRequires and TraceBound, Solve's contract as compiled methods.
   public bool Contracts;
   public readonly List<Point> Points = [];
@@ -208,6 +210,9 @@ public class Deghost {
       var body = new List<Statement>();
       foreach (var s in block.Body) {
         body.Add(s);
+        if (!Selected(s)) {
+          continue;
+        }
         if (s is OneBodyLoopStmt { Body: { } loopBody }) {
           loopBody.Body.Insert(0, TracePoint(method, s, "loop"));
         }
@@ -219,6 +224,8 @@ public class Deghost {
       block.Body.AddRange(body);
     }
   }
+
+  bool Selected(Statement s) => TraceLines == null || TraceLines.Contains(s.Origin.Center.line);
 
   bool AssignsCounter(Statement s) => s switch {
     AssignStatement a => a.Lhss.Any(lhs => LhsName(lhs) == Counter),

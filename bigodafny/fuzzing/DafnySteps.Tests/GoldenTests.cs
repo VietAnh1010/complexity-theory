@@ -3,7 +3,8 @@
 //   <name>.expected.dfy   the output; absent when the pass must fail (exit 1)
 //   <name>.stderr.txt     notes and errors; absent when stderr is empty
 //   <name>.points.json    deghost's trace points
-// An annotate case may have <name>.args: options such as `enable=functions`.
+// A case may have <name>.args: options such as `enable=functions` or
+// `trace=6,11`. A deghost case without one runs with `trace contracts`.
 // The output must also resolve. A failing case leaves <name>.actual.* behind
 // for diffing. `UPDATE_GOLDEN=1 dotnet test` rewrites the expected files.
 using System.Runtime.CompilerServices;
@@ -28,13 +29,16 @@ public class GoldenTests {
 
   [Theory, MemberData(nameof(DeghostCases))]
   public Task Deghost(string name) =>
-    Check("deghost", name, "trace", "contracts", $"points={name}.actual.points.json");
+    Check("deghost", name, [.. Args("deghost", name, "trace contracts"), $"points={name}.actual.points.json"]);
 
-  /// Options for annotate, e.g. `enable=functions`, come from <name>.args.
   [Theory, MemberData(nameof(AnnotateCases))]
-  public Task Annotate(string name) =>
-    Check("annotate", name, Read(Path.Combine(Cases, "annotate"), $"{name}.args").Split((char[])null,
-      StringSplitOptions.RemoveEmptyEntries));
+  public Task Annotate(string name) => Check("annotate", name, Args("annotate", name, ""));
+
+  /// The options in cases/<pass>/<name>.args, or `otherwise` when it is absent.
+  static string[] Args(string pass, string name, string otherwise) {
+    var text = Read(Path.Combine(Cases, pass), $"{name}.args");
+    return (text == "" ? otherwise : text).Split((char[])null, StringSplitOptions.RemoveEmptyEntries);
+  }
 
   [Theory, InlineData("deghost"), InlineData("annotate")]
   public async Task MissingInputFails(string pass) {
