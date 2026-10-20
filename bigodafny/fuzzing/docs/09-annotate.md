@@ -15,8 +15,9 @@ DafnySteps/bin/Release/net10.0/DafnySteps annotate IN.dfy OUT.dfy [counter=NAME]
 - Exits with 1 if IN is missing, has errors, contains code it cannot charge,
   or already has a variable named `steps`.
 - The output states no bound on `steps`. Adding the bound and its loop invariants is the proof's job.
-- The output keeps IN's header comment (title, Python) without its `// time complexity:` line,
-  so an agent reading it does not see the label. The printer drops every other comment.
+- The output keeps the Python block (`// --- Python` to its closing `// ----`) of IN's header,
+  and nothing else of the header: no title, label or label-audit verdict, so an agent reading
+  it does not see the answer. The printer drops every other comment.
 
 ## Rules
 

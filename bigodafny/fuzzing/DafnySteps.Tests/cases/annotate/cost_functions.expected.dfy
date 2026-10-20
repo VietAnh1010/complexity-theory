@@ -1,6 +1,3 @@
-// Each function F gets a ghost cost function F_steps with F's parameters,
-// requires and decreases; a call F(x) is charged F_steps(x). A recursive call
-// inside F costs F_steps too.
 
 function CountZeros(s: seq<int>): int
   decreases |s|

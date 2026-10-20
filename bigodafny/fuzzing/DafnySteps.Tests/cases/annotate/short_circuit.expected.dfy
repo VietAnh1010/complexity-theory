@@ -1,4 +1,3 @@
-// `a && b` charges b only when a lets it run; `||` and `==>` likewise.
 
 method Solve(a: seq<int>, i: int)
     returns (output: bool, ghost steps: nat)

@@ -1,5 +1,3 @@
-// Prelude functions are charged per COMPLEXITY.md. The include stays an include.
-
 include "../../../../prelude.dfy"
 
 method Solve(a: seq<int>, words: seq<string>)

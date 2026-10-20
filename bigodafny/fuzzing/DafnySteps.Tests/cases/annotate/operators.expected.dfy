@@ -1,4 +1,3 @@
-// 1 per operator and index, plus operands; literals and variables cost 0.
 
 method Solve(a: seq<int>, i: nat, b: int)
     returns (output: int, ghost steps: nat)

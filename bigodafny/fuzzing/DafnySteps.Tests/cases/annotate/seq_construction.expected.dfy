@@ -1,7 +1,3 @@
-// seq(n, f): 1 per element plus f's cost for each. A constant-cost lambda
-// gives (1 + k) * n; a lambda whose cost depends on its argument gives
-// n + SumSeq(seq(n, ...)).
-
 include "../../../../prelude.dfy"
 
 method Solve(a: seq<int>, n: nat)

@@ -1,4 +1,3 @@
-// `s + t` charges |t|; a display 1 per element; an update or a slice 1.
 
 method Solve(s: seq<int>, t: seq<int>, x: int)
     returns (output: seq<int>, ghost steps: nat)

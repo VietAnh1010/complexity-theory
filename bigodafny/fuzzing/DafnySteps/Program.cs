@@ -3,8 +3,8 @@
 // prints the deghosted program (included files inlined) so it can be read and
 // tested; the plugin (Plugin.cs) applies the same pass inside `dafny`.
 //   DafnySteps annotate IN.dfy OUT.dfy [counter=steps] [enable=functions,seq,arrays]
-// prints IN with a ghost step counter added (Annotate.cs), keeping IN's header
-// comment except its `// time complexity:` line. Code the cost model does not
+// prints IN with a ghost step counter added (Annotate.cs), keeping the Python
+// block of IN's header and nothing else of it. Code the cost model does not
 // cover is an error, unless `enable=` names a rule for it (CostRules.cs).
 using System.Text.Json;
 using Microsoft.Dafny;
@@ -71,7 +71,12 @@ public static class Cli {
     return 0;
   }
 
-  const string LabelLine = "// time complexity:";
+  /// The lines from `// --- Python` to the `// ----` line closing it; none if absent.
+  static List<string> PythonBlock(List<string> header) {
+    var start = header.FindIndex(l => l.StartsWith("// --- Python"));
+    var end = start < 0 ? -1 : header.FindIndex(start + 1, l => l.StartsWith("// ----------"));
+    return end < 0 ? [] : header[start..(end + 1)];
+  }
 
   static async Task<int> RunAnnotate(string input, string output, Annotate pass) {
     var resolved = await Ast.Load(input, resolve: true);
@@ -88,11 +93,11 @@ public static class Cli {
     }
     var dir = Path.GetDirectoryName(Path.GetFullPath(output))!;
     await using (var wr = new StreamWriter(output)) {
-      // The printer drops comments, so the row's header (title, Python) is
-      // copied as text. Its label line is left out: the output goes to agents
-      // that guess the complexity.
-      var header = File.ReadLines(input).TakeWhile(l => l.StartsWith("//"))
-        .Where(l => !l.StartsWith(LabelLine)).ToList();
+      // The printer drops comments, so the header's Python block is copied
+      // as text. The rest of the header (title, label, a label audit's
+      // verdict) is left out: the output goes to agents guessing the complexity.
+      var header = PythonBlock(File.ReadLines(input)
+        .TakeWhile(l => l.StartsWith("//") || l.Trim() == "").ToList());
       var includes = parsed.Compilation.Includes.Where(i => i.IncluderFilename == file).ToList();
       foreach (var line in header) {
         wr.WriteLine(line);

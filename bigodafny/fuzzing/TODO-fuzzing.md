@@ -40,8 +40,8 @@ Prototype, in development. Nothing here is a gate. `CHANGELOG.md`, `DOCS.md`,
       contract compiled as `TraceRequires`/`TraceBound`
 - [x] `steptrace.py` builds through the plugin; regex code removed
 - [x] `annotate`: counter, charges per COMPLEXITY.md, call steps via a ghost lhs
-- [x] `annotate` keeps the row's header comment (the Python source), minus the
-      label line; the printer still drops every other comment
+- [x] `annotate` keeps the Python block of the row's header and nothing else
+      of it (title, label, label-audit verdicts); the printer drops other comments
 - [x] `annotate` stops on code outside the cost model; `enable=functions,seq`
       adds rules for row functions (`F_steps`) and `seq(n, i => e)`
 - [x] Rule `arrays`; `let`, lambdas, tuple patterns, `assert P; e` in the table.
@@ -72,6 +72,9 @@ Prototype, in development. Nothing here is a gate. `CHANGELOG.md`, `DOCS.md`,
 - [x] `experiments/fuzz/run.py`: runs a generator's inputs (`GRID`, `FAMILIES`)
       untraced; per grid point, the costliest input's steps, bound,
       steps / bound, and loop-head hits from a loops-only rerun
+- [x] Blind runs: `experiments/fuzz/stage.py` stages rows outside the repo;
+      the `blind-fuzz` agent type (`.claude/agents/`) carries `guard.py` as its
+      own PreToolUse hook, so only those agents are confined
 - [ ] Alternative, not explored: a per-call breakdown. A point's hit count sums
       over every call of its method, so it hides which call is costly when a
       helper runs on different sizes (`Fac2286(n)` and `Fac2286(k)`). Would

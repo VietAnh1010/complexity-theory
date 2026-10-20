@@ -1,5 +1,3 @@
-// A call to an annotated method adds its steps through a ghost lhs, in both
-// statement forms.
 
 method Solve(n: int) returns (output: int, ghost steps: nat)
 {
