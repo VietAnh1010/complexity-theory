@@ -30,9 +30,9 @@ Source: the tree.
 
 | Directory | Rows |
 |---|---:|
-| `solutions/` | 297 |
+| `solutions/` | 301 |
 | `solutions-unscreened/` | 127 |
-| `solutions-disputed/` | 203 |
+| `solutions-disputed/` | 199 |
 | `solutions-unsure/` | 2 |
 | `solutions-ungateable/` | 4 |
 | `solutions-unverified/` | 3 |
@@ -45,7 +45,7 @@ Source: the tree.
 |---|---|---|
 | `validate.py` | `data/validation.jsonl` | 536 rows: all `valid` |
 | `difftest.py --loose` | `data/difftest.jsonl` | 98 loose rows: 94 `agrees`, 4 `untranslated`; also keeps the last loose run of the two 1501 rows, now strict |
-| `verify_all.py` | `data/verification.jsonl` | 303 rows (`solutions/`, `solutions-unsure/`, `solutions-ungateable/`): all verify; 296 without `decreases *` |
+| `verify_all.py` | `data/verification.jsonl` | 307 rows (`solutions/`, `solutions-unsure/`, `solutions-ungateable/`): all verify; 300 without `decreases *` |
 | `proofs.py` | `data/complexity_proofs.jsonl` | 321 proofs: all verify, 0 `assume` |
 
 Rows in `solutions/` using `decreases *`: 7.
@@ -56,19 +56,19 @@ Source: `data/label_audit.jsonl`.
 
 | Verdict | Rows | Where they are |
 |---|---:|---|
-| `ok` | 301 | `solutions/` 297, `solutions-ungateable/` 3, `solutions-disputed/` 1 |
-| `mismatch` | 202 | `solutions-disputed/` |
+| `ok` | 305 | `solutions/` 301, `solutions-ungateable/` 3, `solutions-disputed/` 1 |
+| `mismatch` | 198 | `solutions-disputed/` |
 | `unsure` | 3 | `solutions-unsure/` 2, `solutions-ungateable/` 1 |
 
-`solutions-disputed/` (203 rows):
+`solutions-disputed/` (199 rows):
 
 | Item | Count |
 |---|---|
-| Round, by `auditor` field (an override counts in the round it overrides) | r3: 120, r4: 81, io-rule: 2 |
-| Cause | `label` 160, `translation` 34, `both` 5, `harness` 3, none 1 (`1950_45`) |
-| Confidence | high 103, medium 95, low 5 |
-| `true_class: other` | 75 |
-| With a proof in `solutions-proved/` | 52 |
+| Round, by `auditor` field (an override counts in the round it overrides) | r3: 117, r4: 80, io-rule: 2 |
+| Cause | `label` 156, `translation` 34, `both` 5, `harness` 3, none 1 (`1950_45`) |
+| Confidence | high 103, medium 91, low 5 |
+| `true_class: other` | 71 |
+| With a proof in `solutions-proved/` | 48 |
 
 `solutions-unsure/`: 2 rows, each on its own question (`solutions-unsure/README.md`).
 
@@ -81,12 +81,14 @@ Source: `data/complexity_proofs.jsonl`, the tree.
 
 | Row is in | Proofs |
 |---|---:|
-| `solutions/` | 267 |
-| `solutions-disputed/` | 52 |
+| `solutions/` | 271 |
+| `solutions-disputed/` | 48 |
 | `solutions-unsure/` | 1 |
 | `solutions-unscreened/` | 1 |
 
-Labels proved: `O(n)` 150 · `O(nlogn)` 67 · `O(n**2)` 40 · `O(1)` 32 ·
+Labels corrected by a proof (`data/label_corrections.jsonl`): 3, all `O(n)` to `O(sqrt(n))`.
+
+Labels proved, by BigOBench's label: `O(n)` 150 · `O(nlogn)` 67 · `O(n**2)` 40 · `O(1)` 32 ·
 `O(n+m)` 14 · `O(n*m)` 11 · `O(nlogn+mlogm)` 4 · `O(logn)` 1 ·
 `O(n+m)log(n+m)` 1 · `O(n**2+m**2)` 1.
 

@@ -198,9 +198,11 @@ def header(v, t, text):
 # "n+m_variant" and three-word evidence; a summary reads "6 mismatches" either
 # way, so the schema is checked mechanically. "other" keeps a row outside the
 # eleven label classes expressible instead of forcing a wrong class.
+# O(sqrt(n)) is not a BigOBench class; it is the label of a row whose label a
+# proof corrected (data/label_corrections.jsonl).
 CLASSES = {"O(1)", "O(logn)", "O(n)", "O(n**2)", "O(n**2+m**2)", "O(n*m)",
            "O(n+m)", "O(n+m)log(n+m)", "O(n+mlogm)", "O(nlogn)",
-           "O(nlogn+mlogm)", "other"}
+           "O(nlogn+mlogm)", "O(sqrt(n))", "other"}
 VERDICTS = {"ok", "mismatch", "unsure"}
 CAUSES = {"label", "translation", "harness", "both", ""}
 CONFIDENCE = {"high", "medium", "low"}

@@ -24,7 +24,7 @@ usual sense. These have a meaning specific to this project:
 | Term | Meaning |
 |---|---|
 | row | one Python solution and its Dafny translation. Its id (`solution_id`) starts with its problem's id: `1950_45` is a solution to problem `1950` |
-| label | BigOBench's time complexity for the row's Python, one of eleven classes: `O(1)`, `O(logn)`, `O(n)`, `O(nlogn)`, `O(n**2)`, `O(n*m)`, `O(n+m)`, `O(n+mlogm)`, `O(nlogn+mlogm)`, `O(n+m)log(n+m)`, `O(n**2+m**2)` |
+| label | BigOBench's time complexity for the row's Python, one of eleven classes: `O(1)`, `O(logn)`, `O(n)`, `O(nlogn)`, `O(n**2)`, `O(n*m)`, `O(n+m)`, `O(n+mlogm)`, `O(nlogn+mlogm)`, `O(n+m)log(n+m)`, `O(n**2+m**2)`; or, where a proof showed it wrong, the corrected class in `data/label_corrections.jsonl` (the row's header and `dataset.jsonl`'s `label` carry it; `time_complexity_inferred` keeps BigOBench's) |
 | strict / loose (tier) | a strict row is tested against its stored output; a loose row against what its original Python prints (`README.md`) |
 | unvalidatable | a strict row whose tests the problem's own `Input.from_str` rejects, so `validate.py` cannot run them |
 | status directory | one of the seven `solutions*` directories a row sits in; `solutions-proved/` is not one |

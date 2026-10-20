@@ -18,9 +18,14 @@ data lines go to `old-record.jsonl` beside the file they came from.
   `1820_180` O(n**2) -> O(n), as the statement fixes x, y <= 7; `2586_20`
   O(n**3) -> O(n**2). They were found by running every proof on its stored tests
   and comparing steps with the proved bound (`fuzzing/`).
-- The header label of `5_100`, `1011_368` and `2913_484` is `O(sqrt(n))`, with a
-  line naming BigOBench's `O(n)` and the proof. `data/tasks.jsonl` keeps
-  BigOBench's label.
+- A label a proof shows wrong is corrected in `data/label_corrections.jsonl`
+  (BigOBench's label, the corrected one, the proof, its bound). `dataset.py`
+  publishes `label` (corrected, else BigOBench's) and `label_corrected`;
+  `time_complexity_inferred` stays BigOBench's. `label_audit.py` accepts the
+  class `O(sqrt(n))`. `5_100`, `1011_368` and `2913_484` are corrected to
+  `O(sqrt(n))`, their headers say so, and they moved with `1820_180` (label
+  `O(n)`, now proved) from `solutions-disputed/` to `solutions/` through
+  `batches/labelaudit/verdicts_proved_20261020.jsonl`.
 
 ## 2026-10-16
 

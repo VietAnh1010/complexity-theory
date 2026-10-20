@@ -78,6 +78,11 @@ def build():
     dpath = DATA / "difftest.jsonl"
     diff = ({d["solution_id"]: d for d in read_jsonl(dpath)}
             if dpath.exists() else {})
+    # A label a proof showed wrong. `time_complexity_inferred` stays
+    # BigOBench's; `label` is the one the corpus uses.
+    cpath = DATA / "label_corrections.jsonl"
+    corrected = ({c["solution_id"]: c["label"] for c in read_jsonl(cpath)}
+                 if cpath.exists() else {})
 
     rows = []
     for t in tasks:
@@ -100,6 +105,8 @@ def build():
             "parser_ok": pok,
             "nondet_hint": t["nondet_hint"],
             "time_complexity_inferred": t["time_complexity_inferred"],
+            "label": corrected.get(t["solution_id"], t["time_complexity_inferred"]),
+            "label_corrected": t["solution_id"] in corrected,
             "time_curve_coefficient": t["time_curve_coefficient"],
             "n_tests": t["n_tests"],
             "python_status": st,
@@ -148,6 +155,7 @@ def build():
         "quarantine_reasons": dict(Counter(
             x for r in rows for x in r["quarantine_reasons"])),
         "complexity_proved": sum(r["complexity_proved"] for r in rows),
+        "labels_corrected": sum(r["label_corrected"] for r in rows),
         "untranslatable": sum(r["untranslatable"] for r in rows),
         "safety_verified": sum(1 for r in rows if r["safety_verified"]),
         "safety_failure": dict(Counter(r["safety_failure"] for r in rows
