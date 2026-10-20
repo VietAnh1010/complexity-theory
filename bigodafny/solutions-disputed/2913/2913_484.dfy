@@ -32,7 +32,8 @@
 // --------------------------------------------------------------------
 
 // 1088_A. Ehab and another construction problem  (problem 2913, solution 2913_484)
-// time complexity: O(n)
+// time complexity: O(sqrt(n))
+// label corrected 2026-10-20: BigOBench says O(n); solutions-proved/2913/2913_484.dfy bounds steps by 10 * Isqrt(n) + 30
 // python exact-diff baseline: partial
 //
 // Reproduce the Python program's entire stdout in `output`.

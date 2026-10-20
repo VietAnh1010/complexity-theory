@@ -32,7 +32,8 @@
 // --------------------------------------------------------------------
 
 // 1099_B. Squares and Segments  (problem 1011, solution 1011_368)
-// time complexity: O(n)
+// time complexity: O(sqrt(n))
+// label corrected 2026-10-20: BigOBench says O(n); solutions-proved/1011/1011_368.dfy bounds steps by 12 * CSqrt(n)
 // python exact-diff baseline: exact
 //
 // Reproduce the Python program's entire stdout in `output`.

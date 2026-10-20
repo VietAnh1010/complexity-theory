@@ -8,6 +8,20 @@ change lands, update them and add a bullet here.
 A campaign's own run record stays in `batches/<campaign>/README.md`. Superseded
 data lines go to `old-record.jsonl` beside the file they came from.
 
+## 2026-10-20
+
+- The prelude has `ISqrt(x)` (floor square root, recursing on `x / 4`) with
+  `ISqrtSpec` and `LeISqrt`, for bounds of loops that stop once a square passes
+  a value. The `bigodafny-prove` skill describes them.
+- Five proofs in `solutions-proved/` were a class looser than their code and are
+  replaced by tight ones: `5_100`, `1011_368`, `2913_484` O(n) -> O(sqrt n);
+  `1820_180` O(n**2) -> O(n), as the statement fixes x, y <= 7; `2586_20`
+  O(n**3) -> O(n**2). They were found by running every proof on its stored tests
+  and comparing steps with the proved bound (`fuzzing/`).
+- The header label of `5_100`, `1011_368` and `2913_484` is `O(sqrt(n))`, with a
+  line naming BigOBench's `O(n)` and the proof. `data/tasks.jsonl` keeps
+  BigOBench's label.
+
 ## 2026-10-16
 
 - A function the row defines costs its cost function `F_steps`: same

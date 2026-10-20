@@ -32,25 +32,32 @@
 include "../../../prelude.dfy"
 import opened Prelude
 
-// Isolated multiplication: (i+1)*K == i*K + K.
-lemma MulDistribAdd(i: int, K: int)
-  ensures (i + 1) * K == i * K + K
+lemma DigitsLe(x: int)
+  requires x >= 1
+  ensures Digits(x) <= x
+{ if x >= 10 { DigitsLe(x / 10); } }
+
+lemma Mono(p: int, q: int, k: int)
+  requires 0 <= p <= q && k >= 0
+  ensures p * k <= q * k
 {}
 
-// Isolated monotonicity: a <= b, c >= 0 ==> c*a <= c*b.
-lemma MulMonoLeft(a: int, b: int, c: int)
-  requires a <= b
-  requires c >= 0
-  ensures c * a <= c * b
+lemma Dist(n: int, k: int)
+  ensures n * (k + 1) == n * k + n
 {}
 
-method Solve(a: int, b: int, c: int, d_list: seq<int>) returns (output: string, ghost steps: nat)
+lemma Step(p: int, k: int)
+  ensures (p + 1) * k == p * k + k
+{}
+
+method Solve(a: int, b: int, c: int, d_list: seq<int>)
+    returns (output: string, ghost steps: nat)
   requires a <= |d_list|
   requires b >= 0
   requires c >= 0
-  ensures steps <= 2 + (|d_list| + 4) * (|d_list| + 2) + |output|
+  ensures steps <= (if a <= 0 then 3 else a * (18 + b + c) + 3)
 {
-  steps := 1;
+  steps := 0;
   var n := a;
   var x := b;
   var y := c;
@@ -58,42 +65,48 @@ method Solve(a: int, b: int, c: int, d_list: seq<int>) returns (output: string, 
   var i := 0;
   var found := false;
   var result := 0;
-  ghost var cnt := 0;
   while i < n && !found
     invariant 0 <= i
-    invariant i <= |d_list|
-    invariant cnt <= i + (if found then 2 else 1)
-    invariant steps <= 1 + (|d_list| + 4) * cnt
+    invariant n <= 0 ==> i == 0 && !found
+    invariant !found ==> i <= n || n < 0
+    invariant steps <= (i + (if found then 1 else 0)) * (17 + x + y)
+    invariant found ==> 1 <= result <= n && result == i + 1 && i < n
     decreases !found, n - i
   {
+    steps := steps + (3 + if i < n then 1 else 0);
+    steps := steps + (2 + if i >= x then 1 else 0);
     var lo := if i >= x then i - x else 0;
+    steps := steps + 2;
     var hi := i + y + 1;
-    if hi > |arr| { hi := |arr|; }
+    steps := steps + 2;
+    if hi > |arr| {
+      steps := steps + 1;
+      hi := |arr|;
+    }
     assert lo <= i;
     assert hi >= i + 1;
-    ghost var window := arr[lo..hi];
-    var m := MinSeq(arr[lo..hi]);
-    steps := steps + 1 + |window| + 2;
-    ghost var cntOld := cnt;
-    cnt := cnt + 1;
-    assert cnt * (|d_list| + 4) == cntOld * (|d_list| + 4) + (|d_list| + 4)
-      by { MulDistribAdd(cntOld, |d_list| + 4); }
+    steps := steps + (1 + |arr[lo .. hi]|);
+    assert hi - lo <= x + y + 1;
+    Step(i, 17 + x + y);
+    var m := MinSeq(arr[lo .. hi]);
+    steps := steps + 2;
     if arr[i] == m {
+      steps := steps + 1;
       result := i + 1;
       found := true;
     } else {
+      steps := steps + 1;
       i := i + 1;
     }
   }
-  assert cnt <= i + 2;
-  assert (|d_list| + 4) * cnt <= (|d_list| + 4) * (i + 2)
-    by { MulMonoLeft(cnt, i + 2, |d_list| + 4); }
-  assert (|d_list| + 4) * (i + 2) <= (|d_list| + 4) * (|d_list| + 2)
-    by { MulMonoLeft(i + 2, |d_list| + 2, |d_list| + 4); }
+  steps := steps + (2 + if i < n then 1 else 0);
+  if n > 0 { Mono(i + (if found then 1 else 0), n, 17 + x + y); Dist(n, 17 + x + y); }
   if found {
+    DigitsLe(result);
+    steps := steps + Digits(result);
     output := IntToString(result);
   } else {
     output := "";
   }
-  steps := steps + |output|;
 }
+

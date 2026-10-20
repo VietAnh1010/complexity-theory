@@ -31,7 +31,8 @@
 // --------------------------------------------------------------------
 
 // 622_A. Infinite Sequence  (problem 5, solution 5_100)
-// time complexity: O(n)
+// time complexity: O(sqrt(n))
+// label corrected 2026-10-20: BigOBench says O(n); solutions-proved/5/5_100.dfy bounds steps by 4 * ISqrt(2 * n)
 // python exact-diff baseline: exact
 //
 // Reproduce the Python program's entire stdout in `output`.

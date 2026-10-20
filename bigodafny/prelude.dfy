@@ -1067,6 +1067,52 @@ module Prelude {
     CostMulMonoLeft(m, n, CeilLog2(n) + 1);
   }
 
+  // ---- square roots ------------------------------------------------------
+  // floor(sqrt(x)), for bounds on loops that stop once a counter's square
+  // passes a value (`while a * a <= x`, `while m > k` with k growing). It
+  // recurses on x / 4, so its depth is log x: the compiled copy `deghost`
+  // makes for TraceBoundValue stays cheap. A loop that ran t times with
+  // t * t <= x gets t <= ISqrt(x) from LeISqrt.
+  ghost function ISqrt(x: int): nat
+    decreases x
+  {
+    if x <= 0 then 0
+    else if x < 4 then 1
+    else
+      var r := 2 * ISqrt(x / 4);
+      if (r + 1) * (r + 1) <= x then r + 1 else r
+  }
+
+  lemma ISqrtSpec(x: int)
+    requires x >= 0
+    ensures ISqrt(x) * ISqrt(x) <= x < (ISqrt(x) + 1) * (ISqrt(x) + 1)
+    decreases x
+  {
+    if x >= 4 {
+      var q := x / 4;
+      ISqrtSpec(q);
+      var r0 := ISqrt(q);
+      var r := 2 * r0;
+      assert ISqrt(x) == if (r + 1) * (r + 1) <= x then r + 1 else r;
+      var lo, hi := r0 * r0, (r0 + 1) * (r0 + 1);
+      assert lo <= q && q + 1 <= hi;
+      assert r * r == 4 * lo by { assert r * r == (2 * r0) * (2 * r0); }
+      assert (r + 2) * (r + 2) == 4 * hi by { assert r + 2 == 2 * (r0 + 1); }
+      assert 4 * q <= x < 4 * q + 4;
+    }
+  }
+
+  lemma LeISqrt(t: nat, x: int)
+    requires t * t <= x
+    ensures t <= ISqrt(x)
+  {
+    ISqrtSpec(x);
+    var r := ISqrt(x);
+    if t >= r + 1 {
+      assert t * t >= (r + 1) * t >= (r + 1) * (r + 1);
+    }
+  }
+
   // ---- bitwise on int --------------------------------------------------
   // Dafny's `int` has no bitwise operators. Translations were casting through
   // bv64 inline; these wrap that so the width lives in one place.

@@ -158,6 +158,12 @@ its own lemma took it to 2.8s. The prelude's `CostMulMono`, `CostMulMonoLeft`,
 `BitLen(v)` and `SumLog(s, n)` state the result. `1386_38`, `1386_19`,
 `1871_291` and `1915_158` are worked examples.
 
+**A loop that stops once a square passes a value costs a square root.** State
+the bound with the prelude's `ISqrt(x)` (floor of the square root), and close
+it with `LeISqrt(t, x)`: `t * t <= x` gives `t <= ISqrt(x)`. Carry `t * t <= x`
+(or `(k - 1) * (k - 1) <= 2 * n`) as a loop invariant. `ISqrtSpec(x)` is the
+full floor-sqrt spec. `5_100` is the worked example.
+
 ## Procedure
 
 1. Copy the row from `solutions/` into `solutions-proved/<PID>/<SID>.dfy`.
