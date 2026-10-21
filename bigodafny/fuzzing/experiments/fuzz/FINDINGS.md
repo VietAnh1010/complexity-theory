@@ -1,8 +1,27 @@
 # Findings
 
-Blind runs of 2026-10-20. Outputs: `fuzzing/demo/blind/` (git-ignored, local).
+Findings of the blind runs, newest first, one section per session.
 
-## Loose proofs come from settling
+## 2026-10-21: pipeline review
+
+No new runs; one test agent on `2072_40`. Changes are in `fuzzing/CHANGELOG.md`.
+
+- Proofs made each blind row too expensive; the experiment now only guesses the class.
+- `data/constraints.jsonl` quotes limits for few problems; for the rest `fuzz` runs any input.
+- `gen.py` runs with full file access and can read the labels; `BRIEF.md` forbids it, nothing
+  enforces it.
+- An agent missing a tool falls back on another: without `fuzz` it tried Bash, then answered
+  from the code alone.
+- `guard.py` must allow the harness's own tools: denying `SubagentHandback` blocked the agent's
+  report 4 times.
+- `2072_40` again: `steps / n` goes 22.6, 19.8, 18.9, 19.1, 19.4 for n = 8 to 100. The fall
+  is fixed overhead; the rise fits n log n but is too small to show it.
+
+## 2026-10-20: blind runs
+
+Outputs: `fuzzing/demo/blind/` (git-ignored, local).
+
+### Loose proofs come from settling
 
 Settling: proving a bound looser than the class the agent believes is tight, and
 stopping because it verified.
@@ -34,14 +53,14 @@ Countermeasures:
 - Write the predicted class before proving; a proof looser than it is a flaggable gap.
 - Measure steps against the proved bound (`docs/07-steptrace.md`); this found all five.
 
-## Runs do not improve guessing
+### Runs do not improve guessing
 
 - 12 hard rows, two blind Sonnet arms (code only; with `./fuzz`): both matched the
   reference class on all 12.
 - Code only: 14-31 s a row. Runs added 30 s to 4 min and changed no answer.
 - Small sizes mislead: `2072_40` (n <= 100) measured linear; the class is O(n log n).
 
-## Where runs help
+### Where runs help
 
 - Finding loose proofs.
 - Catching a bound that is too low before proving (`1699_213` broke at n = 1).

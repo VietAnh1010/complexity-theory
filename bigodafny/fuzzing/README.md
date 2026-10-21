@@ -1,7 +1,7 @@
 # fuzzing/
 
 Tools for finding a step bound for a row. A prototype; open work is in
-`TODO-fuzzing.md`.
+`TODO-fuzzing.md`, changes in `CHANGELOG.md`.
 
 The loop:
 

@@ -1,7 +1,8 @@
 # TODO: step tracing and fuzzing
 
-Prototype, in development. Nothing here is a gate. `CHANGELOG.md`, `DOCS.md`,
-`README.md` and `STATUS.md` are not updated for this work until asked.
+Prototype, in development. Nothing here is a gate. `bigodafny/`'s `CHANGELOG.md`,
+`DOCS.md`, `README.md` and `STATUS.md` are not updated for this work until asked;
+changes go in `fuzzing/CHANGELOG.md`.
 
 ## Requirements
 
@@ -80,7 +81,19 @@ Prototype, in development. Nothing here is a gate. `CHANGELOG.md`, `DOCS.md`,
       record, per point, steps at each call's exit, grouped by call.
 - [ ] `annotate` refuses a row that already declares `steps` (`1387_34`, `1336_157`);
       `counter=NAME` works, but `steptrace.py` has no `--counter` yet
-- [ ] Blind runs: one format for a complexity class. `answer.json`'s `class` is
+- [ ] (2026-10-21) Blind runs: one format for a complexity class. `answer.json`'s `class` is
       free text (`O(n log n)`) and labels differ (`O(nlogn)`), so `blind.py grade`
       cannot mark an answer equal to the label. Fix the format in `BRIEF.md`, then
       compare in `grade`.
+- [ ] (2026-10-21) Blind runs: nothing checks `answer.json` before `grade`; a missing
+      or broken file shows only there.
+- [ ] (2026-10-21) `data/constraints.jsonl` quotes limits for few problems, so `fuzz`
+      runs out-of-spec inputs for the rest.
+- [ ] (2026-10-21) `fuzz` compiles the row 3 times per call: untraced, all points (to
+      find the loops), loops only.
+- [ ] (2026-10-21) `steptrace.py`: move `HARNESS` into its own file; drop `--log` and
+      `LOG_CAP` (their only user, `./trace`, is gone). Keep the CLI if the stored-test
+      audit (`docs/07-steptrace.md`) is still wanted: undecided.
+- [ ] (2026-10-21) The first `blind-guess` run got no `fuzz` tool. Suspected cause: the
+      server's relative path, from cwd `bigodafny/fuzzing`; not isolated. The
+      `$CLAUDE_PROJECT_DIR` form works.
