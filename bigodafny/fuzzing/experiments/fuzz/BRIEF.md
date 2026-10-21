@@ -46,7 +46,8 @@ FAMILIES = {"random": f, ...}           # f(rng, **sizes) -> input text, as on s
 ```
 
 `gen.py` only builds input text: it must not read or write files or run other programs.
-Stay inside the statement's limits. `fuzz` on `row.dfy` and `gen.py` returns, per grid row, the
+Stay inside the statement's limits: `fuzz` checks them only for some problems, and counts an
+input it rejects as `out-of-spec`. `fuzz` on `row.dfy` and `gen.py` returns, per grid row, the
 costliest input's `steps` and how often the busiest loops ran. To test a candidate bound E,
 copy `row.dfy` to `round-k.dfy`, add `ensures steps <= E` to `Solve`, and run
 `fuzz` on `round-k.dfy`: it also shows E and `steps / E`. A ratio that falls as sizes grow

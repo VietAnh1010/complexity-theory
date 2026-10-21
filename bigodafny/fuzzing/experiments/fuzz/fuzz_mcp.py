@@ -7,8 +7,10 @@ holding `dfy`. `guard.py` checks the paths first. The generator defines
     GRID = [{"n": 8}, {"n": 16}, ...]      # input sizes, one dict per row of the table
     FAMILIES = {"random": f, ...}          # f(rng, **sizes) -> input text (stdin form)
 
-Every family runs `per` times at each grid point. An input that breaks the
-problem's stated limits or Solve's `requires` is not run. For each grid point
+Every family runs `per` times at each grid point. An input that breaks Solve's
+`requires` is not run, nor one that breaks a limit `data/constraints.jsonl`
+quotes for its problem (status `out-of-spec`); most problems have no entry
+there, so their limits go unchecked. For each grid point
 the table shows the costliest input: its steps, the value of the bound
 (`TraceBoundValue`) and steps / bound, and the iterations of the loops that run
 most. Loop counts come from rerunning only that input with the loop heads
@@ -75,7 +77,7 @@ def fuzz(dfy, gen, per=3):
             res = {"status": "gen"}
             gen_error = gen_error or error
         else:
-            res = r.run(text, timeout=TIMEOUT) if _in_spec(r.task, text) else {"status": "limits"}
+            res = r.run(text, timeout=TIMEOUT) if _in_spec(r.task, text) else {"status": "out-of-spec"}
         statuses[res["status"]] += 1
         broken += res.get("bound_ok") is False
         if res["status"] == "ok" and (worst[i] is None or res["steps"] > worst[i][1]["steps"]):
