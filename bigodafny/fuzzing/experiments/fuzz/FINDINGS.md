@@ -19,6 +19,20 @@ No new runs; one test agent on `2072_40`. Changes are in `fuzzing/CHANGELOG.md`.
 - The Stop hook works live: a `blind-guess` agent told to stop on `{}` was blocked once,
   read `BRIEF.md`, and wrote a complete answer (`888_6`, code mode).
 
+### Batch `b10`
+
+10 random rows from `solutions/`, one per problem, seed 20261021, none used before:
+`2947_115 2282_16 307_14 1018_254 2281_112 241_101 209_103 493_134 499_359 187_762`.
+Outputs: `experiments/fuzz/runs/b10/` (git-ignored, local).
+
+- Code mode matched the label on 10 of 10; fuzz mode on 9. `2282_16` fuzz wrote `O(m**2)`, the
+  right class with its measure named `m`.
+- No guard denials and no blocked stops; code rows took 12-27 s, fuzz rows 38-105 s.
+- `fuzz` returned `Connection closed` to 6 of 10 fuzz agents. Each came within 0.7 s of another
+  `blind-guess` agent ending: the agents share one `fuzz` server, and an agent's end kills it.
+- `241_101` got no step counts: its first `gen.py` gave inputs without a final newline, all
+  `parse`, and its retry was killed. `2281_112` lost 6 inputs to `parse` the same way.
+
 ## 2026-10-20: blind runs
 
 Outputs: `fuzzing/demo/blind/` (git-ignored, local).

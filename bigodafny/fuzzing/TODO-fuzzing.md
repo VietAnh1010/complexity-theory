@@ -83,6 +83,10 @@ changes go in `fuzzing/CHANGELOG.md`.
       `counter=NAME` works, but `steptrace.py` has no `--counter` yet
 - [ ] (2026-10-21) `data/constraints.jsonl` quotes limits for few problems, so `fuzz`
       runs out-of-spec inputs for the rest.
+- [ ] (2026-10-21) Concurrent `blind-guess` agents share one `fuzz` server; one agent ending
+      closes it under another's call (`Connection closed`, `FINDINGS.md` batch `b10`).
+- [ ] (2026-10-21) An input without a final newline fails as `parse`, though Python's `input()`
+      accepts it; `fuzz` shows only the count, not the error.
 - [ ] (2026-10-21) `fuzz` compiles the row 3 times per call: untraced, all points (to
       find the loops), loops only.
 - [ ] (2026-10-21) `steptrace.py`: move `HARNESS` into its own file; drop `--log` and
