@@ -1,4 +1,4 @@
-# 9. annotate (`Annotate.cs`, `CostModel.cs`, `CostRules.cs`)
+# 8. annotate (`Annotate.cs`, `CostModel.cs`, `CostRules.cs`)
 
 Adds a ghost `steps` counter to a row that has none. Costs follow
 `bigodafny/COMPLEXITY.md`.

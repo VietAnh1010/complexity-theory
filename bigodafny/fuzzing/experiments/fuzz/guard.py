@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""PreToolUse hook of the `blind-fuzz` agent (`.claude/agents/blind-fuzz.md`):
+"""PreToolUse hook of the `blind-guess` agent (`.claude/agents/blind-guess.md`):
 confine it to the staged rows.
 
 The hook runs only for that agent type, so it checks every call it sees.
-`bigodafny/out/fuzz-confined` holds the stage root (`stage.py`); without it
-every call is denied.
+`guard-path`, beside this file, holds the stage root (`blind.py setup` writes it);
+without it every call is denied.
 
 - File tools (Read, Write, Edit, Glob, Grep, NotebookEdit): every path must lie
   under the stage root.
@@ -14,7 +14,7 @@ every call is denied.
 - Web tools and Agent: denied.
 - Each agent is locked to the first row directory (one holding `BRIEF.md`) it
   touches, so agents in one root cannot read each other's work. In a row with
-  no `fuzz` wrapper (the `code` arm of `stage.py`) Bash is denied.
+  no `fuzz` wrapper (the `code` mode) Bash is denied.
 
 A denial is logged to `<stage root>/guard.log` and voids that row's result.
 """
@@ -22,8 +22,7 @@ from __future__ import annotations
 import json, re, sys, time
 from pathlib import Path
 
-REPO = Path(__file__).resolve().parents[4]
-MARKER = REPO / "bigodafny" / "out" / "fuzz-confined"
+MARKER = Path(__file__).resolve().parent / "guard-path"                # written by blind.py setup
 BANNED = re.compile(r"complexity-theory|bigodafny|solutions|tasks\.jsonl|label|audit|"
                     r"time_complexity|\.claude|(^|[\s;&|(])git\b|\.\./|/\.\.|"
                     r"(^|[\s=<>'\"(;&|])~\w*/|\$HOME|\$\{?CLAUDE|"
@@ -67,7 +66,7 @@ def verdict(tool, args, root, agent=None):
         if why := locked(agent, row, root):
             return why
         if tool == "Bash" and not (row / "fuzz").exists():
-            return "this arm has no Bash; use Read, Glob and Grep"
+            return "this mode has no Bash; use Read, Glob and Grep"
     if tool in FILE_TOOLS:
         for key in ("file_path", "path", "notebook_path"):
             if key in args and not Path(args[key]).resolve().is_relative_to(root):

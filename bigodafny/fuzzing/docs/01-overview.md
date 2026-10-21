@@ -10,13 +10,13 @@ row with ghost steps               no bound yet
    │  deghost
    ▼
 row with compiled steps            Solve returns (output, steps)
-   │  stepfuzz.py / steptrace.py
+   │  steptrace.py, or experiments/fuzz/run.py with an agent-written generator
    ▼
 steps per input size               statistics
    │  LLM guesses a bound
    ▼
 row with ghost steps + ensures     the guessed bound
-   │  deghost → fuzz → LLM → …
+   │  deghost → run → LLM → …
    ▼
 repeat until the bound is good enough
 ```
@@ -28,10 +28,10 @@ An input that breaks it shows the guess is too low.
 
 | Step | Tool | Status |
 |---|---|---|
-| add a ghost counter | `DafnySteps annotate` | works; stops on code outside the cost model unless a rule is enabled (09) |
+| add a ghost counter | `DafnySteps annotate` | works; stops on code outside the cost model unless a rule is enabled (08) |
 | make it run | `DafnySteps deghost` | works |
 | run on stored tests | `steptrace.py --dfy FILE` | works on any file |
-| fuzz | `stepfuzz.py --dfy FILE` | works on any file |
+| run on generated inputs | `experiments/fuzz/run.py` | works; the agent writes the generator |
 | guess a bound | LLM | not built |
 | check the bound | `TraceBound` | works; always true when there is no `ensures` |
 
@@ -39,17 +39,16 @@ An input that breaks it shows the guess is too low.
 
 | Tool | Purpose |
 |---|---|
-| `DafnySteps annotate` | Adds a ghost `steps` counter to a row (09) |
+| `DafnySteps annotate` | Adds a ghost `steps` counter to a row (08) |
 | `DafnySteps deghost` | Turns `steps` into compiled code; `steptrace.py` uses it as a plugin (06) |
 | `steptrace.py` | Runs the row on inputs, records `steps`, checks the bound (07) |
-| `stepfuzz.py` | Finds, for each input size, the input with the largest `steps` (08) |
 
 ## Files
 
 ```
 fuzzing/
   steptrace.py          runs a row's counter on inputs
-  stepfuzz.py           searches for costly inputs; uses steptrace.py
+  experiments/fuzz/     blind guess-only runs; run.py runs an agent-written generator
   scripts/demo.sh       runs annotate, deghost and steptrace on one row -> demo/<problem>/
   DafnySteps/           C# code for annotate and deghost; a CLI and a Dafny plugin
   DafnySteps.Tests/     tests for DafnySteps
@@ -72,7 +71,6 @@ One round of the loop on row `2286_319`:
 ```bash
 DafnySteps/bin/Release/net10.0/DafnySteps annotate ../solutions/2286/2286_319.dfy counted.dfy enable=functions,seq,arrays
 python3 steptrace.py 2286_319 --dfy counted.dfy    # steps on each stored test
-python3 stepfuzz.py 2286_319 --dfy counted.dfy     # costliest input for each size
 ```
 
 `steptrace.py` builds `DafnySteps` only if it is missing. After editing a

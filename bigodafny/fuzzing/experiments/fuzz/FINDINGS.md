@@ -9,12 +9,12 @@ stopping because it verified.
 
 Five proofs in `solutions-proved/` were a class too loose. Their agents saw the label.
 
-| Row | Label | Old proof | Tight | Cause |
-|---|---|---|---|---|
-| `2586_20` | O(n**2) | O(n**3) | O(n**2) | inner scan bounded by the whole array, not the filled slots; recorded `looser-slack` |
-| `1820_180` | O(n) | O(n**2) | O(n) | window bounded by list length, not x + y (statement: x, y <= 7) |
-| `2913_484` | O(n) | O(n) | O(sqrt n) | agent noted ~sqrt(x) iterations, proved 4n + 6 to match the label |
-| `5_100`, `1011_368` | O(n) | O(n) | O(sqrt n) | no record |
+| Row                 | Label     | Old proof | Tight     | Cause                                                                                |
+| ------------------- | --------- | --------- | --------- | ------------------------------------------------------------------------------------ |
+| `2586_20`           | O(n\*\*2) | O(n\*\*3) | O(n\*\*2) | inner scan bounded by the whole array, not the filled slots; recorded `looser-slack` |
+| `1820_180`          | O(n)      | O(n\*\*2) | O(n)      | window bounded by list length, not x + y (statement: x, y <= 7)                      |
+| `2913_484`          | O(n)      | O(n)      | O(sqrt n) | agent noted ~sqrt(x) iterations, proved 4n + 6 to match the label                    |
+| `5_100`, `1011_368` | O(n)      | O(n)      | O(sqrt n) | no record                                                                            |
 
 Why it happened:
 
@@ -24,9 +24,9 @@ Why it happened:
 
 Blind agents settle too:
 
-- `bigodafny/experiments/proofs-blind/`: `1718_1166` predicted O(n*m), proved O((n+m)**2);
-  `1338_61` predicted O(n*m), proved O(q * n**2). Headers don't say if the tight bound was tried.
-- This session (`BRIEF.md` asks for the tightest class first): no row settled on class.
+- `bigodafny/experiments/proofs-blind/`: `1718_1166` predicted O(n*m), proved O((n+m)\*\*2);
+  `1338_61` predicted O(n*m), proved O(q \* n\*\*2). Headers don't say if the tight bound was tried.
+- This session (the prove brief asked for the tightest class first): no row settled on class.
   `1272_278` and `2913_484` settled on constants; `5_100` and `2586_20` ran out of budget.
 
 Countermeasures:

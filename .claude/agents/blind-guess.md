@@ -1,6 +1,6 @@
 ---
-name: blind-fuzz
-description: Blind agent for bigodafny/fuzzing/experiments/fuzz. Guesses, measures and proves one staged row's step bound without seeing its label. Use only for rows staged by stage.py.
+name: blind-guess
+description: Blind agent for bigodafny/fuzzing/experiments/fuzz. Names the complexity class of one staged row without seeing its label. Use only for rows set up by `blind.py setup`.
 tools: Bash, Read, Write, Edit, Glob, Grep
 model: sonnet
 hooks:

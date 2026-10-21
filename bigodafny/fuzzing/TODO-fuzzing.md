@@ -32,7 +32,7 @@ Prototype, in development. Nothing here is a gate. `CHANGELOG.md`, `DOCS.md`,
 - `annotate` loads the file twice: the resolved copy decides charges (what a
   `+` or a call is), the parse-only copy is changed and printed. Nodes are
   matched by source range.
-- `steptrace.py` and `stepfuzz.py` stay Python and build through the plugin.
+- `steptrace.py` stays Python and builds through the plugin.
 
 ## State
 
@@ -56,7 +56,6 @@ Prototype, in development. Nothing here is a gate. `CHANGELOG.md`, `DOCS.md`,
 - [ ] Rows `2128_34`, `2826_42`: headers may still say the model has no arrays;
       `COMPLEXITY.md` now charges them.
 - [ ] `annotate`: AlternativeStmt, match statements, `:-` calls stop it (no rule yet)
-- [ ] `stepfuzz.py`: default size mixes lengths and values; use `--measure`
 - [ ] `TraceBound` is `true` when Solve has no `ensures` (annotated rows)
 - [x] `TraceBoundValue`: the value of `E` in the first `ensures steps <= E`;
       `steptrace.py` records it as `bound`
@@ -72,8 +71,8 @@ Prototype, in development. Nothing here is a gate. `CHANGELOG.md`, `DOCS.md`,
 - [x] `experiments/fuzz/run.py`: runs a generator's inputs (`GRID`, `FAMILIES`)
       untraced; per grid point, the costliest input's steps, bound,
       steps / bound, and loop-head hits from a loops-only rerun
-- [x] Blind runs: `experiments/fuzz/stage.py` stages rows outside the repo;
-      the `blind-fuzz` agent type (`.claude/agents/`) carries `guard.py` as its
+- [x] Blind runs: `experiments/fuzz/blind.py` stages rows outside the repo;
+      the `blind-guess` agent type (`.claude/agents/`) carries `guard.py` as its
       own PreToolUse hook, so only those agents are confined
 - [ ] Alternative, not explored: a per-call breakdown. A point's hit count sums
       over every call of its method, so it hides which call is costly when a

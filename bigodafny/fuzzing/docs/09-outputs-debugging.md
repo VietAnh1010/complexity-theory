@@ -1,4 +1,4 @@
-# 10. Output files, tests, common problems
+# 9. Output files, tests, common problems
 
 ## Output files (not in git)
 
@@ -6,7 +6,6 @@
 |---|---|---|
 | `.build/trace_<SID>*/` | `steptrace.py` | generated Python, `harness.py`, `points.json` |
 | `out/trace/<SID>.jsonl` | `steptrace.py` | one result per input |
-| `out/fuzz/<SID>.json` | `stepfuzz.py` | costliest input per size |
 | `demo/<problem>/` | `scripts/demo.sh` | inputs and outputs of each tool |
 
 ## Tests

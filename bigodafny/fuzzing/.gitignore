@@ -4,3 +4,7 @@ demo/
 DafnySteps.Tests/bin/
 DafnySteps.Tests/obj/
 *.actual.*
+# Blind runs (`experiments/fuzz/blind.py grade`).
+experiments/fuzz/runs/
+# The stage root `blind.py setup` hands to `guard.py`.
+experiments/fuzz/guard-path
