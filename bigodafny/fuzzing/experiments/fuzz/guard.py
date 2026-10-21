@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""PreToolUse hook of the `blind-guess` agent (`.claude/agents/blind-guess.md`):
-confine it to the staged rows.
+"""PreToolUse and Stop hook of the `blind-guess` agent (`.claude/agents/blind-guess.md`):
+confine it to the staged rows, and keep it from stopping without an answer.
 
 The hook runs only for that agent type, so it checks every call it sees.
 `guard-path`, beside this file, holds the stage root (`blind.py setup` writes it);
@@ -13,9 +13,13 @@ without it every call is denied.
 - `fuzz` (`fuzz_mcp.py`) is denied in a `code` mode row.
 
 A denial is logged to `<stage root>/guard.log` and voids that row's result.
+
+On Stop, the agent's `answer.json` must hold every key of `BRIEF.md`'s example,
+with `class` in its form. Else the stop is blocked and the agent told why, at
+most `TRIES` times; then the hook fails, and logs the row void.
 """
 from __future__ import annotations
-import json, sys, time
+import json, re, sys, time
 from pathlib import Path
 
 MARKER = Path(__file__).resolve().parent / "guard-path"                # written by blind.py setup
@@ -24,6 +28,9 @@ PATHS = {"Read": ["file_path"], "Write": ["file_path"], "Edit": ["file_path"],  
          "Glob": ["path"], "Grep": ["path"], FUZZ: ["dfy", "gen"],
          "ToolSearch": [],                                  # loads the fuzz tool's schema
          "SubagentHandback": []}                            # returns the agent's report
+KEYS = ("class", "measures", "worst_case", "example", "reasoning", "confidence")
+CLASS = re.compile(r"O\([0-9a-z+*()]+\)")                             # BRIEF.md: O(nlogn), O(n**2), ...
+TRIES = 3
 
 
 def row_of(path, root):
@@ -69,6 +76,52 @@ def verdict(tool, args, root, agent):
     return None
 
 
+def answer_error(row):
+    """None if row/answer.json is complete, else what is wrong."""
+    if row is None:
+        return "you have no row directory"
+    try:
+        a = json.loads((row / "answer.json").read_text())
+    except (OSError, json.JSONDecodeError) as e:
+        return f"answer.json: {e}"
+    if missing := [k for k in KEYS if not isinstance(a, dict) or not str(a.get(k) or "").strip()]:
+        return f"answer.json lacks {', '.join(missing)}"
+    if not CLASS.fullmatch(a["class"]):
+        return f"class {a['class']!r} is not in the form BRIEF.md gives"
+    if a["confidence"] not in ("high", "medium", "low"):
+        return "confidence must be high, medium or low"
+    return None
+
+
+def log(root, payload, why):
+    with (root / "guard.log").open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps({"ts": time.strftime("%Y-%m-%dT%H:%M:%S"),
+                             "agent": str(payload.get("agent_id"))[:24],
+                             "tool": payload.get("tool_name") or payload.get("hook_event_name"), "why": why,
+                             "input": json.dumps(payload.get("tool_input"))[:600]}) + "\n")
+
+
+def stop(root, payload):
+    """Block the agent's stop while its answer.json is broken, at most TRIES times."""
+    agent = payload.get("agent_id") or "unknown"
+    lock = root / ".locks" / str(agent)
+    row = Path(lock.read_text()) if lock.exists() else None
+    if (why := answer_error(row)) is None:
+        sys.exit(0)
+    count = root / ".locks" / f"{agent}.stops"
+    tries = int(count.read_text()) + 1 if count.exists() else 1
+    count.parent.mkdir(exist_ok=True)
+    count.write_text(str(tries))
+    if tries > TRIES:
+        why = f"answer.json still broken after {TRIES} tries: {why}"
+        payload["tool_input"] = {"row": str(row)}                      # so grade voids the row
+        log(root, payload, why)
+        print(f"FAILED: {why}", file=sys.stderr)
+        sys.exit(1)
+    print(f"Do not stop yet: {why}. Fix answer.json as BRIEF.md says.", file=sys.stderr)
+    sys.exit(2)
+
+
 def main():
     try:
         payload = json.load(sys.stdin)
@@ -78,15 +131,13 @@ def main():
         print(f"DENIED: no stage root; {MARKER} is missing.", file=sys.stderr)
         sys.exit(2)
     root = Path(MARKER.read_text().strip()).resolve()
+    if payload.get("hook_event_name") == "SubagentStop":
+        stop(root, payload)
     why = verdict(payload.get("tool_name"), payload.get("tool_input") or {}, root,
                   payload.get("agent_id") or "unknown")
     if why is None:
         sys.exit(0)
-    with (root / "guard.log").open("a", encoding="utf-8") as fh:
-        fh.write(json.dumps({"ts": time.strftime("%Y-%m-%dT%H:%M:%S"),
-                             "agent": str(payload.get("agent_id"))[:24],
-                             "tool": payload.get("tool_name"), "why": why,
-                             "input": json.dumps(payload.get("tool_input"))[:600]}) + "\n")
+    log(root, payload, why)
     print(f"DENIED: {why}. Work only in your directory under {root}.", file=sys.stderr)
     sys.exit(2)
 

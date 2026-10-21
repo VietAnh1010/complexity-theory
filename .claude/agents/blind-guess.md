@@ -14,6 +14,10 @@ hooks:
       hooks:
         - type: command
           command: python3 "$CLAUDE_PROJECT_DIR"/bigodafny/fuzzing/experiments/fuzz/guard.py
+  Stop:
+    - hooks:
+        - type: command
+          command: python3 "$CLAUDE_PROJECT_DIR"/bigodafny/fuzzing/experiments/fuzz/guard.py
 ---
 
 You work on one staged row. Your prompt names its directory, and that directory's

@@ -12,7 +12,7 @@ the row's label. The `code` mode reads the code only; the `fuzz` mode can also c
 | ------------- | --------------------------------------------------------------------------------------- |
 | `blind.py`    | `setup` sets up rows for the agents; `grade` collects their answers and adds the labels |
 | `BRIEF.md`    | the agent's task; `setup` keeps only the blocks marked for the row's mode               |
-| `guard.py`    | the agent's hook: confines it to its row directory and logs each denial to `guard.log`  |
+| `guard.py`    | the agent's hook: confines it to its row directory, blocks its stop until `answer.json` is complete, and logs each denial to `guard.log` |
 | `guard-path`  | written by `setup`: the `--dir` that `guard.py` confines agents to (git-ignored)        |
 | `fuzz_mcp.py` | the agent's `fuzz` tool, an MCP server the agent file starts: runs `gen.py`'s inputs on the row, returns one table of `steps` |
 | `FINDINGS.md` | results of the runs of 2026-10-20                                                       |
@@ -55,6 +55,6 @@ A `fuzz` row also holds `gen.py`, and any `round-k.dfy` the agent wrote to test 
 
 `runs/<run>/summary.jsonl` has one line per row: `sid`, `mode`, `label` (BigOBench's, added at
 grading), the fields of `answer.json`, `match` (`class` equals `label` as a string), and `leaks`. `leaks` lists the guard's denials for the
-row; a nonempty list voids the row. Nothing checks what `gen.py` does: `BRIEF.md` only tells
+row, and an `answer.json` still broken after 3 blocked stops; a nonempty list voids the row. Nothing checks what `gen.py` does: `BRIEF.md` only tells
 the agent to make `gen.py` build input text and nothing else. `runs/<run>/README.md` is one
 table: label, code mode, fuzz mode; `✓` marks a class equal to the label.

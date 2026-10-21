@@ -29,4 +29,6 @@ per change. Earlier changes are in `git log -- bigodafny/fuzzing`. Findings go i
   are now 08 and 09.
 - `BRIEF.md` fixes the form of `class` to the labels' (`O(nlogn)`, `O(n**2)`, `O(n*m)`);
   `grade` adds `match`, and `✓` in its table.
+- `guard.py` is also the agent's Stop hook: it blocks the stop until `answer.json` has every
+  key and `class` in form; after 3 blocks it fails and logs the row void.
 - `fuzzing/AGENTS.md`: ignore rules for `fuzzing/` go in `fuzzing/.gitignore`.

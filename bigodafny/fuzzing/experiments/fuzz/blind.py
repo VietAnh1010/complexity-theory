@@ -110,7 +110,7 @@ def main(argv=None):
         lines.append(f"| `{sid}` | {tasks[sid]['time_complexity_inferred']} | " + " | ".join(cells) + " |")
     lines += ["", "✓: the class equals the label."]
     if any(r["leaks"] for r in rows):
-        lines += ["(void): the guard logged a denial for the row."]
+        lines += ["(void): the guard logged a denial or a broken answer for the row."]
     (dest / "README.md").write_text(f"# Blind run {root.name}\n\n" + "\n".join(lines) + "\n")
     print("\n".join(lines))
     print(f"-> {dest}")

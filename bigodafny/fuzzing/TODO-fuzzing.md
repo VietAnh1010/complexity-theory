@@ -81,8 +81,6 @@ changes go in `fuzzing/CHANGELOG.md`.
       record, per point, steps at each call's exit, grouped by call.
 - [ ] `annotate` refuses a row that already declares `steps` (`1387_34`, `1336_157`);
       `counter=NAME` works, but `steptrace.py` has no `--counter` yet
-- [ ] (2026-10-21) Blind runs: nothing checks `answer.json` before `grade`; a missing
-      or broken file shows only there.
 - [ ] (2026-10-21) `data/constraints.jsonl` quotes limits for few problems, so `fuzz`
       runs out-of-spec inputs for the rest.
 - [ ] (2026-10-21) `fuzz` compiles the row 3 times per call: untraced, all points (to
