@@ -27,7 +27,7 @@ Outputs: `experiments/fuzz/runs/b10/` (git-ignored, local).
 
 - Code mode matched the label on 10 of 10; fuzz mode on 9. `2282_16` fuzz wrote `O(m**2)`, the
   right class with its measure named `m`.
-- No guard denials and no blocked stops; code rows took 12-27 s, fuzz rows 38-105 s.
+- No guard denials and no blocked stops; code rows took 12-27 s, fuzz rows 39-105 s.
 - `fuzz` returned `Connection closed` to 6 of 10 fuzz agents. Each came within 0.7 s of another
   `blind-guess` agent ending: the agents share one `fuzz` server, and an agent's end kills it.
 - `241_101` got no step counts: its first `gen.py` gave inputs without a final newline, all
