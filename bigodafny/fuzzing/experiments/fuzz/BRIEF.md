@@ -63,7 +63,7 @@ Write `answer.json`:
 
 ```json
 {
-  "class": "O(n log n)",
+  "class": "O(nlogn)",
   "measures": "n = |a_list|",
   "worst_case": "the inputs that cost most",
   "example": "a small worst-case input, as on stdin",
@@ -71,6 +71,11 @@ Write `answer.json`:
   "confidence": "high|medium|low"
 }
 ```
+
+Write `class` in this form, with no spaces: `O(1)`, `O(logn)`, `O(n)`, `O(nlogn)`,
+`O(n**2)`, `O(n*m)`, `O(n+mlogm)`. Powers take `**`, products `*`, and `log` follows its
+factor with no `*` or brackets. Call the main measure `n` and a second one `m`, and define
+them in `measures`.
 
 Write `worst_case` and `reasoning` for a reader who knows the Python in `row.dfy`'s header
 but not the problem: name its variables and loops ("the outer loop runs once per query and

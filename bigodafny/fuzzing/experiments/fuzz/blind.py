@@ -64,7 +64,8 @@ def grade(d, label, guard):
     except (OSError, json.JSONDecodeError) as e:
         answer = {"class": None, "error": f"answer.json: {e}"}
     leaks = [l for l in guard if f"/{d.parent.name}/{d.name}" in l]
-    return {"sid": d.name, "mode": d.parent.name, "label": label, **answer, "leaks": leaks}
+    return {"sid": d.name, "mode": d.parent.name, "label": label, **answer,
+            "match": answer.get("class") == label, "leaks": leaks}
 
 
 def main(argv=None):
@@ -105,10 +106,11 @@ def main(argv=None):
         for mode in MODES:
             r = by.get((sid, mode))
             cells.append("-" if r is None or r["class"] is None else
-                         f"{r['class']}" + (" (void)" if r["leaks"] else ""))
+                         r["class"] + (" ✓" if r["match"] else "") + (" (void)" if r["leaks"] else ""))
         lines.append(f"| `{sid}` | {tasks[sid]['time_complexity_inferred']} | " + " | ".join(cells) + " |")
+    lines += ["", "✓: the class equals the label."]
     if any(r["leaks"] for r in rows):
-        lines += ["", "(void): the guard logged a denial for the row."]
+        lines += ["(void): the guard logged a denial for the row."]
     (dest / "README.md").write_text(f"# Blind run {root.name}\n\n" + "\n".join(lines) + "\n")
     print("\n".join(lines))
     print(f"-> {dest}")

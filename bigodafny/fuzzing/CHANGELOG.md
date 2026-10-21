@@ -27,4 +27,6 @@ per change. Earlier changes are in `git log -- bigodafny/fuzzing`. Findings go i
 - `grade` shows `-` for a missing answer, and the `(void)` legend only when a row is void.
 - `stepfuzz.py`, `docs/08-stepfuzz.md` and the `./trace` wrapper are deleted; docs 09 and 10
   are now 08 and 09.
+- `BRIEF.md` fixes the form of `class` to the labels' (`O(nlogn)`, `O(n**2)`, `O(n*m)`);
+  `grade` adds `match`, and `✓` in its table.
 - `fuzzing/AGENTS.md`: ignore rules for `fuzzing/` go in `fuzzing/.gitignore`.

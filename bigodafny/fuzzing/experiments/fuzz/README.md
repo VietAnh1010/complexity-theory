@@ -42,7 +42,7 @@ Each row directory holds the files `setup` wrote and the agent's `answer.json`:
 
 ```json
 {
-  "class": "O(n log n)",
+  "class": "O(nlogn)",
   "measures": "n = |s|",
   "worst_case": "...",
   "example": "RYBG!!!!\n",
@@ -54,7 +54,7 @@ Each row directory holds the files `setup` wrote and the agent's `answer.json`:
 A `fuzz` row also holds `gen.py`, and any `round-k.dfy` the agent wrote to test a bound.
 
 `runs/<run>/summary.jsonl` has one line per row: `sid`, `mode`, `label` (BigOBench's, added at
-grading), the fields of `answer.json`, and `leaks`. `leaks` lists the guard's denials for the
+grading), the fields of `answer.json`, `match` (`class` equals `label` as a string), and `leaks`. `leaks` lists the guard's denials for the
 row; a nonempty list voids the row. Nothing checks what `gen.py` does: `BRIEF.md` only tells
 the agent to make `gen.py` build input text and nothing else. `runs/<run>/README.md` is one
-table: label, code mode, fuzz mode.
+table: label, code mode, fuzz mode; `✓` marks a class equal to the label.
