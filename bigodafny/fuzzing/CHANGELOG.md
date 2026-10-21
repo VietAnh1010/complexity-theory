@@ -31,4 +31,6 @@ per change. Earlier changes are in `git log -- bigodafny/fuzzing`. Findings go i
   `grade` adds `match`, and `✓` in its table.
 - `guard.py` is also the agent's Stop hook: it blocks the stop until `answer.json` has every
   key and `class` in form; after 3 blocks it fails and logs the row void.
+- `fuzz` adds a missing final newline to each input, as Python's `input()` allows it, and shows
+  the first `parse` error.
 - `fuzzing/AGENTS.md`: ignore rules for `fuzzing/` go in `fuzzing/.gitignore`.

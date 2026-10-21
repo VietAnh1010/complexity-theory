@@ -55,7 +55,9 @@ def generate(gen, per):
         for fam, f in g["FAMILIES"].items():
             for k in range(per):
                 try:
-                    inputs.append([i, fam, f(random.Random(f"{i}/{fam}/{k}"), **sizes), None])
+                    text = f(random.Random(f"{i}/{fam}/{k}"), **sizes)
+                    # Python's input() reads a last line without "\n"; BigOBench's parsers need it.
+                    inputs.append([i, fam, text if text.endswith("\n") else text + "\n", None])
                 except Exception as e:
                     inputs.append([i, fam, None, f"{fam} at {sizes}: {type(e).__name__}: {e}"[:300]])
     return g["GRID"], inputs
@@ -71,7 +73,7 @@ def fuzz(dfy, gen, per=3):
     r = Runner(sid, dfy=dfy)
     out = [f"note: {n}" for n in r.notes]
 
-    statuses, broken, gen_error, worst = Counter(), 0, None, [None] * len(grid)
+    statuses, broken, gen_error, parse_error, worst = Counter(), 0, None, None, [None] * len(grid)
     for i, fam, text, error in inputs:
         if error:
             res = {"status": "gen"}
@@ -79,6 +81,8 @@ def fuzz(dfy, gen, per=3):
         else:
             res = r.run(text, timeout=TIMEOUT) if _in_spec(r.task, text) else {"status": "out-of-spec"}
         statuses[res["status"]] += 1
+        if res["status"] == "parse":
+            parse_error = parse_error or f"{fam}: {res['error']}"
         broken += res.get("bound_ok") is False
         if res["status"] == "ok" and (worst[i] is None or res["steps"] > worst[i][1]["steps"]):
             worst[i] = (fam, res, text)
@@ -120,6 +124,8 @@ def fuzz(dfy, gen, per=3):
     out.append(f"generated: {dict(statuses)}")
     if gen_error:
         out.append(f"first generator error: {gen_error}")
+    if parse_error:
+        out.append(f"first parse error: {parse_error}")
     if broken:
         out.append(f"BOUND BROKEN on {broken} generated inputs")
     return "\n".join(out)
