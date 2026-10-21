@@ -104,10 +104,12 @@ def main(argv=None):
         cells = []
         for mode in MODES:
             r = by.get((sid, mode))
-            cells.append("-" if r is None else f"{r['class']}" + (" (void)" if r["leaks"] else ""))
+            cells.append("-" if r is None or r["class"] is None else
+                         f"{r['class']}" + (" (void)" if r["leaks"] else ""))
         lines.append(f"| `{sid}` | {tasks[sid]['time_complexity_inferred']} | " + " | ".join(cells) + " |")
-    (dest / "README.md").write_text(f"# Blind run {root.name}\n\n" + "\n".join(lines) + "\n\n"
-                                    "(void): the guard logged a denial for the row.\n")
+    if any(r["leaks"] for r in rows):
+        lines += ["", "(void): the guard logged a denial for the row."]
+    (dest / "README.md").write_text(f"# Blind run {root.name}\n\n" + "\n".join(lines) + "\n")
     print("\n".join(lines))
     print(f"-> {dest}")
 
