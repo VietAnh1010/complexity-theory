@@ -16,6 +16,8 @@ No new runs; one test agent on `2072_40`. Changes are in `fuzzing/CHANGELOG.md`.
   report 4 times.
 - `2072_40` again: `steps / n` goes 22.6, 19.8, 18.9, 19.1, 19.4 for n = 8 to 100. The fall
   is fixed overhead; the rise fits n log n but is too small to show it.
+- The Stop hook works live: a `blind-guess` agent told to stop on `{}` was blocked once,
+  read `BRIEF.md`, and wrote a complete answer (`888_6`, code mode).
 
 ## 2026-10-20: blind runs
 
