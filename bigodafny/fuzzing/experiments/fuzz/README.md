@@ -45,6 +45,7 @@ Each row directory holds the files `setup` wrote and the agent's `answer.json`:
   "class": "O(n log n)",
   "measures": "n = |s|",
   "worst_case": "...",
+  "example": "RYBG!!!!\n",
   "reasoning": "...",
   "confidence": "medium"
 }

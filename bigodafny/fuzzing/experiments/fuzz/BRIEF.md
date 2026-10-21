@@ -65,11 +65,17 @@ Write `answer.json`:
 {
   "class": "O(n log n)",
   "measures": "n = |a_list|",
-  "worst_case": "the inputs that cost most, in one line",
+  "worst_case": "the inputs that cost most",
+  "example": "a small worst-case input, as on stdin",
   "reasoning": "two or three lines",
   "confidence": "high|medium|low"
 }
 ```
+
+Write `worst_case` and `reasoning` for a reader who knows the Python in `row.dfy`'s header
+but not the problem: name its variables and loops ("the outer loop runs once per query and
+sorts `a` each time"), not the statement's story. `example` is one concrete input,
+small enough to read.
 
 Your final message: one line, the class and its measures.
 
