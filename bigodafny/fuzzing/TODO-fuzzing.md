@@ -94,6 +94,3 @@ changes go in `fuzzing/CHANGELOG.md`.
 - [ ] (2026-10-21) `steptrace.py`: move `HARNESS` into its own file; drop `--log` and
       `LOG_CAP` (their only user, `./trace`, is gone). Keep the CLI if the stored-test
       audit (`docs/07-steptrace.md`) is still wanted: undecided.
-- [ ] (2026-10-21) The first `blind-guess` run got no `fuzz` tool. Suspected cause: the
-      server's relative path, from cwd `bigodafny/fuzzing`; not isolated. The
-      `$CLAUDE_PROJECT_DIR` form works.
