@@ -54,5 +54,6 @@ A `fuzz` row also holds `gen.py`, and any `round-k.dfy` the agent wrote to test 
 
 `runs/<run>/summary.jsonl` has one line per row: `sid`, `mode`, `label` (BigOBench's, added at
 grading), the fields of `answer.json`, and `leaks`. `leaks` lists the guard's denials for the
-row and file access in `gen.py`; a nonempty list voids the row. `runs/<run>/README.md` is one
+row; a nonempty list voids the row. Nothing checks what `gen.py` does: `BRIEF.md` only tells
+the agent to make `gen.py` build input text and nothing else. `runs/<run>/README.md` is one
 table: label, code mode, fuzz mode.

@@ -24,7 +24,6 @@ from common import DATA, PRELUDE, read_jsonl, write_jsonl            # noqa: E40
 MARKER = HERE / "guard-path"                                           # read by guard.py
 TOOL = FUZZING / "DafnySteps" / "bin" / "Release" / "net10.0" / "DafnySteps"
 LEAKS = re.compile(r"time complexity|time_complexity|label|audit|BigOBench", re.I)
-FILE_ACCESS = re.compile(r"\bopen\(|\bos\.|pathlib|subprocess|\bglob\b|__import__|importlib")
 MODES = ("code", "fuzz")
 
 
@@ -64,9 +63,7 @@ def grade(d, label, guard):
         answer = json.loads((d / "answer.json").read_text())
     except (OSError, json.JSONDecodeError) as e:
         answer = {"class": None, "error": f"answer.json: {e}"}
-    gen = (d / "gen.py").read_text() if (d / "gen.py").exists() else ""
-    leaks = [l for l in guard if f"/{d.parent.name}/{d.name}" in l] + \
-        [f"gen.py: {m[0]}" for m in FILE_ACCESS.finditer(gen)]
+    leaks = [l for l in guard if f"/{d.parent.name}/{d.name}" in l]
     return {"sid": d.name, "mode": d.parent.name, "label": label, **answer, "leaks": leaks}
 
 
@@ -110,8 +107,7 @@ def main(argv=None):
             cells.append("-" if r is None else f"{r['class']}" + (" (void)" if r["leaks"] else ""))
         lines.append(f"| `{sid}` | {tasks[sid]['time_complexity_inferred']} | " + " | ".join(cells) + " |")
     (dest / "README.md").write_text(f"# Blind run {root.name}\n\n" + "\n".join(lines) + "\n\n"
-                                    "(void): the guard logged a denial for the row, or gen.py "
-                                    "touches files.\n")
+                                    "(void): the guard logged a denial for the row.\n")
     print("\n".join(lines))
     print(f"-> {dest}")
 

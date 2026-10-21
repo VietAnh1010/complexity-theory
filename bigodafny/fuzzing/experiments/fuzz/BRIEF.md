@@ -45,6 +45,7 @@ GRID = [{"n": 8}, {"n": 16}, ...]       # sizes, one dict per table row
 FAMILIES = {"random": f, ...}           # f(rng, **sizes) -> input text, as on stdin
 ```
 
+`gen.py` only builds input text: it must not read or write files or run other programs.
 Stay inside the statement's limits. `fuzz` on `row.dfy` and `gen.py` returns, per grid row, the
 costliest input's `steps` and how often the busiest loops ran. To test a candidate bound E,
 copy `row.dfy` to `round-k.dfy`, add `ensures steps <= E` to `Solve`, and run
