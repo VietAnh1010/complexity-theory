@@ -11,15 +11,9 @@ Your working directory is `{{DIR}}`. Everything you need is in it.
 
 <!-- code -->
 
-Do not run anything. Use Read, Glob and Grep; a hook denies Bash.
+Do not run anything: do not call the `fuzz` tool. Use Read, Glob and Grep.
 
 <!-- /code -->
-
-<!-- fuzz -->
-
-Start every Bash command with `cd {{DIR}} &&`. Run nothing in the background.
-
-<!-- /fuzz -->
 
 ## Files
 
@@ -43,20 +37,21 @@ Work from the code alone.
 
 <!-- fuzz -->
 
-You can run the program with `./fuzz FILE.dfy gen.py [--per N]`. Write `gen.py`:
+You can run the program with the `fuzz` tool: `fuzz(dfy, gen, per)`, with the absolute paths of a
+`.dfy` file and `gen.py` in this directory. Write `gen.py`:
 
 ```python
 GRID = [{"n": 8}, {"n": 16}, ...]       # sizes, one dict per table row
 FAMILIES = {"random": f, ...}           # f(rng, **sizes) -> input text, as on stdin
 ```
 
-Stay inside the statement's limits. `./fuzz row.dfy gen.py` prints, per grid row, the
+Stay inside the statement's limits. `fuzz` on `row.dfy` and `gen.py` returns, per grid row, the
 costliest input's `steps` and how often the busiest loops ran. To test a candidate bound E,
 copy `row.dfy` to `round-k.dfy`, add `ensures steps <= E` to `Solve`, and run
-`./fuzz round-k.dfy gen.py`: it also prints E and `steps / E`. A ratio that falls as sizes grow
+`fuzz` on `round-k.dfy`: it also shows E and `steps / E`. A ratio that falls as sizes grow
 means E is a looser class than the code; a flat ratio means the class fits; `BOUND BROKEN`
 means E is too low. Write families for the inputs you think cost most, not only random ones.
-Run `./fuzz` at least once and at most 3 times, and base your answer on what it shows as well as on the code.
+Call `fuzz` at least once and at most 3 times, and base your answer on what it shows as well as on the code.
 
 <!-- /fuzz -->
 

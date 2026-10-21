@@ -3,7 +3,7 @@
 ## Purpose
 
 A `blind-guess` agent names the tightest complexity class of one row's `Solve` without seeing
-the row's label. The `code` mode reads the code only; the `fuzz` mode can also run `./fuzz`.
+the row's label. The `code` mode reads the code only; the `fuzz` mode can also call the `fuzz` tool.
 `FINDINGS.md` holds the results so far.
 
 ## Files
@@ -14,7 +14,7 @@ the row's label. The `code` mode reads the code only; the `fuzz` mode can also r
 | `BRIEF.md`    | the agent's task; `setup` keeps only the blocks marked for the row's mode               |
 | `guard.py`    | the agent's hook: confines it to its row directory and logs each denial to `guard.log`  |
 | `guard-path`  | written by `setup`: the `--dir` that `guard.py` confines agents to (git-ignored)        |
-| `run.py`      | what `./fuzz` runs: the agent's generated inputs on the row, one table of `steps`       |
+| `fuzz_mcp.py` | the agent's `fuzz` tool, an MCP server the agent file starts: runs `gen.py`'s inputs on the row, returns one table of `steps` |
 | `FINDINGS.md` | results of the runs of 2026-10-20                                                       |
 
 ## Run
@@ -50,9 +50,7 @@ Each row directory holds the files `setup` wrote and the agent's `answer.json`:
 }
 ```
 
-A `fuzz` row also holds `gen.py` and, per file run, `run-<file>/`: `runs.jsonl` (one line per
-input: `sizes`, `family`, `status`, `steps`, `bound`) and `worst/<k>.txt` (the costliest input
-of table row k).
+A `fuzz` row also holds `gen.py`, and any `round-k.dfy` the agent wrote to test a bound.
 
 `runs/<run>/summary.jsonl` has one line per row: `sid`, `mode`, `label` (BigOBench's, added at
 grading), the fields of `answer.json`, and `leaks`. `leaks` lists the guard's denials for the

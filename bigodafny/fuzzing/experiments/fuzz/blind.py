@@ -3,16 +3,17 @@
     python3 experiments/fuzz/blind.py setup --dir DIR --mode code|fuzz SID [SID ...]
     python3 experiments/fuzz/blind.py grade --dir DIR --out OUT
 
-`setup` writes DIR/<mode>/<sid>/ and writes DIR to `guard-path`, where `guard.py`
-reads it. DIR must lie outside the repository. Each row gets `annotate`'s output as `row.dfy` (no
-label), the prelude and `BRIEF.md`, which ends with the problem statement; the `fuzz` mode also
-gets `fuzz`, a wrapper around `run.py`. A file naming the label aborts.
+`setup` writes DIR/<mode>/<sid>/ and writes DIR to `guard-path`, where
+`guard.py` reads it. DIR must lie outside the repository. Each row gets
+`annotate`'s output as `row.dfy` (no label), the prelude and `BRIEF.md`, which
+ends with the problem statement. The mode only picks the blocks of `BRIEF.md`;
+`guard.py` denies the `fuzz` tool in `code` mode. A file naming the label aborts.
 
-`grade` copies DIR to OUT and writes there
-`summary.jsonl`, one line per row, and `README.md`, one table.
+`grade` copies DIR to OUT and writes there `summary.jsonl`, one line per row,
+and `README.md`, one table.
 """
 from __future__ import annotations
-import argparse, json, re, shutil, stat, subprocess, sys
+import argparse, json, re, shutil, subprocess, sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -22,17 +23,9 @@ from common import DATA, PRELUDE, read_jsonl, write_jsonl            # noqa: E40
 
 MARKER = HERE / "guard-path"                                           # read by guard.py
 TOOL = FUZZING / "DafnySteps" / "bin" / "Release" / "net10.0" / "DafnySteps"
-PY = FUZZING.parent / ".venv" / "bin" / "python3"
 LEAKS = re.compile(r"time complexity|time_complexity|label|audit|BigOBench", re.I)
 FILE_ACCESS = re.compile(r"\bopen\(|\bos\.|pathlib|subprocess|\bglob\b|__import__|importlib")
 MODES = ("code", "fuzz")
-
-FUZZ = """#!/usr/bin/env bash
-# ./fuzz FILE.dfy gen.py [--per N] [--timeout S]: run gen.py's inputs on FILE.
-set -euo pipefail
-here=$(cd "$(dirname "$0")" && pwd)
-exec {py} {run} {sid} --dfy "$here/$1" --gen "$here/$2" --out "$here/run-$(basename "$1" .dfy)" "${{@:3}}"
-"""
 
 
 def find_row(sid):
@@ -59,9 +52,6 @@ def setup(d, sid, task, mode):
     brief = re.sub(r"\n{3,}", "\n\n", brief)
     (d / "BRIEF.md").write_text(brief.replace("{{DIR}}", str(d)).replace("{{STATEMENT}}", task["description"]),
                                 encoding="utf-8")
-    if mode == "fuzz":
-        (d / "fuzz").write_text(FUZZ.format(py=PY, run=HERE / "run.py", sid=sid))
-        (d / "fuzz").chmod((d / "fuzz").stat().st_mode | stat.S_IXUSR)
 
     label = task["time_complexity_inferred"]
     for f, text in (("row.dfy", (d / "row.dfy").read_text()), ("statement", task["description"])):
@@ -85,7 +75,7 @@ def main(argv=None):
     sub = ap.add_subparsers(dest="cmd", required=True)
     s = sub.add_parser("setup", help="set up rows for agents")
     s.add_argument("--dir", required=True, type=Path, help="where to write the rows; outside the repository")
-    s.add_argument("--mode", required=True, choices=MODES, help="code: read only; fuzz: also ./fuzz")
+    s.add_argument("--mode", required=True, choices=MODES, help="code: read only; fuzz: also the fuzz tool")
     s.add_argument("sids", nargs="+", metavar="SID")
     g = sub.add_parser("grade", help="collect answers, add labels, copy DIR to OUT")
     g.add_argument("--dir", required=True, type=Path, help="the directory setup wrote")
@@ -109,7 +99,7 @@ def main(argv=None):
     rows = [grade(d, tasks[d.name]["time_complexity_inferred"], guard)
             for mode in MODES for d in sorted((root / mode).glob("*/")) if (d / "BRIEF.md").exists()]
     shutil.copytree(root, dest, dirs_exist_ok=True,
-                    ignore=shutil.ignore_patterns("*-py", "__pycache__", "fuzz", ".locks"))
+                    ignore=shutil.ignore_patterns(".locks"))
     write_jsonl(dest / "summary.jsonl", rows)
     by = {(r["sid"], r["mode"]): r for r in rows}
     lines = ["| row | label | code | fuzz |", "|---|---|---|---|"]

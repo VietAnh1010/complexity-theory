@@ -10,7 +10,7 @@ row with ghost steps               no bound yet
    │  deghost
    ▼
 row with compiled steps            Solve returns (output, steps)
-   │  steptrace.py, or experiments/fuzz/run.py with an agent-written generator
+   │  steptrace.py, or the fuzz tool with an agent-written generator
    ▼
 steps per input size               statistics
    │  LLM guesses a bound
@@ -31,7 +31,7 @@ An input that breaks it shows the guess is too low.
 | add a ghost counter | `DafnySteps annotate` | works; stops on code outside the cost model unless a rule is enabled (08) |
 | make it run | `DafnySteps deghost` | works |
 | run on stored tests | `steptrace.py --dfy FILE` | works on any file |
-| run on generated inputs | `experiments/fuzz/run.py` | works; the agent writes the generator |
+| run on generated inputs | `fuzz` tool, `experiments/fuzz/fuzz_mcp.py` | works; the agent writes the generator |
 | guess a bound | LLM | not built |
 | check the bound | `TraceBound` | works; always true when there is no `ensures` |
 
@@ -48,7 +48,7 @@ An input that breaks it shows the guess is too low.
 ```
 fuzzing/
   steptrace.py          runs a row's counter on inputs
-  experiments/fuzz/     blind guess-only runs; run.py runs an agent-written generator
+  experiments/fuzz/     blind guess-only runs; fuzz_mcp.py runs an agent-written generator
   scripts/demo.sh       runs annotate, deghost and steptrace on one row -> demo/<problem>/
   DafnySteps/           C# code for annotate and deghost; a CLI and a Dafny plugin
   DafnySteps.Tests/     tests for DafnySteps

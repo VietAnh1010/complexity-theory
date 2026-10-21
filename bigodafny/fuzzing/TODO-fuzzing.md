@@ -68,7 +68,7 @@ Prototype, in development. Nothing here is a gate. `CHANGELOG.md`, `DOCS.md`,
       hit: `--trace` costs one Python call pair per event (`5_100`: 1.2 s
       untraced, 9.1 s traced, 14M events). A compiled stride was rejected as
       too complicated.
-- [x] `experiments/fuzz/run.py`: runs a generator's inputs (`GRID`, `FAMILIES`)
+- [x] `experiments/fuzz/fuzz_mcp.py` (`fuzz` tool): runs a generator's inputs (`GRID`, `FAMILIES`)
       untraced; per grid point, the costliest input's steps, bound,
       steps / bound, and loop-head hits from a loops-only rerun
 - [x] Blind runs: `experiments/fuzz/blind.py` stages rows outside the repo;

@@ -6,29 +6,24 @@ The hook runs only for that agent type, so it checks every call it sees.
 `guard-path`, beside this file, holds the stage root (`blind.py setup` writes it);
 without it every call is denied.
 
-- File tools (Read, Write, Edit, Glob, Grep, NotebookEdit): every path must lie
-  under the stage root.
-- Bash: the command must start with `cd <stage root>/...`; after that it may not
-  use an absolute path, `cd` again, `..`, `~`, `$HOME`, git, or name the
-  repository or a label-bearing file.
-- Web tools and Agent: denied.
-- Each agent is locked to the first row directory (one holding `BRIEF.md`) it
-  touches, so agents in one root cannot read each other's work. In a row with
-  no `fuzz` wrapper (the `code` mode) Bash is denied.
+- Only the tools in `PATHS` are allowed; Bash, web tools and Agent are denied.
+- Every path a call names must lie in one row directory (one holding
+  `BRIEF.md`) under the stage root. Each agent is locked to the first row it
+  touches, so agents in one root cannot read each other's work.
+- `fuzz` (`fuzz_mcp.py`) is denied in a `code` mode row.
 
 A denial is logged to `<stage root>/guard.log` and voids that row's result.
 """
 from __future__ import annotations
-import json, re, sys, time
+import json, sys, time
 from pathlib import Path
 
 MARKER = Path(__file__).resolve().parent / "guard-path"                # written by blind.py setup
-BANNED = re.compile(r"complexity-theory|bigodafny|solutions|tasks\.jsonl|label|audit|"
-                    r"time_complexity|\.claude|(^|[\s;&|(])git\b|\.\./|/\.\.|"
-                    r"(^|[\s=<>'\"(;&|])~\w*/|\$HOME|\$\{?CLAUDE|"
-                    r"(^|[\s=<>'\"(;&|])/(?!dev/null)[\w.-]+/|\b(cd|pushd)\b")   # no absolute path, no second cd
-FILE_TOOLS = {"Read", "Write", "Edit", "Glob", "Grep", "NotebookEdit"}
-DENIED_TOOLS = {"WebFetch", "WebSearch", "Agent", "Task"}
+FUZZ = "mcp__fuzz__fuzz"
+PATHS = {"Read": ["file_path"], "Write": ["file_path"], "Edit": ["file_path"],     # tool -> path arguments
+         "Glob": ["path"], "Grep": ["path"], FUZZ: ["dfy", "gen"],
+         "ToolSearch": [],                                  # loads the fuzz tool's schema
+         "SubagentHandback": []}                            # returns the agent's report
 
 
 def row_of(path, root):
@@ -55,33 +50,22 @@ def locked(agent, row, root):
     return None
 
 
-def verdict(tool, args, root, agent=None):
+def verdict(tool, args, root, agent):
     """None if allowed, else the reason."""
-    if tool in DENIED_TOOLS:
+    if tool not in PATHS:
         return f"{tool} is not available"
-    if agent is not None and tool in FILE_TOOLS | {"Bash"}:
-        target = (args.get("file_path") or args.get("path") or args.get("notebook_path") if tool != "Bash"
-                  else args.get("command", "").strip()[3:].split(" ")[0].split(";")[0])
-        row = row_of(target, root) if target else None
+    if tool == "Glob" and (args.get("pattern", "").startswith("/") or ".." in args.get("pattern", "")):
+        return "give a pattern relative to `path`"
+    for key in PATHS[tool]:
+        if key not in args:
+            return f"give `{key}` under your directory"
+        if not Path(args[key]).resolve().is_relative_to(root):
+            return f"{args[key]} is outside {root}"
+        row = row_of(args[key], root)
         if why := locked(agent, row, root):
             return why
-        if tool == "Bash" and not (row / "fuzz").exists():
-            return "this mode has no Bash; use Read, Glob and Grep"
-    if tool in FILE_TOOLS:
-        for key in ("file_path", "path", "notebook_path"):
-            if key in args and not Path(args[key]).resolve().is_relative_to(root):
-                return f"{args[key]} is outside {root}"
-        if tool in ("Glob", "Grep") and "path" not in args:
-            return "give `path` under your directory"
-        return None
-    if tool == "Bash":
-        cmd = args.get("command", "").strip()
-        if not cmd.startswith(f"cd {root}/"):
-            return f"start the command with `cd {root}/<your row> &&`"
-        rest = cmd[len(f"cd {root}/"):].replace(str(root), "ROOT")   # the root's own path may match
-        if m := BANNED.search(rest):
-            return f"the command names {m.group(0)!r}"
-        return None
+        if tool == FUZZ and row.parent.name == "code":
+            return "this mode has no fuzz tool"
     return None
 
 
