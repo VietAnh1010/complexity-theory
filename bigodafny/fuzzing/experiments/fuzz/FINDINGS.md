@@ -2,6 +2,28 @@
 
 Findings of the blind runs, newest first, one section per session.
 
+## 2026-10-22: fabricated rows with strange bounds
+
+Batch `20261022-1353`: 4 fabricated rows, both modes, one-letter names, statements with input
+format and limits only. Hosts `804_42 2128_34 2281_112 354_95`.
+
+| row | trap | true class | code | fuzz |
+|---|---|---|---|---|
+| F3 | union by size, no compression; random inputs look linear | O(n+mlogn) | O(n+mlogn) | O(n+mlogn) |
+| F4 | union by size with path compression | O(n+m), alpha | O(n+m) | O(n+m) |
+| F5 | outer loop over distinct counts, inner loop over n | O(n**1.5) | O(n**1.5) | O(n**1.5) |
+| F6 | k-deep recursion through phi, fast power, multiply | O(sqrt(m)) | O(m**0.5) | O(m**0.5) |
+
+- All 8 answers are right; code mode needed no runs. Agents named union-find from structure
+  alone, bounded distinct counts by sqrt(2n), and saw the phi chain end within 2 log m levels.
+- Fuzz agents built the worst cases themselves: binomial-tree unions, a staircase of counts,
+  prime m with k = 10**9. Each ran `fuzz` once.
+- One bound test: F4's `round-1.dfy` with `ensures steps <= 40 * (n + m) + 20` gave a flat ratio
+  of 0.66. Its diff in `table.txt` also lists the 30 header comment lines the agent dropped.
+- `guard.log` holds 4 denials, which void F4, F5 and F6 fuzz: agents wrote `gen.py` with a Bash
+  heredoc or ran `ls`, then used Write. None looked outside its row.
+- F6's `A` (`while p * p <= n`) times out in `dafny verify`; `fuzz` compiles with `--no-verify`.
+
 ## 2026-10-22: fabricated rows
 
 Batch `20261022-1342`: 2 fabricated rows, both modes. Each borrows a real row's stdin parser
