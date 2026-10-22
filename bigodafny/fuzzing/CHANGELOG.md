@@ -2,26 +2,23 @@
 
 What changed in `fuzzing/`, newest first, one dated section per session and one bullet
 per change. Earlier changes are in `git log -- bigodafny/fuzzing`. Findings go in
-`experiments/fuzz/FINDINGS.md`, open work in `TODO-fuzzing.md`.
+`experiments/fuzz/FINDINGS.md`, open work in `TODO.md`.
 
 ## 2026-10-22
 
-- `fuzz.py --bound 'E'` runs the row with `ensures steps <= E` added to `Solve`; `table.txt`
-  records E. It replaces the agent's `round-k.dfy` copy, and `guard.py` allows the flag.
-  `grade` counts `bound_tests` from it.
-- A `fuzz` row's `answer.json` has `skipped`: each step the agent chose not to take, and why;
-  `guard.py` requires it there. `grade` adds `fuzz_calls`, `bound_tests` and `gen_versions` from `attempts/`, and
-  a fuzz calls column to the run table.
-- `fuzz.py` call k writes `attempts/<k>/table.txt` in the row directory: the `.dfy` it ran, the
-  attempt whose `gen.py` it ran, then its table. It copies `gen.py` there only when changed. A
-  `round-k.dfy` goes in the table as a diff from `row.dfy` and is deleted. `grade` copies
-  `attempts/` with the row.
-- A batch is named by its setup time, `YYYYMMDD-HHMM` (`/tmp/fuzz-blind/20261022-1258`,
-  `runs/20261022-1258`). `runs/b10` is `runs/20261021-1804`; `runs/live` is `runs/20261022-1236`.
-- `setup` writes one `prelude.dfy` in `--dir`; each `row.dfy` includes `../../prelude.dfy`.
-  `guard.py` lets Read and Grep open it, and `BRIEF.md` gives its path (`{{PRELUDE}}`).
-- Where run outputs lie goes in `experiments/fuzz/FINDINGS.local.md` (git-ignored), not in
-  `FINDINGS.md`.
+- `TODO-fuzzing.md` is `TODO.md`, as the directory already names it.
+- `fuzz.py`, `guard.py` and `blind.py` are split into named helpers; `BRIEF.md` and the
+  README are reworded. Behaviour is unchanged.
+- `fuzz.py --bound 'E'` runs the row with `ensures steps <= E` added to `Solve`. `guard.py`
+  accepts `--per` and `--bound` in any order.
+- `fuzz` call k writes `attempts/<k>/table.txt`: the `.dfy`, E, the attempt holding the `gen.py`
+  that ran, and the table. It copies `gen.py` there only when it changed.
+- A fuzz row's `answer.json` has `skipped`; `guard.py` requires it. `grade` adds `fuzz_calls`,
+  `bound_tests` and `gen_versions`, and a fuzz calls column.
+- Batches are named by setup time, `YYYYMMDD-HHMM`: `runs/b10` is `runs/20261021-1804`,
+  `runs/live` is `runs/20261022-1236`.
+- `setup` writes one shared `prelude.dfy` per batch; `guard.py` lets Read and Grep open it.
+- Run output locations go in `experiments/fuzz/FINDINGS.local.md` (git-ignored).
 - `fuzz` is a script again: `fuzz_mcp.py` is `fuzz.py DFY GEN [--per N]`, which prints the table.
   `blind-guess.md` starts no MCP server, so concurrent agents share nothing.
 - `blind-guess` has Bash. `guard.py` allows one command, `CMD DFY GEN [--per N]`, where `CMD`

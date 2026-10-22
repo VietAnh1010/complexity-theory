@@ -1,24 +1,20 @@
 #!/usr/bin/env python3
-"""PreToolUse and Stop hook of the `blind-guess` agent (`.claude/agents/blind-guess.md`):
-confine it to the staged rows, and keep it from stopping without an answer.
+"""PreToolUse and Stop hook of the `blind-guess` agent (`.claude/agents/blind-guess.md`).
 
-The hook runs only for that agent type, so it checks every call it sees.
-`guard-path`, beside this file, holds the stage root (`blind.py setup` writes it);
-without it every call is denied.
+Keeps each agent inside its row directory and keeps it from stopping without an
+answer. `guard-path`, beside this file, names the stage root (`blind.py setup`
+writes it); without it every call is denied.
 
-- Only the tools in `PATHS` are allowed; web tools and Agent are denied.
-- Bash runs one command only, `CMD DFY GEN [--per N] [--bound 'E']` (`fuzz.py`
-  under the venv's Python), in the foreground; it is denied in a `code` mode row.
-- Every path a call names must lie in one row directory (one holding
-  `BRIEF.md`) under the stage root. Each agent is locked to the first row it
-  touches, so agents in one root cannot read each other's work. Read and
-  Grep may also open the stage root's shared `prelude.dfy`.
+- Only the tools in `PATHS` are allowed.
+- Bash runs only `CMD DFY GEN [--per N] [--bound 'E']`, in the foreground, and
+  only in a `fuzz` row.
+- Every path must lie in the agent's row directory: the first one it touches.
+  Read and Grep may also open the stage root's `prelude.dfy`.
+- On Stop, `answer.json` must hold every key of `BRIEF.md`'s example (and
+  `skipped` in a `fuzz` row), with `class` in its form. The stop is blocked
+  `TRIES` times, then the hook fails.
 
-A denial is logged to `<stage root>/guard.log` and voids that row's result.
-
-On Stop, the agent's `answer.json` must hold every key of `BRIEF.md`'s example
-(and `skipped` in a `fuzz` row), with `class` in its form. Else the stop is blocked and the agent told why, at
-most `TRIES` times; then the hook fails, and logs the row void.
+Each denial, and a stop that fails, goes to `<stage root>/guard.log` and voids the row.
 """
 from __future__ import annotations
 import json, re, sys, time
@@ -38,7 +34,7 @@ TRIES = 3
 
 
 def row_of(path, root):
-    """The row directory (holding BRIEF.md) at or above path, under root."""
+    """The row directory (holding BRIEF.md) at or above PATH, under ROOT."""
     p = Path(path).resolve()
     for d in [p, *p.parents]:
         if d == root or root not in d.parents:
@@ -48,24 +44,45 @@ def row_of(path, root):
     return None
 
 
-def locked(agent, row, root):
-    """None if `agent` may work in `row`; locks it there on first use."""
+def agent_row(root, agent):
+    """The row AGENT is locked to, or None."""
+    lock = root / ".locks" / str(agent)
+    return Path(lock.read_text()) if lock.exists() else None
+
+
+def lock_reason(agent, row, root):
+    """None if AGENT may work in ROW, else why not. Locks AGENT to its first row."""
     if row is None:
         return "work inside your row directory"
-    lock = root / ".locks" / str(agent)
-    if lock.exists():
-        mine = Path(lock.read_text())
-        return None if row == mine else f"{row} is not your directory {mine}"
-    lock.parent.mkdir(exist_ok=True)
-    lock.write_text(str(row))
+    mine = agent_row(root, agent)
+    if mine is None:
+        (root / ".locks").mkdir(exist_ok=True)
+        (root / ".locks" / str(agent)).write_text(str(row))
+        return None
+    return None if row == mine else f"{row} is not your directory {mine}"
+
+
+def path_reason(tool, path, root, agent):
+    """None if TOOL may use PATH, else why not."""
+    resolved = Path(path).resolve()
+    if tool in ("Read", "Grep") and resolved == root / "prelude.dfy":
+        return None
+    if not resolved.is_relative_to(root):
+        return f"{path} is outside {root}"
+    row = row_of(path, root)
+    if why := lock_reason(agent, row, root):
+        return why
+    if tool == "Bash" and row.parent.name == "code":
+        return "this mode has no Bash"
     return None
 
 
-def verdict(tool, args, root, agent):
-    """None if allowed, else the reason."""
+def deny_reason(tool, args, root, agent):
+    """None if the call is allowed, else why not."""
     if tool not in PATHS:
         return f"{tool} is not available"
-    if tool == "Glob" and (args.get("pattern", "").startswith("/") or ".." in args.get("pattern", "")):
+    pattern = args.get("pattern", "")
+    if tool == "Glob" and (pattern.startswith("/") or ".." in pattern):
         return "give a pattern relative to `path`"
     if tool == "Bash":
         if args.get("run_in_background"):
@@ -76,37 +93,30 @@ def verdict(tool, args, root, agent):
     for key in PATHS[tool]:
         if key not in args:
             return f"give `{key}` under your directory"
-        if tool in ("Read", "Grep") and Path(args[key]).resolve() == root / "prelude.dfy":
-            continue
-        if not Path(args[key]).resolve().is_relative_to(root):
-            return f"{args[key]} is outside {root}"
-        row = row_of(args[key], root)
-        if why := locked(agent, row, root):
+        if why := path_reason(tool, args[key], root, agent):
             return why
-        if tool == "Bash" and row.parent.name == "code":
-            return "this mode has no Bash"
     return None
 
 
 def answer_error(row):
-    """None if row/answer.json is complete, else what is wrong."""
+    """None if ROW/answer.json is complete, else what is wrong."""
     if row is None:
         return "you have no row directory"
     try:
-        a = json.loads((row / "answer.json").read_text())
+        answer = json.loads((row / "answer.json").read_text())
     except (OSError, json.JSONDecodeError) as e:
         return f"answer.json: {e}"
     keys = KEYS + ("skipped",) * (row.parent.name == "fuzz")
-    if missing := [k for k in keys if not isinstance(a, dict) or not str(a.get(k) or "").strip()]:
+    if missing := [k for k in keys if not isinstance(answer, dict) or not str(answer.get(k) or "").strip()]:
         return f"answer.json lacks {', '.join(missing)}"
-    if not CLASS.fullmatch(a["class"]):
-        return f"class {a['class']!r} is not in the form BRIEF.md gives"
-    if a["confidence"] not in ("high", "medium", "low"):
+    if not CLASS.fullmatch(answer["class"]):
+        return f"class {answer['class']!r} is not in the form BRIEF.md gives"
+    if answer["confidence"] not in ("high", "medium", "low"):
         return "confidence must be high, medium or low"
     return None
 
 
-def log(root, payload, why):
+def log_denial(root, payload, why):
     with (root / "guard.log").open("a", encoding="utf-8") as fh:
         fh.write(json.dumps({"ts": time.strftime("%Y-%m-%dT%H:%M:%S"),
                              "agent": str(payload.get("agent_id"))[:24],
@@ -114,21 +124,25 @@ def log(root, payload, why):
                              "input": json.dumps(payload.get("tool_input"))[:600]}) + "\n")
 
 
+def count_stop(root, agent):
+    """How many times AGENT has tried to stop, this try included."""
+    counter = root / ".locks" / f"{agent}.stops"
+    tries = int(counter.read_text()) + 1 if counter.exists() else 1
+    counter.parent.mkdir(exist_ok=True)
+    counter.write_text(str(tries))
+    return tries
+
+
 def stop(root, payload):
-    """Block the agent's stop while its answer.json is broken, at most TRIES times."""
+    """Let the agent stop once its answer.json is complete; block it up to TRIES times."""
     agent = payload.get("agent_id") or "unknown"
-    lock = root / ".locks" / str(agent)
-    row = Path(lock.read_text()) if lock.exists() else None
+    row = agent_row(root, agent)
     if (why := answer_error(row)) is None:
         sys.exit(0)
-    count = root / ".locks" / f"{agent}.stops"
-    tries = int(count.read_text()) + 1 if count.exists() else 1
-    count.parent.mkdir(exist_ok=True)
-    count.write_text(str(tries))
-    if tries > TRIES:
+    if count_stop(root, agent) > TRIES:
         why = f"answer.json still broken after {TRIES} tries: {why}"
         payload["tool_input"] = {"row": str(row)}                      # so grade voids the row
-        log(root, payload, why)
+        log_denial(root, payload, why)
         print(f"FAILED: {why}", file=sys.stderr)
         sys.exit(1)
     print(f"Do not stop yet: {why}. Fix answer.json as BRIEF.md says.", file=sys.stderr)
@@ -146,11 +160,11 @@ def main():
     root = Path(MARKER.read_text().strip()).resolve()
     if payload.get("hook_event_name") == "SubagentStop":
         stop(root, payload)
-    why = verdict(payload.get("tool_name"), payload.get("tool_input") or {}, root,
-                  payload.get("agent_id") or "unknown")
+    why = deny_reason(payload.get("tool_name"), payload.get("tool_input") or {}, root,
+                      payload.get("agent_id") or "unknown")
     if why is None:
         sys.exit(0)
-    log(root, payload, why)
+    log_denial(root, payload, why)
     print(f"DENIED: {why}. Work only in your directory under {root}.", file=sys.stderr)
     sys.exit(2)
 

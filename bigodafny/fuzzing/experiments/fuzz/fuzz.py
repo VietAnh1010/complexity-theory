@@ -1,32 +1,27 @@
-"""The `blind-guess` agent's `fuzz` command: the only command `guard.py` lets its Bash run.
+"""The `blind-guess` agent's `fuzz` command, the only command `guard.py` lets its Bash run.
 
     .venv/bin/python3 experiments/fuzz/fuzz.py DFY GEN [--per N] [--bound E]
 
-runs a row's step counter on inputs from the agent's generator and prints one
-table. The row's SID is the name of the directory holding DFY. `guard.py`
-checks the paths first. The generator defines
+Runs the row's step counter on inputs from the agent's GEN and prints one table.
+The row's SID is the name of DFY's directory. GEN defines
 
-    GRID = [{"n": 8}, {"n": 16}, ...]      # input sizes, one dict per row of the table
-    FAMILIES = {"random": f, ...}          # f(rng, **sizes) -> input text (stdin form)
+    GRID = [{"n": 8}, {"n": 16}, ...]      # input sizes, one dict per table row
+    FAMILIES = {"random": f, ...}          # f(rng, **sizes) -> input text, as on stdin
 
-Every family runs `per` times at each grid point. An input that breaks Solve's
-`requires` is not run, nor one that breaks a limit `data/constraints.jsonl`
-quotes for its problem (status `out-of-spec`); most problems have no entry
-there, so their limits go unchecked. For each grid point
-the table shows the costliest input: its steps, the value of the bound
-(`TraceBoundValue`) and steps / bound, and the iterations of the loops that run
-most. Loop counts come from rerunning only that input with the loop heads
-traced, so the batch itself runs untraced.
+Each family runs N times at each grid point. GEN runs in a child process, so
+nothing it prints reaches the table. An input is skipped as `out-of-spec` when it
+breaks Solve's `requires` or a limit in `data/constraints.jsonl`.
 
-`gen.py` runs in a child process (`fuzz.py --gen GEN PER`), so nothing it
-prints reaches the table.
+For each grid point the table shows the costliest input: its steps, the bound
+and steps / bound, and how often the busiest loops ran. Loop counts come from
+rerunning that one input with only the loop heads traced.
 
-`--bound E` runs a copy of DFY with `ensures steps <= E` added to Solve, so the
-table also shows E and steps / E. The copy lies beside DFY while it runs.
+`--bound E` runs a copy of DFY with `ensures steps <= E` added to Solve. The copy
+lies beside DFY while it runs.
 
-Call k (from 1) writes `attempts/<k>/table.txt` beside DFY: DFY's name, E if
-given, the attempt whose `gen.py` ran, then what the call printed. It copies
-GEN to `attempts/<k>/gen.py` only if GEN differs from the latest copy.
+Call k writes `attempts/<k>/table.txt` beside DFY: the DFY name, E, the attempt
+holding the GEN that ran, then the output. It copies GEN to `attempts/<k>/gen.py`
+only when GEN changed since the last copy.
 """
 from __future__ import annotations
 import argparse, json, random, re, runpy, subprocess, sys
@@ -42,124 +37,161 @@ TIMEOUT = 10                             # seconds per input
 
 
 def generate(gen, per):
-    """GRID, and every input gen.py makes: [grid index, family, text or None, error or None]."""
-    g = runpy.run_path(gen)
+    """GRID, and every input GEN makes as [point, family, text or None, error or None]."""
+    module = runpy.run_path(gen)
     inputs = []
-    for i, sizes in enumerate(g["GRID"]):
-        for fam, f in g["FAMILIES"].items():
-            for k in range(per):
+    for point, sizes in enumerate(module["GRID"]):
+        for family, make in module["FAMILIES"].items():
+            for copy in range(per):
                 try:
-                    text = f(random.Random(f"{i}/{fam}/{k}"), **sizes)
-                    # Python's input() reads a last line without "\n"; BigOBench's parsers need it.
-                    inputs.append([i, fam, text if text.endswith("\n") else text + "\n", None])
+                    text = make(random.Random(f"{point}/{family}/{copy}"), **sizes)
+                    # BigOBench's parsers need the final newline that input() would not.
+                    inputs.append([point, family, text if text.endswith("\n") else text + "\n", None])
                 except Exception as e:
-                    inputs.append([i, fam, None, f"{fam} at {sizes}: {type(e).__name__}: {e}"[:300]])
-    return g["GRID"], inputs
+                    inputs.append([point, family, None, f"{family} at {sizes}: {type(e).__name__}: {e}"[:300]])
+    return module["GRID"], inputs
+
+
+def run_generator(gen, per):
+    """`generate` in a child process: GRID and the inputs."""
+    child = subprocess.run([sys.executable, __file__, "--gen", gen, str(per)],
+                           capture_output=True, text=True, timeout=600)
+    if child.returncode:
+        raise RuntimeError(f"gen.py failed:\n{child.stderr.strip()[-1000:]}")
+    return json.loads(child.stdout.splitlines()[-1])           # GEN's own prints come first
+
+
+def run_inputs(runner, inputs, points):
+    """Run every input. Returns the status counts, the bound breaks, the first
+    generator and parse errors, and per point the costliest (family, result, text)."""
+    statuses, broken, gen_error, parse_error = Counter(), 0, None, None
+    costliest = [None] * points
+    for point, family, text, error in inputs:
+        if error:
+            result = {"status": "gen"}
+            gen_error = gen_error or error
+        elif not _in_spec(runner.task, text):
+            result = {"status": "out-of-spec"}
+        else:
+            result = runner.run(text, timeout=TIMEOUT)
+        statuses[result["status"]] += 1
+        if result["status"] == "parse":
+            parse_error = parse_error or f"{family}: {result['error']}"
+        broken += result.get("bound_ok") is False
+        if result["status"] == "ok" and (costliest[point] is None
+                                         or result["steps"] > costliest[point][1]["steps"]):
+            costliest[point] = (family, result, text)
+    return statuses, broken, gen_error, parse_error, costliest
+
+
+def loop_counts(sid, dfy, costliest):
+    """Rerun each point's costliest input with the loop heads traced.
+    Returns per point {line: iterations}, and {line: loop source}."""
+    _, points, _, _ = build(sid, "", dfy)
+    lines = sorted({str(p["Line"]) for p in points if p["Kind"] == "loop"})
+    counts = [{} for _ in costliest]
+    if not lines or not any(costliest):
+        return counts, {}
+    runner = Runner(sid, trace=",".join(lines), dfy=dfy)
+    loops = [p for p in runner.points if p["Kind"] == "loop"]
+    source = {p["Line"]: f"{p['Method']}: {p['src']}" for p in loops}
+    for point, worst in enumerate(costliest):
+        if worst:
+            result = runner.run(worst[2], timeout=TIMEOUT * 10)
+            hits = {int(i): v[0] for i, v in result.get("hits", {}).items()} if result["status"] == "ok" else {}
+            counts[point] = {p["Line"]: hits.get(p["Id"], 0) for p in loops}
+    runner.close()
+    return counts, source
+
+
+def format_table(grid, costliest, counts, source):
+    """The table's lines: one per grid point, then the shown loops' source."""
+    last = next((c for c in reversed(counts) if c), {})
+    shown = sorted(last, key=lambda line: -last[line])[:TOP]
+    lines = [f"{'k':>2}  {'sizes':<18} {'family':<10} {'steps':>10} {'bound':>12} {'ratio':>6}"
+             + "".join(f" {'L' + str(line):>9}" for line in shown)]
+    for point, worst in enumerate(costliest):
+        sizes = " ".join(f"{name}={value}" for name, value in grid[point].items())
+        if not worst:
+            lines.append(f"{point:>2}  {sizes:<18} {'-':<10} {'no ok run':>10}")
+            continue
+        family, result, _ = worst
+        bound = result.get("bound")
+        ratio = f"{result['steps'] / bound:.3f}" if bound else "-"
+        lines.append(f"{point:>2}  {sizes:<18} {family:<10} {result['steps']:>10} "
+                     f"{bound if bound is not None else '-':>12} {ratio:>6}"
+                     + "".join(f" {counts[point].get(line, '-'):>9}" for line in shown))
+    lines += [f"  L{line:<4} {source[line]}" for line in shown]
+    if len(last) > TOP:
+        lines.append(f"  ({len(last) - TOP} more loops not shown)")
+    return lines
 
 
 def fuzz(dfy, gen, per=3):
+    """Run GEN's inputs on DFY and return the table as text."""
     sid = Path(dfy).parent.name
-    p = subprocess.run([sys.executable, __file__, "--gen", gen, str(per)],
-                       capture_output=True, text=True, timeout=600)
-    if p.returncode:
-        raise RuntimeError(f"gen.py failed:\n{p.stderr.strip()[-1000:]}")
-    grid, inputs = json.loads(p.stdout.splitlines()[-1])        # gen.py's own prints come first
-    r = Runner(sid, dfy=dfy)
-    out = [f"note: {n}" for n in r.notes]
-
-    statuses, broken, gen_error, parse_error, worst = Counter(), 0, None, None, [None] * len(grid)
-    for i, fam, text, error in inputs:
-        if error:
-            res = {"status": "gen"}
-            gen_error = gen_error or error
-        else:
-            res = r.run(text, timeout=TIMEOUT) if _in_spec(r.task, text) else {"status": "out-of-spec"}
-        statuses[res["status"]] += 1
-        if res["status"] == "parse":
-            parse_error = parse_error or f"{fam}: {res['error']}"
-        broken += res.get("bound_ok") is False
-        if res["status"] == "ok" and (worst[i] is None or res["steps"] > worst[i][1]["steps"]):
-            worst[i] = (fam, res, text)
-    r.close()
-
-    # Rerun each grid point's costliest input with only the loop heads traced.
-    _, points, _, _ = build(sid, "", dfy)
-    loops = [p for p in points if p["Kind"] == "loop"]
-    hits, src = [{} for _ in worst], {}
-    if loops and any(worst):
-        rt = Runner(sid, trace=",".join(sorted({str(p["Line"]) for p in loops})), dfy=dfy)
-        traced = [p for p in rt.points if p["Kind"] == "loop"]
-        src = {p["Line"]: f"{p['Method']}: {p['src']}" for p in traced}
-        for k, w in enumerate(worst):
-            if w:
-                res = rt.run(w[2], timeout=TIMEOUT * 10)
-                h = {int(i): v[0] for i, v in res.get("hits", {}).items()} if res["status"] == "ok" else {}
-                hits[k] = {p["Line"]: h.get(p["Id"], 0) for p in traced}
-        rt.close()
-    last = next((h for h in reversed(hits) if h), {})
-    shown = sorted(last, key=lambda line: -last[line])[:TOP]
-
-    out.append(f"{'k':>2}  {'sizes':<18} {'family':<10} {'steps':>10} {'bound':>12} {'ratio':>6}"
-               + "".join(f" {'L' + str(line):>9}" for line in shown))
-    for k, w in enumerate(worst):
-        sizes = " ".join(f"{n}={v}" for n, v in grid[k].items())
-        if not w:
-            out.append(f"{k:>2}  {sizes:<18} {'-':<10} {'no ok run':>10}")
-            continue
-        fam, res, _ = w
-        bound = res.get("bound")
-        ratio = f"{res['steps'] / bound:.3f}" if bound else "-"
-        out.append(f"{k:>2}  {sizes:<18} {fam:<10} {res['steps']:>10} "
-                   f"{bound if bound is not None else '-':>12} {ratio:>6}"
-                   + "".join(f" {hits[k].get(line, '-'):>9}" for line in shown))
-    out += [f"  L{line:<4} {src[line]}" for line in shown]
-    if len(last) > TOP:
-        out.append(f"  ({len(last) - TOP} more loops not shown)")
-    out.append(f"generated: {dict(statuses)}")
+    grid, inputs = run_generator(gen, per)
+    runner = Runner(sid, dfy=dfy)
+    notes = [f"note: {n}" for n in runner.notes]
+    statuses, broken, gen_error, parse_error, costliest = run_inputs(runner, inputs, len(grid))
+    runner.close()
+    counts, source = loop_counts(sid, dfy, costliest)
+    lines = notes + format_table(grid, costliest, counts, source)
+    lines.append(f"generated: {dict(statuses)}")
     if gen_error:
-        out.append(f"first generator error: {gen_error}")
+        lines.append(f"first generator error: {gen_error}")
     if parse_error:
-        out.append(f"first parse error: {parse_error}")
+        lines.append(f"first parse error: {parse_error}")
     if broken:
-        out.append(f"BOUND BROKEN on {broken} generated inputs")
-    return "\n".join(out)
+        lines.append(f"BOUND BROKEN on {broken} generated inputs")
+    return "\n".join(lines)
+
+
+def add_bound(text, bound):
+    """TEXT with `ensures steps <= BOUND` added to Solve's signature."""
+    if not (m := re.search(r"method Solve\b.*?ghost steps: nat\)", text, re.S)):
+        raise ValueError("no `method Solve ... ghost steps: nat)` to add the bound to")
+    return text[:m.end()] + f"\n  ensures steps <= {bound}" + text[m.end():]
+
+
+def keep_gen(row_dir, attempt, gen_text):
+    """The attempt number whose gen.py equals GEN_TEXT: the latest copy, else a new
+    copy in ATTEMPT."""
+    copies = [int(p.parent.name) for p in row_dir.glob("attempts/*/gen.py")]
+    if copies and (row_dir / "attempts" / str(max(copies)) / "gen.py").read_text() == gen_text:
+        return max(copies)
+    (row_dir / "attempts" / str(attempt) / "gen.py").write_text(gen_text)
+    return attempt
 
 
 def main():
-    ap = argparse.ArgumentParser(prog="fuzz.py")
-    ap.add_argument("dfy", help="absolute path of the .dfy file")
-    ap.add_argument("gen", help="absolute path of gen.py")
-    ap.add_argument("--per", type=int, default=3, help="inputs per family and grid point")
-    ap.add_argument("--bound", help="E: run DFY with `ensures steps <= E` added to Solve")
-    a = ap.parse_args()
-    dfy = Path(a.dfy)
-    d = dfy.parent
-    k = len(list(d.glob("attempts/*"))) + 1
-    log = d / "attempts" / str(k)
-    log.mkdir(parents=True)
-    head = [f"dfy: {dfy.name}"] + ([f"bound: {a.bound}"] if a.bound else [])
-    run = d / f".bound-{k}.dfy" if a.bound else dfy
+    parser = argparse.ArgumentParser(prog="fuzz.py")
+    parser.add_argument("dfy", help="absolute path of the .dfy file")
+    parser.add_argument("gen", help="absolute path of gen.py")
+    parser.add_argument("--per", type=int, default=3, help="inputs per family and grid point")
+    parser.add_argument("--bound", help="E: run DFY with `ensures steps <= E` added to Solve")
+    args = parser.parse_args()
+    dfy = Path(args.dfy)
+    row_dir = dfy.parent
+    attempt = len(list(row_dir.glob("attempts/*"))) + 1
+    attempt_dir = row_dir / "attempts" / str(attempt)
+    attempt_dir.mkdir(parents=True)
+    header = [f"dfy: {dfy.name}"] + ([f"bound: {args.bound}"] if args.bound else [])
+    run_dfy = row_dir / f".bound-{attempt}.dfy" if args.bound else dfy
     try:
-        if a.bound:
-            text = dfy.read_text()
-            if not (m := re.search(r"method Solve\b.*?ghost steps: nat\)", text, re.S)):
-                raise ValueError(f"{dfy.name} has no `method Solve ... ghost steps: nat)`")
-            run.write_text(text[:m.end()] + f"\n  ensures steps <= {a.bound}" + text[m.end():])
-        text = Path(a.gen).read_text()
-        prev = max((int(p.parent.name) for p in d.glob("attempts/*/gen.py")), default=None)
-        if prev is None or (d / "attempts" / str(prev) / "gen.py").read_text() != text:
-            prev = k
-            (log / "gen.py").write_text(text)
-        head.append(f"gen: attempts/{prev}/gen.py")
-        out, failed = fuzz(str(run), a.gen, a.per), False
+        if args.bound:
+            run_dfy.write_text(add_bound(dfy.read_text(), args.bound))
+        header.append(f"gen: attempts/{keep_gen(row_dir, attempt, Path(args.gen).read_text())}/gen.py")
+        output, failed = fuzz(str(run_dfy), args.gen, args.per), False
     except Exception as e:
-        out, failed = f"{type(e).__name__}: {e}", True
-    (log / "table.txt").write_text("\n".join(head) + f"\n{out}\n")
-    if a.bound:
-        run.unlink(missing_ok=True)
+        output, failed = f"{type(e).__name__}: {e}", True
+    finally:
+        if args.bound:
+            run_dfy.unlink(missing_ok=True)
+    (attempt_dir / "table.txt").write_text("\n".join(header) + f"\n{output}\n")
     if failed:
-        sys.exit(out)
-    print(out)
+        sys.exit(output)
+    print(output)
 
 
 if __name__ == "__main__":

@@ -53,7 +53,7 @@ fuzzing/
   DafnySteps/           C# code for annotate and deghost; a CLI and a Dafny plugin
   DafnySteps.Tests/     tests for DafnySteps
   Directory.Build.props path to the Dafny install
-  TODO-fuzzing.md       open work
+  TODO.md               open work
 ```
 
 ## Quick start
