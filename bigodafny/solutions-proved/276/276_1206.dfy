@@ -1,37 +1,6 @@
-// LABEL AUDIT -- queued for manual review, not a decision.
-//
-//   stated label   : O(n*m)
-//   audited class  : O(n)
-//   cause          : label
-//   confidence     : high
-//   auditor        : labelaudit-r3d-01
-//
-//   The PYTHON is not the labelled class either. BigOBench's label looks
-//   wrong; the translation is faithful to it.
-//
-//   evidence:
-//     Solve loops over the test triples and calls MaxSeq, MinSeq, CountEq
-//     and IndexOfEq on a length-3 seq, constant work per test, then Join
-//     over n parts, so cost is O(n); the Python's count/max/min over a
-//     3-list is also constant.
-//
-//   how this label could be wrong, and what to check:
-//     The label assumes variable row width m. Check the statement: each
-//     test line holds exactly three integers x,y,z and the Dafny requires
-//     |r| == 3; MaxSeq, MinSeq, CountEq and IndexOfEq run over a
-//     three-element seq.
-//
-//   structural facts (deterministic, from label_audit.py):
-//     {"body_lines": 49, "data_dependent_loops": 0, "decreases_star":
-//     false, "linear_prelude_calls": ["IntToString", "Join", "MaxSeq",
-//     "MinSeq"], "loop_depth": 1, "loops": 1, "recursive_helpers": 2,
-//     "seq_append_read_in_same_loop": false, "seq_args": 1,
-//     "seq_update_in_loop": true, "set_build_in_loop": false, "sorts": [],
-//     "uses_map": false, "uses_multiset": false, "uses_set": false}
-// --------------------------------------------------------------------
-
 // 1385_A. Three Pairwise Maximums  (problem 276, solution 276_1206)
-// time complexity: O(n*m)
+// time complexity: O(n)
+// label corrected 2026-10-22: BigOBench says O(n*m); this proof bounds steps by 27 * |abc_list| + 4 * |output| + 1
 // python exact-diff baseline: partial
 //
 // Reproduce the Python program's entire stdout in `output`.
@@ -59,19 +28,25 @@
 include "../../prelude.dfy"
 import opened Prelude
 
-method Solve(n: int, abc_list: seq<seq<int>>) returns (output: string)
+method Solve(n: int, abc_list: seq<seq<int>>) returns (output: string, ghost steps: nat)
   requires forall r :: r in abc_list ==> |r| == 3
+  ensures steps <= 27 * |abc_list| + 4 * |output| + 1
 {
   var parts: seq<string> := [];
+  steps := 1;
   var i := 0;
   while i < n && i < |abc_list|
-    invariant 0 <= i
+    invariant 0 <= i <= |abc_list|
+    invariant |parts| == i
+    invariant steps <= 1 + 26 * i + 3 * SumLen(parts)
     decreases n - i
   {
     var ls := abc_list[i];
     var mx := MaxSeq(ls);
     var mn := MinSeq(ls);
     var cmax := CountEq(ls, mx);
+    // index, MaxSeq 3, MinSeq 3, CountEq 3, compare, loop overhead, increment
+    steps := steps + 13;
     if cmax > 1 {
       var ls1: seq<int>;
       if cmax == 3 {
@@ -83,14 +58,28 @@ method Solve(n: int, abc_list: seq<seq<int>>) returns (output: string)
         if imin < |ls1| { ls1 := ls1[imin := mn]; }
         if idx2 < |ls1| { ls1 := ls1[idx2 := mx]; }
       }
+      // IndexOfEq 3, idx2, the list, 2 compares, 2 updates, 3 reads
+      steps := steps + 12;
       var line := IntToString(ls1[0]) + " " + IntToString(ls1[1]) + " " + IntToString(ls1[2]) + " ";
+      ghost var piece := "YES\n" + line + "\n\n";
+      IntToStringDigits(ls1[0]);
+      IntToStringDigits(ls1[1]);
+      IntToStringDigits(ls1[2]);
+      // the digits, the concatenations building line, and the one building piece
+      steps := steps + Digits(ls1[0]) + Digits(ls1[1]) + Digits(ls1[2]) + |line| + |piece|;
+      SumLenSnoc(parts, piece);
       parts := parts + ["YES\n" + line + "\n\n"];
+      steps := steps + 1;
     } else {
+      SumLenSnoc(parts, "NO\n");
       parts := parts + ["NO\n"];
+      steps := steps + 1;
     }
     i := i + 1;
   }
   output := Join(parts, "");
+  steps := steps + SumLen(parts) + |parts|;
+  if |parts| >= 1 { JoinLen(parts, ""); }
 }
 
 function CountEq(s: seq<int>, v: int): int

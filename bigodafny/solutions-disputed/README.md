@@ -50,7 +50,7 @@ scan. Such rows: `1336_340`, `1366_102`, `1368_67`, `1470_325`,
 
 ## Common patterns
 
-- **A size that cannot vary:** a `requires` fixes the width (`276_1206`), or
+- **A size that cannot vary:** a `requires` fixes the width (`2012_399`), or
   the code reads fixed positions (`171_82`, `89_463`, `525_273`, `396_361`).
 - **A constant loop bound:** `531_3456`, `531_3499` (`while i < 5`), `514_39`
   (31). Labelled `O(n)` or worse; really O(1).

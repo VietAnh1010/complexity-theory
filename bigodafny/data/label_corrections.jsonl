@@ -1,3 +1,5 @@
 {"bigobench": "O(n)", "bound": "4 * ISqrt(2 * n) + |output| + 1", "date": "2026-10-20", "label": "O(sqrt(n))", "proof": "solutions-proved/5/5_100.dfy", "solution_id": "5_100"}
 {"bigobench": "O(n)", "bound": "12 * CSqrt(n)", "date": "2026-10-20", "label": "O(sqrt(n))", "proof": "solutions-proved/1011/1011_368.dfy", "solution_id": "1011_368"}
 {"bigobench": "O(n)", "bound": "10 * Isqrt(n) + 30", "date": "2026-10-20", "label": "O(sqrt(n))", "proof": "solutions-proved/2913/2913_484.dfy", "solution_id": "2913_484"}
+{"bigobench": "O(nlogn)", "bound": "6 * n + 2 * SortCost(26) + 600", "date": "2026-10-22", "label": "O(n)", "proof": "solutions-proved/1830/1830_0.dfy", "solution_id": "1830_0"}
+{"bigobench": "O(n*m)", "bound": "27 * |abc_list| + 4 * |output| + 1", "date": "2026-10-22", "label": "O(n)", "proof": "solutions-proved/276/276_1206.dfy", "solution_id": "276_1206"}

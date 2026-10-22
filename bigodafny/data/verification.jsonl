@@ -19,6 +19,7 @@
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/241/241_101.dfy", "solution_id": "241_101", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/241/241_47.dfy", "solution_id": "241_47", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/271/271_58.dfy", "solution_id": "271_58", "termination_opt_out": false, "verified": true}
+{"detail": "", "error_count": 0, "kind": null, "path": "solutions/276/276_1206.dfy", "solution_id": "276_1206", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/276/276_610.dfy", "solution_id": "276_610", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/307/307_116.dfy", "solution_id": "307_116", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/307/307_14.dfy", "solution_id": "307_14", "termination_opt_out": false, "verified": true}
@@ -168,6 +169,7 @@
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1765/1765_73.dfy", "solution_id": "1765_73", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1820/1820_180.dfy", "solution_id": "1820_180", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1827/1827_66.dfy", "solution_id": "1827_66", "termination_opt_out": false, "verified": true}
+{"detail": "", "error_count": 0, "kind": null, "path": "solutions/1830/1830_0.dfy", "solution_id": "1830_0", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1830/1830_16.dfy", "solution_id": "1830_16", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1855/1855_33.dfy", "solution_id": "1855_33", "termination_opt_out": false, "verified": true}
 {"detail": "", "error_count": 0, "kind": null, "path": "solutions/1857/1857_103.dfy", "solution_id": "1857_103", "termination_opt_out": false, "verified": true}

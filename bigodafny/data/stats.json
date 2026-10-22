@@ -1,12 +1,12 @@
 {
-  "complexity_proved": 321,
+  "complexity_proved": 323,
   "dafny_status": {
     "agrees": 94,
     "untranslated": 10,
     "valid": 536
   },
   "dafny_version": "4.11.0",
-  "labels_corrected": 3,
+  "labels_corrected": 5,
   "problems": 311,
   "problems_per_split": {
     "loose": 58,

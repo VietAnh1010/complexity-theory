@@ -8,6 +8,13 @@ change lands, update them and add a bullet here.
 A campaign's own run record stays in `batches/<campaign>/README.md`. Superseded
 data lines go to `old-record.jsonl` beside the file they came from.
 
+## 2026-10-22
+
+- `1830_0` (O(nlogn)) and `276_1206` (O(n*m)) are proved O(n) in `solutions-proved/`, corrected
+  to `O(n)` in `data/label_corrections.jsonl`, and moved from `solutions-disputed/` to
+  `solutions/` through `batches/labelaudit/verdicts_proved_20261022.jsonl`. `1830_0` sorts two
+  26-element lists; `276_1206` reads 3-element rows. Blind `fuzzing/` agents named O(n) for both.
+
 ## 2026-10-20
 
 - The prelude has `ISqrt(x)` (floor square root, recursing on `x / 4`) with

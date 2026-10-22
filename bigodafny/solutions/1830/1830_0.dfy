@@ -1,37 +1,6 @@
-// LABEL AUDIT -- queued for manual review, not a decision.
-//
-//   stated label   : O(nlogn)
-//   audited class  : O(n)
-//   cause          : label
-//   confidence     : high
-//   auditor        : labelaudit-r3d-05
-//
-//   The PYTHON is not the labelled class either. BigOBench's label looks
-//   wrong; the translation is faithful to it.
-//
-//   evidence:
-//     The only n-dependent work is the while idx < n loop with O(1)
-//     updates; SortInts(st) and SortInts(ed) act on 26-element sequences
-//     and the merging loop is bounded by 26. The Python likewise sorts two
-//     26-element lists, so its cost is O(n) as well and the label is
-//     wrong.
-//
-//   how this label could be wrong, and what to check:
-//     The label assumes a sort over n elements. Check the SortInts calls:
-//     they sort st and ed, both seq(26, ...) of fixed length 26, so the
-//     sort is a constant; only the loop over n guests is data-sized.
-//
-//   structural facts (deterministic, from label_audit.py):
-//     {"body_lines": 62, "data_dependent_loops": 0, "decreases_star":
-//     false, "linear_prelude_calls": [], "loop_depth": 1, "loops": 3,
-//     "recursive_helpers": 0, "seq_append_read_in_same_loop": false,
-//     "seq_args": 1, "seq_update_in_loop": true, "set_build_in_loop":
-//     false, "sorts": ["SortInts"], "uses_map": false, "uses_multiset":
-//     false, "uses_set": false}
-// --------------------------------------------------------------------
-
 // 834_B. The Festive Evening  (problem 1830, solution 1830_0)
-// time complexity: O(nlogn)
+// time complexity: O(n)
+// label corrected 2026-10-22: BigOBench says O(nlogn); solutions-proved/1830/1830_0.dfy bounds steps by 6 * n + 2 * SortCost(26) + 600
 // python exact-diff baseline: exact
 //
 // Reproduce the Python program's entire stdout in `output`.
