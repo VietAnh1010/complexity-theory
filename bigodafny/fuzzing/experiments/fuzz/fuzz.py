@@ -1,6 +1,6 @@
 """The `blind-guess` agent's `fuzz` command: the only command `guard.py` lets its Bash run.
 
-    .venv/bin/python3 experiments/fuzz/fuzz.py DFY GEN [--per N]
+    .venv/bin/python3 experiments/fuzz/fuzz.py DFY GEN [--per N] [--bound E]
 
 runs a row's step counter on inputs from the agent's generator and prints one
 table. The row's SID is the name of the directory holding DFY. `guard.py`
@@ -21,14 +21,15 @@ traced, so the batch itself runs untraced.
 `gen.py` runs in a child process (`fuzz.py --gen GEN PER`), so nothing it
 prints reaches the table.
 
-Call k (from 1) writes `attempts/<k>/table.txt` beside DFY: DFY's name, the
-attempt whose `gen.py` ran, then what the call printed. It copies GEN to
-`attempts/<k>/gen.py` only if GEN differs from the latest copy. A DFY other
-than `row.dfy` is deleted after the run; its diff from `row.dfy` goes in the
-table instead.
+`--bound E` runs a copy of DFY with `ensures steps <= E` added to Solve, so the
+table also shows E and steps / E. The copy lies beside DFY while it runs.
+
+Call k (from 1) writes `attempts/<k>/table.txt` beside DFY: DFY's name, E if
+given, the attempt whose `gen.py` ran, then what the call printed. It copies
+GEN to `attempts/<k>/gen.py` only if GEN differs from the latest copy.
 """
 from __future__ import annotations
-import argparse, difflib, json, random, runpy, subprocess, sys
+import argparse, json, random, re, runpy, subprocess, sys
 from collections import Counter
 from pathlib import Path
 
@@ -129,31 +130,33 @@ def main():
     ap.add_argument("dfy", help="absolute path of the .dfy file")
     ap.add_argument("gen", help="absolute path of gen.py")
     ap.add_argument("--per", type=int, default=3, help="inputs per family and grid point")
+    ap.add_argument("--bound", help="E: run DFY with `ensures steps <= E` added to Solve")
     a = ap.parse_args()
     dfy = Path(a.dfy)
     d = dfy.parent
     k = len(list(d.glob("attempts/*"))) + 1
     log = d / "attempts" / str(k)
     log.mkdir(parents=True)
-    head = [f"dfy: {dfy.name}"]
-    round_ = dfy.name != "row.dfy" and dfy.exists()
-    if round_:
-        head += [l.rstrip("\n") for l in difflib.unified_diff(
-            (d / "row.dfy").read_text().splitlines(True), dfy.read_text().splitlines(True),
-            "row.dfy", dfy.name, n=0)]
+    head = [f"dfy: {dfy.name}"] + ([f"bound: {a.bound}"] if a.bound else [])
+    run = d / f".bound-{k}.dfy" if a.bound else dfy
     try:
+        if a.bound:
+            text = dfy.read_text()
+            if not (m := re.search(r"method Solve\b.*?ghost steps: nat\)", text, re.S)):
+                raise ValueError(f"{dfy.name} has no `method Solve ... ghost steps: nat)`")
+            run.write_text(text[:m.end()] + f"\n  ensures steps <= {a.bound}" + text[m.end():])
         text = Path(a.gen).read_text()
         prev = max((int(p.parent.name) for p in d.glob("attempts/*/gen.py")), default=None)
         if prev is None or (d / "attempts" / str(prev) / "gen.py").read_text() != text:
             prev = k
             (log / "gen.py").write_text(text)
         head.append(f"gen: attempts/{prev}/gen.py")
-        out, failed = fuzz(a.dfy, a.gen, a.per), False
+        out, failed = fuzz(str(run), a.gen, a.per), False
     except Exception as e:
         out, failed = f"{type(e).__name__}: {e}", True
     (log / "table.txt").write_text("\n".join(head) + f"\n{out}\n")
-    if round_:
-        dfy.unlink()
+    if a.bound:
+        run.unlink(missing_ok=True)
     if failed:
         sys.exit(out)
     print(out)

@@ -57,13 +57,12 @@ in a `fuzz` row):
 ```
 
 A `fuzz` row also holds `gen.py` and, for `fuzz` call k, `attempts/<k>/table.txt`: the `.dfy` it
-ran, the attempt whose `gen.py` it ran, then its table. `attempts/<k>/gen.py` exists only when
-`gen.py` changed since the latest copy. For a `round-k.dfy` the agent wrote to test a bound,
-`table.txt` holds its diff from `row.dfy`, and `fuzz` deletes the file.
+ran, the bound E of `--bound 'E'` if given, the attempt whose `gen.py` it ran, then its table.
+`attempts/<k>/gen.py` exists only when `gen.py` changed since the latest copy.
 
 `runs/<run>/summary.jsonl` has one line per row: `sid`, `mode`, `label` (BigOBench's, added at
 grading), the fields of `answer.json`, `match` (`class` equals `label` as a string), and `leaks`;
-a `fuzz` row adds `fuzz_calls`, `bound_tests` (calls on a file other than `row.dfy`) and
+a `fuzz` row adds `fuzz_calls`, `bound_tests` (calls with `--bound`) and
 `gen_versions`, counted from `attempts/`. `leaks` lists the guard's denials for the
 row, and an `answer.json` still broken after 3 blocked stops; a nonempty list voids the row. Nothing checks what `gen.py` does: `BRIEF.md` only tells
 the agent to make `gen.py` build input text and nothing else. `runs/<run>/README.md` is one

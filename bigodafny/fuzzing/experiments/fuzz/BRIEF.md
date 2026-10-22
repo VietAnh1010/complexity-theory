@@ -42,7 +42,7 @@ Work from the code alone.
 You can run the program with `fuzz`, one Bash command, typed exactly so:
 
 ```
-{{FUZZ}} {{DIR}}/FILE.dfy {{DIR}}/gen.py [--per N]
+{{FUZZ}} {{DIR}}/row.dfy {{DIR}}/gen.py [--per N] [--bound 'E']
 ```
 
 Bash runs this command and nothing else. Give the Bash call `timeout: 600000`, and do not run it
@@ -57,8 +57,9 @@ FAMILIES = {"random": f, ...}           # f(rng, **sizes) -> input text, as on s
 Stay inside the statement's limits: `fuzz` checks them only for some problems, and counts an
 input it rejects as `out-of-spec`. `fuzz` on `row.dfy` and `gen.py` prints, per grid row, the
 costliest input's `steps` and how often the busiest loops ran. To test a candidate bound E,
-copy `row.dfy` to `round-k.dfy`, add `ensures steps <= E` to `Solve`, and run
-`fuzz` on `round-k.dfy`: it also shows E and `steps / E`, then deletes `round-k.dfy`. A ratio that falls as sizes grow
+add `--bound 'E'`, with E a Dafny expression over `Solve`'s parameters in single quotes
+(`--bound '4 * |a_list| * |a_list| + 100'`): `fuzz` adds `ensures steps <= E` to `Solve` and also
+shows E and `steps / E`. A ratio that falls as sizes grow
 means E is a looser class than the code; a flat ratio means the class fits; `BOUND BROKEN`
 means E is too low. Write families for the inputs you think cost most, not only random ones.
 Run `fuzz` at least once and at most 3 times, and base your answer on what it shows as well as on the code.

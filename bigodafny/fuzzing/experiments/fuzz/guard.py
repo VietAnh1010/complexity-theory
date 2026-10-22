@@ -7,8 +7,8 @@ The hook runs only for that agent type, so it checks every call it sees.
 without it every call is denied.
 
 - Only the tools in `PATHS` are allowed; web tools and Agent are denied.
-- Bash runs one command only, `CMD DFY GEN [--per N]` (`fuzz.py` under the
-  venv's Python), in the foreground; it is denied in a `code` mode row.
+- Bash runs one command only, `CMD DFY GEN [--per N] [--bound 'E']` (`fuzz.py`
+  under the venv's Python), in the foreground; it is denied in a `code` mode row.
 - Every path a call names must lie in one row directory (one holding
   `BRIEF.md`) under the stage root. Each agent is locked to the first row it
   touches, so agents in one root cannot read each other's work. Read and
@@ -27,7 +27,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 MARKER = HERE / "guard-path"                                           # written by blind.py setup
 CMD = f"{HERE.parents[2] / '.venv' / 'bin' / 'python3'} {HERE / 'fuzz.py'}"     # BRIEF.md's {{FUZZ}}
-FUZZ = re.compile(re.escape(CMD) + r" (?P<dfy>[\w./-]+\.dfy) (?P<gen>[\w./-]+/gen\.py)( --per \d+)?")
+FUZZ = re.compile(re.escape(CMD) + r" (?P<dfy>[\w./-]+\.dfy) (?P<gen>[\w./-]+/gen\.py)"
+                  r"(?: --per \d+| --bound '[^'\n]*'){0,2}")
 PATHS = {"Read": ["file_path"], "Write": ["file_path"], "Edit": ["file_path"],     # tool -> path arguments
          "Glob": ["path"], "Grep": ["path"], "Bash": ["dfy", "gen"],   # Bash: FUZZ's groups
          "SubagentHandback": []}                            # returns the agent's report
@@ -70,7 +71,7 @@ def verdict(tool, args, root, agent):
         if args.get("run_in_background"):
             return "run fuzz in the foreground"
         if not (m := FUZZ.fullmatch(args.get("command", "").strip())):
-            return f"Bash runs only `{CMD} DFY GEN [--per N]`"
+            return f"Bash runs only `{CMD} DFY GEN [--per N] [--bound 'E']`"
         args = m.groupdict()
     for key in PATHS[tool]:
         if key not in args:

@@ -66,10 +66,10 @@ def grade(d, label, guard):
     except (OSError, json.JSONDecodeError) as e:
         answer = {"class": None, "error": f"answer.json: {e}"}
     leaks = [l for l in guard if f"/{d.parent.name}/{d.name}" in l]
-    dfys = [t.read_text().split("\n", 1)[0] for t in d.glob("attempts/*/table.txt")]
+    heads = [t.read_text().splitlines()[:2] for t in d.glob("attempts/*/table.txt")]
     return {"sid": d.name, "mode": d.parent.name, "label": label, **answer,
             "match": answer.get("class") == label, "leaks": leaks,
-            **({"fuzz_calls": len(dfys), "bound_tests": sum(x != "dfy: row.dfy" for x in dfys),
+            **({"fuzz_calls": len(heads), "bound_tests": sum(h[-1].startswith("bound: ") for h in heads),
                 "gen_versions": len(list(d.glob("attempts/*/gen.py")))} if d.parent.name == "fuzz" else {})}
 
 
