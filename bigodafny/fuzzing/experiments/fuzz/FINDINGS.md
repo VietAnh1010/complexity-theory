@@ -2,6 +2,26 @@
 
 Findings of the blind runs, newest first, one section per session.
 
+## 2026-10-22: hard rows, with `skipped` and `attempts/`
+
+Batch `20261022-1327`, seed 20261022, both modes, 3 agents at a time. 3 rows from
+`solutions-disputed/` (cause `label`, confidence high) whose audited class differs from the label:
+`2610_1259 1830_0 276_1206`. 3 rows from `solutions/` with uncommon labels: `101_10 945_255
+1243_178`.
+
+- Code and fuzz mode gave the same class on all 6 rows.
+- On the 3 disputed rows both modes gave the audited class, not the label: `2610_1259` O(n**2),
+  `1830_0` O(n), `276_1206` O(n).
+- `945_255` matched its label O(logn). `101_10` (O(nlogn), k <= n) and `1243_178` (O(n),
+  |s1| = |s2|) stated the bound that the label's second measure collapses to.
+- Every fuzz agent ran `fuzz` once on `row.dfy`, wrote one `gen.py` and tested no bound.
+- Every `skipped` names the bound test and gives the table as the reason: "the doubling ratio
+  (about 3.9-4.0x per doubling) over 5 sizes already shows a quadratic fit" (`2610_1259`).
+- `276_1206`: 15 of 48 inputs timed out (family `big` at n = 20000), so the last table row shows
+  family `small`. The agent answered from the other rows. Its row took 212 s; the others 23-45 s.
+- Code rows took 9-18 s. `guard.log` stayed empty.
+- `match` compares with the BigOBench label, so it marks the 3 audited-class answers wrong.
+
 ## 2026-10-22: `fuzz` as a script, live
 
 Batch `20261022-1236`: 4 `20261021-1804` rows in fuzz mode, 3 agents at a time: `241_101 2282_16 2281_112 209_103`.
