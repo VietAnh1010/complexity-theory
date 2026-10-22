@@ -2,6 +2,19 @@
 
 Findings of the blind runs, newest first, one section per session.
 
+## 2026-10-22: fabricated rows
+
+Batch `20261022-1342`: 2 fabricated rows, both modes. Each borrows a real row's stdin parser
+(`2281_112`, `71_217`) and has its own `Solve` and statement; `blind.py grade` does not apply,
+since it reads the host's label.
+
+- F1, prefix sums at power-of-two positions: looks quadratic, is O(n). Both modes: O(n).
+- F2, prefix sums at each new prefix maximum: random inputs give about n log n, increasing
+  inputs n**2. Both modes: O(n**2).
+- The F2 fuzz agent wrote an `increasing` family; the F1 fuzz agent sized n just above a power of
+  two. Both ran `fuzz` once and tested no bound.
+- Neither row misled a code-only agent: it read the geometric sum and the records worst case.
+
 ## 2026-10-22: hard rows, with `skipped` and `attempts/`
 
 Batch `20261022-1327`, seed 20261022, both modes, 3 agents at a time. 3 rows from
