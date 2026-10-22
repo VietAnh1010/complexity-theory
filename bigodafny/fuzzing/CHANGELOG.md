@@ -6,6 +6,9 @@ per change. Earlier changes are in `git log -- bigodafny/fuzzing`. Findings go i
 
 ## 2026-10-22
 
+- A `fuzz` row's `answer.json` has `skipped`: each step the agent chose not to take, and why;
+  `guard.py` requires it there. `grade` adds `fuzz_calls`, `bound_tests` and `gen_versions` from `attempts/`, and
+  a fuzz calls column to the run table.
 - `fuzz.py` call k writes `attempts/<k>/table.txt` in the row directory: the `.dfy` it ran, the
   attempt whose `gen.py` it ran, then its table. It copies `gen.py` there only when changed. A
   `round-k.dfy` goes in the table as a diff from `row.dfy` and is deleted. `grade` copies

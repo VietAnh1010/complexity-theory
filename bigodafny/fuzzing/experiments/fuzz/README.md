@@ -41,7 +41,8 @@ From `bigodafny/fuzzing`. `--dir` must lie outside the repository. Name a batch 
 
 ## Outputs
 
-Each row directory holds the files `setup` wrote and the agent's `answer.json`:
+Each row directory holds the files `setup` wrote and the agent's `answer.json` (`skipped` only
+in a `fuzz` row):
 
 ```json
 {
@@ -50,7 +51,8 @@ Each row directory holds the files `setup` wrote and the agent's `answer.json`:
   "worst_case": "...",
   "example": "RYBG!!!!\n",
   "reasoning": "...",
-  "confidence": "medium"
+  "confidence": "medium",
+  "skipped": "did not test a bound: the sort fixes O(nlogn)"
 }
 ```
 
@@ -60,7 +62,9 @@ ran, the attempt whose `gen.py` it ran, then its table. `attempts/<k>/gen.py` ex
 `table.txt` holds its diff from `row.dfy`, and `fuzz` deletes the file.
 
 `runs/<run>/summary.jsonl` has one line per row: `sid`, `mode`, `label` (BigOBench's, added at
-grading), the fields of `answer.json`, `match` (`class` equals `label` as a string), and `leaks`. `leaks` lists the guard's denials for the
+grading), the fields of `answer.json`, `match` (`class` equals `label` as a string), and `leaks`;
+a `fuzz` row adds `fuzz_calls`, `bound_tests` (calls on a file other than `row.dfy`) and
+`gen_versions`, counted from `attempts/`. `leaks` lists the guard's denials for the
 row, and an `answer.json` still broken after 3 blocked stops; a nonempty list voids the row. Nothing checks what `gen.py` does: `BRIEF.md` only tells
 the agent to make `gen.py` build input text and nothing else. `runs/<run>/README.md` is one
-table: label, code mode, fuzz mode; `✓` marks a class equal to the label.
+table: label, code mode, fuzz mode, fuzz calls; `✓` marks a class equal to the label.

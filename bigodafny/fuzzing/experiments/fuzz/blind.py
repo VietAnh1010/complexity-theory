@@ -66,8 +66,11 @@ def grade(d, label, guard):
     except (OSError, json.JSONDecodeError) as e:
         answer = {"class": None, "error": f"answer.json: {e}"}
     leaks = [l for l in guard if f"/{d.parent.name}/{d.name}" in l]
+    dfys = [t.read_text().split("\n", 1)[0] for t in d.glob("attempts/*/table.txt")]
     return {"sid": d.name, "mode": d.parent.name, "label": label, **answer,
-            "match": answer.get("class") == label, "leaks": leaks}
+            "match": answer.get("class") == label, "leaks": leaks,
+            **({"fuzz_calls": len(dfys), "bound_tests": sum(x != "dfy: row.dfy" for x in dfys),
+                "gen_versions": len(list(d.glob("attempts/*/gen.py")))} if d.parent.name == "fuzz" else {})}
 
 
 def main(argv=None):
@@ -104,13 +107,15 @@ def main(argv=None):
                     ignore=shutil.ignore_patterns(".locks"))
     write_jsonl(dest / "summary.jsonl", rows)
     by = {(r["sid"], r["mode"]): r for r in rows}
-    lines = ["| row | label | code | fuzz |", "|---|---|---|---|"]
+    lines = ["| row | label | code | fuzz | fuzz calls |", "|---|---|---|---|---|"]
     for sid in dict.fromkeys(r["sid"] for r in rows):
         cells = []
         for mode in MODES:
             r = by.get((sid, mode))
             cells.append("-" if r is None or r["class"] is None else
                          r["class"] + (" ✓" if r["match"] else "") + (" (void)" if r["leaks"] else ""))
+        f = by.get((sid, "fuzz"))
+        cells.append("-" if f is None else f"{f['fuzz_calls']} ({f['bound_tests']} bound)")
         lines.append(f"| `{sid}` | {tasks[sid]['time_complexity_inferred']} | " + " | ".join(cells) + " |")
     lines += ["", "✓: the class equals the label."]
     if any(r["leaks"] for r in rows):

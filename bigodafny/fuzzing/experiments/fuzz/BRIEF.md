@@ -80,6 +80,13 @@ Write `answer.json`:
 }
 ```
 
+<!-- fuzz -->
+
+Also add `"skipped"`: each step you chose not to take, and why (`"did not test a bound: the
+sort fixes O(nlogn)"`), or `"none"`.
+
+<!-- /fuzz -->
+
 Write `class` in this form, with no spaces: `O(1)`, `O(logn)`, `O(n)`, `O(nlogn)`,
 `O(n**2)`, `O(n*m)`, `O(n+mlogm)`. Powers take `**`, products `*`, and `log` follows its
 factor with no `*` or brackets. Call the main measure `n` and a second one `m`, and define

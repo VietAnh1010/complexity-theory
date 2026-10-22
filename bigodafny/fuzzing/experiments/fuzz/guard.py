@@ -16,8 +16,8 @@ without it every call is denied.
 
 A denial is logged to `<stage root>/guard.log` and voids that row's result.
 
-On Stop, the agent's `answer.json` must hold every key of `BRIEF.md`'s example,
-with `class` in its form. Else the stop is blocked and the agent told why, at
+On Stop, the agent's `answer.json` must hold every key of `BRIEF.md`'s example
+(and `skipped` in a `fuzz` row), with `class` in its form. Else the stop is blocked and the agent told why, at
 most `TRIES` times; then the hook fails, and logs the row void.
 """
 from __future__ import annotations
@@ -95,7 +95,8 @@ def answer_error(row):
         a = json.loads((row / "answer.json").read_text())
     except (OSError, json.JSONDecodeError) as e:
         return f"answer.json: {e}"
-    if missing := [k for k in KEYS if not isinstance(a, dict) or not str(a.get(k) or "").strip()]:
+    keys = KEYS + ("skipped",) * (row.parent.name == "fuzz")
+    if missing := [k for k in keys if not isinstance(a, dict) or not str(a.get(k) or "").strip()]:
         return f"answer.json lacks {', '.join(missing)}"
     if not CLASS.fullmatch(a["class"]):
         return f"class {a['class']!r} is not in the form BRIEF.md gives"
