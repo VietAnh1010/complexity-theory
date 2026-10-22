@@ -7,7 +7,8 @@
 `guard.py` reads it. DIR must lie outside the repository. Each row gets
 `annotate`'s output as `row.dfy` (no label), the prelude and `BRIEF.md`, which
 ends with the problem statement. The mode only picks the blocks of `BRIEF.md`;
-`guard.py` denies the `fuzz` tool in `code` mode. A file naming the label aborts.
+`guard.py` denies Bash, which runs only `fuzz.py`, in `code` mode. A file naming the
+label aborts.
 
 `grade` copies DIR to OUT and writes there `summary.jsonl`, one line per row,
 and `README.md`, one table.
@@ -20,6 +21,7 @@ HERE = Path(__file__).resolve().parent
 FUZZING = HERE.parents[1]
 sys.path.insert(0, str(FUZZING.parent))
 from common import DATA, PRELUDE, read_jsonl, write_jsonl            # noqa: E402
+from guard import CMD                                                 # noqa: E402
 
 MARKER = HERE / "guard-path"                                           # read by guard.py
 TOOL = FUZZING / "DafnySteps" / "bin" / "Release" / "net10.0" / "DafnySteps"
@@ -49,8 +51,8 @@ def setup(d, sid, task, mode):
     brief = re.sub(r"<!-- (\w+) -->\n(.*?)<!-- /\1 -->\n", lambda m: m[2] if m[1] == mode else "",
                    (HERE / "BRIEF.md").read_text(), flags=re.S)
     brief = re.sub(r"\n{3,}", "\n\n", brief)
-    (d / "BRIEF.md").write_text(brief.replace("{{DIR}}", str(d)).replace("{{STATEMENT}}", task["description"]),
-                                encoding="utf-8")
+    (d / "BRIEF.md").write_text(brief.replace("{{DIR}}", str(d)).replace("{{FUZZ}}", CMD)
+                                .replace("{{STATEMENT}}", task["description"]), encoding="utf-8")
 
     label = task["time_complexity_inferred"]
     for f, text in (("row.dfy", (d / "row.dfy").read_text()), ("statement", task["description"])):
@@ -73,7 +75,7 @@ def main(argv=None):
     sub = ap.add_subparsers(dest="cmd", required=True)
     s = sub.add_parser("setup", help="set up rows for agents")
     s.add_argument("--dir", required=True, type=Path, help="where to write the rows; outside the repository")
-    s.add_argument("--mode", required=True, choices=MODES, help="code: read only; fuzz: also the fuzz tool")
+    s.add_argument("--mode", required=True, choices=MODES, help="code: read only; fuzz: also fuzz.py")
     s.add_argument("sids", nargs="+", metavar="SID")
     g = sub.add_parser("grade", help="collect answers, add labels, copy DIR to OUT")
     g.add_argument("--dir", required=True, type=Path, help="the directory setup wrote")

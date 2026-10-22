@@ -6,11 +6,12 @@ The hook runs only for that agent type, so it checks every call it sees.
 `guard-path`, beside this file, holds the stage root (`blind.py setup` writes it);
 without it every call is denied.
 
-- Only the tools in `PATHS` are allowed; Bash, web tools and Agent are denied.
+- Only the tools in `PATHS` are allowed; web tools and Agent are denied.
+- Bash runs one command only, `CMD DFY GEN [--per N]` (`fuzz.py` under the
+  venv's Python), in the foreground; it is denied in a `code` mode row.
 - Every path a call names must lie in one row directory (one holding
   `BRIEF.md`) under the stage root. Each agent is locked to the first row it
   touches, so agents in one root cannot read each other's work.
-- `fuzz` (`fuzz_mcp.py`) is denied in a `code` mode row.
 
 A denial is logged to `<stage root>/guard.log` and voids that row's result.
 
@@ -22,11 +23,12 @@ from __future__ import annotations
 import json, re, sys, time
 from pathlib import Path
 
-MARKER = Path(__file__).resolve().parent / "guard-path"                # written by blind.py setup
-FUZZ = "mcp__fuzz__fuzz"
+HERE = Path(__file__).resolve().parent
+MARKER = HERE / "guard-path"                                           # written by blind.py setup
+CMD = f"{HERE.parents[2] / '.venv' / 'bin' / 'python3'} {HERE / 'fuzz.py'}"     # BRIEF.md's {{FUZZ}}
+FUZZ = re.compile(re.escape(CMD) + r" (?P<dfy>[\w./-]+\.dfy) (?P<gen>[\w./-]+/gen\.py)( --per \d+)?")
 PATHS = {"Read": ["file_path"], "Write": ["file_path"], "Edit": ["file_path"],     # tool -> path arguments
-         "Glob": ["path"], "Grep": ["path"], FUZZ: ["dfy", "gen"],
-         "ToolSearch": [],                                  # loads the fuzz tool's schema
+         "Glob": ["path"], "Grep": ["path"], "Bash": ["dfy", "gen"],   # Bash: FUZZ's groups
          "SubagentHandback": []}                            # returns the agent's report
 KEYS = ("class", "measures", "worst_case", "example", "reasoning", "confidence")
 CLASS = re.compile(r"O\([0-9a-z+*()]+\)")                             # BRIEF.md: O(nlogn), O(n**2), ...
@@ -63,6 +65,12 @@ def verdict(tool, args, root, agent):
         return f"{tool} is not available"
     if tool == "Glob" and (args.get("pattern", "").startswith("/") or ".." in args.get("pattern", "")):
         return "give a pattern relative to `path`"
+    if tool == "Bash":
+        if args.get("run_in_background"):
+            return "run fuzz in the foreground"
+        if not (m := FUZZ.fullmatch(args.get("command", "").strip())):
+            return f"Bash runs only `{CMD} DFY GEN [--per N]`"
+        args = m.groupdict()
     for key in PATHS[tool]:
         if key not in args:
             return f"give `{key}` under your directory"
@@ -71,8 +79,8 @@ def verdict(tool, args, root, agent):
         row = row_of(args[key], root)
         if why := locked(agent, row, root):
             return why
-        if tool == FUZZ and row.parent.name == "code":
-            return "this mode has no fuzz tool"
+        if tool == "Bash" and row.parent.name == "code":
+            return "this mode has no Bash"
     return None
 
 

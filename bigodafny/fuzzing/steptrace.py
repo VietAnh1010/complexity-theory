@@ -58,7 +58,7 @@ def build(sid, trace=None, dfy=None):
     `trace`: None, "" (every point) or "LINE,..". -> (pydir, points, has_contracts, notes)."""
     other = dfy is not None
     dfy = Path(dfy) if other else find_proof(sid)
-    work = BUILD / f"trace_{sid}{'' if trace is None else '_t'}{'_file' if other else ''}"
+    work = BUILD / f"trace_{sid}{'' if trace is None else '_t'}{'_file_' + dfy.stem if other else ''}"
     work.mkdir(parents=True, exist_ok=True)
     points_path = work / "points.json"
     notes = []

@@ -3,7 +3,7 @@
 ## Purpose
 
 A `blind-guess` agent names the tightest complexity class of one row's `Solve` without seeing
-the row's label. The `code` mode reads the code only; the `fuzz` mode can also call the `fuzz` tool.
+the row's label. The `code` mode reads the code only; the `fuzz` mode can also run `fuzz.py`.
 `FINDINGS.md` holds the results so far.
 
 ## Files
@@ -12,9 +12,9 @@ the row's label. The `code` mode reads the code only; the `fuzz` mode can also c
 | ------------- | --------------------------------------------------------------------------------------- |
 | `blind.py`    | `setup` sets up rows for the agents; `grade` collects their answers and adds the labels |
 | `BRIEF.md`    | the agent's task; `setup` keeps only the blocks marked for the row's mode               |
-| `guard.py`    | the agent's hook: confines it to its row directory, blocks its stop until `answer.json` is complete, and logs each denial to `guard.log` |
+| `guard.py`    | the agent's hook: confines it to its row directory, lets Bash run only `fuzz.py`, blocks its stop until `answer.json` is complete, and logs each denial to `guard.log` |
 | `guard-path`  | written by `setup`: the `--dir` that `guard.py` confines agents to (git-ignored)        |
-| `fuzz_mcp.py` | the agent's `fuzz` tool, an MCP server the agent file starts: runs `gen.py`'s inputs on the row, returns one table of `steps` |
+| `fuzz.py`     | the agent's `fuzz` command: runs `gen.py`'s inputs on the row, prints one table of `steps` |
 | `FINDINGS.md` | results of the runs of 2026-10-20                                                       |
 
 ## Run

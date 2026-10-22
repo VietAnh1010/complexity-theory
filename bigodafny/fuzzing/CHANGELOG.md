@@ -4,6 +4,18 @@ What changed in `fuzzing/`, newest first, one dated section per session and one 
 per change. Earlier changes are in `git log -- bigodafny/fuzzing`. Findings go in
 `experiments/fuzz/FINDINGS.md`, open work in `TODO-fuzzing.md`.
 
+## 2026-10-22
+
+- `fuzz` is a script again: `fuzz_mcp.py` is `fuzz.py DFY GEN [--per N]`, which prints the table.
+  `blind-guess.md` starts no MCP server, so concurrent agents share nothing.
+- `blind-guess` has Bash. `guard.py` allows one command, `CMD DFY GEN [--per N]`, where `CMD`
+  is the venv's Python and the path of `fuzz.py`. Both files must be in the agent's own row,
+  and the call must not run in the background. Bash is denied in `code` mode.
+- `setup` writes `CMD` into `BRIEF.md` (`{{FUZZ}}`). `BRIEF.md` gives the command and a Bash
+  timeout of 600 s.
+- `steptrace.build` names a file's build directory by the file's name too, so `row.dfy` and
+  `round-k.dfy` of one row can build at the same time.
+
 ## 2026-10-21
 
 - The blind experiment only guesses the class; the prove brief, `GUESS.md` and `CLOUD.md`

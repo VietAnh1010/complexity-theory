@@ -69,7 +69,7 @@ changes go in `fuzzing/CHANGELOG.md`.
       hit: `--trace` costs one Python call pair per event (`5_100`: 1.2 s
       untraced, 9.1 s traced, 14M events). A compiled stride was rejected as
       too complicated.
-- [x] `experiments/fuzz/fuzz_mcp.py` (`fuzz` tool): runs a generator's inputs (`GRID`, `FAMILIES`)
+- [x] `experiments/fuzz/fuzz.py` (`fuzz`): runs a generator's inputs (`GRID`, `FAMILIES`)
       untraced; per grid point, the costliest input's steps, bound,
       steps / bound, and loop-head hits from a loops-only rerun
 - [x] Blind runs: `experiments/fuzz/blind.py` stages rows outside the repo;
@@ -85,8 +85,9 @@ changes go in `fuzzing/CHANGELOG.md`.
       runs out-of-spec inputs for the rest.
 - [ ] (2026-10-21) Concurrent `blind-guess` agents share one `fuzz` server; one agent ending
       closes it under another's call (`Connection closed`, `FINDINGS.md` batch `b10`).
-      Undecided: a retry rule in `BRIEF.md` (not robust), back to a script the agent
-      runs (needs Bash), or a Claude Code fix. Investigate before choosing.
+      (2026-10-22) `fuzz.py` is a script again; `guard.py` lets Bash run only it. Tested by
+      hand and with fake hook calls. Not yet tested live: a session loads `blind-guess.md`
+      at start, so rerun 4 `b10` fuzz rows, 3 at a time, in a new session.
 - [ ] (2026-10-21) `fuzz` compiles the row 3 times per call: untraced, all points (to
       find the loops), loops only.
 - [ ] (2026-10-21) `steptrace.py`: move `HARNESS` into its own file; drop `--log` and

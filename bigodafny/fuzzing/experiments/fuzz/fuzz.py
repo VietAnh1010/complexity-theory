@@ -1,8 +1,10 @@
-"""MCP server of the `blind-guess` agent (`.claude/agents/blind-guess.md`): one tool, `fuzz`.
+"""The `blind-guess` agent's `fuzz` command: the only command `guard.py` lets its Bash run.
 
-`fuzz(dfy, gen, per)` runs a row's step counter on inputs from the agent's
-generator and returns one table. The row's SID is the name of the directory
-holding `dfy`. `guard.py` checks the paths first. The generator defines
+    .venv/bin/python3 experiments/fuzz/fuzz.py DFY GEN [--per N]
+
+runs a row's step counter on inputs from the agent's generator and prints one
+table. The row's SID is the name of the directory holding DFY. `guard.py`
+checks the paths first. The generator defines
 
     GRID = [{"n": 8}, {"n": 16}, ...]      # input sizes, one dict per row of the table
     FAMILIES = {"random": f, ...}          # f(rng, **sizes) -> input text (stdin form)
@@ -16,13 +18,11 @@ the table shows the costliest input: its steps, the value of the bound
 most. Loop counts come from rerunning only that input with the loop heads
 traced, so the batch itself runs untraced.
 
-`gen.py` runs in a child process (`fuzz_mcp.py --gen GEN PER`), so nothing it
-prints reaches the protocol.
-
-The protocol is MCP over stdio: one JSON-RPC message per line.
+`gen.py` runs in a child process (`fuzz.py --gen GEN PER`), so nothing it
+prints reaches the table.
 """
 from __future__ import annotations
-import json, random, runpy, subprocess, sys
+import argparse, json, random, runpy, subprocess, sys
 from collections import Counter
 from pathlib import Path
 
@@ -32,19 +32,6 @@ from common import _in_spec
 
 TOP = 5                                  # loops shown
 TIMEOUT = 10                             # seconds per input
-TOOL = {
-    "name": "fuzz",
-    "description": "Run gen.py's inputs on a .dfy file in your row directory; return a table of steps.",
-    "inputSchema": {
-        "type": "object",
-        "properties": {
-            "dfy": {"type": "string", "description": "absolute path of the .dfy file"},
-            "gen": {"type": "string", "description": "absolute path of gen.py"},
-            "per": {"type": "integer", "description": "inputs per family and grid point (default 3)"},
-        },
-        "required": ["dfy", "gen"],
-    },
-}
 
 
 def generate(gen, per):
@@ -131,34 +118,16 @@ def fuzz(dfy, gen, per=3):
     return "\n".join(out)
 
 
-def answer(msg):
-    method = msg.get("method")
-    if method == "initialize":
-        return {"protocolVersion": msg["params"]["protocolVersion"],
-                "capabilities": {"tools": {}}, "serverInfo": {"name": "fuzz", "version": "1"}}
-    if method == "ping":
-        return {}
-    if method == "tools/list":
-        return {"tools": [TOOL]}
-    if method == "tools/call":
-        try:
-            text, failed = fuzz(**msg["params"]["arguments"]), False
-        except Exception as e:
-            text, failed = f"{type(e).__name__}: {e}", True
-        return {"content": [{"type": "text", "text": text}], "isError": failed}
-    return None
-
-
 def main():
-    for line in sys.stdin:
-        msg = json.loads(line)
-        if "id" not in msg:
-            continue                                  # a notification: no reply
-        result = answer(msg)
-        reply = ({"result": result} if result is not None
-                 else {"error": {"code": -32601, "message": f"no method {msg.get('method')}"}})
-        sys.stdout.write(json.dumps({"jsonrpc": "2.0", "id": msg["id"], **reply}) + "\n")
-        sys.stdout.flush()
+    ap = argparse.ArgumentParser(prog="fuzz.py")
+    ap.add_argument("dfy", help="absolute path of the .dfy file")
+    ap.add_argument("gen", help="absolute path of gen.py")
+    ap.add_argument("--per", type=int, default=3, help="inputs per family and grid point")
+    a = ap.parse_args()
+    try:
+        print(fuzz(a.dfy, a.gen, a.per))
+    except Exception as e:
+        sys.exit(f"{type(e).__name__}: {e}")
 
 
 if __name__ == "__main__":
