@@ -4,15 +4,18 @@ Findings of the blind runs, newest first, one section per session.
 
 ## 2026-10-22: `fuzz` as a script, live
 
-4 `b10` rows in fuzz mode, 3 agents at a time: `241_101 2282_16 2281_112 209_103`.
-Outputs: `experiments/fuzz/runs/live/` (git-ignored, local).
+Batch `20261022-1236`: 4 `20261021-1804` rows in fuzz mode, 3 agents at a time: `241_101 2282_16 2281_112 209_103`.
 
 - Every agent ran Bash `fuzz.py` once, with `timeout: 600000`, and got a table.
 - No `Connection closed`, although 2 agents ended while another's run was in flight.
 - `guard.log` stayed empty: no denials, no blocked stops.
 - No input failed `parse` or `out-of-spec`; `241_101` got step counts this time.
 - All 4 matched the label; `2282_16` named its measure `n` this time. Rows took 25-37 s.
-- No agent tested a candidate bound with `round-k.dfy`.
+- No agent tested a candidate bound with `round-k.dfy`, in this batch or in `20261021-1804`
+  (transcripts of all 14 fuzz agents: 1-2 `fuzz` calls each, all on `row.dfy`).
+- Agents fix the class from the code, then run `fuzz` once to meet the brief's minimum:
+  "Clearly O(n). Run fuzz once as required." (`2281_112`). `BRIEF.md` makes `round-k.dfy`
+  optional, and the table on `row.dfy` already settles these rows.
 
 ## 2026-10-21: pipeline review
 
@@ -31,11 +34,10 @@ No new runs; one test agent on `2072_40`. Changes are in `fuzzing/CHANGELOG.md`.
 - The Stop hook works live: a `blind-guess` agent told to stop on `{}` was blocked once,
   read `BRIEF.md`, and wrote a complete answer (`888_6`, code mode).
 
-### Batch `b10`
+### Batch `20261021-1804`
 
 10 random rows from `solutions/`, one per problem, seed 20261021, none used before:
 `2947_115 2282_16 307_14 1018_254 2281_112 241_101 209_103 493_134 499_359 187_762`.
-Outputs: `experiments/fuzz/runs/b10/` (git-ignored, local).
 
 - Code mode matched the label on 10 of 10; fuzz mode on 9. `2282_16` fuzz wrote `O(m**2)`, the
   right class with its measure named `m`.
@@ -46,8 +48,6 @@ Outputs: `experiments/fuzz/runs/b10/` (git-ignored, local).
   `parse`, and its retry was killed. `2281_112` lost 6 inputs to `parse` the same way.
 
 ## 2026-10-20: blind runs
-
-Outputs: `fuzzing/demo/blind/` (git-ignored, local).
 
 ### Loose proofs come from settling
 

@@ -6,6 +6,16 @@ per change. Earlier changes are in `git log -- bigodafny/fuzzing`. Findings go i
 
 ## 2026-10-22
 
+- `fuzz.py` call k writes `attempts/<k>/table.txt` in the row directory: the `.dfy` it ran, the
+  attempt whose `gen.py` it ran, then its table. It copies `gen.py` there only when changed. A
+  `round-k.dfy` goes in the table as a diff from `row.dfy` and is deleted. `grade` copies
+  `attempts/` with the row.
+- A batch is named by its setup time, `YYYYMMDD-HHMM` (`/tmp/fuzz-blind/20261022-1258`,
+  `runs/20261022-1258`). `runs/b10` is `runs/20261021-1804`; `runs/live` is `runs/20261022-1236`.
+- `setup` writes one `prelude.dfy` in `--dir`; each `row.dfy` includes `../../prelude.dfy`.
+  `guard.py` lets Read and Grep open it, and `BRIEF.md` gives its path (`{{PRELUDE}}`).
+- Where run outputs lie goes in `experiments/fuzz/FINDINGS.local.md` (git-ignored), not in
+  `FINDINGS.md`.
 - `fuzz` is a script again: `fuzz_mcp.py` is `fuzz.py DFY GEN [--per N]`, which prints the table.
   `blind-guess.md` starts no MCP server, so concurrent agents share nothing.
 - `blind-guess` has Bash. `guard.py` allows one command, `CMD DFY GEN [--per N]`, where `CMD`

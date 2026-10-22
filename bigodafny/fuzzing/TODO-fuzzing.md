@@ -84,9 +84,9 @@ changes go in `fuzzing/CHANGELOG.md`.
 - [ ] (2026-10-21) `data/constraints.jsonl` quotes limits for few problems, so `fuzz`
       runs out-of-spec inputs for the rest.
 - [x] (2026-10-21) Concurrent `blind-guess` agents share one `fuzz` server; one agent ending
-      closes it under another's call (`Connection closed`, `FINDINGS.md` batch `b10`).
+      closes it under another's call (`Connection closed`, `FINDINGS.md` batch `20261021-1804`).
       (2026-10-22) `fuzz.py` is a script again; `guard.py` lets Bash run only it. Live run
-      of 4 `b10` rows, 3 at a time: no `Connection closed`, no denials (`FINDINGS.md`).
+      of 4 `20261021-1804` rows, 3 at a time: no `Connection closed`, no denials (`FINDINGS.md`).
 - [ ] (2026-10-21) `fuzz` compiles the row 3 times per call: untraced, all points (to
       find the loops), loops only.
 - [ ] (2026-10-21) `steptrace.py`: move `HARNESS` into its own file; drop `--log` and

@@ -15,24 +15,27 @@ the row's label. The `code` mode reads the code only; the `fuzz` mode can also r
 | `guard.py`    | the agent's hook: confines it to its row directory, lets Bash run only `fuzz.py`, blocks its stop until `answer.json` is complete, and logs each denial to `guard.log` |
 | `guard-path`  | written by `setup`: the `--dir` that `guard.py` confines agents to (git-ignored)        |
 | `fuzz.py`     | the agent's `fuzz` command: runs `gen.py`'s inputs on the row, prints one table of `steps` |
-| `FINDINGS.md` | results of the runs of 2026-10-20                                                       |
+| `FINDINGS.md` | results of the runs                                                                     |
+| `FINDINGS.local.md` | where each run's outputs lie on this machine (git-ignored)                        |
 
 ## Run
 
-From `bigodafny/fuzzing`. `--dir` must lie outside the repository:
+From `bigodafny/fuzzing`. `--dir` must lie outside the repository. Name a batch by its setup time,
+`YYYYMMDD-HHMM`, and give `grade --out` the same name:
 
 1. Set up each mode:
    ```bash
-   ../.venv/bin/python3 experiments/fuzz/blind.py setup --dir /tmp/fuzz-blind/guess2 --mode code 2072_40 888_6
-   ../.venv/bin/python3 experiments/fuzz/blind.py setup --dir /tmp/fuzz-blind/guess2 --mode fuzz 2072_40 888_6
+   ../.venv/bin/python3 experiments/fuzz/blind.py setup --dir /tmp/fuzz-blind/20261022-1258 --mode code 2072_40 888_6
+   ../.venv/bin/python3 experiments/fuzz/blind.py setup --dir /tmp/fuzz-blind/20261022-1258 --mode fuzz 2072_40 888_6
    ```
-   Rows land in `/tmp/fuzz-blind/guess2/<mode>/<sid>/`.
+   Rows land in `/tmp/fuzz-blind/20261022-1258/<mode>/<sid>/`, beside one shared
+   `/tmp/fuzz-blind/20261022-1258/prelude.dfy`.
 2. For each row, spawn a `blind-guess` agent with the prompt "Your row is in
    DIR. Read DIR/BRIEF.md and do what it says.", DIR being the row directory. Run at most 3
    at a time, and tell the agent nothing else.
 3. Grade:
    ```bash
-   ../.venv/bin/python3 experiments/fuzz/blind.py grade --dir /tmp/fuzz-blind/guess2 --out experiments/fuzz/runs/guess2
+   ../.venv/bin/python3 experiments/fuzz/blind.py grade --dir /tmp/fuzz-blind/20261022-1258 --out experiments/fuzz/runs/20261022-1258
    ```
    This copies the run to `--out`; `experiments/fuzz/runs/` is git-ignored.
 
@@ -51,7 +54,10 @@ Each row directory holds the files `setup` wrote and the agent's `answer.json`:
 }
 ```
 
-A `fuzz` row also holds `gen.py`, and any `round-k.dfy` the agent wrote to test a bound.
+A `fuzz` row also holds `gen.py` and, for `fuzz` call k, `attempts/<k>/table.txt`: the `.dfy` it
+ran, the attempt whose `gen.py` it ran, then its table. `attempts/<k>/gen.py` exists only when
+`gen.py` changed since the latest copy. For a `round-k.dfy` the agent wrote to test a bound,
+`table.txt` holds its diff from `row.dfy`, and `fuzz` deletes the file.
 
 `runs/<run>/summary.jsonl` has one line per row: `sid`, `mode`, `label` (BigOBench's, added at
 grading), the fields of `answer.json`, `match` (`class` equals `label` as a string), and `leaks`. `leaks` lists the guard's denials for the

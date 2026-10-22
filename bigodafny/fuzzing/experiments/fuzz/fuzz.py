@@ -20,9 +20,15 @@ traced, so the batch itself runs untraced.
 
 `gen.py` runs in a child process (`fuzz.py --gen GEN PER`), so nothing it
 prints reaches the table.
+
+Call k (from 1) writes `attempts/<k>/table.txt` beside DFY: DFY's name, the
+attempt whose `gen.py` ran, then what the call printed. It copies GEN to
+`attempts/<k>/gen.py` only if GEN differs from the latest copy. A DFY other
+than `row.dfy` is deleted after the run; its diff from `row.dfy` goes in the
+table instead.
 """
 from __future__ import annotations
-import argparse, json, random, runpy, subprocess, sys
+import argparse, difflib, json, random, runpy, subprocess, sys
 from collections import Counter
 from pathlib import Path
 
@@ -124,10 +130,33 @@ def main():
     ap.add_argument("gen", help="absolute path of gen.py")
     ap.add_argument("--per", type=int, default=3, help="inputs per family and grid point")
     a = ap.parse_args()
+    dfy = Path(a.dfy)
+    d = dfy.parent
+    k = len(list(d.glob("attempts/*"))) + 1
+    log = d / "attempts" / str(k)
+    log.mkdir(parents=True)
+    head = [f"dfy: {dfy.name}"]
+    round_ = dfy.name != "row.dfy" and dfy.exists()
+    if round_:
+        head += [l.rstrip("\n") for l in difflib.unified_diff(
+            (d / "row.dfy").read_text().splitlines(True), dfy.read_text().splitlines(True),
+            "row.dfy", dfy.name, n=0)]
     try:
-        print(fuzz(a.dfy, a.gen, a.per))
+        text = Path(a.gen).read_text()
+        prev = max((int(p.parent.name) for p in d.glob("attempts/*/gen.py")), default=None)
+        if prev is None or (d / "attempts" / str(prev) / "gen.py").read_text() != text:
+            prev = k
+            (log / "gen.py").write_text(text)
+        head.append(f"gen: attempts/{prev}/gen.py")
+        out, failed = fuzz(a.dfy, a.gen, a.per), False
     except Exception as e:
-        sys.exit(f"{type(e).__name__}: {e}")
+        out, failed = f"{type(e).__name__}: {e}", True
+    (log / "table.txt").write_text("\n".join(head) + f"\n{out}\n")
+    if round_:
+        dfy.unlink()
+    if failed:
+        sys.exit(out)
+    print(out)
 
 
 if __name__ == "__main__":

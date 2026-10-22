@@ -11,7 +11,8 @@ without it every call is denied.
   venv's Python), in the foreground; it is denied in a `code` mode row.
 - Every path a call names must lie in one row directory (one holding
   `BRIEF.md`) under the stage root. Each agent is locked to the first row it
-  touches, so agents in one root cannot read each other's work.
+  touches, so agents in one root cannot read each other's work. Read and
+  Grep may also open the stage root's shared `prelude.dfy`.
 
 A denial is logged to `<stage root>/guard.log` and voids that row's result.
 
@@ -74,6 +75,8 @@ def verdict(tool, args, root, agent):
     for key in PATHS[tool]:
         if key not in args:
             return f"give `{key}` under your directory"
+        if tool in ("Read", "Grep") and Path(args[key]).resolve() == root / "prelude.dfy":
+            continue
         if not Path(args[key]).resolve().is_relative_to(root):
             return f"{args[key]} is outside {root}"
         row = row_of(args[key], root)

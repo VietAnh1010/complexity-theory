@@ -5,8 +5,8 @@
 
 `setup` writes DIR/<mode>/<sid>/ and writes DIR to `guard-path`, where
 `guard.py` reads it. DIR must lie outside the repository. Each row gets
-`annotate`'s output as `row.dfy` (no label), the prelude and `BRIEF.md`, which
-ends with the problem statement. The mode only picks the blocks of `BRIEF.md`;
+`annotate`'s output as `row.dfy` (no label) and `BRIEF.md`, which ends with
+the problem statement; DIR gets one `prelude.dfy` that every `row.dfy` includes. The mode only picks the blocks of `BRIEF.md`;
 `guard.py` denies Bash, which runs only `fuzz.py`, in `code` mode. A file naming the
 label aborts.
 
@@ -44,14 +44,14 @@ def setup(d, sid, task, mode):
     if p.returncode:
         raise SystemExit(f"{sid}: annotate failed: {p.stderr.strip()}")
     row = (d / "row.dfy").read_text()
-    row = re.sub(r'^include ".*prelude\.dfy"$', 'include "prelude.dfy"', row, count=1, flags=re.M)
+    row = re.sub(r'^include ".*prelude\.dfy"$', 'include "../../prelude.dfy"', row, count=1, flags=re.M)
     (d / "row.dfy").write_text(row)
-    shutil.copy(PRELUDE, d / "prelude.dfy")
     # Keep the blocks marked for this mode, drop the others.
     brief = re.sub(r"<!-- (\w+) -->\n(.*?)<!-- /\1 -->\n", lambda m: m[2] if m[1] == mode else "",
                    (HERE / "BRIEF.md").read_text(), flags=re.S)
     brief = re.sub(r"\n{3,}", "\n\n", brief)
     (d / "BRIEF.md").write_text(brief.replace("{{DIR}}", str(d)).replace("{{FUZZ}}", CMD)
+                                .replace("{{PRELUDE}}", str(d.parents[1] / "prelude.dfy"))
                                 .replace("{{STATEMENT}}", task["description"]), encoding="utf-8")
 
     label = task["time_complexity_inferred"]
@@ -87,6 +87,8 @@ def main(argv=None):
     if a.cmd == "setup":
         if FUZZING.parents[1] in root.parents:
             raise SystemExit(f"{root} is inside the repository; set up outside it")
+        root.mkdir(parents=True, exist_ok=True)
+        shutil.copy(PRELUDE, root / "prelude.dfy")
         for sid in a.sids:
             setup(root / a.mode / sid, sid, tasks[sid], a.mode)
             print(f"set up {root / a.mode / sid}")
