@@ -62,3 +62,11 @@ Open items only. When one is done, delete it and add a line to `CHANGELOG.md`.
 - [ ] `data/constraints.jsonl` covers 5 problems (1501, 577, 827, 1254, 1276).
       The other 306 count every test; transcribe their limits to find more bogus
       tests.
+
+## Tooling
+
+- [ ] Deferred: make `bigodafny/` an installed package (`pyproject.toml`, `pip install -e .`).
+      Import by package name (`bigodafny.common`), drop every `sys.path.insert`, and run
+      tools by `-m` or entry points. Until then a module named like `common.py` beside a
+      script shadows `bigodafny/common.py`. Touches every script, the docs, the skills and
+      the `blind-guess` hook; re-run every gate after it.
