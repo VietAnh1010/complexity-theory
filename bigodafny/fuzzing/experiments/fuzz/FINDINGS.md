@@ -2,6 +2,18 @@
 
 Findings of the blind runs, newest first, one section per session.
 
+## 2026-10-22: `fuzz` as a script, live
+
+4 `b10` rows in fuzz mode, 3 agents at a time: `241_101 2282_16 2281_112 209_103`.
+Outputs: `experiments/fuzz/runs/live/` (git-ignored, local).
+
+- Every agent ran Bash `fuzz.py` once, with `timeout: 600000`, and got a table.
+- No `Connection closed`, although 2 agents ended while another's run was in flight.
+- `guard.log` stayed empty: no denials, no blocked stops.
+- No input failed `parse` or `out-of-spec`; `241_101` got step counts this time.
+- All 4 matched the label; `2282_16` named its measure `n` this time. Rows took 25-37 s.
+- No agent tested a candidate bound with `round-k.dfy`.
+
 ## 2026-10-21: pipeline review
 
 No new runs; one test agent on `2072_40`. Changes are in `fuzzing/CHANGELOG.md`.
