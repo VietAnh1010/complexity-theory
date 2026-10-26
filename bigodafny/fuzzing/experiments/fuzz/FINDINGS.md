@@ -2,6 +2,34 @@
 
 Findings of the blind runs, newest first, one section per session.
 
+## 2026-10-26: Haiku on the hard and fabricated rows
+
+Batch `20261026-1540`: `blind-guess` with `model: haiku` (the Agent tool's override), both modes,
+3 at a time. The 6 hard rows of `20261022-1327` and fabricated F3-F6 of `20261022-1353`, with
+their `row.dfy` and statement. The fuzz brief now offers `--bound`; the Sonnet runs had `round-k.dfy`.
+
+| row | reference | Sonnet code / fuzz | Haiku code | Haiku fuzz |
+|---|---|---|---|---|
+| 6 hard rows | audited class | 6 / 6 | 6 | 6 |
+| F3, union by size | O(n+mlogn) | ✓ / ✓ | ✓ | ✓ |
+| F4, union by size + compression | O(n+m) | ✓ / ✓ | O(n+mlogn), low | ✓ |
+| F5, distinct counts | O(n**1.5) | ✓ / ✓ | O(n*m), m = distinct counts | ✓ |
+| F6, phi chain | O(sqrt(m)) | ✓ / ✓ | ✓ | ✓ |
+
+- Haiku code got 8 of 10; Haiku fuzz got 10 of 10. One agent per cell, so the 2-row gap may be noise.
+- F4 code knew compression is near-linear, then answered the per-query bound with low confidence.
+- F5 code derived `m <= sqrt(2n)` but kept `m`, a computed count, as the measure.
+- F5 fuzz read the table: steps/n rose about 1.85x per 4x of n, so it answered `n**1.5`.
+- F4 fuzz cited the amortized argument; its flat steps/(n+m) table agrees but did not decide it.
+- 10 of 10 Haiku fuzz agents ran `--bound`, against 2 of 27 Sonnet fuzz agents before.
+- F6 fuzz saw steps/E fall from 0.83 to 0.34 and blamed lower-order terms; the brief says looser.
+- F3 fuzz said a bound cannot name a log; the prelude has `NLogN` and `CeilLog2`, used by `101_10`.
+- `1830_0` fuzz is void: the guard denied `fuzz.py ... 2>&1 | tail -n 80`. The agent blamed its bound.
+- The API was unreachable (`EAI_AGAIN`) mid-batch and killed 3 fuzz agents (`276_1206`, F3, F6).
+  Their partial rows and 2 denials (`ls`/`cat`, a `cd ... &&` prefix) are in the run's `failed/`;
+  the 3 rows were staged fresh and rerun.
+- `blind.py grade` marks `match` against the host's label, so its table is wrong for F3-F6.
+
 ## 2026-10-22: fabricated rows with strange bounds
 
 Batch `20261022-1353`: 4 fabricated rows, both modes, one-letter names, statements with input
