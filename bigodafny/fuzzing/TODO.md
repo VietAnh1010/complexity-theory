@@ -87,6 +87,12 @@ changes go in `fuzzing/CHANGELOG.md`.
       closes it under another's call (`Connection closed`, `FINDINGS.md` batch `20261021-1804`).
       (2026-10-22) `fuzz.py` is a script again; `guard.py` lets Bash run only it. Live run
       of 4 `20261021-1804` rows, 3 at a time: no `Connection closed`, no denials (`FINDINGS.md`).
+- [ ] (2026-10-26) Design a fabricated row where code agents fail and the `fuzz` table corrects
+      them. Read `experiments/fuzz/FINDINGS.md` § summary first: it lists the traps that failed.
+      Steps: `experiments/fuzz/README.md` § Fabricated rows.
+- [ ] (2026-10-26) Screen proofs for loose bounds with `fuzz` inputs, not only stored tests:
+      `docs/07-steptrace.md` § Screening proofs rated 163 of 321 proofs; the rest had too few
+      tests to tell.
 - [ ] (2026-10-26) `blind.py grade` assigns `guard.log` lines to rows by path, so a denial with no
       path (`true`, `echo skip`) voids nothing. Map the line's agent id to its row via `.locks/`.
 - [ ] (2026-10-26) `fuzz.py` always adds a final newline; `2183_1`'s parser counts the empty last

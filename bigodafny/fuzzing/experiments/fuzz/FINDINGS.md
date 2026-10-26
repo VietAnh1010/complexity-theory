@@ -2,6 +2,26 @@
 
 Findings of the blind runs, newest first, one section per session.
 
+## 2026-10-26: summary of the Haiku and Sonnet batches
+
+13 batches, 90 graded answers, 23 distinct rows: 6 hard real rows, 7 disputed real rows, and
+fabricated F1-F10 (F7-F10 also without names or Python). The sections below hold each batch.
+
+- Running changed a class on one row: F4 (union find with compression), Haiku only. Code was 6 of 8,
+  fuzz 4 of 4; the code misses answered the per-query `O(n+mlogn)` while naming compression.
+- F5's code misses (`O(n*m)` over a computed count) came from `BRIEF.md`, which listed no
+  fractional power, and `guard.py`, which rejected a `.`; after the fix code was 4 of 4.
+- Every other row got the same right class in both modes from both models.
+- Traps that did not work: telescoping gcd, amortized two pointers, an adversary for a fixed
+  quicksort pivot, an unreset counter, records worst case, geometric sums, sqrt distinct counts,
+  union by size, a phi chain, length (5-8 helpers), and opaque names without Python.
+- Code agents name the mechanism from the code's shape, then the table agrees. Fuzz agents build
+  the worst case themselves (binomial unions, staircases, quicksort killers).
+- For a row where running helps, the class must not follow from a known pattern, and its worst
+  case must be one a `gen.py` family can reach.
+- Harness faults met: final newline breaks some parsers (`2183_1`), `grade` misses denials with no
+  path, harmless calls void rows (`ls`, heredoc `gen.py`; 11 of 32 answers on F7-F10).
+
 ## 2026-10-26: long fabricated rows without names or Python
 
 Batches `20261026-1730` (Haiku) and `-1735` (Sonnet): F7-F10 with the Python header removed and

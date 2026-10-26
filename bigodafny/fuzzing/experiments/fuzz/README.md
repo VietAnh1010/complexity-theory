@@ -38,6 +38,24 @@ name for both `--dir` (outside the repository) and `grade --out`.
    ```
    `grade` copies the batch to `--out`; `experiments/fuzz/runs/` is git-ignored.
 
+## Fabricated rows
+
+A fabricated row has its own `Solve` and statement and borrows a real row's stdin parser: `fuzz.py`
+takes the parser from the row's directory name, the host.
+
+1. Pick a host whose parameter types (`data/signatures.jsonl`) fit, not in `data/constraints.jsonl`,
+   whose parser accepts a final newline (`2183_1`'s does not).
+2. Write `fN.dfy`: the Python in a header comment, the prelude included and opened, and `Solve`
+   with the host's parameter types in order.
+3. Run `DafnySteps annotate fN.dfy OUT enable=functions,seq,arrays` and point OUT's `include` at
+   `../../prelude.dfy`.
+4. Measure the true class first: run `fuzz.py` on OUT with a worst-case `gen.py`.
+5. Stage OUT at `DIR/<mode>/<host>/row.dfy`, with `blind.brief(mode, row_dir, statement)` as
+   `BRIEF.md`, the prelude at `DIR/prelude.dfy`, and DIR in `guard-path`. Hosts in one batch must
+   differ; a replica is a new batch.
+6. `grade` compares with the host's label, so grade by hand and add `FABRICATED.md` (host,
+   source, trap, true class) and the sources (`fabricated/`) to the run.
+
 ## Outputs
 
 Each row directory holds the files `setup` wrote and the agent's `answer.json`. Only a

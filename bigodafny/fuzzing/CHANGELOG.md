@@ -8,6 +8,7 @@ per change. Earlier changes are in `git log -- bigodafny/fuzzing`. Findings go i
 
 - `BRIEF.md` lists `O(n**1.5)` among the class forms, and `guard.py` accepts a `.` in a class.
   Before, the Stop hook blocked every `O(n**1.5)` and `O(n**0.5)` answer once.
+- `experiments/fuzz/README.md` § Fabricated rows: how to write, measure and stage one.
 
 ## 2026-10-22
 
