@@ -2,6 +2,27 @@
 
 Findings of the blind runs, newest first, one section per session.
 
+## 2026-10-26: long fabricated rows, Haiku and Sonnet
+
+Batches `20261026-1716` (Haiku) and `-1721` (Sonnet): 4 fabricated rows of about 160 lines and
+5-8 helpers each, both modes, statements with format and limits only. Sources are in each run's
+`fabricated/`. Each true class was first measured with `fuzz.py` on a worst-case family.
+
+| row | trap | true class | measured | Haiku code / fuzz | Sonnet code / fuzz |
+|---|---|---|---|---|---|
+| F7 | gcd of each prefix and suffix; looks n log n, the gcd costs telescope | O(n) | steps/n flat at 55 | ✓ / ✓ | ✓ / ✓ |
+| F8 | quicksort, middle pivot, explicit stack; random and sorted inputs are fast | O(n**2) | killer: 3.9x per doubling | ✓ / ✓ | ✓ / ✓ |
+| F9 | two-pointer window, nested loops in helpers | O(n) | steps/n flat at 104 | ✓ / ✓ | ✓ / ✓ |
+| F10 | compacting queue; `removed` is never reset | O(q**2) | fill-drain: 3.9x per doubling | ✓ / ✓ | ✓ / ✓ |
+
+- 16 of 16 right. Length and helper depth misled neither model in either mode.
+- Code agents named each mechanism: telescoping gcd, an adversary for the fixed pivot, the
+  forward-only `left`, the unreset `removed`.
+- Both F8 fuzz agents wrote an adversarial permutation in `gen.py` and saw n(n-1)/2 partition steps.
+- All 4 Sonnet fuzz rows are void: `ls`, `echo`, and `gen.py` written with a Bash heredoc. None
+  read outside its row; every answer was right.
+- No second replica was run: 16 of 16 agreeing answers left nothing for one to separate.
+
 ## 2026-10-26: Haiku on 7 more disputed rows and F1, F2
 
 Batch `20261026-1656`, both modes, Haiku, 3 at a time. 7 rows from `solutions-disputed/` (cause `label`,
