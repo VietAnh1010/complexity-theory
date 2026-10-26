@@ -2,6 +2,24 @@
 
 Findings of the blind runs, newest first, one section per session.
 
+## 2026-10-26: Haiku on 7 more disputed rows and F1, F2
+
+Batch `20261026-1656`, both modes, Haiku, 3 at a time. 7 rows from `solutions-disputed/` (cause `label`,
+confidence high, audited class unlike the label, seed 20261026): `662_527 1673_122 936_203 3060_6262
+2183_1 410_176 88_21`. F1 and F2 of `20261022-1342`, with their `row.dfy` and statement.
+
+- Code 9 of 9, fuzz 9 of 9 against the audited or true class. Both modes gave the same class on every row.
+- `88_21` and `662_527`: the audit writes `O(n*m)` for n strings of length m; both modes wrote
+  `O(n)` or `O(n+m)` over total length, the same cost. Graded right.
+- F1 (looks quadratic, is linear) and F2 (records worst case) misled neither mode.
+- 9 of 9 fuzz agents ran `--bound`; 5 called again because the first constant broke.
+- `2183_1` fuzz got no table: all 3 calls failed `parse`. `fuzz.py` adds a final newline, and the
+  row's parser splits on `\n` and asserts `n == len(rows)`, so the empty last line fails every input.
+  The agent answered from the code. It also ran `ls`, which voids it.
+- `662_527` fuzz is void: the guard denied a `cd ... &&` prefix; the agent reran without it.
+- `88_21` fuzz: at L = 100000 every structured family errored; the agent did not find out why.
+- Haiku over today's 4 batches: running helped only on F4 (fuzz 4 of 4, code 6 of 8).
+
 ## 2026-10-26: Haiku code mode with `O(n**1.5)` in the brief
 
 Batches `20261026-1646` to `-1649`: F4 and F5, code mode only, Haiku, one batch per replica. `BRIEF.md`
