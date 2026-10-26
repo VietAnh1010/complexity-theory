@@ -2,6 +2,24 @@
 
 Findings of the blind runs, newest first, one section per session.
 
+## 2026-10-26: Haiku code mode with `O(n**1.5)` in the brief
+
+Batches `20261026-1646` to `-1649`: F4 and F5, code mode only, Haiku, one batch per replica. `BRIEF.md`
+now lists `O(n**1.5)`, and `guard.py` accepts a `.` in a class (`fuzzing/CHANGELOG.md`).
+
+| row | code, before | code, after | fuzz, before |
+|---|---|---|---|
+| F4, O(n+m) | 3 of 4 | 3 of 4 (1 void) | 4 of 4 |
+| F5, O(n**1.5) | 2 of 4 | 4 of 4 | 4 of 4 |
+
+- F5's code misses were the brief: with the example listed, 4 of 4 code agents wrote `O(n**1.5)`.
+- Before the fix, `guard.py`'s class pattern had no `.`: the Stop hook blocked every `O(n**1.5)` and
+  `O(n**0.5)` answer once (8 agents, one `.stops` each). After it, no stop was blocked.
+- F4's code miss repeats: `1648` answered `O(n+mlogn)` while naming compression as near-linear,
+  like `1540`. F4 code is 6 of 8 over both rounds; F4 fuzz is 4 of 4.
+- `1646` F4 is void: the agent ran `cat` and `ls` through Bash, which code mode denies. Its class was right.
+- After the fix, code is 7 of 8 and fuzz (before the fix) 8 of 8; the one gap is F4.
+
 ## 2026-10-26: Haiku replicas of F4 and F5
 
 Batches `20261026-1623`, `-1626`, `-1628`: F4 and F5 again, both modes, Haiku, staged as in

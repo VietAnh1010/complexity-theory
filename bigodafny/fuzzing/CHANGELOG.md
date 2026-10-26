@@ -4,6 +4,11 @@ What changed in `fuzzing/`, newest first, one dated section per session and one 
 per change. Earlier changes are in `git log -- bigodafny/fuzzing`. Findings go in
 `experiments/fuzz/FINDINGS.md`, open work in `TODO.md`.
 
+## 2026-10-26
+
+- `BRIEF.md` lists `O(n**1.5)` among the class forms, and `guard.py` accepts a `.` in a class.
+  Before, the Stop hook blocked every `O(n**1.5)` and `O(n**0.5)` answer once.
+
 ## 2026-10-22
 
 - `TODO-fuzzing.md` is `TODO.md`, as the directory already names it.

@@ -95,7 +95,7 @@ sort fixes O(nlogn)"`), or `"none"`.
 <!-- /fuzz -->
 
 Write `class` with no spaces, in this form: `O(1)`, `O(logn)`, `O(n)`, `O(nlogn)`, `O(n**2)`,
-`O(n*m)`, `O(n+mlogm)`. Powers take `**`, products `*`, and `log` follows its factor with no
+`O(n**1.5)`, `O(n*m)`, `O(n+mlogm)`. Powers take `**`, products `*`, and `log` follows its factor with no
 `*` or brackets. Call the main measure `n` and a second one `m`, and define them in
 `measures`.
 

@@ -29,7 +29,7 @@ PATHS = {"Read": ["file_path"], "Write": ["file_path"], "Edit": ["file_path"],  
          "Glob": ["path"], "Grep": ["path"], "Bash": ["dfy", "gen"],   # Bash: FUZZ's groups
          "SubagentHandback": []}                            # returns the agent's report
 KEYS = ("class", "measures", "worst_case", "example", "reasoning", "confidence")
-CLASS = re.compile(r"O\([0-9a-z+*()]+\)")                             # BRIEF.md: O(nlogn), O(n**2), ...
+CLASS = re.compile(r"O\([0-9a-z+*().]+\)")                            # BRIEF.md: O(nlogn), O(n**1.5), ...
 TRIES = 3
 
 
