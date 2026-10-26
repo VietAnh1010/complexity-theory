@@ -2,6 +2,25 @@
 
 Findings of the blind runs, newest first, one section per session.
 
+## 2026-10-26: Haiku replicas of F4 and F5
+
+Batches `20261026-1623`, `-1626`, `-1628`: F4 and F5 again, both modes, Haiku, staged as in
+`20261026-1540`. One batch per replica: `fuzz.py` takes the parser from the directory name and
+`guard-path` names one root. With `1540`, each cell has 4 answers.
+
+| row | Haiku code | Haiku fuzz |
+|---|---|---|
+| F4, O(n+m) | 3 of 4 (`1540`: O(n+mlogn)) | 4 of 4 |
+| F5, O(n**1.5) | 2 of 4 (`1540`, `1626`: O(n*m)) | 4 of 4 (1 void) |
+
+- Code 5 of 8, fuzz 8 of 8. With all 3 misses in code, one-sided Fisher p = 0.1: not significant.
+- Both F5 code misses derived `m <= sqrt(2n)`. `1626` said "the allowed class format cannot write
+  n^1.5": `BRIEF.md`'s class examples have no fractional power. A format failure, not analysis.
+- Every F5 fuzz agent wrote `n**1.5` from its table: steps grew 7.3-7.8x per 4x of n.
+- F4 fuzz agents ran families against log depth (binomial, chain, star); random always cost most.
+- `1628` F5 fuzz is void: the guard denied `sed ... gen.py && fuzz.py ...`. The agent reported it.
+- `1623` F4 fuzz ran `fuzz` 4 times; `BRIEF.md` says at most 3 and nothing enforces it.
+
 ## 2026-10-26: Haiku on the hard and fabricated rows
 
 Batch `20261026-1540`: `blind-guess` with `model: haiku` (the Agent tool's override), both modes,
