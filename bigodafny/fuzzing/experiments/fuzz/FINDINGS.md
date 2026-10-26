@@ -2,6 +2,42 @@
 
 Findings of the blind runs, newest first, one section per session.
 
+## 2026-10-26: walks whose cost hides in global dynamics (F11, F12)
+
+Batches `20261026-1801` (F11, Haiku), `-1807` and `-1828` (F12, Haiku), `-1815` (F12, Sonnet). Both rows take
+`n` and `a_list` with `0 <= a_i <= 3` (hosts `2281_112`, `647_11`), and both measure Θ(n**3).
+
+| row | trap | true class | measured | Haiku code / fuzz | Sonnet code / fuzz |
+|---|---|---|---|---|---|
+| F11 | chip firing on a path, chips lost at both ends | O(n**3) | all-3: steps/n**3 flat at 5.4 | ✓ / ✓ | not run |
+| F12 | rotor walks on a path: each step flips the arrow it leaves | O(n**3) | all-3: steps/n**3 flat at 4.06 | 0 of 2 (O(n**2), low) / 2 of 2 | 1 of 1 / 1 of 1 (void) |
+
+- Both classes are proved. Sites 0..n-1, sinks -1 and n; let u(x) count departures from x.
+  - F11: Φ = Σ c[x]·(x+1)(n-x) drops by exactly 2 per firing, so moves = (Φ_start - Φ_end) / 2.
+    That is at most 3·n(n+1)(n+2)/4, and at least n(n+1)(n+2)/6 on all-3, where every cell ends at 0 or 1.
+  - F12: an arrow alternates, so u(x) = a(x) + (u(x-1) + u(x+1))/2 + e(x) with |e(x)| <= 1/2. With
+    sum_y Ĝ(x,y) = (x+1)(n-x), the walk steps lie between (3 ± 1/2)·n(n+1)(n+2)/6 on all-3.
+  - Measured at n = 200: F11 made 200·201·202/6 moves, and F12's walk loop ran 3·200·201·202/6 times.
+- Random `a_i` in 0..3 also costs Θ(n**3) on both rows: the mean exceeds 1, so the lower bound holds.
+- F11 misled no Haiku agent: code mode wrote the Laplacian u(i-1) - 2u(i) + u(i+1) = c_end - c_start.
+- F12 misled both Haiku code agents the same way: ≤ 3n walks, each assumed ≤ n steps, so O(n**2),
+  confidence low. Neither bounded a walk or built a family; `1807` saw that "later calls can cross long
+  stretches again".
+- Both F12 Haiku fuzz agents found all-3 costliest of 9-11 families. steps/n**3 settled at 4.05 and the
+  walk loop ran about n**2/6 times per call. Both answered O(n**3), medium confidence, in 3 and 2 calls.
+  `1828` timed out at n = 512 and measured up to 256.
+- F12 Sonnet code named a rotor-router walk, bounded each walk by O(n**2), and summed 3·Σ i(n-i) by an
+  abelian argument: O(n**3), medium confidence.
+- F12 is the second row where running changed the class, after F4, and the first where code mode was
+  low by a factor of n. Haiku code 0 of 2, fuzz 2 of 2; Sonnet code got it, so F12 catches Haiku only.
+- No Sonnet replica was run, to save time; one right Sonnet code answer shows F12 does not reliably catch it.
+- F12 Sonnet fuzz is void. Its first call, a larger grid with 10 families, outran the Bash tool's 600 s limit
+  and moved to the background. The agent tried to read that output outside its row, then ran `sed` on
+  `gen.py`. It reran on n <= 256: steps/n**3 was 4.43 to 4.05, so O(n**3), confidence medium.
+- `fuzz` has no time limit of its own: a call over 600 s goes to the background, and its output lies
+  outside the row.
+- `1801`, `1807` and `1828` logged no guard denials.
+
 ## 2026-10-26: summary of the Haiku and Sonnet batches
 
 13 batches, 90 graded answers, 23 distinct rows: 6 hard real rows, 7 disputed real rows, and

@@ -87,9 +87,13 @@ changes go in `fuzzing/CHANGELOG.md`.
       closes it under another's call (`Connection closed`, `FINDINGS.md` batch `20261021-1804`).
       (2026-10-22) `fuzz.py` is a script again; `guard.py` lets Bash run only it. Live run
       of 4 `20261021-1804` rows, 3 at a time: no `Connection closed`, no denials (`FINDINGS.md`).
-- [ ] (2026-10-26) Design a fabricated row where code agents fail and the `fuzz` table corrects
-      them. Read `experiments/fuzz/FINDINGS.md` § summary first: it lists the traps that failed.
-      Steps: `experiments/fuzz/README.md` § Fabricated rows.
+- [x] (2026-10-26) Design a fabricated row where code agents fail and the `fuzz` table corrects
+      them: F12, rotor walks (`experiments/fuzz/FINDINGS.md`). Catches Haiku code mode, not Sonnet.
+- [ ] (2026-10-26) A fabricated row that misleads Sonnet code mode. F12's lesson: cost set by
+      global dynamics that no single loop shows.
+- [ ] (2026-10-26) `fuzz` has no time limit: a call past the Bash tool's 600 s goes to the
+      background, and reading its output voids the row (`20261026-1815`). Cap a call's total time,
+      or tell the agent the cap in `BRIEF.md`.
 - [ ] (2026-10-26) Screen proofs for loose bounds with `fuzz` inputs, not only stored tests:
       `docs/07-steptrace.md` § Screening proofs rated 163 of 321 proofs; the rest had too few
       tests to tell.
