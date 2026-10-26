@@ -87,6 +87,8 @@ changes go in `fuzzing/CHANGELOG.md`.
       closes it under another's call (`Connection closed`, `FINDINGS.md` batch `20261021-1804`).
       (2026-10-22) `fuzz.py` is a script again; `guard.py` lets Bash run only it. Live run
       of 4 `20261021-1804` rows, 3 at a time: no `Connection closed`, no denials (`FINDINGS.md`).
+- [ ] (2026-10-26) `blind.py grade` assigns `guard.log` lines to rows by path, so a denial with no
+      path (`true`, `echo skip`) voids nothing. Map the line's agent id to its row via `.locks/`.
 - [ ] (2026-10-26) `fuzz.py` always adds a final newline; `2183_1`'s parser counts the empty last
       line as a row and fails its assert on every input. Count the rows it breaks; try the text
       without the newline when parse fails.

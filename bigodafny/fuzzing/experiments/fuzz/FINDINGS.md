@@ -2,6 +2,22 @@
 
 Findings of the blind runs, newest first, one section per session.
 
+## 2026-10-26: long fabricated rows without names or Python
+
+Batches `20261026-1730` (Haiku) and `-1735` (Sonnet): F7-F10 with the Python header removed and
+every helper and variable renamed (`H1`-`H6`, `v1`-`v21`); `fuzz.py` gives the same steps as the
+named rows. The staged `BRIEF.md` drops its two references to the Python header.
+
+- 16 of 16 right again: Haiku 8 of 8, Sonnet 8 of 8.
+- Code agents recovered each algorithm from its shape: "H1 (Euclid)", "H4 is an iterative
+  quicksort", the forward-only `v5`, the `v4` that never resets.
+- `1730` F10 fuzz: the agent's hand trace disagreed with the table's loop count; it kept the class
+  (both quadratic) and gave confidence medium.
+- Void: Haiku 3 (`ls`/`cat`, a `cd` prefix, Bash in code mode), Sonnet 4 (heredoc `gen.py`, `sed` on
+  `answer.json`, `true`). Every void answer was right.
+- `blind.py grade` missed 2 of the Sonnet voids: a denied `true` names no path, and `grade` assigns
+  `guard.log` lines to rows by path. The agent id in each line names the row through `.locks/`.
+
 ## 2026-10-26: long fabricated rows, Haiku and Sonnet
 
 Batches `20261026-1716` (Haiku) and `-1721` (Sonnet): 4 fabricated rows of about 160 lines and
