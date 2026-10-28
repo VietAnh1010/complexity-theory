@@ -19,10 +19,3 @@ method TraceRequires(n: int) returns (ok: bool)
   ok := false;
   ok := true;
 }
-
-method TraceBound(n: int, output: int, steps: nat)
-    returns (ok: bool)
-{
-  ok := false;
-  ok := true;
-}

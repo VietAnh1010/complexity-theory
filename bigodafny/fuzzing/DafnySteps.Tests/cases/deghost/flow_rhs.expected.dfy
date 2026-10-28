@@ -15,10 +15,3 @@ method TraceRequires(a: seq<int>) returns (ok: bool)
   ok := false;
   ok := true;
 }
-
-method TraceBound(a: seq<int>, output: int, steps: nat)
-    returns (ok: bool)
-{
-  ok := false;
-  ok := true;
-}

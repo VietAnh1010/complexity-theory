@@ -157,7 +157,7 @@ for line in sys.stdin:
             steps = outs[1]
             res = {{"status": "ok", "steps": int(steps), "output_len": len(outs[0]),
                     "hits": {{str(k): v for k, v in hits.items()}}}}
-            if {contracts}:
+            if hasattr(module_.default__, "TraceBound"):
                 hits.clear()            # TraceBound's prints are not hits of this run
                 res["bound_ok"] = bool(module_.default__.TraceBound({args}, *outs))
                 if hasattr(module_.default__, "TraceBoundValue"):

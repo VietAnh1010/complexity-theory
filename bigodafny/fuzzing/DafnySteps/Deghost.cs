@@ -247,8 +247,8 @@ public class Deghost {
 
   // ---- Contract checks -------------------------------------------------
 
-  /// Add `TraceRequires(ins)` and `TraceBound(ins, outs)` beside Solve. Each
-  /// returns whether Solve's requires (ensures) hold. TraceBound takes only
+  /// Add `TraceRequires(ins)` and, if Solve has an ensures, `TraceBound(ins, outs)`
+  /// beside Solve. Each returns whether Solve's requires (ensures) hold. TraceBound takes only
   /// the compiled outs, and skips an ensures clause that names a ghost out.
   /// For the first `ensures <Counter> <= E`, also `TraceBoundValue(ins, outs)`,
   /// which returns E.
@@ -259,7 +259,9 @@ public class Deghost {
 
     var cls = (TopLevelDeclWithMembers)solve.EnclosingClass;
     cls.Members.Add(CheckMethod(solve, "TraceRequires", solve.Ins, solve.Req));
-    cls.Members.Add(CheckMethod(solve, "TraceBound", [.. solve.Ins, .. compiledOuts], ensures));
+    if (ensures.Count > 0) {
+      cls.Members.Add(CheckMethod(solve, "TraceBound", [.. solve.Ins, .. compiledOuts], ensures));
+    }
     var bound = ensures.Select(c => c.E).OfType<BinaryExpr>()
       .FirstOrDefault(b => b.Op == BinaryExpr.Opcode.Le && LhsName(b.E0) == Counter);
     if (bound != null) {

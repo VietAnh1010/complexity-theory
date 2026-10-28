@@ -57,7 +57,8 @@ changes go in `fuzzing/CHANGELOG.md`.
 - [ ] Rows `2128_34`, `2826_42`: headers may still say the model has no arrays;
       `COMPLEXITY.md` now charges them.
 - [ ] `annotate`: AlternativeStmt, match statements, `:-` calls stop it (no rule yet)
-- [ ] `TraceBound` is `true` when Solve has no `ensures` (annotated rows)
+- [x] `TraceBound` is `true` when Solve has no `ensures` (annotated rows). (2026-10-28) No
+      `ensures`, no `TraceBound`, no `bound_ok`
 - [x] `TraceBoundValue`: the value of `E` in the first `ensures steps <= E`;
       `steptrace.py` records it as `bound`
 - [ ] Decide what to gather from a trace. The consumer is an LLM agent, so a

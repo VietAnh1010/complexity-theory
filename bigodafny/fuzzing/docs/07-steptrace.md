@@ -39,7 +39,7 @@ Results go to `out/trace/<SID>.jsonl`.
 - `bound_ok: false`: `steps` exceeded the bound in `ensures`.
   - For a guessed bound: the guess is too low.
   - For a verified proof: a `deghost` bug, since the compiled `steps` should match the proof's.
-- With no `ensures`, `bound_ok` is always true.
+- With no `ensures`, there is no `bound_ok`.
 - `bound`: the value of `E` in the first `ensures steps <= E`; absent when there is none.
   `steps / bound` falling as the input grows means the bound is loose.
 - `--trace` is slow: every trace point costs two Python calls.
