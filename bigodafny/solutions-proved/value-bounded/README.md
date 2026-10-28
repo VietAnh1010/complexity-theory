@@ -48,8 +48,10 @@ reason.
 - **Output whose length is a value:** `1043_358` prints `"3" * (v - 1)`;
   `2254_6` prints a string of length `n_i`.
 - **Euclid's depth:** `1386_19`, `1386_38`, `1871_291`, `1915_158`, `1678_68`
-  charge `Gcd` its depth, a log of the values. Loose: the running gcd only
-  shrinks, so the total is `O(n + log max)`, still a value. `2942_55` computes
+  charge `Gcd` its depth, a log of the values. A running gcd only shrinks, so
+  its depths telescope to `O(n + log max)`, still a value: `1915_158` proves
+  this (`GcdTelescopeFirst`); `1386_38` charges every gcd its full depth, a
+  looser `O(n log max)`. `2942_55` computes
   `2**m` by squaring, costing each exponent's bit length (`TokBits`).
 
 Unlike sorting, where one prelude lemma serves every row, each value-bounded

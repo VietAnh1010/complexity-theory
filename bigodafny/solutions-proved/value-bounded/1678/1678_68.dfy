@@ -66,19 +66,15 @@ ghost function GcdExSteps(a: int, b: int): nat
   if a == 0 then 1 else 1 + GcdExSteps(b % a, a)
 }
 
-// A loose (non-tight) bound: recursion depth is at most a + 1 for a >= 0,
-// because a strictly decreases (b % a < a for a > 0, by Dafny's Euclidean %)
-// every step until it hits 0. The tight bound is O(log(min(a,b))) via a
-// Fibonacci argument; this weaker linear bound is what a bounded proof
-// reaches, and it is enough to show the recursion is NOT a constant.
-lemma GcdExStepsBound(a: int, b: int)
-  requires a >= 0
-  ensures GcdExSteps(a, b) <= a + 1
+// GcdEx(a, b) recurses on (b % a, a), the prelude Gcd's step on (b, a), so its
+// depth is GcdSteps(b, a): O(log a) by GcdStepsBound (Euclid's Fibonacci bound).
+lemma GcdExStepsIsGcdSteps(a: int, b: int)
+  requires a >= 0 && b >= 0
+  ensures GcdExSteps(a, b) == GcdSteps(b, a)
   decreases a
 {
-  if a == 0 {
-  } else {
-    GcdExStepsBound(b % a, a);
+  if a != 0 {
+    GcdExStepsIsGcdSteps(b % a, a);
   }
 }
 
@@ -89,18 +85,19 @@ function CeilDiv(p: int, q: int): int
 }
 
 // Instrumented copy. GcdEx's own recursion is charged its step count,
-// GcdExSteps, bounded by GcdExStepsBound -- linear in `rows`, not constant.
+// GcdExSteps, logarithmic in `rows`, not constant.
 method Solve(rows: int, columns: int, value: int) returns (output: string, ghost steps: nat)
   requires rows >= 1
   requires columns >= 1
-  ensures steps <= rows + 15
+  ensures steps <= 2 * CeilLog2(rows + 1) + 11
 {
   steps := 1;
   var a := rows;
   var b := columns;
   var c := value;
   var r := GcdEx(a, b);
-  GcdExStepsBound(a, b);
+  GcdExStepsIsGcdSteps(a, b);
+  GcdStepsBound(b, a);
   steps := steps + GcdExSteps(a, b);
   var x := r.0;
   var y := r.1;

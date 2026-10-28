@@ -29,25 +29,26 @@
 include "../../../prelude.dfy"
 import opened Prelude
 
-// The while loop is bounded by `fuel`, a countdown seeded from `prob`, which
-// is itself derived from `b` (240-b)/5. That is an input VALUE, not a size:
-// per the campaign's value-vs-size convention it enters the bound as its own
-// parameter rather than being folded into a constant. So the honest proof
-// here is O(prob) -- i.e. O(b) -- not O(1): the label holds only because the
-// Codeforces problem caps 0<=k<=240 (never stated in this signature), a real
-// cost the O(1) label omits. relation = looser-structural.
+// The while loop is bounded by `fuel`, a countdown seeded from `prob`, but it
+// stops first: it runs while (m+1)*(m+2) <= 2*prob, so it ends with
+// m*m <= 2*prob and costs O(sqrt(prob)). `prob` is (240-b)/5, an input VALUE,
+// not a size: per the value-vs-size convention it enters the bound as its own
+// parameter rather than being folded into a constant. So the honest proof is
+// O(sqrt(prob)), not O(1): the label holds only because the Codeforces problem
+// caps 0<=k<=240 (never stated in this signature). The Python takes the square
+// root in O(1); the Dafny searches for it. relation = looser-structural.
 ghost function Prob(b: int): int
 {
   FloorDiv(240 - b, 5)
 }
 
-ghost function FuelInit(b: int): nat
+ghost function ProbNat(b: int): nat
 {
-  (if Prob(b) > 0 then Prob(b) else 0) + 2
+  if Prob(b) > 0 then Prob(b) else 0
 }
 
 method Solve(a: int, b: int) returns (output: string, ghost steps: nat)
-  ensures steps <= 2 * FuelInit(b) + 10 + |output|
+  ensures steps <= 2 * ISqrt(2 * ProbNat(b)) + 10 + |output|
 {
   steps := 1;
   var timeToSolve := 240 - b;
@@ -56,16 +57,18 @@ method Solve(a: int, b: int) returns (output: string, ghost steps: nat)
   var m := 0;
   var fuel := (if prob > 0 then prob else 0) + 2;
   steps := steps + 2;
-  assert fuel == FuelInit(b);
   while fuel > 0 && (m+1)*(m+2) <= 2*prob
-    invariant 0 <= fuel <= FuelInit(b)
-    invariant steps <= 2 * (FuelInit(b) - fuel) + 5
+    invariant 0 <= m
+    invariant m * m <= 2 * ProbNat(b)
+    invariant steps == 2 * m + 5
     decreases fuel
   {
+    assert (m+1)*(m+1) <= (m+1)*(m+2);
     m := m + 1;
     fuel := fuel - 1;
     steps := steps + 2;
   }
+  LeISqrt(m, 2 * ProbNat(b));
   var ans := if m > a then a else m;
   steps := steps + 1;
   output := IntToString(ans);

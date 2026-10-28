@@ -10,6 +10,12 @@ data lines go to `old-record.jsonl` beside the file they came from.
 
 ## 2026-10-28
 
+- Three proofs in `solutions-proved/value-bounded/` were a class looser than their code and are
+  replaced by tight ones: `704_351` O(prob) -> O(sqrt(prob)) (`ISqrt`); `1678_68` O(rows) ->
+  O(log rows) (`GcdStepsBound`); `1915_158` O(n + m + sum of gap bits) -> O(n + m + max gap bits),
+  as the running gcd's depths telescope. They were found by running every proof the stored tests
+  could not rate on generated inputs (`fuzzing/experiments/fuzz/FINDINGS.md`). `MANIFEST.jsonl`
+  carries the new bounds; the old lines are in `old-record.jsonl` beside it.
 - `COMPLEXITY.md` charges `var x :| x in s` 1, one step of set iteration, as `annotate` does.
 - `2826_42` and `2128_34`, rows and proofs: the header no longer calls them the last `array<T>`
   rows; it says they keep `array` because the `seq` version is too slow for their gate.
