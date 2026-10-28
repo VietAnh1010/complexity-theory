@@ -96,12 +96,34 @@ changes go in `fuzzing/CHANGELOG.md`.
       background, and reading its output voids the row (`20261026-1815`). (2026-10-28)
       `--time-limit S`, default 300; `BRIEF.md` gives the cap. A call can overrun by one
       input (10 s), one compile and one loop rerun (100 s)
-- [ ] (2026-10-28) `TraceBoundValue` reads only a top-level `ensures steps <= E`: 5 proofs state
-      the bound under `==>` or a `var` (`457_27`, `1738_24`, `2254_6`, `2826_81`, `1827_66`), so
-      `bound` is missing for them; `bound_ok` still checks them.
-- [ ] (2026-10-26) Screen proofs for loose bounds with `fuzz` inputs, not only stored tests:
+- [x] (2026-10-28) `TraceBoundValue` reads only a top-level `ensures steps <= E`: 6 proofs state
+      the bound under `==>` or a `var` (`457_27`, `1738_24`, `2254_6`, `2826_81`, `1827_66`,
+      `1039_15`), so `bound` is missing for them; `bound_ok` still checks them. `fuzz.py --bound E`
+      with one unconditional E works around it. `2128_34`'s bound names ghost outputs
+      (`r_final`, `span_total`), which `--bound` cannot express either. (2026-10-28) The proofs
+      were malformed, not the tool: `COMPLEXITY.md` requires one top-level `ensures steps <= E`
+      over the inputs, and all 7 are restated; `fuzz` reads each bound.
+- [x] (2026-10-26) Screen proofs for loose bounds with `fuzz` inputs, not only stored tests:
       `docs/07-steptrace.md` § Screening proofs rated 163 of 321 proofs; the rest had too few
-      tests to tell.
+      tests to tell. (2026-10-28) Agents wrote a `gen.py` per unrated proof: 136 of 152 rated,
+      3 loose (`704_351`, `1678_68`, `1915_158`), now tight (`bigodafny/CHANGELOG.md`). 15 have
+      constant or capped bounds, or need inputs over 10 s.
+- [x] (2026-10-28) `fuzz.py --bound` missed `method {:isolate_assertions} Solve` (12 proofs). Fixed.
+- [ ] (2026-10-28) The screening fit runs over the whole grid, so a bound's constant term skews the
+      slope: 0.86 on `450_276` (ratio falling to 0.125), 1.29 on `2496_30` (rising to 0.26). Fit
+      only the top half of the grid?
+- [ ] (2026-10-28) Fuzzing a proof means copying it into a directory named by its SID and rewriting
+      its `include`, because `fuzz.py` takes the SID from the directory name. A `--sid` option would
+      run the proof in place.
+- [ ] (2026-10-28) A generator that holds a value the bound names fixed cannot show that term
+      loose: `1915_158`'s agent kept gaps 57 bits wide. The brief should ask to grow every
+      size and value in the bound.
+- [ ] (2026-10-28) Compiled contracts run ghost functions: a ghost function that recurses twice per
+      level (an early `MaxGapBits` in `1915_158`) makes every `fuzz` input time out.
+- [ ] (2026-10-28) `1386_38` charges every running-gcd step its full depth, `O(n log max)`; the
+      `1915_158` telescoping lemma gives `O(n + log max)`. It was rated by stored tests, not fuzzed.
+- [ ] (2026-10-28) `proofs.py` runs 8 `dafny verify` at once (`common.WORKERS`) and ran the 7 GB
+      WSL VM out of memory beside VS Code; `proofs.run(workers=2)` finished in 15 minutes.
 - [ ] (2026-10-26) `blind.py grade` assigns `guard.log` lines to rows by path, so a denial with no
       path (`true`, `echo skip`) voids nothing. Map the line's agent id to its row via `.locks/`.
 - [x] (2026-10-26) `fuzz.py` always adds a final newline; `2183_1`'s parser counts the empty last

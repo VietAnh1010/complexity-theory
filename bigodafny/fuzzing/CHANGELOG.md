@@ -6,6 +6,8 @@ per change. Earlier changes are in `git log -- bigodafny/fuzzing`. Findings go i
 
 ## 2026-10-28
 
+- Doc 07 § Screening proofs: `fuzz` reads a proof's one top-level `ensures steps <= E`; the
+  `--bound` workaround for `ensures var` and `==>` bounds is gone with those forms.
 - `fuzz.py --bound` finds `Solve` after an attribute, as in `method {:isolate_assertions} Solve`.
 - Doc 07 § Screening proofs rates the proofs stored tests cannot with `fuzz` inputs.
 - Docs 01, 06, 07, `Deghost.cs` and `steptrace.py` describe `TraceBound` as absent without an

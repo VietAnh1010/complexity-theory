@@ -75,7 +75,7 @@ Proofs the stored tests cannot rate need generated inputs:
 2. Write a `gen.py` per row that builds the costliest inputs and grows every size and value
    the bound names (`experiments/fuzz/fuzz.py`).
 3. Run `fuzz.py` and fit its table, the costliest input per grid point, as in step 2.
-   A proof whose bound `fuzz` cannot read (`ensures var ...`, `ensures c ==> ...`) runs with
-   `--bound E`, E one unconditional expression.
+   `fuzz` reads the bound from the proof's one top-level `ensures steps <= E`
+   (`bigodafny/COMPLEXITY.md` § What a proof means); a proof in another form is malformed.
 
 On 2026-10-28 this rated 136 of the remaining 152; 3 were loose (`experiments/fuzz/FINDINGS.md`).
