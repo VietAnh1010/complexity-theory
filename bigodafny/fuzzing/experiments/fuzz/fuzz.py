@@ -196,7 +196,7 @@ def main():
     try:
         if args.bound:
             header.append(f"bound: {args.bound}")
-            run_dfy = row_dir / f".bound-{attempt}.dfy"
+            run_dfy = row_dir / ".bound.dfy"         # one name, so every call reuses its build directory
             run_dfy.write_text(add_bound(dfy.read_text(), args.bound, args.counter))
         header.append(f"gen: attempts/{keep_gen(row_dir, attempt, Path(args.gen).read_text())}/gen.py")
         output, failed = fuzz(str(run_dfy), args.gen, args.per, args.counter, args.time_limit), False
