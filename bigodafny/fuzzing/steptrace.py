@@ -12,8 +12,8 @@ Points are listed in `points.json` by line and column of the proof's source.
 point costs nothing at run time.
 
 The plugin also compiles Solve's contract: `TraceRequires` rejects an input
-the proof does not cover; `TraceBound` checks each run against every
-`ensures`, the step bound among them; `TraceBoundValue` gives the bound's
+the proof does not cover; `TraceBound`, present when Solve has an `ensures`,
+checks each run against every `ensures`, the step bound among them; `TraceBoundValue` gives the bound's
 value, so `steps / bound` shows how tight it is. A run over its proved bound means the
 compiled counter does not count what the proof counts. If the contract does
 not compile (a ghost-only predicate), the build is retried without it.

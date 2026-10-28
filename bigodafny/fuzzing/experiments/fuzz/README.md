@@ -43,8 +43,7 @@ name for both `--dir` (outside the repository) and `grade --out`.
 A fabricated row has its own `Solve` and statement and borrows a real row's stdin parser: `fuzz.py`
 takes the parser from the row's directory name, the host.
 
-1. Pick a host whose parameter types (`data/signatures.jsonl`) fit, not in `data/constraints.jsonl`,
-   whose parser accepts a final newline (`2183_1`'s does not).
+1. Pick a host whose parameter types (`data/signatures.jsonl`) fit, not in `data/constraints.jsonl`.
 2. Write `fN.dfy`: the Python in a header comment, the prelude included and opened, and `Solve`
    with the host's parameter types in order.
 3. Run `DafnySteps annotate fN.dfy OUT enable=functions,seq,arrays` and point OUT's `include` at
