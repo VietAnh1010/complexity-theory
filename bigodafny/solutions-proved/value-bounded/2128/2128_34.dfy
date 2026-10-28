@@ -45,8 +45,8 @@
 include "../../../prelude.dfy"
 import opened Prelude
 
-// The second of two `array<T>` rows left in `solutions/`; see `2826_42.dfy` for
-// the first and `batches/cost-axioms/PLAN.md` § 2 for the rule they except.
+// This row keeps `array<T>`, not `seq`, for the same reason as `2826_42.dfy`:
+// the `seq` version is too slow to pass its gate.
 //
 // `arr` is sized `r + 1`, and `r` reaches 30000 in this row's own tests. The
 // inner loop walks `j` from `neg[i].0` to `r` writing `arr[j + neg[i].1]`, so a

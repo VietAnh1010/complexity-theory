@@ -10,6 +10,9 @@ data lines go to `old-record.jsonl` beside the file they came from.
 
 ## 2026-10-28
 
+- `COMPLEXITY.md` charges `var x :| x in s` 1, one step of set iteration, as `annotate` does.
+- `2826_42` and `2128_34`, rows and proofs: the header no longer calls them the last `array<T>`
+  rows; it says they keep `array` because the `seq` version is too slow for their gate.
 - `1453_483` and `1332_41`, rows and proofs: the `:|` witness used only in the loop's
   `invariant` and `decreases` is `ghost var`, so it no longer compiles into a second search.
   Both verify; `validate.py` (`1453_483`) and `difftest.py` (`1332_41`) pass.

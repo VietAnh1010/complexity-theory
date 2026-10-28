@@ -24,9 +24,8 @@
 include "../../prelude.dfy"
 import opened Prelude
 
-// The one `array<T>` left in `solutions/`. `batches/cost-axioms/PLAN.md` § 2
-// removed arrays from the corpus in favour of `seq`; this row is its single
-// recorded exception, and the exception is measured, not assumed.
+// This row keeps `array<T>`, not `seq`: the `seq` version is too slow to pass
+// `validate.py`, as measured below.
 //
 // The Python allocates a 1_000_004-entry table and fills 1_000_002 of it in a
 // loop, each entry reading an earlier one. Under `seq` that is 10^6 rounds of

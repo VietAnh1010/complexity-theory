@@ -24,6 +24,7 @@ each loop iteration, and each character a string operation produces.
 | `Keys`, `Values`, `Items` | `|m|` |
 | set membership and insertion | 1 |
 | set iteration | `|s|` |
+| `var x :| x in s` | 1: one step of iterating `s` |
 | `multiset(s)` | `|s|` |
 | multiset equality | `|a| + |b|` |
 | `Join(parts, sep)`, `sep` a string literal | `SumLen(parts) + |parts|` |
