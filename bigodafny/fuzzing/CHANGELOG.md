@@ -7,6 +7,7 @@ per change. Earlier changes are in `git log -- bigodafny/fuzzing`. Findings go i
 ## 2026-10-28
 
 - `fuzz.py --bound` finds `Solve` after an attribute, as in `method {:isolate_assertions} Solve`.
+- Doc 07 § Screening proofs rates the proofs stored tests cannot with `fuzz` inputs.
 - Docs 01, 06, 07, `Deghost.cs` and `steptrace.py` describe `TraceBound` as absent without an
   `ensures`, `trace=loops`, `counter=NAME` and the `fuzz` time limit.
 - `steptrace.py --trace LINE,..` prints no points table when no point is on those lines.

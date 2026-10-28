@@ -2,6 +2,30 @@
 
 Findings of the blind runs, newest first, one section per session.
 
+## 2026-10-28: screening proofs with fuzz inputs
+
+Batch `20261028-1601`: the 152 proofs that stored tests could not rate (`docs/07-steptrace.md`
+§ Screening proofs). Each proof was copied into a directory named by its SID, its `include`
+rewritten; 19 Sonnet agents wrote a worst-case `gen.py` per row, at most 4 `fuzz` calls each.
+
+- 136 rated: at least 4 grid points with an ok run, bound range at least 16x. All but the three
+  below fit `log(steps)` against `log(bound)` with slope 0.86 to 1.29.
+- Loose, with steps/bound falling toward 0:
+  - `704_351`: the loop runs about sqrt(2v) times; the bound is linear in v (`FuelInit`). Slope 0.49.
+  - `1678_68`: Euclid's depth is about log(rows); the bound is `rows + 15`. Slope 0.09.
+  - `1915_158`: the bound charges every gap's bit length, but the running gcd only shrinks, so
+    Euclid costs O(n + log V) in all. With n and the gap bits growing together, slope 0.5.
+  - All three charge a value-sized loop linearly; two sit in `solutions-proved/value-bounded/`.
+- `450_276` (slope 0.86) and `2225_120` (0.90) are not loose: steps/bound settles at 0.125 and 0.25.
+- 15 unrated: 13 bounds are constant or capped by the statement, so no grid grows them;
+  `2423_56` and `2926_54` need inputs that take over 10 s.
+- `2128_34`'s bound names ghost outputs (`r_final`, `span_total`), which `--bound` cannot express.
+- Six proofs have no bound for `fuzz` to read: `ensures var ...` or `ensures c ==> steps <= E`.
+  Rerun with `--bound` as one unconditional E, all six fit slope 1.
+- `1915_158`'s agent kept gaps 57 bits wide, so its table showed a flat 0.07. A generator that does not
+  grow every value the bound names cannot show such a bound loose.
+- Rows whose bound grows only through `|output|` (e.g. `1580_118`, `1739_447`) rate trivially.
+
 ## 2026-10-26: walks whose cost hides in global dynamics (F11, F12)
 
 Batches `20261026-1801` (F11, Haiku), `-1807` and `-1828` (F12, Haiku), `-1815` (F12, Sonnet). Both rows take

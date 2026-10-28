@@ -67,3 +67,15 @@ A proof in `solutions-proved/` can be a class looser than its code: it holds, bu
 On 2026-10-20 this rated 163 of 321 proofs, flagged 21, and 5 were loose (`5_100`,
 `1011_368`, `2913_484`, `1820_180`, `2586_20`; `bigodafny/CHANGELOG.md`).
 Run it again after new proofs land.
+
+Proofs the stored tests cannot rate need generated inputs:
+
+1. Copy each proof into a directory named by its SID, with its `include` of `prelude.dfy`
+   rewritten for the new depth.
+2. Write a `gen.py` per row that builds the costliest inputs and grows every size and value
+   the bound names (`experiments/fuzz/fuzz.py`).
+3. Run `fuzz.py` and fit its table, the costliest input per grid point, as in step 2.
+   A proof whose bound `fuzz` cannot read (`ensures var ...`, `ensures c ==> ...`) runs with
+   `--bound E`, E one unconditional expression.
+
+On 2026-10-28 this rated 136 of the remaining 152; 3 were loose (`experiments/fuzz/FINDINGS.md`).
