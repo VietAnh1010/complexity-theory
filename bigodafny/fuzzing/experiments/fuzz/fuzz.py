@@ -162,7 +162,7 @@ def fuzz(dfy, gen, per=3, counter=COUNTER, time_limit=TIME_LIMIT):
 
 def add_bound(text, bound, counter):
     """TEXT with `ensures COUNTER <= BOUND` added to Solve's signature."""
-    if not (m := re.search(rf"method Solve\b.*?ghost {counter}: nat\)", text, re.S)):
+    if not (m := re.search(rf"method [^(]*\bSolve\(.*?ghost {counter}: nat\)", text, re.S)):
         raise ValueError(f"no `method Solve ... ghost {counter}: nat)` to add the bound to")
     return text[:m.end()] + f"\n  ensures {counter} <= {bound}" + text[m.end():]
 
