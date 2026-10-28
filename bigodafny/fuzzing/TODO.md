@@ -48,12 +48,9 @@ changes go in `fuzzing/CHANGELOG.md`.
 - [x] Rule `arrays`; `let`, lambdas, tuple patterns, `assert P; e` in the table.
       A quantifier in compiled code is an error; `531_3456` and `1722_66` now
       recurse instead. With `enable=functions,seq,arrays`, 629 of 636 rows annotate.
-- [ ] `var x :| P` stops `annotate` (5 rows). Decide per kind:
-      - int-range search (`1453_483`, `1332_41`): rewrite as a loop, like the
-        quantifiers, or charge it as a loop over the range?
-      - pick from a set, `var x :| x in gg` (`976_1131`, `960_63`, `960_36`):
-        cost 1, or `|gg|`? Under `|gg|`, a loop that empties a set by picking
-        looks quadratic.
+- [x] `var x :| P` stops `annotate` (5 rows). (2026-10-28) The int-range witnesses in
+      `1453_483` and `1332_41` were proof-only: the rows and proofs declare them `ghost`.
+      `var x :| x in S` costs 1, a step of set iteration (`976_1131`, `960_63`, `960_36`).
 - [ ] Rows `2128_34`, `2826_42`: headers may still say the model has no arrays;
       `COMPLEXITY.md` now charges them.
 - [ ] `annotate`: AlternativeStmt, match statements, `:-` calls stop it (no rule yet)

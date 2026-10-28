@@ -167,6 +167,9 @@ public class Annotate {
     ForLoopStmt f => costs.OfAll([f.Start, f.End]),
     ReturnStmt r => Cost.Sum((r.Rhss ?? []).Select(costs.OfRhs)),
     PrintStmt p => costs.OfAll(p.Args),
+    // `x :| x in S`: one step of iterating S, whose whole iteration costs |S|
+    AssignSuchThatStmt { Expr: BinaryExpr { ResolvedOp: BinaryExpr.ResolvedOpcode.InSet, E0.Resolved: IdentifierExpr } pick } =>
+      Cost.Sum([new Cost { Const = 1 }, costs.Of(pick.E1)]),
     _ => throw new Unsupported(s, s.GetType().Name),
   };
 

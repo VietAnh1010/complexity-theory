@@ -6,6 +6,8 @@ per change. Earlier changes are in `git log -- bigodafny/fuzzing`. Findings go i
 
 ## 2026-10-28
 
+- `annotate` charges `var x :| x in S` 1, one step of iterating `S`; any other compiled `:|` still
+  stops it. Golden cases `such_that`, `unsupported_such_that`.
 - `steptrace.py --counter NAME` and `fuzz.py --counter NAME` run a `.dfy` whose counter is not
   `steps`, such as `annotate counter=NAME`'s output for a row that already declares `steps`.
   `fuzz.py --bound` adds `ensures NAME <= E`. `guard.py` does not accept `--counter`.
