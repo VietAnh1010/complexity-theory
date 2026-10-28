@@ -34,7 +34,7 @@ from collections import Counter
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))       # fuzzing/
-from steptrace import Runner, build  # first: it puts bigodafny/ on sys.path
+from steptrace import Runner  # first: it puts bigodafny/ on sys.path
 from common import _in_spec
 
 TOP = 5                                  # loops shown
@@ -99,13 +99,11 @@ def run_inputs(runner, inputs, points, deadline):
 def loop_counts(sid, dfy, costliest, counter, deadline):
     """Rerun each point's costliest input with the loop heads traced.
     Returns per point {line: iterations}, and {line: loop source}."""
-    _, points, _, _ = build(sid, "", dfy, counter)
-    lines = sorted({str(p["Line"]) for p in points if p["Kind"] == "loop"})
     counts = [{} for _ in costliest]
-    if not lines or not any(costliest):
+    if not any(costliest):
         return counts, {}
-    runner = Runner(sid, trace=",".join(lines), dfy=dfy, counter=counter)
-    loops = [p for p in runner.points if p["Kind"] == "loop"]
+    runner = Runner(sid, trace="loops", dfy=dfy, counter=counter)
+    loops = runner.points
     source = {p["Line"]: f"{p['Method']}: {p['src']}" for p in loops}
     for point, worst in enumerate(costliest):
         if worst and time.monotonic() < deadline:

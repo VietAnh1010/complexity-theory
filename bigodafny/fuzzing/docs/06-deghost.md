@@ -6,13 +6,14 @@ uses it as a Dafny plugin. The CLI writes the result to a file for reading.
 ## Usage
 
 ```bash
-DafnySteps/bin/Release/net10.0/DafnySteps deghost IN.dfy OUT.dfy [trace[=LINE,..]] [contracts] [points=P.json]
+DafnySteps/bin/Release/net10.0/DafnySteps deghost IN.dfy OUT.dfy [trace[=LINE,..|=loops]] [contracts] [points=P.json]
 ```
 
 | Argument | Effect |
 |---|---|
 | `trace` | adds `print <id>, steps;` after each change to `steps` and at the start of each loop body |
 | `trace=LINE,..` | the same, only for statements on those source lines of IN |
+| `trace=loops` | only the `print` at the start of each loop body |
 | `contracts` | adds `TraceRequires` and `TraceBound`, which check `Solve`'s `requires` and `ensures` at run time, and `TraceBoundValue`, the value of `E` in the first `ensures steps <= E` |
 | `points=P.json` | writes the id, method, line and kind of each `print` added by `trace` |
 

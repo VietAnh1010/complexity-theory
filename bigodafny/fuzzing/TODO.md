@@ -106,8 +106,9 @@ changes go in `fuzzing/CHANGELOG.md`.
       stored tests do. Of the 51 rows whose stored tests never end with a newline, the forced newline
       broke 12 and changed no parse in 37; `3079_85` and `3079_181` have stored tests their
       own parser rejects with either ending.
-- [ ] (2026-10-21) `fuzz` compiles the row 3 times per call: untraced, all points (to
-      find the loops), loops only.
+- [x] (2026-10-21) `fuzz` compiles the row 3 times per call: untraced, all points (to
+      find the loops), loops only. (2026-10-28) The plugin's `trace=loops` traces loop heads
+      only; `fuzz` compiles twice.
 - [ ] (2026-10-21) `steptrace.py`: move `HARNESS` into its own file? It stays a template:
       the call to `Solve` (`{args}`) is code built from the row's signature. `--log` is gone
       (2026-10-28). Keep the CLI if the stored-test audit (`docs/07-steptrace.md`) is

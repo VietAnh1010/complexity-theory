@@ -1,5 +1,5 @@
 // DafnySteps CLI.
-//   DafnySteps deghost IN.dfy OUT.dfy [trace[=LINE,..]] [contracts] [counter=steps] [points=P.json]
+//   DafnySteps deghost IN.dfy OUT.dfy [trace[=LINE,..|=loops]] [contracts] [counter=steps] [points=P.json]
 // prints the deghosted program (included files inlined) so it can be read and
 // tested; the plugin (Plugin.cs) applies the same pass inside `dafny`.
 //   DafnySteps annotate IN.dfy OUT.dfy [counter=steps] [enable=functions,seq,arrays]
@@ -18,8 +18,9 @@ public static class Cli {
     foreach (var a in args) {
       var (key, value) = a.Split('=', 2) is [var k, var v] ? (k, v) : (a, null);
       switch (key) {
+        case "trace" when value == "loops": pass.TraceKinds = ["loop"]; break;
         case "trace":
-          pass.Trace = true;
+          pass.TraceKinds = ["loop", "update"];
           pass.TraceLines = value?.Split(',').Select(int.Parse).ToHashSet();
           break;
         case "contracts": pass.Contracts = true; break;
@@ -52,7 +53,7 @@ public static class Cli {
       return await RunAnnotate(src, dst, annotate);
     }
     if (args is not ["deghost", var input, var output, ..]) {
-      Console.Error.WriteLine("usage: DafnySteps deghost IN.dfy OUT.dfy [trace[=LINE,..]] [contracts] [counter=steps] [points=P.json]\n"
+      Console.Error.WriteLine("usage: DafnySteps deghost IN.dfy OUT.dfy [trace[=LINE,..|=loops]] [contracts] [counter=steps] [points=P.json]\n"
                               + "       DafnySteps annotate IN.dfy OUT.dfy [counter=steps] [enable=functions,seq,arrays]");
       return 2;
     }

@@ -1,7 +1,7 @@
 // The deghost pass as a Dafny plugin:
 //   dafny translate py --plugin "DafnySteps.dll,trace contracts points=P.json" row.dfy
 // Dafny splits the arguments after the first comma on spaces. Arguments:
-// `trace` (or `trace=LINE,..`: only those source lines), `contracts`,
+// `trace` (or `trace=LINE,..`: only those source lines; `trace=loops`: only loop heads), `contracts`,
 // `counter=<name>`, `points=<path>` (the trace points, as JSON).
 //
 // Plugins get PreResolve once per module, in dependency order, so the first

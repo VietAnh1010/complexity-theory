@@ -13,6 +13,7 @@ python3 steptrace.py SID --dfy FILE      # a different .dfy, e.g. annotate's out
 python3 steptrace.py SID --dfy FILE --counter cost   # FILE's counter is `cost`, not `steps`
 python3 steptrace.py SID --trace         # also steps at each program point
 python3 steptrace.py SID --trace 37,42  # only points on lines 37, 42
+python3 steptrace.py SID --trace loops   # only loop heads
 ```
 
 Results go to `out/trace/<SID>.jsonl`.

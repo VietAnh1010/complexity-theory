@@ -26,8 +26,9 @@ public record Point(int Id, string Method, int Line, int Col, string Kind);
 
 public class Deghost {
   public string Counter = "steps";
-  /// Insert a trace point after each counter update and at each loop head.
-  public bool Trace;
+  /// Point kinds to insert: "update" after each counter update, "loop" at each
+  /// loop head. Empty: no trace.
+  public HashSet<string> TraceKinds = [];
   /// Source lines that get trace points; null: every line.
   public HashSet<int> TraceLines;
   /// Add TraceRequires and TraceBound, Solve's contract as compiled methods,
@@ -54,7 +55,7 @@ public class Deghost {
 
     FindCompiledCode(methods, Contracts ? solve : null);
     MakeCompiled();
-    if (Trace) {
+    if (TraceKinds.Count > 0) {
       foreach (var method in methods.Where(HasCounter)) {
         InsertTracePoints(method);
       }
@@ -214,10 +215,10 @@ public class Deghost {
         if (!Selected(s)) {
           continue;
         }
-        if (s is OneBodyLoopStmt { Body: { } loopBody }) {
+        if (TraceKinds.Contains("loop") && s is OneBodyLoopStmt { Body: { } loopBody }) {
           loopBody.Body.Insert(0, TracePoint(method, s, "loop"));
         }
-        if (AssignsCounter(s)) {
+        if (TraceKinds.Contains("update") && AssignsCounter(s)) {
           body.Add(TracePoint(method, s, "update"));
         }
       }
