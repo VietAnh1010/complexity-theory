@@ -132,9 +132,7 @@ method Solve(n: int, pairs: seq<seq<int>>) returns (output: string, ghost steps:
     invariant steps <= base + (k - 1) * K
   {
     var delupto := aArr[k] - bArr[k];
-    var idx: int;
-    ghost var bs: nat;
-    idx, bs := BisectLeft(aArr, 0, m, delupto);
+    var idx, bs := BisectLeft(aArr, 0, m, delupto);
     steps := steps + bs;
     var prevIdx := idx - 1;
     if prevIdx < 0 { prevIdx := m + prevIdx; }

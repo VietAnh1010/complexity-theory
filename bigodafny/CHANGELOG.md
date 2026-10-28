@@ -10,6 +10,9 @@ data lines go to `old-record.jsonl` beside the file they came from.
 
 ## 2026-10-28
 
+- `2826_81`'s proof binds `BisectLeft`'s ghost cost as `var idx, bs := ...`, not a bare
+  `var idx: int;` then an assignment: the bare declaration compiled to `idx = 0`, so the
+  proof's Python differed from the row's. They are byte-identical now.
 - A proof states its bound as one top-level `ensures steps <= E`, `E` over `Solve`'s inputs
   and `|output|` (`COMPLEXITY.md` § What a proof means; the `bigodafny-prove` skill). Seven
   proofs are restated so: `457_27`, `1738_24`, `2254_6` split cases with `==>`; `2826_81`,
