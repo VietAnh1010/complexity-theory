@@ -144,8 +144,7 @@ def fuzz(dfy, gen, per=3, counter="steps", time_limit=TIME_LIMIT):
     notes = [f"note: {n}" for n in runner.notes]
     statuses, broken, gen_error, parse_error, costliest = run_inputs(runner, inputs, len(grid), deadline)
     runner.close()
-    counts, source = (loop_counts(sid, dfy, costliest, counter, deadline)
-                      if time.monotonic() < deadline else ([{}] * len(grid), {}))
+    counts, source = loop_counts(sid, dfy, costliest, counter, deadline)
     lines = notes + format_table(grid, costliest, counts, source)
     lines.append(f"generated: {dict(statuses)}")
     if time.monotonic() > deadline:
