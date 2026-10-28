@@ -51,8 +51,9 @@ changes go in `fuzzing/CHANGELOG.md`.
 - [x] `var x :| P` stops `annotate` (5 rows). (2026-10-28) The int-range witnesses in
       `1453_483` and `1332_41` were proof-only: the rows and proofs declare them `ghost`.
       `var x :| x in S` costs 1, a step of set iteration (`976_1131`, `960_63`, `960_36`).
-- [ ] Rows `2128_34`, `2826_42`: headers may still say the model has no arrays;
-      `COMPLEXITY.md` now charges them.
+- [x] Rows `2128_34`, `2826_42`: headers may still say the model has no arrays;
+      `COMPLEXITY.md` now charges them. (2026-10-28) They called themselves the last
+      `array<T>` rows; 18 rows use arrays. Reworded.
 - [ ] `annotate`: AlternativeStmt, match statements, `:-` calls stop it (no rule yet)
 - [x] `TraceBound` is `true` when Solve has no `ensures` (annotated rows). (2026-10-28) No
       `ensures`, no `TraceBound`, no `bound_ok`

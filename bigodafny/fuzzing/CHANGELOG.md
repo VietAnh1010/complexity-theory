@@ -6,6 +6,7 @@ per change. Earlier changes are in `git log -- bigodafny/fuzzing`. Findings go i
 
 ## 2026-10-28
 
+- `steptrace.py --trace LINE,..` prints no points table when no point is on those lines.
 - `annotate` charges `var x :| x in S` 1, one step of iterating `S`; any other compiled `:|` still
   stops it. Golden cases `such_that`, `unsupported_such_that`.
 - `steptrace.py --counter NAME` and `fuzz.py --counter NAME` run a `.dfy` whose counter is not

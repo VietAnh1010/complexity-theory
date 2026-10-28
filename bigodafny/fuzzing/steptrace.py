@@ -244,7 +244,7 @@ def main(argv=None):
         print(f"test {k:>3}  {res['status']:<8} steps={res.get('steps')}  "
               f"input_len={len(text)}  bound={res.get('bound', '-')}  bound_ok={res.get('bound_ok', '-')}")
     r.close()
-    if a.trace is not None and recs and "points" in recs[-1]:
+    if recs and recs[-1].get("points"):
         print(f"\npoints, last test ({len(texts[-1])} chars):")
         for p in recs[-1]["points"]:
             print(f"  L{p['Line']:<4} {p['Kind']:<6} hits={p['hits']:<7} "
