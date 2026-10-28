@@ -101,9 +101,11 @@ changes go in `fuzzing/CHANGELOG.md`.
       tests to tell.
 - [ ] (2026-10-26) `blind.py grade` assigns `guard.log` lines to rows by path, so a denial with no
       path (`true`, `echo skip`) voids nothing. Map the line's agent id to its row via `.locks/`.
-- [ ] (2026-10-26) `fuzz.py` always adds a final newline; `2183_1`'s parser counts the empty last
-      line as a row and fails its assert on every input. Count the rows it breaks; try the text
-      without the newline when parse fails.
+- [x] (2026-10-26) `fuzz.py` always adds a final newline; `2183_1`'s parser counts the empty last
+      line as a row and fails its assert on every input. (2026-10-28) An input ends as the row's
+      stored tests do. Of the 51 rows whose stored tests never end with a newline, the forced newline
+      broke 12 and changed no parse in 37; `3079_85` and `3079_181` have stored tests their
+      own parser rejects with either ending.
 - [ ] (2026-10-21) `fuzz` compiles the row 3 times per call: untraced, all points (to
       find the loops), loops only.
 - [ ] (2026-10-21) `steptrace.py`: move `HARNESS` into its own file? It stays a template:

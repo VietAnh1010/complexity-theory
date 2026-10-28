@@ -51,8 +51,7 @@ def generate(gen, per):
             for copy in range(per):
                 try:
                     text = make(random.Random(f"{point}/{family}/{copy}"), **sizes)
-                    # BigOBench's parsers need the final newline that input() would not.
-                    inputs.append([point, family, text if text.endswith("\n") else text + "\n", None])
+                    inputs.append([point, family, text, None])
                 except Exception as e:
                     inputs.append([point, family, None, f"{family} at {sizes}: {type(e).__name__}: {e}"[:300]])
     return module["GRID"], inputs
@@ -72,7 +71,12 @@ def run_inputs(runner, inputs, points, deadline):
     generator and parse errors, and per point the costliest (family, result, text)."""
     statuses, broken, gen_error, parse_error = Counter(), 0, None, None
     costliest = [None] * points
+    newline = any(seed.endswith("\n") for seed in runner.seeds())    # as the row's stored tests end
     for point, family, text, error in inputs:
+        if text is not None:
+            text = text.removesuffix("\n")
+            if newline:
+                text += "\n"
         if error:
             result = {"status": "gen"}
             gen_error = gen_error or error

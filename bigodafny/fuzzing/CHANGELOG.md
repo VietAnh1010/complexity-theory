@@ -10,6 +10,8 @@ per change. Earlier changes are in `git log -- bigodafny/fuzzing`. Findings go i
   `steps`, such as `annotate counter=NAME`'s output for a row that already declares `steps`.
   `fuzz.py --bound` adds `ensures NAME <= E`. `guard.py` does not accept `--counter`.
 - `steptrace.py` has no `--log` and no `LOG_CAP`; nothing used them.
+- `fuzz.py` ends a generated input with a newline only if one of the row's stored tests ends
+  with one; it added one to every input, which broke parsers like `2183_1`'s.
 - `fuzz.py --time-limit S` (default 300) skips inputs and loop reruns not started within
   S seconds and counts the inputs as `time-limit`. `BRIEF.md` gives agents the cap (`{{TIME_LIMIT}}`);
   `guard.py` does not accept the flag.
