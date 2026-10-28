@@ -66,7 +66,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
   var k := MaxSeq(a_list);          // recursive prelude fn over a_list: charge |a_list|
   steps := steps + n;
   MaxSeqIn(a_list);
-  var m :| 0 <= m < |a_list| && a_list[m] == k;
+  ghost var m :| 0 <= m < |a_list| && a_list[m] == k;
   var t := 0;
   while a_list[t] != k
     invariant 0 <= t <= m

@@ -8,6 +8,12 @@ change lands, update them and add a bullet here.
 A campaign's own run record stays in `batches/<campaign>/README.md`. Superseded
 data lines go to `old-record.jsonl` beside the file they came from.
 
+## 2026-10-28
+
+- `1453_483` and `1332_41`, rows and proofs: the `:|` witness used only in the loop's
+  `invariant` and `decreases` is `ghost var`, so it no longer compiles into a second search.
+  Both verify; `validate.py` (`1453_483`) and `difftest.py` (`1332_41`) pass.
+
 ## 2026-10-22
 
 - `1830_0` (O(nlogn)) and `276_1206` (O(n*m)) are proved O(n) in `solutions-proved/`, corrected

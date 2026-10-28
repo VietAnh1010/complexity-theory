@@ -63,7 +63,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
   var k := MaxSeq(a_list);
   MaxSeqIn(a_list);
-  var m :| 0 <= m < |a_list| && a_list[m] == k;
+  ghost var m :| 0 <= m < |a_list| && a_list[m] == k;
   var t := 0;
   while a_list[t] != k
     invariant 0 <= t <= m
