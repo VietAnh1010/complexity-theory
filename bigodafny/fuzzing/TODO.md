@@ -79,8 +79,9 @@ changes go in `fuzzing/CHANGELOG.md`.
       over every call of its method, so it hides which call is costly when a
       helper runs on different sizes (`Fac2286(n)` and `Fac2286(k)`). Would
       record, per point, steps at each call's exit, grouped by call.
-- [ ] `annotate` refuses a row that already declares `steps` (`1387_34`, `1336_157`);
-      `counter=NAME` works, but `steptrace.py` has no `--counter` yet
+- [x] `annotate` refuses a row that already declares `steps` (`1387_34`, `1336_157`);
+      `counter=NAME` picks another name, and `steptrace.py` and `fuzz.py` take `--counter`.
+      `guard.py` does not accept `--counter`: `blind.py` annotates with `steps`
 - [ ] (2026-10-21) `data/constraints.jsonl` quotes limits for few problems, so `fuzz`
       runs out-of-spec inputs for the rest.
 - [x] (2026-10-21) Concurrent `blind-guess` agents share one `fuzz` server; one agent ending

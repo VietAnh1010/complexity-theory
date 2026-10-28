@@ -1,6 +1,6 @@
 """The `blind-guess` agent's `fuzz` command, the only command `guard.py` lets its Bash run.
 
-    .venv/bin/python3 experiments/fuzz/fuzz.py DFY GEN [--per N] [--bound E]
+    .venv/bin/python3 experiments/fuzz/fuzz.py DFY GEN [--per N] [--bound E] [--counter NAME]
 
 Runs the row's step counter on inputs from the agent's GEN and prints one table.
 The row's SID is the name of DFY's directory. GEN defines
@@ -17,7 +17,8 @@ and steps / bound, and how often the busiest loops ran. Loop counts come from
 rerunning that one input with only the loop heads traced.
 
 `--bound E` runs a copy of DFY with `ensures steps <= E` added to Solve. The copy
-lies beside DFY while it runs.
+lies beside DFY while it runs. `--counter NAME` names the counter when it is not
+`steps`; `guard.py` does not accept it.
 
 Call k writes `attempts/<k>/table.txt` beside DFY: the DFY name, E, the attempt
 holding the GEN that ran, then the output. It copies GEN to `attempts/<k>/gen.py`
@@ -84,15 +85,15 @@ def run_inputs(runner, inputs, points):
     return statuses, broken, gen_error, parse_error, costliest
 
 
-def loop_counts(sid, dfy, costliest):
+def loop_counts(sid, dfy, costliest, counter=None):
     """Rerun each point's costliest input with the loop heads traced.
     Returns per point {line: iterations}, and {line: loop source}."""
-    _, points, _, _ = build(sid, "", dfy)
+    _, points, _, _ = build(sid, "", dfy, counter)
     lines = sorted({str(p["Line"]) for p in points if p["Kind"] == "loop"})
     counts = [{} for _ in costliest]
     if not lines or not any(costliest):
         return counts, {}
-    runner = Runner(sid, trace=",".join(lines), dfy=dfy)
+    runner = Runner(sid, trace=",".join(lines), dfy=dfy, counter=counter)
     loops = [p for p in runner.points if p["Kind"] == "loop"]
     source = {p["Line"]: f"{p['Method']}: {p['src']}" for p in loops}
     for point, worst in enumerate(costliest):
@@ -127,15 +128,15 @@ def format_table(grid, costliest, counts, source):
     return lines
 
 
-def fuzz(dfy, gen, per=3):
+def fuzz(dfy, gen, per=3, counter=None):
     """Run GEN's inputs on DFY and return the table as text."""
     sid = Path(dfy).parent.name
     grid, inputs = run_generator(gen, per)
-    runner = Runner(sid, dfy=dfy)
+    runner = Runner(sid, dfy=dfy, counter=counter)
     notes = [f"note: {n}" for n in runner.notes]
     statuses, broken, gen_error, parse_error, costliest = run_inputs(runner, inputs, len(grid))
     runner.close()
-    counts, source = loop_counts(sid, dfy, costliest)
+    counts, source = loop_counts(sid, dfy, costliest, counter)
     lines = notes + format_table(grid, costliest, counts, source)
     lines.append(f"generated: {dict(statuses)}")
     if gen_error:
@@ -147,11 +148,11 @@ def fuzz(dfy, gen, per=3):
     return "\n".join(lines)
 
 
-def add_bound(text, bound):
-    """TEXT with `ensures steps <= BOUND` added to Solve's signature."""
-    if not (m := re.search(r"method Solve\b.*?ghost steps: nat\)", text, re.S)):
-        raise ValueError("no `method Solve ... ghost steps: nat)` to add the bound to")
-    return text[:m.end()] + f"\n  ensures steps <= {bound}" + text[m.end():]
+def add_bound(text, bound, counter="steps"):
+    """TEXT with `ensures COUNTER <= BOUND` added to Solve's signature."""
+    if not (m := re.search(rf"method Solve\b.*?ghost {counter}: nat\)", text, re.S)):
+        raise ValueError(f"no `method Solve ... ghost {counter}: nat)` to add the bound to")
+    return text[:m.end()] + f"\n  ensures {counter} <= {bound}" + text[m.end():]
 
 
 def keep_gen(row_dir, attempt, gen_text):
@@ -170,6 +171,7 @@ def main():
     parser.add_argument("gen", help="absolute path of gen.py")
     parser.add_argument("--per", type=int, default=3, help="inputs per family and grid point")
     parser.add_argument("--bound", help="E: run DFY with `ensures steps <= E` added to Solve")
+    parser.add_argument("--counter", default="steps", help="the counter's name in DFY")
     args = parser.parse_args()
     dfy = Path(args.dfy)
     row_dir = dfy.parent
@@ -180,9 +182,9 @@ def main():
     run_dfy = row_dir / f".bound-{attempt}.dfy" if args.bound else dfy
     try:
         if args.bound:
-            run_dfy.write_text(add_bound(dfy.read_text(), args.bound))
+            run_dfy.write_text(add_bound(dfy.read_text(), args.bound, args.counter))
         header.append(f"gen: attempts/{keep_gen(row_dir, attempt, Path(args.gen).read_text())}/gen.py")
-        output, failed = fuzz(str(run_dfy), args.gen, args.per), False
+        output, failed = fuzz(str(run_dfy), args.gen, args.per, args.counter), False
     except Exception as e:
         output, failed = f"{type(e).__name__}: {e}", True
     finally:

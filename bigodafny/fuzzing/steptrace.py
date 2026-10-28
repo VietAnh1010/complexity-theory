@@ -53,9 +53,10 @@ def plugin():
     return DLL
 
 
-def build(sid, trace=None, dfy=None):
+def build(sid, trace=None, dfy=None, counter=None):
     """Compile `dfy` (default: the row's proof copy) with the counter compiled.
-    `trace`: None, "" (every point) or "LINE,..". -> (pydir, points, has_contracts, notes)."""
+    `trace`: None, "" (every point) or "LINE,..". `counter`: the counter's name, if
+    not `steps`. -> (pydir, points, has_contracts, notes)."""
     other = dfy is not None
     dfy = Path(dfy) if other else find_proof(sid)
     work = BUILD / f"trace_{sid}{'' if trace is None else '_t'}{'_file_' + dfy.stem if other else ''}"
@@ -65,6 +66,7 @@ def build(sid, trace=None, dfy=None):
     for contracts in (True, False):
         args = " ".join([f"trace={trace}" if trace else "trace"] * (trace is not None)
                         + ["contracts"] * contracts
+                        + [f"counter={counter}"] * bool(counter)
                         + [f"points={points_path}"])
         p = subprocess.run(["dafny", "translate", "py", str(dfy), "--no-verify",
                             "--include-runtime", "--output", str(work / "out"),
@@ -185,13 +187,13 @@ for line in sys.stdin:
 class Runner:
     """A long-lived Python process running one row's counter on input texts."""
 
-    def __init__(self, sid, trace=None, log=None, dfy=None):
+    def __init__(self, sid, trace=None, log=None, dfy=None, counter=None):
         self.sid = sid
         tasks = {t["solution_id"]: t for t in read_jsonl(DATA / "tasks.jsonl")}
         self.task = tasks[sid]
         sig = next(s for s in read_jsonl(DATA / "signatures.jsonl")
                    if s["problem_id"] == self.task["problem_id"])
-        pydir, self.points, contracts, self.notes = build(sid, trace, dfy)
+        pydir, self.points, contracts, self.notes = build(sid, trace, dfy, counter)
         work = pydir.parent
         (work / "dataclass.py").write_text(self.task["dataclass_code"], encoding="utf-8")
         args = ", ".join(conv_expr(p["dafny_type"], f'inp.{p["py_name"]}')
@@ -238,9 +240,10 @@ def main(argv=None):
     ap.add_argument("--dfy", help="the .dfy to run (default: the row's proof copy)")
     ap.add_argument("--trace", nargs="?", const="", metavar="LINE,..",
                     help="record steps at each program point, or only on these source lines")
+    ap.add_argument("--counter", help="the counter's name in the .dfy (default: steps)")
     ap.add_argument("--log", help=f"with --trace: write each event to this file, up to {LOG_CAP}")
     a = ap.parse_args(argv)
-    r = Runner(a.sid, trace=a.trace, log=a.log, dfy=a.dfy)
+    r = Runner(a.sid, trace=a.trace, log=a.log, dfy=a.dfy, counter=a.counter)
     for n in r.notes:
         log(f"{a.sid}: {n}")
     texts = [Path(a.input).read_text()] if a.input else r.seeds()

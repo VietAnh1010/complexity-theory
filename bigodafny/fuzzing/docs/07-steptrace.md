@@ -10,6 +10,7 @@ the bound in `Solve`'s `ensures`. By default it runs the row's proof copy in
 python3 steptrace.py SID                 # every stored test of the row
 python3 steptrace.py SID --input FILE    # one input from a file
 python3 steptrace.py SID --dfy FILE      # a different .dfy, e.g. annotate's output
+python3 steptrace.py SID --dfy FILE --counter cost   # FILE's counter is `cost`, not `steps`
 python3 steptrace.py SID --trace         # also steps at each program point
 python3 steptrace.py SID --trace 37,42 --log ev.tsv   # only points on lines 37, 42; log each event
 ```

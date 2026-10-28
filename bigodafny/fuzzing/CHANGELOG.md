@@ -4,6 +4,12 @@ What changed in `fuzzing/`, newest first, one dated section per session and one 
 per change. Earlier changes are in `git log -- bigodafny/fuzzing`. Findings go in
 `experiments/fuzz/FINDINGS.md`, open work in `TODO.md`.
 
+## 2026-10-28
+
+- `steptrace.py --counter NAME` and `fuzz.py --counter NAME` run a `.dfy` whose counter is not
+  `steps`, such as `annotate counter=NAME`'s output for a row that already declares `steps`.
+  `fuzz.py --bound` adds `ensures NAME <= E`. `guard.py` does not accept `--counter`.
+
 ## 2026-10-26
 
 - `BRIEF.md` lists `O(n**1.5)` among the class forms, and `guard.py` accepts a `.` in a class.
