@@ -8,8 +8,8 @@ everything flowing into it compiled, on Dafny's own AST, before resolution;
 With `--trace`, the plugin also inserts `print <point>, steps;` after each
 assignment to `steps` and at each loop head; the harness captures those prints.
 Points are listed in `points.json` by line and column of the proof's source.
-`--trace LINE,..` inserts points on those source lines only; an unselected
-point costs nothing at run time.
+`--trace LINE,..` inserts points on those source lines only, `--trace loops` only
+at loop heads; an unselected point costs nothing at run time.
 
 The plugin also compiles Solve's contract: `TraceRequires` rejects an input
 the proof does not cover; `TraceBound`, present when Solve has an `ensures`,

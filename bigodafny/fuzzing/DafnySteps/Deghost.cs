@@ -32,8 +32,8 @@ public class Deghost {
   public HashSet<string> TraceKinds = [];
   /// Source lines that get trace points; null: every line.
   public HashSet<int> TraceLines;
-  /// Add TraceRequires and TraceBound, Solve's contract as compiled methods,
-  /// and TraceBoundValue, the value of its step bound.
+  /// Add TraceRequires and, if Solve has an ensures, TraceBound: Solve's contract
+  /// as compiled methods; and TraceBoundValue, the value of its step bound.
   public bool Contracts;
   public readonly List<Point> Points = [];
 

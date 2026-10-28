@@ -31,9 +31,9 @@ An input that breaks it shows the guess is too low.
 | add a ghost counter | `DafnySteps annotate` | works; stops on code outside the cost model unless a rule is enabled (08) |
 | make it run | `DafnySteps deghost` | works |
 | run on stored tests | `steptrace.py --dfy FILE` | works on any file |
-| run on generated inputs | `experiments/fuzz/fuzz.py` | works; the agent writes the generator |
+| run on generated inputs | `experiments/fuzz/fuzz.py` | works; the agent writes the generator; a call starts no input after 300 s |
 | guess a bound | LLM | not built |
-| check the bound | `TraceBound` | works; always true when there is no `ensures` |
+| check the bound | `TraceBound` | works; absent when there is no `ensures` |
 
 ## Tools
 

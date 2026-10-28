@@ -6,7 +6,7 @@ uses it as a Dafny plugin. The CLI writes the result to a file for reading.
 ## Usage
 
 ```bash
-DafnySteps/bin/Release/net10.0/DafnySteps deghost IN.dfy OUT.dfy [trace[=LINE,..|=loops]] [contracts] [points=P.json]
+DafnySteps/bin/Release/net10.0/DafnySteps deghost IN.dfy OUT.dfy [trace[=LINE,..|=loops]] [contracts] [counter=NAME] [points=P.json]
 ```
 
 | Argument | Effect |
@@ -14,7 +14,8 @@ DafnySteps/bin/Release/net10.0/DafnySteps deghost IN.dfy OUT.dfy [trace[=LINE,..
 | `trace` | adds `print <id>, steps;` after each change to `steps` and at the start of each loop body |
 | `trace=LINE,..` | the same, only for statements on those source lines of IN |
 | `trace=loops` | only the `print` at the start of each loop body |
-| `contracts` | adds `TraceRequires` and `TraceBound`, which check `Solve`'s `requires` and `ensures` at run time, and `TraceBoundValue`, the value of `E` in the first `ensures steps <= E` |
+| `contracts` | adds `TraceRequires` and, when `Solve` has an `ensures`, `TraceBound`, which check `Solve`'s `requires` and `ensures` at run time, and `TraceBoundValue`, the value of `E` in the first `ensures steps <= E` |
+| `counter=NAME` | the counter to compile; `steps` by default |
 | `points=P.json` | writes the id, method, line and kind of each `print` added by `trace` |
 
 ## What becomes compiled
@@ -49,4 +50,4 @@ method F(x: int)                       method F(x: int)
 ```
 
 - `TraceBound` leaves out an `ensures` that mentions a ghost out-parameter.
-- If `Solve` has no `ensures`, `TraceBound` always returns true.
+- If `Solve` has no `ensures`, there is no `TraceBound`.

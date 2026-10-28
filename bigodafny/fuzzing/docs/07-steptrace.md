@@ -24,7 +24,7 @@ Results go to `out/trace/<SID>.jsonl`.
    If the `contracts` checks do not compile, it compiles again without them.
 2. Starts `harness.py`, one Python process that stays open and runs `Solve`.
 3. For each input: parses it with the row's `Input.from_str`, checks
-   `TraceRequires`, runs `Solve`, checks `TraceBound`.
+   `TraceRequires`, runs `Solve`, checks `TraceBound` if there is one.
 
 ## Status of each run
 
