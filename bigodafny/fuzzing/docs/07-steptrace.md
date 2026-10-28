@@ -12,7 +12,7 @@ python3 steptrace.py SID --input FILE    # one input from a file
 python3 steptrace.py SID --dfy FILE      # a different .dfy, e.g. annotate's output
 python3 steptrace.py SID --dfy FILE --counter cost   # FILE's counter is `cost`, not `steps`
 python3 steptrace.py SID --trace         # also steps at each program point
-python3 steptrace.py SID --trace 37,42 --log ev.tsv   # only points on lines 37, 42; log each event
+python3 steptrace.py SID --trace 37,42  # only points on lines 37, 42
 ```
 
 Results go to `out/trace/<SID>.jsonl`.
@@ -43,7 +43,6 @@ Results go to `out/trace/<SID>.jsonl`.
   `steps / bound` falling as the input grows means the bound is loose.
 - `--trace` is slow: every trace point costs two Python calls.
   `--trace LINE,..` compiles only the points on those lines; the others cost nothing.
-- `--log FILE` writes one line per event, `test point steps`, up to 100,000 events.
 
 ## Screening proofs for loose bounds
 

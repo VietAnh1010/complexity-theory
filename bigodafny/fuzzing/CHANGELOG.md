@@ -9,6 +9,7 @@ per change. Earlier changes are in `git log -- bigodafny/fuzzing`. Findings go i
 - `steptrace.py --counter NAME` and `fuzz.py --counter NAME` run a `.dfy` whose counter is not
   `steps`, such as `annotate counter=NAME`'s output for a row that already declares `steps`.
   `fuzz.py --bound` adds `ensures NAME <= E`. `guard.py` does not accept `--counter`.
+- `steptrace.py` has no `--log` and no `LOG_CAP`; nothing used them.
 
 ## 2026-10-26
 

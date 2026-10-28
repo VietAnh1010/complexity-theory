@@ -63,7 +63,7 @@ changes go in `fuzzing/CHANGELOG.md`.
 - [ ] Decide what to gather from a trace. The consumer is an LLM agent, so a
       log with an event per hit (millions of lines) is useless. Now: per
       point, hit count and min/max/last steps. `--trace LINE,..` compiles only
-      the points on those lines; `--log FILE` writes events, capped at 10^5.
+      the points on those lines.
       Open: what an agent needs (e.g. steps per loop iteration, against the
       invariant's bound), and how to gather it without paying one print per
       hit: `--trace` costs one Python call pair per event (`5_100`: 1.2 s
@@ -105,6 +105,7 @@ changes go in `fuzzing/CHANGELOG.md`.
       without the newline when parse fails.
 - [ ] (2026-10-21) `fuzz` compiles the row 3 times per call: untraced, all points (to
       find the loops), loops only.
-- [ ] (2026-10-21) `steptrace.py`: move `HARNESS` into its own file; drop `--log` and
-      `LOG_CAP` (their only user, `./trace`, is gone). Keep the CLI if the stored-test
-      audit (`docs/07-steptrace.md`) is still wanted: undecided.
+- [ ] (2026-10-21) `steptrace.py`: move `HARNESS` into its own file? It stays a template:
+      the call to `Solve` (`{args}`) is code built from the row's signature. `--log` is gone
+      (2026-10-28). Keep the CLI if the stored-test audit (`docs/07-steptrace.md`) is
+      still wanted: undecided.

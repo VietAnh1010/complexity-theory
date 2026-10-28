@@ -85,7 +85,7 @@ def run_inputs(runner, inputs, points):
     return statuses, broken, gen_error, parse_error, costliest
 
 
-def loop_counts(sid, dfy, costliest, counter=None):
+def loop_counts(sid, dfy, costliest, counter="steps"):
     """Rerun each point's costliest input with the loop heads traced.
     Returns per point {line: iterations}, and {line: loop source}."""
     _, points, _, _ = build(sid, "", dfy, counter)
@@ -128,7 +128,7 @@ def format_table(grid, costliest, counts, source):
     return lines
 
 
-def fuzz(dfy, gen, per=3, counter=None):
+def fuzz(dfy, gen, per=3, counter="steps"):
     """Run GEN's inputs on DFY and return the table as text."""
     sid = Path(dfy).parent.name
     grid, inputs = run_generator(gen, per)
