@@ -10,6 +10,8 @@ per change. Earlier changes are in `git log -- bigodafny/fuzzing`. Findings go i
   `steps`, such as `annotate counter=NAME`'s output for a row that already declares `steps`.
   `fuzz.py --bound` adds `ensures NAME <= E`. `guard.py` does not accept `--counter`.
 - `steptrace.py` has no `--log` and no `LOG_CAP`; nothing used them.
+- `steptrace.py`'s harness imports Dafny's `module_.default__` once, as `row`, and detects each
+  contract check with `hasattr`; `build` no longer returns whether contracts compiled.
 - `deghost contracts` adds no `TraceBound` when `Solve` has no `ensures`, so `steptrace.py`
   reports no `bound_ok` for such a row, not `true`. Seven golden outputs lose the method.
 - `steptrace.build`'s `trace` is `None`, `all`, `loops` or `LINE,..`. The default counter, the

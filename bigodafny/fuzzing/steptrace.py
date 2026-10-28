@@ -55,7 +55,7 @@ def plugin():
 
 def build(sid, trace=None, dfy=None, counter=COUNTER):
     """Compile `dfy` (default: the row's proof copy) with the counter compiled.
-    `trace`: None, "all", "loops" or "LINE,..". -> (pydir, points, has_contracts, notes)."""
+    `trace`: None, "all", "loops" or "LINE,..". -> (pydir, points, notes)."""
     other = dfy is not None
     dfy = Path(dfy) if other else find_proof(sid)
     work = BUILD / f"trace_{sid}{'' if trace is None else '_t'}{'_file_' + dfy.stem if other else ''}"
@@ -79,7 +79,7 @@ def build(sid, trace=None, dfy=None, counter=COUNTER):
             src = dfy.read_text(encoding="utf-8").split("\n")
             for pt in points:
                 pt["src"] = src[pt["Line"] - 1].strip()[:80]
-            return work / "out-py", points, contracts, notes
+            return work / "out-py", points, notes
         notes.append(f"build {'with' if contracts else 'without'} contracts failed: "
                      + (p.stdout + p.stderr).strip()[-400:])
     raise RuntimeError(f"{sid}: cannot compile the counter:\n" + "\n".join(notes))
@@ -92,7 +92,7 @@ from fractions import Fraction
 sys.path.insert(0, {pydir!r})
 sys.setrecursionlimit(100000)
 import _dafny
-import module_
+from module_ import default__ as row    # Dafny compiles the row's top-level methods into this class
 
 def _mkreal(x):
     f = Fraction(x).limit_denominator(10 ** 12)
@@ -150,18 +150,18 @@ for line in sys.stdin:
             inp = Input.from_str(req["input"])
         except Exception as e:
             raise _Unparsed(e)
-        if {contracts} and not module_.default__.TraceRequires({args}):
+        if hasattr(row, "TraceRequires") and not row.TraceRequires({args}):
             res = {{"status": "requires"}}
         else:
-            outs = module_.default__.Solve({args})
+            outs = row.Solve({args})
             steps = outs[1]
             res = {{"status": "ok", "steps": int(steps), "output_len": len(outs[0]),
                     "hits": {{str(k): v for k, v in hits.items()}}}}
-            if hasattr(module_.default__, "TraceBound"):
+            if hasattr(row, "TraceBound"):
                 hits.clear()            # TraceBound's prints are not hits of this run
-                res["bound_ok"] = bool(module_.default__.TraceBound({args}, *outs))
-                if hasattr(module_.default__, "TraceBoundValue"):
-                    res["bound"] = int(module_.default__.TraceBoundValue({args}, *outs))
+                res["bound_ok"] = bool(row.TraceBound({args}, *outs))
+                if hasattr(row, "TraceBoundValue"):
+                    res["bound"] = int(row.TraceBoundValue({args}, *outs))
     except _Timeout:
         res = {{"status": "timeout"}}
     except _Unparsed as e:
@@ -183,14 +183,14 @@ class Runner:
         self.task = next(t for t in read_jsonl(DATA / "tasks.jsonl") if t["solution_id"] == sid)
         sig = next(s for s in read_jsonl(DATA / "signatures.jsonl")
                    if s["problem_id"] == self.task["problem_id"])
-        pydir, self.points, contracts, self.notes = build(sid, trace, dfy, counter)
+        pydir, self.points, self.notes = build(sid, trace, dfy, counter)
         work = pydir.parent
         (work / "dataclass.py").write_text(self.task["dataclass_code"], encoding="utf-8")
         args = ", ".join(conv_expr(p["dafny_type"], f'inp.{p["py_name"]}')
                          for p in sig["params"])
         (work / "harness.py").write_text(HARNESS.format(
             pydir=str(pydir), dcpath=str(work / "dataclass.py"),
-            args=args, contracts=contracts), encoding="utf-8")
+            args=args), encoding="utf-8")
         self.proc = subprocess.Popen([sys.executable, str(work / "harness.py")],
                                      stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                      text=True, bufsize=1)
