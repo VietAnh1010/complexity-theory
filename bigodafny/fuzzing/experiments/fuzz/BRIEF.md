@@ -60,6 +60,9 @@ an input it rejects `out-of-spec`.
 For each grid row, `fuzz` prints the costliest input's `steps` and how often the busiest
 loops ran. Write families for the inputs you think cost most, not only random ones.
 
+A `fuzz` call stops running inputs after {{TIME_LIMIT}} s. The table counts the inputs it did
+not run as `time-limit`; shrink the grid's largest sizes if it shows any.
+
 To test a candidate bound E, add `--bound 'E'`, with E a Dafny expression over `Solve`'s
 parameters, in single quotes: `--bound '4 * |a_list| * |a_list| + 100'`. The table then also
 shows E and `steps / E`:

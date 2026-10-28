@@ -21,6 +21,7 @@ FUZZING = HERE.parents[1]
 sys.path.insert(0, str(FUZZING.parent))
 from common import DATA, PRELUDE, read_jsonl, write_jsonl            # noqa: E402
 from guard import CMD                                                 # noqa: E402
+from fuzz import TIME_LIMIT                                           # noqa: E402
 
 MARKER = HERE / "guard-path"                                           # read by guard.py
 TOOL = FUZZING / "DafnySteps" / "bin" / "Release" / "net10.0" / "DafnySteps"
@@ -54,6 +55,7 @@ def brief(mode, row_dir, statement):
                   (HERE / "BRIEF.md").read_text(), flags=re.S)
     text = re.sub(r"\n{3,}", "\n\n", text)
     return (text.replace("{{DIR}}", str(row_dir)).replace("{{FUZZ}}", CMD)
+            .replace("{{TIME_LIMIT}}", str(TIME_LIMIT))
             .replace("{{PRELUDE}}", str(row_dir.parents[1] / "prelude.dfy"))
             .replace("{{STATEMENT}}", statement))
 

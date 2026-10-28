@@ -1,6 +1,6 @@
 """The `blind-guess` agent's `fuzz` command, the only command `guard.py` lets its Bash run.
 
-    .venv/bin/python3 experiments/fuzz/fuzz.py DFY GEN [--per N] [--bound E] [--counter NAME]
+    .venv/bin/python3 experiments/fuzz/fuzz.py DFY GEN [--per N] [--bound E] [--counter NAME] [--time-limit S]
 
 Runs the row's step counter on inputs from the agent's GEN and prints one table.
 The row's SID is the name of DFY's directory. GEN defines
@@ -20,12 +20,16 @@ rerunning that one input with only the loop heads traced.
 lies beside DFY while it runs. `--counter NAME` names the counter when it is not
 `steps`; `guard.py` does not accept it.
 
+`--time-limit S` (default `TIME_LIMIT`): inputs and loop reruns not started within S
+seconds are skipped, so a call ends within S plus one input and one rerun.
+`guard.py` does not accept it, so agents get the default.
+
 Call k writes `attempts/<k>/table.txt` beside DFY: the DFY name, E, the attempt
 holding the GEN that ran, then the output. It copies GEN to `attempts/<k>/gen.py`
 only when GEN changed since the last copy.
 """
 from __future__ import annotations
-import argparse, json, random, re, runpy, subprocess, sys
+import argparse, json, random, re, runpy, subprocess, sys, time
 from collections import Counter
 from pathlib import Path
 
@@ -35,6 +39,7 @@ from common import _in_spec
 
 TOP = 5                                  # loops shown
 TIMEOUT = 10                             # seconds per input
+TIME_LIMIT = 300                         # seconds per call; under the Bash tool's 600
 
 
 def generate(gen, per):
@@ -53,16 +58,16 @@ def generate(gen, per):
     return module["GRID"], inputs
 
 
-def run_generator(gen, per):
+def run_generator(gen, per, timeout):
     """`generate` in a child process: GRID and the inputs."""
     child = subprocess.run([sys.executable, __file__, "--gen", gen, str(per)],
-                           capture_output=True, text=True, timeout=600)
+                           capture_output=True, text=True, timeout=timeout)
     if child.returncode:
         raise RuntimeError(f"gen.py failed:\n{child.stderr.strip()[-1000:]}")
     return json.loads(child.stdout.splitlines()[-1])           # GEN's own prints come first
 
 
-def run_inputs(runner, inputs, points):
+def run_inputs(runner, inputs, points, deadline):
     """Run every input. Returns the status counts, the bound breaks, the first
     generator and parse errors, and per point the costliest (family, result, text)."""
     statuses, broken, gen_error, parse_error = Counter(), 0, None, None
@@ -73,6 +78,8 @@ def run_inputs(runner, inputs, points):
             gen_error = gen_error or error
         elif not _in_spec(runner.task, text):
             result = {"status": "out-of-spec"}
+        elif time.monotonic() > deadline:
+            result = {"status": "time-limit"}
         else:
             result = runner.run(text, timeout=TIMEOUT)
         statuses[result["status"]] += 1
@@ -85,7 +92,7 @@ def run_inputs(runner, inputs, points):
     return statuses, broken, gen_error, parse_error, costliest
 
 
-def loop_counts(sid, dfy, costliest, counter="steps"):
+def loop_counts(sid, dfy, costliest, counter, deadline):
     """Rerun each point's costliest input with the loop heads traced.
     Returns per point {line: iterations}, and {line: loop source}."""
     _, points, _, _ = build(sid, "", dfy, counter)
@@ -97,7 +104,7 @@ def loop_counts(sid, dfy, costliest, counter="steps"):
     loops = [p for p in runner.points if p["Kind"] == "loop"]
     source = {p["Line"]: f"{p['Method']}: {p['src']}" for p in loops}
     for point, worst in enumerate(costliest):
-        if worst:
+        if worst and time.monotonic() < deadline:
             result = runner.run(worst[2], timeout=TIMEOUT * 10)
             hits = {int(i): v[0] for i, v in result.get("hits", {}).items()} if result["status"] == "ok" else {}
             counts[point] = {p["Line"]: hits.get(p["Id"], 0) for p in loops}
@@ -128,17 +135,21 @@ def format_table(grid, costliest, counts, source):
     return lines
 
 
-def fuzz(dfy, gen, per=3, counter="steps"):
+def fuzz(dfy, gen, per=3, counter="steps", time_limit=TIME_LIMIT):
     """Run GEN's inputs on DFY and return the table as text."""
+    deadline = time.monotonic() + time_limit
     sid = Path(dfy).parent.name
-    grid, inputs = run_generator(gen, per)
+    grid, inputs = run_generator(gen, per, time_limit)
     runner = Runner(sid, dfy=dfy, counter=counter)
     notes = [f"note: {n}" for n in runner.notes]
-    statuses, broken, gen_error, parse_error, costliest = run_inputs(runner, inputs, len(grid))
+    statuses, broken, gen_error, parse_error, costliest = run_inputs(runner, inputs, len(grid), deadline)
     runner.close()
-    counts, source = loop_counts(sid, dfy, costliest, counter)
+    counts, source = (loop_counts(sid, dfy, costliest, counter, deadline)
+                      if time.monotonic() < deadline else ([{}] * len(grid), {}))
     lines = notes + format_table(grid, costliest, counts, source)
     lines.append(f"generated: {dict(statuses)}")
+    if time.monotonic() > deadline:
+        lines.append(f"TIME LIMIT {time_limit} s reached: later inputs and loop reruns were skipped")
     if gen_error:
         lines.append(f"first generator error: {gen_error}")
     if parse_error:
@@ -172,6 +183,7 @@ def main():
     parser.add_argument("--per", type=int, default=3, help="inputs per family and grid point")
     parser.add_argument("--bound", help="E: run DFY with `ensures steps <= E` added to Solve")
     parser.add_argument("--counter", default="steps", help="the counter's name in DFY")
+    parser.add_argument("--time-limit", type=int, default=TIME_LIMIT, help="seconds for the whole call")
     args = parser.parse_args()
     dfy = Path(args.dfy)
     row_dir = dfy.parent
@@ -184,7 +196,7 @@ def main():
         if args.bound:
             run_dfy.write_text(add_bound(dfy.read_text(), args.bound, args.counter))
         header.append(f"gen: attempts/{keep_gen(row_dir, attempt, Path(args.gen).read_text())}/gen.py")
-        output, failed = fuzz(str(run_dfy), args.gen, args.per, args.counter), False
+        output, failed = fuzz(str(run_dfy), args.gen, args.per, args.counter, args.time_limit), False
     except Exception as e:
         output, failed = f"{type(e).__name__}: {e}", True
     finally:

@@ -92,9 +92,10 @@ changes go in `fuzzing/CHANGELOG.md`.
       them: F12, rotor walks (`experiments/fuzz/FINDINGS.md`). Catches Haiku code mode, not Sonnet.
 - [ ] (2026-10-26) A fabricated row that misleads Sonnet code mode. F12's lesson: cost set by
       global dynamics that no single loop shows.
-- [ ] (2026-10-26) `fuzz` has no time limit: a call past the Bash tool's 600 s goes to the
-      background, and reading its output voids the row (`20261026-1815`). Cap a call's total time,
-      or tell the agent the cap in `BRIEF.md`.
+- [x] (2026-10-26) `fuzz` has no time limit: a call past the Bash tool's 600 s goes to the
+      background, and reading its output voids the row (`20261026-1815`). (2026-10-28)
+      `--time-limit S`, default 300; `BRIEF.md` gives the cap. A call can overrun by one
+      input (10 s), one compile and one loop rerun (100 s)
 - [ ] (2026-10-26) Screen proofs for loose bounds with `fuzz` inputs, not only stored tests:
       `docs/07-steptrace.md` § Screening proofs rated 163 of 321 proofs; the rest had too few
       tests to tell.
