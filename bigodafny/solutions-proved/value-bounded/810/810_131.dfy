@@ -54,39 +54,6 @@ lemma CeilLog2Monotone(m: nat, n: nat)
   else { CeilLog2Monotone((m + 1) / 2, (n + 1) / 2); }
 }
 
-method IntSqrt(x: int) returns (r: int, ghost steps: nat)
-  requires x >= 0
-  ensures steps <= 2 * CeilLog2(x + 1) + 4
-{
-  steps := 1;
-  if x == 0 {
-    steps := steps + 1;
-    return 0, steps;
-  }
-  var lo := 0;
-  var hi := x + 1;
-  steps := steps + 2;
-  while lo + 1 < hi
-    invariant 0 <= lo < hi <= x + 1
-    invariant steps <= 2 * (CeilLog2(x + 1) - CeilLog2(hi - lo)) + 3
-    decreases hi - lo
-  {
-    var mid := (lo + hi) / 2;
-    var w := hi - lo;
-    if mid * mid <= x {
-      assert hi - mid == (w + 1) / 2;
-      lo := mid;
-    } else {
-      assert mid - lo == w / 2 <= (w + 1) / 2;
-      hi := mid;
-    }
-    CeilLog2Monotone(hi - lo, (w + 1) / 2);
-    steps := steps + 2;
-  }
-  r := lo;
-  steps := steps + 1;
-}
-
 // Sum, over the queries seen so far, of the value-dependent IntSqrt cost.
 // This -- not q alone -- is the honest measure of this loop's work.
 ghost function SumQueryCost(pairs: seq<seq<int>>, upto: nat): nat
@@ -136,4 +103,38 @@ method Solve(n: int, pairs: seq<seq<int>>) returns (output: string, ghost steps:
     }
     idx := idx + 1;
   }
+}
+
+method IntSqrt(x: int) returns (r: int, ghost steps: nat)
+  requires x >= 0
+  ensures steps <= 2 * CeilLog2(x + 1) + 4
+{
+  steps := 1;
+  if x == 0 {
+    steps := steps + 1;
+    r := 0;
+    return;
+  }
+  var lo := 0;
+  var hi := x + 1;
+  steps := steps + 2;
+  while lo + 1 < hi
+    invariant 0 <= lo < hi <= x + 1
+    invariant steps <= 2 * (CeilLog2(x + 1) - CeilLog2(hi - lo)) + 3
+    decreases hi - lo
+  {
+    var mid := (lo + hi) / 2;
+    ghost var w := hi - lo;
+    if mid * mid <= x {
+      assert hi - mid == (w + 1) / 2;
+      lo := mid;
+    } else {
+      assert mid - lo == w / 2 <= (w + 1) / 2;
+      hi := mid;
+    }
+    CeilLog2Monotone(hi - lo, (w + 1) / 2);
+    steps := steps + 2;
+  }
+  r := lo;
+  steps := steps + 1;
 }

@@ -57,10 +57,14 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
   {
     var v := a_list[idx];
     steps := steps + 1;
-    if v == 4 { c := c + 1; steps := steps + 1; } else { steps := steps + 1; }
-    if v == 3 { c3 := c3 + 1; steps := steps + 1; } else { steps := steps + 1; }
-    if v == 2 { c2 := c2 + 1; steps := steps + 1; } else { steps := steps + 1; }
-    if v == 1 { c1 := c1 + 1; steps := steps + 1; } else { steps := steps + 1; }
+    steps := steps + 1;
+    if v == 4 { c := c + 1; }
+    steps := steps + 1;
+    if v == 3 { c3 := c3 + 1; }
+    steps := steps + 1;
+    if v == 2 { c2 := c2 + 1; }
+    steps := steps + 1;
+    if v == 1 { c1 := c1 + 1; }
     idx := idx + 1;
   }
   if c1 > c3 {

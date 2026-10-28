@@ -85,6 +85,7 @@ method Solve(n: int, m: int, a_list: seq<int>) returns (output: string, ghost st
       p := p + 1;
       steps := steps + 10;
     }
+    ghost var neither := p != q && !(p < twoN && q < twoN);
     if p == q {
       var k := D[p] - m + d;
       tot := tot + Ans[p] - k * (k + 1) / 2;
@@ -104,7 +105,8 @@ method Solve(n: int, m: int, a_list: seq<int>) returns (output: string, ghost st
       tot := tot - (Ans[p] - k * (k + 1) / 2);
       q := q + 1;
       steps := steps + 10;
-    } else {
+    }
+    if neither {
       assert p == twoN;
       doneWaste := true;
       steps := steps + 5;

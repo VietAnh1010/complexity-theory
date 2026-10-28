@@ -46,11 +46,6 @@ lemma SortLength<T>(s: seq<T>, less: (T, T) -> bool)
   }
 }
 
-function Abs82(x: int): int
-{
-  if x < 0 then -x else x
-}
-
 method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat)
   requires n >= 0
   requires |a_list| == n
@@ -82,4 +77,9 @@ method Solve(n: int, a_list: seq<int>) returns (output: string, ghost steps: nat
   assert steps <= 2 * NLogN(n) + 9 * n + 11;
   output := IntToString(ans) + "\n";
   steps := steps + |output|;
+}
+
+function Abs82(x: int): int
+{
+  if x < 0 then -x else x
 }

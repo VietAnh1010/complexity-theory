@@ -19,13 +19,6 @@
 include "../../prelude.dfy"
 import opened Prelude
 
-function CountChar(s: string, c: char): int
-  decreases |s|
-{
-  if |s| == 0 then 0
-  else (if s[0] == c then 1 else 0) + CountChar(s[1..], c)
-}
-
 // CountChar and Repeat(t, |t|) each cost |t|; the honest per-row cost is the
 // row's own length, not O(1), so the total is additive over the row lengths.
 
@@ -74,4 +67,11 @@ method Solve(n: int, binary_strings: seq<string>) returns (output: string, ghost
   output := Join(parts, "");
   SumLenPrefixLe(binary_strings, i);
   steps := steps + 2;
+}
+
+function CountChar(s: string, c: char): int
+  decreases |s|
+{
+  if |s| == 0 then 0
+  else (if s[0] == c then 1 else 0) + CountChar(s[1..], c)
 }

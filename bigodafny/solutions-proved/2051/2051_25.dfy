@@ -39,19 +39,16 @@ method Solve(n: int, k: int, numbers: seq<int>) returns (output: string, ghost s
     decreases |a| - idx
   {
     var i := a[idx];
-    steps := steps + 1;
+    steps := steps + 3;
     if i < x {
       x := i;
-      steps := steps + 2;
     } else if i - x > d {
       d := i - x;
       counter := 1;
-      steps := steps + 3;
+      steps := steps + 1;
     } else if i - x == d {
       counter := counter + 1;
-      steps := steps + 3;
-    } else {
-      steps := steps + 2;
+      steps := steps + 1;
     }
     idx := idx + 1;
     steps := steps + 1;

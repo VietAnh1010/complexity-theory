@@ -30,6 +30,7 @@ method Solve(s1: string, s2: string) returns (output: string, ghost steps: nat)
 {
   steps := 1;
   var ans := "NO";
+  ghost var sameLen := |s1| == |s2|;
   if |s1| == |s2| {
     var diffs: seq<int> := [];
     var i := 0;
@@ -56,7 +57,8 @@ method Solve(s1: string, s2: string) returns (output: string, ghost steps: nat)
       steps := steps + |s1| + |s2| + 5;
       if a == s2 { ans := "YES"; }
     }
-  } else {
+  }
+  if !sameLen {
     steps := steps + 1;
   }
   output := ans;

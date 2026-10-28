@@ -78,12 +78,10 @@ method {:isolate_assertions} Solve(n: int, handles: seq<string>) returns (output
       y := y + 1;
       steps := steps + 4;
     }
+    assert |chains| <= x;
     if !f {
-      assert |chains| <= x;
       chains := chains + [ [s[0], s[1]] ];
       assert |chains| <= x + 1;
-    } else {
-      assert |chains| <= x;
     }
     x := x + 1;
     assert x * (4 * n + 2) == (x - 1) * (4 * n + 2) + (4 * n + 2) by { MulDistribAdd(x - 1, 4 * n + 2); }

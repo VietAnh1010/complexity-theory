@@ -19,15 +19,6 @@
 include "../../prelude.dfy"
 import opened Prelude
 
-function ReplaceAll(s: string, pat: string, rep: string): string
-  requires |pat| > 0
-  decreases |s|
-{
-  if |s| < |pat| then s
-  else if s[0..|pat|] == pat then rep + ReplaceAll(s[|pat|..], pat, rep)
-  else [s[0]] + ReplaceAll(s[1..], pat, rep)
-}
-
 // Replacing a pattern by something no longer than it never grows the string:
 // the charge table's "recursive function over a string -> its length" line
 // needs this to keep `cur`'s length bounded across the whole second loop.
@@ -84,4 +75,13 @@ method Solve(n: int, s: string) returns (output: string, ghost steps: nat)
   assert iters2 <= P0;
   assert P0 <= |s| + 3;
   CostMulMonoLeft(iters2, |s| + 3, |s| + 5);
+}
+
+function ReplaceAll(s: string, pat: string, rep: string): string
+  requires |pat| > 0
+  decreases |s|
+{
+  if |s| < |pat| then s
+  else if s[0..|pat|] == pat then rep + ReplaceAll(s[|pat|..], pat, rep)
+  else [s[0]] + ReplaceAll(s[1..], pat, rep)
 }

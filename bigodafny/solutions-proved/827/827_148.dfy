@@ -54,12 +54,12 @@ method Solve(n: int, pairs: seq<(int, int)>) returns (output: string, ghost step
     invariant steps <= 10000 * idx * idx + 50000 * idx + 500
     decreases |pairs| - idx
   {
-    var idxOld := idx;
+    ghost var idxOld := idx;
     var s0 := steps;
-    var last0 := last;
+    ghost var last0 := last;
     var i := pairs[idx].0;
     var j := pairs[idx].1;
-    var i0 := i;
+    ghost var i0 := i;
     steps := steps + 4;
     while i <= last
       invariant i0 <= i

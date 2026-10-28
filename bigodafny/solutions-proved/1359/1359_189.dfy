@@ -45,6 +45,7 @@ method Solve(a: int, b: int, c: int) returns (output: string, ghost steps: nat)
   ensures steps <= 7 * a + 10 + |output|
 {
   steps := 1;
+{
   var n := a;
   var x := b;
   var target := c;
@@ -93,4 +94,5 @@ method Solve(a: int, b: int, c: int) returns (output: string, ghost steps: nat)
   assert steps <= 5 * n + 2 + 2 * n;
   output := IntToString(ans);
   steps := steps + 1 + |output|;
+}
 }

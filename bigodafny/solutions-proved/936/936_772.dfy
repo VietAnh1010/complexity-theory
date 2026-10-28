@@ -48,20 +48,19 @@ method Solve(n: int, grid: seq<seq<int>>) returns (output: string, ghost steps: 
     var r2 := row[3];
     steps := steps + 4;
     ghost var ol := |output|;
+    steps := steps + 1;
     if l1 != l2 {
       output := output + IntToString(l1) + " " + IntToString(l2) + "\n";
-      steps := steps + 4 + (|output| - ol);
+      steps := steps + 3 + (|output| - ol);
     } else if l1 != r2 {
       output := output + IntToString(l1) + " " + IntToString(r2) + "\n";
-      steps := steps + 4 + (|output| - ol);
+      steps := steps + 3 + (|output| - ol);
     } else if r1 != l2 {
       output := output + IntToString(r1) + " " + IntToString(l2) + "\n";
-      steps := steps + 4 + (|output| - ol);
+      steps := steps + 3 + (|output| - ol);
     } else if r1 != r2 {
       output := output + IntToString(r1) + " " + IntToString(r2) + "\n";
-      steps := steps + 4 + (|output| - ol);
-    } else {
-      steps := steps + 1;
+      steps := steps + 3 + (|output| - ol);
     }
     i := i + 1;
     steps := steps + 1;
