@@ -47,7 +47,8 @@ changes go in `fuzzing/CHANGELOG.md`.
       adds rules for row functions (`F_steps`) and `seq(n, i => e)`
 - [x] Rule `arrays`; `let`, lambdas, tuple patterns, `assert P; e` in the table.
       A quantifier in compiled code is an error; `531_3456` and `1722_66` now
-      recurse instead. With `enable=functions,seq,arrays`, 629 of 636 rows annotate.
+      recurse instead. With `enable=functions,seq,arrays`, all 636 rows annotate (2026-10-28), `1387_34` and
+      `1336_157` with `counter=NAME`.
 - [x] `var x :| P` stops `annotate` (5 rows). (2026-10-28) The int-range witnesses in
       `1453_483` and `1332_41` were proof-only: the rows and proofs declare them `ghost`.
       `var x :| x in S` costs 1, a step of set iteration (`976_1131`, `960_63`, `960_36`).
@@ -95,6 +96,9 @@ changes go in `fuzzing/CHANGELOG.md`.
       background, and reading its output voids the row (`20261026-1815`). (2026-10-28)
       `--time-limit S`, default 300; `BRIEF.md` gives the cap. A call can overrun by one
       input (10 s), one compile and one loop rerun (100 s)
+- [ ] (2026-10-28) `TraceBoundValue` reads only a top-level `ensures steps <= E`: 5 proofs state
+      the bound under `==>` or a `var` (`457_27`, `1738_24`, `2254_6`, `2826_81`, `1827_66`), so
+      `bound` is missing for them; `bound_ok` still checks them.
 - [ ] (2026-10-26) Screen proofs for loose bounds with `fuzz` inputs, not only stored tests:
       `docs/07-steptrace.md` § Screening proofs rated 163 of 321 proofs; the rest had too few
       tests to tell.
