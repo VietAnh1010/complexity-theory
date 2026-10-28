@@ -10,6 +10,11 @@ data lines go to `old-record.jsonl` beside the file they came from.
 
 ## 2026-10-28
 
+- A proof states its bound as one top-level `ensures steps <= E`, `E` over `Solve`'s inputs
+  and `|output|` (`COMPLEXITY.md` § What a proof means; the `bigodafny-prove` skill). Seven
+  proofs are restated so: `457_27`, `1738_24`, `2254_6` split cases with `==>`; `2826_81`,
+  `1827_66`, `1039_15` bound under `ensures var`; `2128_34` named ghost outputs `r_final` and
+  `span_total`, now `m + Gain` and `Reach`, sums over the input. Same classes; ghost-only edits.
 - Three proofs in `solutions-proved/value-bounded/` were a class looser than their code and are
   replaced by tight ones: `704_351` O(prob) -> O(sqrt(prob)) (`ISqrt`); `1678_68` O(rows) ->
   O(log rows) (`GcdStepsBound`); `1915_158` O(n + m + sum of gap bits) -> O(n + m + max gap bits),

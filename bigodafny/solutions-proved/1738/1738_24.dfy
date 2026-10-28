@@ -21,8 +21,7 @@ import opened Prelude
 method Solve(a: int, b: int, c: int) returns (output: string, ghost steps: nat)
   requires a >= 1
   requires b >= 1
-  ensures c >= 1 ==> steps <= 3 * c + 1 + |output|
-  ensures c < 1 ==> steps <= 1 + |output|
+  ensures steps <= 3 * (if c >= 1 then c else 0) + 1 + |output|
 {
   steps := 1;
   var count := 0;

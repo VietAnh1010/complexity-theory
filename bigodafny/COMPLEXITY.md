@@ -94,6 +94,18 @@ the `requires` allow. Ghost code is removed at compile time, so the file still
 runs. If the bound disagrees with the label, record why; never weaken the
 proof to fit.
 
+**The bound is one top-level `ensures steps <= E`.** `E` names only `Solve`'s
+inputs and `|output|`:
+
+- A case split goes inside `E`: `4 * (if n >= 1 then n else 0) + 6`, not two
+  `ensures n >= 1 ==> ...` clauses.
+- A repeated subterm becomes a ghost function, not an `ensures var x := ...`.
+- No ghost out-parameter: a value the code computes, such as a running total,
+  is bounded by a ghost function of the inputs.
+
+`fuzzing/steptrace.py` evaluates `E` on each input it runs; any other form
+leaves it no bound to compare `steps` with.
+
 A proof says nothing about whether the row passes its tests or its label is
 right.
 

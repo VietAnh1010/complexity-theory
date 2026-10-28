@@ -67,9 +67,14 @@ method BisectLeft(arr: seq<int>, lo0: int, hi0: int, v: int) returns (r: int, gh
   r := lo;
 }
 
+// The input value as a size: negatives count as 0.
+ghost function Pos(x: int): nat
+{
+  if x > 0 then x else 0
+}
+
 method Solve(n: int, pairs: seq<seq<int>>) returns (output: string, ghost steps: nat)
-  ensures var nn := if n > 0 then n else 0;
-          steps <= 5 * NLogN(nn + 1) + 20 * nn + 30 + |output|
+  ensures steps <= 5 * NLogN(Pos(n) + 1) + 20 * Pos(n) + 30 + |output|
 {
   var nn := if n > 0 then n else 0;
   var m := nn + 1;

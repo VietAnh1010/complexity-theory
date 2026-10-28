@@ -48,20 +48,26 @@ lemma RepeatLength(s: string, n: nat)
   }
 }
 
+// The input value as a size: negatives count as 0.
+ghost function Pos(x: int): nat
+{
+  if x > 0 then x else 0
+}
+
 method Solve(n: int, pairs: seq<seq<int>>) returns (output: string, ghost steps: nat)
   requires n <= |pairs|
   requires forall k :: 0 <= k < |pairs| ==> |pairs[k]| >= 2
   // k is an alphabet size: at least 1 (it is a divisor) and at most 26
   requires forall k :: 0 <= k < |pairs| ==> 1 <= pairs[k][1] <= 26
   requires forall k :: 0 <= k < |pairs| ==> pairs[k][0] >= 0
-  ensures n >= 0 ==> steps <= 40 * n + 3 * SumFirst(pairs, n) + 4 + |output|
+  ensures steps <= 40 * Pos(n) + 3 * SumFirst(pairs, Pos(n)) + 4 + |output|
 {
   steps := 1;
   var parts: seq<string> := [];
   var t := 0;
   while t < n
     invariant 0 <= t
-    invariant n >= 0 ==> t <= n
+    invariant t <= Pos(n)
     invariant t <= |pairs|
     invariant steps <= 40 * t + 3 * SumFirst(pairs, t) + 2
     decreases n - t

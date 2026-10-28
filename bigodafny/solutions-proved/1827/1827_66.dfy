@@ -63,9 +63,14 @@ lemma LowbitDepthBound(v: int)
   }
 }
 
+// The input value as a size: negatives count as 0.
+ghost function Pos(x: int): nat
+{
+  if x > 0 then x else 0
+}
+
 method Solve(a: int, b: int) returns (output: string, ghost steps: nat)
-  ensures var L := if b > 0 then b else 0;
-          steps <= 3 * NLogN(L) + 9 * L + 10 + |output|
+  ensures steps <= 3 * NLogN(Pos(b)) + 9 * Pos(b) + 10 + |output|
 {
   var s := a;
   var l := b;

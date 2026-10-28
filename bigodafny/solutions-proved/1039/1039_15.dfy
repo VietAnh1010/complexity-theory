@@ -45,9 +45,7 @@ method {:isolate_assertions} Solve(n_str: string, a_list_str: string) returns (o
   requires |ParseInts(SplitWs(a_list_str))| == ParseInt(n_str)
   requires forall k :: 0 <= k < |ParseInts(SplitWs(a_list_str))| ==>
              1 <= ParseInts(SplitWs(a_list_str))[k] <= ParseInt(n_str)
-  ensures var n := ParseInt(n_str);
-          n >= 0 &&
-          steps <= 5 * NLogN(n + 1) + 11 * n + |n_str| + |a_list_str| + |output| + 10
+  ensures steps <= 5 * NLogN(ParseInt(n_str) + 1) + 11 * ParseInt(n_str) + |n_str| + |a_list_str| + |output| + 10
 {
   var n := ParseInt(n_str);
   var nums := ParseInts(SplitWs(a_list_str));

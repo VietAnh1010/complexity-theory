@@ -168,8 +168,10 @@ full floor-sqrt spec. `5_100` is the worked example.
 
 1. Copy the row from `solutions/` into `solutions-proved/<PID>/<SID>.dfy`.
    Never instrument in place — the ghost version is a second artifact.
-2. Add `ghost steps: nat` to the out-params and an `ensures` naming the bound in
-   terms of the input, matching the label's shape.
+2. Add `ghost steps: nat` to the out-params and one top-level
+   `ensures steps <= E`, `E` over `Solve`'s inputs and `|output|` only, matching
+   the label's shape: no `==>` cases, no `ensures var`, no ghost out-params
+   (`COMPLEXITY.md` § What a proof means).
 3. Charge every operation per the table. Loop invariants relate `steps` to the
    counter.
 4. `dafny verify --verification-time-limit 30`.
