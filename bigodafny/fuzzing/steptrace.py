@@ -180,8 +180,7 @@ class Runner:
 
     def __init__(self, sid, trace=None, dfy=None, counter=COUNTER):
         self.sid = sid
-        tasks = {t["solution_id"]: t for t in read_jsonl(DATA / "tasks.jsonl")}
-        self.task = tasks[sid]
+        self.task = next(t for t in read_jsonl(DATA / "tasks.jsonl") if t["solution_id"] == sid)
         sig = next(s for s in read_jsonl(DATA / "signatures.jsonl")
                    if s["problem_id"] == self.task["problem_id"])
         pydir, self.points, contracts, self.notes = build(sid, trace, dfy, counter)
@@ -216,10 +215,8 @@ def report(runner, res):
     """Per-point table: hits, and steps at the first and last hit."""
     rows = []
     for pt in sorted(runner.points, key=lambda p: (p["Line"], p["Col"])):
-        h = res.get("hits", {}).get(str(pt["Id"]))
-        rows.append({**pt, "hits": h[0] if h else 0,
-                     "min": h[1] if h else None, "max": h[2] if h else None,
-                     "last": h[3] if h else None})
+        hits, low, high, last = res.get("hits", {}).get(str(pt["Id"]), (0, None, None, None))
+        rows.append({**pt, "hits": hits, "min": low, "max": high, "last": last})
     return rows
 
 
