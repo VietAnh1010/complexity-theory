@@ -34,7 +34,7 @@ from collections import Counter
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))       # fuzzing/
-from steptrace import Runner  # first: it puts bigodafny/ on sys.path
+from steptrace import COUNTER, Runner  # first: it puts bigodafny/ on sys.path
 from common import _in_spec
 
 TOP = 5                                  # loops shown
@@ -137,7 +137,7 @@ def format_table(grid, costliest, counts, source):
     return lines
 
 
-def fuzz(dfy, gen, per=3, counter="steps", time_limit=TIME_LIMIT):
+def fuzz(dfy, gen, per=3, counter=COUNTER, time_limit=TIME_LIMIT):
     """Run GEN's inputs on DFY and return the table as text."""
     deadline = time.monotonic() + time_limit
     sid = Path(dfy).parent.name
@@ -160,7 +160,7 @@ def fuzz(dfy, gen, per=3, counter="steps", time_limit=TIME_LIMIT):
     return "\n".join(lines)
 
 
-def add_bound(text, bound, counter="steps"):
+def add_bound(text, bound, counter):
     """TEXT with `ensures COUNTER <= BOUND` added to Solve's signature."""
     if not (m := re.search(rf"method Solve\b.*?ghost {counter}: nat\)", text, re.S)):
         raise ValueError(f"no `method Solve ... ghost {counter}: nat)` to add the bound to")
@@ -183,7 +183,7 @@ def main():
     parser.add_argument("gen", help="absolute path of gen.py")
     parser.add_argument("--per", type=int, default=3, help="inputs per family and grid point")
     parser.add_argument("--bound", help="E: run DFY with `ensures steps <= E` added to Solve")
-    parser.add_argument("--counter", default="steps", help="the counter's name in DFY")
+    parser.add_argument("--counter", default=COUNTER, help="the counter's name in DFY")
     parser.add_argument("--time-limit", type=int, default=TIME_LIMIT, help="seconds for the whole call")
     args = parser.parse_args()
     dfy = Path(args.dfy)
@@ -191,17 +191,19 @@ def main():
     attempt = len(list(row_dir.glob("attempts/*"))) + 1
     attempt_dir = row_dir / "attempts" / str(attempt)
     attempt_dir.mkdir(parents=True)
-    header = [f"dfy: {dfy.name}"] + ([f"bound: {args.bound}"] if args.bound else [])
-    run_dfy = row_dir / f".bound-{attempt}.dfy" if args.bound else dfy
+    header = [f"dfy: {dfy.name}"]
+    run_dfy = dfy
     try:
         if args.bound:
+            header.append(f"bound: {args.bound}")
+            run_dfy = row_dir / f".bound-{attempt}.dfy"
             run_dfy.write_text(add_bound(dfy.read_text(), args.bound, args.counter))
         header.append(f"gen: attempts/{keep_gen(row_dir, attempt, Path(args.gen).read_text())}/gen.py")
         output, failed = fuzz(str(run_dfy), args.gen, args.per, args.counter, args.time_limit), False
     except Exception as e:
         output, failed = f"{type(e).__name__}: {e}", True
     finally:
-        if args.bound:
+        if run_dfy != dfy:
             run_dfy.unlink(missing_ok=True)
     (attempt_dir / "table.txt").write_text("\n".join(header) + f"\n{output}\n")
     if failed:

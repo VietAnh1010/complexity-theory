@@ -25,7 +25,8 @@ namespace DafnySteps;
 public record Point(int Id, string Method, int Line, int Col, string Kind);
 
 public class Deghost {
-  public string Counter = "steps";
+  public const string DefaultCounter = "steps";
+  public string Counter = DefaultCounter;
   /// Point kinds to insert: "update" after each counter update, "loop" at each
   /// loop head. Empty: no trace.
   public HashSet<string> TraceKinds = [];
@@ -68,7 +69,7 @@ public class Deghost {
   // ---- Analysis: what must become compiled --------------------------------
 
   void FindCompiledCode(List<Method> methods, Method contractsOf) {
-    foreach (var method in methods.Where(m => m.Outs.Any(o => o.Name == Counter))) {
+    foreach (var method in methods.Where(HasCounter)) {
       compiledVariables.Add((method, Counter));
     }
     if (contractsOf != null) {

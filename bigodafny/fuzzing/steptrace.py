@@ -31,7 +31,9 @@ from common import (BUILD, DATA, OUT, PROVED, PROVED_VALUE, log, read_jsonl,
 from validate import conv_expr
 
 TOOL = Path(__file__).resolve().parent / "DafnySteps"
-DLL = TOOL / "bin" / "Release" / "net10.0" / "DafnySteps.dll"
+BIN = TOOL / "bin" / "Release" / "net10.0"       # the CLI `DafnySteps` and the plugin's DLL
+DLL = BIN / "DafnySteps.dll"
+COUNTER = "steps"                                # the counter's name unless one is given
 TIERS = ("public_tests", "private_tests", "generated_tests")
 
 
@@ -51,9 +53,9 @@ def plugin():
     return DLL
 
 
-def build(sid, trace=None, dfy=None, counter="steps"):
+def build(sid, trace=None, dfy=None, counter=COUNTER):
     """Compile `dfy` (default: the row's proof copy) with the counter compiled.
-    `trace`: None, "" (every point) or "LINE,..". -> (pydir, points, has_contracts, notes)."""
+    `trace`: None, "all", "loops" or "LINE,..". -> (pydir, points, has_contracts, notes)."""
     other = dfy is not None
     dfy = Path(dfy) if other else find_proof(sid)
     work = BUILD / f"trace_{sid}{'' if trace is None else '_t'}{'_file_' + dfy.stem if other else ''}"
@@ -61,12 +63,16 @@ def build(sid, trace=None, dfy=None, counter="steps"):
     points_path = work / "points.json"
     notes = []
     for contracts in (True, False):
-        args = " ".join([f"trace={trace}" if trace else "trace"] * (trace is not None)
-                        + ["contracts"] * contracts
-                        + [f"counter={counter}", f"points={points_path}"])
+        args = [f"counter={counter}", f"points={points_path}"]
+        if trace == "all":
+            args.append("trace")
+        elif trace is not None:
+            args.append(f"trace={trace}")
+        if contracts:
+            args.append("contracts")
         p = subprocess.run(["dafny", "translate", "py", str(dfy), "--no-verify",
                             "--include-runtime", "--output", str(work / "out"),
-                            "--plugin", f"{plugin()},{args}"],
+                            "--plugin", f"{plugin()},{' '.join(args)}"],
                            capture_output=True, text=True, timeout=300)
         if p.returncode == 0 and (work / "out-py" / "module_.py").exists():
             points = [] if trace is None else json.loads(points_path.read_text())
@@ -172,7 +178,7 @@ for line in sys.stdin:
 class Runner:
     """A long-lived Python process running one row's counter on input texts."""
 
-    def __init__(self, sid, trace=None, dfy=None, counter="steps"):
+    def __init__(self, sid, trace=None, dfy=None, counter=COUNTER):
         self.sid = sid
         tasks = {t["solution_id"]: t for t in read_jsonl(DATA / "tasks.jsonl")}
         self.task = tasks[sid]
@@ -222,9 +228,9 @@ def main(argv=None):
     ap.add_argument("sid")
     ap.add_argument("--input", help="file holding one input text (default: the row's tests)")
     ap.add_argument("--dfy", help="the .dfy to run (default: the row's proof copy)")
-    ap.add_argument("--trace", nargs="?", const="", metavar="LINE,..",
-                    help="record steps at each program point, or only on these source lines")
-    ap.add_argument("--counter", default="steps", help="the counter's name in the .dfy")
+    ap.add_argument("--trace", nargs="?", const="all", metavar="all|loops|LINE,..",
+                    help="record steps at each program point, only at loop heads, or only on these source lines")
+    ap.add_argument("--counter", default=COUNTER, help="the counter's name in the .dfy")
     a = ap.parse_args(argv)
     r = Runner(a.sid, trace=a.trace, dfy=a.dfy, counter=a.counter)
     for n in r.notes:

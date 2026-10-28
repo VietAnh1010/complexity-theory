@@ -24,7 +24,7 @@ using DafnyProgram = Microsoft.Dafny.Program;
 namespace DafnySteps;
 
 public class Annotate {
-  public string Counter = "steps";
+  public string Counter = Deghost.DefaultCounter;
   /// The cost rules to enable, by name: `enable=functions,seq`.
   public readonly HashSet<string> Enabled = [];
   /// Each rule's name and constructor; a rule's argument is the counter name.

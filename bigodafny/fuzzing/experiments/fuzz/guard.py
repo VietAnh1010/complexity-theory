@@ -106,7 +106,9 @@ def answer_error(row):
         answer = json.loads((row / "answer.json").read_text())
     except (OSError, json.JSONDecodeError) as e:
         return f"answer.json: {e}"
-    keys = KEYS + ("skipped",) * (row.parent.name == "fuzz")
+    keys = KEYS
+    if row.parent.name == "fuzz":
+        keys += ("skipped",)
     if missing := [k for k in keys if not isinstance(answer, dict) or not str(answer.get(k) or "").strip()]:
         return f"answer.json lacks {', '.join(missing)}"
     if not CLASS.fullmatch(answer["class"]):

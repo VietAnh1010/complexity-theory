@@ -20,11 +20,11 @@ HERE = Path(__file__).resolve().parent
 FUZZING = HERE.parents[1]
 sys.path.insert(0, str(FUZZING.parent))
 from common import DATA, PRELUDE, read_jsonl, write_jsonl            # noqa: E402
-from guard import CMD                                                 # noqa: E402
+from guard import CMD, MARKER                                         # noqa: E402
 from fuzz import TIME_LIMIT                                           # noqa: E402
+from steptrace import BIN                                             # noqa: E402
 
-MARKER = HERE / "guard-path"                                           # read by guard.py
-TOOL = FUZZING / "DafnySteps" / "bin" / "Release" / "net10.0" / "DafnySteps"
+TOOL = BIN / "DafnySteps"
 LEAKS = re.compile(r"time complexity|time_complexity|label|audit|BigOBench", re.I)
 MODES = ("code", "fuzz")
 
