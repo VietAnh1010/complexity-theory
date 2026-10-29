@@ -127,6 +127,16 @@ changes go in `fuzzing/CHANGELOG.md`.
       WSL VM out of memory beside VS Code; `proofs.run(workers=2)` finished in 15 minutes.
 - [ ] (2026-10-26) `blind.py grade` assigns `guard.log` lines to rows by path, so a denial with no
       path (`true`, `echo skip`) voids nothing. Map the line's agent id to its row via `.locks/`.
+- [ ] (2026-10-29) The `blind-guess` hook runs `$CLAUDE_PROJECT_DIR`'s `guard.py`, the main checkout's
+      even for a session in a worktree, so a guard edited in a worktree never runs.
+- [ ] (2026-10-29) `guard-path` is one file for every session: two sessions cannot run batches at once.
+- [ ] (2026-10-29) `guard.py` fails open: when `guard-path` names a deleted directory, `log_denial`
+      raises, the hook exits 1, and the call runs. Batch `20261029-1318` ran unguarded this way.
+- [ ] (2026-10-29) A harmless call in the agent's own row (`cat row.dfy`) is denied and voids it; both
+      rows of `20261029-1324` were void from their first call.
+- [ ] (2026-10-29) A row directory is named by its host, so a fabricated row looks like a real one,
+      two arms of one row cannot share a batch, and `grade` compares with the host's label (`1807`
+      marks a wrong O(n**2) ✓).
 - [x] (2026-10-26) `fuzz.py` always adds a final newline; `2183_1`'s parser counts the empty last
       line as a row and fails its assert on every input. (2026-10-28) An input ends as the row's
       stored tests do. Of the 51 rows whose stored tests never end with a newline, the forced newline
