@@ -2,6 +2,35 @@
 
 Findings of the blind runs, newest first, one section per session.
 
+## 2026-10-29: fabricated rows for Sonnet code mode (F13-F15)
+
+Batches `20261029-1346` (F13), `-1348` (F14), `-1404` (F15), Sonnet, code mode, one agent each. All three
+rows take F12's input (host `647_11`, `0 <= a_i <= 3`, `n <= 2 * 10^5`); `grade`'s label is the host's, so
+the rows were graded by hand against `FABRICATED.md`.
+
+| row | trap | true class | measured | Sonnet code |
+|---|---|---|---|---|
+| F13 | F12's code with a flip-flop mirror: reverse at a 1, flip every visited cell | O(n**2) | all-3: steps/n**2 flat at 30.4 | ✓ medium |
+| F14 | Josephus on a boolean array, count a_t + 1 alive cells; folklore O(n**2) | O(nlogn) | all-3: steps/(n log n) 2.64 falling to 2.54 | ✓ high |
+| F15 | F12's code; a cell's mark records an arrival moving left and reflects | O(2**n) | all-3: steps x4 per n + 2 | ✓ medium |
+
+- F13: a walk entering a segment over a 0 exits at the far end in at most 3m - 2 steps (induction), so
+  every walk is O(n). Checked over every configuration up to n = 16. Sonnet: each walk zigzags O(n).
+- F14: every count is at most 4, so a lap kills about a quarter of the living: O(log n) laps of n
+  cells. Sonnet derived the laps bound, sum over m of 4/m, and named Josephus.
+- F15: read a block of marks as a binary number, least significant bit on the left. An entry from the
+  left decrements it and leaves left; at 0 it passes. Cells 0-1 reflect each exit back, so the walk
+  from cell 1 on 11 0 1^(n-3) runs at least 2^(n-2) - 1 decrements. One walk from any configuration
+  takes at most 2^(n+1) - n - 3 steps (exhaustive to n = 14); the worst total is 2.3 to 2.6 x 2^n
+  (every input to n = 8). Sonnet hand-simulated the walk and found the doubling recurrence.
+- All 2-state walker rules on a path (256 rules, 2 initial marks), run on all-3 inputs: every total
+  that terminates grows as n**2, n**3 (rotor-like) or 2**n.
+- Sonnet code mode was right on all three, as on F12. It simulates a few steps by hand and finds the
+  mechanism, so a trap needs a cost that a short hand simulation does not reveal.
+- No fuzz arm was run: code mode was never wrong. No guard denials.
+- The search for a fabricated row that misleads Sonnet code mode stopped here: on rows this small,
+  Sonnet reads the class from the code.
+
 ## 2026-10-29: ratio threshold for the proof screen
 
 The stored-test traces in `out/trace/` (2026-10-20 and 2026-10-28), rated by `steps / bound` at the

@@ -90,8 +90,9 @@ changes go in `fuzzing/CHANGELOG.md`.
       of 4 `20261021-1804` rows, 3 at a time: no `Connection closed`, no denials (`FINDINGS.md`).
 - [x] (2026-10-26) Design a fabricated row where code agents fail and the `fuzz` table corrects
       them: F12, rotor walks (`experiments/fuzz/FINDINGS.md`). Catches Haiku code mode, not Sonnet.
-- [ ] (2026-10-26) A fabricated row that misleads Sonnet code mode. F12's lesson: cost set by
-      global dynamics that no single loop shows.
+- [x] (2026-10-26) A fabricated row that misleads Sonnet code mode. F12's lesson: cost set by
+      global dynamics that no single loop shows. (2026-10-29) Dropped: F13-F15 (walkers, Josephus, a
+      counter walk) did not; Sonnet hand-simulates small cases and finds the mechanism (`FINDINGS.md`).
 - [x] (2026-10-26) `fuzz` has no time limit: a call past the Bash tool's 600 s goes to the
       background, and reading its output voids the row (`20261026-1815`). (2026-10-28)
       `--time-limit S`, default 300; `BRIEF.md` gives the cap. A call can overrun by one
