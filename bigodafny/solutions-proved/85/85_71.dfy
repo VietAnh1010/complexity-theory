@@ -123,9 +123,7 @@ method Solve(a: int, b: int, c_list: seq<int>, d_list: seq<int>) returns (output
     invariant steps <= base2 + pIdx * C
     decreases |passengersSorted| - pIdx
   {
-    ghost var bsteps;
-    var idx;
-    bsteps, idx := BinarySearch(taxisSorted, passengersSorted[pIdx]);
+    var bsteps, idx := BinarySearch(taxisSorted, passengersSorted[pIdx]);
     answer := answer[idx := answer[idx] + 1];
     steps := steps + bsteps + 2;
     CostMulDistrib(pIdx, 1, pIdx + 1, C);

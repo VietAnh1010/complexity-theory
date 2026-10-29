@@ -10,6 +10,14 @@ data lines go to `old-record.jsonl` beside the file they came from.
 
 ## 2026-10-28
 
+- 14 proofs now compile to Python byte-identical to their rows'; each differed and each still
+  verifies. Ghost-only `else` branches compiled to `elif True: pass` (`1243_178`, `2051_25`,
+  `2217_247`, `223_180`, `888_6`, `936_772`): the charge moves before the `if`, or into an `if` on a
+  `ghost var` guard. Helpers moved back after `Solve` as in the row (`276_610`, `307_116`,
+  `499_82`, `662_527`, `810_131`). Proof-only locals are `ghost` (`827_148`, `810_131`).
+  `85_71` binds `var bsteps, idx := ...` as `2826_81` does. `1359_189` keeps the row's inner
+  block. `810_131`'s `IntSqrt` returns via `r := 0; return;`. Still different: `1387_34` renames
+  the row's local `steps`; `2496_30` adds iteration caps to three `FormatG9` loops.
 - `2826_81`'s proof binds `BisectLeft`'s ghost cost as `var idx, bs := ...`, not a bare
   `var idx: int;` then an assignment: the bare declaration compiled to `idx = 0`, so the
   proof's Python differed from the row's. They are byte-identical now.

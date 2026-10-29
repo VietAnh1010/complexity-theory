@@ -50,8 +50,6 @@ lemma SumLenAppend(xs: seq<string>, p: string)
   }
 }
 
-function Min2(a: int, b: int): int { if a < b then a else b }
-
 // The charged length of one output part. Both branches are constants under
 // COMPLEXITY.md's table: a string literal costs its own length, and each
 // IntToString result is charged 1 however many digits it really has.
@@ -112,3 +110,5 @@ method Solve(n: int, abc_list: seq<seq<int>>) returns (output: string, ghost ste
   if |parts| >= 1 { JoinLen(parts, ""); }
   steps := steps + SumLen(parts) + |parts| + 1;
 }
+
+function Min2(a: int, b: int): int { if a < b then a else b }
