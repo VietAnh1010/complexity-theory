@@ -109,9 +109,9 @@ changes go in `fuzzing/CHANGELOG.md`.
       3 loose (`704_351`, `1678_68`, `1915_158`), now tight (`bigodafny/CHANGELOG.md`). 15 have
       constant or capped bounds, or need inputs over 10 s.
 - [x] (2026-10-28) `fuzz.py --bound` missed `method {:isolate_assertions} Solve` (12 proofs). Fixed.
-- [ ] (2026-10-28) The screening fit runs over the whole grid, so a bound's constant term skews the
-      slope: 0.86 on `450_276` (ratio falling to 0.125), 1.29 on `2496_30` (rising to 0.26). Fit
-      only the top half of the grid?
+- [x] (2026-10-28) The screening fit runs over the whole grid, so a bound's constant term skews the
+      slope: 0.86 on `450_276` (ratio falling to 0.125), 1.29 on `2496_30` (rising to 0.26).
+      (2026-10-29) No fit: doc 07 flags a ratio at the top bound under half the ratio 16x lower.
 - [ ] (2026-10-28) Fuzzing a proof means copying it into a directory named by its SID and rewriting
       its `include`, because `fuzz.py` takes the SID from the directory name. A `--sid` option would
       run the proof in place.

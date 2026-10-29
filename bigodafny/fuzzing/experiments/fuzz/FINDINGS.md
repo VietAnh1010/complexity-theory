@@ -2,6 +2,17 @@
 
 Findings of the blind runs, newest first, one section per session.
 
+## 2026-10-29: ratio threshold for the proof screen
+
+The stored-test traces in `out/trace/` (2026-10-20 and 2026-10-28), rated by `steps / bound` at the
+largest bound over the ratio at 1/16 of it (`docs/07-steptrace.md` § Screening proofs):
+
+- 183 proofs have enough tests. The middle half sit between 0.92 and 1.09.
+- The 5 proofs found loose on 2026-10-20 fall to 0.04–0.35; their traces predate the tight proofs.
+- No proof falls between 0.35 and 0.53, so the threshold is 0.5. It flags 17 proofs.
+- Tests that miss the worst case still flag tight proofs: `1015_168` falls to 0.000.
+- `1386_38` falls to 0.25, so its stored tests also suggest the bound is loose (`TODO.md`).
+
 ## 2026-10-28: screening proofs with fuzz inputs
 
 Batch `20261028-1601`: the 152 proofs that stored tests could not rate (`docs/07-steptrace.md`

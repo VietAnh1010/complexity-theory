@@ -4,6 +4,11 @@ What changed in `fuzzing/`, newest first, one dated section per session and one 
 per change. Earlier changes are in `git log -- bigodafny/fuzzing`. Findings go in
 `experiments/fuzz/FINDINGS.md`, open work in `TODO.md`.
 
+## 2026-10-29
+
+- Doc 07 § Screening proofs flags a proof whose `steps / bound` at the largest bound is under
+  half the ratio at 1/16 of it, not a log-log slope under 0.8; constant terms skewed the slope.
+
 ## 2026-10-28
 
 - Doc 07 § Screening proofs: `fuzz` reads a proof's one top-level `ensures steps <= E`; the

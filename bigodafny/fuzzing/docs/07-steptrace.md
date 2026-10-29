@@ -56,10 +56,13 @@ A proof in `solutions-proved/` can be a class looser than its code: it holds, bu
    python3 -c "import json; [print(json.loads(l)['solution_id']) for l in open('../data/complexity_proofs.jsonl')]" \
      | xargs -P 4 -I{} python3 steptrace.py {} > /dev/null
    ```
-2. Per proof, keep the costliest test in each doubling of `bound`, and fit
-   `log(steps)` against `log(bound)` over those tests. Skip a proof with fewer than
-   4 such tests or a bound range under 16x: its tests cannot tell.
-3. A slope well below 1 (say under 0.8) means `steps` grows slower than the bound.
+2. Per proof, keep the costliest test in each doubling of `bound`. Skip a proof with
+   fewer than 4 such tests or a bound range under 16x: its tests cannot tell.
+3. Compare `steps / bound` at the largest bound with the ratio at the largest bound at
+   most 1/16 of it. A tight bound's ratio levels off at a constant; a loose bound's
+   ratio falls toward 0. A ratio under half the earlier one flags the proof. Constant
+   terms bend the small-bound end of the table, so a log-log slope fitted over it
+   misreads tight bounds; the comparison uses only the two points.
 4. Read the flagged rows' Python. Most flags are tests that exit early or never
    reach the worst case (`1015_168` gets only even `n`); those proofs are fine.
    The rest are loose: prove the tight class and replace the copy.
@@ -74,7 +77,7 @@ Proofs the stored tests cannot rate need generated inputs:
    rewritten for the new depth.
 2. Write a `gen.py` per row that builds the costliest inputs and grows every size and value
    the bound names (`experiments/fuzz/fuzz.py`).
-3. Run `fuzz.py` and fit its table, the costliest input per grid point, as in step 2.
+3. Run `fuzz.py` and rate its table, the costliest input per grid point, as in steps 2 and 3.
    `fuzz` reads the bound from the proof's one top-level `ensures steps <= E`
    (`bigodafny/COMPLEXITY.md` § What a proof means); a proof in another form is malformed.
 
