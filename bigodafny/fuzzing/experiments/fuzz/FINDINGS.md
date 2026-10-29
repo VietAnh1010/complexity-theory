@@ -12,6 +12,9 @@ largest bound over the ratio at 1/16 of it (`docs/07-steptrace.md` § Screening 
 - No proof falls between 0.35 and 0.53, so the threshold is 0.5. It flags 17 proofs.
 - Tests that miss the worst case still flag tight proofs: `1015_168` falls to 0.000.
 - `1386_38` falls to 0.25, so its stored tests also suggest the bound is loose (`TODO.md`).
+- On batch `20261028-1601`'s fuzz tables, the rule flags none of the 136 rated proofs' final
+  tables, `450_276` (0.96) and `2496_30` (0.99) included. It flags the loose-bound tables of
+  `704_351`, `1678_68` and `1915_158` (attempt 3), as the slope did.
 
 ## 2026-10-28: screening proofs with fuzz inputs
 
