@@ -2,6 +2,34 @@
 
 Findings of the blind runs, newest first, one section per session.
 
+## 2026-11-02: pseudo-median pivot selection (F16)
+
+Batches `20261102-1758` (Sonnet fuzz), `-1801` (Sonnet code, Haiku fuzz), `-1802` (Haiku code, Haiku fuzz).
+F16 is `median3`, `pseudo_median3` and `choose_pivot` from a Rust quickselect; it prints the pivot's index.
+Host `647_11`, `n <= 2 * 10^5`. `grade`'s label is the host's, so the rows were graded by hand.
+
+| row | trap | true class | measured | Sonnet code / fuzz | Haiku code / fuzz |
+|---|---|---|---|---|---|
+| F16 | three recursive calls on `len // 9`, a class outside the usual list | O(n**0.5) | steps 68, 216, 658, 1982 at n = 9**2 to 9**5 | ✓ / ✓ | ✓ / 2 of 2 (both void) |
+
+- Every agent derived `T(len) = 3T(len / 9) + O(1)` from the code, with confidence high. F16 misled no one.
+- Running changed no answer. `steps` rises in jumps at powers of 9: n = 59049 and n = 200000 both cost 1982.
+- Both Haiku fuzz rows are void: the first call of each (`ls`, `cat`) was denied.
+- The void `-1801` Haiku agent skipped a sqrt bound, saying Dafny has no sqrt expression; the prelude has `ISqrt`.
+  The void `-1802` replica ran `--bound '10 * ISqrt(n) + 10'`: the ratio rose from 0.450 to 0.812 and levelled off.
+- One-shot proof: one Sonnet agent, told the class, with one `dafny verify` and no retry. It failed.
+  - Its bound was `25 * ISqrt(n) + |output|`, by induction on `3 * ISqrt(len / 9) <= ISqrt(len)` (`ISqrtDiv9`).
+  - `ISqrtDiv9` timed out at 30 s, and again at 150 s on a rerun; the other 5 declarations verified.
+  - The diff against the annotated row adds only ghost code; charges and `requires` are unchanged, with no `assume`.
+- `{:isolate_assertions}` on `ISqrtDiv9`, added to a copy afterwards, closes the proof: 17 verified, 0 errors, about 4 s.
+  The failure is solver time on the lemma's combined query, not a missing fact: each assertion passes alone.
+  The agent blamed one nonlinear assert; isolation does not support that. Why the combined query times out is unknown.
+- `bigodafny-prove` does not mention `{:isolate_assertions}`, which alone repaired 7 rows in `batches/z3-upgrade/`.
+- The bound is not loose on `fuzz` inputs: `steps / bound` levels off at 0.326 for n = 9**k and 0.188 for n = 3 * 9**k.
+- The full quickselect around this pivot, modelled in Python only (partition work, not Dafny `steps`), measures about
+  n**1.684 (x9 exponents 1.681 to 1.695, n = 81 to 177147). The input gives each round's sampled low elements the
+  smallest unused values, so a pivot has rank about n**(log_9 2), matching 2 - log_9 2 = 1.6845. The quickselect is not part of F16.
+
 ## 2026-10-29: fabricated rows for Sonnet code mode (F13-F15)
 
 Batches `20261029-1346` (F13), `-1348` (F14), `-1404` (F15), Sonnet, code mode, one agent each. All three
