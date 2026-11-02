@@ -41,7 +41,7 @@ usual sense. These have a meaning specific to this project:
 | value-bounded | a row whose cost depends on how large an input value is, not only on how many inputs there are (`solutions-proved/value-bounded/`) |
 | campaign | a batch run in which agents try to prove rows' labels under a fixed time and attempt budget |
 | draw / fresh row | the rows a campaign picks to attempt; a fresh row is one no earlier campaign drew |
-| obstacle | the coded reason a campaign row stayed unproved |
+| obstacle | the coded reason a row stayed unproved (`vocab.py`) |
 | relation | how a proved bound compares with the label, e.g. `confirms` (`COMPLEXITY.md` § Proof relations) |
 | `audit.py` | the campaign checker, in `.claude/skills/bigodafny-prove-campaign/scripts/` |
 

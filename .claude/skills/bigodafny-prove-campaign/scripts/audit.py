@@ -32,17 +32,7 @@ RELATIONS = set(vocab.RELATIONS) | {None}
 LR_KEYS = set(vocab.LABEL_RELATION_KEYS)
 REVIEWS = set(vocab.REVIEWS)
 
-OBSTACLES = {
-    "value-to-size",
-    "z3-nonlinear",
-    "invariant-gap",
-    "decreases-star",
-    "prelude-gap",
-    "recursion-depth",
-    "budget",
-    "label-mismatch",
-    "structural-unbounded",
-}
+OBSTACLES = set(vocab.OBSTACLES)
 
 
 def read_jsonl(path):
@@ -311,6 +301,8 @@ def main():
         if t and t.get("outcome") != "proved" and t.get("obstacle") not in OBSTACLES:
             problems.append(f"{sid}: unresolved with obstacle {t.get('obstacle')!r}"
                             " -- set a code from the vocabulary")
+        if t and t.get("obstacle") == "other" and not t.get("why_failed"):
+            problems.append(f"{sid}: obstacle `other` with no cause in why_failed")
         if t and t.get("relation") not in (None, "confirms") and not t.get("relation_reason"):
             problems.append(f"{sid}: {t.get('relation')} with no reason given")
         if p and p.get("assume_count"):

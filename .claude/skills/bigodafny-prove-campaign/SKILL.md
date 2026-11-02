@@ -183,13 +183,13 @@ the refreshed `data/`. Push to the session's designated branch.
   differs. Run `audit.py` before pruning: afterwards it counts fewer kept
   attempts than `attempts_used` for the promoted rows.
 - **`why_failed` names an obstacle**, not "ran out of attempts". Which
-  invariant would not hold; which multiplication the solver refused. Codes used
-  so far: `value-to-size`, `z3-nonlinear`, `invariant-gap`, `decreases-star`,
-  `recursion-depth`, `budget`, `prelude-gap`, `label-mismatch`. You write the
-  code into the record's `obstacle` field (null on a proved record); a record
-  revised to proved keeps the agent's as `agent_obstacle`. There is no
-  `obstacles.jsonl` any more. `audit.py` fails an unresolved record whose
-  `obstacle` is missing or outside the vocabulary.
+  invariant would not hold; which multiplication the solver refused. You write
+  a code from `bigodafny/vocab.py` into the record's `obstacle` field (null on a
+  proved record). `audit.py` fails an unresolved record whose `obstacle` is
+  missing or outside the vocabulary, or is `other` with an empty `why_failed`.
+- **A row that omits a limit its statement gives is a translation gap**, not an
+  obstacle. Add the limit to the row, re-run its gates and `precheck.py`, then
+  prove it.
 - **Never read a trend off one campaign's per-label table.** A class holds 8
   to 25 rows, so two rows move the rate ten points. After campaign 3 this
   project reported a crossover — `O(nlogn)` overtaking `O(n)` — and campaign 4
@@ -202,8 +202,8 @@ the refreshed `data/`. Push to the session's designated branch.
   independently by campaign 4's agents, none of which had seen campaign 3. A
   recurring named obstacle is a stronger finding than a moving rate.
 - **File value-bounded rows before you write the README.** A proved row whose
-  `looser-structural` reason names an input VALUE, and any row whose obstacle
-  is `value-to-size`, gets filed. The proved row's file moves into
+  `looser-structural` reason names an input VALUE, and any unproved row whose
+  `why_failed` says its cost depends on one, gets filed. The proved row's file moves into
   `solutions-proved/value-bounded/`; the unproved row goes to
   `batches/value-bounded-open/`, because a row with no proof does not belong
   under a directory called `solutions-proved`. That directory's
@@ -243,19 +243,11 @@ the refreshed `data/`. Push to the session's designated branch.
   Do not delete them: they are attempts, and attempts are kept. They stay out
   of the rate, because nothing records the budget they were made under.
   (Campaign 7's slice A lost 14 such files to deletion before this rule.)
-- **Revising a row after its campaign: latest state in the file, the old line
-  in `old-record.jsonl`, the agent's result kept beside.** When a row is
-  proved or its proof tightened later — by the main agent, outside the budget —
-  rewrite its trajectory line to the current state and add `agent_outcome`,
-  `agent_relation`, `agent_bound` (and `agent_why_failed`, `agent_obstacle`) plus a `revision`
-  block `{on, what, by}` with `by: "main agent, outside the campaign budget"`. Move every
-  superseded line — trajectory, `label_relation`, `audit` — into
-  the batch's `old-record.jsonl` as `{"file", "superseded_on", "why",
-  "record"}`. Campaign rates are then computed from `agent_outcome`: a row a
-  bounded agent missed stays missed in its campaign's rate, however it was
-  closed later. `prove_stats.py` and `collect.py` both read it that
-  way. The 2026-09-23 revision is the worked example: 48 rows, 157
-  superseded lines, campaign rates unchanged.
+- **Revising a row after its campaign: a new dated line** (`bigodafny/CLAUDE.md`),
+  with `on` and `by`. It goes in a `traj.jsonl`,
+  never a `traj_*.jsonl`, which `audit.py` and `prove_stats.py` read as the
+  campaign's own records. A superseded `label_relation` line still goes to
+  `old-record.jsonl` as `{"file", "superseded_on", "why", "record"}`.
 - **A normalised batch has one record per row and nothing else current.** Each
   record sits in the trajectory of the slice that produced it; slices and
   briefs whose records were replaced, staging files and every superseded line

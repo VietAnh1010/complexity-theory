@@ -8,6 +8,14 @@ change lands, update them and add a bullet here.
 A campaign's own run record stays in `batches/<campaign>/README.md`. Superseded
 data lines go to `old-record.jsonl` beside the file they came from.
 
+## 2026-11-02
+
+- New obstacle codes, defined only in `vocab.py`. A later change to a row is a new dated line, not
+  a rewrite. `batches/obstacle-review/` codes the open rows from their notes.
+- An accepted proof no longer records a `final` field; nothing read it.
+- `prove_stats.py` drops its revised-rows count, which also counted mass re-charges, and labels
+  rows no campaign agent proved "Proved outside any campaign".
+
 ## 2026-10-28
 
 - 14 proofs now compile to Python byte-identical to their rows'; each differed and each still

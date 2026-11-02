@@ -82,13 +82,10 @@ in one pass; use it for the corpus, never for comparing campaigns.
 ### Where the drawn rows stand now
 
 Everything above is what a bounded agent achieved inside its budget.
-226 rows were revised after their campaign, by the main agent and outside the budget; their records keep the
-agent's result as `agent_outcome`, and the superseded lines sit in
-each batch's `old-record.jsonl`.
 
 **290 of 329 distinct drawn rows carry a proof now — 88%.**
 
-- Closed after their campaign: 11 — `1039_15`, `1582_118`, `1718_1166`, `1827_66`, `1892_121`, `2105_248`, `2128_3`, `2423_48`, `2826_81`, `514_140`, `661_47`.
+- Proved outside any campaign: 11 — `1039_15`, `1582_118`, `1718_1166`, `1827_66`, `1892_121`, `2105_248`, `2128_3`, `2423_48`, `2826_81`, `514_140`, `661_47`.
 - Relations of the proofs as they stand: `confirms` 247, `looser-structural` 26, `tighter-costmodel` 7, `tighter-label` 5, `looser-translation` 2, `tighter-translation` 2, `looser-slack` 1.
 
 ## The label is the strongest predictor
@@ -130,14 +127,37 @@ invites a dozen comparisons and no correction is applied.
 
 | obstacle | what it means |
 |---|---|
-| `value-to-size` | the cost depends on how LARGE an input is; the label counts how MANY. Needs its own arithmetic lemma per row |
-| `z3-nonlinear` | the solver would not close a verification condition mixing several nonlinear scaffolds |
-| `invariant-gap` | an invariant needed reshaping or one more bridging assert |
-| `decreases-star` | the row carries `decreases *`, so there is no termination proof to hang a step bound on |
-| `prelude-gap` | a lemma the prelude does not have. Fixable ONCE for every row that hits it |
-| `recursion-depth` | bounding a recursion depth needs a number-theoretic argument |
-| `structural-unbounded` | no bound in the row's size exists |
-| `budget` | the mechanism was in hand when the clock ran out |
+| `z3-nonlinear` | Z3 will not prove a routine fact about products |
+| `math-too-hard` | a needed fact about a function (a log, a square root, a sum) was not established |
+| `invariant-gap` | a loop invariant is false or too weak: it lacks a simple fact about program state (a range, a case split, a counter) |
+| `termination-not-proved` | nobody showed why a loop stops, so it keeps `decreases *` |
+| `other` | none of these; `why_failed` must state the cause |
+| `value-to-size` | retired: the cost depends on how LARGE an input is; the label counts how MANY |
+| `decreases-star` | retired: the row carries `decreases *`, so there is no termination proof to hang a step bound on |
+| `prelude-gap` | retired: a lemma the prelude does not have |
+| `recursion-depth` | retired: bounding a recursion depth needs a number-theoretic argument |
+| `budget` | retired: the mechanism was in hand when the clock ran out |
+| `label-mismatch` | retired: the size the label names is not what the code pays for |
+| `structural-unbounded` | retired: no bound in the row's size exists |
+
+The counts above use the codes as agents recorded them, when `z3-nonlinear` meant
+"the solver would not close a verification condition mixing several nonlinear
+scaffolds" and `invariant-gap` meant "an invariant needed reshaping or one more
+bridging assert".
+
+### Open rows now
+
+39 drawn rows have no verified proof today. A row's code here comes from its
+latest dated line in a batch's `traj.jsonl`; an uncoded row's line has no code, or it has no line.
+
+| obstacle | rows | IDs |
+|---|---|---|
+| `invariant-gap` | 6 | `2065_24`, `2087_119`, `2231_77`, `2282_437`, `2831_61`, `2914_3` |
+| `z3-nonlinear` | 6 | `2005_187`, `2282_16`, `2394_125`, `2465_212`, `2650_153`, `2704_92` |
+| `math-too-hard` | 4 | `1272_115`, `1272_278`, `1364_161`, `1944_50` |
+| `other` | 3 | `1871_156`, `1972_295`, `2036_33` |
+| `termination-not-proved` | 2 | `281_12`, `2854_30` |
+| uncoded | 18 | `1263_2538`, `1306_126`, `1332_16`, `1582_315`, `1626_179`, `1675_29`, `1861_16`, `2358_103`, `271_58`, `2771_23`, `2819_926`, `2847_21`, `342_86`, `457_38`, `514_90`, `577_509`, `696_51`, `88_200` |
 
 ### Obstacle by label
 
@@ -292,13 +312,13 @@ pushes the rate down for reasons unrelated to the agents.
 
 ## Corpus context
 
-- `solutions/` holds 291 rows.
-- 321 rows carry a proof, in 321 files.
+- `solutions/` holds 303 rows.
+- 323 rows carry a proof, in 323 files.
 - proved_rows counts every proof in the corpus, including the 33 that predate the campaigns and the rows the main agent proved later.
 
 ## What this does not measure
 
-- **Only `solutions/`.** The 127 unscreened and 202 disputed rows have
+- **Only `solutions/`.** The 127 unscreened and 197 disputed rows have
   never been drawn. Nothing here generalises to them.
 - **A bounded agent, not the problem.** `unresolved` means 3 attempts
   and 5 minutes were not enough, not that the row cannot be proved.

@@ -62,8 +62,8 @@ proof needs its own arithmetic; nothing carries over
 
 - `relation: looser-structural` in a campaign's `label_relation.jsonl`, with a
   reason naming an input **value**: move the proof file here.
-- `obstacle: value-to-size` with no proof: the row goes to
-  `batches/value-bounded-open/MANIFEST.jsonl` instead.
+- No proof, and `why_failed` says the cost depends on an input **value**: the row
+  goes to `batches/value-bounded-open/MANIFEST.jsonl` instead.
 
 Name the campaign that found it.
 

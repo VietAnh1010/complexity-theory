@@ -49,18 +49,18 @@ clauses. It must not change what the program does.
 
 ## Record work honestly
 
-- Record an unresolved row's real obstacle (missing invariant, nonlinear
-  arithmetic, no termination measure, an unrelated value), not "ran out of
-  time".
-- Campaign trajectory records are append-only. Use the current schema (the
-  `bigodafny-prove-campaign` skill and `vocab.py`), including `reads` (the
-  declarations the agent read, in order) where required.
+- Record an unresolved row's real obstacle, a code from `vocab.py` that names
+  what blocked the last attempt, not "ran out of time". `other` needs a stated
+  cause.
+- Campaign trajectory records are append-only. A later change is a new line with
+  a top-level `on` date in a batch's `traj.jsonl`, and a row's latest dated line
+  is its current state. Use the current schema (the `bigodafny-prove-campaign`
+  skill and `vocab.py`), including `reads` (the declarations the agent read, in
+  order) where required.
 - Save every proof attempt to
   `batches/<campaign>/attempts/<problem_id>/<solution_id>.<n>.dfy`, failed
   ones included. Once the accepted proof is copied into `solutions-proved/`,
-  delete only the attempt identical to it (ignoring the `include` line), and
-  set that row's `final` field in `batches/<campaign>/audit.jsonl` to the
-  proof's path.
+  delete only the attempt identical to it (ignoring the `include` line).
 
 ## Docs describe the present
 

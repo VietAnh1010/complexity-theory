@@ -12,6 +12,14 @@ checked.
 | `value-bounded-open/` | value-bounded rows with no proof yet | `MANIFEST.jsonl` |
 | `z3-upgrade/` | fixing proofs that time out under Z3 5.1.0 | instructions, trajectory, audit, attempts, transcripts |
 | `output-length/` | re-charging proofs at one step per output character | instructions, trajectory, audit, attempts, transcripts |
+| `obstacle-review/` | the code that blocks each open row | dated trajectory lines, `README.md` |
+
+## Reading a row's records
+
+- **Older campaign lines were revised in place.** They carry `agent_outcome` and `agent_obstacle`,
+  with replaced versions in `old-record.jsonl`. Campaign rates read `agent_outcome`.
+- **`audit.jsonl` is a report.** It holds what `audit.py` found on its last run, so it can go stale, and
+  `audit.py` overwrites it. Use `data/complexity_proofs.jsonl` for what verifies today.
 
 ## `labelaudit/`
 

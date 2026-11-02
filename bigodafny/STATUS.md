@@ -99,3 +99,4 @@ Source: `data/prove_stats.md`.
 
 - 281 of 366 draws proved (77%), over 8 campaigns.
 - 290 of the 329 distinct rows drawn carry a proof today (88%).
+- The other 39 are open: 21 coded by obstacle, 18 uncoded (`data/prove_stats.md` § Open rows now).

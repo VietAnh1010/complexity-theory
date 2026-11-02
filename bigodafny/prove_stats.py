@@ -27,7 +27,7 @@ label_relation.jsonl.
 from __future__ import annotations
 
 import json
-from vocab import RELATIONS
+from vocab import OBSTACLES, RELATIONS, RETIRED_OBSTACLES
 from common import OUT, write_json
 from collections import Counter, defaultdict
 from math import comb
@@ -96,7 +96,6 @@ def load():
                 "current_outcome": "proved" if sid in VERIFIED else ("unresolved" if t else "not attempted"),
                 "current_relation": (rel.get(sid) or {}).get("relation")
                                     if t.get("outcome") == "proved" else None,
-                "revised": bool(t.get("revision")),
                 # drawn although a proof already existed: a sampler bug, not
                 # new work, so not in the denominator
                 "redrawn": bool(m.get("already_proved_when_drawn")),
@@ -192,6 +191,7 @@ def payload():
         "first_vs_repeat": first_vs_repeat(rows),
         "dedup": dedup_view(rows),
         "current": current_state(rows),
+        "open_now": open_now(rows),
         "corpus": corpus_context(),
         "rows": sorted(rows, key=lambda r: (r["campaign"], r["solution_id"])),
     }
@@ -264,7 +264,6 @@ def current_state(rows):
         latest[r["solution_id"]] = r   # later campaigns overwrite earlier ones
     distinct = list(latest.values())
     proved = [r for r in distinct if r["current_outcome"] == "proved"]
-    revised = sorted(r["solution_id"] for r in distinct if r["revised"])
     # no bounded agent proved it in any draw, and it is proved now: closed by
     # hand. Keyed on outcomes, not on a record's shape -- a rerun record carries
     # no `revision` flag but can still be an agent's miss on a row proved later.
@@ -279,9 +278,25 @@ def current_state(rows):
         "rate_now": round(len(proved) / len(distinct), 4) if distinct else None,
         "relations_now": dict(Counter(r["current_relation"] or "confirms"
                                       for r in proved).most_common()),
-        "revised_after_campaign": revised,
         "closed_after_campaign": closed_after,
     }
+
+
+def open_now(rows):
+    """What blocks each drawn row with no verified proof: its latest dated line."""
+    latest = {}
+    for f in sorted((HERE / "batches").glob("*/traj*.jsonl")):
+        for r in jsonl(f):
+            if r.get("on") and r["on"] >= latest.get(r["solution_id"], {}).get("on", ""):
+                latest[r["solution_id"]] = r
+    open_rows = {r["solution_id"] for r in rows} - VERIFIED
+    coded = defaultdict(list)
+    for sid in sorted(open_rows):
+        code = latest.get(sid, {}).get("obstacle")
+        if code:
+            coded[code].append(sid)
+    uncoded = sorted(open_rows - {s for ids in coded.values() for s in ids})
+    return {"open": len(open_rows), "coded": dict(coded), "uncoded": uncoded}
 
 
 def dedup_view(rows):
@@ -415,15 +430,11 @@ def render(p):
         a("### Where the drawn rows stand now")
         a("")
         a("Everything above is what a bounded agent achieved inside its budget.")
-        a(f"{len(c['revised_after_campaign'])} rows were revised after their "
-          "campaign, by the main agent and outside the budget; their records keep the")
-        a("agent's result as `agent_outcome`, and the superseded lines sit in")
-        a("each batch's `old-record.jsonl`.")
         a("")
         a(f"**{c['proved_now']} of {c['distinct_rows']} distinct drawn rows carry a "
           f"proof now — {c['rate_now']:.0%}.**")
         a("")
-        a(f"- Closed after their campaign: {len(c['closed_after_campaign'])} — "
+        a(f"- Proved outside any campaign: {len(c['closed_after_campaign'])} — "
           + ", ".join(f"`{x}`" for x in c["closed_after_campaign"]) + ".")
         a("- Relations of the proofs as they stand: "
           + ", ".join(f"`{k}` {v}" for k, v in c["relations_now"].items()) + ".")
@@ -461,14 +472,27 @@ def render(p):
     a("")
     a("| obstacle | what it means |")
     a("|---|---|")
-    a("| `value-to-size` | the cost depends on how LARGE an input is; the label counts how MANY. Needs its own arithmetic lemma per row |")
-    a("| `z3-nonlinear` | the solver would not close a verification condition mixing several nonlinear scaffolds |")
-    a("| `invariant-gap` | an invariant needed reshaping or one more bridging assert |")
-    a("| `decreases-star` | the row carries `decreases *`, so there is no termination proof to hang a step bound on |")
-    a("| `prelude-gap` | a lemma the prelude does not have. Fixable ONCE for every row that hits it |")
-    a("| `recursion-depth` | bounding a recursion depth needs a number-theoretic argument |")
-    a("| `structural-unbounded` | no bound in the row's size exists |")
-    a("| `budget` | the mechanism was in hand when the clock ran out |")
+    for name, meaning in OBSTACLES.items():
+        a(f"| `{name}` | {meaning} |")
+    for name, meaning in RETIRED_OBSTACLES.items():
+        a(f"| `{name}` | retired: {meaning} |")
+    a("")
+    a("The counts above use the codes as agents recorded them, when `z3-nonlinear` meant")
+    a("\"the solver would not close a verification condition mixing several nonlinear")
+    a("scaffolds\" and `invariant-gap` meant \"an invariant needed reshaping or one more")
+    a("bridging assert\".")
+    a("")
+    a("### Open rows now")
+    a("")
+    o = p["open_now"]
+    a(f"{o['open']} drawn rows have no verified proof today. A row's code here comes from its")
+    a("latest dated line in a batch's `traj.jsonl`; an uncoded row's line has no code, or it has no line.")
+    a("")
+    a("| obstacle | rows | IDs |")
+    a("|---|---|---|")
+    for code, ids in sorted(o["coded"].items(), key=lambda kv: (-len(kv[1]), kv[0])):
+        a(f"| `{code}` | {len(ids)} | " + ", ".join(f"`{s}`" for s in ids) + " |")
+    a(f"| uncoded | {len(o['uncoded'])} | " + ", ".join(f"`{s}`" for s in o["uncoded"]) + " |")
     a("")
     a("### Obstacle by label")
     a("")
