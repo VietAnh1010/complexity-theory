@@ -48,6 +48,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(a: int, b: int, c: int) returns (output: string)
+  requires a >= 1
   requires 1 <= b <= 11
   requires 0 <= c <= b + 1
 {

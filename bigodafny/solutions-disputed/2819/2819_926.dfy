@@ -85,6 +85,9 @@ function RepStr(s: string, n: int): string
 }
 
 method Solve(n: int, pairs_list: seq<seq<int>>) returns (output: string)
+  requires forall t :: 0 <= t < |pairs_list| && |pairs_list[t]| >= 2 ==>
+    pairs_list[t][0] >= 3 && 1 <= pairs_list[t][1] &&
+    2 * pairs_list[t][1] <= pairs_list[t][0] * (pairs_list[t][0] - 1)
 {
   var results: seq<string> := [];
   var t := 0;

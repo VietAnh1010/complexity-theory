@@ -15,6 +15,8 @@ data lines go to `old-record.jsonl` beside the file they came from.
 - An accepted proof no longer records a `final` field; nothing read it.
 - `prove_stats.py` drops its revised-rows count, which also counted mass re-charges, and labels
   rows no campaign agent proved "Proved outside any campaign".
+- Five rows gain a limit their statement gives: `271_58` `n >= 1`, `696_51` `v_2 >= 1`, `1861_16`
+  `a >= 1`, `2771_23` `n >= 1`, `2819_926` `n` and `k` per test. Their compiled Python is unchanged.
 
 ## 2026-10-28
 

@@ -15,16 +15,20 @@ under the 300-second budget. Any code would be a prediction, so retry them first
 `577_509`, `342_86`, `1306_126`, `514_90`, `2358_103`, `1582_315`, `1626_179`, `1332_16`, `1675_29`,
 `2847_21`, `1263_2538`, `88_200`, `457_38`
 
-**Translation gap.** The row omits a limit its problem statement gives, and the agent's note names that
-as the blocker. Add the limit to the row, then re-run its gates and `precheck.py`:
+**Translation gap.** The row omitted a limit its problem statement gives, and the agent's note named that
+as the blocker. Each row now carries the limit and passes its gates and `precheck.py`. Each awaits a proof
+retry:
 
-| Row | The statement gives | The row has |
+| Row | The statement gives | The row's `requires` |
 |---|---|---|
-| `271_58` | `1 ≤ n` | no `requires` |
-| `696_51` | `1 ≤ n` | `v_1 >= 1` only |
-| `1861_16` | `H` between 1 and 100 | nothing on `a` |
-| `2771_23` | `1 ≤ n` | `n >= 0` |
-| `2819_926` | `1 ≤ k ≤ min(2⋅10^9, n(n-1)/2)` on each test | no limit on `k` |
+| `271_58` | `1 ≤ n` | `n >= 1` |
+| `696_51` | `1 ≤ n` | `v_2 >= 1` |
+| `1861_16` | `H` between 1 and 100 | `a >= 1` |
+| `2771_23` | `1 ≤ n` | `n >= 1` |
+| `2819_926` | `3 ≤ n`, `1 ≤ k ≤ min(2⋅10^9, n(n-1)/2)` on each test | `pairs_list[t][0] >= 3`, `1 <= pairs_list[t][1]`, `2 * pairs_list[t][1] <= pairs_list[t][0] * (pairs_list[t][0] - 1)` |
+
+One synthetic generated test of `1861_16` has `H = 0`, outside the statement, so `precheck.py` reports
+that clause as `violated-generated-only`. The test gates do not run generated tests.
 
 `2282_437`, `281_12` and `2914_3` also omit a stated limit, but fixing it may not unblock them, so they
 keep their codes.
