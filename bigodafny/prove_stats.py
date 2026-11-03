@@ -37,7 +37,7 @@ HERE = Path(__file__).resolve().parent
 DATA = HERE / "data"
 BATCHES = ["prove-sample", "prove-sample-2", "prove-sample-3",
            "prove-sample-4", "prove-sample-5", "prove-sample-6",
-           "prove-sample-7", "prove-sample-8"]
+           "prove-sample-7", "prove-sample-8", "prove-retry"]
 # rows with a verified proof in the overlay now, whoever wrote it
 VERIFIED = {r["solution_id"] for r in
             (json.loads(l) for l in (DATA / "complexity_proofs.jsonl").open() if l.strip())

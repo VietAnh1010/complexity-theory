@@ -13,6 +13,7 @@ checked.
 | `z3-upgrade/` | fixing proofs that time out under Z3 5.1.0 | instructions, trajectory, audit, attempts, transcripts |
 | `output-length/` | re-charging proofs at one step per output character | instructions, trajectory, audit, attempts, transcripts |
 | `obstacle-review/` | the code that blocks each open row | dated trajectory lines, `README.md` |
+| `prove-retry/` | a retry of the open rows, then every proof re-proved on `annotate`'s charges | briefs, slices, trajectories, relations, attempts, `README.md` |
 
 ## Reading a row's records
 

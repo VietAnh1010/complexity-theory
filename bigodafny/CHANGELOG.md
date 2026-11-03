@@ -8,6 +8,14 @@ change lands, update them and add a bullet here.
 A campaign's own run record stays in `batches/<campaign>/README.md`. Superseded
 data lines go to `old-record.jsonl` beside the file they came from.
 
+## 2026-11-03
+
+- `batches/prove-retry/`: 33 of the 39 open rows are proved, each on `annotate`'s charges, because
+  agents' hand-written charges proved too low. Seven proofs go to `solutions-proved/value-bounded/`.
+- `271_58` and `514_90` call the prelude's `Repeat` instead of their own helpers. Both pass their
+  gates; `271_58` now confirms its label.
+- `prove_stats.py` counts `prove-retry` as a campaign.
+
 ## 2026-11-02
 
 - New obstacle codes, defined only in `vocab.py`. A later change to a row is a new dated line, not
