@@ -37,7 +37,7 @@ Source: the tree.
 | `solutions-ungateable/` | 4 |
 | `solutions-unverified/` | 3 |
 | `solutions-untranslated/` | 4 |
-| `solutions-proved/` (copies) | 356, of which 29 in `value-bounded/` |
+| `solutions-proved/` (copies) | 361, of which 29 in `value-bounded/` |
 
 ## Gates
 
@@ -46,7 +46,7 @@ Source: the tree.
 | `validate.py` | `data/validation.jsonl` | 536 rows: all `valid` |
 | `difftest.py --loose` | `data/difftest.jsonl` | 98 loose rows: 94 `agrees`, 4 `untranslated`; also keeps the last loose run of the two 1501 rows, now strict |
 | `verify_all.py` | `data/verification.jsonl` | 309 rows (`solutions/`, `solutions-unsure/`, `solutions-ungateable/`): all verify; 302 without `decreases *` |
-| `proofs.py` | `data/complexity_proofs.jsonl` | 356 proofs: all verify, 0 `assume` |
+| `proofs.py` | `data/complexity_proofs.jsonl` | 361 proofs: all verify, 0 `assume` |
 
 Rows in `solutions/` using `decreases *`: 7.
 
@@ -68,7 +68,7 @@ Source: `data/label_audit.jsonl`.
 | Cause | `label` 154, `translation` 34, `both` 5, `harness` 3, none 1 (`1950_45`) |
 | Confidence | high 101, medium 91, low 5 |
 | `true_class: other` | 71 |
-| With a proof in `solutions-proved/` | 67 |
+| With a proof in `solutions-proved/` | 68 |
 
 `solutions-unsure/`: 2 rows, each on its own question (`solutions-unsure/README.md`).
 
@@ -81,15 +81,15 @@ Source: `data/complexity_proofs.jsonl`, the tree.
 
 | Row is in | Proofs |
 |---|---:|
-| `solutions/` | 286 |
-| `solutions-disputed/` | 67 |
+| `solutions/` | 290 |
+| `solutions-disputed/` | 68 |
 | `solutions-unsure/` | 2 |
 | `solutions-unscreened/` | 1 |
 
 Labels corrected by a proof (`data/label_corrections.jsonl`): 5. `O(n)` to `O(sqrt(n))` 3,
 `O(nlogn)` to `O(n)` 1, `O(n*m)` to `O(n)` 1.
 
-Labels proved, by BigOBench's label: `O(n)` 165 · `O(nlogn)` 75 · `O(n**2)` 49 · `O(1)` 33 ·
+Labels proved, by BigOBench's label: `O(n)` 165 · `O(nlogn)` 76 · `O(n**2)` 53 · `O(1)` 33 ·
 `O(n+m)` 14 · `O(n*m)` 12 · `O(nlogn+mlogm)` 4 · `O(logn)` 2 ·
 `O(n+m)log(n+m)` 1 · `O(n**2+m**2)` 1.
 
@@ -98,5 +98,5 @@ Labels proved, by BigOBench's label: `O(n)` 165 · `O(nlogn)` 75 · `O(n**2)` 49
 Source: `data/prove_stats.md`.
 
 - 314 of 405 draws proved (78%), over 9 campaigns; `prove-retry` drew only open rows.
-- 323 of the 329 distinct rows drawn carry a proof today (98%).
-- The other 6 are open, all coded by obstacle (`data/prove_stats.md` § Open rows now).
+- 328 of the 329 distinct rows drawn carry a proof today (100%, rounded).
+- The other 1 is open, coded by obstacle (`data/prove_stats.md` § Open rows now).

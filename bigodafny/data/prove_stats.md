@@ -57,7 +57,7 @@ in it several times, and those are disproportionately the hard
 rows, since a repeat draw selects for failure. This view keeps
 one record per row, the most positive outcome.
 
-**313 of 329 distinct rows were proved by a bounded agent — 95%.** With the proofs the main agent made afterwards, 323 carry one now.
+**313 of 329 distinct rows were proved by a bounded agent — 95%.** With the proofs the main agent made afterwards, 328 carry one now.
 
 - 60 rows were drawn more than once.
 - 48 were closed by a later campaign after an earlier one missed them.
@@ -85,10 +85,10 @@ in one pass; use it for the corpus, never for comparing campaigns.
 
 Everything above is what a bounded agent achieved inside its budget.
 
-**323 of 329 distinct drawn rows carry a proof now — 98%.**
+**328 of 329 distinct drawn rows carry a proof now — 100%.**
 
-- Proved outside any campaign: 11 — `1039_15`, `1582_118`, `1718_1166`, `1827_66`, `1892_121`, `2105_248`, `2128_3`, `2423_48`, `2826_81`, `514_140`, `661_47`.
-- Relations of the proofs as they stand: `confirms` 257, `looser-structural` 40, `looser-translation` 8, `tighter-label` 7, `tighter-costmodel` 7, `looser-slack` 2, `tighter-translation` 2.
+- Proved outside any campaign: 16 — `1039_15`, `1582_118`, `1675_29`, `1718_1166`, `1827_66`, `1892_121`, `2105_248`, `2128_3`, `2423_48`, `2465_212`, `2826_81`, `2831_61`, `2847_21`, `457_38`, `514_140`, `661_47`.
+- Relations of the proofs as they stand: `confirms` 262, `looser-structural` 40, `looser-translation` 8, `tighter-label` 7, `tighter-costmodel` 7, `looser-slack` 2, `tighter-translation` 2.
 
 ## The label is the strongest predictor
 
@@ -152,15 +152,12 @@ bridging assert".
 
 ### Open rows now
 
-6 drawn rows have no verified proof today. A row's code here comes from its
+1 drawn rows have no verified proof today. A row's code here comes from its
 latest dated line in a batch's `traj.jsonl`; an uncoded row's line has no code, or it has no line.
 
 | obstacle | rows | IDs |
 |---|---|---|
-| `invariant-gap` | 2 | `2465_212`, `2831_61` |
-| `other` | 2 | `1675_29`, `1972_295` |
-| `math-too-hard` | 1 | `457_38` |
-| `termination-not-proved` | 1 | `2847_21` |
+| `other` | 1 | `1972_295` |
 | uncoded | 0 |  |
 
 ### Obstacle by label
@@ -347,7 +344,7 @@ pushes the rate down for reasons unrelated to the agents.
 ## Corpus context
 
 - `solutions/` holds 303 rows.
-- 356 rows carry a proof, in 356 files.
+- 361 rows carry a proof, in 361 files.
 - proved_rows counts every proof in the corpus, including the 33 that predate the campaigns and the rows the main agent proved later.
 
 ## What this does not measure

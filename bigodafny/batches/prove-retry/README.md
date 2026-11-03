@@ -15,15 +15,15 @@ because agents' hand-written charges proved too low. `traj_*.jsonl` keeps what t
   `2282_16`.
 - `annotate`'s count exceeded the proved bound:
 
-| Row | Highest count / bound | Tests over the bound |
-|---|---:|---:|
-| `514_90` | 5.83 | 181 of 184 |
-| `2914_3` | 2.28 | 106 of 145 |
-| `2036_33` | 1.31 | 52 of 108 |
-| `1626_179` | 1.16 | 38 of 118 |
-| `2854_30` | 1.09 | 93 of 94 |
-| `2065_24` | 1.02 | 18 of 161 |
-| `2005_187` | 1.00 | 2 of 211 |
+| Row        | Highest count / bound | Tests over the bound |
+| ---------- | --------------------: | -------------------: |
+| `514_90`   |                  5.83 |           181 of 184 |
+| `2914_3`   |                  2.28 |           106 of 145 |
+| `2036_33`  |                  1.31 |            52 of 108 |
+| `1626_179` |                  1.16 |            38 of 118 |
+| `2854_30`  |                  1.09 |             93 of 94 |
+| `2065_24`  |                  1.02 |            18 of 161 |
+| `2005_187` |                  1.00 |             2 of 211 |
 
 `2087_119` passed its stored tests and broke its bound by 1.07 on fuzz inputs. So a clean run on
 stored tests clears no proof.
@@ -58,13 +58,13 @@ unchanged.
 `label_relation.jsonl` has one line per proved row. The main agent read each row's Python; the user
 reviewed every relation that differed from the agent's.
 
-| Relation | Rows |
-|---|---:|
-| `looser-structural` | 14 |
-| `confirms` | 10 |
-| `looser-translation` | 6 |
-| `tighter-label` | 2 |
-| `looser-slack` | 1 |
+| Relation             | Rows |
+| -------------------- | ---: |
+| `looser-structural`  |   14 |
+| `confirms`           |   10 |
+| `looser-translation` |    6 |
+| `tighter-label`      |    2 |
+| `looser-slack`       |    1 |
 
 Filed in `solutions-proved/value-bounded/`: `281_12`, `342_86`, `514_90`, `1263_2538`, `1626_179`,
 `1861_16`, `1871_156`.
@@ -82,16 +82,38 @@ near 31 on `all_same` and rise on `half_heavy` (200, 387, 643, 1668 at `m` = 25,
 Python's own `sum` loop also grows: 26 items per `m` at `m = 100`, 251 at `m = 1000`. The statement caps
 `m` at 100, so larger sizes show growth only. None of this proves a lower bound.
 
+## Unresolved rows proved later
+
+Five of the six unresolved rows now have proofs, each on `annotate`'s charges. Sonnet subagents wrote
+them, with a main-agent hint and an 8-attempt limit. They are not campaign results: `traj_*.jsonl`
+still records all five as unresolved, so the campaign rates do not change. Each row's latest dated
+line in `traj.jsonl` has its current state.
+
+| Row        | Bound                                                        | Hint                                                        |
+| ---------- | ------------------------------------------------------------ | ----------------------------------------------------------- |
+| `457_38`   | `8 * n * n + 12 * n + 4 + \|output\|`                        | `81 >= 10` gives `9^(2k) >= 10^k`, so about `2k` iterations |
+| `1675_29`  | `(\|v1\| + 1) * (2 * \|v0\| + 2) * (7 * \|v0\| + 19) + 13`   | a wrap flag bounds the iterations per `j`                   |
+| `2465_212` | `2 * NLogN(t) + 240 * t + 2 * \|output\| + 200`              | the earlier failure note: assert the prefix unchanged       |
+| `2831_61`  | `2 * NLogN(n) + 11 * (n * n) + 50 * n + 50 + 4 * \|output\|` | the earlier failure note: the empty-sequence fact           |
+| `2847_21`  | `11 + 16 * SpBd(a, b) + \|output\|`                          | closed-form spiral positions, and moves left to the target  |
+
+The main agent changed two agent proofs:
+
+- `2465_212`: `Solve` timed out on some runs, so it gained `{:split_here}` asserts and intermediate step
+  bounds.
+- `2831_61`: `IdxOk2831` became `ghost` and two `_` became `u`, because both changed the compiled Python.
+
+`457_38` and `2847_21` are not filed in `value-bounded/`, though their bounds carry a value: the input
+holds only values, so the label's `n` is that value.
+
+`1675_29` is `looser-structural`. On `s = a^(n/2) b^(n/2)`, `t = (ba)^(n/2)`, the Python's `t[j] in s`
+makes about `0.25 n³` comparisons at `n` = 50 to 400. This is a count, not a proved lower bound.
+
 ## Unresolved
 
-| Row | Obstacle | Blocked by |
-|---|---|---|
-| `457_38` | `math-too-hard` | bounding the iteration count needs a `9^i` against `10^k` comparison |
-| `1675_29` | `other` | no counting potential for the iteration count |
-| `1972_295` | `other` | needs `a`, `b`, `c >= 1`, which the row does not state |
-| `2465_212` | `invariant-gap` | a digit-sum invariant in the output loop |
-| `2831_61` | `invariant-gap` | the invariant lacks its empty-sequence fact |
-| `2847_21` | `termination-not-proved` | no closed-form position for the spiral walk |
+| Row        | Obstacle | Blocked by                                             |
+| ---------- | -------- | ------------------------------------------------------ |
+| `1972_295` | `other`  | needs `a`, `b`, `c >= 1`, which the row does not state |
 
 ## Open
 
@@ -101,7 +123,7 @@ Python's own `sum` loop also grows: 26 items per `m` at `m = 100`, 251 at `m = 1
   quadratically. The accepted proofs inherit all of these.
 - **`2231_77`.** The statement says lowercase Latin letters and the row states no such limit. Adding it
   should give `O(n)`; this was not tried.
-- **Identical attempts.** Each accepted proof also exists as an attempt that differs only in its
+- **Identical attempts.** Each of the first 33 accepted proofs also exists as an attempt that differs only in its
   `include`. `CLAUDE.md` says to delete those, and this batch's brief said to keep them. They are kept
   until that is decided.
 - **Agent-proved rate.** `data/prove_stats.md` counts a row as proved by a bounded agent from `outcome` in

@@ -15,6 +15,8 @@ data lines go to `old-record.jsonl` beside the file they came from.
 - `271_58` and `514_90` call the prelude's `Repeat` instead of their own helpers. Both pass their
   gates; `271_58` now confirms its label.
 - `prove_stats.py` counts `prove-retry` as a campaign.
+- `457_38`, `1675_29`, `2465_212`, `2831_61` and `2847_21` gain proofs on `annotate`'s charges, written
+  with main-agent hints, so the campaign rates do not count them (`batches/prove-retry/README.md`).
 
 ## 2026-11-02
 
