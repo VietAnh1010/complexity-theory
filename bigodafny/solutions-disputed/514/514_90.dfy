@@ -73,7 +73,7 @@ method Solve(n: int, total_score: int, scores: seq<int>) returns (output: string
     a := a[i := if a[i] < cand then a[i] else cand];
     i := i + 1;
   }
-  var bx := RepeatChar90('0', n) + IntToBinary90(x);
+  var bx := Repeat("0", n) + IntToBinary90(x);
   var ans := FCost90(bx, n, a);
   var j := 0;
   while j < |bx|
@@ -81,7 +81,7 @@ method Solve(n: int, total_score: int, scores: seq<int>) returns (output: string
     decreases |bx| - j
   {
     if bx[j] == '0' {
-      var candStr := bx[..j] + "1" + RepeatChar90('0', |bx| - j - 1);
+      var candStr := bx[..j] + "1" + Repeat("0", |bx| - j - 1);
       var candVal := FCost90(candStr, n, a);
       ans := if candVal < ans then candVal else ans;
     }
@@ -103,13 +103,6 @@ function ParseBinary90(bs: string): int
 {
   if |bs| == 0 then 0
   else ParseBinary90(bs[..|bs|-1]) * 2 + (if bs[|bs|-1] == '1' then 1 else 0)
-}
-
-function RepeatChar90(c: char, k: int): string
-  requires k >= 0
-  decreases k
-{
-  if k == 0 then "" else [c] + RepeatChar90(c, k - 1)
 }
 
 function IntToBinaryPos90(x: int): string

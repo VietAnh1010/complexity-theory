@@ -40,6 +40,13 @@ reason.
 | `810_131` | `O(n)` | prove-sample |
 | `2942_55` | `O(n)` | main agent, re-translation |
 | `305_284` | `O(n+m)` | main agent, re-translation |
+| `281_12` | `O(n**2)` | prove-retry |
+| `342_86` | `O(n)` | prove-retry |
+| `514_90` | `O(n**2)` | prove-retry |
+| `1263_2538` | `O(n)` | prove-retry |
+| `1626_179` | `O(nlogn)` | prove-retry |
+| `1861_16` | `O(n)` | prove-retry |
+| `1871_156` | `O(nlogn)` | prove-retry |
 
 ## Causes
 

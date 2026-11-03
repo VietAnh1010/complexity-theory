@@ -54,15 +54,9 @@ method Solve(n: int) returns (output: string)
       }
     }
     if aux == 0 {
-      output := Repeat('4', numFour) + Repeat('7', numSeven);
+      output := Repeat("4", numFour) + Repeat("7", numSeven);
     } else {
       output := "-1";
     }
   }
-}
-
-function Repeat(c: char, n: int): string
-  decreases if n < 0 then 0 else n
-{
-  if n <= 0 then "" else [c] + Repeat(c, n - 1)
 }

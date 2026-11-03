@@ -1,0 +1,13 @@
+{"solution_id": "2465_212", "path": "solutions/2465/2465_212.dfy", "label": "O(nlogn)", "split": "loose"}
+{"solution_id": "2914_3", "path": "solutions/2914/2914_3.dfy", "label": "O(n)", "split": "strict"}
+{"solution_id": "1263_2538", "path": "solutions-disputed/1263/1263_2538.dfy", "label": "O(n)", "split": "strict"}
+{"solution_id": "281_12", "path": "solutions-disputed/281/281_12.dfy", "label": "O(n**2)", "split": "strict"}
+{"solution_id": "2065_24", "path": "solutions/2065/2065_24.dfy", "label": "O(1)", "split": "strict"}
+{"solution_id": "2847_21", "path": "solutions/2847/2847_21.dfy", "label": "O(n**2)", "split": "strict"}
+{"solution_id": "2282_16", "path": "solutions/2282/2282_16.dfy", "label": "O(n**2)", "split": "strict"}
+{"solution_id": "1364_161", "path": "solutions-disputed/1364/1364_161.dfy", "label": "O(logn)", "split": "strict"}
+{"solution_id": "2036_33", "path": "solutions/2036/2036_33.dfy", "label": "O(nlogn)", "split": "strict"}
+{"solution_id": "2854_30", "path": "solutions/2854/2854_30.dfy", "label": "O(n)", "split": "strict"}
+{"solution_id": "1972_295", "path": "solutions/1972/1972_295.dfy", "label": "O(logn)", "split": "strict", "start_from": "batches/z3-upgrade/unresolved/1972_295.dfy"}
+{"solution_id": "1626_179", "path": "solutions-disputed/1626/1626_179.dfy", "label": "O(nlogn)", "split": "strict"}
+{"solution_id": "1332_16", "path": "solutions/1332/1332_16.dfy", "label": "O(nlogn)", "split": "loose"}
