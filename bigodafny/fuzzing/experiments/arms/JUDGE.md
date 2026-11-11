@@ -1,44 +1,38 @@
-# Judge bounds and classes against the reference class
+# Judge batch {{BATCH}}
 
-You judge batch `{{BATCH}}`. Read `{{DIR}}/input.jsonl`, and write `{{DIR}}/output.jsonl` with one
-line per input line. Do not open `key.jsonl`, or anything else under `fuzzing/experiments/arms/runs/`:
-which agent wrote an item is hidden from you on purpose.
+Work in `bigodafny/fuzzing/experiments/arms/`. For batch `{{BATCH}}`, read each arm's
+`runs/<arm>/{{BATCH}}/traj.jsonl` (arms `full`, `nofuzz`, `noguess`, `base`), and write
+`runs/judged-{{BATCH}}.jsonl` with the Write tool: one line per arm and row that needs a call.
 
-## Input
+## Where things are
 
-```json
-{"item": "1-007", "kind": "bound", "sid": "750_14", "row": "solutions/750/750_14.dfy",
- "truth": "O(nlogn)", "value": "4 * NLogN(|data_points|) + 50 * |data_points| + 20 + |output|"}
-```
+- A record's `truth` is the reference class. Its `n` and `m` name the row's main input measures
+  (lengths, counts or values); decide from the row which parameters they are.
+- The row's Dafny, with `Solve`'s parameters and its Python in the header, is at the record's
+  `path`, under `bigodafny/`.
+- The proof is `runs/<arm>/{{BATCH}}/<sid>/audited.dfy`. Read it when a bound names a function that
+  is not in `bigodafny/prelude.dfy`.
 
-- `row`, under `bigodafny/`, is the row's Dafny: `Solve`'s parameters, and the Python it was translated
-  from in its header. Read it to know what each parameter is.
-- `truth` is the reference class. Its `n` and `m` name the row's main input measures (lengths, counts
-  or values); decide from the row which parameters they are.
-- `value` is a proved bound on `steps` (`kind: bound`) or a stated class (`kind: class`).
-- `bigodafny/prelude.dfy` defines the functions a bound may call (`NLogN`, `CeilLog2`, `SumLen`, ...).
+## Calls
 
-## Rules
-
-`kind: bound`: give `relation`, the bound's class against `truth`.
+`tight`, for each record with `outcome` `proved`: is `bound` in `truth`'s class, or below it?
 
 - Drop every term in `|output|`; judge the rest.
 - An input value bounding a loop is a measure, as a length is.
-- `equal`: the bound is in `truth`'s class (`4 * NLogN(n) + 50 * n` for `O(nlogn)`).
-- `looser`: the bound grows faster than `truth` on some inputs (`n * n` for `O(nlogn)`).
-- `tighter`: the bound grows slower than `truth` (`n` for `O(nlogn)`).
-- A bound over a second measure `truth` omits is `looser`, unless the row ties that measure to `truth`'s
-  (say the Python asserts `m <= n`).
+- `true`: the bound is in `truth`'s class (`4 * NLogN(n) + 50 * n` for `O(nlogn)`), or grows slower.
+- `false`: the bound grows faster than `truth` on some inputs (`n * n` for `O(nlogn)`), or names a
+  second measure `truth` omits, unless the row ties that measure to `truth`'s (say `m <= n`).
 
-`kind: class`: give `same`, true if `value` names `truth`'s class with the measures renamed
-(`O(m)` for `O(n)` when the row has one main measure, `O(m*n)` for `O(n*m)`), else false.
+`class_ok` and `guess_ok`, for each `class` or `guess` that differs from `truth` as a string: does it
+name `truth`'s class with the measures renamed (`O(m)` for `O(n)` with one main measure, `O(m*n)` for
+`O(n*m)`)?
 
 ## Output
 
 ```json
-{"item": "1-007", "relation": "equal", "reason": "NLogN(|data_points|) dominates; n = |data_points|"}
-{"item": "1-012", "same": true, "reason": "m is the only measure, |s|"}
+{"arm": "full", "sid": "750_14", "tight": true, "reason": "n = |data_points|; NLogN(n) dominates"}
+{"arm": "base", "sid": "2007_4", "tight": true, "class_ok": false, "reason": "class O(nlogn) counts the output"}
 ```
 
-`reason` is one line: the measure mapping and the dominant term. Write the file with the Write tool.
-End with one line: the item count, and the counts per relation and per `same`.
+Give `reason` in one line: the measure mapping and the dominant term. End with one line: the lines
+written, and how many are `tight` true and false.

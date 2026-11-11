@@ -23,6 +23,7 @@ def record(arm, batch, entry, row):
     why = stage.audit(entry["sid"], row, BIGODAFNY / entry["path"])
     agent_said = result.get("outcome", "no result")
     return {"sid": entry["sid"], "arm": arm, "batch": batch, "stratum": entry["stratum"], "truth": entry["truth"],
+            "path": entry["path"],
             **{k: result.get(k) for k in KEPT},
             "outcome": "proved" if agent_said == "proved" and not why else "unresolved",
             "agent_outcome": agent_said, "audit_failures": why,

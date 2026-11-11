@@ -12,8 +12,9 @@ per change. Earlier changes are in `git log -- bigodafny/fuzzing`. Findings go i
 - `experiments/arms/`: after a 4-row trial, every brief asks for the class ignoring the statement's
   upper limits on sizes, `base`'s `class` excludes the `|output|` term, and every brief says to read
   files with Read and Grep. The trial rows and runs are deleted.
-- `experiments/arms/`: each brief lists its arm's tools; `judge.py` and `JUDGE.md` let a blind Opus agent
-  judge bounds and classes; the README's run steps are for a fresh session per batch.
+- `experiments/arms/`: each brief lists its arm's tools; `JUDGE.md` has an Opus agent judge each proved
+  bound against `truth` from the runs; the README's run steps are for a fresh session per batch;
+  `full`'s brief says a `fuzz --bound` E may name `|output|`. A second trial ran clean.
 
 ## 2026-10-29
 

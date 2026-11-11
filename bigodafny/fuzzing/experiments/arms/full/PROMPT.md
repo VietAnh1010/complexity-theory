@@ -45,7 +45,8 @@ A `fuzz` call stops running inputs after {{TIME_LIMIT}} s. The table counts the 
 not run as `time-limit`; shrink the grid's largest sizes if it shows any.
 
 To test a candidate bound E, add `--bound 'E'`, with E a Dafny expression over `Solve`'s
-parameters, in single quotes: `--bound '4 * |a_list| * |a_list| + 100'`. The table then also
+parameters and `|output|`, in single quotes: `--bound '4 * |a_list| * |a_list| + 100 + |output|'`.
+Printing costs a step per character, so leave out `|output|` and E may break. The table then also
 shows E and `steps / E`:
 
 - a ratio that falls as sizes grow: E is a looser class than the code;

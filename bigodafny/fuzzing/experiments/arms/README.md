@@ -27,11 +27,11 @@ Measure how often each of four agent setups proves a tight bound on a row, on th
 | `setup.py` | stages one batch for one arm in `~/.cache/bigodafny-arms/<arm>/<sid>/` |
 | `collect.py` | audits the staged batch, copies it to `runs/<arm>/<batch>/`, clears the stage |
 | `report.py` | prints the tables over every collected batch |
-| `judge.py`, `JUDGE.md` | the blind judge's input and output, and its brief |
+| `JUDGE.md` | the judge's brief |
 | `<arm>/PROMPT.md` | the arm's brief |
 | `<arm>/guard.py` | the hook of agent type `arms-<arm>` (`.claude/agents/arms-<arm>.md`): the arm's flags |
 | `hook.py` | the rules behind every `guard.py`, on top of `prove_guard.py` run unchanged |
-| `runs/` | git-ignored: each arm's batches, and `judged.jsonl` |
+| `runs/` | git-ignored: each arm's batches, and the judge's `judged-<batch>.jsonl` |
 
 ## Rows
 
@@ -58,13 +58,12 @@ works from this directory, with `../../../.venv/bin/python3` as Python, and chan
       prompt is exactly "Your row is in DIR. Read DIR/BRIEF.md and do what it says.", DIR being the
       row's stage directory. Tell it nothing else, and never answer its messages.
    3. When every agent has finished, `collect.py --arm A --batch K`.
-3. `judge.py export --batch K`. Spawn one `general-purpose` agent with `model: opus` and the prompt
-   "Read bigodafny/fuzzing/experiments/arms/JUDGE.md, with {{BATCH}} = K and {{DIR}} =
-   <this directory>/runs/judge/K, and do what it says." Then `judge.py import --batch K`.
+3. Spawn one `general-purpose` agent with `model: opus` and the prompt "Read
+   bigodafny/fuzzing/experiments/arms/JUDGE.md, with {{BATCH}} = K, and do what it says."
 4. `report.py`, and report to the user: its tables, each row's `audit_failures` and `stop_error`, and
    the guard denials per arm (`runs/<arm>/K/guard.log`).
 
 If an agent ends on an API or harness error, or a script fails, stop and ask the user. Rerun nothing
 on your own, and never rerun a row because its answer looks wrong.
 
-`judged.jsonl` marks a proof tight when the judge finds its bound `equal` to `truth` or `tighter`.
+The judge marks a proof tight when its bound is in `truth`'s class or below it.

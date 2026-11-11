@@ -4,8 +4,8 @@
 
 Metrics per arm: guess accuracy (`full`, `nofuzz`), class accuracy, audited proofs, tight proofs
 (audited, and the bound's class equals `truth`), median seconds, mean attempts and fuzz calls.
-A class equals `truth` as a string unless `runs/judged.jsonl` says otherwise. Tightness comes only
-from `runs/judged.jsonl`: one line per call, `{"arm", "sid", "guess_ok"?, "class_ok"?, "tight"?, "reason"}`.
+A class equals `truth` as a string unless the judge says otherwise. Tightness comes only from the
+judge's `runs/judged-<batch>.jsonl` (`JUDGE.md`).
 Then paired counts: rows where `full` succeeds and the other arm fails, and the reverse.
 """
 from __future__ import annotations
@@ -62,8 +62,7 @@ def paired(recs, scores):
 
 def main():
     recs = [r for p in sorted(RUNS.glob("*/*/traj.jsonl")) for r in read_jsonl(p)]
-    judged_path = RUNS / "judged.jsonl"
-    judged = {(j["arm"], j["sid"]): j for j in read_jsonl(judged_path)} if judged_path.exists() else {}
+    judged = {(j["arm"], j["sid"]): j for p in sorted(RUNS.glob("judged-*.jsonl")) for j in read_jsonl(p)}
     scores = [score(r, judged) for r in recs]
     for name, keep in [(s, lambda r, s=s: r["stratum"] == s) for s in STRATA] + [("pooled", lambda r: True)]:
         idx = [i for i, r in enumerate(recs) if keep(r)]
