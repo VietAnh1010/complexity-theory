@@ -18,6 +18,8 @@ Measure how often each of four agent setups proves a tight bound on a row, on th
 - Every arm has a 5-minute clock; a `fuzz` call stops running inputs after 60 s.
 - Every bound must pass the prove campaign's audit (`stage.audit`); every `class` and `guess` must
   match `fuzz/guard.py`'s `CLASS`.
+- The hook records which attempts verified and blocks a stop until `outcome` and `best_attempt`
+  agree with them.
 
 ## Files
 
@@ -31,7 +33,7 @@ Measure how often each of four agent setups proves a tight bound on a row, on th
 | `<arm>/PROMPT.md` | the arm's brief |
 | `<arm>/guard.py` | the hook of agent type `arms-<arm>` (`.claude/agents/arms-<arm>.md`): the arm's flags |
 | `hook.py` | the rules behind every `guard.py`, on top of `prove_guard.py` run unchanged |
-| `runs/` | git-ignored: each arm's batches, and the judge's `judged-<batch>.jsonl` |
+| `runs/` | git-ignored: each arm's batches, and the judge's `judged-<batch>.jsonl`; `runs/pilot/` holds a first run of batch 1 under the older hook, which `report.py` skips |
 
 ## Rows
 

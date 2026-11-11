@@ -9,6 +9,11 @@ hooks:
       hooks:
         - type: command
           command: python3 "$CLAUDE_PROJECT_DIR"/bigodafny/fuzzing/experiments/arms/full/guard.py
+  PostToolUse:
+    - matcher: "Bash"
+      hooks:
+        - type: command
+          command: python3 "$CLAUDE_PROJECT_DIR"/bigodafny/fuzzing/experiments/arms/full/guard.py
   Stop:
     - hooks:
         - type: command

@@ -52,7 +52,9 @@ run is one attempt. You have **3 attempts** and a **5-minute** clock. The hook d
 - `class` is your stated class: the class of `E` without its `|output|` term. Write it with no spaces, in this form: `O(1)`, `O(logn)`, `O(n)`,
   `O(nlogn)`, `O(n**2)`, `O(n**1.5)`, `O(n*m)`, `O(n+mlogm)`. Powers take `**`, products `*`, and
   `log` follows its factor with no `*` or brackets. The hook blocks your stop until it has this form.
-- `best_attempt` is the attempt you stand by; `bound` is its `E`.
+- `best_attempt` is the attempt you stand by, and it verified; `bound` is its `E`. Every run counts
+  as an attempt, a parse error included. The hook blocks your stop until `outcome` and
+  `best_attempt` match the verifier's results.
 
 ## Problem statement
 

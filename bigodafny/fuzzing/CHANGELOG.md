@@ -19,6 +19,10 @@ per change. Earlier changes are in `git log -- bigodafny/fuzzing`. Findings go i
   `collect.py` replaces its earlier run. A third trial ran clean.
 - `experiments/arms/`: every arm has a 5-minute clock, not 30; `full`'s `fuzz` calls carry
   `--time-limit 60`, which its hook requires.
+- `experiments/arms/`: the hook records each verify run that passed in `budget.json`'s `verified`
+  (a PostToolUse hook on every `arms-*` agent) and blocks a stop until `outcome` and `best_attempt`
+  agree with it; every brief says so. Batch 1's first run, where two `full` rows named a failed
+  attempt, moved to `runs/pilot/`.
 
 ## 2026-10-29
 

@@ -8,6 +8,9 @@ On top of `prove_guard.py`, which this module runs unchanged on a stage of its o
 - `push`: on Stop, `prove_guard.stop` decides (all 3 attempts unless `relation` is `confirms` or tighter).
   Without it, the agent may stop once `result.json` is complete and one attempt ran.
 - Every arm: Stop is blocked until `class`, and `guess` in a `guess_first` arm, match `fuzz/guard.py`'s `CLASS`.
+- Every arm: on PostToolUse of a verify run that ends `0 errors`, `budget.json`'s `verified` gets that run's attempt
+  number. Stop is blocked until `outcome` is `proved` exactly when an attempt verified, and a proved row's
+  `best_attempt` is one of them.
 """
 from __future__ import annotations
 import importlib.util, json, re, sys, time
@@ -25,6 +28,7 @@ _spec.loader.exec_module(fuzz_guard)
 
 STAGE = Path.home() / ".cache" / "bigodafny-arms"                    # <arm>/<sid>/ per row
 MAX_SECONDS, MAX_FUZZ, FUZZ_TIMEOUT_MS, FUZZ_TIME_LIMIT = 300, 3, 600_000, 60
+PASSED = re.compile(r"finished with \d+ verified, 0 errors(?!,)")     # a time-out reads `0 errors, 1 time out`
 FUZZ = re.compile(re.escape(fuzz_guard.CMD) + r" (?P<dfy>[\w./-]+\.dfy) (?P<gen>[\w./-]+/gen\.py)"
                   rf" --time-limit {FUZZ_TIME_LIMIT}(?: --per \d+| --bound '[^'\n]*'){{0,2}}")
 
@@ -90,6 +94,26 @@ def class_error(row, guess_first):
     return None
 
 
+def record(agent, args, response):
+    """After a verify run that passed, add its attempt number to `verified`."""
+    m = pg.VERIFY.fullmatch(args.get("command", "").strip())
+    if not m or not PASSED.search(json.dumps(response)):
+        return
+    row = pg.locked_row(agent)
+    budget = pg.read_budget(row)
+    pg.write_budget(row, {**budget, "verified": sorted({*budget.get("verified", []), budget["attempts"]})})
+
+
+def verified_error(row, budget):
+    r, verified = result(row), budget.get("verified", [])
+    if r.get("outcome") == "proved" and r.get("best_attempt") not in verified:
+        return (f"result.json: best_attempt {r.get('best_attempt')} did not verify; the attempts that verified are "
+                f"{verified}" if verified else "result.json: no attempt verified, so outcome is unresolved")
+    if r.get("outcome") == "unresolved" and verified:
+        return f"result.json: attempts {verified} verified, so outcome is proved"
+    return None
+
+
 def result_error(row, attempts):
     """The baseline's result.json check: fewer fields than prove_guard.result_error asks for."""
     r = result(row)
@@ -107,7 +131,7 @@ def result_error(row, attempts):
 def stop(agent, guess_first, push):
     row = pg.locked_row(agent)
     budget = pg.read_budget(row)
-    why = class_error(row, guess_first)
+    why = class_error(row, guess_first) or verified_error(row, budget)
     if why is None and push:
         return pg.stop(agent)
     if why is None:
@@ -128,7 +152,9 @@ def main(arm, fuzz, guess_first, push):
         payload = json.load(sys.stdin)
         agent = re.sub(r"\W", "_", str(payload["agent_id"]))
         tool = payload.get("tool_name")
-        if payload.get("hook_event_name") == "SubagentStop" or tool == "SubagentHandback":
+        if payload.get("hook_event_name") == "PostToolUse":
+            record(agent, payload.get("tool_input") or {}, payload.get("tool_response"))
+        elif payload.get("hook_event_name") == "SubagentStop" or tool == "SubagentHandback":
             stop(agent, guess_first, push)
         else:
             check(tool, payload.get("tool_input") or {}, agent, fuzz, guess_first)

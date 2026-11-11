@@ -136,6 +136,8 @@ The hook blocks your stop until `class` has this form.
 `outcome` is `proved` or `unresolved`. `proved` means at least one attempt verified.
 `best_attempt` is the number of the tightest attempt that verified: that attempt is the proof
 the audit checks, and `bound` is its bound. A later failed attempt does not lose it.
+Every run counts as an attempt, a parse error included. The hook blocks your stop until
+`outcome` and `best_attempt` match the verifier's results.
 
 `stop_reason` says, in your own words, why you stopped where you did: what made you end the work,
 and, if your bound is above your class, why you did not get a tighter one. Name what you tried and
