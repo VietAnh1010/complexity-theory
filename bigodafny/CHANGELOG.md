@@ -8,6 +8,12 @@ change lands, update them and add a bullet here.
 A campaign's own run record stays in `batches/<campaign>/README.md`. Superseded
 data lines go to `old-record.jsonl` beside the file they came from.
 
+## 2026-11-05
+
+- `data/prove_stats.md` drops the campaign-recorded relations, the per-row revision list, the
+  repeat-draw table, the corpus counts and the claims that disputed rows were never drawn and that
+  failing rows run the clock out. `prove_stats.payload()` keeps its fields for `collect.py`.
+
 ## 2026-11-03
 
 - `batches/prove-retry/`: 33 of the 39 open rows are proved, each on `annotate`'s charges, because

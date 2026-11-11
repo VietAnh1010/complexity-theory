@@ -1,0 +1,13 @@
+{"outcome": "proved",
+ "best_attempt": 3,
+ "stop_reason": "the bound 60*n^3 + 20*n + 10 + 2*|output| is in the label's class O(n**3), so I stopped. Termination and the n^3 move count come from a quadratic potential sum c[j]*(j+1)*(n-j) that drops by 2 per firing. Method-level 'decreases *' lines were removed and {:isolate_assertions} was added on Settle to get past a solver timeout.",
+ "bound": "60 * n**3 + 20 * n + 10 + 2 * |output|",
+ "relation": "confirms",
+ "relation_reason": "",
+ "obstacle": null,
+ "why_failed": null,
+ "reads": [{"scope": "source", "target": "row.dfy", "reason": "call-graph"},
+           {"scope": "source", "target": "Settle", "reason": "termination"},
+           {"scope": "prelude", "target": "IntToStringDigits", "reason": "cost"},
+           {"scope": "prelude", "target": "CostMulMono", "reason": "bound"},
+           {"scope": "prelude", "target": "CostMulDistrib", "reason": "bound"}]}

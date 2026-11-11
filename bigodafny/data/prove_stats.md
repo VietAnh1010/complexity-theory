@@ -57,7 +57,7 @@ in it several times, and those are disproportionately the hard
 rows, since a repeat draw selects for failure. This view keeps
 one record per row, the most positive outcome.
 
-**313 of 329 distinct rows were proved by a bounded agent — 95%.** With the proofs the main agent made afterwards, 328 carry one now.
+**313 of 329 distinct rows were proved by a bounded agent — 95%.**
 
 - 60 rows were drawn more than once.
 - 48 were closed by a later campaign after an earlier one missed them.
@@ -77,7 +77,7 @@ one record per row, the most positive outcome.
 **These two rates answer different questions.** The raw rate asks
 what share of the rows a campaign drew that campaign proved inside
 its budget. The deduplicated rate asks what share of the distinct
-rows anyone has drawn now carries a proof. The second is higher by
+drawn rows a bounded agent ever proved. The second is higher by
 construction and says nothing about what one bounded agent manages
 in one pass; use it for the corpus, never for comparing campaigns.
 
@@ -95,8 +95,7 @@ Everything above is what a bounded agent achieved inside its budget.
 Pooled first, then per campaign. `p` tests that campaign's cell against
 the pooled rate for its label. **Read the pooled column.** A class holds
 as few as one row in a campaign, so a two-row swing moves a cell by
-tens of points; this project has already published one trend that was
-noise and had to be withdrawn.
+tens of points.
 
 | label | pooled | rate | c1 | c2 | c3 | c4 | c5 | c6 | c7 | c8 | prove-retry |
 |---|---|---|---|---|---|---|---|---|---|---|---|
@@ -157,7 +156,7 @@ latest dated line in a batch's `traj.jsonl`; an uncoded row's line has no code, 
 
 | obstacle | rows | IDs |
 |---|---|---|
-| `other` | 1 | `1972_295` |
+| `termination-not-proved` | 1 | `1972_295` |
 | uncoded | 0 |  |
 
 ### Obstacle by label
@@ -173,61 +172,8 @@ latest dated line in a batch's `traj.jsonl`; an uncoded row's line has no code, 
 
 ## What the proved bounds say about their labels
 
-| relation | rows | share |
-|---|---|---|
-| `confirms` | 253 | 81% |
-| `looser-structural` | 29 | 9% |
-| `looser-slack` | 15 | 5% |
-| `tighter-costmodel` | 6 | 2% |
-| `looser-translation` | 6 | 2% |
-| `tighter-translation` | 2 | 1% |
-| `tighter-label` | 2 | 1% |
-| `contradicts` | 1 | 0% |
-
 Every bound here is an **upper** bound. It can confirm a label or fail
 to; refuting one takes a lower bound, which no campaign produces.
-
-These are the relations each campaign RECORDED. Where a finding was
-later acted on, the row's current relation differs and the resolution
-is noted below rather than overwritten, so the finding is not erased:
-
-- **`810_131`** — re-charged for the output-length cost model: bound 8 * SumQueryCost(pairs, |pairs|) + 10 * |pairs| + 2 -> 8 * SumQueryCost(pairs, |pairs|) + 10 * |pairs| + 2 + |output|
-- **`1414_8`** — re-charged for the output-length cost model: bound 4 * SumLen(strings) + 34 * |strings| + 3 -> 4 * SumLen(strings) + 34 * |strings| + 3 + |output|
-- **`1421_89`** — re-charged for the output-length cost model: bound 2 * NLogN(|a_list|) + 6 * |a_list| + 5 -> 2 * NLogN(|a_list|) + 6 * |a_list| + 5 + |output|
-- **`1586_188`** — quadratic SortCost scaffold replaced by the prelude's tight bound
-- **`1871_291`** — re-charged for the output-length cost model: bound |a_list| * (10 + 4 * BitLen(MaxSeq(a_list)) + 2 * BitLen(a_list[0] * a_list[1])) + 2 * BitLen(MaxSeq(a_list)) + 7 -> old + |output|
-- **`1915_158`** — re-charged for the output-length cost model: bound 4 * n + 3 * m + 2 * GapBits(n_list, n) + 6 -> 4 * n + 3 * m + 2 * GapBits(n_list, n) + 6 + |output|
-- **`2235_384`** — re-charged for the output-length cost model: bound 5 * TotalLen(s_list, t) + 10 * t + 10 -> 5 * TotalLen(s_list, t) + 10 * t + 10 + |output|
-- **`2742_0`** — re-charged for the output-length cost model: bound 2 * NLogN(|values|) + 5 * |values| + 5 -> 2 * NLogN(|values|) + 5 * |values| + 5 + |output|
-- **`2942_42`** — re-charged for the output-length cost model: bound 4050 * (if n > 0 then n else 0) + 5 -> 4050 * (if n > 0 then n else 0) + |output| + 5
-- **`3060_1359`** — label naming rule (2026-10-01): a label names each size it depends on: O(n+m) needs two sizes the code pays for
-- **`1180_626`** — re-charged for the output-length cost model: bound 2 * NLogN(b) + 2 * a + 10 * b + 15 -> 2 * NLogN(b) + 2 * a + 10 * b + 15 + 2 * |output|
-- **`1243_0`** — Acted on 2026-09-21: the Dafny was re-translated to sort, as the Python does, and re-proved at the tight two-term bound 2*|s1|*(CeilLog2(|s1|)+1) + 2*|s2|*(CeilLog2(|s2|)+1) + 3*|s1| + |s2| + 5. The row's CURRENT relation is confirms; this record keeps what the campaign found.
-- **`1386_38`** — re-proved charging each Gcd call Euclid's recursion depth (GcdSteps), as the charge table's helper rule requires; the earlier proof charged 1; filed in solutions-proved/value-bounded/
-- **`1421_53`** — re-charged for the output-length cost model: bound 4 * n + 2 -> 4 * n + 2 + |output|
-- **`2225_154`** — re-charged for the output-length cost model: bound 2 * NLogN(n) + 2 * n + 6 -> 2 * NLogN(n) + 2 * n + 6 + |output|
-- **`2593_332`** — re-charged for the output-length cost model: bound 2 * NLogN(n) + 2 * n + 4 -> 2 * NLogN(n) + 2 * n + 4 + |output|
-- **`305_284`** — re-charged for the output-length cost model after the re-translation: bound 2 * |c_list| + |d_list| + 3 * (if MinSeq(d_list) > MaxSeq(c_list) then MinSeq(d_list) - MaxSeq(c_list) else 0) + 6 -> 2 * |c_list| + |d_list| + 3 * (if MinSeq(d_list) > MaxSeq(c_list) then MinSeq(d_list) - MaxSeq(c_list) else 0) + 6 + |output|
-- **`1333_127`** — re-charged for the output-length cost model: bound 4 * NLogN(n) + 2 + 5 * n + 10 -> 4 * NLogN(n) + 2 + 5 * n + 10 + |output|
-- **`1453_211`** — quadratic SortCost scaffold replaced by the prelude's tight bound
-- **`2436_325`** — label naming rule (2026-10-01): a label names each size it depends on; the Python's list(b) is a parse the harness does outside Solve
-- **`2496_30`** — re-charged for the output-length cost model: bound 4 * NLogN(n) + 2 + 5 * n + 6110 -> 4 * NLogN(n) + 2 + 5 * n + 6110 + 120 + 3 * |output|
-- **`2725_319`** — quadratic SortCost scaffold replaced by the prelude's tight bound
-- **`2942_55`** — re-charged for the output-length cost model after the re-translation: bound 20 * (if n > 0 then n else 0) + TokBits(transactions, if n > 0 then n else 0) + 10 -> 20 * (if n > 0 then n else 0) + TokBits(transactions, if n > 0 then n else 0) + 10 + |output|
-- **`2962_1968`** — label naming rule (2026-10-01): a label names each size it depends on: O(n**2) is one size squared
-- **`3070_180`** — quadratic SortCost scaffold replaced by the prelude's tight bound
-- **`662_527`** — label naming rule (2026-10-01): a label names each size it depends on: O(n) over several scanned strings is O(n*m)
-- **`1871_156`** — re-proved charging each Gcd call Euclid's recursion depth (GcdSteps), as the charge table's helper rule requires; the earlier proof charged 1; filed in solutions-proved/value-bounded/
-- **`276_610`** — re-charged for the output-length cost model: bound 24 * n + 2 -> 24 * n + 2 + 3 * |output|
-- **`1386_19`** — re-proved charging each Gcd call Euclid's recursion depth (GcdSteps), as the charge table's helper rule requires; the earlier proof charged 1; filed in solutions-proved/value-bounded/
-- **`1935_61`** — label naming rule (2026-10-01): a label names each size it depends on: O(n+m) needs two sizes the code pays for
-- **`1580_12`** — made to verify under Z3 5.1.0: bound 8 * (a * c) + 8 * b + |output| + 20 -> 8 * (a * c) + 8 * b + |output| + 20
-- **`1948_388`** — made to verify under Z3 5.1.0: bound 32 * n + 5 -> 32 * n + 5
-- **`499_82`** — re-charged for the output-length cost model: bound 2 * NLogN(n) + 9 * n + 11 -> 2 * NLogN(n) + 9 * n + 11 + |output|
-- **`85_71`** — re-charged for the output-length cost model: bound 7 * NLogN(|c_list|) + 12 * |c_list| + 10 -> 7 * NLogN(|c_list|) + 12 * |c_list| + 11 + |output|
-- **`1954_83`** — re-charged for the output-length cost model: bound 4 * a * b + 3 -> 4 * a * b + 2 + |output|
-- **`2286_319`** — re-charged for the output-length cost model: bound 24 * AbsInt(n) + 250 -> 24 * AbsInt(n) + 249 + |output|
-- **`794_794`** — re-charged for the output-length cost model: bound 20 * PrefixSum(...) + 20 * |data| + 2 -> 20 * PrefixSum(...) + 20 * |data| + 2 + |output|
 
 | relation | meaning |
 |---|---|
@@ -239,20 +185,6 @@ is noted below rather than overwritten, so the finding is not erased:
 | `tighter-costmodel` | the bound is below the label because the charge table costs something less than CPython does, most often int arithmetic on values that outgrow a machine word |
 | `tighter-translation` | the bound is below the label because the Dafny does less work than the Python |
 | `tighter-label` | the bound is below the label and the Python itself does no more: the label overstates the row |
-
-### Relation by label
-
-| label | `confirms` | `contradicts` | `looser-slack` | `looser-structural` | `looser-translation` | `tighter-costmodel` | `tighter-label` | `tighter-translation` | total |
-|---|---|---|---|---|---|---|---|---|---|
-| `O(n)` | 140 |  | 1 | 15 | 4 |  |  |  | 160 |
-| `O(nlogn)` | 42 |  | 12 | 3 | 2 |  | 1 |  | 60 |
-| `O(n**2)` | 32 |  | 1 | 5 |  | 5 | 1 | 1 | 45 |
-| `O(1)` | 27 |  |  | 4 |  |  |  |  | 31 |
-| `O(n+m)` | 10 |  |  |  |  | 1 |  |  | 11 |
-| `O(nlogn+mlogm)` | 1 |  |  | 1 |  |  |  | 1 | 3 |
-| `O(logn)` | 1 |  |  | 1 |  |  |  |  | 2 |
-| `O(n*m)` |  | 1 |  |  |  |  |  |  | 1 |
-| `O(n+m)log(n+m)` |  |  | 1 |  |  |  |  |  | 1 |
 
 ## Effort
 
@@ -266,91 +198,9 @@ is noted below rather than overwritten, so the finding is not erased:
 Proved rows: median 90s, max 600s.
 Unresolved rows: median 270s, max 1500s.
 
-A row that closes, closes quickly. A row that does not runs the clock
-out, which is why almost no failure is a budget failure: the budget is
-not what decides these.
-
-## Rows drawn more than once
-
-60 rows were drawn by more than one campaign. A row that fails stays in the pool, so later campaigns redraw it. Each attempt is independent -- a different agent that has not seen the earlier one.
-
-| row | label | campaigns | outcomes |
-|---|---|---|---|
-| `1047_26` | `O(n)` | c3, c5 | unresolved, proved |
-| `1263_2538` | `O(n)` | c5, c6, prove-retry | unresolved, unresolved, proved |
-| `1272_115` | `O(n**2)` | c6, prove-retry | unresolved, proved |
-| `1272_278` | `O(nlogn)` | c2, c6, prove-retry | unresolved, unresolved, proved |
-| `1306_126` | `O(n)` | c4, prove-retry | unresolved, proved |
-| `1332_16` | `O(nlogn)` | c6, prove-retry | unresolved, proved |
-| `1359_4` | `O(n**2)` | c3, c5 | unresolved, proved |
-| `1364_161` | `O(logn)` | c2, c5, prove-retry | unresolved, unresolved, proved |
-| `1386_19` | `O(nlogn)` | c2, c5 | unresolved, proved |
-| `1582_118` | `O(nlogn)` | c1, c5 | unresolved, unresolved |
-| `1582_315` | `O(n)` | c5, prove-retry | unresolved, proved |
-| `1626_179` | `O(nlogn)` | c6, prove-retry | unresolved, proved |
-| `1675_29` | `O(n**2)` | c6, prove-retry | unresolved, unresolved |
-| `1699_98` | `O(n**2)` | c5, c6 | unresolved, proved |
-| `1765_40` | `O(n**2)` | c2, c4 | unresolved, proved |
-| `1820_180` | `O(n)` | c3, c4 | unresolved, proved |
-| `1861_16` | `O(n)` | c6, prove-retry | unresolved, proved |
-| `1871_156` | `O(nlogn)` | c4, prove-retry | proved, proved |
-| `1944_50` | `O(n)` | c2, c3, prove-retry | unresolved, unresolved, proved |
-| `1948_388` | `O(1)` | c4, c6 | unresolved, proved |
-| `1972_295` | `O(logn)` | c2, c6, prove-retry | unresolved, proved, unresolved |
-| `2005_187` | `O(n**2)` | c6, prove-retry | unresolved, proved |
-| `2036_120` | `O(n**2)` | c1, c2, c4 | unresolved, unresolved, proved |
-| `2036_33` | `O(nlogn)` | c5, prove-retry | unresolved, proved |
-| `2065_24` | `O(1)` | c1, c6, prove-retry | unresolved, unresolved, proved |
-| `2072_40` | `O(nlogn)` | c3, c6 | unresolved, proved |
-| `2087_119` | `O(n)` | c8, prove-retry | unresolved, proved |
-| `2105_248` | `O(nlogn)` | c1, c6 | unresolved, unresolved |
-| `2128_34` | `O(n**2)` | c1, c5 | proved, proved |
-| `2231_77` | `O(n)` | c8, prove-retry | unresolved, proved |
-| `2282_16` | `O(n**2)` | c3, c6, prove-retry | unresolved, unresolved, proved |
-| `2282_437` | `O(n)` | c3, prove-retry | unresolved, proved |
-| `2358_103` | `O(nlogn)` | c5, prove-retry | unresolved, proved |
-| `2394_125` | `O(n**2)` | c4, c6, prove-retry | unresolved, unresolved, proved |
-| `2423_48` | `O(nlogn)` | c3, c4 | unresolved, unresolved |
-| `2425_5` | `O(nlogn)` | c1, c3 | unresolved, proved |
-| `2465_212` | `O(nlogn)` | c6, prove-retry | unresolved, unresolved |
-| `2650_153` | `O(n**2)` | c6, prove-retry | unresolved, proved |
-| `2704_92` | `O(n**2)` | c7, prove-retry | unresolved, proved |
-| `271_58` | `O(n)` | c6, prove-retry | unresolved, proved |
-| `2771_23` | `O(nlogn)` | c2, prove-retry | unresolved, proved |
-| `2819_926` | `O(n)` | c3, c4, c5, c6, prove-retry | unresolved, unresolved, unresolved, unresolved, proved |
-| `281_12` | `O(n**2)` | c7, prove-retry | unresolved, proved |
-| `2831_61` | `O(n**2)` | c4, prove-retry | unresolved, unresolved |
-| `2831_71` | `O(nlogn)` | c4, c6 | unresolved, proved |
-| `2847_21` | `O(n**2)` | c6, prove-retry | unresolved, unresolved |
-| `2854_30` | `O(n)` | c2, c3, c4, prove-retry | unresolved, unresolved, unresolved, proved |
-| `2914_3` | `O(n)` | c5, prove-retry | unresolved, proved |
-| `2926_50` | `O(n)` | c4, c5 | unresolved, proved |
-| `2926_54` | `O(n**2)` | c2, c3 | unresolved, proved |
-| `2947_115` | `O(n**2)` | c4, c5 | unresolved, proved |
-| `305_76` | `O(nlogn+mlogm)` | c3, c5 | proved, proved |
-| `342_86` | `O(n)` | c5, prove-retry | unresolved, proved |
-| `457_38` | `O(n**2)` | c2, c3, c5, prove-retry | unresolved, unresolved, unresolved, unresolved |
-| `514_140` | `O(nlogn)` | c1, c2, c6 | unresolved, unresolved, unresolved |
-| `514_90` | `O(n**2)` | c4, prove-retry | unresolved, proved |
-| `577_509` | `O(n)` | c2, prove-retry | unresolved, proved |
-| `696_51` | `O(n)` | c6, prove-retry | unresolved, proved |
-| `750_14` | `O(nlogn)` | c4, c5, c6 | unresolved, unresolved, proved |
-| `88_200` | `O(n**2)` | c6, prove-retry | unresolved, proved |
-
-A row that fails stays in the pool, so the residue concentrates as the
-pool shrinks and each later draw contains more known-hard rows. That
-pushes the rate down for reasons unrelated to the agents.
-
-## Corpus context
-
-- `solutions/` holds 303 rows.
-- 361 rows carry a proof, in 361 files.
-- proved_rows counts every proof in the corpus, including the 33 that predate the campaigns and the rows the main agent proved later.
-
 ## What this does not measure
 
-- **Only `solutions/`.** The 127 unscreened and 197 disputed rows have
-  never been drawn. Nothing here generalises to them.
+- **Only drawn rows.** Nothing here generalises to rows no campaign drew.
 - **A bounded agent, not the problem.** `unresolved` means 3 attempts
   and 5 minutes were not enough, not that the row cannot be proved.
   `2423_48` failed twice and then closed once the prelude gained the

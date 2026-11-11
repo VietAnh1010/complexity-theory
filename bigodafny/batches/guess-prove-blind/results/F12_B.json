@@ -1,0 +1,13 @@
+{"guess": "O(n^2)", "guess_basis": "each Walk is a rotor walk whose interval of visited cells grows by one per bounce, costing O(n^2) worst case; at most 3n walks but arrow state likely resets cost, so n^2 overall is my belief.",
+ "outcome": "proved",
+ "best_attempt": 3,
+ "stop_reason": "Proved O(n^3) (n^2 per Walk via a visited-interval invariant, times at most 3n walks). Attempts 2 and 3 only trimmed redundant asserts. I did not try an amortised invariant on the arrow state between walks; it looked too hard for the time left.",
+ "bound": "n * (24 * (n * n) + 35) + 11 * n + 3 + 2 * |output|",
+ "relation": "looser-slack",
+ "relation_reason": "the per-Walk n^2 bound is applied to each of up to 3n Walk calls in the nested for loops with no invariant on the arrow state between calls",
+ "obstacle": null,
+ "why_failed": null,
+ "reads": [{"scope": "source", "target": "row.dfy", "reason": "call-graph"},
+           {"scope": "prelude", "target": "CostMulDistrib", "reason": "contract"},
+           {"scope": "prelude", "target": "CostMulMonoLeft", "reason": "contract"},
+           {"scope": "prelude", "target": "IntToStringDigits", "reason": "cost"}]}

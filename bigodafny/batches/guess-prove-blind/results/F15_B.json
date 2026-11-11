@@ -1,0 +1,11 @@
+{"guess": "O(n^2)", "guess_basis": "at most 3n walks, and hand traces of one walk on small all-ones arrays show a back-and-forth sweep of roughly quadratic length",
+ "outcome": "unresolved",
+ "best_attempt": null,
+ "stop_reason": "attempts spent; no bound on steps verified. Walk's while loop bounces and needs a real decreases measure that I could not find; attempt 2 only verified 0/1 mark invariants, with decreases * kept",
+ "bound": null,
+ "relation": null,
+ "relation_reason": "",
+ "obstacle": "termination-not-proved",
+ "why_failed": "Walk's loop reverses direction on every mark==1 cell, so no simple measure on p, d or mark decreases and I found no lexicographic or potential argument that it stops.",
+ "reads": [{"scope": "source", "target": "row.dfy", "reason": "call-graph"},
+           {"scope": "source", "target": "Walk", "reason": "termination"}]}

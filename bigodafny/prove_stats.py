@@ -225,12 +225,9 @@ def repeat_draws(rows):
 def first_vs_repeat(rows):
     """Split each campaign's draw into rows never drawn before and rows redrawn.
 
-    A row that FAILS stays in the pool, so every plain draw carries more rows
-    already known to be hard: 8%, 12%, 20%, 28% across campaigns 3 to 6. Past
-    about a quarter the campaign has stopped measuring "can a bounded agent
-    prove a random row" and started measuring "can a second agent close what a
-    first could not". Both rates are reported so the pooled headline can be
-    read for what it is.
+    A row that FAILS stays in a plain draw's pool, so that draw carries rows
+    already known to be hard. Both rates are reported so the pooled headline
+    can be read for what it is.
     """
     seen, out = set(), {}
     for b in BATCHES:
@@ -405,8 +402,7 @@ def render(p):
         a("one record per row, the most positive outcome.")
         a("")
         a(f"**{d['proved']} of {d['distinct_rows']} distinct rows were proved by a "
-          f"bounded agent — {d['rate']:.0%}.** With the proofs the main agent made "
-          f"afterwards, {d['proved_now']} carry one now.")
+          f"bounded agent — {d['rate']:.0%}.**")
         a("")
         a(f"- {d['drawn_more_than_once']} rows were drawn more than once.")
         a(f"- {d['closed_on_a_later_draw']} were closed by a later campaign "
@@ -421,7 +417,7 @@ def render(p):
         a("**These two rates answer different questions.** The raw rate asks")
         a("what share of the rows a campaign drew that campaign proved inside")
         a("its budget. The deduplicated rate asks what share of the distinct")
-        a("rows anyone has drawn now carries a proof. The second is higher by")
+        a("drawn rows a bounded agent ever proved. The second is higher by")
         a("construction and says nothing about what one bounded agent manages")
         a("in one pass; use it for the corpus, never for comparing campaigns.")
         a("")
@@ -444,8 +440,7 @@ def render(p):
     a("Pooled first, then per campaign. `p` tests that campaign's cell against")
     a("the pooled rate for its label. **Read the pooled column.** A class holds")
     a("as few as one row in a campaign, so a two-row swing moves a cell by")
-    a("tens of points; this project has already published one trend that was")
-    a("noise and had to be withdrawn.")
+    a("tens of points.")
     a("")
     hdr = "| label | pooled | rate |" + "".join(
         f" {b.replace('prove-sample', 'c')} |" for b in BATCHES)
@@ -507,35 +502,13 @@ def render(p):
     a("")
     a("## What the proved bounds say about their labels")
     a("")
-    a(table(Counter(p["relations"]), p["proved"], "relation"))
-    a("")
     a("Every bound here is an **upper** bound. It can confirm a label or fail")
     a("to; refuting one takes a lower bound, which no campaign produces.")
-    a("")
-    a("These are the relations each campaign RECORDED. Where a finding was")
-    a("later acted on, the row's current relation differs and the resolution")
-    a("is noted below rather than overwritten, so the finding is not erased:")
-    a("")
-    for sid, why in p.get("resolved_since", {}).items():
-        a(f"- **`{sid}`** — {why}")
-    if not p.get("resolved_since"):
-        a("- none yet.")
     a("")
     a("| relation | meaning |")
     a("|---|---|")
     for name, meaning in RELATIONS.items():
         a(f"| `{name}` | {meaning} |")
-    a("")
-    a("### Relation by label")
-    a("")
-    rels = sorted({r for v in p["relation_by_label"].values() for r in v})
-    a("| label | " + " | ".join(f"`{r}`" for r in rels) + " | total |")
-    a("|---" * (len(rels) + 2) + "|")
-    for lab in sorted(p["relation_by_label"],
-                      key=lambda k: -sum(p["relation_by_label"][k].values())):
-        v = p["relation_by_label"][lab]
-        a(f"| `{lab}` | " + " | ".join(str(v.get(r, "")) for r in rels)
-          + f" | {sum(v.values())} |")
     a("")
     a("## Effort")
     a("")
@@ -549,41 +522,9 @@ def render(p):
     a(f"Unresolved rows: median {p['seconds_when_unresolved']['median']}s, "
       f"max {p['seconds_when_unresolved']['max']}s.")
     a("")
-    a("A row that closes, closes quickly. A row that does not runs the clock")
-    a("out, which is why almost no failure is a budget failure: the budget is")
-    a("not what decides these.")
-    a("")
-    a("## Rows drawn more than once")
-    a("")
-    rd = p["repeat_draws"]
-    a(f"{rd['count']} rows were drawn by more than one campaign. {rd['note']}")
-    a("")
-    a("| row | label | campaigns | outcomes |")
-    a("|---|---|---|---|")
-    for sid, d in rd["rows"].items():
-        a(f"| `{sid}` | `{d['label']}` | "
-          + ", ".join(c.replace("prove-sample-", "c").replace("prove-sample", "c1")
-                      for c in d["drawn_in"])
-          + " | " + ", ".join(d["outcomes"]) + " |")
-    a("")
-    a("A row that fails stays in the pool, so the residue concentrates as the")
-    a("pool shrinks and each later draw contains more known-hard rows. That")
-    a("pushes the rate down for reasons unrelated to the agents.")
-    a("")
-    a("## Corpus context")
-    a("")
-    c = p["corpus"]
-    a(f"- `solutions/` holds {c['solutions_rows']} rows.")
-    a(f"- {c['proved_rows']} rows carry a proof, in {c['proof_files']} files.")
-    a(f"- {c['note']}")
-    a("")
     a("## What this does not measure")
     a("")
-    n_dir = {d: len(list((HERE / d).rglob("*.dfy")))
-             for d in ("solutions-unscreened", "solutions-disputed")}
-    a(f"- **Only `solutions/`.** The {n_dir['solutions-unscreened']} unscreened "
-      f"and {n_dir['solutions-disputed']} disputed rows have")
-    a("  never been drawn. Nothing here generalises to them.")
+    a("- **Only drawn rows.** Nothing here generalises to rows no campaign drew.")
     a("- **A bounded agent, not the problem.** `unresolved` means 3 attempts")
     a("  and 5 minutes were not enough, not that the row cannot be proved.")
     a("  `2423_48` failed twice and then closed once the prelude gained the")

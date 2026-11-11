@@ -1,0 +1,5 @@
+{"arm": "labeled", "label": "O(n**3)", "path": "batches/guess-prove-labeled/rows/f11.dfy", "solution_id": "F11_L"}
+{"arm": "labeled", "label": "O(n**3)", "path": "batches/guess-prove-labeled/rows/f12.dfy", "solution_id": "F12_L"}
+{"arm": "labeled", "label": "O(n**2)", "path": "batches/guess-prove-labeled/rows/f13.dfy", "solution_id": "F13_L"}
+{"arm": "labeled", "label": "O(nlogn)", "path": "batches/guess-prove-labeled/rows/f14.dfy", "solution_id": "F14_L"}
+{"arm": "labeled", "label": "O(2**n)", "path": "batches/guess-prove-labeled/rows/f15.dfy", "solution_id": "F15_L"}

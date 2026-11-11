@@ -1,0 +1,13 @@
+{"guess": "O(n^2)", "guess_basis": "up to 3n walks, each a bouncing pass over the mirror array costing O(n)",
+ "outcome": "proved",
+ "best_attempt": 1,
+ "stop_reason": "the bound n*(198n+623)+14n+3+2|output| is O(n^2), in the label's class, so I stopped",
+ "bound": "14 * n + 3 + n * (198 * n + 623) + 2 * |output|",
+ "relation": "confirms",
+ "relation_reason": "",
+ "obstacle": null,
+ "why_failed": null,
+ "reads": [{"scope": "source", "target": "row.dfy", "reason": "call-graph"},
+           {"scope": "prelude", "target": "IntToStringDigits", "reason": "cost"},
+           {"scope": "prelude", "target": "CostMulDistrib", "reason": "bound"},
+           {"scope": "prelude", "target": "CostMulMonoLeft", "reason": "bound"}]}

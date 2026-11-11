@@ -1,0 +1,13 @@
+{"outcome": "unresolved",
+ "best_attempt": null,
+ "stop_reason": "3 attempts used; none verified. Attempt 3 failed on 'p in aliveSet' after the inner loop; I then added an inner invariant tying alive[] to aliveSet, but had no attempt left to run it. The planned bound was n*(35n+35)+5n+4+|output|, which is quadratic and would not confirm O(n log n) (dead cells are rescanned each round).",
+ "bound": null,
+ "relation": null,
+ "relation_reason": "",
+ "obstacle": "invariant-gap",
+ "why_failed": "The inner loop lacked an invariant linking alive[] to ghost aliveSet, so alive[p]==1 did not give p in aliveSet after the loop.",
+ "reads": [{"scope": "source", "target": "row.dfy", "reason": "call-graph"},
+           {"scope": "prelude", "target": "ModUpper", "reason": "contract"},
+           {"scope": "prelude", "target": "SmallMod", "reason": "contract"},
+           {"scope": "prelude", "target": "CostMulDistrib", "reason": "contract"},
+           {"scope": "prelude", "target": "IntToStringDigits", "reason": "cost"}]}

@@ -1,0 +1,13 @@
+{"outcome": "proved",
+ "best_attempt": 3,
+ "stop_reason": "All 3 attempts verified; attempts 2 and 3 only trimmed the linear constant. The true cost is exponential: with a[0]=3 the third walk from cell 0 on mirror [0,1,1,...,1] takes 2^n-1 iterations, so no polynomial bound exists and the label cannot be reached. I did not try to sharpen the base from 5 to 2, which changes only the exponent's base.",
+ "bound": "n * Kc(n) + 11 * n + 2 + 2 * |output|, where Kc(n) = 33 * 5^n + 35",
+ "relation": "looser-structural",
+ "relation_reason": "walk() bounces the ball between mirrors like a binary counter, so one call can run exponentially many iterations in n. The label O(n**2) omits this. Proof uses a base-5 lexicographic potential, cell 0 most significant, that strictly drops each iteration.",
+ "obstacle": null,
+ "why_failed": null,
+ "reads": [{"scope": "source", "target": "row.dfy", "reason": "call-graph"},
+           {"scope": "source", "target": "Walk", "reason": "termination"},
+           {"scope": "prelude", "target": "CostMulDistrib", "reason": "cost"},
+           {"scope": "prelude", "target": "CostMulMonoLeft", "reason": "cost"},
+           {"scope": "prelude", "target": "IntToStringDigits", "reason": "cost"}]}

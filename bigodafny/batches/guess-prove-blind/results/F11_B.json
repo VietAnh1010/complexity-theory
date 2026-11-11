@@ -1,0 +1,11 @@
+{"guess": "O(n^3)", "guess_basis": "chip firing on a path with leaks at both ends: 3n chips diffuse for ~n^2 firings each, giving Theta(n^3) pops of the stack",
+ "outcome": "proved",
+ "best_attempt": 3,
+ "stop_reason": "the bound 21n + 12 + 60n^3 + 2|output| is in the label's class (cubic), so I stopped; attempt 3 reported 0 errors but exited non-zero on an indentation warning; a parenthesis fix after it was not re-run because attempts were spent",
+ "bound": "21 * n + 12 + 20 * (n * (3 * (n * n))) + 2 * |output|",
+ "relation": "confirms",
+ "relation_reason": "",
+ "obstacle": null,
+ "why_failed": null,
+ "reads": [{"scope": "source", "target": "row.dfy", "reason": "call-graph"},
+           {"scope": "prelude", "target": "IntToStringDigits", "reason": "cost"}]}

@@ -1,0 +1,64 @@
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(nlogn)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "1039_15"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(n)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "1047_26"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(n)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "1263_2538"}
+{"agent_relation": "looser-structural", "class": "not-hard", "label": "O(n**2)", "needs_review": null, "reason": "audited proof", "relation": "looser-structural", "solution_id": "1272_115"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(nlogn)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "1272_278"}
+{"agent_relation": "looser-translation", "class": "not-hard", "label": "O(n)", "needs_review": null, "reason": "audited proof", "relation": "looser-translation", "solution_id": "1306_126"}
+{"agent_relation": "looser-translation", "class": "maybe-hard", "label": "O(nlogn)", "needs_review": "user decides: the proof timed out once in 4 verify runs", "reason": "unstable proof: the audit's verify timed out once; 3 later runs passed", "relation": null, "solution_id": "1332_16"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(n**2)", "needs_review": null, "reason": "audited proof", "relation": "tighter-costmodel", "solution_id": "1359_4"}
+{"agent_relation": "looser-structural", "class": "not-hard", "label": "O(logn)", "needs_review": null, "reason": "audited proof", "relation": "looser-structural", "solution_id": "1364_161"}
+{"agent_relation": "looser-structural", "class": "not-hard", "label": "O(nlogn)", "needs_review": null, "reason": "audited proof", "relation": "looser-structural", "solution_id": "1386_19"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(nlogn)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "1582_118"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(n)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "1582_315"}
+{"agent_relation": "looser-structural", "class": "not-hard", "label": "O(nlogn)", "needs_review": null, "reason": "audited proof", "relation": "looser-structural", "solution_id": "1626_179"}
+{"agent_relation": "looser-slack", "class": "not-hard", "label": "O(n**2)", "needs_review": null, "reason": "audited proof", "relation": "looser-structural", "solution_id": "1675_29"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(n**2)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "1699_98"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(n*m)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "1718_1166"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(n**2)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "1765_40"}
+{"agent_relation": "looser-structural", "class": "not-hard", "label": "O(n)", "needs_review": null, "reason": "audited proof", "relation": "looser-structural", "solution_id": "1820_180"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(nlogn)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "1827_66"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(n)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "1861_16"}
+{"agent_relation": "looser-structural", "class": "not-hard", "label": "O(nlogn)", "needs_review": null, "reason": "audited proof", "relation": "looser-translation", "solution_id": "1892_121"}
+{"agent_relation": "looser-structural", "class": "not-hard", "label": "O(n)", "needs_review": null, "reason": "setup: annotate's own output compiles differently from the row, and the proof's Python equals annotate's", "relation": null, "solution_id": "1944_50"}
+{"agent_relation": "looser-structural", "class": "not-hard", "label": "O(1)", "needs_review": null, "reason": "agent oversight: a leftover method-level `decreases *`; without that line it verified 3 of 3 runs", "relation": null, "solution_id": "1948_388"}
+{"agent_relation": null, "class": "row-bug", "label": "O(logn)", "needs_review": null, "reason": "the row lacks a `requires`; its loops may not terminate for k <= 0", "relation": null, "solution_id": "1972_295"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(n**2)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "2005_187"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(n**2)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "2036_120"}
+{"agent_relation": "tighter-label", "class": "not-hard", "label": "O(nlogn)", "needs_review": null, "reason": "audited proof", "relation": "tighter-label", "solution_id": "2036_33"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(1)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "2065_24"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(nlogn)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "2072_40"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(n)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "2087_119"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(nlogn)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "2105_248"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(nlogn)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "2128_3"}
+{"agent_relation": "looser-structural", "class": "not-hard", "label": "O(n)", "needs_review": null, "reason": "audited proof", "relation": "looser-translation", "solution_id": "2231_77"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(n**2)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "2282_16"}
+{"agent_relation": "looser-structural", "class": "not-hard", "label": "O(n)", "needs_review": null, "reason": "audited proof", "relation": "looser-structural", "solution_id": "2282_437"}
+{"agent_relation": "looser-structural", "class": "not-hard", "label": "O(nlogn)", "needs_review": null, "reason": "audited proof", "relation": "looser-translation", "solution_id": "2358_103"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(n**2)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "2394_125"}
+{"agent_relation": null, "class": "maybe-hard", "label": "O(nlogn)", "needs_review": null, "reason": "failed in 1 of 2 runs: the main run could not show the sort's last element is in the input; the rerun proved it", "relation": "looser-structural", "solution_id": "2423_48"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(nlogn)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "2425_5"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(nlogn)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "2465_212"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(n**2)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "2650_153"}
+{"agent_relation": "looser-structural", "class": "not-hard", "label": "O(n**2)", "needs_review": null, "reason": "audited proof", "relation": "looser-structural", "solution_id": "2704_92"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(n)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "271_58"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(nlogn)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "2771_23"}
+{"agent_relation": "looser-structural", "class": "not-hard", "label": "O(n)", "needs_review": null, "reason": "audited proof", "relation": "looser-translation", "solution_id": "2819_926"}
+{"agent_relation": "looser-structural", "class": "not-hard", "label": "O(n**2)", "needs_review": null, "reason": "audited proof", "relation": "looser-structural", "solution_id": "281_12"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(nlogn)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "2826_81"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(n**2)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "2831_61"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(nlogn)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "2831_71"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(n**2)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "2847_21"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(n)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "2854_30"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(n)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "2914_3"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(n)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "2926_50"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(n**2)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "2926_54"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(n**2)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "2947_115"}
+{"agent_relation": "looser-structural", "class": "not-hard", "label": "O(n)", "needs_review": null, "reason": "audited proof", "relation": "looser-structural", "solution_id": "342_86"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(n**2)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "457_38"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(nlogn)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "514_140"}
+{"agent_relation": "looser-structural", "class": "not-hard", "label": "O(n**2)", "needs_review": null, "reason": "audited proof", "relation": "looser-structural", "solution_id": "514_90"}
+{"agent_relation": "looser-structural", "class": "not-hard", "label": "O(n)", "needs_review": null, "reason": "audited proof", "relation": "looser-slack", "solution_id": "577_509"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(nlogn)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "661_47"}
+{"agent_relation": "looser-structural", "class": "not-hard", "label": "O(n)", "needs_review": null, "reason": "audited proof", "relation": "looser-structural", "solution_id": "696_51"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(nlogn)", "needs_review": null, "reason": "audited proof", "relation": "confirms", "solution_id": "750_14"}
+{"agent_relation": "confirms", "class": "not-hard", "label": "O(n**2)", "needs_review": null, "reason": "audited proof", "relation": "tighter-label", "solution_id": "88_200"}

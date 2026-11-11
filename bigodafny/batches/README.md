@@ -14,6 +14,8 @@ checked.
 | `output-length/` | re-charging proofs at one step per output character | instructions, trajectory, audit, attempts, transcripts |
 | `obstacle-review/` | the code that blocks each open row | dated trajectory lines, `README.md` |
 | `prove-retry/` | a retry of the open rows, then every proof re-proved on `annotate`'s charges | briefs, slices, trajectories, relations, attempts, `README.md` |
+| `prove-hard/` | a blind rerun of the rows that had failed, to find hard rows | brief, trajectories, classification, attempts, `README.md` |
+| `guess-prove-labeled/`, `guess-prove-blind/` | a pilot on fabricated rows: prove a class given, or a class the agent guessed first | briefs, rows, trajectories, results, attempts, `README.md` |
 
 ## Reading a row's records
 

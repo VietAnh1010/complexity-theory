@@ -1,0 +1,13 @@
+{"outcome": "proved",
+ "best_attempt": 3,
+ "stop_reason": "all 3 attempts verified; attempts 2 and 3 only trimmed constants, as I found no amortised argument across walks, so the bound stays n*2^n",
+ "bound": "n * (290 * Pow(n)) + 11 * n + 3 + 2 * |output|, with Pow(n) = 2**n",
+ "relation": "looser-slack",
+ "relation_reason": "Solve charges each of up to 3n walk calls the per-call worst case 90*2**n+4 proved from a potential on Walk (Phi, exact remaining iterations up to an overestimate when no wall exists); no amortisation over the shared mark array was attempted, so the n factor remains",
+ "obstacle": null,
+ "why_failed": null,
+ "reads": [{"scope": "source", "target": "row.dfy", "reason": "call-graph"},
+           {"scope": "prelude", "target": "CostMulDistrib", "reason": "contract"},
+           {"scope": "prelude", "target": "CostMulMonoLeft", "reason": "contract"},
+           {"scope": "prelude", "target": "IntToStringDigits", "reason": "contract"},
+           {"scope": "prelude", "target": "Digits", "reason": "cost"}]}
