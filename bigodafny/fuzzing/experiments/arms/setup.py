@@ -1,12 +1,4 @@
-"""Stage one batch of `manifest.jsonl` for one arm.
-
-    ../../../.venv/bin/python3 setup.py --arm full --batch 1
-
-Each row goes to `~/.cache/bigodafny-arms/<arm>/<sid>/`: `row.dfy` and `proof.dfy` (`annotate`'s
-output), `BRIEF.md` (`<arm>/PROMPT.md` filled in), `budget.json` and `attempts/`. The arm's stage
-also gets `prelude.dfy`, without the comment lines that name a row. Aborts if a row's files could
-leak its label or class.
-"""
+"""Stage one batch for one arm (README.md § Run)."""
 from __future__ import annotations
 import argparse, json, re, subprocess, sys
 from pathlib import Path

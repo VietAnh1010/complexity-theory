@@ -1,13 +1,4 @@
-"""Print one table per stratum, and pooled, over every collected batch in `runs/` but `trial`.
-
-    ../../../.venv/bin/python3 report.py
-
-Metrics per arm: guess accuracy (`full`, `nofuzz`), class accuracy, audited proofs, tight proofs
-(audited, and the bound's class equals `truth`), median seconds, mean attempts and fuzz calls.
-A class equals `truth` as a string unless the judge says otherwise. Tightness comes only from the
-judge's `runs/judged-<batch>.jsonl` (`JUDGE.md`).
-Then paired counts: rows where `full` succeeds and the other arm fails, and the reverse.
-"""
+"""Print the result tables over every collected batch but `trial` (README.md § Run)."""
 from __future__ import annotations
 from statistics import mean, median
 
@@ -15,7 +6,7 @@ from setup import ARMS, ARM_NAMES, read_jsonl
 
 RUNS = ARMS / "runs"
 STRATA = ("easy", "nlogn", "n2", "rare")
-TRIAL = "trial"                                                    # harness test rows; never reported
+TRIAL = "trial"
 
 
 def score(rec, judged):

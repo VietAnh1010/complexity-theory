@@ -1,71 +1,83 @@
-# Arms: the full approach against a baseline and two ablations
+# Arms: four agent setups on the same rows
 
 ## Purpose
 
-Measure how often each of four agent setups proves a tight bound on a row, on the same 60 rows.
-`annotate` charges every row before any agent sees it. No agent sees a label.
+Measure how often each of four agent setups proves a tight complexity bound, on the same 60 rows.
+Before any agent starts, `annotate` adds the step charges to each row. No agent sees a row's label.
 
-| Arm | Before proving | Proving | Brief |
-|---|---|---|---|
-| `full` | names a class (`guess`) after running `fuzz.py` (1-3 calls) | `dafny verify`, 3 attempts | `full/PROMPT.md` |
-| `nofuzz` | names a class from the code alone | same | `nofuzz/PROMPT.md` |
-| `noguess` | nothing | same | `noguess/PROMPT.md` |
-| `base` | nothing | same, may stop after one attempt | `base/PROMPT.md`: the output contract only |
+| Arm | Before proving | Brief |
+|---|---|---|
+| `full` | runs `fuzz.py` 1 to 3 times, then writes a guessed class | `full/PROMPT.md` |
+| `nofuzz` | reads the code, then writes a guessed class | `nofuzz/PROMPT.md` |
+| `noguess` | nothing | `noguess/PROMPT.md` |
+| `base` | nothing; its brief gives only the output format | `base/PROMPT.md` |
 
-- A brief, staged as each row's `BRIEF.md`, is the agent's whole task. Every arm writes `class`.
-- `full`, `nofuzz` and `noguess` must use all 3 attempts unless they claim the bound is in `class`.
-- Every arm has a 5-minute clock; a `fuzz` call stops running inputs after 60 s.
-- Every bound must pass the prove campaign's audit (`stage.audit`); every `class` and `guess` must
-  match `fuzz/guard.py`'s `CLASS`.
-- The hook records which attempts verified and blocks a stop until `outcome` and `best_attempt`
-  agree with them.
+Rules for every arm:
+
+- The agent's whole task is its brief, copied into each row's folder as `BRIEF.md`.
+- The agent gets 3 `dafny verify` runs and 5 minutes. Each `fuzz` call stops after 60 seconds.
+- `full`, `nofuzz` and `noguess` must use all 3 runs, unless their bound is already in or below the
+  class they state. `base` may stop after one run.
+- The agent writes its final class to `result.json` as `class`, in the format `CLASS` in
+  `fuzz/guard.py` accepts.
+- A proof counts only if it passes the prove campaign's audit, `stage.audit`.
+- The hook records whether each verify run passed. It keeps the agent from stopping while
+  `result.json` names a failed run as `best_attempt`, or says `unresolved` although a run passed.
 
 ## Files
 
 | File | Role |
 |---|---|
 | `manifest.jsonl` | the 60 rows and 4 trial rows: `sid`, `stratum`, `path`, `truth`, `source`, `batch` |
-| `setup.py` | stages one batch for one arm in `~/.cache/bigodafny-arms/<arm>/<sid>/` |
-| `collect.py` | audits the staged batch, copies it to `runs/<arm>/<batch>/`, clears the stage |
-| `report.py` | prints the tables over every collected batch |
-| `JUDGE.md` | the judge's brief |
+| `setup.py` | copies one batch for one arm into `~/.cache/bigodafny-arms/<arm>/<sid>/` |
+| `collect.py` | audits that copy, moves it to `runs/<arm>/<batch>/`, and empties `~/.cache/bigodafny-arms/<arm>/` |
+| `report.py` | prints the result tables over every collected batch |
+| `JUDGE.md` | the brief of the agent that judges each bound against `truth` |
 | `<arm>/PROMPT.md` | the arm's brief |
-| `<arm>/guard.py` | the hook of agent type `arms-<arm>` (`.claude/agents/arms-<arm>.md`): the arm's flags |
-| `hook.py` | the rules behind every `guard.py`, on top of `prove_guard.py` run unchanged |
-| `runs/` | git-ignored: each arm's batches, and the judge's `judged-<batch>.jsonl`; `runs/pilot/` holds a first run of batch 1 under the older hook, which `report.py` skips |
+| `<arm>/guard.py` | the hook of agent type `arms-<arm>` (`.claude/agents/arms-<arm>.md`); it sets the arm's options |
+| `hook.py` | the hook rules all arms share; it calls `prove_guard.py`, unchanged |
+| `runs/` | results, git-ignored: one folder per arm and batch, and the judge's `judged-<batch>.jsonl` |
+| `runs/pilot/` | the first run of batch 1, made before the hook recorded verify results; `report.py` ignores it |
 
 ## Rows
 
-- Pool: `solutions/` (`truth` is the label) and `solutions-disputed/` rows with cause `label`,
-  confidence high and `true_class` not `other` (`truth` is the audited class in `data/label_audit.jsonl`).
-- Strata by `truth`: `easy` (`O(1)`, `O(n)`) 10, `nlogn` 18, `n2` 16, `rare` (the rest) 16, since a
-  random draw would be half `O(n)`.
-- The draw: the pool sorted by directory and SID, shuffled with seed 20261111, then taken in order,
-  at most one row per problem, skipping `1387_34`, `1336_157` (need `counter=NAME`), `1972_295`
-  (a row bug, `batches/prove-hard/README.md`) and rows `annotate` rejects (none).
-- The first row of each stratum is in batch `trial`, for testing the harness: `report.py` skips it,
-  and `collect.py` replaces its earlier run. The next rows fill batches 1-4 of 15, each stratum spread
-  evenly.
+- Pool: rows in `solutions/`, where `truth` is the label, and rows in `solutions-disputed/` whose
+  cause is `label`, with high confidence and a `true_class` other than `other`. For those, `truth`
+  is the class in `data/label_audit.jsonl`.
+- Strata by `truth`: `easy` (`O(1)`, `O(n)`) 10 rows, `nlogn` 18, `n2` 16, `rare` (every other
+  class) 16. A random draw would be half `O(n)`.
+- Draw: sort the pool by directory and SID, shuffle it with seed 20261111, and take rows in order,
+  at most one per problem. `1387_34` and `1336_157` are skipped because they need `counter=NAME`,
+  and `1972_295` because of a row bug (`batches/prove-hard/README.md`). `annotate` rejected no row.
+- Batch `trial` holds the first row of each stratum and is for testing the harness. `report.py`
+  ignores it, and `collect.py` overwrites its earlier run. The other rows form batches 1 to 4, 15
+  rows each, spread evenly over the strata.
 
 ## Run
 
-Run one batch per fresh Claude Code session, started in the repository root with the prompt
-"Run batch K of `bigodafny/fuzzing/experiments/arms`, following its README § Run exactly." The session
-works from this directory, with `../../../.venv/bin/python3` as Python, and changes no file here.
+Run each batch in a fresh Claude Code session, started in the repository root with this prompt,
+where K is the batch number:
 
-1. Check that `~/.cache/bigodafny-arms/` holds no arm directory and `runs/` holds no batch K.
-2. For each arm, in the order `full`, `nofuzz`, `noguess`, `base`, finishing one before the next:
-   1. `setup.py --arm A --batch K`.
-   2. Spawn one `arms-A` agent per row, at most 3 at a time, starting the next when one finishes. The
-      prompt is exactly "Your row is in DIR. Read DIR/BRIEF.md and do what it says.", DIR being the
-      row's stage directory. Tell it nothing else, and never answer its messages.
-   3. When every agent has finished, `collect.py --arm A --batch K`.
-3. Spawn one `general-purpose` agent with `model: opus` and the prompt "Read
+> Run batch K of `bigodafny/fuzzing/experiments/arms`, following its README § Run exactly.
+
+The session works in this directory, uses `../../../.venv/bin/python3` as Python, and changes no
+file here.
+
+1. Check that `~/.cache/bigodafny-arms/` has no arm folder and `runs/` has no batch K.
+2. Do these steps for each arm, in the order `full`, `nofuzz`, `noguess`, `base`, finishing one arm
+   before starting the next:
+   1. Run `setup.py --arm <arm> --batch K`.
+   2. Start one `arms-<arm>` agent per row, at most 3 at a time, and start the next row when an agent
+      finishes. Give each agent exactly this prompt, with DIR replaced by the row's folder
+      `~/.cache/bigodafny-arms/<arm>/<sid>`: "Your row is in DIR. Read DIR/BRIEF.md and do what it
+      says." Tell it nothing else, and never answer its messages.
+   3. When every agent has finished, run `collect.py --arm <arm> --batch K`. Each row's line ends
+      with `hook recorded X of Y verify runs`. If X is less than Y, the hook missed a run: stop and
+      ask the user.
+3. Start one `general-purpose` agent with `model: opus` and this prompt: "Read
    bigodafny/fuzzing/experiments/arms/JUDGE.md, with {{BATCH}} = K, and do what it says."
-4. `report.py`, and report to the user: its tables, each row's `audit_failures` and `stop_error`, and
-   the guard denials per arm (`runs/<arm>/K/guard.log`).
+4. Run `report.py`. Report to the user its tables, each row's `audit_failures` and `stop_error`, and
+   each arm's hook denials, from `runs/<arm>/K/guard.log`.
 
-`collect.py` prints `results R/A` per row. R below A means the verify hooks missed runs: stop and ask.
-
-If an agent ends on an API or harness error, or a script fails, stop and ask the user. Rerun nothing
-on your own, and never rerun a row because its answer looks wrong.
+If an agent ends on an API or harness error, or a script fails, stop and ask the user. Never rerun
+anything on your own, and never rerun a row because its answer looks wrong.

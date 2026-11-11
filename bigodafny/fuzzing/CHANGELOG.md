@@ -19,12 +19,11 @@ per change. Earlier changes are in `git log -- bigodafny/fuzzing`. Findings go i
   `collect.py` replaces its earlier run. A third trial ran clean.
 - `experiments/arms/`: every arm has a 5-minute clock, not 30; `full`'s `fuzz` calls carry
   `--time-limit 60`, which its hook requires.
-- `experiments/arms/`: the hook records each verify run's result in `budget.json`'s `results`
-  (PostToolUse and PostToolUseFailure hooks on every `arms-*` agent) and blocks a stop while
-  `outcome` or `best_attempt` contradicts a recorded result; every brief says so. Batch 1's first run, where two `full` rows named a failed
-  attempt, moved to `runs/pilot/`.
-- `experiments/arms/`: the briefs are cut to about half (`full` 232 to 120 lines) with the same rules,
-  fields and prelude hints, in fewer words.
+- `experiments/arms/`: the hook stores whether each verify run passed, in `budget.json`'s `results`,
+  and keeps the agent from stopping while `result.json` contradicts it. In batch 1's first run, two
+  `full` agents named a failed run as `best_attempt`; that run moved to `runs/pilot/`.
+- `experiments/arms/`: the briefs are about half as long (`full` 232 to 120 lines), with the same
+  rules, fields and prelude hints. The README is rewritten in plainer words.
 
 ## 2026-10-29
 

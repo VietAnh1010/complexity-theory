@@ -1,17 +1,4 @@
-"""The PreToolUse and Stop hook of the `arms-*` agents. Each arm's `guard.py` calls `main` with its rules.
-
-On top of `prove_guard.py`, which this module runs unchanged on a stage of its own:
-
-- `fuzz`: Bash may also run `fuzz.py <row>/row.dfy <row>/gen.py --time-limit 60 [--per N] [--bound 'E']` and Write may
-  write `gen.py`, at most `MAX_FUZZ` calls, and only until `result.json` holds a guess.
-- `guess_first`: Write and Edit of `proof.dfy` are denied until `result.json` holds `guess` and `guess_basis`.
-- `push`: on Stop, `prove_guard.stop` decides (all 3 attempts unless `relation` is `confirms` or tighter).
-  Without it, the agent may stop once `result.json` is complete and one attempt ran.
-- Every arm: Stop is blocked until `class`, and `guess` in a `guess_first` arm, match `fuzz/guard.py`'s `CLASS`.
-- Every arm: after each verify run, `budget.json`'s `results` maps its attempt number to whether it passed
-  (PostToolUse: the output ends `0 errors`; PostToolUseFailure: failed). Stop is blocked while a proved row's
-  `best_attempt` failed, or an unresolved row has a passed attempt. A run without a result blocks nothing.
-"""
+"""Hook of the `arms-*` agents, on top of `prove_guard.py` (README.md § Purpose)."""
 from __future__ import annotations
 import importlib.util, json, re, sys, time
 from pathlib import Path

@@ -1,10 +1,4 @@
-"""Audit one arm's staged batch, copy it to `runs/<arm>/<batch>/`, then clear the stage.
-
-    ../../../.venv/bin/python3 collect.py --arm full --batch 1
-
-A trial batch replaces its earlier run; any other batch never does. The audit is `stage.audit` from the prove campaign: an attempt that fails it is not a proof,
-whatever the agent reported. `runs/<arm>/<batch>/traj.jsonl` gets one record per row.
-"""
+"""Audit one arm's staged batch, copy it to runs/, and clear the stage (README.md § Run)."""
 from __future__ import annotations
 import argparse, json, shutil
 from pathlib import Path
@@ -47,8 +41,8 @@ def main():
         if str(entry["batch"]) == args.batch:
             records.append(record(args.arm, args.batch, entry, root / entry["sid"]))
             r, results = records[-1], hook.pg.read_budget(root / entry["sid"]).get("results", {})
-            print(r["sid"], r["outcome"], f"agent said {r['agent_outcome']}",
-                  f"results {len(results)}/{r['attempts']}", r["audit_failures"] or "")
+            print(r["sid"], r["outcome"], f"agent said {r['agent_outcome']}", r["audit_failures"] or "",
+                  f"hook recorded {len(results)} of {r['attempts']} verify runs")
     shutil.copytree(root, out, ignore=shutil.ignore_patterns(".locks"))
     (out / "traj.jsonl").write_text("".join(json.dumps(r, sort_keys=True) + "\n" for r in records))
     shutil.rmtree(root)

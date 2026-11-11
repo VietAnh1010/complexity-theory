@@ -1,17 +1,17 @@
 # State and prove one row's time complexity
 
-Directory: `{{DIR}}`. Prelude: `{{PRELUDE}}`, readable. A hook denies every other path and
-enforces the budget.
+Your folder is `{{DIR}}`; the prelude is `{{PRELUDE}}`. A hook enforces these rules and your budget.
 
-- Read, Grep: this directory and the prelude.
+- Read, Grep: your folder and the prelude.
 - Write, Edit: `proof.dfy` and `result.json`.
 - Bash: only the command below, verbatim. No `cd`, `cat`, `cp`, `python` or pipes.
 
-`row.dfy` holds the code, its Python as a comment, and a charged ghost counter `steps`.
-`proof.dfy` starts as a copy.
+`row.dfy` holds the code, its Python as a comment, and a ghost counter `steps` that the code
+already increments. `proof.dfy` starts as a copy of `row.dfy`.
 
-**Task:** state the tightest time-complexity class of `Solve`, as a function of the input sizes
-and values, ignoring the statement's upper limits on them, and prove an upper bound on `steps` in `proof.dfy`. Work however you like.
+**Task:** state the tightest time-complexity class of `Solve` in its input sizes and values,
+ignoring the statement's upper limits on them, and prove an upper bound on `steps` in
+`proof.dfy`. Work however you like.
 
 ## Verifying
 
@@ -19,8 +19,9 @@ and values, ignoring the statement's upper limits on them, and prove an upper bo
 dafny verify {{DIR}}/proof.dfy --verification-time-limit 30
 ```
 
-Run it verbatim, in the foreground, Bash `timeout: 300000`. 3 attempts, a 5-minute clock. Every
-run is one attempt, a parse error included. A run on an unchanged `proof.dfy` is denied.
+Run it verbatim, in the foreground, Bash `timeout: 300000`. You have 3 attempts and 5 minutes.
+Each run counts as one attempt, even a run that fails to parse. The hook denies a run on an
+unchanged `proof.dfy`.
 
 ## What counts as a proof
 
@@ -45,11 +46,12 @@ run is one attempt, a parse error included. A run on an unchanged `proof.dfy` is
 ```
 
 - `outcome` is `proved` (an attempt verified) or `unresolved`.
-- `class` is your stated class: the class of `E` without its `|output|` term. Write it with no spaces, in this form: `O(1)`, `O(logn)`, `O(n)`,
-  `O(nlogn)`, `O(n**2)`, `O(n**1.5)`, `O(n*m)`, `O(n+mlogm)`. Powers take `**`, products `*`, and
-  `log` follows its factor with no `*` or brackets. The hook blocks your stop until it has this form.
-- `best_attempt` is a verified attempt you stand by; `bound` is its `E`. The hook checks
-  `outcome` and `best_attempt` against the verifier.
+- `class` is the class of `E` without its `|output|` term. Write it with no spaces, like `O(1)`,
+  `O(logn)`, `O(n)`, `O(nlogn)`, `O(n**2)`, `O(n**1.5)`, `O(n*m)`, `O(n+mlogm)`: powers take `**`,
+  products `*`, and `log` follows its factor with no `*` or brackets. The hook blocks your stop
+  until `class` has this form.
+- `best_attempt` is the number of a verified attempt you stand by, and `bound` is its `E`. The
+  hook checks `outcome` and `best_attempt` against the verifier's results.
 
 ## Problem statement
 
