@@ -26,11 +26,11 @@ foreground. No `cd`, pipes or other commands: the hook denies them.
 
 - **3 attempts.** Each run of the command above is one attempt. The hook denies a run on a
   `proof.dfy` that equals `row.dfy` or your last attempt.
-- A **30-minute** clock from your first tool call guards against a runaway run.
+- A **5-minute** clock from your first tool call guards against a runaway run.
 - **A verified proof is not the end.** If a tighter bound may exist, keep trying until all 3
   attempts are used. Stop early only if your bound is in the class you name as `class` in
   `result.json`.
-- Past 30 minutes `result.json` is the only file left open: write it and stop.
+- Past 5 minutes `result.json` is the only file left open: write it and stop.
 - **Your job is to get the tightest proof you can. Work as diligently as you can.** Make every
   attempt a real proof attempt, and use what the verifier told you to improve the next one.
 - **Never stop because a row looks hard.** Prove the tightest bound the code supports.

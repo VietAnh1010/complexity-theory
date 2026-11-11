@@ -23,7 +23,7 @@ dafny verify {{DIR}}/proof.dfy --verification-time-limit 30
 ```
 
 Bash runs exactly that command, in the foreground, with the Bash `timeout` set to 300000. Each
-run is one attempt. You have **3 attempts** and a **30-minute** clock. The hook denies a run on a
+run is one attempt. You have **3 attempts** and a **5-minute** clock. The hook denies a run on a
 `proof.dfy` that equals `row.dfy` or your last attempt.
 
 ## What counts as a proof

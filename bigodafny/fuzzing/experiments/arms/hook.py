@@ -2,7 +2,7 @@
 
 On top of `prove_guard.py`, which this module runs unchanged on a stage of its own:
 
-- `fuzz`: Bash may also run `fuzz.py <row>/row.dfy <row>/gen.py [--per N] [--bound 'E']` and Write may
+- `fuzz`: Bash may also run `fuzz.py <row>/row.dfy <row>/gen.py --time-limit 60 [--per N] [--bound 'E']` and Write may
   write `gen.py`, at most `MAX_FUZZ` calls, and only until `result.json` holds a guess.
 - `guess_first`: Write and Edit of `proof.dfy` are denied until `result.json` holds `guess` and `guess_basis`.
 - `push`: on Stop, `prove_guard.stop` decides (all 3 attempts unless `relation` is `confirms` or tighter).
@@ -24,7 +24,9 @@ fuzz_guard = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(fuzz_guard)
 
 STAGE = Path.home() / ".cache" / "bigodafny-arms"                    # <arm>/<sid>/ per row
-MAX_SECONDS, MAX_FUZZ, FUZZ_TIMEOUT_MS = 1800, 3, 600_000
+MAX_SECONDS, MAX_FUZZ, FUZZ_TIMEOUT_MS, FUZZ_TIME_LIMIT = 300, 3, 600_000, 60
+FUZZ = re.compile(re.escape(fuzz_guard.CMD) + r" (?P<dfy>[\w./-]+\.dfy) (?P<gen>[\w./-]+/gen\.py)"
+                  rf" --time-limit {FUZZ_TIME_LIMIT}(?: --per \d+| --bound '[^'\n]*'){{0,2}}")
 
 
 def result(row):
@@ -66,7 +68,7 @@ def check_fuzz(args, agent, m):
 
 def check(tool, args, agent, fuzz, guess_first):
     """Return normally if the call is allowed."""
-    if fuzz and tool == "Bash" and (m := fuzz_guard.FUZZ.fullmatch(args.get("command", "").strip())):
+    if fuzz and tool == "Bash" and (m := FUZZ.fullmatch(args.get("command", "").strip())):
         return check_fuzz(args, agent, m)
     if tool in ("Write", "Edit") and "file_path" in args:
         path = Path(args["file_path"]).resolve()

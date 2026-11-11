@@ -17,6 +17,8 @@ per change. Earlier changes are in `git log -- bigodafny/fuzzing`. Findings go i
   `full`'s brief says a `fuzz --bound` E may name `|output|`. A second trial ran clean.
 - `experiments/arms/`: the 4 trial rows stay in `manifest.jsonl` as batch `trial`; `report.py` skips it and
   `collect.py` replaces its earlier run. A third trial ran clean.
+- `experiments/arms/`: every arm has a 5-minute clock, not 30; `full`'s `fuzz` calls carry
+  `--time-limit 60`, which its hook requires.
 
 ## 2026-10-29
 

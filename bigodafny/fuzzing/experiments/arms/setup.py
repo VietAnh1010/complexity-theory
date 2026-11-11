@@ -15,9 +15,8 @@ ARMS = Path(__file__).resolve().parent
 sys.path.insert(0, str(ARMS.parent / "fuzz"))
 import blind                                                         # noqa: E402  (puts bigodafny/ on sys.path)
 from guard import CMD                                                # noqa: E402  fuzz/guard.py
-from fuzz import TIME_LIMIT                                          # noqa: E402
 from common import DATA, PRELUDE, ROOT as BIGODAFNY, read_jsonl      # noqa: E402
-from hook import STAGE                                               # noqa: E402
+from hook import STAGE, FUZZ_TIME_LIMIT as TIME_LIMIT                 # noqa: E402
 import stage                                                         # noqa: E402  (hook put its directory on sys.path)
 
 ARM_NAMES = ("full", "nofuzz", "noguess", "base")

@@ -15,7 +15,7 @@ Measure how often each of four agent setups proves a tight bound on a row, on th
 - A brief is the `BRIEF.md` staged beside each row: the agent's whole task.
 - Every arm writes `class`, the class it stands by, to `result.json`.
 - `full`, `nofuzz` and `noguess` must use all 3 attempts unless they claim the bound is in `class`.
-- Every arm has a 30-minute clock.
+- Every arm has a 5-minute clock; a `fuzz` call stops running inputs after 60 s.
 - Every bound must pass the prove campaign's audit (`stage.audit`); every `class` and `guess` must
   match `fuzz/guard.py`'s `CLASS`.
 
