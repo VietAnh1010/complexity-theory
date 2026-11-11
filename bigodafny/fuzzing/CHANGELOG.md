@@ -4,6 +4,17 @@ What changed in `fuzzing/`, newest first, one dated section per session and one 
 per change. Earlier changes are in `git log -- bigodafny/fuzzing`. Findings go in
 `experiments/fuzz/FINDINGS.md`, open work in `TODO.md`.
 
+## 2026-11-11
+
+- `experiments/arms/`: four agent arms (`full`, `nofuzz`, `noguess`, `base`) on one stratified
+  60-row manifest, each with its brief, its hook and agent type `arms-<arm>`; `setup.py`,
+  `collect.py`, `report.py`. Imports `stage.py`, `prove_guard.py` and `blind.py` unchanged.
+- `experiments/arms/`: after a 4-row trial, every brief asks for the class ignoring the statement's
+  upper limits on sizes, `base`'s `class` excludes the `|output|` term, and every brief says to read
+  files with Read and Grep. The trial rows and runs are deleted.
+- `experiments/arms/`: each brief lists its arm's tools; `judge.py` and `JUDGE.md` let a blind Opus agent
+  judge bounds and classes; the README's run steps are for a fresh session per batch.
+
 ## 2026-10-29
 
 - Doc 07 § Screening proofs flags a proof whose `steps / bound` at the largest bound is under
