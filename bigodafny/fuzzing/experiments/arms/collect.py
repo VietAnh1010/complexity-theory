@@ -46,8 +46,9 @@ def main():
     for entry in read_jsonl(ARMS / "manifest.jsonl"):
         if str(entry["batch"]) == args.batch:
             records.append(record(args.arm, args.batch, entry, root / entry["sid"]))
-            r = records[-1]
-            print(r["sid"], r["outcome"], f"agent said {r['agent_outcome']}", r["audit_failures"] or "")
+            r, results = records[-1], hook.pg.read_budget(root / entry["sid"]).get("results", {})
+            print(r["sid"], r["outcome"], f"agent said {r['agent_outcome']}",
+                  f"results {len(results)}/{r['attempts']}", r["audit_failures"] or "")
     shutil.copytree(root, out, ignore=shutil.ignore_patterns(".locks"))
     (out / "traj.jsonl").write_text("".join(json.dumps(r, sort_keys=True) + "\n" for r in records))
     shutil.rmtree(root)

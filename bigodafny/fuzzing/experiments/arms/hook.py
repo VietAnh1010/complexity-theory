@@ -8,9 +8,9 @@ On top of `prove_guard.py`, which this module runs unchanged on a stage of its o
 - `push`: on Stop, `prove_guard.stop` decides (all 3 attempts unless `relation` is `confirms` or tighter).
   Without it, the agent may stop once `result.json` is complete and one attempt ran.
 - Every arm: Stop is blocked until `class`, and `guess` in a `guess_first` arm, match `fuzz/guard.py`'s `CLASS`.
-- Every arm: on PostToolUse of a verify run that ends `0 errors`, `budget.json`'s `verified` gets that run's attempt
-  number. Stop is blocked until `outcome` is `proved` exactly when an attempt verified, and a proved row's
-  `best_attempt` is one of them.
+- Every arm: after each verify run, `budget.json`'s `results` maps its attempt number to whether it passed
+  (PostToolUse: the output ends `0 errors`; PostToolUseFailure: failed). Stop is blocked while a proved row's
+  `best_attempt` failed, or an unresolved row has a passed attempt. A run without a result blocks nothing.
 """
 from __future__ import annotations
 import importlib.util, json, re, sys, time
@@ -95,18 +95,19 @@ def class_error(row, guess_first):
 
 
 def record(agent, args, response):
-    """After a verify run that passed, add its attempt number to `verified`."""
-    m = pg.VERIFY.fullmatch(args.get("command", "").strip())
-    if not m or not PASSED.search(json.dumps(response)):
+    """After a verify run, record whether it passed; RESPONSE is None for a failed tool call."""
+    if not pg.VERIFY.fullmatch(args.get("command", "").strip()):
         return
     row = pg.locked_row(agent)
     budget = pg.read_budget(row)
-    pg.write_budget(row, {**budget, "verified": sorted({*budget.get("verified", []), budget["attempts"]})})
+    passed = response is not None and bool(PASSED.search(json.dumps(response)))
+    pg.write_budget(row, {**budget, "results": {**budget.get("results", {}), str(budget["attempts"]): passed}})
 
 
 def verified_error(row, budget):
-    r, verified = result(row), budget.get("verified", [])
-    if r.get("outcome") == "proved" and r.get("best_attempt") not in verified:
+    r, results = result(row), budget.get("results", {})
+    verified = sorted(int(k) for k, ok in results.items() if ok)
+    if r.get("outcome") == "proved" and results.get(str(r.get("best_attempt"))) is False:
         return (f"result.json: best_attempt {r.get('best_attempt')} did not verify; the attempts that verified are "
                 f"{verified}" if verified else "result.json: no attempt verified, so outcome is unresolved")
     if r.get("outcome") == "unresolved" and verified:
@@ -152,8 +153,9 @@ def main(arm, fuzz, guess_first, push):
         payload = json.load(sys.stdin)
         agent = re.sub(r"\W", "_", str(payload["agent_id"]))
         tool = payload.get("tool_name")
-        if payload.get("hook_event_name") == "PostToolUse":
-            record(agent, payload.get("tool_input") or {}, payload.get("tool_response"))
+        if payload.get("hook_event_name") in ("PostToolUse", "PostToolUseFailure"):
+            record(agent, payload.get("tool_input") or {},
+                   payload.get("tool_response") if payload["hook_event_name"] == "PostToolUse" else None)
         elif payload.get("hook_event_name") == "SubagentStop" or tool == "SubagentHandback":
             stop(agent, guess_first, push)
         else:

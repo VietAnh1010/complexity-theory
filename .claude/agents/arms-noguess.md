@@ -14,6 +14,11 @@ hooks:
       hooks:
         - type: command
           command: python3 "$CLAUDE_PROJECT_DIR"/bigodafny/fuzzing/experiments/arms/noguess/guard.py
+  PostToolUseFailure:
+    - matcher: "Bash"
+      hooks:
+        - type: command
+          command: python3 "$CLAUDE_PROJECT_DIR"/bigodafny/fuzzing/experiments/arms/noguess/guard.py
   Stop:
     - hooks:
         - type: command

@@ -65,5 +65,7 @@ works from this directory, with `../../../.venv/bin/python3` as Python, and chan
 4. `report.py`, and report to the user: its tables, each row's `audit_failures` and `stop_error`, and
    the guard denials per arm (`runs/<arm>/K/guard.log`).
 
+`collect.py` prints `results R/A` per row. R below A means the verify hooks missed runs: stop and ask.
+
 If an agent ends on an API or harness error, or a script fails, stop and ask the user. Rerun nothing
 on your own, and never rerun a row because its answer looks wrong.
