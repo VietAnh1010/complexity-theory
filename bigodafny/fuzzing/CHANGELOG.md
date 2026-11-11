@@ -24,6 +24,9 @@ per change. Earlier changes are in `git log -- bigodafny/fuzzing`. Findings go i
   `full` agents named a failed run as `best_attempt`; that run moved to `runs/pilot/`.
 - `experiments/arms/`: the briefs are about half as long (`full` 232 to 120 lines), with the same
   rules, fields and prelude hints. The README is rewritten in plainer words.
+- `experiments/arms/`: `full`'s hook denies writing `result.json` before the first `fuzz` call, and
+  its Bash denial names the `fuzz` command too. In a trial, 2 of 4 `full` agents skipped `fuzz` after a
+  denial that named only `dafny verify`.
 
 ## 2026-10-29
 

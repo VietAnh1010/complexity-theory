@@ -23,6 +23,7 @@ Rules for every arm:
 - A proof counts only if it passes the prove campaign's audit, `stage.audit`.
 - The hook records whether each verify run passed. It keeps the agent from stopping while
   `result.json` names a failed run as `best_attempt`, or says `unresolved` although a run passed.
+- In `full`, the hook denies writing `result.json` before the first `fuzz` call.
 
 ## Files
 

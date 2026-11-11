@@ -68,8 +68,16 @@ def check(tool, args, agent, fuzz, guess_first):
             if path != row / "gen.py" or guessed(row) or pg.over_budget(pg.read_budget(row)):
                 raise pg.Denied("you may write gen.py only in your directory, before your guess")
             return
+        if fuzz and path.name == "result.json":
+            budget = pg.read_budget(in_row(agent, path))
+            if not budget.get("fuzz_calls") and not pg.over_budget(budget):
+                raise pg.Denied("run fuzz.py at least once before you write result.json")
         if guess_first and path.name == "proof.dfy" and not guessed(in_row(agent, path)):
             raise pg.Denied("write guess and guess_basis to result.json before you edit proof.dfy")
+    if fuzz and tool == "Bash" and not pg.VERIFY.fullmatch(args.get("command", "").strip()):
+        raise pg.Denied(f"Bash runs only `{fuzz_guard.CMD} <your dir>/row.dfy <your dir>/gen.py --time-limit "
+                        f"{FUZZ_TIME_LIMIT} [--per N] [--bound 'E']` or "
+                        "`dafny verify <your dir>/proof.dfy --verification-time-limit 30`")
     pg.check(tool, args, agent)
 
 
