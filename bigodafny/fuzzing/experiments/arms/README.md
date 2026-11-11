@@ -12,8 +12,7 @@ Measure how often each of four agent setups proves a tight bound on a row, on th
 | `noguess` | nothing | same | `noguess/PROMPT.md` |
 | `base` | nothing | same, may stop after one attempt | `base/PROMPT.md`: the output contract only |
 
-- A brief is the `BRIEF.md` staged beside each row: the agent's whole task.
-- Every arm writes `class`, the class it stands by, to `result.json`.
+- A brief, staged as each row's `BRIEF.md`, is the agent's whole task. Every arm writes `class`.
 - `full`, `nofuzz` and `noguess` must use all 3 attempts unless they claim the bound is in `class`.
 - Every arm has a 5-minute clock; a `fuzz` call stops running inputs after 60 s.
 - Every bound must pass the prove campaign's audit (`stage.audit`); every `class` and `guess` must
@@ -39,8 +38,8 @@ Measure how often each of four agent setups proves a tight bound on a row, on th
 
 - Pool: `solutions/` (`truth` is the label) and `solutions-disputed/` rows with cause `label`,
   confidence high and `true_class` not `other` (`truth` is the audited class in `data/label_audit.jsonl`).
-- Strata by `truth`: `easy` (`O(1)`, `O(n)`) 10, `nlogn` 18, `n2` 16, `rare` (every other class) 16.
-  A random draw would be half `O(n)`, which every proof campaign proved.
+- Strata by `truth`: `easy` (`O(1)`, `O(n)`) 10, `nlogn` 18, `n2` 16, `rare` (the rest) 16, since a
+  random draw would be half `O(n)`.
 - The draw: the pool sorted by directory and SID, shuffled with seed 20261111, then taken in order,
   at most one row per problem, skipping `1387_34`, `1336_157` (need `counter=NAME`), `1972_295`
   (a row bug, `batches/prove-hard/README.md`) and rows `annotate` rejects (none).
@@ -68,5 +67,3 @@ works from this directory, with `../../../.venv/bin/python3` as Python, and chan
 
 If an agent ends on an API or harness error, or a script fails, stop and ask the user. Rerun nothing
 on your own, and never rerun a row because its answer looks wrong.
-
-The judge marks a proof tight when its bound is in `truth`'s class or below it.

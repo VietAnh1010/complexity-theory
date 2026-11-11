@@ -23,6 +23,8 @@ per change. Earlier changes are in `git log -- bigodafny/fuzzing`. Findings go i
   (a PostToolUse hook on every `arms-*` agent) and blocks a stop until `outcome` and `best_attempt`
   agree with it; every brief says so. Batch 1's first run, where two `full` rows named a failed
   attempt, moved to `runs/pilot/`.
+- `experiments/arms/`: the briefs are cut to about half (`full` 232 to 120 lines) with the same rules,
+  fields and prelude hints, in fewer words.
 
 ## 2026-10-29
 
