@@ -15,6 +15,8 @@ per change. Earlier changes are in `git log -- bigodafny/fuzzing`. Findings go i
 - `experiments/arms/`: each brief lists its arm's tools; `JUDGE.md` has an Opus agent judge each proved
   bound against `truth` from the runs; the README's run steps are for a fresh session per batch;
   `full`'s brief says a `fuzz --bound` E may name `|output|`. A second trial ran clean.
+- `experiments/arms/`: the 4 trial rows stay in `manifest.jsonl` as batch `trial`; `report.py` skips it and
+  `collect.py` replaces its earlier run. A third trial ran clean.
 
 ## 2026-10-29
 

@@ -23,7 +23,7 @@ Measure how often each of four agent setups proves a tight bound on a row, on th
 
 | File | Role |
 |---|---|
-| `manifest.jsonl` | the rows: `sid`, `stratum`, `path`, `truth`, `source`, `batch` |
+| `manifest.jsonl` | the 60 rows and 4 trial rows: `sid`, `stratum`, `path`, `truth`, `source`, `batch` |
 | `setup.py` | stages one batch for one arm in `~/.cache/bigodafny-arms/<arm>/<sid>/` |
 | `collect.py` | audits the staged batch, copies it to `runs/<arm>/<batch>/`, clears the stage |
 | `report.py` | prints the tables over every collected batch |
@@ -42,8 +42,9 @@ Measure how often each of four agent setups proves a tight bound on a row, on th
 - The draw: the pool sorted by directory and SID, shuffled with seed 20261111, then taken in order,
   at most one row per problem, skipping `1387_34`, `1336_157` (need `counter=NAME`), `1972_295`
   (a row bug, `batches/prove-hard/README.md`) and rows `annotate` rejects (none).
-- The first row of each stratum went to a trial of the harness, then out of the manifest; the next
-  ones fill batches 1-4 of 15, each stratum spread evenly.
+- The first row of each stratum is in batch `trial`, for testing the harness: `report.py` skips it,
+  and `collect.py` replaces its earlier run. The next rows fill batches 1-4 of 15, each stratum spread
+  evenly.
 
 ## Run
 

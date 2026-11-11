@@ -1,4 +1,4 @@
-"""Print one table per stratum, and pooled, over every collected batch in `runs/`.
+"""Print one table per stratum, and pooled, over every collected batch in `runs/` but `trial`.
 
     ../../../.venv/bin/python3 report.py
 
@@ -15,6 +15,7 @@ from setup import ARMS, ARM_NAMES, read_jsonl
 
 RUNS = ARMS / "runs"
 STRATA = ("easy", "nlogn", "n2", "rare")
+TRIAL = "trial"                                                    # harness test rows; never reported
 
 
 def score(rec, judged):
@@ -61,7 +62,7 @@ def paired(recs, scores):
 
 
 def main():
-    recs = [r for p in sorted(RUNS.glob("*/*/traj.jsonl")) for r in read_jsonl(p)]
+    recs = [r for p in sorted(RUNS.glob("*/*/traj.jsonl")) if p.parent.name != TRIAL for r in read_jsonl(p)]
     judged = {(j["arm"], j["sid"]): j for p in sorted(RUNS.glob("judged-*.jsonl")) for j in read_jsonl(p)}
     scores = [score(r, judged) for r in recs]
     for name, keep in [(s, lambda r, s=s: r["stratum"] == s) for s in STRATA] + [("pooled", lambda r: True)]:

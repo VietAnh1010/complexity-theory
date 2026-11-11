@@ -58,3 +58,7 @@
 {"batch": "4", "path": "solutions/3046/3046_65.dfy", "sid": "3046_65", "source": "solutions", "stratum": "rare", "truth": "O(n*m)"}
 {"batch": "4", "path": "solutions-disputed/662/662_527.dfy", "sid": "662_527", "source": "solutions-disputed", "stratum": "rare", "truth": "O(n*m)"}
 {"batch": "4", "path": "solutions/459/459_199.dfy", "sid": "459_199", "source": "solutions", "stratum": "rare", "truth": "O(n+m)"}
+{"batch": "trial", "path": "solutions/2007/2007_4.dfy", "sid": "2007_4", "source": "solutions", "stratum": "easy", "truth": "O(n)"}
+{"batch": "trial", "path": "solutions/750/750_14.dfy", "sid": "750_14", "source": "solutions", "stratum": "nlogn", "truth": "O(nlogn)"}
+{"batch": "trial", "path": "solutions/976/976_656.dfy", "sid": "976_656", "source": "solutions", "stratum": "n2", "truth": "O(n**2)"}
+{"batch": "trial", "path": "solutions-disputed/1954/1954_83.dfy", "sid": "1954_83", "source": "solutions-disputed", "stratum": "rare", "truth": "O(n*m)"}

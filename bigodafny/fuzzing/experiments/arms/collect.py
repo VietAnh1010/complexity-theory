@@ -2,7 +2,7 @@
 
     ../../../.venv/bin/python3 collect.py --arm full --batch 1
 
-The audit is `stage.audit` from the prove campaign: an attempt that fails it is not a proof,
+A trial batch replaces its earlier run; any other batch never does. The audit is `stage.audit` from the prove campaign: an attempt that fails it is not a proof,
 whatever the agent reported. `runs/<arm>/<batch>/traj.jsonl` gets one record per row.
 """
 from __future__ import annotations
@@ -10,6 +10,7 @@ import argparse, json, shutil
 from pathlib import Path
 
 from setup import ARMS, ARM_NAMES, BIGODAFNY, STAGE, read_jsonl
+from report import TRIAL
 import hook
 import stage
 
@@ -38,8 +39,9 @@ def main():
     parser.add_argument("--batch", required=True)
     args = parser.parse_args()
     root, out = STAGE / args.arm, ARMS / "runs" / args.arm / args.batch
-    if out.exists():
+    if out.exists() and args.batch != TRIAL:
         raise SystemExit(f"{out} exists")
+    shutil.rmtree(out, ignore_errors=True)                         # only a trial reaches here with `out`
     records = []
     for entry in read_jsonl(ARMS / "manifest.jsonl"):
         if str(entry["batch"]) == args.batch:
