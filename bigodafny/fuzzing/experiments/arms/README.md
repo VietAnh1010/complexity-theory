@@ -44,7 +44,8 @@ Rules for every arm:
 
 - Pool: rows in `solutions/`, where `truth` is the label, and rows in `solutions-disputed/` whose
   cause is `label`, with high confidence and a `true_class` other than `other`. For those, `truth`
-  is the class in `data/label_audit.jsonl`.
+  is the class in `data/label_audit.jsonl`. `1011_368` and `276_1206` carry their corrected labels
+  from `data/label_corrections.jsonl`, and their strata follow.
 - Strata by `truth`: `easy` (`O(1)`, `O(n)`) 10 rows, `nlogn` 18, `n2` 16, `rare` (every other
   class) 16. A random draw would be half `O(n)`.
 - Draw: sort the pool by directory and SID, shuffle it with seed 20261111, and take rows in order,

@@ -6,6 +6,12 @@ per change. Earlier changes are in `git log -- bigodafny/fuzzing`. Findings go i
 
 ## 2026-11-11
 
+- `experiments/arms/manifest.jsonl`: `1011_368` takes its corrected label `O(n**0.5)` (stratum
+  `rare`) and `276_1206` its corrected `O(n)` (stratum `easy`); the draw had used BigOBench's
+  labels for both. Batch 1's `traj.jsonl` copies were updated to match.
+- `experiments/arms/JUDGE.md`: `class_ok` accepts truth's class as a function of the inputs,
+  including a sum of sizes and a tie the row enforces, as the briefs state no naming rule. Batch 1
+  re-judged under it.
 - `experiments/arms/`: four agent arms (`full`, `nofuzz`, `noguess`, `base`) on one stratified
   60-row manifest, each with its brief, its hook and agent type `arms-<arm>`; `setup.py`,
   `collect.py`, `report.py`. Imports `stage.py`, `prove_guard.py` and `blind.py` unchanged.

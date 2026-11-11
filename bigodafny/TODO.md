@@ -48,6 +48,10 @@ Open items only. When one is done, delete it and add a line to `CHANGELOG.md`.
 - [ ] `label_audit.py siblings` lists 87 candidate pairs over 157 rows. 109 of
       them are quarantined for `sibling-convergence` in
       `solutions-unscreened/` and were never label-audited. Review the pairs.
+- [ ] `2381_156`: its `O(1)` label and `ok` verdict (r3) predate the 2026-10-07
+      `IntToString` charge. Its proof bounds `2 * Digits(n) + 4`, and arms agents
+      proved `Digits(n)**2` bounds over the `Power` helper. Re-audit; if the label
+      changes, update `fuzzing/experiments/arms/manifest.jsonl` and re-judge.
 
 ## Gates (an agent must not change a gate that judges its own work)
 

@@ -23,9 +23,11 @@ Work in `bigodafny/fuzzing/experiments/arms/`. For batch `{{BATCH}}`, read each 
 - `false`: the bound grows faster than `truth` on some inputs (`n * n` for `O(nlogn)`), or names a
   second measure `truth` omits, unless the row ties that measure to `truth`'s (say `m <= n`).
 
-`class_ok` and `guess_ok`, for each `class` or `guess` that differs from `truth` as a string: does it
-name `truth`'s class with the measures renamed (`O(m)` for `O(n)` with one main measure, `O(m*n)` for
-`O(n*m)`)?
+`class_ok` and `guess_ok`, for each `class` or `guess` that differs from `truth` as a string: is it
+`truth`'s class as a function of the inputs? Renamed measures count (`O(m)` for `O(n)` with one main
+measure, `O(m*n)` for `O(n*m)`), and so do a sum of sizes (`O(n**2)` with n = |a| + |b| for
+`O(n**2+m**2)`) and a tie the row enforces (`O(n)` for `O(n+m)` when the work runs only if
+`|a| == |b|`).
 
 ## Output
 

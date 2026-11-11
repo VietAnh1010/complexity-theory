@@ -1,4 +1,4 @@
-{"batch": "1", "path": "solutions/1011/1011_368.dfy", "sid": "1011_368", "source": "solutions", "stratum": "easy", "truth": "O(n)"}
+{"batch": "1", "path": "solutions/1011/1011_368.dfy", "sid": "1011_368", "source": "solutions", "stratum": "rare", "truth": "O(n**0.5)"}
 {"batch": "1", "path": "solutions/2803/2803_59.dfy", "sid": "2803_59", "source": "solutions", "stratum": "easy", "truth": "O(1)"}
 {"batch": "1", "path": "solutions/2381/2381_156.dfy", "sid": "2381_156", "source": "solutions", "stratum": "easy", "truth": "O(1)"}
 {"batch": "2", "path": "solutions/2700/2700_137.dfy", "sid": "2700_137", "source": "solutions", "stratum": "easy", "truth": "O(1)"}
@@ -54,7 +54,7 @@
 {"batch": "3", "path": "solutions/101/101_10.dfy", "sid": "101_10", "source": "solutions", "stratum": "rare", "truth": "O(nlogn+mlogm)"}
 {"batch": "3", "path": "solutions/1029/1029_119.dfy", "sid": "1029_119", "source": "solutions", "stratum": "rare", "truth": "O(n+m)"}
 {"batch": "3", "path": "solutions/433/433_16.dfy", "sid": "433_16", "source": "solutions", "stratum": "rare", "truth": "O(n+m)"}
-{"batch": "4", "path": "solutions/276/276_1206.dfy", "sid": "276_1206", "source": "solutions", "stratum": "rare", "truth": "O(n*m)"}
+{"batch": "4", "path": "solutions/276/276_1206.dfy", "sid": "276_1206", "source": "solutions", "stratum": "easy", "truth": "O(n)"}
 {"batch": "4", "path": "solutions/3046/3046_65.dfy", "sid": "3046_65", "source": "solutions", "stratum": "rare", "truth": "O(n*m)"}
 {"batch": "4", "path": "solutions-disputed/662/662_527.dfy", "sid": "662_527", "source": "solutions-disputed", "stratum": "rare", "truth": "O(n*m)"}
 {"batch": "4", "path": "solutions/459/459_199.dfy", "sid": "459_199", "source": "solutions", "stratum": "rare", "truth": "O(n+m)"}
