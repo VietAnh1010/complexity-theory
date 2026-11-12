@@ -28,6 +28,10 @@ else, anywhere. Do not modify any `.dfy`. Do not run `dafny`.
 > `bigodafny/COMPLEXITY.md` is the authority. § *Value terms* below is the
 > rule that changes the most verdicts.
 
+> **Since r3:** `IntToString(x)` costs its digits (2026-10-07, the table below),
+> and a square root is a prelude `ISqrt` call costing O(log x) (2026-11-12).
+> Verdicts in `verdicts_r3.jsonl` and `verdicts_r4.jsonl` charge `IntToString` 1.
+
 > **This table changed on 2026-09-16.** Every verdict in `verdicts_r1-r2.jsonl`
 > was filed against a table read off Dafny's Python
 > backend, in which `s[i := v]`, `m[k := v]` and set insertion were all linear. They are `1` now. Do not compare a verdict
@@ -59,6 +63,7 @@ Everything else costs what the table says:
 | reading `Solve`'s own arguments: `SplitWs`, `ParseInt`, `ParseInts`, or a hand-written tokenizer or numeral parser in any base | O(input length) | the one read never counts toward the class; any further pass does |
 | `IntToString(x)`, `\|IntToString(x)\|` | O(digits of x) | printed text is output length: never counts toward the class; this does NOT make a value-bounded loop constant |
 | `Gcd(a, b)` (or a Euclid loop) | O(log min(a, b)) | Euclid's depth: a VALUE term |
+| `ISqrt(x)` | O(log x) | its recursion depth: a VALUE term. Every row computes the Python's `math.sqrt`/`isqrt`/`** 0.5` with it, as `Gcd` stands for `math.gcd` |
 | a recursive helper for Python `**` | its recursion depth | O(e) or O(log e) in the exponent VALUE |
 | `SortInts`, `SortStrings`, `Sort` | O(k log k) | merge sort |
 | a hand-written recursion on `s[1..]` | O(\|s\|) | one level per element; the slice itself is free |
@@ -166,9 +171,10 @@ large** they are. Since 2026-09-17 an input value is a parameter of the cost:
   term (it usually does), `true_class: "other"`, and name the real class in
   `evidence`, e.g. "O(n log max a_i)". A per-test size inside a test-case
   loop is a size, not a value: `O(n*m)` per § *Naming the sizes*.
-- If only the Dafny pays the value term, use `cause: "translation"`: the
-  standard case is a Dafny `sqrt` search where the Python calls `math.sqrt`
-  once. CPython's `math.gcd` runs Euclid too, so a `Gcd` term is `label`.
+- If only the Dafny pays the value term, use `cause: "translation"`. A `Gcd`
+  term is `label` (CPython's `math.gcd` runs Euclid too), and so is an `ISqrt`
+  term where the Python takes that square root: the model charges a square
+  root its `ISqrt` depth in every row (`COMPLEXITY.md`).
 
 ## The two causes — getting this right is the point of the audit
 

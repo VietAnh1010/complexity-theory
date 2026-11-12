@@ -55,7 +55,7 @@ Status is `done`, `open` or `partly`. Update this table with every commit that f
 | # | Piece | Status |
 |---|---|---|
 | C1 | `label_audit.py apply` finds rows in `solutions-unscreened/` | code written, not yet tested or committed |
-| C2 | label-audit the unscreened rows (`batches/labelaudit/PROMPT.md`) | open |
+| C2 | label-audit the unscreened rows and the 38 disputed rows whose code changed in B4 (`batches/labelaudit/PROMPT.md`, updated for `ISqrt`) | open; stopped for quota before any verdict. Rebuild batches: `label_audit.py evidence --dir solutions-unscreened --prefix r5u --batch-size 19`, and `--dir solutions-disputed --only <the 38 changed rows in batches/retranslate/ and batches/isqrt/> --prefix r5d` |
 | C3 | `truth` lives in `data/label_corrections.jsonl`; a proof-backed correction moves a disputed row to `solutions/`; READMEs and `CHANGELOG.md` say so | open |
 | C4 | prove every row with no proof (`bigodafny-prove-campaign`), including proofs `proofs.py` flags as stale (`TODO.md`) | open |
 | C5 | prove C4's leftovers by hand | open |
