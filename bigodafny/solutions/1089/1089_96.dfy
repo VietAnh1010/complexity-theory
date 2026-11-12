@@ -17,6 +17,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a: int, b: int) returns (output: string)
+  requires n >= 0
 {
   var ans := 0;
   var i := 0;

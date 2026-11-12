@@ -21,7 +21,7 @@ Source: `data/stats.json`, `data/dataset.jsonl`.
 | Strict rows tested by `validate.py`                             |                                                                    536 |
 | Strict rows that cannot be tested (`unvalidatable`)             | 6: `1196_100`, `1196_51`, `1578_481`, `1578_724`, `1950_45`, `1950_47` |
 | Loose rows                                                      |                                                                     98 |
-| Problems with stated limits in `data/constraints.jsonl`         |                                         5 (1501, 577, 827, 1254, 1276) |
+| Problems with stated limits in `data/constraints.jsonl`         |                                         6 (1501, 577, 827, 1254, 1276, 1954) |
 | Stored tests skipped as outside those limits (public + private) |                                                        48 per 1501 row |
 
 ## Clean rows
@@ -39,8 +39,9 @@ has no blocker. A row can carry several.
 | `tests` | its gate has no pass; `1950_45`, `1950_47` (`unvalidatable`) | 2 |
 | `precheck` | a `requires` clause fails `precheck.py` on the row (`1861_16`) | 1 |
 | `proof-fails` | its proof does not verify or uses `assume` | 0 |
+| `proof-changes-row` | its proof compiles to other Python or changes `Solve`'s `requires` (`2496_30`) | 1 |
 
-Clean: 285 of 636 translated rows. `annotate` rejects 2 rows that declare their own `steps`
+Clean: 284 of 636 translated rows. `annotate` rejects 2 rows that declare their own `steps`
 (`1387_34`, `1336_157`); no record holds that, so it is not a blocker field.
 
 ## Directories
@@ -65,7 +66,7 @@ Source: the tree.
 | `validate.py`         | `data/validation.jsonl`        | 536 rows: all `valid`                                                                                        |
 | `difftest.py --loose` | `data/difftest.jsonl`          | 98 loose rows: 94 `agrees`, 4 `untranslated`                                                                 |
 | `verify_all.py`       | `data/verification.jsonl`      | 636 rows, every status directory: 559 verify, 20 of them only with `decreases *` |
-| `proofs.py`           | `data/complexity_proofs.jsonl` | 361 proofs: all verify, 0 `assume`                                                                           |
+| `proofs.py`           | `data/complexity_proofs.jsonl` | 361 proofs: all verify, 0 `assume`; 1 changes its row (`2496_30`)                                                                           |
 
 Rows in `solutions/` using `decreases *`: 7.
 

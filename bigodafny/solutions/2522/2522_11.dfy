@@ -19,6 +19,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int) returns (output: string)
+  requires n >= 1
 {
   var total := 1;
   if n == 1 {

@@ -38,6 +38,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int) returns (output: string)
+  requires n >= 0
 {
   var isprime: seq<bool> := seq(2003, _ => true);
   isprime := isprime[0 := false];

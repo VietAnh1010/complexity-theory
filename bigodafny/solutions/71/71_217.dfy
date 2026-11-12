@@ -31,6 +31,7 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
   requires n == |a_list|
+  requires n >= 1
 {
   var sortedA := SortInts(a_list);
   var ans := 0;

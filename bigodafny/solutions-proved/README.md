@@ -23,8 +23,9 @@ Procedure: `.claude/skills/bigodafny-prove/SKILL.md`. Charges:
 `SearchLoopWithin`).
 
 A proof may add only ghost code: it must compile to the same Python as its
-row, and never change a `requires` on the row's code. `audit.py` checks both,
-but only for rows a campaign drew.
+row, and never change the `requires` of the row's `Solve`. `proofs.py` checks
+both on every proof (`same_python`, `requires_changed`) and fails otherwise. A
+helper's new `requires` is allowed: the proof discharges it at every call.
 
 Some proofs charge `|s|` for a sequence update where the model charges 1:
 correct, not tight.

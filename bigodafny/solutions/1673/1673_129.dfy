@@ -22,7 +22,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, pairs: seq<seq<int>>) returns (output: string)
-  requires n <= |pairs|
+  requires 0 <= n <= |pairs|
   requires forall k :: 0 <= k < |pairs| ==> |pairs[k]| >= 2
 {
   var sa := 0;

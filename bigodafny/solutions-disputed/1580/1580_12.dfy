@@ -68,6 +68,8 @@ import opened Prelude
 
 method Solve(a: int, b: int, c: int) returns (output: string)
   requires b >= 1
+  requires a >= 0
+  requires c >= 0
 {
   var res: seq<int> := [b];
   var val := b;

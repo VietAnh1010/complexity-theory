@@ -39,6 +39,7 @@ method Solve(n: int, a: int, b: int, s: string) returns (output: string)
   requires a >= 1
   requires b >= 0
   requires n == |s|
+  requires a <= n
 {
   var N := n;
   var K := a;

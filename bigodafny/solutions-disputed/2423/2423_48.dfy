@@ -78,6 +78,7 @@ import opened Prelude
 method Solve(n: int, k: int, pairs: seq<(int, int)>) returns (output: string)
   requires |pairs| >= 1
   requires n <= |pairs|
+  requires n >= 0
 {
   var d := Sort(pairs, (x: (int, int), y: (int, int)) => x.0 < y.0 || (x.0 == y.0 && x.1 < y.1));
   var cur := 0;

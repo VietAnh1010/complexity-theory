@@ -27,7 +27,7 @@ import opened Prelude
 
 method Solve(n: int, pairs: seq<(int, int)>) returns (output: string)
   requires |pairs| >= 1
-  requires forall k :: 0 <= k < |pairs| ==> pairs[k].1 >= 1
+  requires forall k :: 0 <= k < |pairs| ==> 1 <= pairs[k].0 <= 1000 && 1 <= pairs[k].1 <= 1000
 {
   var last := pairs[0].0;
   var idx := 1;

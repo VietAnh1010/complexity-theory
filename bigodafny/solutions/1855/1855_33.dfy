@@ -21,6 +21,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(hour: string, minute: string) returns (output: string)
+  requires |hour| == 2 && |minute| == 2
 {
   var h := 12 - (ParseInt(hour) % 12);
   var m := ParseInt(minute);

@@ -51,7 +51,7 @@ lemma SortElems<T>(s: seq<T>, less: (T, T) -> bool)
 method Solve(t: int, n_list: seq<int>) returns (output: string)
   requires t >= 1
   requires |n_list| == t
-  requires forall v :: v in n_list ==> 0 <= v < 0x40000000
+  requires forall v :: v in n_list ==> 0 <= v < 1073741824
 {
   var n := t;
   var a := Sort(n_list, (x: int, y: int) => x > y);

@@ -4,17 +4,11 @@ Open items only. When one is done, delete it and add a line to `CHANGELOG.md`.
 
 ## Proofs
 
-- [ ] `2496_30`: the proof adds real (non-ghost) loop caps (`padIter < 9`,
-      `trimIter < 20`, `expIter < 2`), so it compiles to different Python than
-      the row. Fix it or drop it.
-- [ ] `1359_189` and `810_131` also compile to different Python than their rows.
-- [ ] Some proofs add or change a `requires` on the row's own code. `audit.py`
-      (`.claude/skills/bigodafny-prove-campaign/scripts/`)
-      lists the drawn ones as `requires_changed`, including `794_794` and
-      `307_14`. For each: prove it without the `requires`, or add the
-      `requires` to the row and re-run the row's gates.
-- [ ] Proofs no campaign drew were never checked by `audit.py`, for either the
-      compiled Python or `requires`. Run both checks on them.
+- [ ] `2496_30`: the proof adds real loop caps (`padIter < 9`, `trimIter < 20`,
+      `expIter < 2`). Without them `FormatG9`'s trim loop runs once per trailing
+      zero of `digits`, unbounded when a value is outside 10^-1000..10^1000 (the
+      normalising loops stop at 1000). Needs a value bound on `Solve`, quoted
+      from the statement, and a proof that normalisation finishes.
 - [ ] The `Gcd` bounds (`1386_19`, `1386_38`, `1871_291`, `1915_158`) are
       `n * log max`, which is loose: the running gcd only shrinks, so the total
       is `O(n + log max)`. Optional.

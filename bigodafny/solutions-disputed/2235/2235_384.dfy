@@ -54,6 +54,7 @@ import opened Prelude
 
 method Solve(t: int, n_list: seq<int>, s_list: seq<string>) returns (output: string)
   requires t <= |s_list|
+  requires t >= 0
 {
   var lines: seq<string> := [];
   var i := 0;

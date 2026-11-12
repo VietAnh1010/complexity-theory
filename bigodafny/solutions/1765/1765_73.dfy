@@ -26,6 +26,7 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
   requires n <= |a_list|
+  requires n >= 0
 {
   var ok := true;
   var i := 0;

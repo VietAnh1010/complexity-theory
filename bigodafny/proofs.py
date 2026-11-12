@@ -14,7 +14,11 @@ from concurrent.futures import ThreadPoolExecutor
 
 from common import (WORKERS, DAFNY_VERSION, z3_version, DATA, UNSCREENED, SOLUTIONS, UNVERIFIED,
                     PROVED, PRELUDE, log, read_jsonl, write_jsonl, DISPUTED,
-                    UNGATEABLE, UNSURE)
+                    UNGATEABLE, UNSURE, ROOT)
+
+# The prove campaign's audit compares a proof with its row; every proof gets it.
+sys.path.insert(0, str(ROOT.parent / ".claude/skills/bigodafny-prove-campaign/scripts"))
+import audit  # noqa: E402
 
 DAFNY = "dafny"   # on PATH; dafny finds z3 on PATH itself
 
@@ -87,6 +91,10 @@ def scan_assumes():
     return hits
 
 
+def changes_row(r):
+    return r["same_python"] != "identical" or bool(r["requires_changed"])
+
+
 def run(workers=WORKERS):
     ds = {r["solution_id"]: r for r in read_jsonl(DATA / "dataset.jsonl")}
     # value-bounded/ is nested inside solutions-proved/, so one rglob reaches
@@ -108,6 +116,12 @@ def run(workers=WORKERS):
             "proved_bound": bound_of(text),
             "verified": ok,
             "assume_count": assumes,
+            # A proof must leave its row's program and its inputs unchanged.
+            # Only Solve takes the input; a helper's new `requires` is proved
+            # at every call, so it narrows nothing.
+            "same_python": audit.identity(str(ROOT), sid, {}, str(p)),
+            "requires_changed": [m for m in audit.contract_changes(
+                str(ROOT), sid, {}, str(p)) if m == "Solve"],
             "dafny_version": DAFNY_VERSION,
             "z3_version": Z3,
             "verifier_output": out.strip().splitlines()[-1] if out.strip() else "",
@@ -128,7 +142,9 @@ def run(workers=WORKERS):
     write_jsonl(DATA / "complexity_proofs.jsonl", rows, key="solution_id")
     n_ok = sum(r["verified"] for r in rows)
     n_assume = sum(1 for r in rows if r["assume_count"])
-    log(f"proofs: {n_ok}/{len(rows)} verify; {n_assume} contain `assume`")
+    n_changed = sum(1 for r in rows if changes_row(r))
+    log(f"proofs: {n_ok}/{len(rows)} verify; {n_assume} contain `assume`; "
+        f"{n_changed} change their row")
     return rows
 
 
@@ -141,5 +157,6 @@ if __name__ == "__main__":
                          capture_output=True, text=True, timeout=1200)
     pre_ok = pre.returncode == 0
     log(f"prelude: {(pre.stdout + pre.stderr).strip().splitlines()[-1]}")
-    sys.exit(0 if (all(r["verified"] and not r["assume_count"] for r in rows)
+    sys.exit(0 if (all(r["verified"] and not r["assume_count"] and not changes_row(r)
+                       for r in rows)
                    and not hits and pre_ok) else 1)

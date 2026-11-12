@@ -20,6 +20,7 @@ import opened Prelude
 
 method Solve(n: int, abc_list: seq<seq<int>>) returns (output: string)
   requires forall r :: r in abc_list ==> |r| == 3
+  requires n >= 0
 {
   var parts: seq<string> := [];
   var i := 0;

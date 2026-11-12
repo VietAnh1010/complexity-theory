@@ -162,6 +162,9 @@ def build():
                 ("no-proof", pf is None),
                 ("proof-fails", pf is not None and not (
                     pf["verified"] and pf["assume_count"] == 0)),
+                ("proof-changes-row", pf is not None and (
+                    pf.get("same_python") != "identical"
+                    or bool(pf.get("requires_changed")))),
             ] if hit]
         r["clean"] = not r["blockers"]
     rows.sort(key=lambda r: (int(r["problem_id"]), r["solution_id"]))

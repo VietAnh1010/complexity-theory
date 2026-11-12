@@ -39,6 +39,7 @@ lemma MaxSeqIn1765(s: seq<int>)
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
   requires n == |a_list|
+  requires n >= 0
 {
   var size := n;
   var data := a_list;

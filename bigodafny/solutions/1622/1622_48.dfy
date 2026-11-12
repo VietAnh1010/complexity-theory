@@ -23,7 +23,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, k: int, d: int, binary_list: seq<string>) returns (output: string)
-  requires k <= n
+  requires 0 <= k <= n
   requires n <= |binary_list|
 {
   var c := 0;

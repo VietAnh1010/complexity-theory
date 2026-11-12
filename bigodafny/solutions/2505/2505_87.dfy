@@ -22,6 +22,7 @@ import opened Prelude
 method Solve(n: int, coordinates: seq<seq<int>>) returns (output: string)
   requires |coordinates| >= 1
   requires n <= |coordinates[0]|
+  requires n >= 0
 {
   var arr := SortInts(coordinates[0]);
   var cnt := 0;

@@ -74,7 +74,7 @@ benchmark and load-bearing for this dataset.
 | `validate.py` | matches BigOBench's **stored** output | `strict` rows |
 | `difftest.py` | matches **its own Python** | `loose` rows |
 | `verify_all.py` | memory-safe for all inputs, no spec needed | everything |
-| `proofs.py` | complexity **proved**; fails on any `assume` | `solutions-proved/`, `prelude.dfy` |
+| `proofs.py` | complexity **proved**; fails on any `assume`, or a proof that changes its row | `solutions-proved/`, `prelude.dfy` |
 | `precheck.py` | every added `requires` holds on real inputs | anything with `requires` |
 | `label_audit.py siblings` | same-problem rows converged despite different labels | everything |
 | `label_audit.py` | the label describes what the code costs | `solutions/`, `solutions-disputed/` |

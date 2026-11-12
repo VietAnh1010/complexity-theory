@@ -30,6 +30,7 @@ import opened Prelude
 
 method Solve(a: int, b: int, c: int, d: int) returns (output: string)
   decreases *
+  requires c >= 1
 {
   var n := a; var t := b; var k := c;
   var fi := if k > 0 then ((n + k - 1) / k) * t else 0;

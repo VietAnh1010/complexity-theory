@@ -23,6 +23,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int) returns (output: string)
+  requires n >= 0
 {
   var l := [1, 1];
   var i := 2;

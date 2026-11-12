@@ -67,6 +67,7 @@ function HexHelper(s: string): int
 }
 
 method Solve(n: int) returns (output: string)
+  requires n >= 0
 {
   var s := IntToString(n);
   var result := HexHelper(s) - 1;

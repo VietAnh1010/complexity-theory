@@ -31,7 +31,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
-  requires n <= |a_list|
+  requires 0 <= n <= |a_list|
 {
   var count1 := 0;
   var count2 := 0;

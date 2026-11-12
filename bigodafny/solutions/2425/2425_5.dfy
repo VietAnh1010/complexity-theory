@@ -27,6 +27,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, k: int, pairs: seq<(int, int)>) returns (output: string)
+  requires n >= 0 && n == |pairs|
 {
   var arr := pairs + [(0, -1)];
   var sortedDesc := Sort(arr, (x: (int, int), y: (int, int)) => x.0 > y.0 || (x.0 == y.0 && x.1 > y.1));

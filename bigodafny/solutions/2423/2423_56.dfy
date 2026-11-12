@@ -30,6 +30,7 @@ import opened Prelude
 
 method Solve(n: int, k: int, pairs: seq<(int, int)>) returns (output: string)
   requires n <= |pairs|
+  requires n >= 0
   requires forall t :: 0 <= t < |pairs| ==> 0 <= pairs[t].0 < 3010
 {
   var l: seq<int> := [];

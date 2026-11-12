@@ -15,6 +15,12 @@ data lines go to `old-record.jsonl` beside the file they came from.
 - `verify_all.py` sweeps every status directory except `solutions-untranslated/`; `--unscreened` is
   gone. `--move` moves only `solutions/` rows, so a disputed or unscreened row keeps its directory.
   The first full sweep fails 73 unscreened rows, never verified before.
+- `proofs.py` records `same_python` and `requires_changed` (on `Solve`) for every proof, using
+  `audit.py`'s checks, and fails when a proof changes its row; `dataset.py` adds blocker
+  `proof-changes-row`. 40 rows take the `requires` their proof had added (`precheck.py`: all hold);
+  `2496_30` stays flagged (`TODO.md`).
+- `data/constraints.jsonl` quotes problem 1954's limits (`1 ≤ M ≤ 100`, `1 ≤ D ≤ 99`); 26 generated
+  tests with negative values are skipped.
 
 ## 2026-11-05
 

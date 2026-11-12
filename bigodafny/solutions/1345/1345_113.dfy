@@ -39,6 +39,7 @@ function CellVal1345b(board: seq<string>, n: int, r: int, c: int): int
 }
 
 method Solve(n: int, board: seq<string>) returns (output: string)
+  requires n >= 0
 {
   var ok := true;
   var i := 1;

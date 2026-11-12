@@ -18,6 +18,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int) returns (output: string)
+  requires n >= 0
 {
   var rawN := n + 1;
   var half := FloorDiv(rawN, 2);

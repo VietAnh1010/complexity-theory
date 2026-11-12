@@ -58,9 +58,9 @@ import opened Prelude
 
 method Solve(n: int, m: int, data: seq<seq<int>>) returns (output: string)
   requires n >= 0
-  requires m > 0
-  requires n == |data|
-  requires forall k :: 0 <= k < n ==> |data[k]| >= 2
+  requires m != 0
+  requires |data| == n
+  requires forall i :: 0 <= i < n ==> |data[i]| >= 2
 {
   var result := 0;
   var i := 0;

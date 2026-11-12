@@ -3,3 +3,4 @@
 {"check": "1 <= i.n <= 200", "problem_id": "1254", "quote": "N is an integer between 1 and 200 (inclusive)."}
 {"check": "1 <= i.n <= 10000", "problem_id": "1501", "quote": "The first and only line contains integer k (1 ≤ k ≤ 10000) — the position to process (1-based index)."}
 {"check": "1 <= i.a <= 10**9 and 2 <= i.b <= 100", "problem_id": "1276", "quote": "* 1\\leq N\\leq 10^9 * ~~1~~ 2\\leq K\\leq 100 (fixed at 21:33 JST) * N and K are integers."}
+{"check": "1 <= i.a <= 100 and 1 <= i.b <= 99", "problem_id": "1954", "quote": "Constraints * All values in input are integers. * 1 \\leq M \\leq 100 * 1 \\leq D \\leq 99"}

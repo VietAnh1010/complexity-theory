@@ -58,6 +58,8 @@ method Solve(n: int, pairs: seq<seq<int>>) returns (output: string)
   requires forall k :: 0 <= k < |pairs| ==> |pairs[k]| >= 2
   // k is an alphabet size: at least 1 (it is a divisor) and at most 26
   requires forall k :: 0 <= k < |pairs| ==> 1 <= pairs[k][1] <= 26
+  requires n >= 0
+  requires forall k :: 0 <= k < |pairs| ==> pairs[k][0] >= 0
 {
   var parts: seq<string> := [];
   var t := 0;

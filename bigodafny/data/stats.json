@@ -3,12 +3,13 @@
     "decreases-star": 20,
     "no-proof": 275,
     "precheck": 1,
+    "proof-changes-row": 1,
     "tests": 2,
     "truth-unsettled": 329,
     "untranslatable": 4,
     "unverified": 77
   },
-  "clean": 285,
+  "clean": 284,
   "complexity_proved": 361,
   "dafny_status": {
     "agrees": 94,

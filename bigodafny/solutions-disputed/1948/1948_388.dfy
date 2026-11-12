@@ -53,6 +53,7 @@ import opened Prelude
 
 method Solve(n: int) returns (output: string)
   decreases *
+  requires n >= 0
 {
   var k := n;
   var target := 8 * k + 1;
