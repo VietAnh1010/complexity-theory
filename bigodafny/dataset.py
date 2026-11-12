@@ -83,6 +83,17 @@ def build():
     cpath = DATA / "label_corrections.jsonl"
     corrected = ({c["solution_id"]: c["label"] for c in read_jsonl(cpath)}
                  if cpath.exists() else {})
+    # Inputs to `blockers`: the label verdict, the proof, the ungateable
+    # record, and precheck clauses on the row itself (not on a proof copy).
+    audit = {a["sid"]: a for a in read_jsonl(DATA / "label_audit.jsonl")}
+    proofs = {p["solution_id"]: p
+              for p in read_jsonl(DATA / "complexity_proofs.jsonl")}
+    ungateable = {g["solution_id"]
+                  for g in read_jsonl(DATA / "gate_ungateable.jsonl")}
+    bad_clause = {c["solution_id"]
+                  for c in read_jsonl(DATA / "precondition_check.jsonl")
+                  if c["root"] not in ("solutions-proved", "value-bounded")
+                  and c["status"] not in ("ok", "violated-python-also-fails")}
 
     rows = []
     for t in tasks:
@@ -137,6 +148,22 @@ def build():
             "dafny_tests_total": gate_rec.get("tests_total",
                                               gate_rec.get("comparable")),
         })
+        # What keeps the row from being clean (STATUS.md § Clean rows).
+        r, sid, pf = rows[-1], t["solution_id"], proofs.get(t["solution_id"])
+        vf = verif.get(sid, {})
+        r["blockers"] = ["untranslatable"] if r["untranslatable"] else [
+            name for name, hit in [
+                ("tests", r["dafny_status"] not in ("valid", "agrees")
+                 and sid not in ungateable),
+                ("unverified", not vf.get("verified")),
+                ("decreases-star", vf.get("termination_opt_out")),
+                ("precheck", sid in bad_clause),
+                ("truth-unsettled", audit.get(sid, {}).get("verdict") != "ok"),
+                ("no-proof", pf is None),
+                ("proof-fails", pf is not None and not (
+                    pf["verified"] and pf["assume_count"] == 0)),
+            ] if hit]
+        r["clean"] = not r["blockers"]
     rows.sort(key=lambda r: (int(r["problem_id"]), r["solution_id"]))
     write_jsonl(DATA / "dataset.jsonl", rows)
 
@@ -160,6 +187,9 @@ def build():
         "safety_verified": sum(1 for r in rows if r["safety_verified"]),
         "safety_failure": dict(Counter(r["safety_failure"] for r in rows
                                        if r["safety_failure"])),
+        "clean": sum(r["clean"] for r in rows),
+        "blockers": dict(Counter(
+            x for r in rows for x in r["blockers"]).most_common()),
         "time_complexity": dict(Counter(r["time_complexity_inferred"]
                                         for r in rows).most_common()),
         "strict_by_complexity": dict(Counter(

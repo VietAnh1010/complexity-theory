@@ -8,6 +8,11 @@ change lands, update them and add a bullet here.
 A campaign's own run record stays in `batches/<campaign>/README.md`. Superseded
 data lines go to `old-record.jsonl` beside the file they came from.
 
+## 2026-11-12
+
+- `dataset.py` gives each row `blockers` and `clean`; `stats.json` counts them. A row is clean when
+  it has no blocker (`STATUS.md` § Clean rows).
+
 ## 2026-11-05
 
 - `data/prove_stats.md` drops the campaign-recorded relations, the per-row revision list, the

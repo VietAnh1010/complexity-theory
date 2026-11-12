@@ -2,7 +2,7 @@
 
 Every count about the corpus, in one file (`CLAUDE.md` § Counts).
 
-Last checked against `data/` and the tree: 2026-11-03.
+Last checked against `data/` and the tree: 2026-11-03; § Clean rows: 2026-11-12.
 
 To refresh: re-run the scripts that write each source (`README.md` § Toolchain),
 then read the numbers off the sources named in each section. Campaign
@@ -23,6 +23,24 @@ Source: `data/stats.json`, `data/dataset.jsonl`.
 | Loose rows                                                      |                                                                     98 |
 | Problems with stated limits in `data/constraints.jsonl`         |                                         5 (1501, 577, 827, 1254, 1276) |
 | Stored tests skipped as outside those limits (public + private) |                                                        48 per 1501 row |
+
+## Clean rows
+
+Source: `data/stats.json` (`clean`, `blockers`), written by `dataset.py`. A row is clean when it
+has no blocker. A row can carry several.
+
+| Blocker | Meaning | Rows |
+| --- | --- | ---: |
+| `truth-unsettled` | label verdict is not `ok` (disputed, unsure, or never audited) | 329 |
+| `unverified` | no passing `verify_all.py` record | 327 |
+| `no-proof` | no proof in `solutions-proved/` | 275 |
+| `decreases-star` | verifies only with `decreases *` | 7 |
+| `untranslatable` | in `solutions-untranslated/`; outside the target | 4 |
+| `tests` | its gate has no pass; `1950_45`, `1950_47` (`unvalidatable`) | 2 |
+| `precheck` | a `requires` clause fails `precheck.py` on the row (`1861_16`) | 1 |
+| `proof-fails` | its proof does not verify or uses `assume` | 0 |
+
+Clean: 285 of 636 translated rows. `unverified` counts rows `verify_all.py` never ran on.
 
 ## Directories
 
