@@ -2,7 +2,7 @@
 
 Every count about the corpus, in one file (`CLAUDE.md` § Counts).
 
-Last checked against `data/` and the tree: 2026-11-03; § Clean rows: 2026-11-12.
+Last checked against `data/` and the tree: 2026-11-03; § Clean rows, § Directories, § Gates: 2026-11-12.
 
 To refresh: re-run the scripts that write each source (`README.md` § Toolchain),
 then read the numbers off the sources named in each section. Campaign
@@ -39,7 +39,7 @@ has no blocker. A row can carry several.
 | `tests` | its gate has no pass; `1950_45`, `1950_47` (`unvalidatable`) | 2 |
 | `precheck` | a `requires` clause fails `precheck.py` on the row (`1861_16`) | 1 |
 | `proof-fails` | its proof does not verify or uses `assume` | 0 |
-| `proof-changes-row` | its proof compiles to other Python or changes `Solve`'s `requires` (`2496_30`) | 1 |
+| `proof-changes-row` | its proof compiles to other Python or changes `Solve`'s `requires` (`2496_30`; 10 rows whose code changed, `TODO.md`) | 11 |
 
 Clean: 289 of 636 translated rows. `annotate` accepts every translated row.
 
@@ -65,7 +65,7 @@ Source: the tree.
 | `validate.py`         | `data/validation.jsonl`        | 536 rows: all `valid`                                                                                        |
 | `difftest.py --loose` | `data/difftest.jsonl`          | 98 loose rows: 94 `agrees`, 4 `untranslated`                                                                 |
 | `verify_all.py`       | `data/verification.jsonl`      | 636 rows, every status directory: 635 verify; `1336_157` fails and uses `decreases *` |
-| `proofs.py`           | `data/complexity_proofs.jsonl` | 361 proofs: all verify, 0 `assume`; 1 changes its row (`2496_30`)                                                                           |
+| `proofs.py`           | `data/complexity_proofs.jsonl` | 361 proofs: all verify, 0 `assume`; 11 change their row (`2496_30`, and 10 written for code since changed)                                                                           |
 
 Rows in `solutions/` using `decreases *`: 0.
 

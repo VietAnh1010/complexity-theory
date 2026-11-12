@@ -3,7 +3,7 @@
     "decreases-star": 1,
     "no-proof": 275,
     "precheck": 1,
-    "proof-changes-row": 1,
+    "proof-changes-row": 11,
     "tests": 2,
     "truth-unsettled": 329,
     "untranslatable": 4,
