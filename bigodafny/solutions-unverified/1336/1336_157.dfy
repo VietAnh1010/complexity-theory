@@ -65,12 +65,12 @@ method ProbeInsert(table: seq<int>, mask: int, key: int) returns (table2: seq<in
   {
     var probes := if i + 9 <= mask then 9 else 0;
     var j := i;
-    var steps := 0;
+    var probeCount := 0;
     var slot := -1;
     var dup := false;
-    while steps <= probes && slot == -1 && !dup
-      invariant 0 <= j < mask + 1 || steps > probes
-      decreases probes - steps + 1
+    while probeCount <= probes && slot == -1 && !dup
+      invariant 0 <= j < mask + 1 || probeCount > probes
+      decreases probes - probeCount + 1
     {
       if tbl[j] == -1 {
         slot := j;
@@ -78,7 +78,7 @@ method ProbeInsert(table: seq<int>, mask: int, key: int) returns (table2: seq<in
         dup := true;
       } else {
         j := j + 1;
-        steps := steps + 1;
+        probeCount := probeCount + 1;
       }
     }
     if slot != -1 {

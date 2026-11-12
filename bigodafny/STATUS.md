@@ -41,8 +41,7 @@ has no blocker. A row can carry several.
 | `proof-fails` | its proof does not verify or uses `assume` | 0 |
 | `proof-changes-row` | its proof compiles to other Python or changes `Solve`'s `requires` (`2496_30`) | 1 |
 
-Clean: 289 of 636 translated rows. `annotate` rejects 2 rows that declare their own `steps`
-(`1387_34`, `1336_157`); no record holds that, so it is not a blocker field.
+Clean: 289 of 636 translated rows. `annotate` accepts every translated row.
 
 ## Directories
 

@@ -22,6 +22,8 @@ data lines go to `old-record.jsonl` beside the file they came from.
 - `batches/verify-clean/`: 95 of 96 rows that failed `dafny verify` or used `decreases *` now
   verify without it; `1336_157` is left. `verify_all.py` ignores `decreases *` inside comments.
   `data/constraints.jsonl` quotes the limits of problems 565 and 772.
+- `1387_34` and `1336_157` rename their own `steps` variable (`moves`, `probeCount`), so
+  `annotate` accepts them with its default counter name.
 - `prelude.dfy`: `ISqrt` is compiled, and a call costs `ISqrtSteps(x)`, bounded by
   `ISqrtStepsBound` (`COMPLEXITY.md`). Every row whose Python takes a square root calls it.
 - `batches/retranslate/`: 31 rows now follow their Python's algorithm (sort, dict, set, heap,
