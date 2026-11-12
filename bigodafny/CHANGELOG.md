@@ -12,6 +12,9 @@ data lines go to `old-record.jsonl` beside the file they came from.
 
 - `dataset.py` gives each row `blockers` and `clean`; `stats.json` counts them. A row is clean when
   it has no blocker (`STATUS.md` § Clean rows).
+- `verify_all.py` sweeps every status directory except `solutions-untranslated/`; `--unscreened` is
+  gone. `--move` moves only `solutions/` rows, so a disputed or unscreened row keeps its directory.
+  The first full sweep fails 73 unscreened rows, never verified before.
 
 ## 2026-11-05
 

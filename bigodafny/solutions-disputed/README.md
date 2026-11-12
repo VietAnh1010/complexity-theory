@@ -5,8 +5,8 @@ review; nothing here is decided.** Each file's header gives the class the audit
 thinks is right (`true_class`), the cause, the confidence and the evidence.
 
 Rows got here through `label_audit.py apply`, from verdict files that passed
-`label_audit.py check`. They stay in the dataset, and the test gates still run
-on them; `verify_all.py` does not (`DOCS.md` § The gates). Some also have a
+`label_audit.py check`. They stay in the dataset, and every gate still runs on
+them (`DOCS.md` § The gates). Some also have a
 proof in `solutions-proved/`; compare it with the verdict by hand, as no tool
 does.
 

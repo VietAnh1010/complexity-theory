@@ -15,8 +15,8 @@ from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
-from common import (WORKERS, DATA, OUT, UNSCREENED, ROOT, SOLUTIONS, UNGATEABLE, UNSURE, log, write_json,
-                    write_jsonl)
+from common import (WORKERS, DATA, OUT, UNSCREENED, ROOT, SOLUTIONS, UNGATEABLE, UNSURE, DISPUTED,
+                    log, write_json, write_jsonl)
 
 DAFNY = "dafny"   # on PATH; dafny finds z3 on PATH itself
 UNVERIFIED = ROOT / "solutions-unverified"
@@ -93,7 +93,9 @@ def run(dirs, workers=WORKERS, move=False):
             if r["verified"]:
                 continue
             src = ROOT / r["path"]
-            if not src.exists() or src.parent.parent == UNVERIFIED:
+            # Only a `solutions/` row moves: elsewhere the directory records
+            # a label status the move would erase.
+            if not src.exists() or src.parent.parent != SOLUTIONS:
                 continue
             dst = UNVERIFIED / src.parent.name / src.name
             dst.parent.mkdir(parents=True, exist_ok=True)
@@ -108,11 +110,9 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--move", action="store_true")
     ap.add_argument("--workers", type=int, default=WORKERS)
-    ap.add_argument("--unscreened", action="store_true",
-                    help="also verify solutions-unscreened/")
     a = ap.parse_args()
-    # solutions-ungateable/ rows are translated and were verified while they
-    # still sat in solutions/. Leaving them out of the sweep would drop their
-    # safety record silently, which is how a directory becomes a blind spot.
-    dirs = [SOLUTIONS, UNGATEABLE, UNSURE] + ([UNSCREENED] if a.unscreened else [])
+    # Every status directory that holds translations. A directory left out
+    # drops its rows' safety record silently, which is how it becomes a blind
+    # spot.
+    dirs = [SOLUTIONS, UNSCREENED, DISPUTED, UNSURE, UNGATEABLE, UNVERIFIED]
     run([d for d in dirs if d.exists()], workers=a.workers, move=a.move)

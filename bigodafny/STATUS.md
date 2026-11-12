@@ -32,15 +32,16 @@ has no blocker. A row can carry several.
 | Blocker | Meaning | Rows |
 | --- | --- | ---: |
 | `truth-unsettled` | label verdict is not `ok` (disputed, unsure, or never audited) | 329 |
-| `unverified` | no passing `verify_all.py` record | 327 |
+| `unverified` | fails `verify_all.py` (73 unscreened, 3 unverified, `1871_291` time-out) | 77 |
 | `no-proof` | no proof in `solutions-proved/` | 275 |
-| `decreases-star` | verifies only with `decreases *` | 7 |
+| `decreases-star` | verifies only with `decreases *` | 20 |
 | `untranslatable` | in `solutions-untranslated/`; outside the target | 4 |
 | `tests` | its gate has no pass; `1950_45`, `1950_47` (`unvalidatable`) | 2 |
 | `precheck` | a `requires` clause fails `precheck.py` on the row (`1861_16`) | 1 |
 | `proof-fails` | its proof does not verify or uses `assume` | 0 |
 
-Clean: 285 of 636 translated rows. `unverified` counts rows `verify_all.py` never ran on.
+Clean: 285 of 636 translated rows. `annotate` rejects 2 rows that declare their own `steps`
+(`1387_34`, `1336_157`); no record holds that, so it is not a blocker field.
 
 ## Directories
 
@@ -63,7 +64,7 @@ Source: the tree.
 | --------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------ |
 | `validate.py`         | `data/validation.jsonl`        | 536 rows: all `valid`                                                                                        |
 | `difftest.py --loose` | `data/difftest.jsonl`          | 98 loose rows: 94 `agrees`, 4 `untranslated`                                                                 |
-| `verify_all.py`       | `data/verification.jsonl`      | 309 rows (`solutions/`, `solutions-unsure/`, `solutions-ungateable/`): all verify; 302 without `decreases *` |
+| `verify_all.py`       | `data/verification.jsonl`      | 636 rows, every status directory: 559 verify, 20 of them only with `decreases *` |
 | `proofs.py`           | `data/complexity_proofs.jsonl` | 361 proofs: all verify, 0 `assume`                                                                           |
 
 Rows in `solutions/` using `decreases *`: 7.
