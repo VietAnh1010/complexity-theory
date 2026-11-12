@@ -4,6 +4,10 @@ What changed in `fuzzing/`, newest first, one dated section per session and one 
 per change. Earlier changes are in `git log -- bigodafny/fuzzing`. Findings go in
 `experiments/fuzz/FINDINGS.md`, open work in `TODO.md`.
 
+## 2026-11-12
+
+- `DafnySteps/CostModel.cs`: a prelude `ISqrt(x)` call costs `ISqrtSteps(x)` (`bigodafny/COMPLEXITY.md`).
+
 ## 2026-11-11
 
 - `experiments/arms/manifest.jsonl`: `1011_368` takes its corrected label `O(n**0.5)` (stratum

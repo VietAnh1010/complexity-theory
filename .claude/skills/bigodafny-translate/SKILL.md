@@ -66,7 +66,7 @@ Give each agent: its manifest path, a unique validation prefix, and this body.
     PRELUDE (already `import opened`; do not reimplement)
         FloorDiv FloorMod IntToString Join JoinInts SplitWs
         Sort SortInts SortStrings StringLess   (all carry length `ensures`)
-        MaxSeq MinSeq SumSeq Gcd AbsInt Repeat ReplaceAll
+        MaxSeq MinSeq SumSeq Gcd ISqrt AbsInt Repeat ReplaceAll
         ParseInt ParseIntFrom ParseInts BitOr BitAnd BitXor
 
     TRAPS

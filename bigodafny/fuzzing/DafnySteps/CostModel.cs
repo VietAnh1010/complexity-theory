@@ -152,6 +152,7 @@ public class CostModel(Dictionary<(int, int), INode> parsedByRange, List<ICostRu
       "ParseInts" => Call(o, "SumLen", Arg(0)),
       "Sort" or "SortInts" or "SortStrings" => Call(o, "SortCost", Length(o, Arg(0))),
       "Gcd" => Call(o, "GcdSteps", Arg(0), Arg(1)),
+      "ISqrt" => Call(o, "ISqrtSteps", Arg(0)),
       "Repeat" => Multiply(o, Length(o, Arg(0)), Arg(1)),
       _ => new LiteralExpr(o, 1),
     };

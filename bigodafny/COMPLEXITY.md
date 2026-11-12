@@ -36,6 +36,7 @@ each loop iteration, and each character a string operation produces.
 | helper calls | the helper's `steps` |
 | recursive helpers used for Python `**` | recursion depth |
 | `Gcd(a, b)` (Python `math.gcd` or a Euclid loop) | `GcdSteps(a, b)`; bound it with `GcdStepsBound` |
+| `ISqrt(x)` (Python `math.isqrt(x)`, `int(math.sqrt(x))`, `int(x ** 0.5)`) | `ISqrtSteps(x)`; bound it with `ISqrtStepsBound` |
 
 A proof may charge a function call more coarsely, e.g. its argument length
 for a helper that recurses once per element and does constant work each time.

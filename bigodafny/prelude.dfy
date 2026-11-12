@@ -1068,12 +1068,12 @@ module Prelude {
   }
 
   // ---- square roots ------------------------------------------------------
-  // floor(sqrt(x)), for bounds on loops that stop once a counter's square
-  // passes a value (`while a * a <= x`, `while m > k` with k growing). It
-  // recurses on x / 4, so its depth is log x: the compiled copy `deghost`
-  // makes for TraceBoundValue stays cheap. A loop that ran t times with
-  // t * t <= x gets t <= ISqrt(x) from LeISqrt.
-  ghost function ISqrt(x: int): nat
+  // floor(sqrt(x)): what a row calls for Python's `math.isqrt(x)`,
+  // `int(math.sqrt(x))` or `int(x ** 0.5)`, and the bound for loops that stop
+  // once a counter's square passes a value (`while a * a <= x`). It recurses
+  // on x / 4, so it costs ISqrtSteps(x), about log x (COMPLEXITY.md). A loop
+  // that ran t times with t * t <= x gets t <= ISqrt(x) from LeISqrt.
+  function ISqrt(x: int): nat
     decreases x
   {
     if x <= 0 then 0
@@ -1099,6 +1099,26 @@ module Prelude {
       assert r * r == 4 * lo by { assert r * r == (2 * r0) * (2 * r0); }
       assert (r + 2) * (r + 2) == 4 * hi by { assert r + 2 == 2 * (r0 + 1); }
       assert 4 * q <= x < 4 * q + 4;
+    }
+  }
+
+  // A prelude call costs its recursion depth, as Gcd does.
+  ghost function ISqrtSteps(x: int): nat
+    decreases x
+  {
+    if x < 4 then 1 else 1 + ISqrtSteps(x / 4)
+  }
+
+  lemma ISqrtStepsBound(x: int)
+    ensures ISqrtSteps(x) <= CeilLog2(if x < 0 then 0 else x) + 1
+    decreases x
+  {
+    if x >= 4 {
+      ISqrtStepsBound(x / 4);
+      // x / 4 is at most two of CeilLog2's halvings of x, so its CeilLog2 is
+      // at least 1 smaller than x's.
+      assert CeilLog2((x + 1) / 2) == 1 + CeilLog2(((x + 1) / 2 + 1) / 2);
+      CeilLog2Monotone(x / 4, ((x + 1) / 2 + 1) / 2);
     }
   }
 
