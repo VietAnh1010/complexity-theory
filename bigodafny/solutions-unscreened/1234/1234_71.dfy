@@ -44,12 +44,8 @@ method Solve(N: int, numbers: seq<int>) returns (output: string)
   {
     var n := numbers[t];
     var p := 1;
-    var limit := 1;
-    while limit * limit < n
-      decreases n - limit * limit
-    {
-      limit := limit + 1;
-    }
+    var limit := ISqrt(n);
+    if limit * limit < n { limit := limit + 1; }
     var i := 2;
     var found := false;
     while i <= limit && !found

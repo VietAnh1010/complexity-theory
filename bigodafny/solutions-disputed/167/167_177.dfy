@@ -57,7 +57,7 @@ import opened Prelude
 method Solve(n: int) returns (output: string)
   requires n >= 0
 {
-  var x := IntSqrtFloor(n);
+  var x := ISqrt(n);
   var p := 0;
   var result := "";
   var i := 1;
@@ -75,22 +75,4 @@ method Solve(n: int) returns (output: string)
     result := "NO";
   }
   output := result;
-}
-
-method IntSqrtFloor(x: int) returns (r: int)
-  requires x >= 0
-{
-  var lo := 0;
-  var hi := x + 1;
-  while lo < hi
-    decreases hi - lo
-  {
-    var mid := (lo + hi) / 2;
-    if mid * mid <= x {
-      lo := mid + 1;
-    } else {
-      hi := mid;
-    }
-  }
-  r := lo - 1;
 }

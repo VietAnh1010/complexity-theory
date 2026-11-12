@@ -25,7 +25,8 @@ data lines go to `old-record.jsonl` beside the file they came from.
 - `1387_34` and `1336_157` rename their own `steps` variable (`moves`, `probeCount`), so
   `annotate` accepts them with its default counter name.
 - `prelude.dfy`: `ISqrt` is compiled, and a call costs `ISqrtSteps(x)`, bounded by
-  `ISqrtStepsBound` (`COMPLEXITY.md`). Every row whose Python takes a square root calls it.
+  `ISqrtStepsBound` (`COMPLEXITY.md`). `batches/isqrt/`: the 16 rows whose Python takes a square
+  root call it, one call per root.
 - `batches/retranslate/`: 31 rows now follow their Python's algorithm (sort, dict, set, heap,
   bisect); 7 audited as translation defects need no change under the model.
 - A row leaving `solutions-unverified/` goes to `solutions/` only with label verdict `ok`, else to

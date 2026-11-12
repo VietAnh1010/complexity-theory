@@ -68,7 +68,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
     if v < 0 {
       ans := v;
     } else {
-      var r := IntSqrt2358(v);
+      var r := ISqrt(v);
       if r * r != v {
         ans := v;
       }
@@ -76,14 +76,4 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
     i := i + 1;
   }
   output := IntToString(ans);
-}
-
-method IntSqrt2358(x: int) returns (r: int)
-{
-  r := 0;
-  while (r + 1) * (r + 1) <= x
-    decreases x - r
-  {
-    r := r + 1;
-  }
 }

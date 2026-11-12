@@ -73,12 +73,7 @@ method Solve(a: int, b: int) returns (output: string)
   var n := a;
   var k := b;
   var mod := 1000000007;
-  var s := 0;
-  while (s+1)*(s+1) <= n
-    decreases n - s*s
-  {
-    s := s + 1;
-  }
+  var s := ISqrt(n);
   var l := 2*s + 1;
   var num0 := new int[l];
   var ii := 0;

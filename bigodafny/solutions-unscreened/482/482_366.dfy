@@ -29,20 +29,18 @@ method Solve(a: int, b: int) returns (output: string)
   var n := if a > b then a else b;
   var m := if a < b then a else b;
   var count := 0;
-  var av := 0;
-  while av <= n
-    decreases n - av
+  var bv := 0;
+  while bv <= n
+    decreases n - bv
   {
-    var bv := 0;
-    while bv <= n
-      decreases n - bv
-    {
-      if av * av + bv == n && av + bv * bv == m {
+    var av := ISqrt(n - bv);
+    if av * av == n - bv && m >= av {
+      var sv := ISqrt(m - av);
+      if sv * sv == m - av && bv == sv {
         count := count + 1;
       }
-      bv := bv + 1;
     }
-    av := av + 1;
+    bv := bv + 1;
   }
   output := IntToString(count);
 }

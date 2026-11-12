@@ -62,20 +62,8 @@ method Solve(n: int) returns (output: string)
 {
   var num := n;
   var m := 1 + 8 * num;
-  // find largest k >= 0 with (2k+1)^2 <= m  (== floor((sqrt(m)-1)/2))
-  var lo := 0;
-  var hi := num + 2;
-  while lo < hi
-    decreases hi - lo
-  {
-    var mid := (lo + hi) / 2;
-    if (2 * mid + 1) * (2 * mid + 1) <= m {
-      lo := mid + 1;
-    } else {
-      hi := mid;
-    }
-  }
-  var k := lo - 1;
+  var d: int := ISqrt(m);
+  var k := (d - 1) / 2;
   var summa := k * (k + 1) / 2;
   if num == summa {
     k := k - 1;

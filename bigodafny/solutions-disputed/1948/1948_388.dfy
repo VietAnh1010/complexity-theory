@@ -51,26 +51,12 @@
 include "../../prelude.dfy"
 import opened Prelude
 
-lemma SqGe(s: int)
-  requires s >= 0
-  ensures s <= s * s
-{
-  if s > 0 { assert s * s == s + s * (s - 1); assert s * (s - 1) >= 0; }
-}
-
 method Solve(n: int) returns (output: string)
   requires n >= 0
 {
   var k := n;
   var target := 8 * k + 1;
-  var s := 0;
-  while s * s < target
-    invariant 0 <= s <= target
-    decreases target - s
-  {
-    SqGe(s);
-    s := s + 1;
-  }
+  var s := ISqrt(target);
   if s * s == target {
     output := "YES";
   } else {

@@ -73,9 +73,10 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
     decreases |a_list| - idx
   {
     var v := a_list[idx];
+    var r := ISqrt(v);
     var j := 1;
-    while j * j <= v
-      decreases v - j * j
+    while j <= r
+      decreases r + 1 - j
     {
       if v % j == 0 {
         var term := v + m - v / j - m * j;

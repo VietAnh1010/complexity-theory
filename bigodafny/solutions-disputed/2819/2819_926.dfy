@@ -60,24 +60,6 @@
 include "../../prelude.dfy"
 import opened Prelude
 
-method IntSqrtFloor(v: int) returns (r: int)
-  requires v >= 0
-{
-  var lo := 0;
-  var hi := v + 1;
-  while lo < hi
-    decreases hi - lo
-  {
-    var mid := (lo + hi) / 2;
-    if mid * mid <= v {
-      lo := mid + 1;
-    } else {
-      hi := mid;
-    }
-  }
-  r := lo - 1;
-}
-
 function RepStr(s: string, n: int): string
   decreases if n > 0 then n else 0
 {
@@ -100,9 +82,8 @@ method Solve(n: int, pairs_list: seq<seq<int>>) returns (output: string)
       var k := row[1];
       var val := 8 * k - 7;
       if val < 0 { val := 0; }
-      var s := IntSqrtFloor(val);
-      var x := FloorDiv(1 + s, 2);
-      var d := FloorDiv(s - 1, 2);
+      var x := FloorDiv(1 + ISqrt(val), 2);
+      var d := FloorDiv(ISqrt(val) - 1, 2);
       var b := FloorDiv(d * (d + 1), 2) + 1;
       var y := k - b;
       var r := RepStr("a", nn - x - 1) + "b" + RepStr("a", x - y - 1) + "b" + RepStr("a", y);

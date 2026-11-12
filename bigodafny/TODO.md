@@ -21,7 +21,8 @@ Open items only. When one is done, delete it and add a line to `CHANGELOG.md`.
 
 ## Translations
 
-- [ ] Re-prove `647_11` and `685_583`: their proofs cover the code before `batches/retranslate/`.
+- [ ] Re-prove `647_11` and `685_583` (`batches/retranslate/`) and the 8 proved rows in
+      `batches/isqrt/README.md`: their proofs cover the old code.
 - [ ] `1336_157`: `ProbeInsert` still needs `decreases *`.
 
 ## Value-bounded filing

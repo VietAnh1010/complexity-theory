@@ -73,7 +73,7 @@ method Solve(n: int, pairs: seq<seq<int>>) returns (output: string)
     if a == b {
       output := output + IntToString(2 * a - 2) + "\n";
     } else {
-      var t := IntSqrt(a * b);
+      var t := ISqrt(a * b);
       if t * t >= a * b {
         output := output + IntToString(2 * t - 3) + "\n";
       } else if t * (t + 1) >= a * b {
@@ -84,26 +84,4 @@ method Solve(n: int, pairs: seq<seq<int>>) returns (output: string)
     }
     idx := idx + 1;
   }
-}
-
-method IntSqrt(x: int) returns (r: int)
-  requires x >= 0
-{
-  if x == 0 {
-    return 0;
-  }
-  var lo := 0;
-  var hi := x + 1;
-  while lo + 1 < hi
-    invariant 0 <= lo < hi
-    decreases hi - lo
-  {
-    var mid := (lo + hi) / 2;
-    if mid * mid <= x {
-      lo := mid;
-    } else {
-      hi := mid;
-    }
-  }
-  r := lo;
 }

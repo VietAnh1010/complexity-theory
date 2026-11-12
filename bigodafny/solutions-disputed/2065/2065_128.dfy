@@ -57,19 +57,7 @@ method Solve(n: int) returns (output: string)
   var a := n * 2;
   var b := 0;
 
-  var lo := 0;
-  var hi := a + 1;
-  while lo < hi
-    decreases hi - lo
-  {
-    var mid := (lo + hi + 1) / 2;
-    if mid * mid <= a {
-      lo := mid;
-    } else {
-      hi := mid - 1;
-    }
-  }
-  var lim := lo;
+  var lim: int := ISqrt(a);
 
   var i := 1;
   while i < lim
@@ -77,19 +65,7 @@ method Solve(n: int) returns (output: string)
   {
     var c := a - i * i - i;
     if c >= 0 {
-      var dlo := 0;
-      var dhi := c + 1;
-      while dlo < dhi
-        decreases dhi - dlo
-      {
-        var mid2 := (dlo + dhi + 1) / 2;
-        if mid2 * mid2 <= c {
-          dlo := mid2;
-        } else {
-          dhi := mid2 - 1;
-        }
-      }
-      var d := dlo;
+      var d := ISqrt(c);
       if d * (d + 1) == c {
         b := 1;
       }

@@ -68,15 +68,8 @@ import opened Prelude
 method Solve(n: int) returns (output: string)
   requires n >= 1
 {
-  var f := 0;
-  while (f + 1) * (f + 1) <= n
-    invariant 0 <= f
-    invariant f * f <= n
-    invariant f <= n
-    decreases n - f
-  {
-    f := f + 1;
-  }
+  var f := ISqrt(n);
+  ISqrtSpec(n);
   var b := f;
   if 4 * n > (2 * f + 1) * (2 * f + 1) {
     b := f + 1;

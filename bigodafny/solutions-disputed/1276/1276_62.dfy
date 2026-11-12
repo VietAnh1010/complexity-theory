@@ -73,12 +73,7 @@ method Solve(a: int, b: int) returns (output: string)
   var n := a;
   var k := b;
   var md := 1000000007;
-  var r := 0;
-  while (r+1)*(r+1) <= n
-    decreases n - r*r
-  {
-    r := r + 1;
-  }
+  var r := ISqrt(n);
   var lim := r + 1;
   var partCount := lim - 1;
   var wsPart := new int[partCount];
