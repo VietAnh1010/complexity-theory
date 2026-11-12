@@ -20,12 +20,14 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
+  requires n >= 1 && |a_list| == n
 {
   var total := SumSeq(a_list);
   var bestIdx := 0;
   var bestVal := AbsInt(a_list[0] * n - total);
   var i := 1;
   while i < n
+    invariant 1 <= i <= n
     decreases n - i
   {
     var val := AbsInt(a_list[i] * n - total);

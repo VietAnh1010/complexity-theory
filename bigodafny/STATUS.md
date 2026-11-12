@@ -32,16 +32,16 @@ has no blocker. A row can carry several.
 | Blocker | Meaning | Rows |
 | --- | --- | ---: |
 | `truth-unsettled` | label verdict is not `ok` (disputed, unsure, or never audited) | 329 |
-| `unverified` | fails `verify_all.py` (73 unscreened, 3 unverified, `1871_291` time-out) | 77 |
+| `unverified` | fails `verify_all.py` (`1336_157`) | 1 |
 | `no-proof` | no proof in `solutions-proved/` | 275 |
-| `decreases-star` | verifies only with `decreases *` | 20 |
+| `decreases-star` | uses `decreases *` (`1336_157`) | 1 |
 | `untranslatable` | in `solutions-untranslated/`; outside the target | 4 |
 | `tests` | its gate has no pass; `1950_45`, `1950_47` (`unvalidatable`) | 2 |
 | `precheck` | a `requires` clause fails `precheck.py` on the row (`1861_16`) | 1 |
 | `proof-fails` | its proof does not verify or uses `assume` | 0 |
 | `proof-changes-row` | its proof compiles to other Python or changes `Solve`'s `requires` (`2496_30`) | 1 |
 
-Clean: 284 of 636 translated rows. `annotate` rejects 2 rows that declare their own `steps`
+Clean: 289 of 636 translated rows. `annotate` rejects 2 rows that declare their own `steps`
 (`1387_34`, `1336_157`); no record holds that, so it is not a blocker field.
 
 ## Directories
@@ -51,11 +51,11 @@ Source: the tree.
 | Directory                    |                                 Rows |
 | ---------------------------- | -----------------------------------: |
 | `solutions/`                 |                                  303 |
-| `solutions-unscreened/`      |                                  127 |
+| `solutions-unscreened/`      |                                  129 |
 | `solutions-disputed/`        |                                  197 |
 | `solutions-unsure/`          |                                    2 |
 | `solutions-ungateable/`      |                                    4 |
-| `solutions-unverified/`      |                                    3 |
+| `solutions-unverified/`      |                                    1 |
 | `solutions-untranslated/`    |                                    4 |
 | `solutions-proved/` (copies) | 361, of which 29 in `value-bounded/` |
 
@@ -65,10 +65,10 @@ Source: the tree.
 | --------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------ |
 | `validate.py`         | `data/validation.jsonl`        | 536 rows: all `valid`                                                                                        |
 | `difftest.py --loose` | `data/difftest.jsonl`          | 98 loose rows: 94 `agrees`, 4 `untranslated`                                                                 |
-| `verify_all.py`       | `data/verification.jsonl`      | 636 rows, every status directory: 559 verify, 20 of them only with `decreases *` |
+| `verify_all.py`       | `data/verification.jsonl`      | 636 rows, every status directory: 635 verify; `1336_157` fails and uses `decreases *` |
 | `proofs.py`           | `data/complexity_proofs.jsonl` | 361 proofs: all verify, 0 `assume`; 1 changes its row (`2496_30`)                                                                           |
 
-Rows in `solutions/` using `decreases *`: 7.
+Rows in `solutions/` using `decreases *`: 0.
 
 ## Label audit
 
@@ -92,7 +92,7 @@ Source: `data/label_audit.jsonl`.
 
 `solutions-unsure/`: 2 rows, each on its own question (`solutions-unsure/README.md`).
 
-`solutions-unscreened/` (source `data/quarantine.jsonl`): all 127 quarantined;
+`solutions-unscreened/` (source `data/quarantine.jsonl`): 127 of 129 quarantined (`1369_10`, `1369_14` came from `solutions-unverified/`);
 `sibling-convergence` 109, `set-build-quadratic` 22 (4 rows have both).
 
 ## Proofs

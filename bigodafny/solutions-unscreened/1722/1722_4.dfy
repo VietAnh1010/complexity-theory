@@ -34,19 +34,24 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, lists: seq<seq<int>>) returns (output: string)
+  requires n >= 0 && |lists| == n
 {
   var used := seq(n, (idx: int) => false);
   var pos := Gen1722_4(n, lists, 0, used, 0, {});
   var x := 1;
   while x in pos
-    decreases if x in pos then 1000000 - x else 0
+    decreases set y | y in pos && y >= x
   {
+    ghost var before := set y | y in pos && y >= x;
     x := x + 1;
+    assert x - 1 in before && x - 1 !in (set y | y in pos && y >= x);
+    assert (set y | y in pos && y >= x) < before;
   }
   output := IntToString(x - 1);
 }
 
 method Gen1722_4(n: int, a: seq<seq<int>>, cur: int, used: seq<bool>, x: int, posIn: set<int>) returns (posOut: set<int>)
+  requires 0 <= x <= n && |used| == n && |a| == n
   decreases n - x
 {
   var pos := posIn + {cur};
@@ -56,11 +61,13 @@ method Gen1722_4(n: int, a: seq<seq<int>>, cur: int, used: seq<bool>, x: int, po
   }
   var j := 0;
   while j < n
+    invariant 0 <= j <= n
     decreases n - j
   {
     if !used[j] {
       var k := 0;
       while k < |a[j]|
+        invariant 0 <= k <= |a[j]|
         decreases |a[j]| - k
       {
         var i := a[j][k];

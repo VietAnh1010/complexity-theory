@@ -69,11 +69,35 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+ghost function Unvisited(s: seq<bool>): nat
+  decreases |s|
+{
+  if |s| == 0 then 0 else (if s[0] then 0 else 1) + Unvisited(s[1..])
+}
+
+lemma UnvisitedUpd(s: seq<bool>, i: int)
+  requires 0 <= i < |s| && !s[i]
+  ensures Unvisited(s[i := true]) + 1 == Unvisited(s)
+  decreases |s|
+{
+  if i > 0 {
+    assert s[i := true][1..] == s[1..][i - 1 := true];
+    UnvisitedUpd(s[1..], i - 1);
+  } else {
+    assert s[i := true][1..] == s[1..];
+  }
+}
+
+ghost predicate FreshTop(stack: seq<(int, int)>, visited: seq<bool>)
+{
+  |stack| > 0 && 0 <= stack[|stack| - 1].0 < |visited| && !visited[stack[|stack| - 1].0]
+}
+
 method Solve(n: int, edges: seq<string>) returns (output: string)
   requires n >= 0
   // the DFS stack can hold a node more than once: a neighbour is marked
-  // visited when popped, not when pushed, so no stack measure decreases.
-  decreases *
+  // visited when popped, not when pushed. A pop that pushes leaves an
+  // unvisited node on top, so the next pop visits it.
 {
   var adj: seq<seq<int>> := seq(n + 1, _ => []);
   var idx := 0;
@@ -101,21 +125,33 @@ method Solve(n: int, edges: seq<string>) returns (output: string)
   while |stack| > 0
     invariant |visited| == n + 1
     invariant |adj| == n + 1
-    decreases *
+    decreases Unvisited(visited), (if FreshTop(stack, visited) then 0 else 1), |stack|
   {
+    ghost var fresh0 := FreshTop(stack, visited);
+    ghost var u0 := Unvisited(visited);
     var top := stack[|stack| - 1];
     stack := stack[..|stack| - 1];
     var node := top.0;
     var color := top.1;
     if 0 <= node < |visited| {
+      if !visited[node] {
+        UnvisitedUpd(visited, node);
+      } else {
+        assert visited[node := true] == visited;
+      }
       visited := visited[node := true];
     }
+    assert fresh0 ==> Unvisited(visited) < u0;
+    assert !fresh0 ==> Unvisited(visited) == u0;
+    ghost var len0 := |stack|;
     if color == 0 { l0 := l0 + 1; } else { l1 := l1 + 1; }
     if 0 <= node < |adj| {
       var nbrs := adj[node];
       var k := 0;
       while k < |nbrs|
         invariant 0 <= k <= |nbrs|
+        invariant |stack| >= len0
+        invariant |stack| > len0 ==> FreshTop(stack, visited)
         decreases |nbrs| - k
       {
         var nb := nbrs[k];

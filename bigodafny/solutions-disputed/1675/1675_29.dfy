@@ -81,11 +81,43 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+ghost function PP(w: bool, n: nat, i: nat): nat
+{
+  if w then n + 1 + i else i
+}
+
+ghost opaque function Pot(j: nat, m: nat, p: nat): nat
+{
+  j * m + p
+}
+
+lemma PotStep(j: nat, m: nat, p: nat, p2: nat)
+  requires p <= p2
+  ensures Pot(j, m, p) <= Pot(j, m, p2)
+  ensures p < p2 ==> Pot(j, m, p) < Pot(j, m, p2)
+{
+  reveal Pot();
+}
+
+lemma PotJump(j: nat, m: nat, p: nat, p2: nat)
+  requires p < m
+  ensures Pot(j, m, p) < Pot(j + 1, m, p2)
+{
+  reveal Pot();
+  CostMulDistrib(j, 1, j + 1, m);
+}
+
+lemma PotBound(j: nat, T: nat, m: nat, p: nat)
+  requires j <= T && p < m
+  ensures Pot(j, m, p) < (T + 1) * m
+{
+  reveal Pot();
+  CostMulMonoLeft(j, T, m);
+  CostMulDistrib(T, 1, T + 1, m);
+}
+
 method Solve(v0: string, v1: string) returns (output: string)
   requires |v0| >= 1
-  // i sweeps s and wraps; it terminates because t[j] is known to occur in s,
-  // but the measure is the distance to that occurrence, not a loop bound.
-  decreases *
 {
   var s := v0;
   var t := v1;
@@ -95,20 +127,29 @@ method Solve(v0: string, v1: string) returns (output: string)
   var ar := 0;
   var at := 0;
   var done := false;
+  ghost var w := false;
   while i <= |s| && j < |t| && !done
     invariant 0 <= i <= |s|
     invariant 0 <= j <= |t|
     invariant |s| == |v0|
-    decreases *
+    invariant w ==> (j < |t| ==> forall q :: 0 <= q < i ==> s[q] != t[j])
+    decreases if done then 0 else 1, (|t| + 1) * (2 * |s| + 2) - Pot(j, 2 * |s| + 2, PP(w, |s|, i))
   {
+    ghost var jOld := j;
+    ghost var pOld := PP(w, |s|, i);
+    ghost var stuck := i == |s| && w;
+    assert stuck ==> forall q :: 0 <= q < |s| ==> s[q] != t[j];
+    PotBound(j, |t|, 2 * |s| + 2, PP(w, |s|, i));
     if i == |s| {
       i := 0;
       ar := 1;
+      w := true;
     }
     var found := false;
     var idx := 0;
     while idx < |s|
       invariant 0 <= idx <= |s|
+      invariant found <==> exists q :: 0 <= q < idx && s[q] == t[j]
       decreases |s| - idx
     {
       if s[idx] == t[j] {
@@ -116,11 +157,13 @@ method Solve(v0: string, v1: string) returns (output: string)
       }
       idx := idx + 1;
     }
+    assert stuck ==> !found;
     if found {
       if s[i] == t[j] {
         s := s[i := ':'];
         j := j + 1;
         i := i + 1;
+        w := false;
       } else {
         i := i + 1;
         at := 1;
@@ -128,6 +171,15 @@ method Solve(v0: string, v1: string) returns (output: string)
     } else {
       nt := 1;
       done := true;
+    }
+    if done {
+    } else if j == jOld {
+      PotStep(j, 2 * |s| + 2, pOld, PP(w, |s|, i));
+    } else {
+      PotJump(jOld, 2 * |s| + 2, pOld, PP(w, |s|, i));
+    }
+    if !done {
+      PotBound(j, |t|, 2 * |s| + 2, PP(w, |s|, i));
     }
   }
   if nt == 0 && |s| == |t| {

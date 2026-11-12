@@ -15,6 +15,8 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<seq<int>>) returns (output: string)
+  requires n <= |a_list|
+  requires forall k :: 0 <= k < |a_list| ==> |a_list[k]| >= 3
 {
   var lines: seq<string> := [];
   var i := 0;

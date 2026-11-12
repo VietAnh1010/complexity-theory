@@ -29,7 +29,6 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(a: int, b: int, c: int, d: int) returns (output: string)
-  decreases *
   requires c >= 1
 {
   var n := a; var t := b; var k := c;
@@ -38,7 +37,7 @@ method Solve(a: int, b: int, c: int, d: int) returns (output: string)
   var t2 := d;
   var stop := false;
   while n > 0 && !stop
-    decreases *
+    decreases (if n > 0 then n else 0)
   {
     n := n - k;
     t1 := t1 + t;

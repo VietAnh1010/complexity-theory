@@ -2,6 +2,8 @@
 {"clause": "n >= 1", "error": 0, "holds": 162, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "1011_368", "status": "ok", "violated": 0}
 {"clause": "n >= 1", "error": 0, "holds": 99, "out_of_spec": 0, "root": "solutions", "solution_id": "1015_168", "status": "ok", "violated": 0}
 {"clause": "n >= 1", "error": 0, "holds": 99, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "1015_168", "status": "ok", "violated": 0}
+{"clause": "|s| == 7", "error": 0, "holds": 97, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1017_834", "status": "ok", "violated": 0}
+{"clause": "|s| == 7", "error": 0, "holds": 97, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1017_937", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |edges| ==> |edges[k]| >= 2", "error": 0, "holds": 102, "out_of_spec": 0, "root": "solutions", "solution_id": "1018_254", "status": "ok", "violated": 0}
 {"clause": "n >= 0", "error": 0, "holds": 102, "out_of_spec": 0, "root": "solutions", "solution_id": "1018_254", "status": "ok", "violated": 0}
 {"clause": "|edges| == 2 * n", "error": 0, "holds": 102, "out_of_spec": 0, "root": "solutions", "solution_id": "1018_254", "status": "ok", "violated": 0}
@@ -42,6 +44,10 @@
 {"clause": "n >= 0", "error": 0, "holds": 11, "out_of_spec": 0, "root": "solutions", "solution_id": "1073_822", "status": "ok", "violated": 0}
 {"clause": "n >= 0", "error": 0, "holds": 143, "out_of_spec": 0, "root": "solutions", "solution_id": "1089_96", "status": "ok", "violated": 0}
 {"clause": "n >= 0", "error": 0, "holds": 143, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "1089_96", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |b_list| ==> b_list[k] >= 1", "error": 0, "holds": 125, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1092_0", "status": "ok", "violated": 0}
+{"clause": "|b_list| == 5", "error": 0, "holds": 125, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1092_0", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |b_list| ==> b_list[k] >= 1", "error": 0, "holds": 125, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1092_11", "status": "ok", "violated": 0}
+{"clause": "|b_list| == 5", "error": 0, "holds": 125, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1092_11", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |matrix| ==> |matrix[k]| >= 3", "error": 0, "holds": 102, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "1134_120", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |matrix| ==> |matrix[k]| >= 3", "error": 0, "holds": 102, "out_of_spec": 0, "root": "solutions", "solution_id": "1134_928", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |matrix| ==> |matrix[k]| >= 3", "error": 0, "holds": 102, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "1134_928", "status": "ok", "violated": 0}
@@ -87,6 +93,12 @@
 {"clause": "b >= 0", "error": 0, "holds": 109, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "1180_626", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < b ==> d_list[k] >= 1 && d_list[k] <= PrefixSum1180(c_list, a)", "error": 0, "holds": 109, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "1180_626", "status": "ok", "violated": 0}
 {"clause": "n == |text_list|", "error": 26, "holds": 74, "out_of_spec": 0, "root": "solutions-ungateable", "solution_id": "1196_51", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |a_list| ==> |a_list[k]| >= 3", "error": 0, "holds": 105, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1231_51", "status": "ok", "violated": 0}
+{"clause": "n <= |a_list|", "error": 0, "holds": 105, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1231_51", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |a_list| ==> |a_list[k]| >= 3", "error": 0, "holds": 105, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1231_541", "status": "ok", "violated": 0}
+{"clause": "n <= |a_list|", "error": 0, "holds": 105, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1231_541", "status": "ok", "violated": 0}
+{"clause": "N <= |numbers|", "error": 0, "holds": 128, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1234_634", "status": "ok", "violated": 0}
+{"clause": "N <= |numbers|", "error": 0, "holds": 128, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1234_71", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < n ==> |matrix[k]| >= 4", "error": 0, "holds": 111, "out_of_spec": 0, "root": "solutions", "solution_id": "1235_283", "status": "ok", "violated": 0}
 {"clause": "n == |matrix|", "error": 0, "holds": 111, "out_of_spec": 0, "root": "solutions", "solution_id": "1235_283", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < n ==> |matrix[k]| >= 4", "error": 0, "holds": 111, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "1235_283", "status": "ok", "violated": 0}
@@ -100,6 +112,10 @@
 {"clause": "n == |strings|", "error": 0, "holds": 138, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "1272_115", "status": "ok", "violated": 0}
 {"clause": "n == |strings|", "error": 0, "holds": 138, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "1272_115", "status": "ok", "violated": 0}
 {"clause": "a >= 0", "error": 0, "holds": 85, "out_of_spec": 18, "root": "solutions-disputed", "solution_id": "1276_62", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |edges| ==> |edges[k]| >= 2", "error": 0, "holds": 132, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1310_1170", "status": "ok", "violated": 0}
+{"clause": "n <= |edges|", "error": 0, "holds": 132, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1310_1170", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |edges| ==> |edges[k]| >= 2", "error": 0, "holds": 132, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1310_3062", "status": "ok", "violated": 0}
+{"clause": "n <= |edges|", "error": 0, "holds": 132, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1310_3062", "status": "ok", "violated": 0}
 {"clause": "n + 2 < 0x1_0000_0000_0000_0000", "error": 3, "holds": 116, "out_of_spec": 0, "root": "solutions", "solution_id": "1332_16", "status": "ok", "violated": 0}
 {"clause": "n == |a_list|", "error": 3, "holds": 116, "out_of_spec": 0, "root": "solutions", "solution_id": "1332_16", "status": "ok", "violated": 0}
 {"clause": "n + 2 < 18446744073709551616", "error": 3, "holds": 116, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "1332_16", "status": "ok", "violated": 0}
@@ -145,6 +161,12 @@
 {"clause": "forall idx :: 1 <= idx < n ==> 0 <= coordinates[idx] <= idx", "error": 0, "holds": 97, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "1367_88", "status": "ok", "violated": 0}
 {"clause": "n == |coordinates|", "error": 0, "holds": 97, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "1367_88", "status": "ok", "violated": 0}
 {"clause": "n >= 0", "error": 0, "holds": 97, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "1367_88", "status": "ok", "violated": 0}
+{"clause": "GreedyL(s, b, 0) >= a", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions-unverified", "solution_id": "1369_10", "status": "ok", "violated": 0}
+{"clause": "GreedyR(s, b, n - 1) >= a", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions-unverified", "solution_id": "1369_10", "status": "ok", "violated": 0}
+{"clause": "n == |s| && a >= 1 && b >= 0", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions-unverified", "solution_id": "1369_10", "status": "ok", "violated": 0}
+{"clause": "GreedyL(s, b, 0) >= a", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions-unverified", "solution_id": "1369_14", "status": "ok", "violated": 0}
+{"clause": "GreedyR(s, b, n - 1) >= a", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions-unverified", "solution_id": "1369_14", "status": "ok", "violated": 0}
+{"clause": "n == |s| && a >= 1 && b >= 0", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions-unverified", "solution_id": "1369_14", "status": "ok", "violated": 0}
 {"clause": "a <= n", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions", "solution_id": "1369_7", "status": "ok", "violated": 0}
 {"clause": "a >= 1", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions", "solution_id": "1369_7", "status": "ok", "violated": 0}
 {"clause": "b >= 0", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions", "solution_id": "1369_7", "status": "ok", "violated": 0}
@@ -167,6 +189,9 @@
 {"clause": "n == |s|", "error": 0, "holds": 99, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "1387_34", "status": "ok", "violated": 0}
 {"clause": "k >= 1", "error": 0, "holds": 121, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "138_360", "status": "ok", "violated": 0}
 {"clause": "k >= 1", "error": 0, "holds": 121, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "138_449", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |values| ==> values[k] >= 1", "error": 0, "holds": 121, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1413_104", "status": "ok", "violated": 0}
+{"clause": "n >= 1", "error": 0, "holds": 121, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1413_104", "status": "ok", "violated": 0}
+{"clause": "n >= 1", "error": 0, "holds": 121, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1413_222", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < n ==> -n <= a_list[k] - 1 < n", "error": 0, "holds": 42, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "1421_53", "status": "ok", "violated": 0}
 {"clause": "n <= |a_list|", "error": 0, "holds": 42, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "1421_53", "status": "ok", "violated": 0}
 {"clause": "n >= 0", "error": 0, "holds": 42, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "1421_53", "status": "ok", "violated": 0}
@@ -201,6 +226,10 @@
 {"clause": "|numbers| == n", "error": 0, "holds": 111, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "1540_206", "status": "ok", "violated": 0}
 {"clause": "0 <= a <= |numbers|", "error": 0, "holds": 111, "out_of_spec": 0, "root": "solutions", "solution_id": "1540_9", "status": "ok", "violated": 0}
 {"clause": "0 <= a <= |numbers|", "error": 0, "holds": 111, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "1540_9", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |edges_list| ==> |edges_list[k]| >= 3 && edges_list[k][2] >= 1", "error": 0, "holds": 137, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1548_179", "status": "ok", "violated": 0}
+{"clause": "n <= |edges_list|", "error": 0, "holds": 137, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1548_179", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |edges_list| ==> |edges_list[k]| >= 3 && edges_list[k][2] >= 1", "error": 0, "holds": 137, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1548_552", "status": "ok", "violated": 0}
+{"clause": "n <= |edges_list|", "error": 0, "holds": 137, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1548_552", "status": "ok", "violated": 0}
 {"clause": "|pairs| == n", "error": 0, "holds": 112, "out_of_spec": 0, "root": "solutions", "solution_id": "1560_164", "status": "ok", "violated": 0}
 {"clause": "|pairs| == n", "error": 0, "holds": 112, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "1560_164", "status": "ok", "violated": 0}
 {"clause": "n >= 1", "error": 0, "holds": 112, "out_of_spec": 0, "root": "solutions", "solution_id": "1560_63", "status": "ok", "violated": 0}
@@ -213,6 +242,9 @@
 {"clause": "forall k :: 0 <= k < |values| ==> values[k] != 0", "error": 0, "holds": 183, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "1563_356", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |values| ==> values[k] != 0", "error": 0, "holds": 183, "out_of_spec": 0, "root": "solutions", "solution_id": "1563_497", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |values| ==> values[k] != 0", "error": 0, "holds": 183, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "1563_497", "status": "ok", "violated": 0}
+{"clause": "n <= |s|", "error": 0, "holds": 118, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1577_173", "status": "ok", "violated": 0}
+{"clause": "n <= |s|", "error": 0, "holds": 118, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1577_411", "status": "ok", "violated": 0}
+{"clause": "n <= |s|", "error": 0, "holds": 118, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1577_61", "status": "ok", "violated": 0}
 {"clause": "forall i :: 0 <= i < |matrix| ==> |matrix[i]| >= 3", "error": 100, "holds": 7, "out_of_spec": 0, "root": "solutions-ungateable", "solution_id": "1578_481", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |matrix| ==> matrix[k][0] >= 0 && matrix[k][1] >= 0 && matrix[k][2] >= 0", "error": 100, "holds": 7, "out_of_spec": 0, "root": "solutions-ungateable", "solution_id": "1578_724", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |matrix| ==> |matrix[k]| >= 3", "error": 100, "holds": 7, "out_of_spec": 0, "root": "solutions-ungateable", "solution_id": "1578_724", "status": "ok", "violated": 0}
@@ -244,10 +276,18 @@
 {"clause": "|a_list| == n", "error": 0, "holds": 118, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "1626_179", "status": "ok", "violated": 0}
 {"clause": "|a_list| > 0", "error": 0, "holds": 118, "out_of_spec": 0, "root": "solutions", "solution_id": "1626_33", "status": "ok", "violated": 0}
 {"clause": "|a_list| > 0", "error": 0, "holds": 118, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "1626_33", "status": "ok", "violated": 0}
+{"clause": "|s1| > 0 && |s2| > 0", "error": 0, "holds": 134, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1628_26", "status": "ok", "violated": 0}
+{"clause": "|s1| > 0 && |s2| > 0", "error": 0, "holds": 134, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1628_32", "status": "ok", "violated": 0}
+{"clause": "exists j, k :: 0 <= j < |a_list| && 0 <= k < |a_list| && a_list[j] != a_list[k]", "error": 0, "holds": 109, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1640_35", "status": "ok", "violated": 0}
+{"clause": "exists j, k :: 0 <= j < |a_list| && 0 <= k < |a_list| && a_list[j] != a_list[k]", "error": 0, "holds": 109, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1640_36", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |pairs| ==> |pairs[k]| >= 2", "error": 0, "holds": 93, "out_of_spec": 0, "root": "solutions", "solution_id": "1650_311", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |pairs| ==> |pairs[k]| >= 2", "error": 0, "holds": 93, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "1650_311", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |pairs| ==> |pairs[k]| >= 2", "error": 0, "holds": 93, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "1650_428", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |pairs| ==> |pairs[k]| >= 2", "error": 0, "holds": 93, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "1650_428", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |edges| ==> |edges[k]| >= 2", "error": 0, "holds": 128, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1671_196", "status": "ok", "violated": 0}
+{"clause": "|edges| == m && 1 <= n <= m", "error": 0, "holds": 128, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1671_196", "status": "ok", "violated": 0}
+{"clause": "1 <= n <= |edges|", "error": 0, "holds": 128, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1671_68", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |edges| ==> |edges[k]| >= 2", "error": 0, "holds": 128, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1671_68", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |pairs| ==> |pairs[k]| >= 1", "error": 0, "holds": 110, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "1673_122", "status": "ok", "violated": 0}
 {"clause": "n <= |pairs|", "error": 0, "holds": 110, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "1673_122", "status": "ok", "violated": 0}
 {"clause": "0 <= n <= |pairs|", "error": 0, "holds": 110, "out_of_spec": 0, "root": "solutions", "solution_id": "1673_129", "status": "ok", "violated": 0}
@@ -286,6 +326,7 @@
 {"clause": "forall idx :: 0 <= idx < |pairs| ==> |pairs[idx]| >= 2 && pairs[idx][1] != 0", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "171_82", "status": "ok", "violated": 0}
 {"clause": "n >= 0", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "171_82", "status": "ok", "violated": 0}
 {"clause": "|pairs| == n", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "171_82", "status": "ok", "violated": 0}
+{"clause": "n >= 0 && |lists| == n", "error": 0, "holds": 176, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1722_4", "status": "ok", "violated": 0}
 {"clause": "n <= |lists|", "error": 0, "holds": 176, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "1722_66", "status": "ok", "violated": 0}
 {"clause": "forall v :: 1 <= v <= a ==> v in b_list", "error": 0, "holds": 61, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "1733_49", "status": "ok", "violated": 0}
 {"clause": "|b_list| == a", "error": 0, "holds": 61, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "1733_49", "status": "ok", "violated": 0}
@@ -296,6 +337,9 @@
 {"clause": "b >= 1", "error": 0, "holds": 132, "out_of_spec": 0, "root": "solutions", "solution_id": "1738_24", "status": "ok", "violated": 0}
 {"clause": "a >= 1", "error": 0, "holds": 132, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "1738_24", "status": "ok", "violated": 0}
 {"clause": "b >= 1", "error": 0, "holds": 132, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "1738_24", "status": "ok", "violated": 0}
+{"clause": "|scores| == n", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1741_12", "status": "ok", "violated": 0}
+{"clause": "n >= 1 && |a_list| == n", "error": 0, "holds": 102, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1742_66", "status": "ok", "violated": 0}
+{"clause": "n >= 1 && |a_list| == n", "error": 0, "holds": 102, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1742_78", "status": "ok", "violated": 0}
 {"clause": "0 <= b <= |d_list|", "error": 0, "holds": 138, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "1748_145", "status": "ok", "violated": 0}
 {"clause": "SumSeq(d_list) <= a", "error": 0, "holds": 138, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "1748_145", "status": "ok", "violated": 0}
 {"clause": "a >= 0", "error": 0, "holds": 138, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "1748_145", "status": "ok", "violated": 0}
@@ -326,6 +370,8 @@
 {"clause": "n <= |string_|", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "1830_0", "status": "ok", "violated": 0}
 {"clause": "forall t :: 0 <= t < |string_| ==> 'A' <= string_[t] <= 'Z'", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions", "solution_id": "1830_16", "status": "ok", "violated": 0}
 {"clause": "forall t :: 0 <= t < |string_| ==> 'A' <= string_[t] <= 'Z'", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "1830_16", "status": "ok", "violated": 0}
+{"clause": "|coordinates| == n", "error": 0, "holds": 110, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1853_137", "status": "ok", "violated": 0}
+{"clause": "|coordinates| == n", "error": 0, "holds": 110, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1853_66", "status": "ok", "violated": 0}
 {"clause": "|hour| == 2 && |minute| == 2", "error": 0, "holds": 164, "out_of_spec": 0, "root": "solutions", "solution_id": "1855_33", "status": "ok", "violated": 0}
 {"clause": "|hour| == 2 && |minute| == 2", "error": 0, "holds": 164, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "1855_33", "status": "ok", "violated": 0}
 {"clause": "0 <= c <= b + 1", "error": 0, "holds": 106, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "1861_16", "status": "ok", "violated": 0}
@@ -402,6 +448,7 @@
 {"clause": "n == |s|", "error": 0, "holds": 121, "out_of_spec": 0, "root": "solutions", "solution_id": "1966_59", "status": "ok", "violated": 0}
 {"clause": "n % 2 == 0 || n >= 3", "error": 0, "holds": 121, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "1966_59", "status": "ok", "violated": 0}
 {"clause": "n == |s|", "error": 0, "holds": 121, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "1966_59", "status": "ok", "violated": 0}
+{"clause": "c >= 1", "error": 0, "holds": 134, "out_of_spec": 0, "root": "solutions", "solution_id": "1972_295", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < n ==> -n <= a_list[k] - 1 < n", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions", "solution_id": "1981_39", "status": "ok", "violated": 0}
 {"clause": "n >= 0", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions", "solution_id": "1981_39", "status": "ok", "violated": 0}
 {"clause": "|a_list| == n", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions", "solution_id": "1981_39", "status": "ok", "violated": 0}
@@ -411,6 +458,8 @@
 {"clause": "forall k :: 0 <= k < n ==> -n <= a_list[k] - 1 < n", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "1981_62", "status": "ok", "violated": 0}
 {"clause": "n >= 0", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "1981_62", "status": "ok", "violated": 0}
 {"clause": "|a_list| == n", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "1981_62", "status": "ok", "violated": 0}
+{"clause": "|a_list| > 0", "error": 0, "holds": 167, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1997_199", "status": "ok", "violated": 0}
+{"clause": "|a_list| > 0", "error": 0, "holds": 167, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "1997_311", "status": "ok", "violated": 0}
 {"clause": "n == |numbers|", "error": 0, "holds": 211, "out_of_spec": 0, "root": "solutions", "solution_id": "2005_187", "status": "ok", "violated": 0}
 {"clause": "n >= 0", "error": 0, "holds": 211, "out_of_spec": 0, "root": "solutions", "solution_id": "2005_187", "status": "ok", "violated": 0}
 {"clause": "n == |numbers|", "error": 0, "holds": 211, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "2005_187", "status": "ok", "violated": 0}
@@ -506,6 +555,8 @@
 {"clause": "forall k :: 0 <= k < n ==> |rows[k]| >= 8", "error": 0, "holds": 101, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "2183_2", "status": "ok", "violated": 0}
 {"clause": "n >= 0", "error": 0, "holds": 101, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "2183_2", "status": "ok", "violated": 0}
 {"clause": "|rows| == n", "error": 0, "holds": 101, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "2183_2", "status": "ok", "violated": 0}
+{"clause": "1 <= n && 2 * n <= |coord_list|", "error": 0, "holds": 116, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "2185_148", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |coord_list| ==> |coord_list[k]| >= 2", "error": 0, "holds": 116, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "2185_148", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |coord_list| ==> |coord_list[k]| >= 2", "error": 0, "holds": 116, "out_of_spec": 0, "root": "solutions", "solution_id": "2185_274", "status": "ok", "violated": 0}
 {"clause": "n != 0", "error": 0, "holds": 116, "out_of_spec": 0, "root": "solutions", "solution_id": "2185_274", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |coord_list| ==> |coord_list[k]| >= 2", "error": 0, "holds": 116, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "2185_274", "status": "ok", "violated": 0}
@@ -575,16 +626,25 @@
 {"clause": "forall k :: 0 <= k < |pairs| ==> pairs[k][0] >= 0", "error": 0, "holds": 88, "out_of_spec": 0, "root": "value-bounded", "solution_id": "2254_6", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |pairs| ==> |pairs[k]| >= 2", "error": 0, "holds": 88, "out_of_spec": 0, "root": "value-bounded", "solution_id": "2254_6", "status": "ok", "violated": 0}
 {"clause": "n <= |pairs|", "error": 0, "holds": 88, "out_of_spec": 0, "root": "value-bounded", "solution_id": "2254_6", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |coordinates| ==> |coordinates[k]| >= 2", "error": 0, "holds": 108, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "225_145", "status": "ok", "violated": 0}
+{"clause": "n <= |coordinates|", "error": 0, "holds": 108, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "225_145", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |coordinates| ==> |coordinates[k]| >= 2", "error": 0, "holds": 108, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "225_85", "status": "ok", "violated": 0}
+{"clause": "n <= |coordinates|", "error": 0, "holds": 108, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "225_85", "status": "ok", "violated": 0}
 {"clause": "n <= |a_list|", "error": 0, "holds": 24, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "2281_358", "status": "ok", "violated": 0}
 {"clause": "n >= 0", "error": 0, "holds": 152, "out_of_spec": 0, "root": "solutions", "solution_id": "2282_1118", "status": "ok", "violated": 0}
 {"clause": "k >= 0", "error": 0, "holds": 152, "out_of_spec": 0, "root": "solutions", "solution_id": "2282_16", "status": "ok", "violated": 0}
 {"clause": "n >= 0", "error": 0, "holds": 152, "out_of_spec": 0, "root": "solutions", "solution_id": "2282_16", "status": "ok", "violated": 0}
 {"clause": "k >= 0", "error": 0, "holds": 152, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "2282_16", "status": "ok", "violated": 0}
 {"clause": "n >= 0", "error": 0, "holds": 152, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "2282_16", "status": "ok", "violated": 0}
+{"clause": "n <= |a_list|", "error": 0, "holds": 104, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "229_3630", "status": "ok", "violated": 0}
 {"clause": "a >= 1", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions", "solution_id": "2313_104", "status": "ok", "violated": 0}
 {"clause": "a >= 1", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "2313_104", "status": "ok", "violated": 0}
 {"clause": "a >= 0", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions", "solution_id": "2313_177", "status": "ok", "violated": 0}
 {"clause": "a >= 0", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "2313_177", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |lists| ==> |lists[k]| >= 4", "error": 0, "holds": 116, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "2325_570", "status": "ok", "violated": 0}
+{"clause": "n <= |lists|", "error": 0, "holds": 116, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "2325_570", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |lists| ==> |lists[k]| >= 4", "error": 0, "holds": 116, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "2325_862", "status": "ok", "violated": 0}
+{"clause": "n <= |lists|", "error": 0, "holds": 116, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "2325_862", "status": "ok", "violated": 0}
 {"clause": "n >= 0", "error": 0, "holds": 136, "out_of_spec": 0, "root": "solutions", "solution_id": "2381_156", "status": "ok", "violated": 0}
 {"clause": "n >= 0", "error": 0, "holds": 136, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "2381_156", "status": "ok", "violated": 0}
 {"clause": "1 <= n <= |string_|", "error": 0, "holds": 154, "out_of_spec": 0, "root": "solutions", "solution_id": "2394_125", "status": "ok", "violated": 0}
@@ -620,6 +680,7 @@
 {"clause": "forall v :: v in n_list ==> 0 <= v < 1073741824", "error": 0, "holds": 141, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "2465_212", "status": "ok", "violated": 0}
 {"clause": "t >= 1", "error": 0, "holds": 141, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "2465_212", "status": "ok", "violated": 0}
 {"clause": "|n_list| == t", "error": 0, "holds": 141, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "2465_212", "status": "ok", "violated": 0}
+{"clause": "N >= 2", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions", "solution_id": "2482_13", "status": "ok", "violated": 0}
 {"clause": "N >= 2", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions", "solution_id": "2482_151", "status": "ok", "violated": 0}
 {"clause": "N >= 2", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "2482_151", "status": "ok", "violated": 0}
 {"clause": "|a_list| == n", "error": 0, "holds": 136, "out_of_spec": 0, "root": "solutions", "solution_id": "2496_30", "status": "ok", "violated": 0}
@@ -645,6 +706,9 @@
 {"clause": "|c_list| >= 1", "error": 0, "holds": 162, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "2514_221", "status": "ok", "violated": 0}
 {"clause": "n >= 1", "error": 0, "holds": 134, "out_of_spec": 0, "root": "solutions", "solution_id": "2522_11", "status": "ok", "violated": 0}
 {"clause": "n >= 1", "error": 0, "holds": 134, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "2522_11", "status": "ok", "violated": 0}
+{"clause": "n <= |mat|", "error": 0, "holds": 107, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "2577_283", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |mat| ==> |mat[k]| >= 3", "error": 0, "holds": 107, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "2577_822", "status": "ok", "violated": 0}
+{"clause": "n <= |mat|", "error": 0, "holds": 107, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "2577_822", "status": "ok", "violated": 0}
 {"clause": "n == |a_list|", "error": 0, "holds": 121, "out_of_spec": 0, "root": "solutions", "solution_id": "2586_20", "status": "ok", "violated": 0}
 {"clause": "n == |a_list|", "error": 0, "holds": 121, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "2586_20", "status": "ok", "violated": 0}
 {"clause": "n == |a_list|", "error": 0, "holds": 121, "out_of_spec": 0, "root": "solutions", "solution_id": "2586_216", "status": "ok", "violated": 0}
@@ -708,7 +772,10 @@
 {"clause": "forall t :: 0 <= t < |pairs_list| && |pairs_list[t]| >= 2 ==> pairs_list[t][0] >= 3 && 1 <= pairs_list[t][1] && 2 * pairs_list[t][1] <= pairs_list[t][0] * (pairs_list[t][0] - 1)", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "2819_926", "status": "ok", "violated": 0}
 {"clause": "forall t :: 0 <= t < |pairs_list| && |pairs_list[t]| >= 2 ==> pairs_list[t][0] >= 3 && 1 <= pairs_list[t][1] && 2 * pairs_list[t][1] <= pairs_list[t][0] * (pairs_list[t][0] - 1)", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "2819_926", "status": "ok", "violated": 0}
 {"clause": "n == |a_list|", "error": 0, "holds": 125, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "281_12", "status": "ok", "violated": 0}
-{"clause": "n == |a_list|", "error": 0, "holds": 125, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "281_12", "status": "ok", "violated": 0}
+{"clause": "n == |a_list|", "error": 0, "holds": 125, "out_of_spec": 0, "root": "value-bounded", "solution_id": "281_12", "status": "ok", "violated": 0}
+{"clause": "forall x :: x in a_list ==> x >= 0", "error": 0, "holds": 125, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "281_138", "status": "ok", "violated": 0}
+{"clause": "|a_list| >= 1", "error": 0, "holds": 125, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "281_138", "status": "ok", "violated": 0}
+{"clause": "forall x :: x in a_list ==> x >= 0", "error": 0, "holds": 125, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "281_250", "status": "ok", "violated": 0}
 {"clause": "n >= 1", "error": 0, "holds": 160, "out_of_spec": 0, "root": "solutions", "solution_id": "2831_61", "status": "ok", "violated": 0}
 {"clause": "|a_list| == n", "error": 0, "holds": 160, "out_of_spec": 0, "root": "solutions", "solution_id": "2831_61", "status": "ok", "violated": 0}
 {"clause": "n >= 1", "error": 0, "holds": 160, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "2831_61", "status": "ok", "violated": 0}
@@ -770,6 +837,10 @@
 {"clause": "|rectangles| >= 1", "error": 0, "holds": 124, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "396_361", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |rectangles| ==> |rectangles[k]| >= 2", "error": 0, "holds": 124, "out_of_spec": 0, "root": "solutions", "solution_id": "396_58", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |rectangles| ==> |rectangles[k]| >= 2", "error": 0, "holds": 124, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "396_58", "status": "ok", "violated": 0}
+{"clause": "|a_list| >= 1", "error": 0, "holds": 97, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "397_163", "status": "ok", "violated": 0}
+{"clause": "|a_list| >= 1", "error": 0, "holds": 97, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "397_80", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |pairs_list| ==> |pairs_list[k]| >= 2", "error": 0, "holds": 162, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "408_1572", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |pairs_list| ==> |pairs_list[k]| >= 2", "error": 0, "holds": 162, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "408_2", "status": "ok", "violated": 0}
 {"clause": "0 <= n <= |arrows|", "error": 0, "holds": 126, "out_of_spec": 0, "root": "solutions", "solution_id": "410_105", "status": "ok", "violated": 0}
 {"clause": "0 <= n <= |arrows|", "error": 0, "holds": 126, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "410_105", "status": "ok", "violated": 0}
 {"clause": "a >= 1 && b >= 1", "error": 0, "holds": 140, "out_of_spec": 0, "root": "solutions", "solution_id": "433_16", "status": "ok", "violated": 0}
@@ -796,6 +867,10 @@
 {"clause": "n >= 1", "error": 0, "holds": 184, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "514_90", "status": "ok", "violated": 0}
 {"clause": "total_score >= 0", "error": 0, "holds": 184, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "514_90", "status": "ok", "violated": 0}
 {"clause": "|scores| == n", "error": 0, "holds": 184, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "514_90", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |points_list| ==> |points_list[k]| >= 8", "error": 0, "holds": 101, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "522_46", "status": "ok", "violated": 0}
+{"clause": "n <= |points_list|", "error": 0, "holds": 101, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "522_46", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |points_list| ==> |points_list[k]| >= 8", "error": 0, "holds": 101, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "522_62", "status": "ok", "violated": 0}
+{"clause": "n <= |points_list|", "error": 0, "holds": 101, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "522_62", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |points| ==> |points[k]| >= 2", "error": 0, "holds": 135, "out_of_spec": 0, "root": "solutions", "solution_id": "525_234", "status": "ok", "violated": 0}
 {"clause": "n >= 0", "error": 0, "holds": 135, "out_of_spec": 0, "root": "solutions", "solution_id": "525_234", "status": "ok", "violated": 0}
 {"clause": "|points| == n", "error": 0, "holds": 135, "out_of_spec": 0, "root": "solutions", "solution_id": "525_234", "status": "ok", "violated": 0}
@@ -817,6 +892,8 @@
 {"clause": "forall t :: 0 <= t < |pairs| ==> 1 <= pairs[t].0 <= 150 && 0 <= pairs[t].1 <= 9", "error": 0, "holds": 87, "out_of_spec": 0, "root": "solutions", "solution_id": "554_107", "status": "ok", "violated": 0}
 {"clause": "forall t :: 0 <= t < |pairs| ==> 1 <= pairs[t].0 <= 150 && 0 <= pairs[t].1 <= 9", "error": 0, "holds": 87, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "554_107", "status": "ok", "violated": 0}
 {"clause": "forall t :: 0 <= t < |pairs| ==> 1 <= pairs[t].0 <= 150 && 0 <= pairs[t].1 <= 9", "error": 0, "holds": 87, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "554_70", "status": "ok", "violated": 0}
+{"clause": "forall x :: x in numbers ==> 0 <= x <= 100000", "error": 0, "holds": 109, "out_of_spec": 20, "root": "solutions-unscreened", "solution_id": "565_118", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |numbers| ==> 1 <= numbers[k] <= 100000", "error": 0, "holds": 109, "out_of_spec": 20, "root": "solutions-unscreened", "solution_id": "565_158", "status": "ok", "violated": 0}
 {"clause": "forall t :: 0 <= t < |numbers_list| ==> numbers_list[t] >= 0", "error": 0, "holds": 88, "out_of_spec": 9, "root": "solutions-disputed", "solution_id": "577_509", "status": "ok", "violated": 0}
 {"clause": "forall t :: 0 <= t < |numbers_list| ==> numbers_list[t] >= 0", "error": 0, "holds": 88, "out_of_spec": 9, "root": "solutions-proved", "solution_id": "577_509", "status": "ok", "violated": 0}
 {"clause": "forall t :: 0 <= t < |numbers_list| ==> numbers_list[t] >= 1", "error": 0, "holds": 88, "out_of_spec": 9, "root": "solutions-disputed", "solution_id": "577_656", "status": "ok", "violated": 0}
@@ -837,6 +914,7 @@
 {"clause": "|a_list| == n", "error": 0, "holds": 168, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "647_11", "status": "ok", "violated": 0}
 {"clause": "n >= 1", "error": 0, "holds": 168, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "647_11", "status": "ok", "violated": 0}
 {"clause": "|a_list| == n", "error": 0, "holds": 168, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "647_11", "status": "ok", "violated": 0}
+{"clause": "k >= 1", "error": 1, "holds": 98, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "64_1063", "status": "ok", "violated": 0}
 {"clause": "k >= 1", "error": 1, "holds": 98, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "64_609", "status": "ok", "violated": 0}
 {"clause": "|a_list| > 0", "error": 0, "holds": 109, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "669_107", "status": "ok", "violated": 0}
 {"clause": "|list1| > 0 && |list2| > 0", "error": 0, "holds": 123, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "685_583", "status": "ok", "violated": 0}
@@ -847,20 +925,33 @@
 {"clause": "v_2 >= 1", "error": 0, "holds": 120, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "696_51", "status": "ok", "violated": 0}
 {"clause": "n >= 1", "error": 0, "holds": 131, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "698_155", "status": "ok", "violated": 0}
 {"clause": "n >= 1", "error": 0, "holds": 131, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "698_43", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |s| ==> 'a' <= s[k] <= 'z'", "error": 0, "holds": 114, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "700_233", "status": "ok", "violated": 0}
+{"clause": "|a_list| == 26", "error": 0, "holds": 114, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "700_233", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |s| ==> 'a' <= s[k] <= 'z'", "error": 0, "holds": 114, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "700_99", "status": "ok", "violated": 0}
+{"clause": "|a_list| == 26", "error": 0, "holds": 114, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "700_99", "status": "ok", "violated": 0}
 {"clause": "a >= 0", "error": 0, "holds": 138, "out_of_spec": 0, "root": "solutions", "solution_id": "704_614", "status": "ok", "violated": 0}
 {"clause": "a >= 0", "error": 0, "holds": 138, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "704_614", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |edges| ==> |edges[k]| == 2", "error": 0, "holds": 158, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "716_174", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |edges| ==> |edges[k]| == 2", "error": 0, "holds": 158, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "716_514", "status": "ok", "violated": 0}
 {"clause": "n == |a_list|", "error": 0, "holds": 133, "out_of_spec": 0, "root": "solutions", "solution_id": "71_217", "status": "ok", "violated": 0}
 {"clause": "n >= 1", "error": 0, "holds": 133, "out_of_spec": 0, "root": "solutions", "solution_id": "71_217", "status": "ok", "violated": 0}
 {"clause": "n == |a_list|", "error": 0, "holds": 133, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "71_217", "status": "ok", "violated": 0}
 {"clause": "n >= 1", "error": 0, "holds": 133, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "71_217", "status": "ok", "violated": 0}
 {"clause": "n >= 1 && n == |a_list|", "error": 0, "holds": 133, "out_of_spec": 0, "root": "solutions", "solution_id": "71_257", "status": "ok", "violated": 0}
 {"clause": "n >= 1 && n == |a_list|", "error": 0, "holds": 133, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "71_257", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |edges| ==> |edges[k]| == 2 && 1 <= edges[k][0] <= Pow2_772(n) && 0 <= edges[k][1] < 0x4000_0000", "error": 0, "holds": 102, "out_of_spec": 2, "root": "solutions-unscreened", "solution_id": "772_19", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |weights| ==> 0 <= weights[k] < 0x4000_0000", "error": 0, "holds": 102, "out_of_spec": 2, "root": "solutions-unscreened", "solution_id": "772_19", "status": "ok", "violated": 0}
+{"clause": "n >= 1", "error": 0, "holds": 102, "out_of_spec": 2, "root": "solutions-unscreened", "solution_id": "772_19", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |edges| ==> |edges[k]| == 2 && 1 <= edges[k][0] <= Pow2_772(n) && 0 <= edges[k][1] < 0x4000_0000", "error": 0, "holds": 102, "out_of_spec": 2, "root": "solutions-unscreened", "solution_id": "772_6", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |weights| ==> 0 <= weights[k] < 0x4000_0000", "error": 0, "holds": 102, "out_of_spec": 2, "root": "solutions-unscreened", "solution_id": "772_6", "status": "ok", "violated": 0}
+{"clause": "n >= 1", "error": 0, "holds": 102, "out_of_spec": 2, "root": "solutions-unscreened", "solution_id": "772_6", "status": "ok", "violated": 0}
 {"clause": "n >= 1", "error": 0, "holds": 22, "out_of_spec": 0, "root": "solutions", "solution_id": "785_12", "status": "ok", "violated": 0}
 {"clause": "n >= 1", "error": 0, "holds": 22, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "785_12", "status": "ok", "violated": 0}
 {"clause": "n >= 1", "error": 0, "holds": 22, "out_of_spec": 0, "root": "solutions", "solution_id": "785_75", "status": "ok", "violated": 0}
 {"clause": "|numbers| == n", "error": 0, "holds": 22, "out_of_spec": 0, "root": "solutions", "solution_id": "785_75", "status": "ok", "violated": 0}
 {"clause": "n >= 1", "error": 0, "holds": 22, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "785_75", "status": "ok", "violated": 0}
 {"clause": "|numbers| == n", "error": 0, "holds": 22, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "785_75", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |a_list| ==> 1 <= a_list[k] <= 1000000000", "error": 0, "holds": 101, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "788_22", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |data| ==> data[k].0 >= 2 && 0 <= data[k].1 < data[k].2", "error": 0, "holds": 103, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "794_794", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |data| ==> data[k].0 >= 2 && 0 <= data[k].1 < data[k].2", "error": 0, "holds": 103, "out_of_spec": 0, "root": "value-bounded", "solution_id": "794_794", "status": "ok", "violated": 0}
 {"clause": "forall i :: 0 <= i < n_edges ==> |edges[i]| >= 2 && edges[i][0] >= edges[i][1] >= 1", "error": 0, "holds": 139, "out_of_spec": 0, "root": "solutions", "solution_id": "804_10", "status": "ok", "violated": 0}
@@ -869,6 +960,8 @@
 {"clause": "forall i :: 0 <= i < n_edges ==> |edges[i]| >= 2 && edges[i][0] >= edges[i][1] >= 1", "error": 0, "holds": 139, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "804_10", "status": "ok", "violated": 0}
 {"clause": "n_edges >= 0", "error": 0, "holds": 139, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "804_10", "status": "ok", "violated": 0}
 {"clause": "|edges| == n_edges", "error": 0, "holds": 139, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "804_10", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |edges| ==> |edges[k]| == 2", "error": 0, "holds": 139, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "804_42", "status": "ok", "violated": 0}
+{"clause": "n_edges <= |edges|", "error": 0, "holds": 139, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "804_42", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |pairs| ==> |pairs[k]| >= 2 && pairs[k][0] >= 0 && pairs[k][1] >= 0", "error": 0, "holds": 101, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "810_131", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |pairs| ==> |pairs[k]| >= 2 && pairs[k][0] >= 0 && pairs[k][1] >= 0", "error": 0, "holds": 101, "out_of_spec": 0, "root": "value-bounded", "solution_id": "810_131", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |pairs| ==> |pairs[k]| >= 2", "error": 0, "holds": 101, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "810_98", "status": "ok", "violated": 0}
@@ -919,6 +1012,8 @@
 {"clause": "forall idx :: 0 <= idx < |lists| ==> |lists[idx]| >= 5 && lists[idx][2] != 0 && lists[idx][3] != 0", "error": 0, "holds": 128, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "89_909", "status": "ok", "violated": 0}
 {"clause": "n >= 0", "error": 0, "holds": 128, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "89_909", "status": "ok", "violated": 0}
 {"clause": "|lists| == n", "error": 0, "holds": 128, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "89_909", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |matrix| ==> |matrix[k]| == 4", "error": 0, "holds": 102, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "914_14", "status": "ok", "violated": 0}
+{"clause": "forall k :: 0 <= k < |matrix| ==> |matrix[k]| == 4", "error": 0, "holds": 102, "out_of_spec": 0, "root": "solutions-unscreened", "solution_id": "914_416", "status": "ok", "violated": 0}
 {"clause": "forall r :: r in grid ==> |r| >= 3", "error": 0, "holds": 92, "out_of_spec": 0, "root": "solutions-disputed", "solution_id": "936_203", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |grid| ==> |grid[k]| >= 4", "error": 0, "holds": 92, "out_of_spec": 0, "root": "solutions", "solution_id": "936_772", "status": "ok", "violated": 0}
 {"clause": "forall k :: 0 <= k < |grid| ==> |grid[k]| >= 4", "error": 0, "holds": 92, "out_of_spec": 0, "root": "solutions-proved", "solution_id": "936_772", "status": "ok", "violated": 0}

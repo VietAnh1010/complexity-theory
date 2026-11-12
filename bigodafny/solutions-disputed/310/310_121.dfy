@@ -60,9 +60,39 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+lemma MulPos(d: int, x: int)
+  requires d > 0 && x >= 1
+  ensures d * x >= d
+{}
+
+lemma MulModZero(d: int, r: int)
+  requires d > 0
+  ensures (d * r) % d == 0
+{
+  var a := d * r;
+  var x := r - a / d;
+  assert a == d * (a / d) + a % d;
+  assert d * x == d * r - d * (a / d);
+  assert d * x == a % d;
+  if x >= 1 { MulPos(d, x); }
+  if x <= -1 { MulPos(d, -x); assert d * (-x) == -(d * x); }
+}
+
+lemma DivKeepsNoSmall(n: int, c: int, d: int)
+  requires n >= 1 && c >= 2 && d >= 2
+  requires n % c == 0 && (n / c) % d == 0
+  ensures n % d == 0
+{
+  var m := n / c;
+  var q := m / d;
+  assert m == d * q;
+  assert n == c * m;
+  assert c * (d * q) == d * (c * q);
+  MulModZero(d, c * q);
+}
+
 method Solve(a: int, b: int) returns (output: string)
   requires a >= 1
-  decreases *
 {
   var n := a;
   var k := b;
@@ -70,9 +100,19 @@ method Solve(a: int, b: int) returns (output: string)
   var curr_div := 2;
   while n != 1 && |sols| < k - 1
     invariant 1 <= n
-    decreases *
+    invariant curr_div >= 2
+    invariant forall d :: 2 <= d < curr_div ==> n % d != 0
+    decreases n, n - curr_div
   {
+    assert curr_div <= n by {
+      if curr_div > n { assert n % n == 0; }
+    }
     if n % curr_div == 0 {
+      forall d | 2 <= d < curr_div
+        ensures (n / curr_div) % d != 0
+      {
+        if (n / curr_div) % d == 0 { DivKeepsNoSmall(n, curr_div, d); }
+      }
       sols := sols + [curr_div];
       n := n / curr_div;
     } else {

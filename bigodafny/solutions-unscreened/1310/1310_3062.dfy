@@ -24,6 +24,8 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, edges: seq<seq<int>>) returns (output: string)
+  requires n <= |edges|
+  requires forall k :: 0 <= k < |edges| ==> |edges[k]| >= 2
 {
 {
 

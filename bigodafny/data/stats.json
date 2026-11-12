@@ -1,15 +1,15 @@
 {
   "blockers": {
-    "decreases-star": 20,
+    "decreases-star": 1,
     "no-proof": 275,
     "precheck": 1,
     "proof-changes-row": 1,
     "tests": 2,
     "truth-unsettled": 329,
     "untranslatable": 4,
-    "unverified": 77
+    "unverified": 1
   },
-  "clean": 284,
+  "clean": 289,
   "complexity_proved": 361,
   "dafny_status": {
     "agrees": 94,
@@ -36,14 +36,9 @@
   "quarantined": 127,
   "rows": 640,
   "safety_failure": {
-    "division-by-zero": 2,
-    "index-out-of-range": 60,
-    "map-domain": 1,
-    "other": 5,
-    "precondition": 7,
-    "termination": 2
+    "index-out-of-range": 1
   },
-  "safety_verified": 559,
+  "safety_verified": 635,
   "signature_status": {
     "ok": 640
   },

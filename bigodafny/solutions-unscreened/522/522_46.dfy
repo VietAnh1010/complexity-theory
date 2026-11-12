@@ -15,10 +15,13 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, points_list: seq<seq<real>>) returns (output: string)
+  requires n <= |points_list|
+  requires forall k :: 0 <= k < |points_list| ==> |points_list[k]| >= 8
 {
   var lines: seq<string> := [];
   var i := 0;
   while i < n
+    invariant 0 <= i
     decreases n - i
   {
     var pts := points_list[i];

@@ -35,6 +35,7 @@ import opened Prelude
 
 function Pow2(bit: int): int
   requires bit >= 0
+  ensures Pow2(bit) >= 1
   decreases bit
 {
   if bit == 0 then 1 else 2 * Pow2(bit - 1)

@@ -29,6 +29,8 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, coord_list: seq<seq<int>>) returns (output: string)
+  requires 1 <= n && 2 * n <= |coord_list|
+  requires forall k :: 0 <= k < |coord_list| ==> |coord_list[k]| >= 2
 {
   var p := coord_list[0..n];
   var bset := coord_list[n..2*n];

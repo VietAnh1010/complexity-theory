@@ -37,6 +37,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, mat: seq<seq<int>>) returns (output: string)
+  requires n <= |mat|
 {
   var lines: seq<string> := [];
   var i := 0;

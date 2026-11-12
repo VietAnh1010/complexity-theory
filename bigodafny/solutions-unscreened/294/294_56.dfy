@@ -53,10 +53,12 @@ method Solve(s: string) returns (output: string)
 }
 
 method AllSameChar(s: string) returns (r: bool)
+  ensures !r ==> |s| >= 2
 {
   r := true;
   var i := 1;
   while i < |s|
+    invariant !r ==> |s| >= 2
     decreases |s| - i
   {
     if s[i] != s[0] { r := false; }
@@ -70,11 +72,14 @@ method ShrinkCount(s0: string, alp: char) returns (cnt: int)
   cnt := 0;
   var same := AllSameChar(SL);
   while !same
+    invariant !same ==> |SL| >= 2
     decreases |SL|
   {
     var tmp: seq<char> := [];
     var i := 0;
     while i < |SL| - 1
+      invariant 0 <= i <= |SL| - 1
+      invariant |tmp| == i
       decreases |SL| - 1 - i
     {
       if SL[i + 1] == alp {

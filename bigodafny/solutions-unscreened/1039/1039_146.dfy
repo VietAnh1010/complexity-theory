@@ -34,6 +34,9 @@ method Solve(n_str: string, a_list_str: string) returns (output: string)
   var left: map<int, int> := map[];
   var i := 0;
   while i < |nums|
+    invariant 0 <= i <= |nums|
+    invariant forall x :: (x in left <==> Occ1039(nums, 0, i, x) > 0)
+    invariant forall x :: x in left ==> left[x] == Occ1039(nums, 0, i, x)
     decreases |nums| - i
   {
     var v := nums[i];
@@ -44,13 +47,20 @@ method Solve(n_str: string, a_list_str: string) returns (output: string)
     }
     i := i + 1;
   }
+  assert forall x :: Occ1039(nums, 0, |nums|, x) == Occ1039(nums, 0, i, x);
   var done: set<int> := {};
   var count := 0;
   i := 0;
   while i < |nums|
+    invariant 0 <= i <= |nums|
+    invariant forall x :: (x in left <==> Occ1039(nums, i, |nums|, x) > 0)
+    invariant forall x :: x in left ==> left[x] == Occ1039(nums, i, |nums|, x)
     decreases |nums| - i
   {
     var v := nums[i];
+    forall x ensures Occ1039(nums, i, |nums|, x) == (if nums[i] == x then 1 else 0) + Occ1039(nums, i + 1, |nums|, x) {
+      Occ1039Front(nums, i, |nums|, x);
+    }
     left := left[v := left[v] - 1];
     if left[v] == 0 {
       left := left - {v};
@@ -62,4 +72,19 @@ method Solve(n_str: string, a_list_str: string) returns (output: string)
     i := i + 1;
   }
   output := IntToString(count);
+}
+
+ghost function Occ1039(s: seq<int>, lo: int, hi: int, x: int): nat
+  requires 0 <= lo <= hi <= |s|
+  decreases hi - lo
+{
+  if hi == lo then 0 else Occ1039(s, lo, hi - 1, x) + (if s[hi - 1] == x then 1 else 0)
+}
+
+lemma Occ1039Front(s: seq<int>, lo: int, hi: int, x: int)
+  requires 0 <= lo < hi <= |s|
+  ensures Occ1039(s, lo, hi, x) == (if s[lo] == x then 1 else 0) + Occ1039(s, lo + 1, hi, x)
+  decreases hi - lo
+{
+  if hi > lo + 1 { Occ1039Front(s, lo, hi - 1, x); }
 }

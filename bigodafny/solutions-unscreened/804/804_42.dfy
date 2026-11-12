@@ -38,6 +38,8 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n_nodes: int, n_edges: int, edges: seq<seq<int>>) returns (output: string)
+  requires n_edges <= |edges|
+  requires forall k :: 0 <= k < |edges| ==> |edges[k]| == 2
 {
   var n := n_nodes - 1;
   var canbe: set<int> := {};
@@ -49,6 +51,7 @@ method Solve(n_nodes: int, n_edges: int, edges: seq<seq<int>>) returns (output: 
     var good := true;
     var j := 0;
     while j < n_edges
+      invariant 0 <= j
       decreases n_edges - j
     {
       var k := edges[j][0] - 1;

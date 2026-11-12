@@ -34,6 +34,7 @@ method Solve(n: int, word: string) returns (output: string)
   var curr := word[0];
   var i := 1;
   while i < |word|
+    invariant 1 <= j <= i <= |word|
     decreases |word| - i
   {
     if IsVowelWC536(curr) && IsVowelWC536(word[i]) {

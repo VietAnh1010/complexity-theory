@@ -26,6 +26,8 @@ include "../../prelude.dfy"
 import opened Prelude
 
 function ToPairs1671a(edges: seq<seq<int>>): seq<(int, int)>
+  requires forall k :: 0 <= k < |edges| ==> |edges[k]| >= 2
+  ensures |ToPairs1671a(edges)| == |edges|
   decreases |edges|
 {
   if |edges| == 0 then []
@@ -40,6 +42,8 @@ function CountPair1671a(xs: seq<(int, int)>, t: (int, int)): int
 }
 
 method Solve(m: int, n: int, edges: seq<seq<int>>) returns (output: string)
+  requires forall k :: 0 <= k < |edges| ==> |edges[k]| >= 2
+  requires |edges| == m && 1 <= n <= m
 {
   var pairs := ToPairs1671a(edges);
   var asc := Sort(pairs, (x: (int, int), y: (int, int)) => x.0 < y.0 || (x.0 == y.0 && x.1 > y.1));

@@ -55,12 +55,12 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int) returns (output: string)
-  decreases *
 {
   var a := n;
   var m := 1;
   while 2 * a > m * m + m
-    decreases *
+    invariant m >= 1
+    decreases 2 * a - m
   {
     m := m + 1;
   }

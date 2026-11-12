@@ -14,13 +14,23 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+lemma MulAtLeast(n: int, a: int)
+  requires n >= 0 && a >= 1
+  ensures n * a >= n
+{
+  assert n * a == n * (a - 1) + n;
+  assert n * (a - 1) >= 0;
+}
+
 method Solve(N: int, M: int) returns (output: string)
-  decreases *
+  requires N >= 2
 {
   var n := 0;
   while n * (N - 1) + 1 < M
-    decreases *
+    invariant n >= 0
+    decreases M - n
   {
+    MulAtLeast(n, N - 1);
     n := n + 1;
   }
   output := IntToString(n);

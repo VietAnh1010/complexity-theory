@@ -20,6 +20,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, matrix: seq<seq<int>>) returns (output: string)
+  requires forall k :: 0 <= k < |matrix| ==> |matrix[k]| == 4
 {
   output := "";
   var i := 0;

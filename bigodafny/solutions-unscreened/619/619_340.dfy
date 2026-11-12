@@ -49,6 +49,7 @@ method Signature619(s: string) returns (sig: string)
   var pres := seq(26, _ => false);
   var i := 0;
   while i < |s|
+    invariant |pres| == 26
     decreases |s| - i
   {
     var idx := (s[i] as int) - ('a' as int);
@@ -61,6 +62,8 @@ method Signature619(s: string) returns (sig: string)
   sig := "";
   i := 0;
   while i < 26
+    invariant 0 <= i <= 26
+    invariant |pres| == 26
     decreases 26 - i
   {
     if pres[i] {

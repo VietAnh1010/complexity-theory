@@ -30,14 +30,17 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, coordinates: seq<(int, int)>) returns (output: string)
+  requires |coordinates| == n
 {
   var total := 0;
   var i := 0;
   while i < n
+    invariant 0 <= i <= n
     decreases n - i
   {
     var j := i + 1;
     while j < n
+      invariant i + 1 <= j <= n
       decreases n - j
     {
       if coordinates[i].0 == coordinates[j].0 || coordinates[i].1 == coordinates[j].1 {

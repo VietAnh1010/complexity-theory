@@ -18,10 +18,12 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, scores: seq<int>) returns (output: string)
+  requires |scores| == n
 {
   var c := 0;
   var i := 0;
   while i < n
+    invariant 0 <= i <= n
     decreases n - i
   {
     var mx := MaxSeq(scores[0..i + 1]);

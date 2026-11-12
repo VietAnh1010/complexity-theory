@@ -19,7 +19,7 @@
 //   how this label could be wrong, and what to check:
 //     The label treats the check as constant, but the Dafny scans s upward
 //     until s*s >= 8k+1, which costs O(sqrt(k)) in the input value. Check
-//     the while s * s < target loop (which also needs decreases *) against
+//     the while s * s < target loop against
 //     the Python's single sqrt call; the Python is O(1), so the
 //     translation replaced a library call with a search.
 //
@@ -51,16 +51,24 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+lemma SqGe(s: int)
+  requires s >= 0
+  ensures s <= s * s
+{
+  if s > 0 { assert s * s == s + s * (s - 1); assert s * (s - 1) >= 0; }
+}
+
 method Solve(n: int) returns (output: string)
-  decreases *
   requires n >= 0
 {
   var k := n;
   var target := 8 * k + 1;
   var s := 0;
   while s * s < target
-    decreases *
+    invariant 0 <= s <= target
+    decreases target - s
   {
+    SqGe(s);
     s := s + 1;
   }
   if s * s == target {

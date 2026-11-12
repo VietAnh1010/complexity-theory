@@ -57,13 +57,24 @@ function BinAsDecimal(x: int): int
   else BinAsDecimal(x / 2) * 10 + x % 2
 }
 
+lemma BinAtLeast(x: int)
+  requires x >= 0
+  ensures BinAsDecimal(x) >= x
+  decreases x
+{
+  if x > 0 {
+    BinAtLeast(x / 2);
+  }
+}
+
 method Solve(n: int) returns (output: string)
-  decreases *
 {
   var ans := 1;
   while BinAsDecimal(ans) <= n
-    decreases *
+    invariant ans >= 1
+    decreases n - ans
   {
+    BinAtLeast(ans);
     ans := ans + 1;
   }
   output := IntToString(ans - 1);

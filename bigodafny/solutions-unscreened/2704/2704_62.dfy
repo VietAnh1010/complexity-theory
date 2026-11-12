@@ -236,13 +236,55 @@ function ContainsSub(s: string, pat: string): bool
   ContainsFrom(s, pat, 0)
 }
 
+lemma ReplaceShrink(s: string, pat: string, rep: string)
+  requires |pat| > 0 && |rep| < |pat|
+  ensures |ReplaceAll(s, pat, rep)| <= |s|
+  decreases |s|
+{
+  if |s| < |pat| {
+  } else if s[0..|pat|] == pat {
+    ReplaceShrink(s[|pat|..], pat, rep);
+  } else {
+    ReplaceShrink(s[1..], pat, rep);
+  }
+}
+
+lemma ReplaceStrict(t: string, pat: string, rep: string, j: int)
+  requires |pat| > 0 && |rep| < |pat|
+  requires 0 <= j <= |t| - |pat| && t[j..j + |pat|] == pat
+  ensures |ReplaceAll(t, pat, rep)| < |t|
+  decreases |t|
+{
+  if t[0..|pat|] == pat {
+    ReplaceShrink(t[|pat|..], pat, rep);
+  } else {
+    assert j > 0;
+    assert t[1..][j - 1..j - 1 + |pat|] == t[j..j + |pat|];
+    ReplaceStrict(t[1..], pat, rep, j - 1);
+  }
+}
+
+lemma ContainsWitness(s: string, pat: string, i: int) returns (j: int)
+  requires 0 <= i <= |s| && |pat| > 0
+  requires ContainsFrom(s, pat, i)
+  ensures i <= j <= |s| - |pat| && s[j..j + |pat|] == pat
+  decreases |s| - i
+{
+  if s[i..i + |pat|] != pat {
+    j := ContainsWitness(s, pat, i + 1);
+  } else {
+    j := i;
+  }
+}
+
 method Normalize(word: string) returns (result: string)
-  decreases *
 {
   var w := ReplaceAll(word, "u", "oo");
   while ContainsSub(w, "kkh")
-    decreases *
+    decreases |w|
   {
+    ghost var j := ContainsWitness(w, "kkh", 0);
+    ReplaceStrict(w, "kkh", "kh", j);
     w := ReplaceAll(w, "kkh", "kh");
   }
   if ContainsSub(w, "kh") {
@@ -253,7 +295,6 @@ method Normalize(word: string) returns (result: string)
 
 method Solve(n: int, names: seq<string>) returns (output: string)
   requires n == |names|
-  decreases *
 {
   var seen: set<string> := {};
   var i := 0;

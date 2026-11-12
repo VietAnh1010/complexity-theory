@@ -37,6 +37,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
+  requires forall k :: 0 <= k < |a_list| ==> 1 <= a_list[k] <= 1000000000
 {
   var freq: map<int,int> := map[];
   var j := 0;
@@ -65,6 +66,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
     } else {
       var pw := 1;
       while pw <= v
+        invariant pw >= 1
         decreases v - pw
       {
         pw := pw * 2;

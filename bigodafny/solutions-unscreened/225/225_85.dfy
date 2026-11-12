@@ -19,11 +19,14 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, coordinates: seq<seq<int>>) returns (output: string)
+  requires n <= |coordinates|
+  requires forall k :: 0 <= k < |coordinates| ==> |coordinates[k]| >= 2
 {
   var xs: set<int> := {};
   var ys: set<int> := {};
   var i := 0;
   while i < n
+    invariant 0 <= i
     decreases n - i
   {
     xs := xs + {coordinates[i][0]};

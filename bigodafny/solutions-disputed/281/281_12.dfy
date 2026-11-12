@@ -67,21 +67,42 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+ghost function P(x: int): nat { if x > 0 then x else 0 }
+
+ghost function SP(s: seq<int>): nat
+  decreases |s|
+{ if |s| == 0 then 0 else P(s[0]) + SP(s[1..]) }
+
+lemma SPUpd(s: seq<int>, j: nat, x: int)
+  requires j < |s|
+  ensures SP(s[j := x]) + P(s[j]) == SP(s) + P(x)
+  decreases |s|
+{
+  if j > 0 {
+    SPUpd(s[1..], j - 1, x);
+    assert s[j := x][1..] == s[1..][j - 1 := x];
+  } else {
+    assert s[0 := x][1..] == s[1..];
+  }
+}
+
 method Solve(n: int, a_list: seq<int>) returns (output: string)
   requires n == |a_list|
-  decreases *
 {
   var no := a_list;
   var flag := true;
   while flag
     invariant |no| == n
-    decreases *
+    decreases SP(no) + (if flag then 1 else 0)
   {
+    ghost var sp0 := SP(no);
     flag := false;
     var oi := 0;
     while oi < n
       invariant 0 <= oi <= n
       invariant |no| == n
+      invariant SP(no) <= sp0
+      invariant flag ==> SP(no) < sp0
       decreases n - oi
     {
       var iv := no[oi];
@@ -90,13 +111,17 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
         while j < n
           invariant 0 <= j <= n
           invariant |no| == n
+          invariant SP(no) <= sp0
+          invariant flag ==> SP(no) < sp0
           decreases n - j
         {
           if no[j] > iv {
             flag := true;
             if no[j] % iv == 0 {
+              SPUpd(no, j, iv);
               no := no[j := iv];
             } else {
+              SPUpd(no, j, no[j] % iv);
               no := no[j := no[j] % iv];
             }
           }

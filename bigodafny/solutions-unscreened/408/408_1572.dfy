@@ -25,11 +25,13 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(N: int, pairs_list: seq<seq<int>>) returns (output: string)
+  requires forall k :: 0 <= k < |pairs_list| ==> |pairs_list[k]| >= 2
 {
   var h := 0;
   var k := 0;
   var i := 0;
   while i < |pairs_list|
+    invariant 0 <= i
     decreases |pairs_list| - i
   {
     var a := pairs_list[i][0];

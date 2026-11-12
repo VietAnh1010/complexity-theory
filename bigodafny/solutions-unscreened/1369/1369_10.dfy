@@ -39,7 +39,28 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+function GreedyL(s: string, C: int, pos: int): nat
+  requires C >= 0 && pos >= 0
+  decreases |s| - pos
+{
+  if pos >= |s| then 0
+  else if s[pos] == 'o' then 1 + GreedyL(s, C, pos + C + 1)
+  else GreedyL(s, C, pos + 1)
+}
+
+function GreedyR(s: string, C: int, pos: int): nat
+  requires C >= 0 && pos < |s|
+  decreases pos + 1
+{
+  if pos < 0 then 0
+  else if s[pos] == 'o' then 1 + GreedyR(s, C, pos - C - 1)
+  else GreedyR(s, C, pos - 1)
+}
+
 method Solve(n: int, a: int, b: int, s: string) returns (output: string)
+  requires n == |s| && a >= 1 && b >= 0
+  requires GreedyL(s, b, 0) >= a
+  requires GreedyR(s, b, n - 1) >= a
 {
   var N := n;
   var K := a;
@@ -49,7 +70,9 @@ method Solve(n: int, a: int, b: int, s: string) returns (output: string)
   var pos := 0;
   var lc := 0;
   while lc != K
-    decreases K - lc
+    invariant 0 <= lc <= K && |L| == K && pos >= 0
+    invariant lc + GreedyL(s, C, pos) >= K
+    decreases K - lc, |s| - pos
   {
     if s[pos] == 'o' {
       L := L[lc := pos + 1];
@@ -62,7 +85,9 @@ method Solve(n: int, a: int, b: int, s: string) returns (output: string)
   pos := N - 1;
   var rc := 0;
   while rc != K
-    decreases K - rc
+    invariant 0 <= rc <= K && |R| == K && pos < |s|
+    invariant rc + GreedyR(s, C, pos) >= K
+    decreases K - rc, pos + 1
   {
     if s[pos] == 'o' {
       R := R[K - 1 - rc := pos + 1];

@@ -19,6 +19,11 @@ data lines go to `old-record.jsonl` beside the file they came from.
   `audit.py`'s checks, and fails when a proof changes its row; `dataset.py` adds blocker
   `proof-changes-row`. 40 rows take the `requires` their proof had added (`precheck.py`: all hold);
   `2496_30` stays flagged (`TODO.md`).
+- `batches/verify-clean/`: 95 of 96 rows that failed `dafny verify` or used `decreases *` now
+  verify without it; `1336_157` is left. `verify_all.py` ignores `decreases *` inside comments.
+  `data/constraints.jsonl` quotes the limits of problems 565 and 772.
+- A row leaving `solutions-unverified/` goes to `solutions/` only with label verdict `ok`, else to
+  `solutions-unscreened/`. `1369_10` and `1369_14` move to `solutions-unscreened/`.
 - `data/constraints.jsonl` quotes problem 1954's limits (`1 ≤ M ≤ 100`, `1 ≤ D ≤ 99`); 26 generated
   tests with negative values are skipped.
 

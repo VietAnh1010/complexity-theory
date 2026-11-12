@@ -20,6 +20,8 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(s: string, n: int, a_list: seq<int>) returns (output: string)
+  requires |a_list| == 26
+  requires forall k :: 0 <= k < |s| ==> 'a' <= s[k] <= 'z'
 {
   var total := 0;
   var i := 0;

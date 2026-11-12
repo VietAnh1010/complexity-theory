@@ -32,6 +32,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, numbers: seq<int>) returns (output: string)
+  requires forall k :: 0 <= k < |numbers| ==> 1 <= numbers[k] <= 100000
 {
 
   var maxV := 100000;

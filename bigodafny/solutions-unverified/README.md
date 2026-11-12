@@ -6,9 +6,7 @@ zero, recursion that ends).
 
 | Row | What the verifier rejects |
 |---|---|
-| `1336/1336_157.dfy` | a function precondition at line 58 |
-| `1369/1369_10.dfy` | a `decreases` expression might not decrease |
-| `1369/1369_14.dfy` | a `decreases` expression might not decrease |
+| `1336/1336_157.dfy` | a function precondition at line 58; `ProbeInsert` also uses `decreases *` |
 
 ## Getting a row out
 
@@ -18,6 +16,7 @@ Full procedure: `.claude/skills/bigodafny-verify/SKILL.md`.
 2. Run `precheck.py`: the `requires` must accept every input the row's tests
    use.
 3. Re-run `dafny verify` on the row (`verify_all.py`) and `validate.py`.
-4. `git mv` the row into `solutions/`.
+4. `git mv` the row into `solutions/` if `data/label_audit.jsonl` gives it verdict `ok`, else
+   into `solutions-unscreened/`.
 
 Never add an `assume` or a `decreases *`.

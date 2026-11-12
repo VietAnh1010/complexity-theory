@@ -25,6 +25,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(s1: string, s2: string) returns (output: string)
+  requires |s1| > 0 && |s2| > 0
 {
   var n1 := Norm1628a(s1);
   var n2 := Norm1628a(s2);
@@ -36,6 +37,7 @@ method Solve(s1: string, s2: string) returns (output: string)
 }
 
 function Norm1628a(s: string): string
+  requires |s| > 0
   decreases |s|
 {
   if |s| % 2 == 1 then s

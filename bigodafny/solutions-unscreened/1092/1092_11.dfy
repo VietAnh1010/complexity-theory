@@ -37,8 +37,13 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>, b_list: seq<int>) returns (output: string)
+  requires |b_list| == 5
+  requires forall k :: 0 <= k < |b_list| ==> b_list[k] >= 1
 {
   var prizes := SortInts(b_list);
+  SortIntsKeepsElems(b_list);
+  assert forall x :: x in prizes ==> x >= 1;
+  assert prizes[0] in prizes && prizes[1] in prizes && prizes[2] in prizes && prizes[3] in prizes && prizes[4] in prizes;
   var aC := 0;
   var bC := 0;
   var cC := 0;

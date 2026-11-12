@@ -22,6 +22,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
+  requires |a_list| > 0
 {
   var mn := MinSeq(a_list);
   var mx := MaxSeq(a_list);

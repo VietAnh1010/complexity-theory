@@ -21,6 +21,8 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, edges_list: seq<seq<int>>) returns (output: string)
+  requires n <= |edges_list|
+  requires forall k :: 0 <= k < |edges_list| ==> |edges_list[k]| >= 3 && edges_list[k][2] >= 1
 {
   var lines: seq<string> := [];
   var i := 0;

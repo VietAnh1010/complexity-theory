@@ -19,6 +19,13 @@ Open items only. When one is done, delete it and add a line to `CHANGELOG.md`.
       (`batches/z3-upgrade/unresolved/`).
 - [ ] `2831_71` still charges `IntToString` 1 step (`batches/output-length/`).
 
+## Translations
+
+- [ ] Re-translate rows that swap the Python's algorithm (`batches/verify-clean/README.md`):
+      `1671_196`, `1742_66`, `1853_137`, `1853_66`, `565_158`, `700_233`, `700_99`,
+      `1997_311`.
+- [ ] `1336_157`: `ProbeInsert` still needs `decreases *`.
+
 ## Value-bounded filing
 
 - [ ] Review the 7 rows in `batches/value-bounded-open/` that were filed from

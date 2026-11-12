@@ -14,6 +14,9 @@ gives each row's reasons:
   output copies on every insert. This reason no longer applies:
   `COMPLEXITY.md` charges set insertion 1.
 
+A row from `solutions-unverified/` with no label verdict also lands here once it
+verifies; it has no `quarantine.jsonl` entry.
+
 ## Emptying it
 
 ```bash

@@ -17,6 +17,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(s: string) returns (output: string)
+  requires |s| == 7
 {
   var d := s[6] as int - '0' as int;
   if d % 2 == 0 {

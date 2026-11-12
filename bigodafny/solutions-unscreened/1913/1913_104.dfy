@@ -26,6 +26,8 @@ method Solve(s: string) returns (output: string)
   var bChar := 'b';
   var idx := n - 1;
   while idx >= 0
+    invariant -1 <= idx < n
+    invariant |r| == n
     decreases idx + 1
   {
     if s[idx] != bChar {

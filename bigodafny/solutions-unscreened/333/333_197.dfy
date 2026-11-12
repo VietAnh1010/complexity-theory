@@ -43,6 +43,7 @@ method Solve(n: int, word: string) returns (output: string)
   var j := 1;
   var i := 1;
   while i < |word|
+    invariant 1 <= j <= i <= |word|
     decreases |word| - i
   {
     if !(IsVowelWC197(word[i]) && IsVowelWC197(word[i-1])) {

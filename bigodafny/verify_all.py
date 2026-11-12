@@ -56,7 +56,8 @@ def one(path_str):
     ok = r.returncode == 0 and "0 errors" in out
     # `decreases *` makes Dafny accept a loop without proving it terminates.
     # The file still verifies; termination specifically does not.
-    src = p.read_text(encoding="utf-8")
+    # Comments are skipped: an audit header may quote `decreases *`.
+    src = re.sub(r"//[^\n]*", "", p.read_text(encoding="utf-8"))
     unbounded = "decreases *" in src
     errs = [l for l in out.splitlines() if re.search(r"Error:", l)]
     return {"solution_id": p.stem, "path": str(p.relative_to(ROOT)),

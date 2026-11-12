@@ -185,10 +185,12 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, k: int, a_list: seq<int>) returns (output: string)
+  requires n <= |a_list|
 {
   var tw := 0;
   var i := 0;
   while i < n
+    invariant 0 <= i
     decreases n - i
   {
     if a_list[i] <= k {

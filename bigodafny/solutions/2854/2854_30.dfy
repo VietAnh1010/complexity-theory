@@ -32,10 +32,23 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+ghost function U(adj: seq<seq<(int, int)>>, vis: seq<int>, k: nat): nat
+  requires |vis| == |adj| && k <= |adj|
+  decreases k
+{ if k == 0 then 0 else U(adj, vis, k - 1) + (if vis[k - 1] == 0 then |adj[k - 1]| else 0) }
+
+lemma UUpd(adj: seq<seq<(int, int)>>, vis: seq<int>, t: nat, k: nat)
+  requires |vis| == |adj| && k <= |adj| && t < |adj|
+  requires vis[t] == 0
+  ensures U(adj, vis[t := 1], k) + (if t < k then |adj[t]| else 0) == U(adj, vis, k)
+  decreases k
+{
+  if k > 0 { UUpd(adj, vis, t, k - 1); }
+}
+
 method Solve(n: int, edges: seq<string>) returns (output: string)
   requires n >= 0
   // same as 2854_107: a target is marked visited on pop, not on push.
-  decreases *
 {
   var adj: seq<seq<(int, int)>> := seq(n, _ => []);
   var idx := 0;
@@ -66,13 +79,14 @@ method Solve(n: int, edges: seq<string>) returns (output: string)
     invariant |visited| == n
     invariant |colors| == n
     invariant |adj| == n
-    decreases *
+    decreases |options| + 2 * U(adj, visited, |adj|)
   {
     var t := options[|options| - 1];
     options := options[..|options| - 1];
     var tgt := t.0;
     var src := t.1;
     if 0 <= tgt < |visited| && visited[tgt] == 0 {
+      UUpd(adj, visited, tgt, |adj|);
       visited := visited[tgt := 1];
       if 0 <= src < |colors| {
         colors := colors[tgt := 1 - colors[src]];

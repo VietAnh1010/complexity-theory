@@ -37,6 +37,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, k: int, ratings: seq<int>) returns (output: string)
+  requires k >= 1
 {
   var listt: seq<int> := [];
   var present: set<int> := {};

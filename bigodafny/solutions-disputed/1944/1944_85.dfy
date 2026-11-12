@@ -64,7 +64,6 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, numbers: seq<int>) returns (output: string)
-  decreases *
 {
   var results: seq<string> := [];
   var idx := 0;
@@ -84,7 +83,7 @@ method Solve(n: int, numbers: seq<int>) returns (output: string)
       var cc := 1;
       var i := 3;
       while i < nn + 5 && S != nn
-        decreases *
+        decreases nn + 5 - i
       {
         if i + S <= nn {
           S := S + i;

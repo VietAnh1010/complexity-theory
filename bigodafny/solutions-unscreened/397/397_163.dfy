@@ -39,10 +39,13 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
+  requires |a_list| >= 1
 {
   var count: map<int, int> := map[];
   var i := 0;
   while i < |a_list|
+    invariant 0 <= i <= |a_list|
+    invariant forall k :: 0 <= k < i ==> a_list[k] in count
     decreases |a_list| - i
   {
     var v := a_list[i];
@@ -52,6 +55,8 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
   var maxCount := 0;
   i := 0;
   while i < |a_list|
+    invariant 0 <= i
+    invariant forall k :: 0 <= k < |a_list| ==> a_list[k] in count
     decreases |a_list| - i
   {
     var c := count[a_list[i]];
@@ -62,6 +67,9 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
   var found := false;
   i := 0;
   while i < |a_list| && !found
+    invariant 0 <= i
+    invariant forall k :: 0 <= k < |a_list| ==> a_list[k] in count
+    invariant 0 <= pivot < |a_list|
     decreases |a_list| - i
   {
     if count[a_list[i]] == maxCount {
@@ -74,6 +82,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
   var ans: seq<string> := [];
   var j := pivot - 1;
   while j >= 0
+    invariant j < pivot
     decreases j + 1
   {
     if a_list[j] < maxKey {
@@ -85,6 +94,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
   }
   j := pivot + 1;
   while j < |a_list|
+    invariant pivot + 1 <= j
     decreases |a_list| - j
   {
     if a_list[j] != maxKey {

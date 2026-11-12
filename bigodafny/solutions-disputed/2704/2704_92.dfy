@@ -76,16 +76,32 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+lemma ReplaceShrink(s: string, pat: string, rep: string)
+  requires |pat| > 0 && |rep| < |pat|
+  ensures |ReplaceAll(s, pat, rep)| <= |s|
+  ensures |ReplaceAll(s, pat, rep)| == |s| ==> ReplaceAll(s, pat, rep) == s
+  decreases |s|
+{
+  if |s| < |pat| {
+  } else if s[0..|pat|] == pat {
+    ReplaceShrink(s[|pat|..], pat, rep);
+  } else {
+    ReplaceShrink(s[1..], pat, rep);
+  }
+}
+
 method Reduce(s0: string) returns (result: string)
-  decreases *
 {
   var s := s0;
   var changed := true;
   while changed
-    decreases *
+    invariant |s| <= |s0|
+    decreases |s|, changed
   {
     var s2 := ReplaceAll(s, "oo", "u");
+    ReplaceShrink(s, "oo", "u");
     var s3 := ReplaceAll(s2, "kh", "h");
+    ReplaceShrink(s2, "kh", "h");
     if s3 == s {
       changed := false;
     } else {
@@ -97,7 +113,6 @@ method Reduce(s0: string) returns (result: string)
 
 method Solve(n: int, names: seq<string>) returns (output: string)
   requires n == |names|
-  decreases *
 {
   var result: seq<string> := [];
   var i := 0;

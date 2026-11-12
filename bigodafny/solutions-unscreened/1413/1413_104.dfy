@@ -19,10 +19,13 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, values: seq<int>) returns (output: string)
+  requires n >= 1
+  requires forall k :: 0 <= k < |values| ==> values[k] >= 1
 {
   var ok := seq(n, i => false);
   var idx := 0;
   while idx < |values|
+    invariant |ok| == n
     decreases |values| - idx
   {
     var ni := values[idx] - 1;
@@ -35,6 +38,7 @@ method Solve(n: int, values: seq<int>) returns (output: string)
   var cnt := 0;
   var j := 0;
   while j < n
+    invariant 0 <= j && |ok| == n
     decreases n - j
   {
     if !ok[j] { cnt := cnt + 1; }

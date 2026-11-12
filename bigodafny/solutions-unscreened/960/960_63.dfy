@@ -41,11 +41,13 @@ method Solve(n: int, strings: seq<string>) returns (output: string)
     var tset: set<char> := {};
     var j := 0;
     while j < mlen
+      invariant 0 <= j <= mlen
       decreases mlen - j
     {
       if s[j] !in tset {
         var c := 1;
         while j < mlen - 1 && s[j] == s[j+1]
+          invariant 0 <= j < mlen
           decreases mlen - j
         {
           j := j + 1;

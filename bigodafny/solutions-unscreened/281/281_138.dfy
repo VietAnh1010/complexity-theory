@@ -25,13 +25,20 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
+  requires |a_list| >= 1
+  requires forall x :: x in a_list ==> x >= 0
 {
   var xs := SortInts(a_list);
+  SortIntsKeepsElems(a_list);
+  assert xs[0] in xs;
   var g := xs[0];
   var i := 1;
   while i < |xs|
+    invariant 1 <= i
+    invariant g >= 0
     decreases |xs| - i
   {
+    assert xs[i] in xs;
     g := Gcd(g, xs[i]);
     i := i + 1;
   }
@@ -40,6 +47,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
 
 function Gcd(a: int, b: int): int
   requires a >= 0 && b >= 0
+  ensures Gcd(a, b) >= 0
   decreases b
 {
   if b == 0 then a else Gcd(b, a % b)

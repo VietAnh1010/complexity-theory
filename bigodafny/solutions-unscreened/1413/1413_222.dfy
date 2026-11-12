@@ -24,10 +24,12 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, values: seq<int>) returns (output: string)
+  requires n >= 1
 {
   var present := seq(n, i => false);
   var idx := 0;
   while idx < |values|
+    invariant |present| == n
     decreases |values| - idx
   {
     var v := values[idx];
@@ -39,6 +41,7 @@ method Solve(n: int, values: seq<int>) returns (output: string)
   var cnt := 0;
   var j := 0;
   while j < n
+    invariant 0 <= j && |present| == n
     decreases n - j
   {
     if !present[j] { cnt := cnt + 1; }

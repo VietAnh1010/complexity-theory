@@ -23,6 +23,7 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(N: int, numbers: seq<int>) returns (output: string)
+  requires N <= |numbers|
 {
   var lines: seq<string> := [];
   var t := 0;

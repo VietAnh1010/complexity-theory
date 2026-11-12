@@ -83,7 +83,27 @@ lemma GcdPositive(a: int, b: int)
   }
 }
 
-method Solve(n: int, a_list: seq<int>) returns (output: string)
+lemma MulDivBounds(x: int, y: int, g: int)
+  requires x >= 0 && y >= 0 && g >= 1
+  ensures x * y >= 0 && (x * y) / g >= 0
+  ensures x >= 1 && 1 <= g <= y ==> 1 <= (x * y) / g <= x * y
+{
+  CostMulMono(x, 0, y);
+  var p := x * y;
+  var q := p / g;
+  assert p == g * q + p % g && 0 <= p % g < g;
+  if q < 0 {
+    CostMulMonoLeft(1, g, -q);
+    assert false;
+  }
+  if x >= 1 && 1 <= g <= y {
+    CostMulMonoLeft(1, x, y);
+    assert q != 0;
+    CostMulMonoLeft(1, g, q);
+  }
+}
+
+method {:isolate_assertions} Solve(n: int, a_list: seq<int>) returns (output: string)
   requires |a_list| >= 2
   requires forall v :: v in a_list ==> v >= 1
 {
@@ -91,12 +111,13 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
   assert arr[0] in arr && arr[1] in arr;
   assert {:split_here} arr[0] >= 1 && arr[1] >= 1;
   GcdPositive(arr[0], arr[1]);
+  MulDivBounds(arr[0], arr[1], Gcd(arr[0], arr[1]));
   var lcm := (arr[0] * arr[1]) / Gcd(arr[0], arr[1]);
   assert {:split_here} lcm >= 0;
   var current := lcm;
   var i := 2;
   while i < |arr|
-    invariant 2 <= i
+    invariant 2 <= i <= |arr|
     invariant current >= 0
     invariant lcm >= 0
     decreases |arr| - i
@@ -106,6 +127,7 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
     GcdPositive(current, arr[i]);
     var gi := Gcd(current, arr[i]);
     assert {:split_here} gi >= 1;
+    MulDivBounds(current, arr[i], gi);
     var running := (current * arr[i]) / gi;
     assert {:split_here} running >= 0;
     GcdNonneg(lcm, running);

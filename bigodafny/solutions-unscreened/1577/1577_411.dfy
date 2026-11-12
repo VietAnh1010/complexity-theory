@@ -24,12 +24,14 @@ include "../../prelude.dfy"
 import opened Prelude
 
 method Solve(n: int, s: string) returns (output: string)
+  requires n <= |s|
 {
   var i := 0;
   var found := false;
   var idx := 0;
   while i < n - 1 && !found
-    decreases n - 1 - i
+    invariant 0 <= i
+    decreases !found, n - 1 - i
   {
     if s[i+1] < s[i] {
       found := true;
