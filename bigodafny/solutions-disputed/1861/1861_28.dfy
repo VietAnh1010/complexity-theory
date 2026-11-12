@@ -105,12 +105,33 @@ method Solve(a: int, b: int, c: int) returns (output: string)
     pats := branch1 + branch2;
     i := i + 1;
   }
+  // iws = [Counter(r) for r in zip(*pats)]
+  var iws: seq<map<int, int>> := seq(W, _ => map[]);
+  var t := 0;
+  while t < |pats|
+    invariant 0 <= t <= |pats|
+    invariant |iws| == W
+    invariant forall q :: 0 <= q < W ==> forall k :: k in iws[q] ==> 0 <= k < W
+    decreases |pats| - t
+  {
+    var u := 0;
+    while u < W
+      invariant 0 <= u <= W
+      invariant |iws| == W
+      invariant forall q :: 0 <= q < W ==> forall k :: k in iws[q] ==> 0 <= k < W
+      decreases W - u
+    {
+      var v := pats[t][u];
+      var cnt := if v in iws[u] then iws[u][v] else 0;
+      iws := iws[u := iws[u][v := cnt + 1]];
+      u := u + 1;
+    }
+    t := t + 1;
+  }
   var rs: seq<int> := seq(W, k requires 0 <= k < W => if k == 0 then 1 else 0);
   var row := 0;
   while row < H
     invariant |rs| == W
-    invariant forall t :: 0 <= t < |pats| ==> |pats[t]| == W
-    invariant forall t :: 0 <= t < |pats| ==> forall u :: 0 <= u < |pats[t]| ==> 0 <= pats[t][u] < W
     decreases H - row
   {
     var newrs: seq<int> := [];
@@ -120,16 +141,18 @@ method Solve(a: int, b: int, c: int) returns (output: string)
       invariant |newrs| == col
       decreases W - col
     {
+      var iw := iws[col];
       var s := 0;
-      var pi := 0;
-      while pi < |pats|
-        invariant 0 <= pi <= |pats|
-        decreases |pats| - pi
+      var keys := iw.Keys;
+      while keys != {}
+        invariant keys <= iw.Keys
+        decreases |keys|
       {
-        s := (s + rs[pats[pi][col]]) % MOD;
-        pi := pi + 1;
+        var k :| k in keys;
+        s := s + rs[k] * iw[k];
+        keys := keys - {k};
       }
-      newrs := newrs + [s];
+      newrs := newrs + [s % MOD];
       col := col + 1;
     }
     rs := newrs;

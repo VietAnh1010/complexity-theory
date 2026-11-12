@@ -62,23 +62,30 @@ import opened Prelude
 
 method Solve(n: int, k: int, s: string) returns (output: string)
 {
-  var flag := false;
+  var count: map<char, int> := map[];
   var i := 0;
   while i < |s|
     invariant 0 <= i <= |s|
     decreases |s| - i
   {
-    var cnt := 0;
-    var j := 0;
-    while j < |s|
-      invariant 0 <= j <= |s|
-      decreases |s| - j
-    {
-      if s[j] == s[i] { cnt := cnt + 1; }
-      j := j + 1;
+    var val := s[i];
+    if val !in count {
+      count := count[val := 0];
     }
-    if cnt > k { flag := true; }
+    count := count[val := count[val] + 1];
     i := i + 1;
+  }
+  var flag := false;
+  var ks := count.Keys;
+  while ks != {} && !flag
+    invariant ks <= count.Keys
+    decreases |ks|
+  {
+    var item :| item in ks;
+    if count[item] > k {
+      flag := true;
+    }
+    ks := ks - {item};
   }
   if flag {
     output := "NO";

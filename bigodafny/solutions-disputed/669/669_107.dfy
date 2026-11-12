@@ -62,27 +62,20 @@ import opened Prelude
 method Solve(n: int, a_list: seq<int>) returns (output: string)
   requires |a_list| > 0
 {
-  var mn := a_list[0];
-  var mx := a_list[0];
-  var i := 1;
-  while i < |a_list|
-    decreases |a_list| - i
-  {
-    if a_list[i] < mn { mn := a_list[i]; }
-    if a_list[i] > mx { mx := a_list[i]; }
-    i := i + 1;
-  }
+  var s := SortInts(a_list);
+  var mn := MinSeq(s);
+  var mx := MaxSeq(s);
   if mn == mx {
     output := "0 " + IntToString(n * (n - 1) / 2);
   } else {
     var cntA := 0;
     var cntB := 0;
-    i := 0;
-    while i < |a_list|
-      decreases |a_list| - i
+    var i := 0;
+    while i < |s|
+      decreases |s| - i
     {
-      if a_list[i] == mn { cntA := cntA + 1; }
-      if a_list[i] == mx { cntB := cntB + 1; }
+      if s[i] == mn { cntA := cntA + 1; }
+      if s[i] == mx { cntB := cntB + 1; }
       i := i + 1;
     }
     output := IntToString(mx - mn) + " " + IntToString(cntA * cntB);

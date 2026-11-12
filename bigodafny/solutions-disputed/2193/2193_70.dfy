@@ -62,41 +62,39 @@ import opened Prelude
 method Solve(n: int, a_list: seq<int>) returns (output: string)
   requires |a_list| >= 1
 {
-  var distinct: seq<int> := [];
+  // freq, with its keys in insertion order (Python dict order)
+  var freq: map<int, int> := map[];
+  var order: seq<int> := [];
   var i := 0;
   while i < |a_list|
     invariant 0 <= i <= |a_list|
-    invariant i >= 1 ==> |distinct| >= 1
+    invariant i >= 1 ==> |order| >= 1
+    invariant forall k :: 0 <= k < |order| ==> order[k] in freq
+    invariant forall x :: x in freq ==> x in order
     decreases |a_list| - i
   {
-    var v := a_list[i];
-    if v !in distinct { distinct := distinct + [v]; }
+    var item := a_list[i];
+    if item in freq {
+      freq := freq[item := freq[item] + 1];
+    } else {
+      freq := freq[item := 1];
+      order := order + [item];
+    }
     i := i + 1;
   }
-  assert |distinct| >= 1;
-  var counts: seq<int> := [];
+  // freq.values()
+  var vals: seq<int> := [];
   var j := 0;
-  while j < |distinct|
-    invariant 0 <= j <= |distinct|
-    invariant |counts| == j
-    decreases |distinct| - j
+  while j < |order|
+    invariant 0 <= j <= |order|
+    invariant |vals| == j
+    decreases |order| - j
   {
-    var v := distinct[j];
-    var c := 0;
-    var k := 0;
-    while k < |a_list|
-      invariant 0 <= k <= |a_list|
-      decreases |a_list| - k
-    {
-      if a_list[k] == v { c := c + 1; }
-      k := k + 1;
-    }
-    counts := counts + [c];
+    vals := vals + [freq[order[j]]];
     j := j + 1;
   }
-  assert |counts| >= 1;
-  var sortedCounts := Sort(counts, (x: int, y: int) => x > y);
-  assert |sortedCounts| >= 1;
-  var total := SumSeq(sortedCounts[1..]);
-  output := IntToString(total);
+  var l := Sort(vals, (x: int, y: int) => x > y);
+  // l.remove(l[0]) drops index 0
+  l := l[1..];
+  output := IntToString(SumSeq(l));
 }

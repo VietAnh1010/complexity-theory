@@ -90,27 +90,10 @@ method Solve(n: int, digits: seq<int>) returns (output: string)
     decreases 2 * N - i
   {
     var v := A[i];
-    var newR: seq<int> := [];
-    var j := 0;
-    var inserted := false;
-    while j < |R|
-      invariant 0 <= j <= |R|
-      invariant |newR| == j + (if inserted then 1 else 0)
-      decreases |R| - j
-    {
-      if !inserted && v <= R[j] {
-        newR := newR + [v];
-        inserted := true;
-      }
-      newR := newR + [R[j]];
-      j := j + 1;
-    }
-    if !inserted {
-      newR := newR + [v];
-    }
-    var tmp := newR[0];
+    R := HeapPush(R, v);
+    var tmp;
+    R, tmp := HeapPop(R);
     s1 := s1 + v - tmp;
-    R := newR[1..];
     SUM1 := SUM1[idx1 := s1];
     idx1 := idx1 + 1;
     i := i + 1;
@@ -132,28 +115,10 @@ method Solve(n: int, digits: seq<int>) returns (output: string)
     invariant idx2 == 2 * N - i
     decreases i - (N - 1)
   {
-    var v := -A[i];
-    var newB: seq<int> := [];
-    var j := 0;
-    var inserted := false;
-    while j < |B|
-      invariant 0 <= j <= |B|
-      invariant |newB| == j + (if inserted then 1 else 0)
-      decreases |B| - j
-    {
-      if !inserted && v <= B[j] {
-        newB := newB + [v];
-        inserted := true;
-      }
-      newB := newB + [B[j]];
-      j := j + 1;
-    }
-    if !inserted {
-      newB := newB + [v];
-    }
-    var tmp := newB[0];
+    B := HeapPush(B, -A[i]);
+    var tmp;
+    B, tmp := HeapPop(B);
     s2 := s2 + A[i] + tmp;
-    B := newB[1..];
     SUM2 := SUM2[idx2 := s2];
     idx2 := idx2 + 1;
     i := i - 1;
@@ -173,4 +138,57 @@ method Solve(n: int, digits: seq<int>) returns (output: string)
     i := i + 1;
   }
   output := IntToString(ans);
+}
+
+// heapq.heappush: append, then sift up
+method HeapPush(h0: seq<int>, x: int) returns (h: seq<int>)
+  ensures |h| == |h0| + 1
+{
+  h := h0 + [x];
+  var i := |h| - 1;
+  while i > 0
+    invariant 0 <= i < |h|
+    invariant |h| == |h0| + 1
+    decreases i
+  {
+    var p := (i - 1) / 2;
+    if h[i] < h[p] {
+      var t := h[i];
+      h := h[i := h[p]][p := t];
+      i := p;
+    } else {
+      break;
+    }
+  }
+}
+
+// heapq.heappop: take the root, move the last item to the root, sift down
+method HeapPop(h0: seq<int>) returns (h: seq<int>, top: int)
+  requires |h0| > 0
+  ensures |h| == |h0| - 1
+{
+  top := h0[0];
+  var last := h0[|h0| - 1];
+  h := h0[..|h0| - 1];
+  if |h| > 0 {
+    h := h[0 := last];
+    var i := 0;
+    while 2 * i + 1 < |h|
+      invariant 0 <= i < |h|
+      invariant |h| == |h0| - 1
+      decreases |h| - i
+    {
+      var c := 2 * i + 1;
+      if c + 1 < |h| && h[c + 1] < h[c] {
+        c := c + 1;
+      }
+      if h[c] < h[i] {
+        var t := h[i];
+        h := h[i := h[c]][c := t];
+        i := c;
+      } else {
+        break;
+      }
+    }
+  }
 }

@@ -56,43 +56,32 @@ import opened Prelude
 
 method Solve(a: int, b: int, c: int, d_list: seq<(int, int)>) returns (output: string)
 {
-  var signs: seq<int> := [];
-  var nums: seq<int> := [];
-  var dens: seq<int> := [];
+  // target[i] = (numerator, denominator) of the signed cos2, denominator > 0
+  var target: seq<(int, int)> := [];
   var i := 0;
   while i < |d_list|
     invariant 0 <= i <= |d_list|
-    invariant |signs| == i && |nums| == i && |dens| == i
     decreases |d_list| - i
   {
     var dx := d_list[i].0 - b;
     var dy := d_list[i].1 - c;
     var num := dx * dx;
     var den := dx * dx + dy * dy;
-    var sgn := if dx * dy >= 0 then 1 else -1;
-    signs := signs + [sgn];
-    nums := nums + [num];
-    dens := dens + [den];
+    var v := if dx * dy >= 0 then num else -num;
+    target := target + [(v, den)];
     i := i + 1;
   }
+  var sorted := Sort(target, (p: (int, int), q: (int, int)) => p.0 * q.1 < q.0 * p.1);
+  // itertools.groupby: one group per run of equal values
   var count := 0;
   i := 0;
-  while i < |d_list|
-    invariant 0 <= i <= |d_list|
-    decreases |d_list| - i
+  while i < |sorted|
+    invariant 0 <= i <= |sorted|
+    decreases |sorted| - i
   {
-    var isNew := true;
-    var j := 0;
-    while j < i
-      invariant 0 <= j <= i
-      decreases i - j
-    {
-      if signs[j] == signs[i] && nums[i] * dens[j] == nums[j] * dens[i] {
-        isNew := false;
-      }
-      j := j + 1;
+    if i == 0 || sorted[i].0 * sorted[i - 1].1 != sorted[i - 1].0 * sorted[i].1 {
+      count := count + 1;
     }
-    if isNew { count := count + 1; }
     i := i + 1;
   }
   output := IntToString(count);

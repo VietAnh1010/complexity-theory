@@ -76,18 +76,18 @@ method Solve(a: int, b: int, c_list: seq<int>, d_list: seq<int>) returns (output
     decreases b - i
   {
     var v := d_list[i];
-    var cnt := 0;
-    var j := 0;
-    while j < |x|
-      invariant 0 <= j <= |x|
-      invariant 0 <= cnt <= j
-      invariant j >= 1 ==> cnt >= 1
-      decreases |x| - j
+    // bisect(x, v): first index whose value exceeds v
+    var lo := 0;
+    var hi := |x|;
+    while lo < hi
+      invariant 0 <= lo <= hi <= |x|
+      invariant lo >= 1 || hi >= 1
+      decreases hi - lo
     {
-      if x[j] <= v { cnt := cnt + 1; }
-      j := j + 1;
+      var mid := (lo + hi) / 2;
+      if v < x[mid] { hi := mid; } else { lo := mid + 1; }
     }
-    var idx := cnt - 1;
+    var idx := lo - 1;
     lines := lines + [IntToString(idx + 1) + " " + IntToString(v - x[idx] + 1)];
     i := i + 1;
   }

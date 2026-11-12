@@ -65,30 +65,48 @@
 include "../../prelude.dfy"
 import opened Prelude
 
+method Valid(l: seq<int>, k: int, x: int, y: int) returns (r: bool)
+  requires 0 <= k <= |l|
+{
+  var s := 0;
+  var i := 0;
+  while i < k
+    invariant 0 <= i <= k
+    decreases k - i
+  {
+    s := s + l[i];
+    if s >= x && s <= y && SumSeq(l) - s >= x && SumSeq(l) - s <= y && s != SumSeq(l) && s != 0 && SumSeq(l) - s != 0 {
+      return true;
+    }
+    i := i + 1;
+  }
+  return false;
+}
+
 method Solve(n: int, a_list: seq<int>, x: int, y: int) returns (output: string)
 {
-  var total := 0;
-  var idx := 0;
-  while idx < |a_list|
-    decreases |a_list| - idx
+  var i := 0;
+  var broke := false;
+  while i < |a_list| && !broke
+    invariant 0 <= i <= |a_list|
+    decreases |a_list| - i, if broke then 0 else 1
   {
-    total := total + a_list[idx];
-    idx := idx + 1;
-  }
-  var s := 0;
-  var p := 0;
-  var found := false;
-  while p < |a_list| && !found
-    decreases |a_list| - p
-  {
-    s := s + a_list[p];
-    if s >= x && s <= y && (total - s) >= x && (total - s) <= y && s != total && s != 0 && (total - s) != 0 {
-      found := true;
+    var v := Valid(a_list, i, x, y);
+    if v {
+      broke := true;
+    } else {
+      i := i + 1;
     }
-    p := p + 1;
   }
-  if found {
-    output := IntToString(p + 1) + "\n";
+  if !broke {
+    i := |a_list| - 1;
+  }
+  var ok := false;
+  if i + 1 > 0 && i < |a_list| {
+    ok := Valid(a_list, i, x, y);
+  }
+  if ok {
+    output := IntToString(i + 1) + "\n";
   } else {
     output := "0\n";
   }

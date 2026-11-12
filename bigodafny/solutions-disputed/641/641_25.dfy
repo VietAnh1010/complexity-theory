@@ -78,14 +78,20 @@ method Solve(n: int, m: int, s: string) returns (output: string)
     }
     i := i + 1;
   }
-  var maxGap := -1;
+  j := SortInts(j);
+  var h: seq<int> := [];
   var f := 0;
   while f + 1 < |j|
     decreases |j| - f
   {
-    var gap := j[f+1] - j[f] - 1;
-    if gap > maxGap { maxGap := gap; }
+    h := h + [j[f+1] - j[f] - 1];
     f := f + 1;
+  }
+  h := SortInts(h);
+  var maxGap := -1;
+  if |h| > 0 {
+    maxGap := h[|h| - 1];
+    h := h[..|h| - 1];
   }
   if maxGap >= m {
     output := "NO";

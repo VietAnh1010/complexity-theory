@@ -68,27 +68,23 @@ import opened Prelude
 method Solve(s: string) returns (output: string)
 {
   var n := |s|;
+  var t := Sort(s, (x: char, y: char) => x < y);
   var flag := true;
   if n == 0 || s[0] != 'a' { flag := false; }
+  if s != t { flag := false; }
+  var dic: map<char, int> := map[];
   var i := 0;
-  while i + 1 < n
-    decreases n - i
-  {
-    if s[i] > s[i+1] { flag := false; }
-    i := i + 1;
-  }
-  var ca := 0;
-  var cb := 0;
-  var cc := 0;
-  i := 0;
   while i < n
     decreases n - i
   {
-    if s[i] == 'a' { ca := ca + 1; }
-    else if s[i] == 'b' { cb := cb + 1; }
-    else if s[i] == 'c' { cc := cc + 1; }
+    var c := s[i];
+    var cur := if c in dic then dic[c] else 0;
+    dic := dic[c := cur + 1];
     i := i + 1;
   }
+  var ca := if 'a' in dic then dic['a'] else 0;
+  var cb := if 'b' in dic then dic['b'] else 0;
+  var cc := if 'c' in dic then dic['c'] else 0;
   if ca == 0 || cb == 0 { flag := false; }
   if ca != cc && cb != cc { flag := false; }
   output := if flag then "YES" else "NO";

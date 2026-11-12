@@ -45,9 +45,37 @@ method Solve(m: int, n: int, edges: seq<seq<int>>) returns (output: string)
   requires forall k :: 0 <= k < |edges| ==> |edges[k]| >= 2
   requires |edges| == m && 1 <= n <= m
 {
-  var pairs := ToPairs1671a(edges);
-  var asc := Sort(pairs, (x: (int, int), y: (int, int)) => x.0 < y.0 || (x.0 == y.0 && x.1 > y.1));
-  var target := asc[m - n];
-  var cnt := CountPair1671a(pairs, target);
+  var A: seq<(int, int)> := [(0, 0)] + ToPairs1671a(edges);
+  var j := 2;
+  while j <= m
+    invariant |A| == m + 1
+    decreases m + 1 - j
+  {
+    var key := A[j];
+    var i := j - 1;
+    while i > 0 && (A[i].0 > key.0 || (A[i].0 == key.0 && A[i].1 < key.1))
+      invariant 0 <= i <= j - 1
+      invariant |A| == m + 1
+      decreases i
+    {
+      A := A[i + 1 := A[i]];
+      i := i - 1;
+    }
+    A := A[i + 1 := key];
+    j := j + 1;
+  }
+  A := A[1..];
+  var rev: seq<(int, int)> := [];
+  var r := |A| - 1;
+  while r >= 0
+    invariant -1 <= r < |A|
+    invariant |rev| == |A| - 1 - r
+    decreases r + 1
+  {
+    rev := rev + [A[r]];
+    r := r - 1;
+  }
+  var B := [(0, 0)] + rev;
+  var cnt := CountPair1671a(B, B[n]);
   output := IntToString(cnt);
 }

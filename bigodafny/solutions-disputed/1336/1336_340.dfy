@@ -92,27 +92,15 @@ method Solve(N: int, tree_heights: seq<int>) returns (output: string)
     }
     t := t + 1;
   }
-  var firstGroup: seq<int> := [];
-  var secondGroup: seq<int> := [];
-  var u := 0;
-  while u < |C|
-    invariant 0 <= u <= |C|
-    invariant |A| == N
-    invariant forall k :: 0 <= k < |C| ==> 0 <= C[k] < N
-    invariant forall k :: 0 <= k < |firstGroup| ==> 0 <= firstGroup[k] < N
-    invariant forall k :: 0 <= k < |secondGroup| ==> 0 <= secondGroup[k] < N
-    decreases |C| - u
-  {
-    var x := C[u];
-    assert x in C;
-    if A[x] != -1 {
-      firstGroup := firstGroup + [x];
-    } else {
-      secondGroup := secondGroup + [x];
-    }
-    u := u + 1;
-  }
-  C := firstGroup + secondGroup;
+  var A0 := A;
+  var B0 := B;
+  var less := (p: int, q: int) =>
+    !(0 <= p < |A0| && p < |B0| && A0[p] == B0[p]) &&
+    (0 <= q < |A0| && q < |B0| && A0[q] == B0[q]);
+  SortKeepsElems(C, less);
+  var C0 := C;
+  C := Sort(C, less);
+  assert forall k :: 0 <= k < |C| ==> C[k] in C0;
   var i := 0;
   while i < N
     invariant 0 <= i <= N

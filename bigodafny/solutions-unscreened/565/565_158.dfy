@@ -34,27 +34,40 @@ import opened Prelude
 method Solve(n: int, numbers: seq<int>) returns (output: string)
   requires forall k :: 0 <= k < |numbers| ==> 1 <= numbers[k] <= 100000
 {
-
-  var maxV := 100000;
-  var s := new int[maxV + 1];
-  var z := 0;
-  while z <= maxV
-  {
-    s[z] := 0;
-    z := z + 1;
-  }
+  var arr := Sort(numbers, (x: int, y: int) => x > y);
+  var m := |arr|;
+  var arrx: seq<int> := [];
   var i := 0;
-  while i < |numbers|
+  while i < m
+    invariant 0 <= i <= m
+    decreases m - i
   {
-    s[numbers[i]] := s[numbers[i]] + 1;
-    i := i + 1;
+    var count := 0;
+    var val := arr[i];
+    var i0 := i;
+    while i < m && arr[i] == val
+      invariant i0 <= i <= m
+      decreases m - i
+    {
+      i := i + 1;
+      count := count + 1;
+    }
+    arrx := arrx + [count];
   }
-  var found := false;
-  var j := 0;
-  while j <= maxV
+  var flag := 0;
+  var k := 0;
+  while k < |arrx|
+    invariant 0 <= k <= |arrx|
   {
-    if s[j] % 2 == 1 { found := true; }
-    j := j + 1;
+    if arrx[k] % 2 != 0 {
+      flag := 1;
+      break;
+    }
+    k := k + 1;
   }
-  output := if found then "Conan" else "Agasa";
+  if flag == 0 {
+    output := "Agasa";
+  } else {
+    output := "Conan";
+  }
 }

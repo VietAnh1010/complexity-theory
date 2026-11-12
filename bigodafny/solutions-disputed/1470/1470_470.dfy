@@ -68,28 +68,72 @@ import opened Prelude
 method Solve(n: int, k: int, a_list: seq<int>) returns (output: string)
   requires |a_list| == n
 {
-  var idx1 := -1;
+  var ar := a_list;
+  var t := 0;
   var i := 0;
-  while i < n && idx1 == -1
+  while i < n
     invariant 0 <= i <= n
     decreases n - i
   {
-    if a_list[i] > k { idx1 := i; }
+    if ar[i] > k {
+      t := Index1470(ar, ar[i]);
+      break;
+    }
     i := i + 1;
   }
-  if idx1 == -1 {
+  // ar.reverse()
+  var rev: seq<int> := [];
+  var r := |ar|;
+  while r > 0
+    invariant 0 <= r <= |ar|
+    invariant |rev| == |ar| - r
+    decreases r
+  {
+    rev := rev + [ar[r - 1]];
+    r := r - 1;
+  }
+  ar := rev;
+  var z := 0;
+  i := 0;
+  while i < |ar|
+    invariant 0 <= i <= |ar|
+    decreases |ar| - i
+  {
+    if ar[i] > k {
+      z := Index1470(ar, ar[i]);
+      break;
+    }
+    i := i + 1;
+  }
+  ar := SortInts(ar);
+  var s := 0;
+  i := 0;
+  while i < |ar|
+    invariant 0 <= i <= |ar|
+    decreases |ar| - i
+  {
+    if ar[i] > k { s := 1; }
+    i := i + 1;
+  }
+  if s == 0 {
     output := IntToString(n);
   } else {
-    var idx2 := n - 1;
-    var found2 := false;
-    var j := n - 1;
-    while j >= 0 && !found2
-      invariant -1 <= j <= n - 1
-      decreases j + 1
-    {
-      if a_list[j] > k { idx2 := j; found2 := true; }
-      j := j - 1;
-    }
-    output := IntToString(idx1 + (n - 1 - idx2));
+    output := IntToString(z + t);
+  }
+}
+
+// list.index: position of the first occurrence of x
+method Index1470(xs: seq<int>, x: int) returns (idx: int)
+  requires x in xs
+  ensures 0 <= idx < |xs|
+{
+  idx := 0;
+  while xs[idx] != x
+    invariant 0 <= idx < |xs|
+    invariant x !in xs[..idx]
+    decreases |xs| - idx
+  {
+    assert xs[..idx + 1] == xs[..idx] + [xs[idx]];
+    idx := idx + 1;
   }
 }

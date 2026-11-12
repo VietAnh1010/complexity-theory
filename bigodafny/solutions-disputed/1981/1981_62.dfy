@@ -75,14 +75,23 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
   var up := seq(n, i requires 0 <= i < n => 1 + i*20001);
   var down := seq(n, i requires 0 <= i < n => up[n-1-i]);
-  var i := 0;
-  while i < n
-    invariant 0 <= i <= n
+  // argsort: sorted [(l, i) for i, l in enumerate(lis)]
+  var tpls := seq(n, i requires 0 <= i < n => (a_list[i], i));
+  var less := (p: (int, int), q: (int, int)) => p.0 < q.0 || (p.0 == q.0 && p.1 < q.1);
+  var arg := Sort(tpls, less);
+  SortIsPermutation(tpls, less);
+  forall j | 0 <= j < |arg| ensures exists k :: 0 <= k < n && arg[j] == tpls[k] {
+    assert arg[j] in multiset(arg);
+    assert arg[j] in tpls;
+  }
+  var j := 0;
+  while j < n
+    invariant 0 <= j <= n
     invariant |up| == n
   {
-    var val := PyIndex(a_list[i] - 1, |up|);
-    up := up[val := up[val] + i];
-    i := i + 1;
+    var val := PyIndex(arg[j].0 - 1, |up|);
+    up := up[val := up[val] + arg[j].1];
+    j := j + 1;
   }
   output := JoinInts(up, " ") + "\n" + JoinInts(down, " ") + "\n";
 }

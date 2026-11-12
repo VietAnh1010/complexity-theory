@@ -22,6 +22,8 @@ data lines go to `old-record.jsonl` beside the file they came from.
 - `batches/verify-clean/`: 95 of 96 rows that failed `dafny verify` or used `decreases *` now
   verify without it; `1336_157` is left. `verify_all.py` ignores `decreases *` inside comments.
   `data/constraints.jsonl` quotes the limits of problems 565 and 772.
+- `batches/retranslate/`: 31 rows now follow their Python's algorithm (sort, dict, set, heap,
+  bisect); 7 audited as translation defects need no change under the model.
 - A row leaving `solutions-unverified/` goes to `solutions/` only with label verdict `ok`, else to
   `solutions-unscreened/`. `1369_10` and `1369_14` move to `solutions-unscreened/`.
 - `data/constraints.jsonl` quotes problem 1954's limits (`1 ≤ M ≤ 100`, `1 ≤ D ≤ 99`); 26 generated

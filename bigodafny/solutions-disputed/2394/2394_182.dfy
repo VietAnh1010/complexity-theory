@@ -74,28 +74,23 @@ method Solve(n: int, string_: string) returns (output: string)
   var m := |s|;
   var ans := new char[m];
   ans[0] := '1';
-  var fstLast := s[0];
-  var sndOk := true;
-  var haveSnd := false;
-  var sndLast := s[0];
+  var fstLst: seq<char> := [s[0]];
+  var sndLst: seq<char> := [];
   var i := 1;
   while i < m
     invariant 1 <= i <= m
+    invariant |fstLst| >= 1
   {
-    if fstLast <= s[i] {
-      fstLast := s[i];
+    if fstLst[|fstLst| - 1] <= s[i] {
+      fstLst := fstLst + [s[i]];
       ans[i] := '1';
     } else {
-      if haveSnd && sndLast > s[i] {
-        sndOk := false;
-      }
-      sndLast := s[i];
-      haveSnd := true;
+      sndLst := sndLst + [s[i]];
       ans[i] := '0';
     }
     i := i + 1;
   }
-  if sndOk {
+  if Sort(sndLst, (x: char, y: char) => x < y) == sndLst {
     output := "YES\n" + ans[..] + "\n";
   } else {
     output := "NO\n";

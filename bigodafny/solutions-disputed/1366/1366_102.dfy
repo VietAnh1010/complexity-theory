@@ -67,34 +67,50 @@ import opened Prelude
 
 method Solve(n: int, a_list: seq<int>) returns (output: string)
 {
-  var s := 0;
+  var p: seq<int> := [];
+  var neg: seq<int> := [];
   var i := 0;
   while i < |a_list|
     decreases |a_list| - i
   {
-    if a_list[i] > 0 { s := s + a_list[i]; }
+    if a_list[i] > 0 { p := p + [a_list[i]]; }
     i := i + 1;
   }
+  i := 0;
+  while i < |a_list|
+    decreases |a_list| - i
+  {
+    if a_list[i] < 0 { neg := neg + [a_list[i]]; }
+    i := i + 1;
+  }
+  var s := SumSeq(p);
   if FloorMod(s, 2) == 1 {
     output := IntToString(s);
   } else {
-    // sorted(n)[::-1] scanned for first odd == max odd negative (order-independent).
     var m := -10000000;
-    var j := 0;
-    while j < |a_list|
-      decreases |a_list| - j
+    var sn := SortInts(neg);
+    // sorted(n)[::-1]: walk the sorted list from the end
+    var j := |sn|;
+    while j > 0
+      invariant 0 <= j <= |sn|
+      decreases j
     {
-      if a_list[j] < 0 && FloorMod(a_list[j], 2) == 1 && a_list[j] > m {
-        m := a_list[j];
+      var x := sn[j - 1];
+      if FloorMod(x, 2) == 1 {
+        m := x;
+        break;
       }
-      j := j + 1;
+      j := j - 1;
     }
+    var sp := SortInts(p);
     j := 0;
-    while j < |a_list|
-      decreases |a_list| - j
+    while j < |sp|
+      invariant 0 <= j <= |sp|
+      decreases |sp| - j
     {
-      if a_list[j] > 0 && FloorMod(a_list[j], 2) == 1 && -a_list[j] > m {
-        m := -a_list[j];
+      var y := sp[j];
+      if FloorMod(y, 2) == 1 && -y > m {
+        m := -y;
       }
       j := j + 1;
     }

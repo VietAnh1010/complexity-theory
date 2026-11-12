@@ -24,14 +24,15 @@ import opened Prelude
 method Solve(n: int, a_list: seq<int>) returns (output: string)
   requires |a_list| > 0
 {
-  var mn := MinSeq(a_list);
-  var mx := MaxSeq(a_list);
+  var stewards := SortInts(a_list);
+  var mx := MaxSeq(stewards);
+  var mn := MinSeq(stewards);
   var help := 0;
   var i := 0;
-  while i < |a_list|
-    decreases |a_list| - i
+  while i < |stewards|
+    decreases |stewards| - i
   {
-    if mn < a_list[i] < mx {
+    if mn < stewards[i] < mx {
       help := help + 1;
     }
     i := i + 1;

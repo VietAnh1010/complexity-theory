@@ -23,19 +23,17 @@ method Solve(n: int, a_list: seq<int>) returns (output: string)
   requires n >= 1 && |a_list| == n
 {
   var total := SumSeq(a_list);
-  var bestIdx := 0;
-  var bestVal := AbsInt(a_list[0] * n - total);
-  var i := 1;
+  // a[i] = |a_list[i] - mean| scaled by n; b = [a[i], i] pairs
+  var b: seq<(int, int)> := [];
+  var i := 0;
   while i < n
-    invariant 1 <= i <= n
+    invariant 0 <= i <= n
+    invariant |b| == i
     decreases n - i
   {
-    var val := AbsInt(a_list[i] * n - total);
-    if val < bestVal {
-      bestVal := val;
-      bestIdx := i;
-    }
+    b := b + [(AbsInt(a_list[i] * n - total), i)];
     i := i + 1;
   }
-  output := IntToString(bestIdx);
+  b := Sort(b, (p: (int, int), q: (int, int)) => p.0 < q.0 || (p.0 == q.0 && p.1 < q.1));
+  output := IntToString(b[0].1);
 }

@@ -60,40 +60,38 @@ import opened Prelude
 
 method Solve(a: int, b: int, c: int, d_list: seq<(int, int)>) returns (output: string)
 {
-  var seenVertical := false;
-  var dxs: seq<int> := [];
-  var dys: seq<int> := [];
+  // Python keys the dict by the float dy/dx, or "a" when dx == 0. Here the key
+  // is (true, 0) for vertical, else (false, floor(dy * L / dx)) with
+  // L = D * D + 1, D the largest |dx|: distinct slopes differ by at least
+  // 1 / D^2, so their scaled floors differ, and equal slopes share a key.
+  var D := 0;
+  var t := 0;
+  while t < |d_list|
+    decreases |d_list| - t
+  {
+    var ax := AbsInt(d_list[t].0 - b);
+    if ax > D { D := ax; }
+    t := t + 1;
+  }
+  var L := D * D + 1;
+  var slope: map<(bool, int), int> := map[];
   var shoot := 0;
   var i := 0;
   while i < |d_list|
     invariant 0 <= i <= |d_list|
-    invariant |dxs| == |dys|
     decreases |d_list| - i
   {
     var dx := d_list[i].0 - b;
     var dy := d_list[i].1 - c;
+    var m: (bool, int);
     if dx == 0 {
-      if !seenVertical {
-        seenVertical := true;
-        shoot := shoot + 1;
-      }
+      m := (true, 0);
     } else {
-      var found := false;
-      var j := 0;
-      while j < |dxs|
-        invariant 0 <= j <= |dxs|
-        decreases |dxs| - j
-      {
-        if dys[j] * dx == dy * dxs[j] {
-          found := true;
-        }
-        j := j + 1;
-      }
-      if !found {
-        dxs := dxs + [dx];
-        dys := dys + [dy];
-        shoot := shoot + 1;
-      }
+      m := (false, FloorDiv(dy * L, dx));
+    }
+    if m !in slope {
+      shoot := shoot + 1;
+      slope := slope[m := 0];
     }
     i := i + 1;
   }

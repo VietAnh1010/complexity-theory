@@ -1,0 +1,9 @@
+solutions-disputed/647/647_11.dfy
+solutions-unscreened/700/700_99.dfy
+solutions-disputed/1180/1180_39.dfy
+solutions-disputed/1434/1434_1729.dfy
+solutions-unscreened/1742/1742_66.dfy
+solutions-disputed/1861/1861_28.dfy
+solutions-disputed/2005/2005_137.dfy
+solutions-disputed/2394/2394_182.dfy
+solutions-disputed/2947/2947_125.dfy

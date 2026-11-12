@@ -21,9 +21,7 @@ Open items only. When one is done, delete it and add a line to `CHANGELOG.md`.
 
 ## Translations
 
-- [ ] Re-translate rows that swap the Python's algorithm (`batches/verify-clean/README.md`):
-      `1671_196`, `1742_66`, `1853_137`, `1853_66`, `565_158`, `700_233`, `700_99`,
-      `1997_311`.
+- [ ] Re-prove `647_11` and `685_583`: their proofs cover the code before `batches/retranslate/`.
 - [ ] `1336_157`: `ProbeInsert` still needs `decreases *`.
 
 ## Value-bounded filing

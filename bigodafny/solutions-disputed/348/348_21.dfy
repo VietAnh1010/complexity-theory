@@ -59,19 +59,11 @@
 include "../../prelude.dfy"
 import opened Prelude
 
-function ContainsInt(xs: seq<int>, x: int): bool
-  decreases |xs|
-{
-  if |xs| == 0 then false
-  else if xs[0] == x then true
-  else ContainsInt(xs[1..], x)
-}
-
 method Solve(n: int, v_list: seq<seq<int>>) returns (output: string)
   requires forall k :: 0 <= k < |v_list| ==> |v_list[k]| >= 3
 {
-  var source: seq<int> := [];
-  var dest: seq<int> := [];
+  var source: set<int> := {};
+  var dest: set<int> := {};
   var c1 := 0;
   var c2 := 0;
   var idx := 0;
@@ -82,7 +74,7 @@ method Solve(n: int, v_list: seq<seq<int>>) returns (output: string)
     var s := v_list[idx][0];
     var d := v_list[idx][1];
     var w := v_list[idx][2];
-    if ContainsInt(source, s) || ContainsInt(dest, d) {
+    if s in source || d in dest {
       c1 := c1 + w;
       var tmp := s;
       s := d;
@@ -90,8 +82,8 @@ method Solve(n: int, v_list: seq<seq<int>>) returns (output: string)
     } else {
       c2 := c2 + w;
     }
-    source := source + [s];
-    dest := dest + [d];
+    source := source + {s};
+    dest := dest + {d};
     idx := idx + 1;
   }
   output := IntToString(if c1 < c2 then c1 else c2);

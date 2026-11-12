@@ -1,0 +1,10 @@
+solutions-disputed/348/348_21.dfy
+solutions-disputed/669/669_107.dfy
+solutions-disputed/894/894_85.dfy
+solutions-disputed/1336/1336_340.dfy
+solutions-disputed/1470/1470_325.dfy
+solutions-disputed/1827/1827_44.dfy
+solutions-disputed/1950/1950_47.dfy
+solutions-disputed/2087/2087_50.dfy
+solutions-disputed/2516/2516_236.dfy
+solutions-disputed/3029/3029_114.dfy

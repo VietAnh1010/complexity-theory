@@ -32,7 +32,12 @@ method Solve(s: string, n: int, a_list: seq<int>) returns (output: string)
     total := total + a_list[idx] * (i + 1);
     i := i + 1;
   }
-  var mx := MaxSeq(a_list);
-  total := total + mx * (n * |s| + (n * (n + 1)) / 2);
+  i := 0;
+  while i < n
+    decreases n - i
+  {
+    total := total + MaxSeq(a_list) * (|s| + i + 1);
+    i := i + 1;
+  }
   output := IntToString(total);
 }
