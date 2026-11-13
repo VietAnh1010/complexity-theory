@@ -112,15 +112,6 @@ bounded agents achieved. Each revised trajectory keeps the agent's result as
 — trajectory, relation, obstacle, audit — is in `old-record.jsonl`, with the
 file it came from.
 
-## How the agents explored
-
-All three agents opened a row before the prelude, then returned to the prelude
-about once per row: top-down, consulted on demand. Read once from the agents'
-transcripts on 2026-09-17 (commit `d3a4643`); per-row order was recoverable for
-21 of 50 rows (15 top-down, 6 never opened a shared file, 0 bottom-up), since
-most calls were Bash commands touching several files. The script and its JSON
-were removed on 2026-09-30: the transcripts no longer exist.
-
 ## Files
 
 | file | what it is |
