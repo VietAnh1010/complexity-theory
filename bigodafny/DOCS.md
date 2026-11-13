@@ -8,6 +8,7 @@ repository root is unrelated.
 | To… | Read |
 |---|---|
 | understand the dataset and its directories | `README.md` |
+| see why collection costs are fixed by rule | `COST_AXIOMS.md` |
 | change a translation or move a row | `CLAUDE.md`, then each affected directory's `README.md` |
 | review a label | `COMPLEXITY.md`, `solutions-disputed/README.md`, `batches/labelaudit/PROMPT.md` |
 | write a proof | `COMPLEXITY.md`, `solutions-proved/README.md`, `batches/CAMPAIGN_CONFIG.md` |

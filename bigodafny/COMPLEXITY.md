@@ -6,7 +6,7 @@ What a proof counts as work, and how a Dafny file proves a bound on it.
 
 Costs are fixed by rule, not timed. Dafny's Python output may copy a sequence
 on every update, but the model charges 1: timing a backend would tie every
-verdict to one compiler and language.
+verdict to one compiler and language. `COST_AXIOMS.md` records how this rule was decided.
 
 Charge 1 for integer arithmetic and comparison, a sequence index or length,
 each loop iteration, and each character a string operation produces.

@@ -162,8 +162,8 @@ not the same assertion as one about `a` over a sequence.
    banner, a § *What this rules out as a verdict*, and a schema example that no
    longer teaches the closed defect class.
 3. Re-file the queued rows mechanically; report how many moved back to `ok`.
-   **Done** — applied from `refile_decisions.jsonl`, a per-row
-   decision table with the derivation written out for each. 31 of the 58
+   **Done** — each re-filed verdict's old line is in `data/old-record.jsonl`, with the
+   decision and its derivation under `refiled`. 31 of the 58
    `translation` rows returned to `solutions/`, inside the predicted 30–40.
    Two things the prediction missed:
    - **Five rows moved the other way.** `1622_305`, `1748_145`, `1367_88`,

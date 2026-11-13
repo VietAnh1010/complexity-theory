@@ -20,6 +20,8 @@ data lines go to `old-record.jsonl` beside the file they came from.
   `prove-sample/value_vs_size_decision.jsonl`.
 - Moved `summaries/`, the outdated September run notes, out of `bigodafny/`. The `bigodafny-prove`
   skill no longer points to `proof_obstructions.md` or states a proof count.
+- `batches/cost-axioms/PLAN.md` is now `COST_AXIOMS.md`; its `refile_decisions.jsonl` is deleted, as
+  `data/old-record.jsonl` holds the same decisions under `refiled`.
 - `proofs.py` keeps a verified proof's record when its `fingerprint` (proof, row, prelude, Dafny
   and Z3 versions) is unchanged; `--all` re-verifies every proof. A proof removed mid-run is skipped.
 - `bigodafny-prove-campaign`: `sample.py --dir` draws from another status directory;

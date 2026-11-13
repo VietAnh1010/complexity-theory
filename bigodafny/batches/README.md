@@ -6,7 +6,6 @@ checked.
 | Directory | Run | Contents |
 |---|---|---|
 | `labelaudit/` | the label audit | `PROMPT.md` and the verdict files |
-| `cost-axioms/` | plan: fix collection costs by rule; drop `array<T>` | `PLAN.md` only |
 | `gate-audit/` | seven rows that, when audited, sat in `solutions/` without a passing gate result | control results (`control.jsonl`) |
 | `prove-sample/`, `prove-sample-2/` … `prove-sample-8/` | bounded proof campaigns | see `CAMPAIGN_CONFIG.md` |
 | `value-bounded-open/` | value-bounded rows with no proof yet | `MANIFEST.jsonl` |
