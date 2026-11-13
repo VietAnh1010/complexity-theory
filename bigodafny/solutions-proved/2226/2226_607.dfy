@@ -1,0 +1,175 @@
+// LABEL AUDIT -- queued for manual review, not a decision.
+//
+//   stated label   : O(nlogn)
+//   audited class  : O(n)
+//   cause          : label
+//   confidence     : high
+//   auditor        : labelaudit-r3d-06
+//
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
+//
+//   evidence:
+//     The Dafny scans the string once counting runs of 'x' with O(1)
+//     arithmetic per character, so it is O(n); the Python's only executed
+//     function is count_moves, a single loop, with no sort anywhere on the
+//     executed path.
+//
+//   how this label could be wrong, and what to check:
+//     The label O(nlogn) assumes a sort or logarithmic structure, but the
+//     Dafny has a single loop `while i < n` with O(1) work. Check the
+//     Python: only count_moves(n, name) is called, and it is one for loop;
+//     the other helpers (mod_expo, is_prime, sorting in prin_abc) are
+//     never invoked.
+//
+//   structural facts (deterministic, from label_audit.py):
+//     {"body_lines": 25, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 1,
+//     "loops": 1, "recursive_helpers": 0, "seq_append_read_in_same_loop":
+//     false, "seq_args": 1, "seq_update_in_loop": false,
+//     "set_build_in_loop": false, "sorts": [], "uses_map": false,
+//     "uses_multiset": false, "uses_set": false}
+// --------------------------------------------------------------------
+
+// 978_B. File Name  (problem 2226, solution 2226_607)
+// time complexity: O(nlogn)
+// python exact-diff baseline: exact
+//
+// Reproduce the Python program's entire stdout in `output`.
+//
+// --- Python ---------------------------------------------------------
+// from math import ceil, log, floor, sqrt
+// import math	
+// 	
+// 	
+// k = 1	
+// def mod_expo(n, p, m):
+// 	"""find (n^p)%m"""
+// 	result = 1
+// 	while p != 0:
+// 		if p%2 == 1:
+// 			result = (result * n)%m
+// 		p //= 2
+// 		n = (n * n)%m
+// 	return result
+// 	
+// def is_prime(n):
+// 	m = 2
+// 	while m*m <= n:
+// 		if n%m == 0:
+// 			return False
+// 		m += 1
+// 	return True
+// 	
+// def find_sum(n, a):
+// 	a.insert(0, 0)
+// 	for i in range(1, n+1):
+// 		prev = a[i] & a[i-1]
+// 		cur = a[i] | a[i-1]
+// 		a[i-1] = prev
+// 		a[i] = cur
+// 	return sum(m*m for m in a)
+// 
+// def prin_abc(x, y, z):
+// 	l = [x, y, z]
+// 	l.sort()
+// 	if l[1] < l[2]:
+// 		print("NO")
+// 		return 
+// 	a = b = l[0]
+// 	c = l[2]
+// 	print("YES")
+// 	print(a, b, c)
+// 	
+// def get_scores(n, vals):
+// 	l = 0
+// 	r = n-1
+// 	turn = 0
+// 	sereja = 0
+// 	dima = 0
+// 	while l <= r:
+// 		if vals[l] > vals[r]:
+// 			cur = vals[l]
+// 			l += 1
+// 		else:
+// 			cur = vals[r]
+// 			r -= 1
+// 		if turn == 0:
+// 			sereja += cur
+// 		else:
+// 			dima += cur
+// 		turn = not turn
+// 	print(sereja, dima)
+// 		
+// def count_lamps(n, m):
+// 	return (n*m + 1)//2
+// 	
+// def count_moves(n, name):
+// 	mvs = 0
+// 	cnt = 0
+// 	for i in range(n):
+// 		if name[i] == 'x':
+// 			cnt += 1
+// 		else:
+// 			mvs += max(0, cnt-2)
+// 			cnt = 0
+// 	mvs += max(0, cnt-2)
+// 	return mvs
+// 		
+// t = 1
+// #t = int(input())
+// while t:
+// 	t = t - 1
+// 	points = []
+// 	n = int(input()) 
+// 	name = input()
+// 	#a, b, k = map(int, input().split()) 
+// 	#print(discover())
+// 	# = map(int, input().split())
+// 	#a = list(map(int, input().strip().split()))[:n]
+// 	#w = list(map(int, input().strip().split()))[:k]
+// 	#for i in range(3):
+// 	#	x, y = map(int, input().split()) 
+// 	#	points.append((x, y))
+// 	#s = input()
+// 	#if solvable(n, m):
+// 	#	print("YES")
+// 	#else:
+// 	#	print("NO")
+// 	
+// 	print(count_moves(n, name))
+// --------------------------------------------------------------------
+
+include "../../prelude.dfy"
+import opened Prelude
+
+method Solve(n: int, binary_string: string) returns (output: string, ghost steps: nat)
+  requires n <= |binary_string|
+  ensures steps <= 12 * (if n > 0 then n else 0) + |output| + 10
+{
+  steps := 1;
+  var mvs := 0;
+  var cnt := 0;
+  var i := 0;
+  while i < n
+    invariant 0 <= i
+    invariant i <= (if n > 0 then n else 0)
+    invariant steps <= 1 + 12 * i
+    decreases n - i
+  {
+    if binary_string[i] == 'x' {
+      cnt := cnt + 1;
+    } else {
+      var extra := cnt - 2;
+      mvs := mvs + (if extra > 0 then extra else 0);
+      cnt := 0;
+    }
+    i := i + 1;
+    steps := steps + 12;
+  }
+  var extra2 := cnt - 2;
+  mvs := mvs + (if extra2 > 0 then extra2 else 0);
+  output := IntToString(mvs);
+  IntToStringDigits(mvs);
+  steps := steps + 6 + Digits(mvs);
+}

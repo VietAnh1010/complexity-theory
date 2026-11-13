@@ -1,7 +1,7 @@
 {
   "blockers": {
     "decreases-star": 1,
-    "no-proof": 176,
+    "no-proof": 156,
     "proof-changes-row": 11,
     "tests": 2,
     "truth-unsettled": 258,
@@ -9,7 +9,7 @@
     "unverified": 1
   },
   "clean": 368,
-  "complexity_proved": 460,
+  "complexity_proved": 480,
   "dafny_status": {
     "agrees": 94,
     "untranslated": 10,
