@@ -9,6 +9,5 @@ experiments/fuzz/runs/
 # The stage root `blind.py setup` hands to `guard.py`.
 experiments/fuzz/guard-path
 # Where run outputs lie on this machine.
-experiments/fuzz/FINDINGS.local.md
 # Arm runs (`experiments/arms/collect.py`).
 experiments/arms/runs/

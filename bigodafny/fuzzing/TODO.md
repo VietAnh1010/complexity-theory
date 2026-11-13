@@ -85,16 +85,10 @@ changes go in `fuzzing/CHANGELOG.md`.
 - [ ] (2026-10-21) `data/constraints.jsonl` quotes limits for few problems, so `fuzz`
       runs out-of-spec inputs for the rest.
 - [x] (2026-10-21) Concurrent `blind-guess` agents share one `fuzz` server; one agent ending
-      closes it under another's call (`Connection closed`, `FINDINGS.md` batch `20261021-1804`).
-      (2026-10-22) `fuzz.py` is a script again; `guard.py` lets Bash run only it. Live run
-      of 4 `20261021-1804` rows, 3 at a time: no `Connection closed`, no denials (`FINDINGS.md`).
-- [x] (2026-10-26) Design a fabricated row where code agents fail and the `fuzz` table corrects
-      them: F12, rotor walks (`experiments/fuzz/FINDINGS.md`). Catches Haiku code mode, not Sonnet.
-- [x] (2026-10-26) A fabricated row that misleads Sonnet code mode. F12's lesson: cost set by
-      global dynamics that no single loop shows. (2026-10-29) Dropped: F13-F15 (walkers, Josephus, a
-      counter walk) did not; Sonnet hand-simulates small cases and finds the mechanism (`FINDINGS.md`).
+      closes it under another's call (`Connection closed`).
+      (2026-10-22) `fuzz.py` is a script again; `guard.py` lets Bash run only it.
 - [x] (2026-10-26) `fuzz` has no time limit: a call past the Bash tool's 600 s goes to the
-      background, and reading its output voids the row (`20261026-1815`). (2026-10-28)
+      background, and reading its output voids the row. (2026-10-28)
       `--time-limit S`, default 300; `BRIEF.md` gives the cap. A call can overrun by one
       input (10 s), one compile and one loop rerun (100 s)
 - [x] (2026-10-28) `TraceBoundValue` reads only a top-level `ensures steps <= E`: 6 proofs state
@@ -106,9 +100,8 @@ changes go in `fuzzing/CHANGELOG.md`.
       over the inputs, and all 7 are restated; `fuzz` reads each bound.
 - [x] (2026-10-26) Screen proofs for loose bounds with `fuzz` inputs, not only stored tests:
       `docs/07-steptrace.md` § Screening proofs rated 163 of 321 proofs; the rest had too few
-      tests to tell. (2026-10-28) Agents wrote a `gen.py` per unrated proof: 136 of 152 rated,
-      3 loose (`704_351`, `1678_68`, `1915_158`), now tight (`bigodafny/CHANGELOG.md`). 15 have
-      constant or capped bounds, or need inputs over 10 s.
+      tests to tell. (2026-10-28) Agents wrote a `gen.py` per unrated proof:
+      3 were loose (`704_351`, `1678_68`, `1915_158`), now tight (`bigodafny/CHANGELOG.md`).
 - [x] (2026-10-28) `fuzz.py --bound` missed `method {:isolate_assertions} Solve` (12 proofs). Fixed.
 - [x] (2026-10-28) The screening fit runs over the whole grid, so a bound's constant term skews the
       slope: 0.86 on `450_276` (ratio falling to 0.125), 1.29 on `2496_30` (rising to 0.26).
@@ -131,9 +124,8 @@ changes go in `fuzzing/CHANGELOG.md`.
       even for a session in a worktree, so a guard edited in a worktree never runs.
 - [ ] (2026-10-29) `guard-path` is one file for every session: two sessions cannot run batches at once.
 - [ ] (2026-10-29) `guard.py` fails open: when `guard-path` names a deleted directory, `log_denial`
-      raises, the hook exits 1, and the call runs. Batch `20261029-1318` ran unguarded this way.
-- [ ] (2026-10-29) A harmless call in the agent's own row (`cat row.dfy`) is denied and voids it; both
-      rows of `20261029-1324` were void from their first call.
+      raises, the hook exits 1, and the call runs.
+- [ ] (2026-10-29) A harmless call in the agent's own row (`cat row.dfy`) is denied and voids it.
 - [ ] (2026-10-29) A row directory is named by its host, so a fabricated row looks like a real one,
       two arms of one row cannot share a batch, and `grade` compares with the host's label (`1807`
       marks a wrong O(n**2) ✓).

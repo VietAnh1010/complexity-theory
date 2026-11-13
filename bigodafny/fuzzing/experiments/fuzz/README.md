@@ -4,7 +4,7 @@
 
 A `blind-guess` agent names the tightest complexity class of one row's `Solve` without seeing
 the row's label. In `code` mode it reads the code only; in `fuzz` mode it can also run
-`fuzz.py`. `FINDINGS.md` holds the results.
+`fuzz.py`.
 
 ## Files
 
@@ -15,8 +15,6 @@ the row's label. In `code` mode it reads the code only; in `fuzz` mode it can al
 | `guard.py`          | the agent's hook: keeps it in its row, lets Bash run only `fuzz.py`, blocks its stop until `answer.json` is complete, logs denials to `guard.log` |
 | `guard-path`        | temporary channel: `setup` writes the stage root, `guard.py` reads it (git-ignored)          |
 | `fuzz.py`           | the agent's `fuzz` command: runs `gen.py`'s inputs on the row and prints one table of `steps` |
-| `FINDINGS.md`       | results of the runs                                                                           |
-| `FINDINGS.local.md` | where each run's outputs are on this machine (git-ignored)                                    |
 
 ## Run
 
