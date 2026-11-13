@@ -45,7 +45,7 @@ amortises to `O(n + log V)`. Its proof is sound but too loose to settle `truth`.
 
 `1276_62` (`O(n+m)`): six loops plus a `rep * K` product and an `ISqrt` invariant timed out at 30 s
 on all 3 attempts. The agent left `obstacle` null; the main agent coded it `z3-nonlinear`
-(`agent_said_obstacle: null` in the record). Its 3 attempts are under `attempts/1276/`.
+(`agent_said_obstacle: null` in the record).
 
 ## Value-bounded
 
@@ -57,7 +57,7 @@ moved to `solutions-proved/value-bounded/` with the include fixed and re-verifie
 
 `2602_57` and `2610_1259` hoisted row expressions into non-ghost temporaries, so their emitted
 Python differed from the row's. The temporaries are now `ghost var` and the row's expressions
-are back. Both re-verify; their last agent attempt stays under `attempts/`.
+are back. Both re-verify.
 
 ## Effort
 

@@ -21,7 +21,6 @@ wrong is the rule; the prelude adds `Digits`, `SumLen`, `SumDigits`,
 | path | what |
 |---|---|
 | `PROMPT.md` | the migration agent's brief |
-| `attempts/<pid>/<sid>.<n>.dfy` | every attempt that differs from the promoted proof |
 | `traj.jsonl` | one record per row, written by the agents; pilot, main, fixup slices in order |
 | `audit.jsonl` | the promotion audit of each record, same order |
 
@@ -68,8 +67,7 @@ superseded records go to `old-record.jsonl` beside the file they came from:
 - Five promoted rows (`514_140`, `1029_92`, `1029_119`, `2942_55`, `305_284`)
   were re-translated by the remote re-audit r4 the same week. Their proofs now
   carry the new code, re-charged by hand when the two lines of work were merged.
-- For the seven Z3-repaired rows the superseded proof is in `../z3-upgrade/attempts/`;
-  other superseded proofs are not kept.
+- Superseded proofs are not kept.
 
 ### What the audit rejected, and why
 

@@ -44,8 +44,7 @@ not the translation's. `1467_233` passed label audit r5 as `ok`; its `truth` is 
 
 `225_85`, `3005_182` and `397_80` declared non-ghost temporaries (`res`, `line`), so their emitted
 Python differed from their rows'. Each became a `ghost var`, and the row's original expression went
-back into the compiled assignment. All three re-verify; their last agent attempt stays under
-`attempts/`.
+back into the compiled assignment. All three re-verify.
 
 ## Effort
 

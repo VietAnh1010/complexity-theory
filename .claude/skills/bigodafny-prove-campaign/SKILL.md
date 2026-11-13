@@ -146,8 +146,7 @@ reason written out, never inside a script.
 ### 6. Collect the statistics
 
 Add the batch to `BATCHES` in `bigodafny/prove_stats.py` and run it; it writes
-`data/prove_stats.md`, and `collect.py` folds the same figures into
-`out/artifact_data.json`. Report, at minimum:
+`data/prove_stats.md`. Report, at minimum:
 
 - drawn, proved, unresolved;
 - proved rate **per label class** — the rate is not flat, and the split is the

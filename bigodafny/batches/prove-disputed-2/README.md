@@ -45,8 +45,7 @@ proof moved to `solutions-proved/value-bounded/` with the include fixed and re-v
 
 ## Fixed by the main agent before promotion
 
-Six proofs compiled to Python other than their row's. All six now match it and re-verify; their
-last agent attempt stays under `attempts/`.
+Six proofs compiled to Python other than their row's. All six now match it and re-verify.
 
 - `1047_641`, `1092_11`, `698_155`: a non-ghost temporary became `ghost var`; the row's
   original expression went back into the compiled assignment.

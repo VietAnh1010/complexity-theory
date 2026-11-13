@@ -102,7 +102,6 @@ failed, and its second and third verified. So the row failed in 1 of 2 runs.
 | `label_relation.jsonl` | each proved row's bound, relation and reason |
 | `traj_trial.jsonl`, `traj_trial2.jsonl`, `traj_main.jsonl` | records written by `stage.py collect` |
 | `traj.jsonl` | dated lines after the audit began allowing replaced invariants |
-| `attempts/` | every attempt the audit collected |
 
 ## Run notes
 

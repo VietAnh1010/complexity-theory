@@ -59,9 +59,7 @@ attempt.
 ## Fixed by the main agent before promotion
 
 `1234_71` (the resumed row) hoisted the row's output line into a non-ghost temporary. It is now
-`ghost var line` and the row's expression is back; it re-verifies, and its agent attempt stays
-under `attempts/`. `1015_129`'s agent changed "assumes" to "presumes" in a header comment after
-saving its attempt, so that attempt differs from the proof by one comment word and is kept.
+`ghost var line` and the row's expression is back; it re-verifies.
 
 ## Effort
 

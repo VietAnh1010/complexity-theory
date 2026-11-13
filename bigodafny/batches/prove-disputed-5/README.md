@@ -80,8 +80,7 @@ fixed and re-verified.
 
 `1234_634` and `1369_10` hoisted the row's output expression into a non-ghost temporary. Each
 temporary is now `ghost var` and the row's expression is back. `1234_634` then timed out until
-an `assert` equating the two appended seqs was added; both re-verify. Their agent attempts stay
-under `attempts/`.
+an `assert` equating the two appended seqs was added; both re-verify.
 
 ## Charged by formula
 

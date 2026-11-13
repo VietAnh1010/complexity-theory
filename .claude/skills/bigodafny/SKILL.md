@@ -79,11 +79,6 @@ benchmark and load-bearing for this dataset.
 | `label_audit.py` | the label describes what the code costs | `solutions/`, `solutions-disputed/` |
 | `baseline.py --round-trip` | a failing strict row is the harness's fault, not the translation's | rows `validate.py` fails |
 
-`callgraph.py` is a **measurement, not a gate**: it writes `out/call_depth.jsonl` (git-ignored),
-the longest acyclic chain from `Solve` per row, ghost declarations excluded.
-Use it to pick rows: depth 0–1 are self-contained and cheap to change; a deeper row pushes any
-edit through helper signatures.
-
 **Before an unproven obligation, ask whether the TRANSLATION is wrong.** Python
 wraps a negative subscript; Dafny faults. Three rows read a negative index on
 real inputs — they were wrong there, not merely unproven. `Prelude.PyIndex` is the fix.

@@ -57,10 +57,6 @@ clauses. It must not change what the program does.
   is its current state. Use the current schema (the `bigodafny-prove-campaign`
   skill and `vocab.py`), including `reads` (the declarations the agent read, in
   order) where required.
-- Save every proof attempt to
-  `batches/<campaign>/attempts/<problem_id>/<solution_id>.<n>.dfy`, failed
-  ones included. Once the accepted proof is copied into `solutions-proved/`,
-  delete only the attempt identical to it (ignoring the `include` line).
 
 ## Docs describe the present
 

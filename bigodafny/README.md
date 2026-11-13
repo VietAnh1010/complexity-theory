@@ -78,8 +78,6 @@ python3 label_audit.py apply FILE # move rows by verdict -> data/label_audit.jso
 python3 label_audit.py siblings   # same-problem rows whose labels differ
 # reports
 python3 prove_stats.py      # proof-campaign statistics -> data/prove_stats.md
-python3 callgraph.py        # call depth per row -> out/call_depth.jsonl
-python3 collect.py          # dashboard payload -> out/artifact_data.json (run callgraph.py first)
 # libraries, never run directly: common.py (paths, IO), features.py (static
 # facts from a .dfy), vocab.py (campaign record vocabularies)
 ```

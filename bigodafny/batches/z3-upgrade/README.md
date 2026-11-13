@@ -26,9 +26,8 @@ by `../output-length/`.
 
 ## Layout
 
-As `../output-length/`: `PROMPT.md`, `traj.jsonl` and `audit.jsonl` (slices
-a, b, c in order), `attempts/`. `unresolved/` holds the two
-proofs that still time out. Other superseded proofs are not kept.
+`PROMPT.md`, `traj.jsonl` and `audit.jsonl` (slices a, b, c in order). `unresolved/` holds the two proofs that
+still time out. Superseded proofs are not kept.
 
 ## Still open
 

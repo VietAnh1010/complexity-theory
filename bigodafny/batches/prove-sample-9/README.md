@@ -56,8 +56,7 @@ allows for a helper that recurses once per element.
 - `2627_568`: a non-ghost `var t := IntToString(...)` was inlined back into the row's
   expression, and the step update reads `lines[i - 1]`.
 
-Both re-verify. Their last agent attempt stays under `attempts/` because it differs from the
-promoted proof.
+Both re-verify.
 
 ## Effort
 

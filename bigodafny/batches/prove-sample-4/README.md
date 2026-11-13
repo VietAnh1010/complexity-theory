@@ -29,9 +29,7 @@ plain noise.
 
 The mistake was structural, not arithmetic. A label class holds 8 to 25 rows
 per campaign, so two rows move a rate by ten points, and three points on a line
-look like a trend. `collect.py` now computes `campaign_series`, which reports
-the pooled rate and a per-cell binomial test, so the next reader gets the test
-without having to think of it.
+look like a trend. Test a per-label trend against the pooled rate before reporting it.
 
 ## What survives: the obstacle, not the rate
 
