@@ -43,9 +43,8 @@ Open items only. When one is done, delete it and add a line to `CHANGELOG.md`.
 ## Labels
 
 - [ ] `2381_156`: its `O(1)` label and `ok` verdict (r3) predate the 2026-10-07
-      `IntToString` charge. Its proof bounds `2 * Digits(n) + 4`, and arms agents
-      proved `Digits(n)**2` bounds over the `Power` helper. Re-audit; if the label
-      changes, update `fuzzing/experiments/arms/manifest.jsonl` and re-judge.
+      `IntToString` charge. Its proof bounds `2 * Digits(n) + 4`. Re-audit; if the label
+      changes, update `fuzzing/experiments/arms/manifest.jsonl`.
 
 ## Gates (an agent must not change a gate that judges its own work)
 

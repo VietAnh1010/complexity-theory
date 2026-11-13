@@ -31,7 +31,8 @@ checked.
 - `verdicts_<round>.jsonl`: one verdict per line, in the order applied; a later
   line for a row replaces an earlier one. `auditor` names the batch or marks
   an override. `data/label_audit.jsonl` holds the latest verdict per row.
-- `verdicts_19.rejected.jsonl`: a batch `label_audit.py check` rejected.
+- `verdicts_io-rule*.jsonl`: verdicts re-filed when parsing (`ParseInt`, `SplitWs`) began to cost `|s|` (`COMPLEXITY.md`).
+- `verdicts_proved_<date>.jsonl`: verdicts set by a proof that corrects the label (`data/label_corrections.jsonl`).
 - Evidence batches go to `out/labelaudit/` (git-ignored).
 
 | Round | File | Date | Rules |

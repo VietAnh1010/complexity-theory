@@ -3,13 +3,15 @@
 Rows that pass their tests and `dafny verify`, where the audit answered
 `unsure`.
 Each file's header gives the candidate class, evidence, and what to check.
-Verdicts: `data/label_audit.jsonl` (from `batches/labelaudit/verdicts_r4.jsonl`).
+Verdicts: `data/label_audit.jsonl` (from `batches/labelaudit/verdicts_r4.jsonl` and `verdicts_r5.jsonl`).
 
 ## Why
 
 - `1484_82`: is a phone number's fixed width a second size?
 - `2231_77`: `O(n)` only if the 26-letter alphabet is constant, which no
   `requires` says.
+- `2680_65`: the card game runs until a deck state repeats; nothing in the code bounds the
+  number of rounds by a polynomial in n.
 
 ## Leaving
 
@@ -27,3 +29,4 @@ verdict in `data/old-record.jsonl`.
 |---|---|---|---|
 | `1484_82` | O(nlogn) | O(nlogn) | fixed string width |
 | `2231_77` | O(n) | O(n) | alphabet size |
+| `2680_65` | O(n**2+m**2) | other | number of rounds |

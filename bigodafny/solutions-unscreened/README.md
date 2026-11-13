@@ -23,7 +23,5 @@ verifies; it has no `quarantine.jsonl` entry.
 python3 label_audit.py evidence --dir solutions-unscreened --prefix unscreened
 ```
 
-Audit the batches with `batches/labelaudit/PROMPT.md`; each row then moves to
-`solutions/` or `solutions-disputed/`. `label_audit.py apply` can't move rows
-out of this directory yet: it only looks in `solutions/`,
-`solutions-disputed/` and `solutions-unsure/`.
+Audit the batches with `batches/labelaudit/PROMPT.md`, then run `label_audit.py apply` on the
+verdict file; each row moves to `solutions/`, `solutions-disputed/` or `solutions-unsure/`.

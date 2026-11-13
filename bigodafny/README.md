@@ -35,8 +35,8 @@ Each row is in exactly one of these (counts: `STATUS.md`):
 | Directory | The row… |
 |---|---|
 | `solutions/` | passes its tests and `dafny verify`; the label audit found no problem |
-| `solutions-unscreened/` | passes its tests; not yet label-audited or swept by `dafny verify` |
-| `solutions-disputed/` | has a label or translation problem to review; not swept by `dafny verify` |
+| `solutions-unscreened/` | passes its tests; not yet label-audited |
+| `solutions-disputed/` | has a label or translation problem to review |
 | `solutions-unsure/` | passes its tests and `dafny verify`; the label audit could not decide |
 | `solutions-ungateable/` | cannot get a reliable test verdict |
 | `solutions-unverified/` | passes its tests but fails `dafny verify` |

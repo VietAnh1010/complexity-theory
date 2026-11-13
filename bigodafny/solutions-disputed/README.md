@@ -12,7 +12,7 @@ does.
 
 ## Verdicts
 
-From `batches/labelaudit/verdicts_r3.jsonl` and `verdicts_r4.jsonl`
+From `batches/labelaudit/verdicts_r3.jsonl`, `verdicts_r4.jsonl` and `verdicts_r5.jsonl`
 (`batches/README.md` describes the rounds). Counts by round, cause and
 confidence are in `STATUS.md`.
 
