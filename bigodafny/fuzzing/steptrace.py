@@ -1,24 +1,13 @@
 """Run a proof copy with its ghost step counter compiled; record `steps` at program points.
 
-A proof in `solutions-proved/` counts work in a ghost `steps`, which compilation
-erases. The `DafnySteps` plugin (`DafnySteps/Deghost.cs`) makes the counter and
-everything flowing into it compiled, on Dafny's own AST, before resolution;
-`Solve` then returns `(output, steps)`.
+The `DafnySteps` plugin compiles the ghost counter; `Solve` then returns
+`(output, steps)`. `--trace` prints `steps` after each assignment to it and at
+each loop head (`--trace LINE,..` or `--trace loops` to select); points.json
+lists the points.
 
-With `--trace`, the plugin also inserts `print <point>, steps;` after each
-assignment to `steps` and at each loop head; the harness captures those prints.
-Points are listed in `points.json` by line and column of the proof's source.
-`--trace LINE,..` inserts points on those source lines only, `--trace loops` only
-at loop heads; an unselected point costs nothing at run time.
-
-The plugin also compiles Solve's contract: `TraceRequires` rejects an input
-the proof does not cover; `TraceBound`, present when Solve has an `ensures`,
-checks each run against every `ensures`, the step bound among them; `TraceBoundValue` gives the bound's
-value, so `steps / bound` shows how tight it is. A run over its proved bound means the
-compiled counter does not count what the proof counts. If the contract does
-not compile (a ghost-only predicate), the build is retried without it.
-
-`DafnySteps deghost` prints the program the plugin compiles, for reading.
+The plugin also compiles Solve's contract: `TraceRequires` rejects an uncovered
+input, `TraceBound` checks every `ensures`, `TraceBoundValue` gives the bound's
+value. A contract that does not compile is dropped and the build retried.
 """
 from __future__ import annotations
 import argparse, json, subprocess, sys

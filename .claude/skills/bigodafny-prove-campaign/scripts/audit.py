@@ -1,15 +1,10 @@
 #!/usr/bin/env python3
 """Check a prove campaign's trajectories against the verifier, not the reports.
 
-Run `python3 proofs.py` first -- it re-verifies every file in
-`solutions-proved/` from scratch and writes `data/complexity_proofs.jsonl`.
-This script joins that output to the campaign's manifest and trajectories and
-reports every place they disagree.
+Run `python3 proofs.py` first; this joins its output to the campaign's manifest
+and trajectories and reports every disagreement.
 
     python3 audit.py --batch batches/prove-sample-2 --repo .
-
-An agent's own report is not evidence. In the first campaign one agent's prose
-said 9 proved where its trajectory said 10, and the files said 10.
 """
 
 import argparse
@@ -43,12 +38,7 @@ def read_jsonl(path):
 
 
 def jsonl_problems(path):
-    """One JSON object per line, or say which line breaks that.
-
-    prove-sample-5's slice C wrote pretty-printed JSON spanning 59 lines for
-    16 rows. Every consumer of the file raised instead of reporting, so the
-    trajectory looked lost when it was only misformatted.
-    """
+    """One JSON object per line, or say which line breaks that."""
     if not os.path.exists(path):
         return [f"{os.path.basename(path)}: missing"]
     out = []
@@ -69,13 +59,8 @@ DAFNY = "dafny"   # on PATH; dafny finds z3 on PATH itself
 
 
 def emitted_python(repo, path):
-    """The Python `dafny translate py` emits for the file's own module.
-
-    Ghost code is erased, so a proof that only adds annotations emits the same
-    Python as its row; compare through normalise(). Cached under
-    .cache/emitted_py/ by the file's and the prelude's content. Returns
-    (text, None) or (None, error).
-    """
+    """The Python `dafny translate py` emits for the file's own module, as
+    (text, None) or (None, error). Cached in .cache/emitted_py/ by content."""
     with open(path, "rb") as fh:
         src = fh.read()
     with open(os.path.join(repo, "prelude.dfy"), "rb") as fh:
@@ -87,8 +72,7 @@ def emitted_python(repo, path):
             return fh.read(), None
     with tempfile.TemporaryDirectory() as tmp:
         out = os.path.join(tmp, "m")
-        # --no-verify: proofs.py is the verifier; translating under load must
-        # not turn a solver timeout into a failed identity check
+        # --no-verify: a solver timeout must not fail the identity check
         r = subprocess.run([DAFNY, "translate", "py", path, "--no-verify",
                             "--output", out],
                            capture_output=True, text=True, timeout=600)
@@ -226,12 +210,8 @@ def main():
             traj[sid]["relation"] = row.get("relation")
             traj[sid]["relation_reason"] = row.get("reason", "")
 
-    # A rerun proves each row afresh in rerun/<pid>/<sid>.dfy, away from the
-    # overlay, and rerun/verify.jsonl is the verifier's result on those files
-    # until they are promoted (a normalised batch has neither).
-    # An existing overlay proof is deliberately NOT consulted for a rerun row:
-    # the retry must not use it, so "unresolved while a proof exists" is the
-    # expected case there, listed rather than failed.
+    # A rerun's proofs sit in rerun/<pid>/<sid>.dfy with their verdicts in
+    # rerun/verify.jsonl. An existing overlay proof is not consulted for them.
     rerun_verify = {
         r["solution_id"]: r
         for r in read_jsonl(f"{args.batch}/rerun/verify.jsonl")
@@ -239,9 +219,7 @@ def main():
     not_used, not_promoted = [], []
 
     rows, problems, no_reads = [], list(schema_problems), []
-    # Every attempt's .dfy is kept under attempts/ once the brief says so.
-    # Enforced only for campaigns whose brief carries the rule: campaigns 1-8
-    # predate it and deleted their failed attempts.
+    # Every attempt is kept under attempts/, enforced only when the brief says so.
     import glob as _glob
     keeps_attempts = any("/attempts/<pid>/<sid>.<n>.dfy" in open(f).read()
                          for f in _glob.glob(os.path.join(args.batch, "PROMPT_*.md")))
@@ -278,8 +256,7 @@ def main():
             problems.append(f"{sid}: no trajectory entry")
         elif rerun:
             rv = rerun_verify.get(sid, {})
-            # a rerun proof promoted into the overlay is judged there, like any
-            # other proof
+            # a promoted rerun proof is judged in the overlay
             if str(rerun.get("proof") or "").startswith("solutions-proved/"):
                 rv = {"verified": verified, "assume_count": (p or {}).get("assume_count", 0)}
                 rec["rerun_proof_verified"] = verified if claimed == "proved" else None
@@ -316,16 +293,12 @@ def main():
             elif len(kept) < (t.get("attempts_used") or 0):
                 problems.append(f"{sid}: {t.get('attempts_used')} attempts recorded, "
                                 f"{len(kept)} kept under attempts/{pid}/")
-        # The reading trace. Reported, never repaired: a `reads` array is a
-        # record of what an agent actually opened, so a missing one can only
-        # be counted, not filled in afterwards.
+        # A missing `reads` is reported, never filled in.
         if t is not None and not t.get("reads"):
             no_reads.append(sid)
 
-    # A proof must be a proof of the row as written. Output-equivalence is not
-    # enough: campaign 7's rerun had four verified proofs that added non-ghost
-    # counters or restructured an append. Ghost code is erased on compilation,
-    # so the row and an annotation-only proof emit identical Python.
+    # Ghost code is erased, so a proof that only adds annotations emits the
+    # same Python as its row.
     jobs = {}
     for sid, m in manifest.items():
         found = glob.glob(os.path.join(args.repo, "solutions-proved", "**",
@@ -360,10 +333,7 @@ def main():
         if name.startswith("traj_") and name.endswith(".jsonl"):
             problems.extend(jsonl_problems(os.path.join(args.batch, name)))
 
-    # An agent deleting a proof that is not its own. prove-sample-5's slice C
-    # removed solutions-proved/2914/2914_264.dfy -- a verified proof for a
-    # DIFFERENT solution of the problem it was working on -- while cleaning up
-    # its own failed 2914_3. Only `git status` caught it.
+    # An agent deleting a proof that is not its own.
     deleted = subprocess.run(
         ["git", "diff", "--name-only", "--diff-filter=D", "HEAD",
          "--", "bigodafny/solutions-proved"],
@@ -374,9 +344,7 @@ def main():
         if sid not in manifest:
             problems.append(f"{path}: proof deleted, and {sid} is not in this batch")
 
-    # A row drawn although it already had a proof. The sampler missed
-    # solutions-proved/value-bounded/ for one campaign and 12 rows rejoined the
-    # pool; two were redrawn and one agent spent its budget rediscovering that.
+    # A row drawn although it already had a proof.
     for sid in manifest:
         found = [p for p in glob.glob(
             os.path.join(args.repo, "solutions-proved", "**", f"{sid}.dfy"),
@@ -405,9 +373,7 @@ def main():
         "by_relation": {},
         "obstacles": {},
         "problems": problems,
-        # `proved` above is the verifier's view of the rows as they stand now.
-        # A row the main agent proved after the campaign counts there, not here: this
-        # block is what the campaign's bounded agents achieved.
+        # What the campaign's agents achieved; `proved` above is the state now.
         "campaign": {
             "proved": sum(1 for r in rows if r["agent_outcome"] == "proved"),
             "unresolved": sum(1 for r in rows if r["agent_outcome"] != "proved"),

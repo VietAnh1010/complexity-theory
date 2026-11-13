@@ -6,22 +6,9 @@ only; it never touches `solutions/` or `solutions-proved/`.
 
     python3 sample.py --batch batches/prove-sample-2 --n 50 --seed 20260921 --slices 3
 
-A row is eligible when all three hold:
-
-  * its `.dfy` lives in `solutions/` (the clean partition),
-  * `data/index.jsonl` gives it a time-complexity label,
-  * it passes its own gate -- `validate.py` says `valid` for a strict row,
-    `difftest.py` says `agrees` for a loose row, and `dataset.py` has not
-    marked it `unvalidatable`,
-
-and it has no proof overlay in `solutions-proved/`.
-
-`--exclude-drawn` additionally skips every row an earlier campaign drew, so
-the sample is over rows no campaign has touched. Use it once the repeat rate
-climbs: by campaign 6 a plain draw was 28% rows that had already failed.
-
-The eligible pool is sorted by solution id before sampling, so the seed alone
-determines the draw.
+Eligible: in `solutions/` (or `--dir`), labelled, passing its own gate, and not
+in `solutions-proved/`. `--exclude-drawn` also skips rows an earlier campaign
+drew. The seed alone determines the draw.
 """
 
 import argparse
@@ -62,12 +49,7 @@ def dfy_files(root):
 
 
 def dfy_files_deep(root):
-    """Every .dfy anywhere under root, at any depth.
-
-    The proof overlay has subdirectories (value-bounded/), and a flat listing
-    misses them: it once let 12 proved rows rejoin the pool as if unproved.
-    Enumerate the tree; do not maintain a list of subdirectory names.
-    """
+    """Every .dfy anywhere under root, at any depth (value-bounded/ included)."""
     found = {}
     for dirpath, _, names in os.walk(root):
         for name in names:
@@ -96,24 +78,11 @@ def main():
     }
     validation = load_jsonl(os.path.join(repo, "data/validation.jsonl"))
     difftest = load_jsonl(os.path.join(repo, "data/difftest.jsonl"))
-    # dataset.py already decides which gate a row gets, and marks the rows no
-    # gate can judge `unvalidatable` -- its `parser_ok` runs the problem's own
-    # from_str over every stored test. Read that rather than re-deriving it:
-    # reading validation.jsonl alone reports such a row as "gate missing",
-    # which is a fact about the file, not about the row.
+    # dataset.py decides each row's gate and marks the `unvalidatable` ones.
     dataset = load_jsonl(os.path.join(repo, "data/dataset.jsonl"))
 
-    # Rows an earlier campaign already drew. A row that FAILED stays in the
-    # pool, so by campaign 6 nearly a third of a plain draw was rows already
-    # known to be hard, and the sample had drifted from "a random row of the
-    # corpus" to "a random row of what is left".
-    #
-    # --exclude-drawn restores the first question. Rows never drawn were never
-    # selected on: earlier campaigns removed a RANDOM subset (the ones they
-    # proved) and left a non-random one (the ones they failed), so the
-    # never-drawn remainder is an unbiased sample of the original population
-    # and comparable with campaign 1. The rows it skips are recorded, not
-    # dropped quietly.
+    # Failed rows stay in the pool; --exclude-drawn keeps the draw an unbiased
+    # sample of the original population. Skipped rows are counted.
     already_drawn = set()
     for f in sorted(glob.glob(os.path.join(
             repo, "batches", "prove-sample*", "manifest.jsonl"))):
@@ -122,9 +91,6 @@ def main():
                 already_drawn.add(json.loads(line)["solution_id"])
 
     solutions = dfy_files(os.path.join(repo, args.dir))
-    # solutions-proved/ is an overlay over the partition, not a member of it.
-    # Walked to any depth, so a new variant subdirectory cannot leak proved
-    # rows back into the pool.
     proved = set(dfy_files_deep(os.path.join(repo, "solutions-proved")))
 
     pool, excluded = [], []
@@ -149,8 +115,7 @@ def main():
             gate = validation.get(sid, {}).get("status")
             ok = gate == "valid"
         if not ok:
-            # A row in solutions/ whose latest recorded gate result is negative
-            # or missing. Not drawn, and not dropped silently either.
+            # gate result negative or missing
             skipped["gate"] += 1
             excluded.append(
                 {"solution_id": sid, "why": "gate", "split": split, "gate": gate}
