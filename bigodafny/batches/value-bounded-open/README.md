@@ -8,7 +8,7 @@ There are no `.dfy` files here, because there is nothing proved to hold.
 `MANIFEST.jsonl` names each row, where it lives, the campaign that found it,
 and the obstacle that stopped it. The rows themselves are untouched in their
 status directories and still pass their behaviour gate; what is missing is a
-complexity proof, not a translation. History: `../../CHANGELOG.md`.
+complexity proof, not a translation.
 
 ## The rows
 

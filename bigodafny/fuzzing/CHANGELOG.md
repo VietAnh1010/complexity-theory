@@ -1,49 +1,27 @@
 # Changelog
 
-What changed in `fuzzing/`, newest first, one dated section per session and one bullet
-per change. Open work is in `TODO.md`.
+Changes to `fuzzing/`'s cost charges, judging rules and tool behaviour that records depend on,
+newest first. Open work is in `TODO.md`.
 
 ## 2026-11-13
 
-- `experiments/fuzz/FINDINGS.md` and `FINDINGS.local.md` leave `fuzzing/`: their runs stay local, so
-  nothing here cites them.
-- `steptrace.py` and `DafnySteps/*.cs`: shorter comments; code unchanged.
+- This changelog keeps only changes that records depend on.
 
 ## 2026-11-12
 
 - `DafnySteps/CostModel.cs`: a prelude `ISqrt(x)` call costs `ISqrtSteps(x)` (`bigodafny/COMPLEXITY.md`).
-- `experiments/arms/manifest.jsonl`: batch 4 split into `4a` (5 rows: the first row of each
-  stratum plus the second `nlogn` row) and `4b` (the other 10), so a short run reaches 50 rows.
 
 ## 2026-11-11
 
-- `experiments/arms/manifest.jsonl`: `1011_368` takes its corrected label `O(n**0.5)` (stratum
-  `rare`) and `276_1206` its corrected `O(n)` (stratum `easy`); the draw had used BigOBench's
-  labels for both. Batch 1's `traj.jsonl` copies were updated to match.
-- `experiments/arms/JUDGE.md`: `class_ok` accepts truth's class as a function of the inputs,
-  including a sum of sizes and a tie the row enforces, as the briefs state no naming rule. Batch 1
-  re-judged under it.
 - `experiments/arms/`: four agent arms (`full`, `nofuzz`, `noguess`, `base`) on one stratified
-  60-row manifest, each with its brief, its hook and agent type `arms-<arm>`; `setup.py`,
-  `collect.py`, `report.py`. Imports `stage.py`, `prove_guard.py` and `blind.py` unchanged.
-- `experiments/arms/`: after a 4-row trial, every brief asks for the class ignoring the statement's
-  upper limits on sizes, `base`'s `class` excludes the `|output|` term, and every brief says to read
-  files with Read and Grep. The trial rows and runs are deleted.
-- `experiments/arms/`: each brief lists its arm's tools; `JUDGE.md` has an Opus agent judge each proved
-  bound against `truth` from the runs; the README's run steps are for a fresh session per batch;
-  `full`'s brief says a `fuzz --bound` E may name `|output|`. A second trial ran clean.
-- `experiments/arms/`: the 4 trial rows stay in `manifest.jsonl` as batch `trial`; `report.py` skips it and
-  `collect.py` replaces its earlier run. A third trial ran clean.
-- `experiments/arms/`: every arm has a 5-minute clock, not 30; `full`'s `fuzz` calls carry
-  `--time-limit 60`, which its hook requires.
-- `experiments/arms/`: the hook stores whether each verify run passed, in `budget.json`'s `results`,
-  and keeps the agent from stopping while `result.json` contradicts it. In batch 1's first run, two
-  `full` agents named a failed run as `best_attempt`; that run moved to `runs/pilot/`.
-- `experiments/arms/`: the briefs are about half as long (`full` 232 to 120 lines), with the same
-  rules, fields and prelude hints. The README is rewritten in plainer words.
-- `experiments/arms/`: `full`'s hook denies writing `result.json` before the first `fuzz` call, and
-  its Bash denial names the `fuzz` command too. In a trial, 2 of 4 `full` agents skipped `fuzz` after a
-  denial that named only `dafny verify`.
+  60-row manifest, each with its brief, its hook and agent type `arms-<arm>`.
+- `experiments/arms/manifest.jsonl`: `1011_368` takes its corrected label `O(n**0.5)` (stratum
+  `rare`) and `276_1206` its corrected `O(n)` (stratum `easy`).
+- `experiments/arms/JUDGE.md`: `class_ok` accepts truth's class as a function of the inputs,
+  including a sum of sizes and a tie the row enforces, as the briefs state no naming rule.
+- `experiments/arms/`: every arm has a 5-minute clock; `full`'s `fuzz` calls carry
+  `--time-limit 60`, which its hook requires. The hook keeps the agent from stopping while
+  `result.json` names a failed run as `best_attempt`.
 
 ## 2026-10-29
 
@@ -52,96 +30,22 @@ per change. Open work is in `TODO.md`.
 
 ## 2026-10-28
 
-- Doc 07 § Screening proofs: `fuzz` reads a proof's one top-level `ensures steps <= E`; the
-  `--bound` workaround for `ensures var` and `==>` bounds is gone with those forms.
-- `fuzz.py --bound` finds `Solve` after an attribute, as in `method {:isolate_assertions} Solve`.
-- Doc 07 § Screening proofs rates the proofs stored tests cannot with `fuzz` inputs.
-- Docs 01, 06, 07, `Deghost.cs` and `steptrace.py` describe `TraceBound` as absent without an
-  `ensures`, `trace=loops`, `counter=NAME` and the `fuzz` time limit.
-- `steptrace.py --trace LINE,..` prints no points table when no point is on those lines.
+- `fuzz` reads a proof's one top-level `ensures steps <= E`.
 - `annotate` charges `var x :| x in S` 1, one step of iterating `S`; any other compiled `:|` still
-  stops it. Golden cases `such_that`, `unsupported_such_that`.
-- `steptrace.py --counter NAME` and `fuzz.py --counter NAME` run a `.dfy` whose counter is not
-  `steps`, such as `annotate counter=NAME`'s output for a row that already declares `steps`.
-  `fuzz.py --bound` adds `ensures NAME <= E`. `guard.py` does not accept `--counter`.
-- `steptrace.py` has no `--log` and no `LOG_CAP`; nothing used them.
-- `fuzz.py --bound` writes its copy as `.bound.dfy`, not `.bound-<k>.dfy`, so every call reuses one
-  build directory; each call left two new ones in `.build/`.
-- `experiments/fuzz/README.md` § Fabricated rows no longer asks for a host whose parser accepts a
-  final newline: `fuzz.py` ends inputs as the host's stored tests do.
-- `steptrace.py`'s harness imports Dafny's `module_.default__` once, as `row`, and detects each
-  contract check with `hasattr`; `build` no longer returns whether contracts compiled.
+  stops it.
 - `deghost contracts` adds no `TraceBound` when `Solve` has no `ensures`, so `steptrace.py`
-  reports no `bound_ok` for such a row, not `true`. Seven golden outputs lose the method.
-- `steptrace.build`'s `trace` is `None`, `all`, `loops` or `LINE,..`. The default counter, the
-  build directory (`steptrace.BIN`) and `guard.MARKER` are each defined once. Behaviour is unchanged.
-- The plugin's `trace=loops` traces loop heads only; `Deghost.TraceKinds`, the point kinds to
-  insert, replaces the `Trace` flag. `fuzz.py` uses it for the loop reruns, so a call compiles
-  the row twice, not 3 times.
+  reports no `bound_ok` for such a row.
 - `fuzz.py` ends a generated input with a newline only if one of the row's stored tests ends
-  with one; it added one to every input, which broke parsers like `2183_1`'s.
+  with one.
 - `fuzz.py --time-limit S` (default 300) skips inputs and loop reruns not started within
-  S seconds and counts the inputs as `time-limit`. `BRIEF.md` gives agents the cap (`{{TIME_LIMIT}}`);
-  `guard.py` does not accept the flag.
+  S seconds and counts the inputs as `time-limit`.
 
 ## 2026-10-26
 
 - `BRIEF.md` lists `O(n**1.5)` among the class forms, and `guard.py` accepts a `.` in a class.
-  Before, the Stop hook blocked every `O(n**1.5)` and `O(n**0.5)` answer once.
-- `experiments/fuzz/README.md` § Fabricated rows: how to write, measure and stage one.
-
-## 2026-10-22
-
-- `TODO-fuzzing.md` is `TODO.md`, as the directory already names it.
-- `fuzz.py`, `guard.py` and `blind.py` are split into named helpers; `BRIEF.md` and the
-  README are reworded. Behaviour is unchanged.
-- `fuzz.py --bound 'E'` runs the row with `ensures steps <= E` added to `Solve`. `guard.py`
-  accepts `--per` and `--bound` in any order.
-- `fuzz` call k writes `attempts/<k>/table.txt`: the `.dfy`, E, the attempt holding the `gen.py`
-  that ran, and the table. It copies `gen.py` there only when it changed.
-- A fuzz row's `answer.json` has `skipped`; `guard.py` requires it. `grade` adds `fuzz_calls`,
-  `bound_tests` and `gen_versions`, and a fuzz calls column.
-- Batches are named by setup time, `YYYYMMDD-HHMM`: `runs/b10` is `runs/20261021-1804`,
-  `runs/live` is `runs/20261022-1236`.
-- `setup` writes one shared `prelude.dfy` per batch; `guard.py` lets Read and Grep open it.
-- Run output locations go in `experiments/fuzz/FINDINGS.local.md` (git-ignored).
-- `fuzz` is a script again: `fuzz_mcp.py` is `fuzz.py DFY GEN [--per N]`, which prints the table.
-  `blind-guess.md` starts no MCP server, so concurrent agents share nothing.
-- `blind-guess` has Bash. `guard.py` allows one command, `CMD DFY GEN [--per N]`, where `CMD`
-  is the venv's Python and the path of `fuzz.py`. Both files must be in the agent's own row,
-  and the call must not run in the background. Bash is denied in `code` mode.
-- `setup` writes `CMD` into `BRIEF.md` (`{{FUZZ}}`). `BRIEF.md` gives the command and a Bash
-  timeout of 600 s.
-- `steptrace.build` names a file's build directory by the file's name too, so `row.dfy` and
-  `round-k.dfy` of one row can build at the same time.
 
 ## 2026-10-21
 
-- The blind experiment only guesses the class; the prove brief, `GUESS.md` and `CLOUD.md`
-  are gone. Modes `code` and `fuzz`.
-- `blind.py setup|grade` replaces `stage.py` and `grade.py`; paths are explicit
-  (`--dir`, `--out`).
-- `BRIEF.md` is one template with a block per mode, and ends with the problem statement;
-  `statement.txt` is gone.
-- `setup` hands its `--dir` to `guard.py` through `experiments/fuzz/guard-path` (git-ignored).
-- The agent `blind-fuzz` is renamed `blind-guess`.
-- `fuzz` is an MCP tool (`fuzz_mcp.py`) that `blind-guess.md` starts; it replaces the
-  generated `./fuzz` script and `run.py`. The agent has no Bash.
-- `fuzz` no longer runs the stored tests or writes `run-<file>/`; `gen.py` runs in a
-  child process.
-- `guard.py` allows only listed tools, each with its path arguments, including
-  `SubagentHandback`.
-- `gen.py` is trusted: `BRIEF.md` says it only builds input text, and `grade` no longer
-  scans it.
-- An input `data/constraints.jsonl` rejects is counted `out-of-spec`, not `limits`.
-- `answer.json` has `example`; `worst_case` and `reasoning` use the code's variables and loops.
-- `grade` shows `-` for a missing answer, and the `(void)` legend only when a row is void.
-- `stepfuzz.py`, `docs/08-stepfuzz.md` and the `./trace` wrapper are deleted; docs 09 and 10
-  are now 08 and 09.
-- `BRIEF.md` fixes the form of `class` to the labels' (`O(nlogn)`, `O(n**2)`, `O(n*m)`);
-  `grade` adds `match`, and `✓` in its table.
-- `guard.py` is also the agent's Stop hook: it blocks the stop until `answer.json` has every
-  key and `class` in form; after 3 blocks it fails and logs the row void.
-- `fuzz` adds a missing final newline to each input, as Python's `input()` allows it, and shows
-  the first `parse` error.
-- `fuzzing/AGENTS.md`: ignore rules for `fuzzing/` go in `fuzzing/.gitignore`.
+- The blind experiment only guesses the class, in modes `code` and `fuzz`.
+- `BRIEF.md` fixes the form of `class` to the labels' (`O(nlogn)`, `O(n**2)`, `O(n*m)`).
+- An input `data/constraints.jsonl` rejects is counted `out-of-spec`.

@@ -1,162 +1,67 @@
 # Changelog
 
-What changed in the corpus, its rules, or its tools, newest first. One bullet
-per change. State documents (`CLAUDE.md`, `DOCS.md`, `COMPLEXITY.md`, the
-`solutions*/README.md` files, the skills) describe only the present; when a
-change lands, update them and add a bullet here.
+Changes to the rules, the cost model and the gates, newest first. Records follow the rules of
+their day: check a record's date here before reusing it. State documents (`CLAUDE.md`, `DOCS.md`,
+`COMPLEXITY.md`, the `solutions*/README.md` files, the skills) describe only the present; when a
+rule changes, update them and add a dated bullet here.
 
-A campaign's own run record stays in `batches/<campaign>/README.md`. Superseded
-data lines go to `old-record.jsonl` beside the file they came from.
+A campaign's own run record stays in `batches/<campaign>/README.md`. Superseded data lines go to
+`old-record.jsonl` beside the file they came from.
 
 ## 2026-11-13
 
-- Removed every reference to a git commit, in docs and in record strings (`old proof is git ...`):
-  this tree ships without its history.
-- Agent proof campaigns stopped after `prove-disputed-5`. `DOCS.md` points to
-  `batches/clean-636/README.md` for the open pieces.
-- `prove_stats.py` counts `prove-sample-12`.
-- Each campaign keeps one `PROMPT.md` with a `{{SLICE}}` placeholder; the per-slice copies, which
-  differed only in the slice letter, and `prove-sample-3`'s resume briefs are deleted.
-- Deleted the agent worklists (`w_*.txt`) of `retranslate`, `isqrt` and `verify-clean` (its README
-  now lists the rows), `prove-hard/trial-1.jsonl`, `gate-audit/difftest_1501_224.json` and
-  `prove-sample/value_vs_size_decision.jsonl`.
-- Moved `summaries/`, the outdated September run notes, out of `bigodafny/`. The `bigodafny-prove`
-  skill no longer points to `proof_obstructions.md` or states a proof count.
-- `batches/cost-axioms/PLAN.md` is now `COST_AXIOMS.md`; its `refile_decisions.jsonl` is deleted, as
-  `data/old-record.jsonl` holds the same decisions under `refiled`.
-- Moved `batches/guess-prove-labeled/` and `guess-prove-blind/` out of `bigodafny/`: their measured
-  classes came from fuzz runs that are not in the tree.
+- Agent proof campaigns stopped after `prove-disputed-5`; `batches/clean-636/README.md` lists the
+  open pieces.
+- This changelog keeps only rule, cost-model and gate changes.
 - `proofs.py` keeps a verified proof's record when its `fingerprint` (proof, row, prelude, Dafny
-  and Z3 versions) is unchanged; `--all` re-verifies every proof. A proof removed mid-run is skipped.
+  and Z3 versions) is unchanged; `--all` re-verifies every proof.
 - `bigodafny-prove-campaign`: `sample.py --dir` draws from another status directory;
   `PROMPT_disputed.md`, appended to the brief for `solutions-disputed/` rows, asks for the tightest bound.
-- Deleted the archived `experiments/` (with `proofs-blind/`), the `transcripts/` of `output-length`
-  and `z3-upgrade`, and `prove-hard`'s guard logs: they held machine-local paths and nothing read them.
 
 ## 2026-11-12
 
 - `dataset.py` gives each row `blockers` and `clean`; `stats.json` counts them. A row is clean when
   it has no blocker (`STATUS.md` § Clean rows).
-- `verify_all.py` sweeps every status directory except `solutions-untranslated/`; `--unscreened` is
-  gone. `--move` moves only `solutions/` rows, so a disputed or unscreened row keeps its directory.
-  The first full sweep fails 73 unscreened rows, never verified before.
-- `proofs.py` records `same_python` and `requires_changed` (on `Solve`) for every proof, using
-  `audit.py`'s checks, and fails when a proof changes its row; `dataset.py` adds blocker
-  `proof-changes-row`. 40 rows take the `requires` their proof had added (`precheck.py`: all hold);
-  `2496_30` stays flagged (`TODO.md`).
-- `batches/verify-clean/`: 95 of 96 rows that failed `dafny verify` or used `decreases *` now
-  verify without it; `1336_157` is left. `verify_all.py` ignores `decreases *` inside comments.
-  `data/constraints.jsonl` quotes the limits of problems 565 and 772.
-- `1387_34` and `1336_157` rename their own `steps` variable (`moves`, `probeCount`), so
-  `annotate` accepts them with its default counter name.
+- `verify_all.py` sweeps every status directory except `solutions-untranslated/`. `--move` moves
+  only `solutions/` rows, so a disputed or unscreened row keeps its directory. It ignores
+  `decreases *` inside comments.
+- `proofs.py` records `same_python` and `requires_changed` (on `Solve`) for every proof, and fails
+  when a proof changes its row; `dataset.py` adds blocker `proof-changes-row`.
 - `prelude.dfy`: `ISqrt` is compiled, and a call costs `ISqrtSteps(x)`, bounded by
-  `ISqrtStepsBound` (`COMPLEXITY.md`). `batches/isqrt/`: the 16 rows whose Python takes a square
-  root call it, one call per root.
-- `batches/retranslate/`: 31 rows now follow their Python's algorithm (sort, dict, set, heap,
-  bisect); 7 audited as translation defects need no change under the model.
+  `ISqrtStepsBound` (`COMPLEXITY.md`).
 - A row leaving `solutions-unverified/` goes to `solutions/` only with label verdict `ok`, else to
-  `solutions-unscreened/`. `1369_10` and `1369_14` move to `solutions-unscreened/`.
-- `data/constraints.jsonl` quotes problem 1954's limits (`1 ≤ M ≤ 100`, `1 ≤ D ≤ 99`); 26 generated
-  tests with negative values are skipped.
-
-## 2026-11-05
-
-- `data/prove_stats.md` drops the campaign-recorded relations, the per-row revision list, the
-  repeat-draw table, the corpus counts and the claims that disputed rows were never drawn and that
-  failing rows run the clock out. `prove_stats.payload()` keeps its fields for `collect.py`.
-
-## 2026-11-03
-
-- `batches/prove-retry/`: 33 of the 39 open rows are proved, each on `annotate`'s charges, because
-  agents' hand-written charges proved too low. Seven proofs go to `solutions-proved/value-bounded/`.
-- `271_58` and `514_90` call the prelude's `Repeat` instead of their own helpers. Both pass their
-  gates; `271_58` now confirms its label.
-- `prove_stats.py` counts `prove-retry` as a campaign.
-- `457_38`, `1675_29`, `2465_212`, `2831_61` and `2847_21` gain proofs on `annotate`'s charges, written
-  with main-agent hints, so the campaign rates do not count them (`batches/prove-retry/README.md`).
+  `solutions-unscreened/`.
 
 ## 2026-11-02
 
-- New obstacle codes, defined only in `vocab.py`. A later change to a row is a new dated line, not
-  a rewrite. `batches/obstacle-review/` codes the open rows from their notes.
-- An accepted proof no longer records a `final` field; nothing read it.
-- `prove_stats.py` drops its revised-rows count, which also counted mass re-charges, and labels
-  rows no campaign agent proved "Proved outside any campaign".
-- Five rows gain a limit their statement gives: `271_58` `n >= 1`, `696_51` `v_2 >= 1`, `1861_16`
-  `a >= 1`, `2771_23` `n >= 1`, `2819_926` `n` and `k` per test. Their compiled Python is unchanged.
+- Obstacle codes are defined only in `vocab.py`. A later change to a row is a new dated line, not
+  a rewrite.
 
 ## 2026-10-28
 
-- 14 proofs now compile to Python byte-identical to their rows'; each differed and each still
-  verifies. Ghost-only `else` branches compiled to `elif True: pass` (`1243_178`, `2051_25`,
-  `2217_247`, `223_180`, `888_6`, `936_772`): the charge moves before the `if`, or into an `if` on a
-  `ghost var` guard. Helpers moved back after `Solve` as in the row (`276_610`, `307_116`,
-  `499_82`, `662_527`, `810_131`). Proof-only locals are `ghost` (`827_148`, `810_131`).
-  `85_71` binds `var bsteps, idx := ...` as `2826_81` does. `1359_189` keeps the row's inner
-  block. `810_131`'s `IntSqrt` returns via `r := 0; return;`. Still different: `1387_34` renames
-  the row's local `steps`; `2496_30` adds iteration caps to three `FormatG9` loops.
-- `2826_81`'s proof binds `BisectLeft`'s ghost cost as `var idx, bs := ...`, not a bare
-  `var idx: int;` then an assignment: the bare declaration compiled to `idx = 0`, so the
-  proof's Python differed from the row's. They are byte-identical now.
 - A proof states its bound as one top-level `ensures steps <= E`, `E` over `Solve`'s inputs
-  and `|output|` (`COMPLEXITY.md` § What a proof means; the `bigodafny-prove` skill). Seven
-  proofs are restated so: `457_27`, `1738_24`, `2254_6` split cases with `==>`; `2826_81`,
-  `1827_66`, `1039_15` bound under `ensures var`; `2128_34` named ghost outputs `r_final` and
-  `span_total`, now `m + Gain` and `Reach`, sums over the input. Same classes; ghost-only edits.
-- Three proofs in `solutions-proved/value-bounded/` were a class looser than their code and are
-  replaced by tight ones: `704_351` O(prob) -> O(sqrt(prob)) (`ISqrt`); `1678_68` O(rows) ->
-  O(log rows) (`GcdStepsBound`); `1915_158` O(n + m + sum of gap bits) -> O(n + m + max gap bits),
-  as the running gcd's depths telescope. They were found by running every proof the stored tests
-  could not rate on generated inputs. `MANIFEST.jsonl`
-  carries the new bounds; the old lines are in `old-record.jsonl` beside it.
+  and `|output|` (`COMPLEXITY.md` § What a proof means; the `bigodafny-prove` skill).
 - `COMPLEXITY.md` charges `var x :| x in s` 1, one step of set iteration, as `annotate` does.
-- `2826_42` and `2128_34`, rows and proofs: the header no longer calls them the last `array<T>`
-  rows; it says they keep `array` because the `seq` version is too slow for their gate.
-- `1453_483` and `1332_41`, rows and proofs: the `:|` witness used only in the loop's
-  `invariant` and `decreases` is `ghost var`, so it no longer compiles into a second search.
-  Both verify; `validate.py` (`1453_483`) and `difftest.py` (`1332_41`) pass.
-
-## 2026-10-22
-
-- `1830_0` (O(nlogn)) and `276_1206` (O(n*m)) are proved O(n) in `solutions-proved/`, corrected
-  to `O(n)` in `data/label_corrections.jsonl`, and moved from `solutions-disputed/` to
-  `solutions/` through `batches/labelaudit/verdicts_proved_20261022.jsonl`. `1830_0` sorts two
-  26-element lists; `276_1206` reads 3-element rows. Blind `fuzzing/` agents named O(n) for both.
 
 ## 2026-10-20
 
-- The prelude has `ISqrt(x)` (floor square root, recursing on `x / 4`) with
-  `ISqrtSpec` and `LeISqrt`, for bounds of loops that stop once a square passes
-  a value. The `bigodafny-prove` skill describes them.
-- Five proofs in `solutions-proved/` were a class looser than their code and are
-  replaced by tight ones: `5_100`, `1011_368`, `2913_484` O(n) -> O(sqrt n);
-  `1820_180` O(n**2) -> O(n), as the statement fixes x, y <= 7; `2586_20`
-  O(n**3) -> O(n**2). They were found by running every proof on its stored tests
-  and comparing steps with the proved bound (`fuzzing/`).
 - A label a proof shows wrong is corrected in `data/label_corrections.jsonl`
   (BigOBench's label, the corrected one, the proof, its bound). `dataset.py`
   publishes `label` (corrected, else BigOBench's) and `label_corrected`;
   `time_complexity_inferred` stays BigOBench's. `label_audit.py` accepts the
-  class `O(sqrt(n))`. `5_100`, `1011_368` and `2913_484` are corrected to
-  `O(sqrt(n))`, their headers say so, and they moved with `1820_180` (label
-  `O(n)`, now proved) from `solutions-disputed/` to `solutions/` through
-  `batches/labelaudit/verdicts_proved_20261020.jsonl`.
+  class `O(sqrt(n))`.
+- The prelude has `ISqrt(x)` (floor square root) with `ISqrtSpec` and `LeISqrt`, for bounds of
+  loops that stop once a square passes a value.
 
 ## 2026-10-16
 
 - A function the row defines costs its cost function `F_steps`: same
   parameters, `requires` and `decreases`, body the cost of `F`'s body
   (`COMPLEXITY.md`). Replaces "recursive sequence/string helpers: argument
-  length". Existing proofs keep their class: for a helper that recurses once
-  per element with constant work, argument length is within a constant factor
-  of `F_steps`. `fuzzing/` `annotate enable=functions` generates `F_steps`.
-- `seq(n, f)` costs `n` plus each `f(i)`'s cost (`COMPLEXITY.md`); the table
-  had no entry for it.
-- `COMPLEXITY.md` charges arrays (`new T[n]` costs `n`), `let` and lambdas. It said the model had no arrays and two rows
-  used them; 17 rows allocate arrays.
-- `531_3456` and `1722_66`: a `forall`/`exists` helper is now a recursive scan
-  with early exit, as their Python is; `annotate` refuses quantifiers in
-  compiled code. Both still pass `validate.py`, `dafny verify`, `precheck.py`.
+  length". For a helper that recurses once per element with constant work,
+  argument length is within a constant factor of `F_steps`.
+- `seq(n, f)` costs `n` plus each `f(i)`'s cost (`COMPLEXITY.md`).
+- `COMPLEXITY.md` charges arrays (`new T[n]` costs `n`), `let` and lambdas.
 
 ## 2026-10-14
 
@@ -164,301 +69,86 @@ data lines go to `old-record.jsonl` beside the file they came from.
   `|output|` (`COMPLEXITY.md`). One read: find each token's boundaries, then
   convert it (a numeral in any base, prelude or hand-written); one write:
   format, assemble, `Join`. Any further pass is work. `ParseInt` and `SplitWs`
-  cost `|s|`. Eight proofs that charged parsing as a constant or not at all
-  are re-charged (`2015_175`, `2105_248`, `2105_521`, `2217_247`, `378_91`,
-  `976_1131`, `2942_42`, `2942_55`); the audit prompt follows, `IntToString`
-  at its digit count included.
-- Verdicts re-filed under that rule (`batches/labelaudit/verdicts_io-rule*.jsonl`):
-  `378_91`, `976_1131`, `966_134`, `2854_30`, `1047_26` to `solutions/`;
-  `378_20` to `solutions-disputed/` (`O(n*m)` label, `O(n)` code); `1047_641`
-  re-filed as `other` (a second boundary scan, a prepend-built column).
+  cost `|s|`. Label verdicts re-filed under this rule are in
+  `batches/labelaudit/verdicts_io-rule*.jsonl`.
 - Tests outside a limit the problem statement sets are bogus: the test gates,
   `baseline.py` and `precheck.py` skip them and record the count. Limits live
-  in `data/constraints.jsonl`, quoted from the statement: 1501, 577, 827,
-  1254, 1276. 48 of 1501's 122 tests reach `k = 10^12` against `k <= 10000`;
-  both 1501 rows turn `strict` and `1501_224` passes 74/74, leaving
-  `solutions-ungateable/`. 18 of 1276's generated tests break its limits.
+  in `data/constraints.jsonl`, quoted from the statement.
 - `precheck.py` has Dafny evaluate each `requires`: one compiled method per
-  clause, built with `dafny translate py` and run on every stored input. The
-  Dafny-to-Python translation is gone. `--all` covers every row with a
-  `requires` and every recorded row; a `{:attr} Solve(` header is found.
-  Full run: 848 clauses over 307 rows, 0 violated, 0 unchecked; 197 of those
-  rows had never been checked.
-- No `var` binding inside a `requires` (`CLAUDE.md`, verify and translate
-  skills). `85_71`'s clause is now `exists k :: ... d_list[k] == 1`;
-  `1039_15`'s is written without `var`.
-- `2742_0` re-proved without the `requires N == |values|` its proof copy had
-  added, false on every real input; same bound.
-- `1738_180` stops its inner scan at the first match, as Python's `in` does;
-  its one timeout is gone, 32/32.
-- The nine rows with their own `ParseInt`/`ParseIntFrom` (and four proof
-  copies) use the prelude's, which now ensures a non-negative result unless
-  the text starts with `-`; the `1039` files use `ParseInts`. Seven proofs
-  drop local copies of `SumLen`/`SumLenSnoc`, now in the prelude.
-- `validate.py` and `proofs.py` check rows in parallel; every gate's
-  `--workers` defaults to `common.WORKERS` (8). Both re-check a failure alone
-  before recording it: load timed out `1582_118`, `2913_309`, `577_509` and
-  `1738_180`, and all pass alone.
+  clause, built with `dafny translate py` and run on every stored input.
+- No `var` binding inside a `requires` (`CLAUDE.md`, verify and translate skills).
+- `validate.py` and `proofs.py` re-check a failure alone before recording it.
 - `common.write_jsonl(..., key=)` archives every replaced or dropped line in
   `old-record.jsonl`; every `data/` record writer passes its key.
-- `GcdStepsBound`, `GcdStepsBoundFirst` and `GcdLeFirst` did not verify under
-  Z3 5.1.0, unnoticed because `dafny verify` skips included files. Fixed with
-  `SmallMod` and `ModUpper`; `proofs.py` now verifies the prelude.
-- The cloud environment runs Z3 5.1.0, matching the local pin.
-- The bigodafny skill no longer carries counts (they live in `STATUS.md`), and
-  drops a finding fixed on 2026-10-13 (gates testing a row's proof copy).
-- `dataset.py` stops on a missing `numpy` instead of marking every row
-  `unvalidatable`. The bigodafny skill's state check activates `.venv`.
+- `proofs.py` verifies the prelude: `dafny verify` skips included files.
+- `dataset.py` stops on a missing `numpy` instead of marking every row `unvalidatable`.
 
 ## 2026-10-13
 
-- `data/quarantine.jsonl` restored to all 127 `solutions-unscreened/` rows. A
-  2026-09-07 run rewrote it with only its 12 new entries, dropping
-  115 rows' reasons while the rows stayed quarantined; the reasons are merged
-  back from the file's earlier versions. `dataset.jsonl` and
-  `stats.json` re-derived: only the quarantine fields changed.
-- `validate.py` and `difftest.py` no longer search `solutions-proved/`: they
-  found a row's proof copy before the row itself when the row sat in
-  `solutions-disputed/`, `solutions-unsure/` or `solutions-ungateable/`, so
-  those rows were tested through the copy. 11 loose rows re-run (all agree);
-  `validate.py` re-run in full.
-- Docs: glossary limited to terms this project defines; gate definition
-  corrected, with the directories each gate covers; `verify_all.py` does not
-  sweep `solutions-disputed/` or `solutions-unscreened/`; `TODO.md` content no
-  longer copied into other docs (`CLAUDE.md` § Counts).
-- `STATUS.md`: every corpus count in one file, checked against `data/`. Other
-  docs no longer carry counts (`CLAUDE.md` rule). Corrected on the way:
-  `validate.py` has 1 failing row (`1738_180`), not 7; the 6 `unvalidatable`
-  rows are not run.
-- Docs rewritten in plainer words (`DOCS.md`, `README.md`, `CLAUDE.md`,
-  `COMPLEXITY.md`, `TODO.md`, every `solutions*/README.md`, `batches/README.md`,
-  `CAMPAIGN_CONFIG.md`). Stale facts fixed: `signature.py` maps all 311
-  problems; `apply` cannot yet move `solutions-unscreened/` rows; the partition
-  has seven directories; `solutions-proved/README.md` lists all three proofs
-  that compile to different Python; the `§ 1` links to `COMPLEXITY.md`.
-- Docs: a glossary in `DOCS.md`; proof relations defined in `COMPLEXITY.md`.
-  Counts corrected against `data/`: proved labels `O(nlogn)` 67 and `O(logn)` 1;
-  disputed causes (34 `translation`, 1 blank) and confidence (101/96/5); the
-  `1950` rows do carry label verdicts.
-- `selftest.py` folded into `validate.py --self-test`; `checkverdicts.py`
-  into `label_audit.py check`, which `apply` now runs first and refuses on.
-  Dropped `checkverdicts.py`'s proof cross-check: it printed proved bounds and
-  rejected nothing, though three docs said it rejected contradicting verdicts.
-- `batches/labelaudit/`: the 62 per-batch verdict files merged into one per
-  round, in the order applied: `verdicts_r1-r2.jsonl`, `verdicts_r3.jsonl`
-  (with `r3_fix`, `r3d_*`, overrides), `verdicts_r4.jsonl` (with `r4d`, `r4s`,
-  `r4u`, overrides). `auditor` still names each line's batch. The last line
-  per row matches `data/label_audit.jsonl` for all 506 rows. Dropped
-  `verdicts_r2.jsonl` (80 lines identical to `verdicts_01`–`04`) and
-  `old-PROMPT.md`. File names in the bullets below are the pre-merge names.
-- `callgraph.py` writes `out/call_depth.jsonl` (git-ignored) and drops its
-  partial-run guard; `collect.py` reads it from there. `data/call_depth.jsonl`
-  removed: only the artifact payload read it.
-- Removed code only `experiments/` used: `score()`, `difficulty_static()`,
-  `drift()` and its append helpers from `features.py`; the unused `EXPORT`
-  from `dataset.py`. `experiments/` is archived: `aggregate.py` no longer
-  imports; `select.py` already did not.
-- Removed `common.event()` and `data/events.jsonl`: a per-run summary log no
-  script or doc read. The two warnings only it carried (`extract.py` rows with
-  missing fields, `signature.py` dataclasses that differ within a problem) now
-  go to stderr. Unused imports dropped across the scripts.
-- Scratch output moved to `out/`: `validate.py` spot checks
-  (`out/<prefix>validation.jsonl`), `difftest.py`'s resume checkpoint, and
-  `label_audit.py evidence` batches (`out/labelaudit/`). `.gitignore` cut from
-  12 rules to 5; `evidence --only` output (`reaudit_NN.json`) was not ignored.
+- `validate.py` and `difftest.py` test the row, never its copy in `solutions-proved/`.
+- Counts live only in `STATUS.md` (`CLAUDE.md` § Counts).
+- `label_audit.py apply` runs `label_audit.py check` first and refuses a malformed verdict file.
+- `validate.py` spot checks write `out/<prefix>validation.jsonl`, and `label_audit.py evidence`
+  writes `out/labelaudit/` (`batches/README.md` § The `--only` trap).
 
 ## 2026-10-08
 
-- Rebased the output-length, Z3 and cleanup work onto the remote re-audit
-  (below, 2026-10-01). Z3 5.1.0 stays the pin; the remote's run had used
-  4.12.1, under which `1871_156` and `1972_295` still verify.
-- The five re-translated proofs (`514_140`, `1029_92`, `1029_119`, `2942_55`,
-  `305_284`) take the remote's code and were re-charged for output length;
-  their earlier re-charges of the old code were dropped with their
-  `old-record.jsonl` lines.
-- Campaign records merged per row and field. Where both sides set `revision`,
-  the output-length one is kept and the remote line is in the campaign's
-  `old-record.jsonl`.
-- `1871_156` and `1972_295` left `solutions-proved/`: their proofs time out
-  under Z3 5.1.0 and the repair failed. Proofs in
-  `batches/z3-upgrade/unresolved/`; `1871_156` filed in
-  `batches/value-bounded-open/`. The overlay holds 321 proofs, all verifying.
-- `batches/output-length/old/` and `batches/z3-upgrade/old/` dropped. For seven
-  Z3-repaired rows the superseded proof is in `batches/z3-upgrade/attempts/`.
-- History moved out of the state documents into this file.
-- Deleted the `.txt` manifests in `batches/wave1/`–`wave7/`, `loose/`,
-  `loose2/`, `verify/`–`verify3/`.
-- `batches/output-length/` and `batches/z3-upgrade/`: per-slice `traj_*` and
-  `audit_*` merged into one `traj.jsonl` and `audit.jsonl` each; slices,
-  one-off scripts (`prep.py`, `promote.py`, `normalize.py`,
-  `slim_transcripts.py`), `triage.json` and `proofs_run.log` deleted.
-- New rule in `CLAUDE.md`: delete one-off scripts when the task is done.
-- `bigodafny/.gitignore` now holds the project's ignore rules (moved from the
-  repository root); `demo/` is ignored and `visualization/` deleted.
-- New git-ignored `out/` (`common.OUT`) for generated files nothing reads back.
-  Moved there: `artifact_data.json`, `prove_stats.json`, the three
-  `*_summary.json`, `sibling_review.jsonl`.
-- `corpusstats.py` merged into `collect.py`; `data/corpus_stats.json` deleted.
-- `siblings.py` merged into `label_audit.py siblings`. It now scans every
-  status directory, not only `solutions/`, and compares with `autojunk=False`,
-  which made the similarity order-independent: 87 candidate pairs, all 12
-  quarantined rows among them.
-- Documentation sweep: `TODO.md` holds open items only; stale counts fixed
-  (strict gate, call graph, `O(n*m)` rows); `DOCS.md` and the skill list
-  `label_audit.py siblings` and `baseline.py --round-trip`; directory lists
-  include `solutions-unsure/` and `solutions-ungateable/`; `label_audit.py`'s
-  docstring describes the stipulated model.
-- Full `validate.py` run on the current tree: 533 of 534 strict rows valid,
-  `1738_180` fails as before, the five re-translated rows pass. The record now
-  matches what a plain run produces; the 4 ungateable rows and the 2
-  `unvalidatable` `1950` rows are no longer in it. Loose tier re-run: 99 rows
-  unchanged, `1332_16` agrees on 44 of 44 tests.
-- Python runs from a local `.venv` made with uv (git-ignored).
-- `requirements.txt` names `numpy`, which every row's `Input` dataclass imports;
-  no doc had listed a Python dependency. README's Z3 pin corrected to 5.1.0.
-- `batches/gate-audit/control.py` merged into `baseline.py --round-trip`: the
-  original Python run on inputs passed through `Input.from_str`. Same tallies
-  as `control.jsonl` on its six rows.
-- `dedupe.py` merged into `prove_stats.py`: the deduplicated view is computed
-  from the draws it already loads; `data/campaign_dedup.json(l)` deleted.
-  Figures unchanged.
-- `collect.py` takes its campaign figures from `prove_stats.payload()` instead
-  of recomputing them per campaign, and no longer carries hand-typed notes
-  (campaign annotations, open decisions, a pinned Z3 version): 704 -> 321 lines.
-- `batches/output-length/transcripts/`: 32 per-run files concatenated into
-  `pilot.jsonl`, `main.jsonl`, `fixup.jsonl`.
-- `features.py` moved from `experiments/` to the top level: `label_audit.py`
-  and `collect.py` import it. The archived `experiments/` scripts that import
-  it no longer find it.
-- Deleted `batches/verify-sample/` (its question, whether unrecorded rows
-  verify, is settled corpus-wide by `verify_all.py`) and the `sample` block
-  `collect.py` built from it. Deleted `batches/stdlib-migration/`, a prompt
-  for a migration that never ran.
+- Delete one-off scripts when the task is done (`CLAUDE.md`).
+- Generated files nothing reads back go to `out/` (git-ignored, `common.OUT`).
+- `label_audit.py siblings` scans every status directory.
 - `proofs.py`'s corpus `assume` scan ignores `//` comments.
-  A header comment in `514_140` had made every run exit 1.
-- `provestats.py` renamed `prove_stats.py`, matching its outputs. Its
-  deduplicated "carry a proof now" count reads the verified proofs instead of
-  campaign records: 290, not 292.
-- Attempts identical to their promoted proof deleted: 238 in
-  `batches/output-length/attempts/`, 5 in `batches/z3-upgrade/attempts/`;
-  45 that differ remain. Their audits' `final` fields point at
-  `solutions-proved/`. The rule is now "keep every attempt that differs".
+- A proof attempt identical to its promoted proof is deleted; every attempt that differs is kept.
 
 ## 2026-10-07
 
 - Output costs one step per character. `IntToString(x)` costs `Digits(x)`;
   `JoinInts(xs, sep)` costs `SumDigits(xs) + |xs|`; an additive `|output|` term
-  never counts against a label. `SumLen`, `Digits`, `SumDigits` and five lemmas
-  added to the prelude. 239 proofs re-charged, 26 already compliant, `2831_71`
-  unresolved. `batches/output-length/`.
-- Z3 pin moved from 4.12.1 to 5.1.0, the version actually installed since
-  2026-09-02. `proofs.py` records `z3_version`. 14 proofs timed out; 12
-  repaired with bounds unchanged, 2 not. `batches/z3-upgrade/`.
+  never counts against a label. `batches/output-length/` re-charged the proofs.
+- Z3 pin moved from 4.12.1 to 5.1.0. `proofs.py` records `z3_version`. `batches/z3-upgrade/`
+  repaired the proofs that timed out.
 
 ## 2026-10-01
 
 - Naming rule: a label is the tight class and names each size it depends on.
   `O(n)` over several scanned strings and `O(n**2)` over two different sizes
-  are `O(n*m)`. In `COMPLEXITY.md` and the audit brief.
-- Re-audit r4 under the naming rule: 166 rows re-judged
-  (`verdicts_r4*`, 8 overrides); 22 rows into `solutions-disputed/`, 4 out.
-- The 157 rows already in `solutions-disputed/` re-audited under r3 with their
-  old header stripped (`verdicts_r3d_*`): 138 `mismatch`, 12 released to
-  `solutions/`, 6 `unsure`; one override (`1484_26`).
-- New status directory `solutions-unsure/` for rows the audit could not
-  decide; every gate searches it. Partition: 291 / 127 / 202 / 8 / 5 / 3 / 4.
-- Five translations fixed to keep the Python's algorithm: `514_140` (`2**i`
-  by squaring), `1029_92`, `1029_119`, `1332_16` (bitwise ops through `bv64`),
-  `2942_55` (a map for the Python's dict); `305_284`'s search loop restored.
-  `2942_55` and `305_284` re-proved in `solutions-proved/value-bounded/`.
-- Label re-audit r3 of the 344 rows then in `solutions/`, under: input values
-  are cost parameters, `IntToString` costs 1, `Gcd` costs Euclid's depth.
-  288 `ok`, 45 `mismatch`, 11 `unsure`; the 45 moved to `solutions-disputed/`.
-  Verdicts: `batches/labelaudit/verdicts_r3_*.jsonl`.
+  are `O(n*m)`. In `COMPLEXITY.md` and the audit brief. Label audit round r4.
+- Label audit round r3: input values are cost parameters, `IntToString` costs 1, `Gcd` costs
+  Euclid's depth.
+- New status directory `solutions-unsure/` for rows the audit could not decide.
 
 ## 2026-09-30
 
 - `Gcd` charged Euclid's depth (`GcdSteps`, `GcdStepsBound` in the prelude).
-  `1386_38`, `1386_19`, `1871_156`, `1871_291`, `1915_158` re-proved with a
-  log-of-value term and filed in `solutions-proved/value-bounded/`.
-- The relation review of every proved row filed `2254_6` and `1580_12` in
-  `value-bounded/`.
-- `guard.py` hook removed from `.claude/settings.json`.
-
-## 2026-09-29
-
-- 19 proofs that failed `audit.py`'s same-code check fixed: non-ghost
-  temporaries made ghost, the row's statements restored, bounds unchanged.
-  `1077_84` rewritten on the row's recursive `Factorial`.
-- Campaign 7's rerun proofs replaced `1043_358` and `794_794`; relation
-  unchanged.
-- Seven `value-to-size` rows from campaigns 5 and 6 filed in
-  `batches/value-bounded-open/`: `1263_2538`, `1332_16`, `1364_161`,
-  `1626_179`, `2358_103`, `2465_212`, `342_86`.
-
-## 2026-09-24
-
-- Campaign 7 rerun charged `GcdEx`'s recursion depth; `1678_68` filed in
-  `value-bounded/` at `rows + 15`.
-- Campaign 7's 30 rows without `reads` traces rerun with the newer prelude.
 
 ## 2026-09-23
 
 - Prelude gained the sort-cost and binary-search lemmas (`SortCostNLogN`,
   `SortCostWithin`, `SearchPot`, `BisectStep`, `SearchLoopWithin`).
-- `solutions-proved/nlogn/` removed: its base proofs became tight, so its
-  copies were duplicates.
-- `prove-sample-7` filed `1043_358` and `794_794` in `value-bounded/`.
 
 ## 2026-09-22
 
 - `IntToString(x)` and `|IntToString(x)|` charged 1 (reversed 2026-10-07).
-  `2381_156` and `276_610` returned to `solutions/` with a
-  `LABEL AUDIT WITHDRAWN` header, left `value-bounded/`, and were re-proved
-  tight: `steps <= 6` and `steps <= 24 * n + 2`.
-- `prove-sample-4` had moved `276_610` to `solutions-disputed/` the same day,
-  on its digit-count bound.
-- `SortIsSorted` and `SortLastIsMax` added to the prelude; `2423_48` proved
-  after failing in two campaigns.
-- `batches/value-bounded-open/` split out of `solutions-proved/value-bounded/`:
-  unproved rows no longer sit under a directory named `proved`.
-- `proofs.py` changed; proof bounds normalised.
+- Unproved value-bounded rows go to `batches/value-bounded-open/`, not under
+  `solutions-proved/value-bounded/`.
 
 ## 2026-09-21
 
-- `data/gate_ungateable.jsonl` replaced `data/gate_exempt.jsonl`.
-- `1501_224` re-measured (39 minutes); it reproduced the stored `differs`
-  record. An earlier claim that it never terminates came from a `difftest.py`
-  budget bug.
+- `data/gate_ungateable.jsonl` records the rows no gate can judge (`solutions-ungateable/`).
 
 ## 2026-09-17
 
 - Value-versus-size convention: a loop bounded by an input value is a
-  parameter of the bound, not a constant. `810_131`, `1484_26`, `2381_156`,
-  `2607_90` moved to `solutions-disputed/`.
+  parameter of the bound, not a constant.
 
 ## 2026-09-16
 
-- Collection costs stipulated, not measured (`batches/cost-axioms/PLAN.md`):
+- Collection costs stipulated, not measured (`COST_AXIOMS.md`):
   `s[i := v]`, `m[k := v]`, `s + [x]`, `s[a..b]` and set insertion cost 1.
   Records older than this charge the backend's copies.
-- `solutions-disputed/` re-filed from `batches/cost-axioms/refile_decisions.jsonl`:
-  31 left, 5 joined, 3 re-classified, 178 → 152. The five that joined
-  (`1622_305`, `1748_145`, `1367_88`, `2505_30`, `2854_107`) had matched their
-  `O(n**2)` labels only through the old copy charge. Rows that left were
-  re-gated: 26 strict `VALID`, 5 loose `agrees`.
-- First label audit complete: 506 rows screened; 347 `ok`, 152 `mismatch`,
-  7 `unsure` after the re-file.
-- First proof campaign, `prove-sample`.
+- First label audit and first proof campaign (`prove-sample`).
 
 ## Undated
 
-- Renames: `solutions-inexact/` → `solutions-unscreened/`; `solutions-tofix/` →
-  `solutions-disputed/` (118 of 152 rows needed a label change, not code);
-  `solutions-verified/` → `solutions-proved/` (it collided with `dafny verify`,
-  which checks safety); `solutions-nlogn/` → `solutions-proved/nlogn/`;
-  `solution-guessed-verified/` → `experiments/proofs-blind/`.
-- `Join` was recorded as superlinear; it is linear, and the excess was
-  constant overhead. The bad call blocked 164 rows and cost four agent runs.
-- `precheck.py` fixed with `find_all()` to check every copy of a row;
-  `validate.py` and `difftest.py` still take the first hit.
+- Old records may use earlier directory names: `solutions-inexact/` is `solutions-unscreened/`,
+  `solutions-tofix/` is `solutions-disputed/`, `solutions-verified/` is `solutions-proved/`.
+- `Join` is linear; records that call it superlinear are wrong (the excess was constant overhead).

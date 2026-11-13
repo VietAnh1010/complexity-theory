@@ -67,8 +67,6 @@ A proof in `solutions-proved/` can be a class looser than its code: it holds, bu
    reach the worst case (`1015_168` gets only even `n`); those proofs are fine.
    The rest are loose: prove the tight class and replace the copy.
 
-On 2026-10-20 this rated 163 of 321 proofs, flagged 21, and 5 were loose (`5_100`,
-`1011_368`, `2913_484`, `1820_180`, `2586_20`; `bigodafny/CHANGELOG.md`).
 Run it again after new proofs land.
 
 Proofs the stored tests cannot rate need generated inputs:
@@ -80,5 +78,3 @@ Proofs the stored tests cannot rate need generated inputs:
 3. Run `fuzz.py` and rate its table, the costliest input per grid point, as in steps 2 and 3.
    `fuzz` reads the bound from the proof's one top-level `ensures steps <= E`
    (`bigodafny/COMPLEXITY.md` § What a proof means); a proof in another form is malformed.
-
-On 2026-10-28 this found 3 loose proofs (`704_351`, `1678_68`, `1915_158`; `bigodafny/CHANGELOG.md`).

@@ -37,29 +37,7 @@ changes go in `fuzzing/CHANGELOG.md`.
 
 ## State
 
-- [x] `deghost`: CLI and plugin; trace points as `PrintStmt` nodes; Solve's
-      contract compiled as `TraceRequires`/`TraceBound`
-- [x] `steptrace.py` builds through the plugin; regex code removed
-- [x] `annotate`: counter, charges per COMPLEXITY.md, call steps via a ghost lhs
-- [x] `annotate` keeps the Python block of the row's header and nothing else
-      of it (title, label, label-audit verdicts); the printer drops other comments
-- [x] `annotate` stops on code outside the cost model; `enable=functions,seq`
-      adds rules for row functions (`F_steps`) and `seq(n, i => e)`
-- [x] Rule `arrays`; `let`, lambdas, tuple patterns, `assert P; e` in the table.
-      A quantifier in compiled code is an error; `531_3456` and `1722_66` now
-      recurse instead. With `enable=functions,seq,arrays`, all 636 rows annotate (2026-10-28), `1387_34` and
-      `1336_157` with `counter=NAME`.
-- [x] `var x :| P` stops `annotate` (5 rows). (2026-10-28) The int-range witnesses in
-      `1453_483` and `1332_41` were proof-only: the rows and proofs declare them `ghost`.
-      `var x :| x in S` costs 1, a step of set iteration (`976_1131`, `960_63`, `960_36`).
-- [x] Rows `2128_34`, `2826_42`: headers may still say the model has no arrays;
-      `COMPLEXITY.md` now charges them. (2026-10-28) They called themselves the last
-      `array<T>` rows; 18 rows use arrays. Reworded.
 - [ ] `annotate`: AlternativeStmt, match statements, `:-` calls stop it (no rule yet)
-- [x] `TraceBound` is `true` when Solve has no `ensures` (annotated rows). (2026-10-28) No
-      `ensures`, no `TraceBound`, no `bound_ok`
-- [x] `TraceBoundValue`: the value of `E` in the first `ensures steps <= E`;
-      `steptrace.py` records it as `bound`
 - [ ] Decide what to gather from a trace. The consumer is an LLM agent, so a
       log with an event per hit (millions of lines) is useless. Now: per
       point, hit count and min/max/last steps. `--trace LINE,..` compiles only
@@ -69,43 +47,12 @@ changes go in `fuzzing/CHANGELOG.md`.
       hit: `--trace` costs one Python call pair per event (`5_100`: 1.2 s
       untraced, 9.1 s traced, 14M events). A compiled stride was rejected as
       too complicated.
-- [x] `experiments/fuzz/fuzz.py` (`fuzz`): runs a generator's inputs (`GRID`, `FAMILIES`)
-      untraced; per grid point, the costliest input's steps, bound,
-      steps / bound, and loop-head hits from a loops-only rerun
-- [x] Blind runs: `experiments/fuzz/blind.py` stages rows outside the repo;
-      the `blind-guess` agent type (`.claude/agents/`) carries `guard.py` as its
-      own PreToolUse hook, so only those agents are confined
 - [ ] Alternative, not explored: a per-call breakdown. A point's hit count sums
       over every call of its method, so it hides which call is costly when a
       helper runs on different sizes (`Fac2286(n)` and `Fac2286(k)`). Would
       record, per point, steps at each call's exit, grouped by call.
-- [x] `annotate` refuses a row that already declares `steps` (`1387_34`, `1336_157`);
-      `counter=NAME` picks another name, and `steptrace.py` and `fuzz.py` take `--counter`.
-      `guard.py` does not accept `--counter`: `blind.py` annotates with `steps`
 - [ ] (2026-10-21) `data/constraints.jsonl` quotes limits for few problems, so `fuzz`
       runs out-of-spec inputs for the rest.
-- [x] (2026-10-21) Concurrent `blind-guess` agents share one `fuzz` server; one agent ending
-      closes it under another's call (`Connection closed`).
-      (2026-10-22) `fuzz.py` is a script again; `guard.py` lets Bash run only it.
-- [x] (2026-10-26) `fuzz` has no time limit: a call past the Bash tool's 600 s goes to the
-      background, and reading its output voids the row. (2026-10-28)
-      `--time-limit S`, default 300; `BRIEF.md` gives the cap. A call can overrun by one
-      input (10 s), one compile and one loop rerun (100 s)
-- [x] (2026-10-28) `TraceBoundValue` reads only a top-level `ensures steps <= E`: 6 proofs state
-      the bound under `==>` or a `var` (`457_27`, `1738_24`, `2254_6`, `2826_81`, `1827_66`,
-      `1039_15`), so `bound` is missing for them; `bound_ok` still checks them. `fuzz.py --bound E`
-      with one unconditional E works around it. `2128_34`'s bound names ghost outputs
-      (`r_final`, `span_total`), which `--bound` cannot express either. (2026-10-28) The proofs
-      were malformed, not the tool: `COMPLEXITY.md` requires one top-level `ensures steps <= E`
-      over the inputs, and all 7 are restated; `fuzz` reads each bound.
-- [x] (2026-10-26) Screen proofs for loose bounds with `fuzz` inputs, not only stored tests:
-      `docs/07-steptrace.md` § Screening proofs rated 163 of 321 proofs; the rest had too few
-      tests to tell. (2026-10-28) Agents wrote a `gen.py` per unrated proof:
-      3 were loose (`704_351`, `1678_68`, `1915_158`), now tight (`bigodafny/CHANGELOG.md`).
-- [x] (2026-10-28) `fuzz.py --bound` missed `method {:isolate_assertions} Solve` (12 proofs). Fixed.
-- [x] (2026-10-28) The screening fit runs over the whole grid, so a bound's constant term skews the
-      slope: 0.86 on `450_276` (ratio falling to 0.125), 1.29 on `2496_30` (rising to 0.26).
-      (2026-10-29) No fit: doc 07 flags a ratio at the top bound under half the ratio 16x lower.
 - [ ] (2026-10-28) Fuzzing a proof means copying it into a directory named by its SID and rewriting
       its `include`, because `fuzz.py` takes the SID from the directory name. A `--sid` option would
       run the proof in place.
@@ -127,16 +74,7 @@ changes go in `fuzzing/CHANGELOG.md`.
       raises, the hook exits 1, and the call runs.
 - [ ] (2026-10-29) A harmless call in the agent's own row (`cat row.dfy`) is denied and voids it.
 - [ ] (2026-10-29) A row directory is named by its host, so a fabricated row looks like a real one,
-      two arms of one row cannot share a batch, and `grade` compares with the host's label (`1807`
-      marks a wrong O(n**2) ✓).
-- [x] (2026-10-26) `fuzz.py` always adds a final newline; `2183_1`'s parser counts the empty last
-      line as a row and fails its assert on every input. (2026-10-28) An input ends as the row's
-      stored tests do. Of the 51 rows whose stored tests never end with a newline, the forced newline
-      broke 12 and changed no parse in 37; `3079_85` and `3079_181` have stored tests their
-      own parser rejects with either ending.
-- [x] (2026-10-21) `fuzz` compiles the row 3 times per call: untraced, all points (to
-      find the loops), loops only. (2026-10-28) The plugin's `trace=loops` traces loop heads
-      only; `fuzz` compiles twice.
+      two arms of one row cannot share a batch, and `grade` compares with the host's label.
 - [ ] (2026-10-21) `steptrace.py`: move `HARNESS` into its own file? It stays a template:
       the call to `Solve` (`{args}`) is code built from the row's signature. `--log` is gone
       (2026-10-28). Keep the CLI if the stored-test audit (`docs/07-steptrace.md`) is
