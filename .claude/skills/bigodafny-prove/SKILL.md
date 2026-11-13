@@ -205,9 +205,8 @@ statement. Record the disagreement; never adjust the proof to match the label.**
 
 ## Results so far
 
-321 rows in `solutions-proved/`, one file each; all verify, zero `assume`
-(`data/complexity_proofs.jsonl`). **`bigodafny/summaries/proof_obstructions.md` lists what is NOT
-provable and why — read it before picking a row.** Behavioural equivalence is established by **emitted-Python identity**,
+Proofs live in `solutions-proved/`, one file each; counts are in `STATUS.md`
+(`data/complexity_proofs.jsonl`). Behavioural equivalence is established by **emitted-Python identity**,
 not by re-running tests — see the gate note below.
 
 **`O(n*m)`: read the loop body, not the input shape.** Nine examined, seven

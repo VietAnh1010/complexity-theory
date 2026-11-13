@@ -18,6 +18,8 @@ data lines go to `old-record.jsonl` beside the file they came from.
 - Deleted the agent worklists (`w_*.txt`) of `retranslate`, `isqrt` and `verify-clean` (its README
   now lists the rows), `prove-hard/trial-1.jsonl`, `gate-audit/difftest_1501_224.json` and
   `prove-sample/value_vs_size_decision.jsonl`.
+- Moved `summaries/`, the outdated September run notes, out of `bigodafny/`. The `bigodafny-prove`
+  skill no longer points to `proof_obstructions.md` or states a proof count.
 - `proofs.py` keeps a verified proof's record when its `fingerprint` (proof, row, prelude, Dafny
   and Z3 versions) is unchanged; `--all` re-verifies every proof. A proof removed mid-run is skipped.
 - `bigodafny-prove-campaign`: `sample.py --dir` draws from another status directory;

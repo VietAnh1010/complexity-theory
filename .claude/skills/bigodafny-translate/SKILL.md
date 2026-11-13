@@ -88,7 +88,7 @@ Give each agent: its manifest path, a unique validation prefix, and this body.
 
     HARD RULES
     NEVER git add/commit/push. NEVER edit prelude.dfy, any *.py, or anything
-    under data/, batches/, summaries/. Only files in your manifest.
+    under data/ or batches/. Only files in your manifest.
 
     REPORT: valid count; how many also verify; rows given up with one line each;
     sibling pairs and how their algorithms differ.

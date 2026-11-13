@@ -15,7 +15,7 @@ repository root is unrelated.
 | see what changed | `CHANGELOG.md` |
 | see where the work stopped and what is open | `batches/clean-636/README.md`, `TODO.md` |
 
-`summaries/` and old campaign prompts are history, not instructions.
+Old campaign prompts are history, not instructions.
 
 ## Terms defined by this project
 
