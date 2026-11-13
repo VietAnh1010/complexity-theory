@@ -35,19 +35,19 @@ Status is `done`, `open` or `partly`. Update this table with every commit that f
 
 | # | Piece | Status |
 |---|---|---|
-| A1 | `dataset.py` writes `clean` and `blockers` per row | done `5b4d174` |
-| A2 | `verify_all.py` sweeps every status directory | done `c3d5bee` |
-| A3 | `proofs.py` checks every proof leaves its row unchanged | done `73e65cd` |
+| A1 | `dataset.py` writes `clean` and `blockers` per row | done |
+| A2 | `verify_all.py` sweeps every status directory | done |
+| A3 | `proofs.py` checks every proof leaves its row unchanged | done |
 | A4 | `annotate` on all rows | done; its 2 rejections fixed in B5 |
 
 ### B. Every row valid and verified (14-19 Nov)
 
 | # | Piece | Status |
 |---|---|---|
-| B1-B3 | rows failing `dafny verify` or using `decreases *` (`batches/verify-clean/`) | partly `943c08e`: 95 of 96; `1336_157` open |
-| B4 | rows whose Dafny swaps the Python's algorithm (`batches/retranslate/`, `batches/isqrt/`) | done `f2fa883`, `a716343`, `b9654b2` |
-| B5 | rename a row's own `steps` variable (`1387_34`, `1336_157`) | done `f35b2e7` |
-| B6 | proofs that change their row: 40 `requires` copied to rows | partly `73e65cd`; `2496_30` open (`TODO.md`) |
+| B1-B3 | rows failing `dafny verify` or using `decreases *` (`batches/verify-clean/`) | partly: 95 of 96; `1336_157` open |
+| B4 | rows whose Dafny swaps the Python's algorithm (`batches/retranslate/`, `batches/isqrt/`) | done |
+| B5 | rename a row's own `steps` variable (`1387_34`, `1336_157`) | done |
+| B6 | proofs that change their row: 40 `requires` copied to rows | partly; `2496_30` open (`TODO.md`) |
 | B7 | `1950_45`, `1950_47`: no test gate (`unvalidatable`, 100-digit reals) | open: all 42 tests parse, but the problem's own `Input.from_str` reads the number as a float, so the exact input never reaches Dafny; a harness fix |
 | B8 | `1861_16`: a `requires` fails `precheck.py` | done: the failing test (`H = 0`) breaks the statement; `constraints.jsonl` has problem 1861 |
 

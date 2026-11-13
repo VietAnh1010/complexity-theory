@@ -1,8 +1,7 @@
 # Changelog
 
 What changed in `fuzzing/`, newest first, one dated section per session and one bullet
-per change. Earlier changes are in `git log -- bigodafny/fuzzing`. Open work is in
-`TODO.md`.
+per change. Open work is in `TODO.md`.
 
 ## 2026-11-13
 

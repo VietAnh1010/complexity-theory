@@ -28,8 +28,7 @@ by `../output-length/`.
 
 As `../output-length/`: `PROMPT.md`, `traj.jsonl` and `audit.jsonl` (slices
 a, b, c in order), `attempts/`. `unresolved/` holds the two
-proofs that still time out. A superseded proof is the committed version at
-`7d2c8d5`; `old-record.jsonl` points there.
+proofs that still time out. Other superseded proofs are not kept.
 
 ## Still open
 

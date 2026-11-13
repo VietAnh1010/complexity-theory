@@ -10,6 +10,8 @@ data lines go to `old-record.jsonl` beside the file they came from.
 
 ## 2026-11-13
 
+- Removed every reference to a git commit, in docs and in record strings (`old proof is git ...`):
+  this tree ships without its history.
 - Agent proof campaigns stopped after `prove-disputed-5`. `DOCS.md` points to
   `batches/clean-636/README.md` for the open pieces.
 - `prove_stats.py` counts `prove-sample-12`.
@@ -211,9 +213,9 @@ data lines go to `old-record.jsonl` beside the file they came from.
 ## 2026-10-13
 
 - `data/quarantine.jsonl` restored to all 127 `solutions-unscreened/` rows. A
-  2026-09-07 run (`a56cfcf`) rewrote it with only its 12 new entries, dropping
+  2026-09-07 run rewrote it with only its 12 new entries, dropping
   115 rows' reasons while the rows stayed quarantined; the reasons are merged
-  back from the file's three committed versions. `dataset.jsonl` and
+  back from the file's earlier versions. `dataset.jsonl` and
   `stats.json` re-derived: only the quarantine fields changed.
 - `validate.py` and `difftest.py` no longer search `solutions-proved/`: they
   found a row's proof copy before the row itself when the row sat in
@@ -281,12 +283,11 @@ data lines go to `old-record.jsonl` beside the file they came from.
   under Z3 5.1.0 and the repair failed. Proofs in
   `batches/z3-upgrade/unresolved/`; `1871_156` filed in
   `batches/value-bounded-open/`. The overlay holds 321 proofs, all verifying.
-- `batches/output-length/old/` and `batches/z3-upgrade/old/` dropped. A
-  superseded proof is at git `7d2c8d5`, or for seven Z3-repaired rows in
-  `batches/z3-upgrade/attempts/`; `old-record.jsonl` names which.
+- `batches/output-length/old/` and `batches/z3-upgrade/old/` dropped. For seven
+  Z3-repaired rows the superseded proof is in `batches/z3-upgrade/attempts/`.
 - History moved out of the state documents into this file.
 - Deleted the `.txt` manifests in `batches/wave1/`–`wave7/`, `loose/`,
-  `loose2/`, `verify/`–`verify3/` (in git history).
+  `loose2/`, `verify/`–`verify3/`.
 - `batches/output-length/` and `batches/z3-upgrade/`: per-slice `traj_*` and
   `audit_*` merged into one `traj.jsonl` and `audit.jsonl` each; slices,
   one-off scripts (`prep.py`, `promote.py`, `normalize.py`,
