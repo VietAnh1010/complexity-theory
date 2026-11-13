@@ -1,6 +1,7 @@
 # clean-636: every translated row clean, then `full` and `base` on all of them
 
-Deadline: 2026-12-01. Started 2026-11-12.
+Deadline: 2026-12-01. Started 2026-11-12. Stopped 2026-11-13, during C4: no more agent campaigns.
+The open pieces below are where the next owner picks up.
 
 ## Goal
 
@@ -57,7 +58,7 @@ Status is `done`, `open` or `partly`. Update this table with every commit that f
 | C1 | `label_audit.py apply` finds rows in `solutions-unscreened/` | done (with C2) |
 | C2 | label-audit the unscreened rows and the 38 disputed rows whose code changed in B4 (`batches/labelaudit/PROMPT.md`, updated for `ISqrt`) | done: `verdicts_r5.jsonl`, 167 rows: 71 ok, 95 mismatch, 1 unsure; 4 mismatch rows (`827_148`, `1944_50`, `2358_103`, `2819_926`) carry proofs of the label, settle in C4/C6 |
 | C3 | `truth` lives in `data/label_corrections.jsonl`; a proof-backed correction moves a disputed row to `solutions/`; READMEs and `CHANGELOG.md` say so | open; proofs below an `ok` label: `1303_8` (`O(1)`, label `O(n**2)`), `1467_233` (`O(nlogn)`, label `O(n)`) |
-| C4 | prove every row with no proof (`bigodafny-prove-campaign`), including proofs `proofs.py` flags as stale (`TODO.md`) | partly: `solutions/` done in `prove-sample-9`..`12` (79 of 80; `2282_1118` open); `solutions-disputed/` in `prove-disputed-1`..`5` (94 of 186; open: `1276_62`, failed twice, and `531_3456`, `2065_128`, `960_36`, `2854_107`); stale proofs not started |
+| C4 | prove every row with no proof (`bigodafny-prove-campaign`), including proofs `proofs.py` flags as stale (`TODO.md`) | stopped, partly: `solutions/` done in `prove-sample-9`..`12` (79 of 80; `2282_1118` open); `solutions-disputed/` in `prove-disputed-1`..`5` (94 of 186; open: `1276_62`, failed twice, and `531_3456`, `2065_128`, `960_36`, `2854_107`); stale proofs not started |
 | C5 | prove C4's leftovers by hand | open: `2282_1118`, `1972_295` (no proof); `294_56`, `294_131` (add the statement's lowercase `requires`, then bound the distinct letters by 26) |
 | C6 | write `truth` for disputed rows from their proofs | open; first, re-translate `1099_169`, `1054_212`, `101_43` (`batches/prove-disputed-1/README.md`) and `1437_223`, `799_94`, `949_67`, `1231_51`, `138_360` (`batches/prove-disputed-2/README.md`), `1054_216`, `619_340`, `1306_197`, `1593_264` (`batches/prove-disputed-3/README.md`), `1913_104`, `1413_222` (`batches/prove-disputed-4/README.md`), `333_197`, `397_163` (`batches/prove-disputed-5/README.md`): the Dafny does other work than the Python |
 | C7 | settle the 2 unsure rows; re-audit `2381_156` | open |
@@ -86,7 +87,8 @@ Status is `done`, `open` or `partly`. Update this table with every commit that f
 1. Read this file, then `STATUS.md` § Clean rows and `TODO.md`.
 2. Refresh the counts: `.venv/bin/python dataset.py`, then read `data/stats.json` (`clean`,
    `blockers`).
-3. Continue with the first piece not `done`. The next C4 batch is `prove-disputed-6`:
+3. Continue with the first piece not `done`. C4 stopped after `prove-disputed-5`; to resume it,
+   sample the next batch from `solutions-disputed/` with the `bigodafny-prove-campaign` skill:
 
    ```bash
    .venv/bin/python ../.claude/skills/bigodafny-prove-campaign/scripts/sample.py \
