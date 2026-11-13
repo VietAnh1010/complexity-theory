@@ -94,9 +94,8 @@ public static class Cli {
     }
     var dir = Path.GetDirectoryName(Path.GetFullPath(output))!;
     await using (var wr = new StreamWriter(output)) {
-      // The printer drops comments, so the header's Python block is copied
-      // as text. The rest of the header (title, label, a label audit's
-      // verdict) is left out: the output goes to agents guessing the complexity.
+      // The printer drops comments: copy the Python block as text. The rest of
+      // the header names the label, so it is left out.
       var header = PythonBlock(File.ReadLines(input)
         .TakeWhile(l => l.StartsWith("//") || l.Trim() == "").ToList());
       var includes = parsed.Compilation.Includes.Where(i => i.IncluderFilename == file).ToList();

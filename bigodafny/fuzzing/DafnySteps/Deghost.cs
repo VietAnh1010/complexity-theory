@@ -1,21 +1,13 @@
-// deghost: make a ghost step counter compiled, so it runs.
-//
-// The pass runs on the parse tree, before resolution, so the CLI (parse,
-// transform, print) and the plugin (transform, then Dafny resolves and
-// compiles) share it. If the pass leaves a ghost value flowing into compiled
-// code, the resolver reports an error; the pass never hides one.
+// deghost: make a ghost step counter compiled, so it runs. The pass runs on the
+// parse tree before resolution, so the CLI and the plugin share it.
 //
 // What becomes compiled:
 // - each out-parameter named <Counter> of a compiled method;
-// - each variable whose value flows into something compiled: the right-hand
-//   side of an assignment to it, the guards around that assignment, and the
-//   argument passed for a compiled in-parameter;
-// - for a call `x, s := M(..)` where `s` is compiled, M's out-parameter in
-//   the same position;
-// - each ghost function called by such a flow, and the ghost functions it calls.
-//
-// Variables are matched by name within their method: the pass runs before
-// resolution, so there are no resolved variables yet.
+// - each variable flowing into compiled code, with its assigned values, the
+//   guards around them, and arguments for compiled in-parameters;
+// - for `x, s := M(..)` with `s` compiled, M's out-parameter at that position;
+// - the ghost functions such flows call, transitively.
+// Variables match by name within their method (nothing is resolved yet).
 using System.Reflection;
 using Microsoft.Dafny;
 

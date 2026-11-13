@@ -1,13 +1,7 @@
-// The cost model of COMPLEXITY.md, applied to resolved expressions.
-//
-// Of(e) is what evaluating `e` costs: a constant plus terms. A term is an
-// expression to insert into the annotated program, such as `|t|` for `s + t`.
-// It is built from the parse tree, by copying the node with the same source
-// range as the resolved one.
-//
-// The model charges only what COMPLEXITY.md's table covers. Any other
-// expression goes to the enabled rules (CostRules.cs); if none applies, Of
-// throws Unsupported, so a charge is never silently wrong.
+// The cost model of COMPLEXITY.md, applied to resolved expressions. Of(e) is a
+// constant plus terms (such as `|t|` for `s + t`) copied from the parse tree.
+// Anything outside the table goes to the enabled rules (CostRules.cs), else
+// Of throws Unsupported.
 using Microsoft.Dafny;
 
 namespace DafnySteps;
@@ -71,7 +65,6 @@ public class CostModel(Dictionary<(int, int), INode> parsedByRange, List<ICostRu
     };
   }
 
-  /// The right-hand side of an assignment.
   public Cost OfRhs(AssignmentRhs rhs) => rhs switch {
     ExprRhs r => Of(r.Expr),
     HavocRhs => new Cost(),

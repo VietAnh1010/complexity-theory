@@ -1,23 +1,14 @@
 // annotate: add a ghost step counter to a plain row, charged per COMPLEXITY.md.
 //
-// The program is loaded twice from the same file. The resolved copy says what
-// each node is (a `+` on sequences or on ints, a method call or a function
-// call); the parse-only copy is changed and printed, because printing a
-// resolved program leaks resolver output (triggers, desugarings). A node is
-// found in the other copy by its source range.
+// The resolved copy says what each node is; the parse-only copy, matched by
+// source range, is changed and printed (a resolved program prints resolver output).
 //
-// Each compiled method of the input file gains:
-// - an out-parameter `ghost steps: nat`, and `steps := 0;` first;
-// - `steps := steps + <cost>;` before each statement whose own expressions
-//   cost something (CostModel.cs);
-// - in each loop body, first, the iteration and its guard; after the loop,
-//   the guard's last, failing evaluation;
-// - for a call `x := M(..)` to an annotated method, a ghost lhs `s<k>` that
-//   receives M's steps, added to `steps` after the call.
-//
-// The output states no bound on the counter; that is the proof's work.
-// Code the model does not cover stops the pass (Unsupported) unless a rule
-// for it is enabled (CostRules.cs).
+// Each compiled method gains:
+// - `ghost steps: nat` as an out-parameter, and `steps := 0;` first;
+// - `steps := steps + <cost>;` before each statement that costs something;
+// - per loop iteration, the iteration and its guard; after the loop, the last guard;
+// - for `x := M(..)` to an annotated method, M's steps via a ghost lhs `s<k>`.
+// Uncovered code throws Unsupported unless a rule is enabled (CostRules.cs).
 using Microsoft.Dafny;
 using DafnyProgram = Microsoft.Dafny.Program;
 

@@ -3,11 +3,8 @@
 // Dafny splits the arguments after the first comma on spaces. Arguments:
 // `trace` (or `trace=LINE,..`: only those source lines; `trace=loops`: only loop heads), `contracts`,
 // `counter=<name>`, `points=<path>` (the trace points, as JSON).
-//
-// Plugins get PreResolve once per module, in dependency order, so the first
-// call comes before any module is resolved. That call runs the pass over the
-// whole program from the root module; later calls do nothing. Dafny may create
-// several rewriters for one program, so "done" is recorded per root module.
+// The first PreResolve call runs the pass over the whole program; later calls do
+// nothing. "Done" is recorded per root module: Dafny may create several rewriters.
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using Microsoft.Dafny;
