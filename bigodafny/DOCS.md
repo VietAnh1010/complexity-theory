@@ -1,7 +1,6 @@
 # Working on BigODafny
 
-Everything for BigODafny is in this directory. The paper-mining project at the
-repository root is unrelated.
+Everything for BigODafny is in this directory.
 
 ## Start here
 
