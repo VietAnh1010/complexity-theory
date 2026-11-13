@@ -115,7 +115,7 @@ Proofs, by the row's BigOBench label: `O(n)` 227 · `O(nlogn)` 110 · `O(n**2)` 
 
 Source: `data/prove_stats.md`.
 
-- 373 of 465 draws proved (80%), over 12 campaigns; `prove-retry` drew only open rows.
+- 393 of 485 draws proved (81%), over 13 campaigns; `prove-retry` drew only open rows.
 - `prove-disputed-1`..`5` proved 94 of 99 distinct disputed rows (open: `1276_62`, failed twice; `531_3456`, `2065_128`, `960_36`, `2854_107`); not label-proving draws, not counted.
-- 387 of the 389 distinct rows drawn carry a proof today.
+- 407 of the 409 distinct rows drawn carry a proof today.
 - The other 2 are open, coded by obstacle (`data/prove_stats.md` § Open rows now).
