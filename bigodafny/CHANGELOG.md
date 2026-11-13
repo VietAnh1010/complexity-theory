@@ -8,6 +8,11 @@ change lands, update them and add a bullet here.
 A campaign's own run record stays in `batches/<campaign>/README.md`. Superseded
 data lines go to `old-record.jsonl` beside the file they came from.
 
+## 2026-11-13
+
+- `proofs.py` keeps a verified proof's record when its `fingerprint` (proof, row, prelude, Dafny
+  and Z3 versions) is unchanged; `--all` re-verifies every proof.
+
 ## 2026-11-12
 
 - `dataset.py` gives each row `blockers` and `clean`; `stats.json` counts them. A row is clean when

@@ -1,0 +1,40 @@
+// 1194_A. Remove a Progression  (problem 2627, solution 2627_568)
+// time complexity: O(n)
+// python exact-diff baseline: exact
+//
+// Reproduce the Python program's entire stdout in `output`.
+//
+// --- Python ---------------------------------------------------------
+// t = int(input())
+// for i in range(t):
+//     n,x = map(int, input().split(" "))
+//     print(2*x)
+// --------------------------------------------------------------------
+
+include "../../prelude.dfy"
+import opened Prelude
+
+method Solve(n: int, data: seq<seq<int>>) returns (output: string, ghost steps: nat)
+  requires n == |data|
+  requires forall k :: 0 <= k < |data| ==> |data[k]| >= 2
+  ensures steps <= 9 * n + 2 * |output| + 3
+{
+  steps := 1;
+  var lines: seq<string> := [];
+  var i := 0;
+  while i < n
+    invariant 0 <= i <= n
+    invariant |lines| == i
+    invariant steps == 1 + 7 * i + SumLen(lines)
+    decreases n - i
+  {
+    IntToStringDigits(2 * data[i][1]);
+    SumLenSnoc(lines, IntToString(2 * data[i][1]));
+    lines := lines + [IntToString(2 * data[i][1])];
+    i := i + 1;
+    steps := steps + 7 + |lines[i - 1]|;
+  }
+  output := Join(lines, "\n");
+  steps := steps + SumLen(lines) + |lines| + 1;
+  if |lines| >= 1 { JoinLen(lines, "\n"); }
+}

@@ -9,7 +9,7 @@ over profiling runs; a proved bound holds for every input. Where they conflict,
 the proof is the stronger statement.
 """
 from __future__ import annotations
-import re, subprocess, sys
+import hashlib, re, subprocess, sys
 from concurrent.futures import ThreadPoolExecutor
 
 from common import (WORKERS, DAFNY_VERSION, z3_version, DATA, UNSCREENED, SOLUTIONS, UNVERIFIED,
@@ -101,8 +101,22 @@ def run(workers=WORKERS):
     # both; listing the two roots separately would double-count.
     files = sorted(PROVED.rglob("*.dfy")) if PROVED.exists() else []
     Z3 = z3_version()
+    # A proof's verdict depends only on these inputs; an unchanged, verified
+    # proof keeps its record. `--all` re-checks every proof.
+    old = {} if "--all" in sys.argv else {
+        r["solution_id"]: r for r in read_jsonl(DATA / "complexity_proofs.jsonl")}
+    def fingerprint(p):
+        h = hashlib.sha256(f"{DAFNY_VERSION} {Z3}".encode())
+        for f in [p, PRELUDE, *(f for d in (SOLUTIONS, UNVERIFIED, UNSCREENED, DISPUTED,
+                                            UNGATEABLE, UNSURE) for f in d.glob(f"*/{p.stem}.dfy"))]:
+            h.update(f.read_bytes())
+        return h.hexdigest()[:16]
     def check(p):
         sid = p.stem
+        fp = fingerprint(p)
+        prev = old.get(sid)
+        if prev and prev.get("fingerprint") == fp and prev["verified"]:
+            return dict(prev, label=ds.get(sid, {}).get("time_complexity_inferred"))
         text = p.read_text(encoding="utf-8")
         r = subprocess.run([DAFNY, "verify", str(p)],
                            capture_output=True, text=True, timeout=600)
@@ -125,6 +139,7 @@ def run(workers=WORKERS):
             "dafny_version": DAFNY_VERSION,
             "z3_version": Z3,
             "verifier_output": out.strip().splitlines()[-1] if out.strip() else "",
+            "fingerprint": fp,
         }
         log(f"  {sid:>10}  {'VERIFIED' if ok else 'FAILED  '}  "
             f"label={row['label']}  bound={row['proved_bound']}"

@@ -182,7 +182,7 @@ full floor-sqrt spec. `5_100` is the worked example.
    Python of the proof against its original: identical bytes is the real
    equivalence claim, and it is the only one available for a `loose` row.
 6. `python3 precheck.py <SID>` — every `requires` against every stored input.
-7. `python3 proofs.py` — re-verifies everything and **exits non-zero on any
+7. `python3 proofs.py` — re-verifies every proof whose file, row, prelude or toolchain changed (`--all`: every proof) and **exits non-zero on any
    `assume`**.
 
 ## What a proof claims

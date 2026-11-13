@@ -83,6 +83,8 @@ def main():
     ap.add_argument("--seed", type=int, required=True)
     ap.add_argument("--slices", type=int, default=3)
     ap.add_argument("--repo", default=".", help="bigodafny/ root")
+    ap.add_argument("--dir", default="solutions",
+                    help="status directory to draw from, e.g. solutions-disputed")
     ap.add_argument("--exclude-drawn", action="store_true",
                     help="draw only from rows no earlier campaign has drawn")
     args = ap.parse_args()
@@ -119,7 +121,7 @@ def main():
             if line.strip():
                 already_drawn.add(json.loads(line)["solution_id"])
 
-    solutions = dfy_files(os.path.join(repo, "solutions"))
+    solutions = dfy_files(os.path.join(repo, args.dir))
     # solutions-proved/ is an overlay over the partition, not a member of it.
     # Walked to any depth, so a new variant subdirectory cannot leak proved
     # rows back into the pool.

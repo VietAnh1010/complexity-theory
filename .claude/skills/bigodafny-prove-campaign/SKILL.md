@@ -70,6 +70,10 @@ Copy `PROMPT.md` from this skill into the batch directory and substitute
 table, ghost-counter shape, both log functions, the hard rules, the budget, and
 the trajectory schema. An agent should not need to read `COMPLEXITY.md`.
 
+A draw from `solutions-disputed/` (`sample.py --dir solutions-disputed`) appends
+`PROMPT_disputed.md` to each brief: the agent proves the tightest bound it can,
+not the label, and the proved class becomes the row's `truth`.
+
 ### 3. Run the slices
 
 Spawn the agents with `subagent_type: "general-purpose"` and
@@ -83,7 +87,7 @@ record.
 ### 4. Audit — the agents' reports are not evidence
 
 ```bash
-python3 proofs.py                       # re-verifies solutions-proved/ from scratch
+python3 proofs.py                       # re-verifies changed proofs; `--all` re-verifies every proof
 python3 ../.claude/skills/bigodafny-prove-campaign/scripts/audit.py --batch batches/<name>
 ```
 
@@ -280,3 +284,4 @@ the refreshed `data/`. Push to the session's designated branch.
 | `scripts/sample.py` | draws the sample, writes manifest and slices |
 | `scripts/audit.py` | joins verifier output to trajectories, fails on disagreement or changed code |
 | `PROMPT.md` | the agent brief, with `{{BATCH}}` / `{{SLICE}}` placeholders |
+| `PROMPT_disputed.md` | appended to the brief for rows drawn from `solutions-disputed/` |

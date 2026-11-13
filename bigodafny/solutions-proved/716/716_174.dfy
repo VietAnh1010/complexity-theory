@@ -1,0 +1,39 @@
+// 1047_B. Cover Points  (problem 716, solution 716_174)
+// time complexity: O(n)
+// python exact-diff baseline: exact
+//
+// Reproduce the Python program's entire stdout in `output`.
+//
+// --- Python ---------------------------------------------------------
+// n=int(input())
+// c=0
+// for i in range(n):
+//     x,y=map(int,input().split())
+//     c=max(c,x+y)
+// print(c)
+// --------------------------------------------------------------------
+
+include "../../prelude.dfy"
+import opened Prelude
+
+method Solve(n: int, edges: seq<seq<int>>) returns (output: string, ghost steps: nat)
+  requires forall k :: 0 <= k < |edges| ==> |edges[k]| == 2
+  ensures steps <= 6 * |edges| + 2 + |output|
+{
+  steps := 1;
+  var c := 0;
+  var i := 0;
+  while i < |edges|
+    invariant 0 <= i <= |edges|
+    invariant steps == 1 + 6 * i
+    decreases |edges| - i
+  {
+    var s := edges[i][0] + edges[i][1];
+    if s > c { c := s; }
+    i := i + 1;
+    steps := steps + 6;
+  }
+  output := IntToString(c);
+  IntToStringDigits(c);
+  steps := steps + Digits(c);
+}
