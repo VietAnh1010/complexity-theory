@@ -261,7 +261,8 @@ def check(path, batch_path=None):
 def apply(verdicts_path, dry_run=False):
     """Put each audited row where its verdict says: ok -> solutions/ (no
     header), mismatch -> solutions-disputed/, unsure -> solutions-unsure/ (both
-    with the review header), from whichever of the three it is in now. A row
+    with the review header), from whichever of those three or
+    solutions-unscreened/ it is in now. A row
     queued by a translation audit is not a label question: it stays put."""
     if check(verdicts_path):
         raise SystemExit("apply: verdict file fails `check`; nothing moved")
@@ -277,7 +278,7 @@ def apply(verdicts_path, dry_run=False):
         if t is None:
             missing.append(sid); continue
         name = Path(t["problem_id"]) / f"{sid}.dfy"
-        src = next((d / name for d in (SOLUTIONS, DISPUTED, UNSURE)
+        src = next((d / name for d in (SOLUTIONS, DISPUTED, UNSURE, UNSCREENED)
                     if (d / name).exists()), None)
         if src is None:
             missing.append(sid); continue

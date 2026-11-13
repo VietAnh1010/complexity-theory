@@ -1,32 +1,32 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n)
-//   audited class  : O(n*m)
-//   cause          : label
+//   audited class  : other
+//   cause          : both
 //   confidence     : medium
-//   auditor        : labelaudit-r4-d03
+//   auditor        : labelaudit-r5-opus
 //
-//   The PYTHON is not the labelled class either. BigOBench's label looks
-//   wrong; the translation is faithful to it.
+//   The Python does not match the label AND the translation diverges
+//   from the Python. Both need attention.
 //
 //   evidence:
-//     Solve loops over the test rows and per test calls IntSqrtFloor (log
-//     k steps, at most about log n) and three RepStr calls whose counts
-//     sum to nn, so each test is O(nn) and the total is tests times string
-//     length, O(n*m), not O(n). The Python builds A = ['a' for i in
-//     range(n)] and the string R per test, also O(n) per test. The sqrt
-//     search is dominated by the string building.
+//     The Dafny's `RepStr` prepends one character per recursion level and
+//     each `s + RepStr(...)` concat costs the tail's length, so each test
+//     costs O(n_i**2 + log k); the Python's `"a"*m` repetition and list
+//     `A` are O(n_i) per test.
 //
 //   how this label could be wrong, and what to check:
-//     The label has one size, but Solve loops over the tests and per test
-//     builds strings of length nn with RepStr. Check RepStr("a", nn - x -
-//     1) and the other two calls: each recurses on a per-test count, and
-//     the loop `while t < |pairs_list|` is outside them.
+//     Two faults. Each test builds a list `A` of length n_i and takes two
+//     square roots, so the Python is O(T*(n + log k)), a per-test size the
+//     O(n) label omits. The Dafny's `RepStr(s, n)` builds a run of 'a' by
+//     `s + RepStr(s, n - 1)`, a concat charged the tail's length at every
+//     level, O(n**2) per run. Check `RepStr` against the Python's
+//     `"a"*(n-x-1)`.
 //
 //   structural facts (deterministic, from label_audit.py):
-//     {"body_lines": 49, "data_dependent_loops": 0, "decreases_star":
+//     {"body_lines": 34, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["Join"], "loop_depth": 1, "loops":
-//     2, "recursive_helpers": 2, "seq_append_read_in_same_loop": false,
+//     1, "recursive_helpers": 1, "seq_append_read_in_same_loop": false,
 //     "seq_args": 1, "seq_update_in_loop": false, "set_build_in_loop":
 //     false, "sorts": [], "uses_map": false, "uses_multiset": false,
 //     "uses_set": false}

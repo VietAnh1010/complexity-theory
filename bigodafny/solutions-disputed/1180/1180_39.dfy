@@ -1,29 +1,27 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n+m)
-//   audited class  : O(n*m)
-//   cause          : translation
+//   audited class  : other
+//   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r3d-03
+//   auditor        : labelaudit-r5-opus
 //
-//   The Python matches its label; the DAFNY does not. The label is right
-//   about the program it was measured on and the translation is the
-//   defect.
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     For each of the b letters the Dafny runs `while j < |x|` over all
-//     a+1 prefix sums counting x[j] <= v, so it costs O(a*b); the Python's
-//     bisect is O(log n) per letter (O(n+m log n) overall, close to the
-//     label), so the binary search was replaced by a linear scan.
+//     The Dafny builds the prefix array `x` in O(n) and then runs a binary
+//     search over it for each of the m queries, O(n + m log n); the
+//     Python's `bisect(x, v)` per query is the same search.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes a binary search per letter. The Python uses
-//     `bisect(x, v)` which is logarithmic, but check whether the Dafny's
-//     inner `while j < |x|` counting scan over the whole prefix array for
-//     each letter replaces it.
+//     The label omits the search: for each of the m letters the Python
+//     calls `bisect(x, v)` on the n + 1 prefix sums, O(log n) each. Check
+//     the Dafny's inner `while lo < hi` binary search per query; the class
+//     is O(n + m log n), not in the vocabulary.
 //
 //   structural facts (deterministic, from label_audit.py):
-//     {"body_lines": 44, "data_dependent_loops": 0, "decreases_star":
+//     {"body_lines": 43, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "Join"],
 //     "loop_depth": 2, "loops": 3, "recursive_helpers": 0,
 //     "seq_append_read_in_same_loop": true, "seq_args": 2,

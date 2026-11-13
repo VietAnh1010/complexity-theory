@@ -1,0 +1,85 @@
+// 797_B. Odd sum  (problem 1366, solution 1366_102)
+// time complexity: O(nlogn)
+// python exact-diff baseline: exact
+//
+// Reproduce the Python program's entire stdout in `output`.
+//
+// --- Python ---------------------------------------------------------
+// '''input
+// 10
+// 1184 5136 1654 3254 6576 6900 6468 327 179 7114
+// '''
+// input()
+// a = list(map(int, input().split()))
+// s = 0
+// p, n = [i for i in a if i > 0], [j for j in a if j < 0]
+// s = sum(p)
+// if s % 2 == 1:
+// 	print(s)
+// else:
+// 	m = -10000000
+// 	for x in sorted(n)[::-1]:
+// 		if x % 2 == 1:
+// 			m = x
+// 			break
+// 	for y in sorted(p):
+// 		if y % 2 == 1:
+// 			m = max(m, -y)
+// 	print(s + m)
+// --------------------------------------------------------------------
+
+include "../../prelude.dfy"
+import opened Prelude
+
+method Solve(n: int, a_list: seq<int>) returns (output: string)
+{
+  var p: seq<int> := [];
+  var neg: seq<int> := [];
+  var i := 0;
+  while i < |a_list|
+    decreases |a_list| - i
+  {
+    if a_list[i] > 0 { p := p + [a_list[i]]; }
+    i := i + 1;
+  }
+  i := 0;
+  while i < |a_list|
+    decreases |a_list| - i
+  {
+    if a_list[i] < 0 { neg := neg + [a_list[i]]; }
+    i := i + 1;
+  }
+  var s := SumSeq(p);
+  if FloorMod(s, 2) == 1 {
+    output := IntToString(s);
+  } else {
+    var m := -10000000;
+    var sn := SortInts(neg);
+    // sorted(n)[::-1]: walk the sorted list from the end
+    var j := |sn|;
+    while j > 0
+      invariant 0 <= j <= |sn|
+      decreases j
+    {
+      var x := sn[j - 1];
+      if FloorMod(x, 2) == 1 {
+        m := x;
+        break;
+      }
+      j := j - 1;
+    }
+    var sp := SortInts(p);
+    j := 0;
+    while j < |sp|
+      invariant 0 <= j <= |sp|
+      decreases |sp| - j
+    {
+      var y := sp[j];
+      if FloorMod(y, 2) == 1 && -y > m {
+        m := -y;
+      }
+      j := j + 1;
+    }
+    output := IntToString(s + m);
+  }
+}

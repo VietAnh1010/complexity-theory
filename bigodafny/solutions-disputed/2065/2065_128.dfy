@@ -2,31 +2,27 @@
 //
 //   stated label   : O(n)
 //   audited class  : other
-//   cause          : both
+//   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r3d-06
+//   auditor        : labelaudit-r5-opus
 //
-//   The Python does not match the label AND the translation diverges
-//   from the Python. Both need attention.
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The Python loops about sqrt(2n) times with math.sqrt, so O(sqrt n),
-//     while the Dafny's outer loop runs sqrt(2n) times with an inner
-//     binary-search sqrt, giving O(sqrt(n) log n) in the VALUE n; neither
-//     is the labelled O(n), and the Dafny additionally reimplements
-//     math.sqrt.
+//     The Dafny loops i from 1 to `ISqrt(2n)`, about sqrt(2n) iterations,
+//     and calls `ISqrt(c)` in each, charged O(log n), so the cost is
+//     O(sqrt(n) log n); the Python's loop and `math.sqrt(c)` match.
 //
 //   how this label could be wrong, and what to check:
-//     The label O(n) treats n as a linear loop bound, but the outer loop
-//     `while i < lim` runs lim ~ sqrt(2n) times, and the Dafny runs an
-//     inner binary search for the integer sqrt at each step (log factor),
-//     where the Python calls math.sqrt in O(1). Check the Python `for i in
-//     range(1,int(math.sqrt(a)))` to confirm O(sqrt n), and the Dafny
-//     inner `dlo < dhi` loop to confirm the extra log.
+//     The label is linear in the value n, but the loop runs i up to
+//     sqrt(2n) and takes a square root each time. Check the loop bound
+//     `lim := ISqrt(a)` and the inner `ISqrt(c)`; the class is O(sqrt(n)
+//     log n), the Python taking `math.sqrt(c)` at the same point.
 //
 //   structural facts (deterministic, from label_audit.py):
-//     {"body_lines": 50, "data_dependent_loops": 0, "decreases_star":
-//     false, "linear_prelude_calls": [], "loop_depth": 2, "loops": 3,
+//     {"body_lines": 26, "data_dependent_loops": 0, "decreases_star":
+//     false, "linear_prelude_calls": [], "loop_depth": 1, "loops": 1,
 //     "recursive_helpers": 0, "seq_append_read_in_same_loop": false,
 //     "seq_args": 0, "seq_update_in_loop": false, "set_build_in_loop":
 //     false, "sorts": [], "uses_map": false, "uses_multiset": false,

@@ -2,33 +2,33 @@
 //
 //   stated label   : O(n**2)
 //   audited class  : other
-//   cause          : both
+//   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r4-d02
+//   auditor        : labelaudit-r5-opus
 //
-//   The Python does not match the label AND the translation diverges
-//   from the Python. Both need attention.
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     pats is rebuilt by concatenations that roughly double per column, so
-//     |pats| is exponential in W, and the main loop runs H rows times W
-//     columns times |pats| patterns (`while pi < |pats|`), a cost in the
-//     values H and W, not O(n**2). The Python also builds pats
-//     exponentially but sums over Counter keys (at most W per column), so
-//     the Dafny pays an extra |pats| factor per row.
+//     The Dafny's outer loop extends every pattern in `pats` and adds a
+//     second branch for those ending in i - 1, so `|pats|` grows like
+//     Fibonacci in W, and the counting loop walks W entries of each, O(W *
+//     phi**W + H * W); the Python's list comprehensions are identical.
 //
 //   how this label could be wrong, and what to check:
-//     The label reads the loops as quadratic in one size, but the pattern
-//     list pats grows with W (roughly Fibonacci). Check the loop `while pi
-//     < |pats|` inside the H x W loops: its bound is |pats|, exponential
-//     in W, so the cost is a value term in W and H.
+//     The label is polynomial, but `pats` enumerates every valid row of
+//     horizontal bars, a Fibonacci number of patterns in W, so building it
+//     and the per-column counts costs O(W * phi**W). Check `|pats|` after
+//     each round of the outer `while i < W` loop: it follows F(i+1). The
+//     statement caps W at 8, which by the value rule does not make it
+//     constant.
 //
 //   structural facts (deterministic, from label_audit.py):
-//     {"body_lines": 76, "data_dependent_loops": 0, "decreases_star":
+//     {"body_lines": 98, "data_dependent_loops": 1, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 3,
-//     "loops": 6, "recursive_helpers": 0, "seq_append_read_in_same_loop":
-//     false, "seq_args": 0, "seq_update_in_loop": false,
-//     "set_build_in_loop": false, "sorts": [], "uses_map": false,
+//     "loops": 8, "recursive_helpers": 0, "seq_append_read_in_same_loop":
+//     false, "seq_args": 0, "seq_update_in_loop": true,
+//     "set_build_in_loop": false, "sorts": [], "uses_map": true,
 //     "uses_multiset": false, "uses_set": false}
 // --------------------------------------------------------------------
 

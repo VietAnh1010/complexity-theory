@@ -2,28 +2,28 @@
 //
 //   stated label   : O(n)
 //   audited class  : other
-//   cause          : label
-//   confidence     : high
-//   auditor        : labelaudit-r3-02
+//   cause          : both
+//   confidence     : medium
+//   auditor        : labelaudit-r5-opus
 //
-//   The PYTHON is not the labelled class either. BigOBench's label looks
-//   wrong; the translation is faithful to it.
+//   The Python does not match the label AND the translation diverges
+//   from the Python. Both need attention.
 //
 //   evidence:
-//     Each of the n elements runs the inner loop `while j * j <= v` for
-//     about sqrt(v) iterations, a cost in the element value; the Python
-//     does the same with range(1, int(i**.5)+1) over set(a), so the true
-//     cost is O(n sqrt(max a_i)) and the label omits that value term.
+//     The Dafny's third loop runs `ISqrt(v)` and a divisor loop to sqrt(v)
+//     for each of the n elements, O(n sqrt(max a_i)); the Python iterates
+//     `set(a)`, so its divisor work is O(n + d sqrt(max a_i)) for d
+//     distinct values.
 //
 //   how this label could be wrong, and what to check:
-//     The label counts only the n elements, but each element runs an inner
-//     divisor search up to its square root. Open the `while j * j <= v`
-//     loop inside the per-element loop and compare with the Python's `for
-//     j in range(1, int(i**.5)+1)`; if the Python took sqrt in O(1)
-//     without a loop the cause would differ, but it loops too.
+//     Two faults. Both programs run a divisor loop to sqrt(a_i), a value
+//     term the O(n) label omits. The Python runs it once per DISTINCT
+//     value (`for i in set(a)`); the Dafny runs it for every element of
+//     `a_list`. Check the Dafny's third loop: it iterates `idx` over all n
+//     elements with no deduplication.
 //
 //   structural facts (deterministic, from label_audit.py):
-//     {"body_lines": 41, "data_dependent_loops": 1, "decreases_star":
+//     {"body_lines": 42, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 2,
 //     "loops": 4, "recursive_helpers": 0, "seq_append_read_in_same_loop":
 //     false, "seq_args": 1, "seq_update_in_loop": false,

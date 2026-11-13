@@ -31,7 +31,7 @@ has no blocker. A row can carry several.
 
 | Blocker | Meaning | Rows |
 | --- | --- | ---: |
-| `truth-unsettled` | label verdict is not `ok` (disputed, unsure, or never audited) | 329 |
+| `truth-unsettled` | label verdict is not `ok` (disputed, unsure, or never audited) | 258 |
 | `unverified` | fails `verify_all.py` (`1336_157`) | 1 |
 | `no-proof` | no proof in `solutions-proved/` | 275 |
 | `decreases-star` | uses `decreases *` (`1336_157`) | 1 |
@@ -49,10 +49,10 @@ Source: the tree.
 
 | Directory                    |                                 Rows |
 | ---------------------------- | -----------------------------------: |
-| `solutions/`                 |                                  303 |
-| `solutions-unscreened/`      |                                  129 |
-| `solutions-disputed/`        |                                  197 |
-| `solutions-unsure/`          |                                    2 |
+| `solutions/`                 |                                  374 |
+| `solutions-unscreened/`      |                                    0 |
+| `solutions-disputed/`        |                                  254 |
+| `solutions-unsure/`          |                                    3 |
 | `solutions-ungateable/`      |                                    4 |
 | `solutions-unverified/`      |                                    1 |
 | `solutions-untranslated/`    |                                    4 |

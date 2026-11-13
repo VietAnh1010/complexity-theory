@@ -4,29 +4,27 @@
 //   audited class  : other
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r3d-04
+//   auditor        : labelaudit-r5-opus
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The Dafny runs a sqrt search for r, builds ws of length m = (lim-1)
-//     + (n - s), which is about 2*sqrt(N), and then loops `rep < k - 1`
-//     times over m elements, so the cost is O(K*sqrt(N)), a product not a
-//     sum; the Python's dp loop `for _ in range(k-1)` over len(ws) pays
+//     The Dafny's `ws` has `partCount + extra` entries, both about
+//     sqrt(n), and the `while rep < k - 1` loop sweeps all of them each
+//     round, so the cost is O(k sqrt n); the Python's `accumulate` loop is
 //     the same.
 //
 //   how this label could be wrong, and what to check:
-//     The label is a sum n+m but the code multiplies: the outer `while rep
-//     < k - 1` contains an inner `while t < m`. Check the loop nesting and
-//     that m = partCount + extra is about 2*sqrt(N) (extra = n - s =
-//     n/lim); if the two loops are nested the cost is K*sqrt(N), not a
-//     sum.
+//     The label sums n and k, but the DP runs k - 1 rounds over a weight
+//     list of length about 2*sqrt(n): `lim` is sqrt(n) and the padding `n
+//     - s` equals n // lim, also about sqrt(n). Check the length m of
+//     `ws`; the class is O(k sqrt n).
 //
 //   structural facts (deterministic, from label_audit.py):
-//     {"body_lines": 94, "data_dependent_loops": 1, "decreases_star":
+//     {"body_lines": 89, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 2,
-//     "loops": 8, "recursive_helpers": 0, "seq_append_read_in_same_loop":
+//     "loops": 7, "recursive_helpers": 0, "seq_append_read_in_same_loop":
 //     false, "seq_args": 0, "seq_update_in_loop": false,
 //     "set_build_in_loop": false, "sorts": [], "uses_map": false,
 //     "uses_multiset": false, "uses_set": false}

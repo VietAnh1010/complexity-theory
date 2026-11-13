@@ -39,6 +39,7 @@ checked.
 | r2 | same file | 09-15 | r1's rules; the auditor also sees the problem statement. Redid batches 01–06, whose r1 verdicts survive only in git (`896e5fb`) |
 | r3 | `verdicts_r3.jsonl` | 10-01 | input values are sizes; `IntToString` costs 1; `Gcd` costs Euclid's depth |
 | r4 | `verdicts_r4.jsonl` | 10-01 | r3's rules plus the naming rule (`COMPLEXITY.md`) |
+| r5 | `verdicts_r5.jsonl` | 11-12 | r4's rules plus `ISqrt` costs `ISqrtSteps`; the unscreened rows and 38 disputed rows whose code changed in B4 |
 
 ## The `--only` trap
 

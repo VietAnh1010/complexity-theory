@@ -1,36 +1,33 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n+m)
-//   audited class  : O(n**2)
-//   cause          : both
-//   confidence     : medium
-//   auditor        : labelaudit-r3d-08
+//   audited class  : O(nlogn)
+//   cause          : label
+//   confidence     : high
+//   auditor        : labelaudit-r5-opus
 //
-//   The Python does not match the label AND the translation diverges
-//   from the Python. Both need attention.
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The Dafny's `while i < N` loop contains `while j < |heap|`, which
-//     copies N elements to newHeap each step, so it is O(n**2); SortInts
-//     adds O(n log n). The Python's heappush/heappop pair per step is O(n
-//     log n), so the O(n+m) label fits neither and the sorted-insertion
-//     heap is worse than the Python.
+//     The Dafny heapifies N values and then runs 2N rounds of `HeapPush`
+//     and `HeapPop`, each sifting O(log N) levels, so the cost is O(N log
+//     N); the Python's `heapq.heappush`/`heappop` loops are the same.
 //
 //   how this label could be wrong, and what to check:
-//     The label claims linear cost, but the Python uses heapq with a push
-//     and pop per step (O(n log n)), and the Dafny rebuilds a sorted seq
-//     of size N in an inner loop at each of N steps. Check the
-//     heappush/heappop loop in the Python and the `while j < |heap|` loop
-//     inside `while i < N` in the Dafny.
+//     The label is linear and names a second size, but there is one size,
+//     N, and each of 2N steps does a `heappush` and `heappop` on a heap of
+//     N items, O(log N) each. Check the two loops calling
+//     `HeapPush`/`HeapPop` (the Python's `heapq` calls); the class is O(N
+//     log N).
 //
 //   structural facts (deterministic, from label_audit.py):
-//     {"body_lines": 97, "data_dependent_loops": 0, "decreases_star":
+//     {"body_lines": 134, "data_dependent_loops": 1, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "SumSeq"],
-//     "loop_depth": 2, "loops": 5, "recursive_helpers": 0,
+//     "loop_depth": 1, "loops": 6, "recursive_helpers": 4,
 //     "seq_append_read_in_same_loop": false, "seq_args": 1,
-//     "seq_update_in_loop": true, "set_build_in_loop": false, "sorts":
-//     ["SortInts"], "uses_map": false, "uses_multiset": false, "uses_set":
-//     false}
+//     "seq_update_in_loop": true, "set_build_in_loop": false, "sorts": [],
+//     "uses_map": false, "uses_multiset": false, "uses_set": false}
 // --------------------------------------------------------------------
 
 // p03714 AtCoder Beginner Contest 062 - 3N Numbers  (problem 3029, solution 3029_114)

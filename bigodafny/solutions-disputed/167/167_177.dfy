@@ -3,29 +3,27 @@
 //   stated label   : O(n)
 //   audited class  : other
 //   cause          : label
-//   confidence     : medium
-//   auditor        : labelaudit-r3d-01
+//   confidence     : high
+//   auditor        : labelaudit-r5-opus
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The main loop in Solve runs at most sqrt(n) iterations and
-//     IntSqrtFloor adds O(log n) binary search steps, so the true cost is
-//     O(sqrt n) in the value n; the Python also loops range(1,
-//     floor(sqrt(n))).
+//     The Dafny computes `x := ISqrt(n)` and loops `while i < x`, at most
+//     sqrt(n) iterations of O(1) work, so the cost is O(sqrt n); the
+//     Python's `range(1, x)` has the same bound.
 //
 //   how this label could be wrong, and what to check:
-//     The label treats the value r (named n) as the loop size, but the
-//     loop only runs to floor(sqrt(n)). Check `while i < x && p == 0` with
-//     x := IntSqrtFloor(n), and the Python's range(1, x) with x =
-//     floor(sqrt(n)); a reviewer accepting value-bounded O(n) as an upper
-//     bound would keep the label.
+//     The label is linear in the input value n, but the loop runs i from 1
+//     to floor(sqrt(n)), about sqrt(n) iterations. Check the loop bound `x
+//     = math.floor(math.sqrt(n))` (`ISqrt(n)` in the Dafny); the class is
+//     O(sqrt n), outside the vocabulary.
 //
 //   structural facts (deterministic, from label_audit.py):
-//     {"body_lines": 41, "data_dependent_loops": 1, "decreases_star":
+//     {"body_lines": 24, "data_dependent_loops": 1, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 1,
-//     "loops": 2, "recursive_helpers": 0, "seq_append_read_in_same_loop":
+//     "loops": 1, "recursive_helpers": 0, "seq_append_read_in_same_loop":
 //     false, "seq_args": 0, "seq_update_in_loop": false,
 //     "set_build_in_loop": false, "sorts": [], "uses_map": false,
 //     "uses_multiset": false, "uses_set": false}

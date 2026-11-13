@@ -2,32 +2,28 @@
 //
 //   stated label   : O(nlogn)
 //   audited class  : other
-//   cause          : translation
-//   confidence     : high
-//   auditor        : labelaudit-r3-13
+//   cause          : label
+//   confidence     : medium
+//   auditor        : labelaudit-r5-opus
 //
-//   The Python matches its label; the DAFNY does not. The label is right
-//   about the program it was measured on and the translation is the
-//   defect.
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Solve calls IntSqrt2358(v) for each element, which loops about
-//     sqrt(v) iterations, so the Dafny costs O(n log n + sum of
-//     sqrt(a_i)); the Python's math.sqrt call is O(1) per element and
-//     sorted() gives the labelled O(n log n), so the sqrt search is
-//     introduced by the translation.
+//     After `SortInts(a_list)` the Dafny calls `ISqrt(v)` for each
+//     nonnegative element, charged O(log v), so the cost is O(n log n + n
+//     log max a_i); the Python's `ps` takes the same square roots.
 //
 //   how this label could be wrong, and what to check:
-//     The label counts only the sort. Open IntSqrt2358: its loop `while (r
-//     + 1) * (r + 1) <= x` runs about sqrt(v) times for each element v, a
-//     value term. Compare with the Python, which calls math.sqrt once per
-//     element in O(1); if the Python is O(n log n) as labelled, the fault
-//     is the Dafny's reimplemented sqrt.
+//     The label counts the sort but charges each square root 1. Check the
+//     loop: each nonnegative element calls `ISqrt(v)`, charged O(log v), a
+//     value term; the Python's `ps(i)` takes `sqrt(n)` for the same
+//     elements.
 //
 //   structural facts (deterministic, from label_audit.py):
-//     {"body_lines": 32, "data_dependent_loops": 1, "decreases_star":
+//     {"body_lines": 23, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 1,
-//     "loops": 2, "recursive_helpers": 0, "seq_append_read_in_same_loop":
+//     "loops": 1, "recursive_helpers": 0, "seq_append_read_in_same_loop":
 //     false, "seq_args": 1, "seq_update_in_loop": false,
 //     "set_build_in_loop": false, "sorts": ["SortInts"], "uses_map":
 //     false, "uses_multiset": false, "uses_set": false}

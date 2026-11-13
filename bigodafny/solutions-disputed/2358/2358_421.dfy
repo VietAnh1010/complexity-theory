@@ -2,31 +2,28 @@
 //
 //   stated label   : O(n)
 //   audited class  : other
-//   cause          : translation
-//   confidence     : high
-//   auditor        : labelaudit-r3-13
+//   cause          : label
+//   confidence     : medium
+//   auditor        : labelaudit-r5-opus
 //
-//   The Python matches its label; the DAFNY does not. The label is right
-//   about the program it was measured on and the translation is the
-//   defect.
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Solve calls IntSqrt2358b(v) for each non-negative element, looping
-//     about sqrt(v) times, so the Dafny costs O(n sqrt(max a_i)) in
-//     values, whereas the Python's int(i ** 0.5) is O(1) per element and
-//     gives the labelled O(n).
+//     The single loop over `a_list` calls `ISqrt(v)` for every nonnegative
+//     element, charged its O(log v) depth, so the cost is O(n log max
+//     a_i); the Python's `int(i ** 0.5)` takes the same square root.
 //
 //   how this label could be wrong, and what to check:
-//     The label assumes O(1) per element. Open IntSqrt2358b: its loop
-//     `while (r + 1) * (r + 1) <= x` runs about sqrt(v) times per element
-//     v, a value term the label does not account for. The Python uses i **
-//     0.5 once per element in O(1), so the O(n) label fits the Python and
-//     the Dafny's sqrt search is the fault.
+//     The label charges each element 1, but each nonnegative element calls
+//     `ISqrt(v)`, charged O(log v), a value term; the Python's `i ** 0.5`
+//     takes the same root. Check that the loop body is otherwise constant;
+//     then the class is O(n log max a_i).
 //
 //   structural facts (deterministic, from label_audit.py):
-//     {"body_lines": 31, "data_dependent_loops": 1, "decreases_star":
+//     {"body_lines": 22, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 1,
-//     "loops": 2, "recursive_helpers": 0, "seq_append_read_in_same_loop":
+//     "loops": 1, "recursive_helpers": 0, "seq_append_read_in_same_loop":
 //     false, "seq_args": 1, "seq_update_in_loop": false,
 //     "set_build_in_loop": false, "sorts": [], "uses_map": false,
 //     "uses_multiset": false, "uses_set": false}

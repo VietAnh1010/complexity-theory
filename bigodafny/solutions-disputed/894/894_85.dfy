@@ -1,37 +1,34 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(n**2)
-//   audited class  : O(n)
-//   cause          : translation
+//   audited class  : other
+//   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r4-d01
+//   auditor        : labelaudit-r5-opus
 //
-//   The Python matches its label; the DAFNY does not. The label is right
-//   about the program it was measured on and the translation is the
-//   defect.
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The Python's `for i in range(len(l))` calls Valid, whose own loop
-//     runs k < i times with sum(l) evaluated inside, so it is at least
-//     quadratic (cubic when the range tests pass); the Dafny computes
-//     `total` once and runs one `while p < |a_list| && !found` scan, which
-//     is O(n). The repeated-call structure was replaced by a single pass;
-//     if the Python is cubic then neither matches, so the cause lean is
-//     translation.
+//     The outer loop calls `Valid(a_list, i, x, y)` for each i, `Valid`
+//     loops i times, and its condition calls `SumSeq(l)` (linear) once s
+//     is in [x, y], so the worst case is O(n**3); the Python's `sum(l)`
+//     sits in the same place.
 //
 //   how this label could be wrong, and what to check:
-//     The label matches a Python that calls Valid(l, i, x, y) for each i,
-//     each looping over k items (quadratic, and sum(l) inside the loop can
-//     make it worse). Check that the Dafny instead sums once into `total`
-//     and does a single scan; if so it is a class faster than the Python.
+//     The label counts the two nested loops but not `sum(l)` inside the
+//     condition, an O(n) pass evaluated whenever the prefix sum lies in
+//     [x, y]. With l = [1, 0, ..., 0, big] and x = y = 1, every prefix
+//     reaches it and fails later, so `Valid(l, i)` costs O(i*n) and the
+//     total is O(n**3). Check the condition's short-circuit order.
 //
 //   structural facts (deterministic, from label_audit.py):
-//     {"body_lines": 30, "data_dependent_loops": 1, "decreases_star":
-//     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 1,
-//     "loops": 2, "recursive_helpers": 0, "seq_append_read_in_same_loop":
-//     false, "seq_args": 1, "seq_update_in_loop": false,
-//     "set_build_in_loop": false, "sorts": [], "uses_map": false,
-//     "uses_multiset": false, "uses_set": false}
+//     {"body_lines": 47, "data_dependent_loops": 1, "decreases_star":
+//     false, "linear_prelude_calls": ["IntToString", "SumSeq"],
+//     "loop_depth": 1, "loops": 2, "recursive_helpers": 1,
+//     "seq_append_read_in_same_loop": false, "seq_args": 1,
+//     "seq_update_in_loop": false, "set_build_in_loop": false, "sorts":
+//     [], "uses_map": false, "uses_multiset": false, "uses_set": false}
 // --------------------------------------------------------------------
 
 // 357_A. Group of Students  (problem 894, solution 894_85)

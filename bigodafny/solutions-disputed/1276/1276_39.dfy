@@ -4,28 +4,26 @@
 //   audited class  : other
 //   cause          : label
 //   confidence     : medium
-//   auditor        : labelaudit-r3d-04
+//   auditor        : labelaudit-r5-opus
 //
 //   The PYTHON is not the labelled class either. BigOBench's label looks
 //   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     The Dafny runs a sqrt search loop (while (s+1)*(s+1) <= n), builds
-//     arrays of length l = 2*s+1, then loops k times over l, so the cost
-//     is O(K*sqrt(N)) in the input VALUES; the Python pays the same via
-//     len(Num) = 2*int(n**0.5) in its k-by-l DP loop.
+//     The Dafny computes `s := ISqrt(n)`, sets `l := 2*s + 1`, and fills k
+//     - 1 DP rows of length l, so the cost is O(k sqrt n) in the two input
+//     values; the Python's DP has the same shape.
 //
 //   how this label could be wrong, and what to check:
-//     The label treats N and K as plain sizes (N*K). Open the nested loops
-//     `while i < k` / `while j < l` and check that l = 2*s+1 with s =
-//     floor(sqrt(n)); if l is sqrt(N) rather than N, the true cost is
-//     K*sqrt(N), a value term the label does not name. If the dataset
-//     reads n and m as other quantities, the label could stand.
+//     The label multiplies the two input values n and k, but the DP rows
+//     have length l = 2*sqrt(n) + 1, not n. Check `s=int(n**0.5)` and
+//     `l=len(Num)` in the Python (`l := 2*s + 1` in the Dafny); k rows of
+//     sqrt(n) cells give O(k sqrt n).
 //
 //   structural facts (deterministic, from label_audit.py):
-//     {"body_lines": 74, "data_dependent_loops": 1, "decreases_star":
+//     {"body_lines": 69, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString"], "loop_depth": 2,
-//     "loops": 7, "recursive_helpers": 0, "seq_append_read_in_same_loop":
+//     "loops": 6, "recursive_helpers": 0, "seq_append_read_in_same_loop":
 //     false, "seq_args": 0, "seq_update_in_loop": false,
 //     "set_build_in_loop": false, "sorts": [], "uses_map": false,
 //     "uses_multiset": false, "uses_set": false}

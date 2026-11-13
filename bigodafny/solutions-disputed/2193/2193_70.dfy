@@ -1,38 +1,33 @@
 // LABEL AUDIT -- queued for manual review, not a decision.
 //
 //   stated label   : O(nlogn)
-//   audited class  : O(n**2)
-//   cause          : translation
-//   confidence     : low
-//   auditor        : labelaudit-r4-u01
+//   audited class  : O(n)
+//   cause          : label
+//   confidence     : medium
+//   auditor        : labelaudit-r5-opus
 //
-//   The Python matches its label; the DAFNY does not. The label is right
-//   about the program it was measured on and the translation is the
-//   defect.
+//   The PYTHON is not the labelled class either. BigOBench's label looks
+//   wrong; the translation is faithful to it.
 //
 //   evidence:
-//     Solve scans the seq `distinct` for each element and then rescans
-//     a_list once per distinct value, O(n*d) with d the distinct count,
-//     which is O(n**2) when values are unrestricted, whereas the Python's
-//     dict is O(n) plus sorting d counts; I lean translation, as the Dafny
-//     replaced a dict by a linear seq search.
+//     The Dafny counts into `freq` in one pass over n elements and sorts
+//     `vals`, which holds at most three counts because each a_i is 1, 2 or
+//     3, so the cost is O(n); the Python's `sorted(freq.values())` sorts
+//     the same three counts.
 //
 //   how this label could be wrong, and what to check:
-//     The label O(nlogn) matches the Python, which counts with a dict and
-//     sorts the counts. Check the Dafny `v !in distinct` over a seq and
-//     the `while j < |distinct|` pass that rescans a_list per distinct
-//     value: with no requires bounding the values, distinct can grow to n
-//     and the cost is O(n**2). If you instead honour the statement's 1 <=
-//     a_i <= 3 cap, distinct has at most 3 entries, the Dafny is O(n) and
-//     the label is simply too loose (cause label).
+//     The label's log factor comes from `sorted(freq.values())`, but every
+//     element is 1, 2 or 3, so `freq` has at most three keys and the sort
+//     is constant. Check the problem statement's value set; with three
+//     possible values the class is the O(n) counting pass.
 //
 //   structural facts (deterministic, from label_audit.py):
-//     {"body_lines": 43, "data_dependent_loops": 0, "decreases_star":
+//     {"body_lines": 38, "data_dependent_loops": 0, "decreases_star":
 //     false, "linear_prelude_calls": ["IntToString", "SumSeq"],
-//     "loop_depth": 2, "loops": 3, "recursive_helpers": 0,
+//     "loop_depth": 1, "loops": 2, "recursive_helpers": 0,
 //     "seq_append_read_in_same_loop": false, "seq_args": 1,
-//     "seq_update_in_loop": false, "set_build_in_loop": false, "sorts":
-//     ["Sort"], "uses_map": false, "uses_multiset": false, "uses_set":
+//     "seq_update_in_loop": true, "set_build_in_loop": false, "sorts":
+//     ["Sort"], "uses_map": true, "uses_multiset": false, "uses_set":
 //     false}
 // --------------------------------------------------------------------
 
