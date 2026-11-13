@@ -38,7 +38,6 @@ Rules for every arm:
 | `<arm>/guard.py` | the hook of agent type `arms-<arm>` (`.claude/agents/arms-<arm>.md`); it sets the arm's options |
 | `hook.py` | the hook rules all arms share; it calls `prove_guard.py`, unchanged |
 | `runs/` | results, git-ignored: one folder per arm and batch, and the judge's `judged-<batch>.jsonl` |
-| `runs/pilot/` | the first run of batch 1, made before the hook recorded verify results; `report.py` ignores it |
 
 ## Rows
 

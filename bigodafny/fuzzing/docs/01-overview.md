@@ -49,6 +49,7 @@ An input that breaks it shows the guess is too low.
 fuzzing/
   steptrace.py          runs a row's counter on inputs
   experiments/fuzz/     blind guess-only runs; fuzz.py runs an agent-written generator
+  experiments/arms/     four agent setups proving the same rows (clean-636 pieces E)
   scripts/demo.sh       runs annotate, deghost and steptrace on one row -> demo/<problem>/
   DafnySteps/           C# code for annotate and deghost; a CLI and a Dafny plugin
   DafnySteps.Tests/     tests for DafnySteps

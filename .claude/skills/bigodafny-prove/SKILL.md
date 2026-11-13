@@ -214,7 +214,7 @@ wrong, two right, and the split is mechanical. `3046_65` and `3091_384` walk
 every token of every row, so a wider row costs more and the second dimension is
 real. The six wrong ones touch a fixed number of positions per row (`row[0]`,
 `row[1]`, up to `row[4]`) and never scan one — a row of width 1000 costs what a
-row of width 2 costs, so there is no `m`. 39 rows still carry the label.
+row of width 2 costs, so there is no `m`.
 `1138_83` fails a third way: its `m` is a scalar modulus, not a size.
 
 **`685_583` was recorded here as a disproved label. It is not one** -- its
