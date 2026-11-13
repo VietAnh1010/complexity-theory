@@ -123,8 +123,8 @@ changes go in `fuzzing/CHANGELOG.md`.
       level (an early `MaxGapBits` in `1915_158`) makes every `fuzz` input time out.
 - [ ] (2026-10-28) `1386_38` charges every running-gcd step its full depth, `O(n log max)`; the
       `1915_158` telescoping lemma gives `O(n + log max)`. It was rated by stored tests, not fuzzed.
-- [ ] (2026-10-28) `proofs.py` runs 8 `dafny verify` at once (`common.WORKERS`) and ran the 7 GB
-      WSL VM out of memory beside VS Code; `proofs.run(workers=2)` finished in 15 minutes.
+- [ ] (2026-10-28) `proofs.py` runs 8 `dafny verify` at once (`common.WORKERS`) and can run out of
+      memory; `proofs.run(workers=2)` finished in 15 minutes.
 - [ ] (2026-10-26) `blind.py grade` assigns `guard.log` lines to rows by path, so a denial with no
       path (`true`, `echo skip`) voids nothing. Map the line's agent id to its row via `.locks/`.
 - [ ] (2026-10-29) The `blind-guess` hook runs `$CLAUDE_PROJECT_DIR`'s `guard.py`, the main checkout's
