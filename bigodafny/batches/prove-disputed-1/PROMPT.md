@@ -1,6 +1,6 @@
 # Prove one batch of rows against its complexity label
 
-Your rows are the ones listed in `prove-disputed-2/slice_b.jsonl`. Read that
+Your rows are the ones listed in `prove-disputed-1/slice_{{SLICE}}.jsonl`. Read that
 file first; each line gives the solution id, its path, and its label.
 
 Each assigned row behaves correctly and passes `dafny verify`. What it has
@@ -214,7 +214,7 @@ nothing. A quantity **fixed in the source** is a constant however large.
 - **Keep every attempt.** After EVERY `dafny verify`, pass or fail, copy the
   file you just verified to
 
-      prove-disputed-2/attempts/<pid>/<sid>.<n>.dfy
+      prove-disputed-1/attempts/<pid>/<sid>.<n>.dfy
 
   where `<n>` is the attempt number, and name that path in the attempt's
   `"file"` field in your trajectory. Never delete, overwrite or edit a file
@@ -236,7 +236,7 @@ worthless.
 ## What to write back
 
 Append **one JSON object per line** to your own
-`prove-disputed-2/traj_b.jsonl` — that is what JSONL means, and every tool
+`prove-disputed-1/traj_{{SLICE}}.jsonl` — that is what JSONL means, and every tool
 that reads the file assumes it. Do not pretty-print across several lines: one
 slice did, and its 16 rows arrived as 59 lines that nothing could parse.
 Never write to another agent's file, and never to any other file in that

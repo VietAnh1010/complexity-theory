@@ -166,7 +166,7 @@ file it came from.
 | `manifest.jsonl` | the 50 drawn rows |
 | `excluded.jsonl` | rows skipped at draw time (empty this campaign) |
 | `slice_{a,b,c}.jsonl` | the split handed to each agent |
-| `PROMPT_{a,b,c}.md` | the brief each agent was given |
+| `PROMPT.md` | the brief each agent was given |
 | `traj_{a,b,c}.jsonl` | one line per row: outcome, bound, attempts, obstacle |
 | `label_relation.jsonl` | normalised relation per proved row, with reasons |
 | `audit.jsonl` | verifier output joined to the trajectories |

@@ -1,6 +1,6 @@
 # Prove one batch of rows against its complexity label
 
-Your rows are the ones listed in `prove-disputed-4/slice_b.jsonl`. Read that
+Your rows are the ones listed in `prove-disputed-4/slice_{{SLICE}}.jsonl`. Read that
 file first; each line gives the solution id, its path, and its label.
 
 Each assigned row behaves correctly and passes `dafny verify`. What it has
@@ -236,7 +236,7 @@ worthless.
 ## What to write back
 
 Append **one JSON object per line** to your own
-`prove-disputed-4/traj_b.jsonl` — that is what JSONL means, and every tool
+`prove-disputed-4/traj_{{SLICE}}.jsonl` — that is what JSONL means, and every tool
 that reads the file assumes it. Do not pretty-print across several lines: one
 slice did, and its 16 rows arrived as 59 lines that nothing could parse.
 Never write to another agent's file, and never to any other file in that

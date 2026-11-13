@@ -66,7 +66,7 @@ Say in the README which mode the draw used; the two are not interchangeable.
 ### 2. Write the brief
 
 Copy `PROMPT.md` from this skill into the batch directory and substitute
-`{{BATCH}}` and `{{SLICE}}`, one copy per slice. It is self-contained: charge
+`{{BATCH}}`; keep `{{SLICE}}` there and substitute it in each agent's copy. It is self-contained: charge
 table, ghost-counter shape, both log functions, the hard rules, the budget, and
 the trajectory schema. An agent should not need to read `COMPLEXITY.md`.
 
@@ -253,10 +253,9 @@ the refreshed `data/`. Push to the session's designated branch.
   campaign's own records. A superseded `label_relation` line still goes to
   `old-record.jsonl` as `{"file", "superseded_on", "why", "record"}`.
 - **A normalised batch has one record per row and nothing else current.** Each
-  record sits in the trajectory of the slice that produced it; slices and
-  briefs whose records were replaced, staging files and every superseded line
-  go into `old-` files (`old-record.jsonl`, `old-slice_*.jsonl`,
-  `old-PROMPT_*.md`). A proof the main agent fixed before promotion is not kept
+  record sits in the trajectory of the slice that produced it; slices whose
+  records were replaced, staging files and every superseded line go into `old-`
+  files (`old-record.jsonl`, `old-slice_*.jsonl`). A proof the main agent fixed before promotion is not kept
   as an attempt; its record says what was fixed. `prove-sample-7` is the example.
 - **`label_relation.jsonl` has one line per proved row, in one schema.**
   `solution_id`, `label`, `proved_bound`, `relation`, `reason` (never empty),

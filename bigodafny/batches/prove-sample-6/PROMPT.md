@@ -1,6 +1,6 @@
 # Prove one batch of rows against its complexity label
 
-Your rows are the ones listed in `batches/prove-sample-2/slice_b.jsonl`. Read that
+Your rows are the ones listed in `batches/prove-sample-6/slice_{{SLICE}}.jsonl`. Read that
 file first; each line gives the solution id, its path, and its label.
 
 Each assigned row behaves correctly and passes `dafny verify`. What it has
@@ -66,6 +66,7 @@ unit of loop overhead per iteration.
 | `multiset(s)` | `\|s\|` |
 | `multiset(a) == multiset(b)` | `\|a\|+\|b\|` |
 | `Join(parts, sep)` | `SumLen(parts) + \|parts\|` |
+| `IntToString(x)`, and `\|IntToString(x)\|` | `1` |
 | a recursive prelude function over a seq or string | its length |
 | a call to a helper | the helper's `steps` |
 
@@ -124,10 +125,27 @@ So record `relation` from exactly this vocabulary:
 | `confirms` | your bound is within the label's class |
 | `looser-slack` | you used a loose scaffold and did not attempt the tight bound |
 | `looser-structural` | your proof exposes a real cost the label omits |
+| `tighter-costmodel` | your bound is below the label because the charge table costs something CPython does not — most often `int` arithmetic on values that outgrow a machine word |
+| `tighter-translation` | your bound is below the label because the Dafny uses a cheaper algorithm than the Python, not because the label is loose |
 | `contradicts` | the row provably cannot meet the label — a literal in the source forces more work than the label allows |
 
 `contradicts` needs a reason naming the construct in the source. Do not reach
 for it because a bound came out large.
+
+A bound **below** the label is not automatically a tighter reading of the row.
+Before recording one, read the Python: if it sorts and your Dafny compares
+multisets, or if it multiplies numbers that grow past a machine word, the gap
+is the translation or the charge table, not the label. Say which.
+
+## `IntToString` is constant, and so is its result
+
+Charge `1` for `IntToString(x)` and treat `|IntToString(x)|` as `1` too, so a
+`Join` over k digit strings costs k rather than the sum of their digits. A
+digit count is bounded at 19 in practice and the hidden constant stays small.
+`Join` still costs `SumLen(parts) + |parts|` for parts of unbounded length,
+such as input lines.
+
+This is an exception to the next section and it is deliberately narrow.
 
 ## Value versus size — a settled convention
 
@@ -140,14 +158,24 @@ nothing. A quantity **fixed in the source** is a constant however large.
 
 - **3 attempts.** One attempt = one edit followed by one `dafny verify`.
 - **5 minutes** wall clock, including verifier time.
-- Out of either → delete your partial copy from `solutions-proved/`, record
-  `unresolved` with the reason, move on. **Most rows will not close in this
-  budget, and that is the expected result.** An accurate `unresolved` is the
-  deliverable; a proof that does not verify is worthless.
+- Out of either → delete **your own row's** partial copy from
+  `solutions-proved/`, record `unresolved` with the reason, move on.
+- **Delete `solutions-proved/<pid>/<sid>.dfy` for YOUR `<sid>` and nothing
+  else.** Never remove the directory. Two verified proofs were destroyed this
+  way in one campaign: an agent abandoning `2914_3` took `2914_264` with it,
+  and one abandoning `750_14` took `750_51`. Those are different solutions of
+  the same problem, with their own labels and their own proofs.
+
+**Most rows will not close in this budget, and that is the expected result.**
+An accurate `unresolved` is the deliverable; a proof that does not verify is
+worthless.
 
 ## What to write back
 
-Append one JSON object per row to **your own** `batches/prove-sample-2/traj_b.jsonl`.
+Append **one JSON object per line** to your own
+`batches/prove-sample-6/traj_{{SLICE}}.jsonl` — that is what JSONL means, and every tool
+that reads the file assumes it. Do not pretty-print across several lines: one
+slice did, and its 16 rows arrived as 59 lines that nothing could parse.
 Never write to another agent's file, and never to any other file in that
 directory.
 

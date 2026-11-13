@@ -1,6 +1,6 @@
 # Prove one batch of rows against its complexity label
 
-Your rows are the ones listed in `prove-disputed-5/slice_b.jsonl`. Read that
+Your rows are the ones listed in `batches/prove-sample-7/slice_{{SLICE}}.jsonl`. Read that
 file first; each line gives the solution id, its path, and its label.
 
 Each assigned row behaves correctly and passes `dafny verify`. What it has
@@ -10,8 +10,9 @@ counter with a proved upper bound.
 ## Setup
 
 ```bash
-cd bigodafny                     # from the repository root
-dafny verify <file> --verification-time-limit 30
+cd /home/user/complexity-theory/bigodafny
+export PATH="$PATH:/root/.dotnet/tools"
+dafny verify <file> --solver-path /usr/local/bin/z3 --verification-time-limit 30
 ```
 
 ## Where your work goes — read this twice
@@ -65,12 +66,9 @@ unit of loop overhead per iteration.
 | `multiset(s)` | `\|s\|` |
 | `multiset(a) == multiset(b)` | `\|a\|+\|b\|` |
 | `Join(parts, sep)` | `SumLen(parts) + \|parts\|` |
-| `IntToString(x)` | `Digits(x)` |
-| `JoinInts(xs, sep)` | `SumDigits(xs) + \|xs\|` |
-| `Sort`, `SortInts`, `SortStrings` on k elements | `SortCost(k)` |
+| `IntToString(x)`, and `\|IntToString(x)\|` | `1` |
 | a recursive prelude function over a seq or string | its length |
 | a call to a helper | the helper's `steps` |
-| `Gcd(a, b)` | `GcdSteps(a, b)`, Euclid's depth; bound it with `GcdStepsBound` |
 
 Do **not** charge `|s|` for `s[i := v]`. That was the old backend-derived model
 and it was retired; old files in `solutions-proved/` still use it.
@@ -80,50 +78,16 @@ and it was retired; old files in `solutions-proved/` still use it.
 The label is asymptotic. `steps <= 7*n + 12` proves O(n). Take whatever
 constant the invariant supports; never tune one to look tight.
 
-## Sorts and binary searches — use the prelude, do not re-derive
+## Logarithmic bounds
 
-`prelude.dfy` already has the sort charge, its tight bound, and a binary-search
-potential. Call them; do not copy a `SortCost` or `CeilLog2` into your file.
-
-```dafny
-steps := steps + SortCost(|s|);
-SortCostWithin(|s|, n);          // SortCost(|s|) <= 2 * NLogN(n) + 1, any |s| <= n
-ensures steps <= 2 * NLogN(n) + 5 * n + 3
-```
-
-A search loop over N elements:
-
-```dafny
-ghost var it: nat := 0;
-while lo < hi
-  invariant it + SearchPot(hi - lo) <= SearchPot(N)
-{
-  ghost var k := hi - lo;
-  ...                              // lo := mid + 1 or hi := mid
-  BisectStep(k, hi - lo);
-  it := it + 1;
-}
-```
-
-m searches, each costing `a` per halving plus `b`, fold with
-`SearchLoopWithin(m, N, n, a, b)` into `a * NLogN(n) + b * n`. Carry the outer
-invariant as `steps <= base + i * K` and step it with
-`CostMulDistrib(i, 1, i + 1, K)`.
-
-`NLogN` is opaque on purpose: your verification condition sees an atom, not a
-product, so a sort plus searches combine by linear arithmetic. Never
-`reveal NLogN()` in `Solve`. Writing the bound as `2 * n * (CeilLog2(n) + 1)`
-brings back the product that timed out five rows in `prove-sample-7`.
-
-## Other logarithmic bounds
-
-For a log that is not a sort or a search, **match its rounding to the code's**.
-`CeilLog2` is in the prelude (a recursion that splits into ceil(k/2)); for a
-loop that does `m := m / 2`, define a floor log yourself:
+Dafny has no `log`. Define one, and **match its rounding to the code's**:
 
 ```dafny
 ghost function Log2(x: nat): nat  decreases x     // loop does m := m / 2
 { if x <= 1 then 0 else 1 + Log2(x / 2) }
+
+ghost function CeilLog2(n: nat): nat  decreases n // recursion splits into ceil(k/2)
+{ if n <= 1 then 0 else 1 + CeilLog2((n + 1) / 2) }
 ```
 
 Pick the wrong one and the inductive step is false at some small `k` — floor-log
@@ -131,9 +95,8 @@ fails at `k = 3` for a split — and nothing you add will close it.
 
 **Isolate every multiplication into its own lemma.** Z3 is bad at nonlinear
 arithmetic; an argument with the multiplications inline times out where the same
-argument with each product fact as a separate lemma finishes in seconds. The
-prelude has `CostMulMono`, `CostMulMonoLeft`, `CostMulDistrib` and
-`CostMulAssoc` for exactly this.
+argument with `MulMonoRight` and `MulDistrib` as separate lemmas finishes in
+seconds.
 
 ## Rules you may not break
 
@@ -141,9 +104,7 @@ prelude has `CostMulMono`, `CostMulMonoLeft`, `CostMulDistrib` and
    corpus for it and fails.
 2. **No `decreases *`.**
 3. **Do not change what the row computes.** You add ghost state, `ensures`,
-   `invariant`, `decreases`, `assert`, and lemmas. Nothing else. Never add or
-   change a `requires` on the row's own methods and functions: if the bound
-   needs one, stop and record the row `unresolved` with the clause you needed.
+   `invariant`, `decreases`, `assert`, and lemmas. Nothing else.
 4. **Do not touch** `solutions/`, `validate.py`, `difftest.py`, `verify_all.py`,
    `precheck.py`, `proofs.py`, or anything in `data/`.
 5. **If your proved bound exceeds the label, keep the proof and record it.**
@@ -161,44 +122,30 @@ So record `relation` from exactly this vocabulary:
 
 | value | when |
 |---|---|
-| `confirms` | your bound is in the label's class |
-| `looser-slack` | above the label: you used a loose scaffold and did not attempt the tight bound |
-| `looser-structural` | above the label: the Python really pays a cost the label omits, usually a loop over an input value |
-| `looser-costmodel` | above the label: the charge table costs something more than CPython does |
-| `looser-translation` | above the label: the Dafny does work the Python does not |
-| `tighter-costmodel` | below the label: the charge table costs something less than CPython does — most often `int` arithmetic on values that outgrow a machine word |
-| `tighter-translation` | below the label: the Dafny does less work than the Python |
-| `tighter-label` | below the label, and the Python itself does no more: the label overstates |
+| `confirms` | your bound is within the label's class |
+| `looser-slack` | you used a loose scaffold and did not attempt the tight bound |
+| `looser-structural` | your proof exposes a real cost the label omits |
+| `tighter-costmodel` | your bound is below the label because the charge table costs something CPython does not — most often `int` arithmetic on values that outgrow a machine word |
+| `tighter-translation` | your bound is below the label because the Dafny uses a cheaper algorithm than the Python, not because the label is loose |
+| `contradicts` | the row provably cannot meet the label — a literal in the source forces more work than the label allows |
 
-Every value other than `confirms` needs a `relation_reason` naming the construct
-in the source.
+`contradicts` needs a reason naming the construct in the source. Do not reach
+for it because a bound came out large.
 
 A bound **below** the label is not automatically a tighter reading of the row.
 Before recording one, read the Python: if it sorts and your Dafny compares
 multisets, or if it multiplies numbers that grow past a machine word, the gap
 is the translation or the charge table, not the label. Say which.
 
-## Output costs one step per character
+## `IntToString` is constant, and so is its result
 
-Integer arithmetic costs `1` however large the value. Producing text costs one
-step per character: `IntToString(x)` costs `Digits(x)`, `Join(parts, sep)`
-costs `SumLen(parts) + |parts|`. All three, plus `SumDigits`, are prelude ghost
-functions; do not define your own.
+Charge `1` for `IntToString(x)` and treat `|IntToString(x)|` as `1` too, so a
+`Join` over k digit strings costs k rather than the sum of their digits. A
+digit count is bounded at 19 in practice and the hidden constant stays small.
+`Join` still costs `SumLen(parts) + |parts|` for parts of unbounded length,
+such as input lines.
 
-**Bound printing by `|output|`.** Every program that prints L characters pays L
-steps, so output length is a parameter of its own. Prove a bound of the form
-`steps <= f(n) + c * |output|` and compare only `f(n)` with the label. Link the
-charges to the output with the prelude lemmas:
-
-```dafny
-IntToStringDigits(x);   // |IntToString(x)| == Digits(x)
-JoinLen(parts, sep);    // |Join(parts, sep)| == SumLen(parts) + (|parts| - 1) * |sep|
-JoinIntsLen(xs, sep);   // |JoinInts(xs, sep)| == SumDigits(xs) + (|xs| - 1) * |sep|
-```
-
-An additive `|output|` term never makes a row looser. A term that multiplies it
-(`n * |output|`), or a `Digits` charge whose string never reaches the output (a
-digit sum, a string comparison), is ordinary work and counts against the label.
+This is an exception to the next section and it is deliberately narrow.
 
 ## Value versus size — a settled convention
 
@@ -211,19 +158,9 @@ nothing. A quantity **fixed in the source** is a constant however large.
 
 - **3 attempts.** One attempt = one edit followed by one `dafny verify`.
 - **5 minutes** wall clock, including verifier time.
-- **Keep every attempt.** After EVERY `dafny verify`, pass or fail, copy the
-  file you just verified to
-
-      prove-disputed-5/attempts/<pid>/<sid>.<n>.dfy
-
-  where `<n>` is the attempt number, and name that path in the attempt's
-  `"file"` field in your trajectory. Never delete, overwrite or edit a file
-  under `attempts/`. A failed attempt is data: it is how anyone learns what
-  was tried and where it broke.
-- Out of attempts or time → your attempts are already saved under
-  `attempts/`. Remove only your own row's copy from `solutions-proved/`, which
-  holds verified proofs only, record `unresolved` with the reason, move on.
-- **Remove `solutions-proved/<pid>/<sid>.dfy` for YOUR `<sid>` and nothing
+- Out of either → delete **your own row's** partial copy from
+  `solutions-proved/`, record `unresolved` with the reason, move on.
+- **Delete `solutions-proved/<pid>/<sid>.dfy` for YOUR `<sid>` and nothing
   else.** Never remove the directory. Two verified proofs were destroyed this
   way in one campaign: an agent abandoning `2914_3` took `2914_264` with it,
   and one abandoning `750_14` took `750_51`. Those are different solutions of
@@ -236,7 +173,7 @@ worthless.
 ## What to write back
 
 Append **one JSON object per line** to your own
-`prove-disputed-5/traj_b.jsonl` — that is what JSONL means, and every tool
+`batches/prove-sample-7/traj_{{SLICE}}.jsonl` — that is what JSONL means, and every tool
 that reads the file assumes it. Do not pretty-print across several lines: one
 slice did, and its 16 rows arrived as 59 lines that nothing could parse.
 Never write to another agent's file, and never to any other file in that
@@ -260,8 +197,8 @@ array is invalid: every row must at least record reading its assigned source.
  "bound":"3 * |a_list| + 4","relation":"confirms","relation_reason":"",
  "reads":[{"scope":"source","target":"solutions/1053/1053_38.dfy","reason":"call-graph"},
           {"scope":"prelude","target":"IntToString","reason":"cost"}],
- "attempts":[{"n":1,"action":"ghost steps + loop invariant steps == 3*i+1","outcome":"failed","note":"invariant not maintained across the inner append","file":"attempts/1053/1053_38.1.dfy"},
-             {"n":2,"action":"charged s + [x] as 1, not |s|","outcome":"verified","note":"","file":"attempts/1053/1053_38.2.dfy"}],
+ "attempts":[{"n":1,"action":"ghost steps + loop invariant steps == 3*i+1","outcome":"failed","note":"invariant not maintained across the inner append"},
+             {"n":2,"action":"charged s + [x] as 1, not |s|","outcome":"verified","note":""}],
  "attempts_used":2,"seconds":140,"why_failed":null}
 ```
 
@@ -277,28 +214,3 @@ Be concise. No preamble, no per-command narration. Final message ≤ 8 lines:
 counts proved / unresolved, any row whose `relation` is not `confirms`, and the
 single most common obstacle. The trajectory file is the record — do not repeat
 it in chat.
-
-## Your rows are disputed — this section overrides the label-first parts above
-
-Every row in your slice lives in `solutions-disputed/<pid>/<sid>.dfy`, not in
-`solutions/`. Read `solutions-disputed/` wherever this brief says `solutions/`;
-it is the original you never modify. Your copy still goes to
-`solutions-proved/<pid>/<sid>.dfy`.
-
-A label audit doubts each row's label. The row's header comment
-(`LABEL AUDIT -- queued for manual review`) gives the audit's guess
-(`audited class`) and its reasoning. The label and the guess are both hints,
-and either may be wrong.
-
-Your goal is the **tightest upper bound you can prove** within the budget, not
-the label:
-
-1. Read the Python and the Dafny and decide the real cost yourself.
-2. Prove that bound. If it is below the label, record `tighter-label` only after
-   checking that the Python itself does no more work (see above); otherwise name
-   the translation or charge-table cause.
-3. If the tight bound will not close, a looser proved bound is still a result:
-   record it with `looser-slack` and say in `relation_reason` what the tight
-   bound would need.
-
-`relation` is still measured against the row's label, from the same vocabulary.

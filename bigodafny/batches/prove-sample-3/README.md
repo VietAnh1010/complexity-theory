@@ -156,8 +156,7 @@ file it came from.
 |---|---|
 | `manifest.jsonl` | the 50 rows: id, path, label, split, gate |
 | `slice_{a,b,c}.jsonl` | the three agent assignments, 17/17/16 |
-| `resume_{a,b,c}.jsonl` | the 16 rows left after the interruption |
-| `PROMPT_{a,b,c}.md`, `PROMPT_resume_{a,b,c}.md` | the agent briefs |
+| `PROMPT.md` | the agent brief |
 | `traj_{a,b,c}.jsonl` | per-row attempts, bound, timing, failure reason, obstacle code |
 | `label_relation.jsonl` | normalised relation per proved row, with reasons |
 | `audit.jsonl`, `summary.json` | the verifier-joined audit and its totals |

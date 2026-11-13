@@ -11,12 +11,12 @@ look at them, and your result must stand on its own.
 1. `bigodafny/DOCS.md`
 2. `bigodafny/COMPLEXITY.md`
 3. `bigodafny/batches/prove-sample-7/README.md`
-4. `bigodafny/batches/prove-sample-7/PROMPT_a.md` — the campaign brief: charges,
+4. `bigodafny/batches/prove-sample-7/PROMPT.md` — the campaign brief: charges,
    the ghost-counter shape, the hard rules, the budget, the trajectory schema,
    the reading trace. **Everything in it applies except the overrides below.**
 5. For each row, its source file in `solutions/`.
 
-## Overrides to PROMPT_a.md
+## Overrides to PROMPT.md
 
 **Where your proof goes.** Not `solutions-proved/`. Write your instrumented copy to
 
@@ -32,7 +32,7 @@ and fix its include to `include "../../../../prelude.dfy"`. Verify it there:
 
     bigodafny/batches/prove-sample-7/rerun/traj_rerun_{{SLICE}}.jsonl
 
-as soon as each row is finished, not at the end. Same schema as PROMPT_a.md,
+as soon as each row is finished, not at the end. Same schema as PROMPT.md,
 including `reads`. Write to no other file in `batches/`.
 
 **Out of budget or unproved.** Delete only your own

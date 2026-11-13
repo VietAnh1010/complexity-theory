@@ -1,6 +1,6 @@
 # Prove one batch of rows against its complexity label
 
-Your rows are the ones listed in `batches/prove-sample-7/slice_c2.jsonl`. Read that
+Your rows are the ones listed in `batches/prove-sample-4/slice_{{SLICE}}.jsonl`. Read that
 file first; each line gives the solution id, its path, and its label.
 
 Each assigned row behaves correctly and passes `dafny verify`. What it has
@@ -66,7 +66,6 @@ unit of loop overhead per iteration.
 | `multiset(s)` | `\|s\|` |
 | `multiset(a) == multiset(b)` | `\|a\|+\|b\|` |
 | `Join(parts, sep)` | `SumLen(parts) + \|parts\|` |
-| `IntToString(x)`, and `\|IntToString(x)\|` | `1` |
 | a recursive prelude function over a seq or string | its length |
 | a call to a helper | the helper's `steps` |
 
@@ -137,16 +136,6 @@ Before recording one, read the Python: if it sorts and your Dafny compares
 multisets, or if it multiplies numbers that grow past a machine word, the gap
 is the translation or the charge table, not the label. Say which.
 
-## `IntToString` is constant, and so is its result
-
-Charge `1` for `IntToString(x)` and treat `|IntToString(x)|` as `1` too, so a
-`Join` over k digit strings costs k rather than the sum of their digits. A
-digit count is bounded at 19 in practice and the hidden constant stays small.
-`Join` still costs `SumLen(parts) + |parts|` for parts of unbounded length,
-such as input lines.
-
-This is an exception to the next section and it is deliberately narrow.
-
 ## Value versus size — a settled convention
 
 A loop bounded by an input **value** counts: the value is a parameter of the
@@ -158,45 +147,20 @@ nothing. A quantity **fixed in the source** is a constant however large.
 
 - **3 attempts.** One attempt = one edit followed by one `dafny verify`.
 - **5 minutes** wall clock, including verifier time.
-- Out of either → delete **your own row's** partial copy from
-  `solutions-proved/`, record `unresolved` with the reason, move on.
-- **Delete `solutions-proved/<pid>/<sid>.dfy` for YOUR `<sid>` and nothing
-  else.** Never remove the directory. Two verified proofs were destroyed this
-  way in one campaign: an agent abandoning `2914_3` took `2914_264` with it,
-  and one abandoning `750_14` took `750_51`. Those are different solutions of
-  the same problem, with their own labels and their own proofs.
-
-**Most rows will not close in this budget, and that is the expected result.**
-An accurate `unresolved` is the deliverable; a proof that does not verify is
-worthless.
+- Out of either → delete your partial copy from `solutions-proved/`, record
+  `unresolved` with the reason, move on. **Most rows will not close in this
+  budget, and that is the expected result.** An accurate `unresolved` is the
+  deliverable; a proof that does not verify is worthless.
 
 ## What to write back
 
-Append **one JSON object per line** to your own
-`batches/prove-sample-7/traj_c2.jsonl` — that is what JSONL means, and every tool
-that reads the file assumes it. Do not pretty-print across several lines: one
-slice did, and its 16 rows arrived as 59 lines that nothing could parse.
+Append one JSON object per row to **your own** `batches/prove-sample-4/traj_{{SLICE}}.jsonl`.
 Never write to another agent's file, and never to any other file in that
 directory.
-
-### Reading trace -- required
-
-Add a `reads` array to every trajectory record. Record the material reading
-path, in order: first the assigned source row, then each direct helper or
-prelude declaration whose implementation, contract, termination, or cost you
-needed to inspect. Use `scope` as `source`, `helper`, or `prelude`; `target`
-names the method/function or source path; `reason` is one of `call-graph`,
-`cost`, `contract`, `termination`, or `bound`.
-
-Do not log routine re-reads, verifier output, or unrelated prelude functions.
-This is a proof-relevance trace, not a terminal transcript. An empty `reads`
-array is invalid: every row must at least record reading its assigned source.
 
 ```json
 {"solution_id":"1053_38","label":"O(n)","outcome":"proved",
  "bound":"3 * |a_list| + 4","relation":"confirms","relation_reason":"",
- "reads":[{"scope":"source","target":"solutions/1053/1053_38.dfy","reason":"call-graph"},
-          {"scope":"prelude","target":"IntToString","reason":"cost"}],
  "attempts":[{"n":1,"action":"ghost steps + loop invariant steps == 3*i+1","outcome":"failed","note":"invariant not maintained across the inner append"},
              {"n":2,"action":"charged s + [x] as 1, not |s|","outcome":"verified","note":""}],
  "attempts_used":2,"seconds":140,"why_failed":null}

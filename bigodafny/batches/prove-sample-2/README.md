@@ -142,7 +142,7 @@ file it came from.
 | `manifest.jsonl` | the 50 rows: id, path, label, split, gate |
 | `slice_{a,b,c}.jsonl` | the three agent assignments, 17/17/16 |
 | `excluded.jsonl` | rows kept out of the pool, with the reason |
-| `PROMPT_{a,b,c}.md` | the agent briefs, from the skill's template |
+| `PROMPT.md` | the agent brief, from the skill's template |
 | `traj_{a,b,c}.jsonl` | per-row attempts, bound, timing, failure reason, obstacle code |
 | `label_relation.jsonl` | normalised relation per proved row, with reasons |
 | `audit.jsonl`, `summary.json` | the verifier-joined audit and its totals |

@@ -134,7 +134,7 @@ file it came from.
 |---|---|
 | `manifest.jsonl` | the 50 rows: id, path, label, split, gate |
 | `slice_{a,b,c}.jsonl` | the three agent assignments, 17/17/16 |
-| `PROMPT_{a,b,c}.md` | the agent briefs, including the new prelude lemmas |
+| `PROMPT.md` | the agent brief, including the new prelude lemmas |
 | `traj_{a,b,c}.jsonl` | per-row attempts, bound, timing, failure reason, obstacle code |
 | `label_relation.jsonl` | normalised relation per proved row, with reasons |
 | `audit.jsonl`, `summary.json` | the verifier-joined audit and its totals |

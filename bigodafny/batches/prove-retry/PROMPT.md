@@ -1,6 +1,6 @@
 # Prove one batch of rows against its complexity label
 
-Your rows are the ones listed in `prove-disputed-4/slice_c.jsonl`. Read that
+Your rows are the ones listed in `batches/prove-retry/slice_{{SLICE}}.jsonl`. Read that
 file first; each line gives the solution id, its path, and its label.
 
 Each assigned row behaves correctly and passes `dafny verify`. What it has
@@ -214,7 +214,7 @@ nothing. A quantity **fixed in the source** is a constant however large.
 - **Keep every attempt.** After EVERY `dafny verify`, pass or fail, copy the
   file you just verified to
 
-      prove-disputed-4/attempts/<pid>/<sid>.<n>.dfy
+      batches/prove-retry/attempts/<pid>/<sid>.<n>.dfy
 
   where `<n>` is the attempt number, and name that path in the attempt's
   `"file"` field in your trajectory. Never delete, overwrite or edit a file
@@ -233,10 +233,29 @@ nothing. A quantity **fixed in the source** is a constant however large.
 An accurate `unresolved` is the deliverable; a proof that does not verify is
 worthless.
 
+## This batch
+
+- Each line of your slice gives the row's `path`, which may be outside `solutions/`. It is the
+  original: never modify it. Your copy still goes to `solutions-proved/<pid>/<sid>.dfy`.
+- Do not touch any `solutions*` directory except your own copy in `solutions-proved/`.
+- **Run the verifier before giving up.** Write a copy with a ghost counter and run `dafny verify`
+  at least once on every row, even if you expect it to fail. An expected failure is not a result.
+- If a slice line has `start_from`, that earlier proof no longer verifies; you may start from it.
+- A row with `decreases *` needs a real `decreases` in your copy (rule 2).
+- **On `unresolved`, also set `obstacle`** to exactly one code. It names what blocked your last attempt:
+
+| code | when |
+|---|---|
+| `z3-nonlinear` | Z3 will not prove a routine fact about products |
+| `math-too-hard` | a needed fact about a function (a log, a square root, a sum) was not established |
+| `invariant-gap` | a loop invariant is false or too weak: it lacks a simple fact about program state (a range, a case split, a counter) |
+| `termination-not-proved` | nobody showed why a loop stops, so it keeps `decreases *` |
+| `other` | none of these; `why_failed` must state the cause |
+
 ## What to write back
 
 Append **one JSON object per line** to your own
-`prove-disputed-4/traj_c.jsonl` — that is what JSONL means, and every tool
+`batches/prove-retry/traj_{{SLICE}}.jsonl` — that is what JSONL means, and every tool
 that reads the file assumes it. Do not pretty-print across several lines: one
 slice did, and its 16 rows arrived as 59 lines that nothing could parse.
 Never write to another agent's file, and never to any other file in that
@@ -277,28 +296,3 @@ Be concise. No preamble, no per-command narration. Final message ≤ 8 lines:
 counts proved / unresolved, any row whose `relation` is not `confirms`, and the
 single most common obstacle. The trajectory file is the record — do not repeat
 it in chat.
-
-## Your rows are disputed — this section overrides the label-first parts above
-
-Every row in your slice lives in `solutions-disputed/<pid>/<sid>.dfy`, not in
-`solutions/`. Read `solutions-disputed/` wherever this brief says `solutions/`;
-it is the original you never modify. Your copy still goes to
-`solutions-proved/<pid>/<sid>.dfy`.
-
-A label audit doubts each row's label. The row's header comment
-(`LABEL AUDIT -- queued for manual review`) gives the audit's guess
-(`audited class`) and its reasoning. The label and the guess are both hints,
-and either may be wrong.
-
-Your goal is the **tightest upper bound you can prove** within the budget, not
-the label:
-
-1. Read the Python and the Dafny and decide the real cost yourself.
-2. Prove that bound. If it is below the label, record `tighter-label` only after
-   checking that the Python itself does no more work (see above); otherwise name
-   the translation or charge-table cause.
-3. If the tight bound will not close, a looser proved bound is still a result:
-   record it with `looser-slack` and say in `relation_reason` what the tight
-   bound would need.
-
-`relation` is still measured against the row's label, from the same vocabulary.

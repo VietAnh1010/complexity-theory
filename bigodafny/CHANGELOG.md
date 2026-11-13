@@ -13,6 +13,8 @@ data lines go to `old-record.jsonl` beside the file they came from.
 - Agent proof campaigns stopped after `prove-disputed-5`. `DOCS.md` points to
   `batches/clean-636/README.md` for the open pieces.
 - `prove_stats.py` counts `prove-sample-12`.
+- Each campaign keeps one `PROMPT.md` with a `{{SLICE}}` placeholder; the per-slice copies, which
+  differed only in the slice letter, and `prove-sample-3`'s resume briefs are deleted.
 - `proofs.py` keeps a verified proof's record when its `fingerprint` (proof, row, prelude, Dafny
   and Z3 versions) is unchanged; `--all` re-verifies every proof. A proof removed mid-run is skipped.
 - `bigodafny-prove-campaign`: `sample.py --dir` draws from another status directory;

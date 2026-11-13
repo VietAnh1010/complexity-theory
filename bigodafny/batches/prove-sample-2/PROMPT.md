@@ -1,6 +1,6 @@
 # Prove one batch of rows against its complexity label
 
-Your rows are the ones listed in `batches/prove-sample-4/slice_b.jsonl`. Read that
+Your rows are the ones listed in `batches/prove-sample-2/slice_{{SLICE}}.jsonl`. Read that
 file first; each line gives the solution id, its path, and its label.
 
 Each assigned row behaves correctly and passes `dafny verify`. What it has
@@ -124,17 +124,10 @@ So record `relation` from exactly this vocabulary:
 | `confirms` | your bound is within the label's class |
 | `looser-slack` | you used a loose scaffold and did not attempt the tight bound |
 | `looser-structural` | your proof exposes a real cost the label omits |
-| `tighter-costmodel` | your bound is below the label because the charge table costs something CPython does not — most often `int` arithmetic on values that outgrow a machine word |
-| `tighter-translation` | your bound is below the label because the Dafny uses a cheaper algorithm than the Python, not because the label is loose |
 | `contradicts` | the row provably cannot meet the label — a literal in the source forces more work than the label allows |
 
 `contradicts` needs a reason naming the construct in the source. Do not reach
 for it because a bound came out large.
-
-A bound **below** the label is not automatically a tighter reading of the row.
-Before recording one, read the Python: if it sorts and your Dafny compares
-multisets, or if it multiplies numbers that grow past a machine word, the gap
-is the translation or the charge table, not the label. Say which.
 
 ## Value versus size — a settled convention
 
@@ -154,7 +147,7 @@ nothing. A quantity **fixed in the source** is a constant however large.
 
 ## What to write back
 
-Append one JSON object per row to **your own** `batches/prove-sample-4/traj_b.jsonl`.
+Append one JSON object per row to **your own** `batches/prove-sample-2/traj_{{SLICE}}.jsonl`.
 Never write to another agent's file, and never to any other file in that
 directory.
 
