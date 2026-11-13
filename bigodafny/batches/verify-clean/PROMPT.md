@@ -79,7 +79,7 @@ the ghost `steps` counter, its updates, or its `ensures steps <= ...`.
 # Hard rules
 - NEVER git add/commit/push/mv. `git checkout --` on your own files is allowed.
 - Edit ONLY the files in your manifest. NEVER edit prelude.dfy, any *.py,
-  anything under data/, batches/, summaries/, or solutions-proved/.
+  anything under data/, batches/, or solutions-proved/.
 
 # Report (concise)
 - how many rows now verify with no `decreases *`

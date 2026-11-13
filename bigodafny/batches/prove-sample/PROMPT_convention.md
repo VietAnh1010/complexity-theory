@@ -7,8 +7,8 @@ This file states only what is different.
 ## What changed
 
 **Decided 2026-09-17: a loop bounded by an input VALUE counts.** The value is a
-parameter of the bound, not a constant. `COMPLEXITY.md` § 1 "Value is a
-parameter, not a constant" is the authority.
+parameter of the bound, not a constant. `COMPLEXITY.md` § Rules people
+often get wrong is the authority.
 
 So a bound may name an input value. `O(r)` for `while i < r`, `O(log v)` for a
 binary search over `v`, `O(L)` for a per-character string comparison — all legal
