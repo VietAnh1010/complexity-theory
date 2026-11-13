@@ -2,8 +2,8 @@
 
 Stage B4 of the clean-636 plan: rows whose Dafny does not follow the Python's algorithm. 38 rows: 31
 disputed rows with audit cause `translation` or `both`, minus the 9 that hinge on a square root
-(handled separately), plus 8 rows the `verify-clean` agents reported. Four slices
-(`w_00.txt` to `w_03.txt`, one row path per line), one general-purpose agent each, brief
+(handled separately), plus 8 rows the `verify-clean` agents reported. Four slices,
+one general-purpose agent each, brief
 `PROMPT.md`.
 
 ## Audit (parent, from scratch)

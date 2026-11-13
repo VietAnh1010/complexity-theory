@@ -76,7 +76,7 @@ answers.
 
 Re-measured 2026-09-21, 39 minutes for the one row, and it **reproduced the
 stored record exactly** -- same agree, comparable, python-failed and timeout
-counts. The record was current, not stale. `difftest_1501_224.json` has it.
+counts. The record was current, not stale.
 
 (The first attempt was killed by its own 30-minute wrapper before writing
 anything. That run produced no data and none was reported from it.)
@@ -107,4 +107,3 @@ the split.
 |---|---|
 | (control) | now `python3 baseline.py --round-trip SID...`; the one-off script was merged into it |
 | `control.jsonl` | the control's per-row tally and per-test detail |
-| `difftest_1501_224.json` | the re-measured loose-tier result |

@@ -15,6 +15,9 @@ data lines go to `old-record.jsonl` beside the file they came from.
 - `prove_stats.py` counts `prove-sample-12`.
 - Each campaign keeps one `PROMPT.md` with a `{{SLICE}}` placeholder; the per-slice copies, which
   differed only in the slice letter, and `prove-sample-3`'s resume briefs are deleted.
+- Deleted the agent worklists (`w_*.txt`) of `retranslate`, `isqrt` and `verify-clean` (its README
+  now lists the rows), `prove-hard/trial-1.jsonl`, `gate-audit/difftest_1501_224.json` and
+  `prove-sample/value_vs_size_decision.jsonl`.
 - `proofs.py` keeps a verified proof's record when its `fingerprint` (proof, row, prelude, Dafny
   and Z3 versions) is unchanged; `--all` re-verifies every proof. A proof removed mid-run is skipped.
 - `bigodafny-prove-campaign`: `sample.py --dir` draws from another status directory;

@@ -130,7 +130,6 @@ were removed on 2026-09-30: the transcripts no longer exist.
 | `slice_convention.jsonl`, `PROMPT_convention.md` | `2128_34` and `2942_42`, re-run on 2026-09-17 after the value-versus-size decision |
 | `traj_{a,b,c,convention}.jsonl` | one record per row, in the file of the run that produced it |
 | `label_relation.jsonl` | the normalised label relation, with reasons |
-| `value_vs_size_decision.jsonl` | the 2026-09-17 convention decision |
 | `old-record.jsonl` | every superseded line, with its source file |
 | `old-slice_c.jsonl` | slice C as first assigned, before its two rows moved to the convention run |
 

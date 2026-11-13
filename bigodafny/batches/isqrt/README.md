@@ -3,8 +3,8 @@
 Every row whose Python takes a square root (`math.sqrt`, `math.isqrt`, `** 0.5`; 20 rows by a
 search of `solution_code`) now computes it with one call to the prelude's `ISqrt` per root the
 Python takes, charged `ISqrtSteps` (`COMPLEXITY.md`). Before, the rows used a linear search, a
-binary search or a doubling search, so the same Python operation had different costs. Two slices
-(`w_00.txt`, `w_01.txt`), one general-purpose agent each, brief `PROMPT.md`.
+binary search or a doubling search, so the same Python operation had different costs. Two slices,
+one general-purpose agent each, brief `PROMPT.md`.
 
 ## Audit (parent, from scratch)
 
