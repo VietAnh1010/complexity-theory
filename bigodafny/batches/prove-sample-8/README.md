@@ -71,8 +71,8 @@ frequently read prelude declarations were `IntToString` and `Join`.
 
 | file | contents |
 |---|---|
-| `manifest.jsonl`, `excluded.jsonl` | the draw |
-| `slice_{a,b,c}.jsonl`, `PROMPT.md` | slices and the prompt |
+| `manifest.jsonl` | the draw |
+| `PROMPT.md` | the prompt |
 | `traj_{a,b,c}.jsonl` | one record per row |
 | `label_relation.jsonl` | reviewed relation and reason for each proved row |
 | `audit.jsonl`, `summary.json` | verifier results joined to records |

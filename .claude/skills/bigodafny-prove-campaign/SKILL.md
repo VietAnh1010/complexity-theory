@@ -208,10 +208,8 @@ the refreshed `data/`. Push to the session's designated branch.
 - **File value-bounded rows before you write the README.** A proved row whose
   `looser-structural` reason names an input VALUE, and any unproved row whose
   `why_failed` says its cost depends on one, gets filed. The proved row's file moves into
-  `solutions-proved/value-bounded/`; the unproved row goes to
-  `batches/value-bounded-open/`, because a row with no proof does not belong
-  under a directory called `solutions-proved`. That directory's
-  README has the procedure and the three ways a row leaves. Skipping this
+  `solutions-proved/value-bounded/`; the unproved row keeps obstacle `value-to-size` in its
+  trajectory. That directory's README has the procedure and the ways a row leaves. Skipping this
   leaves the finding scattered across batch directories where nobody joins it.
 - **Filing a proof one directory deeper breaks its `include`.** A proof in
   `solutions-proved/<pid>/` reaches the prelude by `../../prelude.dfy`; from
@@ -254,7 +252,7 @@ the refreshed `data/`. Push to the session's designated branch.
 - **A normalised batch has one record per row and nothing else current.** Each
   record sits in the trajectory of the slice that produced it; slices whose
   records were replaced, staging files and every superseded line go into `old-`
-  files (`old-record.jsonl`, `old-slice_*.jsonl`). A proof the main agent fixed before promotion is not kept
+  files (`old-record.jsonl`). A proof the main agent fixed before promotion is not kept
   as an attempt; its record says what was fixed. `prove-sample-7` is the example.
 - **`label_relation.jsonl` has one line per proved row, in one schema.**
   `solution_id`, `label`, `proved_bound`, `relation`, `reason` (never empty),

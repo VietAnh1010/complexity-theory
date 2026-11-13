@@ -12,6 +12,7 @@ repository root is unrelated.
 | review a label | `COMPLEXITY.md`, `solutions-disputed/README.md`, `batches/labelaudit/PROMPT.md` |
 | write a proof | `COMPLEXITY.md`, `solutions-proved/README.md` |
 | see counts and results | `STATUS.md`; campaigns: `data/prove_stats.md` |
+| read a campaign's or audit's records | `batches/README.md` |
 | see what changed | `CHANGELOG.md` |
 | see known issues | `STATUS.md` § Known issues |
 
@@ -46,14 +47,6 @@ usual sense. These have a meaning specific to this project:
 | relation | how a proved bound compares with the label, e.g. `confirms` (`COMPLEXITY.md` § Proof relations) |
 | `audit.py` | the campaign checker, in `.claude/skills/bigodafny-prove-campaign/scripts/` |
 
-## Counts
-
-All counts are in `STATUS.md`.
-
-A row's directory is its current state; don't infer it from old records.
-Label verdicts are in `data/label_audit.jsonl`. A row with a failing gate stays
-out of `solutions/` whatever its label verdict.
-
 ## The gates
 
 A gate decides whether a row passes one check. A row stays in `solutions/` only
@@ -85,15 +78,3 @@ Other checks, which move no rows:
 | `label_audit.py check` | Is a verdict file well formed? |
 | `label_audit.py siblings` | Did two siblings converge despite different labels? |
 | `baseline.py --round-trip` | Is a failing strict row the harness's fault? |
-
-## Rules
-
-`CLAUDE.md`. Records follow the rules of their day; `CHANGELOG.md` dates every
-rule change, so check it before reusing an old record.
-
-## Proof campaigns
-
-`batches/prove-sample*`, `batches/prove-disputed-*`: what each campaign drew (manifest), every attempt
-(`traj_*.jsonl`, with an `obstacle` code when unresolved), and each proof's
-relation to its label (`label_relation.jsonl`). Settings changed between
-campaigns; read `batches/README.md` § Combining campaign numbers before combining them.

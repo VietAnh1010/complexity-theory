@@ -10,6 +10,8 @@ A campaign's own run record stays in `batches/<campaign>/README.md`. Superseded 
 
 ## 2026-11-13
 
+- `batches/value-bounded-open/` is gone: every row it listed has a proof. An unproved
+  value-bounded row stays open with obstacle `value-to-size`.
 - Agent proof campaigns stopped after `prove-disputed-5`; known defects are in `STATUS.md`
   § Known issues.
 - The translate skill states how to keep the Python's algorithm (sort, map, heap, bisect, `ISqrt`).

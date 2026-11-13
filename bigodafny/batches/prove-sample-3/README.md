@@ -155,7 +155,6 @@ file it came from.
 | file | what it is |
 |---|---|
 | `manifest.jsonl` | the 50 rows: id, path, label, split, gate |
-| `slice_{a,b,c}.jsonl` | the three agent assignments, 17/17/16 |
 | `PROMPT.md` | the agent brief |
 | `traj_{a,b,c}.jsonl` | per-row attempts, bound, timing, failure reason, obstacle code |
 | `label_relation.jsonl` | normalised relation per proved row, with reasons |

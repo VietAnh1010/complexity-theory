@@ -1,7 +1,0 @@
-{"solution_id": "1306_15", "path": "solutions/1306/1306_15.dfy", "label": "O(n**2)", "split": "strict", "gate": "valid"}
-{"solution_id": "1733_64", "path": "solutions/1733/1733_64.dfy", "label": "O(n**2)", "split": "loose", "gate": "agrees"}
-{"solution_id": "1853_66", "path": "solutions/1853/1853_66.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}
-{"solution_id": "2282_1118", "path": "solutions/2282/2282_1118.dfy", "label": "O(nlogn)", "split": "strict", "gate": "valid"}
-{"solution_id": "482_385", "path": "solutions/482/482_385.dfy", "label": "O(n**2+m**2)", "split": "strict", "gate": "valid"}
-{"solution_id": "659_33", "path": "solutions/659/659_33.dfy", "label": "O(n**2)", "split": "strict", "gate": "valid"}
-{"solution_id": "949_38", "path": "solutions/949/949_38.dfy", "label": "O(n)", "split": "strict", "gate": "valid"}

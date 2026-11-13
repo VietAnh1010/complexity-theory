@@ -3,14 +3,15 @@
 Campaign 9 of 9 to prove every unproved row, the fifth drawn from `solutions-disputed/`: 20 of its
 108 unproved, gate-passing rows (`sample.py --dir solutions-disputed`, seed `20261113`, no
 `--exclude-drawn`; no row had been drawn before). Three Sonnet agents, 3 attempts and 5 minutes per
-row. Each brief is `PROMPT.md` followed by `PROMPT_disputed.md`: prove the tightest upper bound you
-can. Each agent's spawn message also repeated the brief's rule that a proof adds only ghost code.
+row. Each brief is the `bigodafny-prove-campaign` skill's `PROMPT.md` followed by its
+`PROMPT_disputed.md`: prove the tightest upper bound you can. Each agent's spawn message also
+repeated the brief's rule that a proof adds only ghost code.
 
 This is not a measurement of label-proving and stays out of `prove_stats.py`.
 
 **Result: 16 proved, 4 unresolved.**
 
-`excluded.jsonl` holds `1950_45` and `1950_47`: no test gate (`unvalidatable`).
+The sampler excluded `1950_45` and `1950_47`: no test gate (`unvalidatable`).
 
 | label | drawn | proved |
 |---|---:|---:|

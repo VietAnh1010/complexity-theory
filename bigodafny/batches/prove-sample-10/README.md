@@ -2,14 +2,15 @@
 
 Campaign 2 of 9 to prove every unproved row. Draws 20 of the 60 never-drawn, unproved rows left in
 `solutions/` after `prove-sample-9` (`--exclude-drawn`, seed `20261113`). Three Sonnet agents, 3
-attempts and 5 minutes per row, the default brief. The agent prompt adds one line: every variable
-added for the proof must be `ghost`, because two `prove-sample-9` proofs compiled to different
-Python by declaring a proof-only temporary without it.
+attempts and 5 minutes per row, the default brief, the `bigodafny-prove-campaign` skill's
+`PROMPT.md`. The agent prompt adds one line: every variable added for the proof must be `ghost`,
+because two `prove-sample-9` proofs compiled to different Python by declaring a proof-only temporary
+without it.
 
 **Result: 20 proved, 0 unresolved.** Every row has a `reads` trace. `audit.py` reports no
 disagreement between the trajectories and the verifier. Every row closed within its time budget.
 
-`excluded.jsonl` holds 1 row, `1972_295`, drawn by an earlier campaign. It still has no proof.
+The sampler excluded 1 row, `1972_295`, drawn by an earlier campaign. It still has no proof.
 
 ## Slices
 

@@ -8,7 +8,7 @@ Three Sonnet agents, 3 attempts and 5 minutes per row, the brief and the `ghost`
 **Result: 20 proved, 0 unresolved.** Every row has a `reads` trace. Every row closed within its
 time budget.
 
-`excluded.jsonl` holds 2 rows drawn by earlier campaigns: `1972_295` and `2282_1118`. Neither
+The sampler excluded 2 rows drawn by earlier campaigns: `1972_295` and `2282_1118`. Neither
 has a proof.
 
 ## Slices

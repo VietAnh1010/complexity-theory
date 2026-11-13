@@ -117,12 +117,11 @@ file it came from.
 | file | what it is |
 |---|---|
 | `manifest.jsonl` | the 50 rows: id, path, label, split, gate |
-| `slice_{a,b,c}.jsonl`, `PROMPT.md` | the three agent assignments and their brief |
-| `slice_convention.jsonl`, `PROMPT_convention.md` | `2128_34` and `2942_42`, re-run on 2026-09-17 after the value-versus-size decision |
+| `PROMPT.md` | the agents' brief |
+| `PROMPT_convention.md` | `2128_34` and `2942_42`, re-run on 2026-09-17 after the value-versus-size decision |
 | `traj_{a,b,c,convention}.jsonl` | one record per row, in the file of the run that produced it |
 | `label_relation.jsonl` | the normalised label relation, with reasons |
 | `old-record.jsonl` | every superseded line, with its source file |
-| `old-slice_c.jsonl` | slice C as first assigned, before its two rows moved to the convention run |
 
 Proofs themselves are overlay copies in `../../solutions-proved/<pid>/`. The
 originals in `solutions/` were not modified; that was checked, not assumed.

@@ -1,8 +1,8 @@
 # `value-bounded/`: the label counts items, the code depends on their magnitude
 
 Proved rows whose cost depends on **how large** an input is, while the
-label counts only **how many** inputs there are. Unproved rows of this kind are
-in `batches/value-bounded-open/`.
+label counts only **how many** inputs there are. An unproved row of this kind stays open with
+obstacle `value-to-size` in its campaign trajectory.
 
 Example, `1948_388`: the Python computes `sqrt(8*k+1)` from one input, so its
 label is `O(1)`. Dafny has no float `sqrt`, so the translation searches
@@ -75,15 +75,14 @@ reason.
   `2**m` by squaring, costing each exponent's bit length (`TokBits`).
 
 Unlike sorting, where one prelude lemma serves every row, each value-bounded
-proof needs its own arithmetic; nothing carries over
-(`batches/value-bounded-open/` lists what each open row needs).
+proof needs its own arithmetic; nothing carries over.
 
 ## Getting in
 
 - `relation: looser-structural` in a campaign's `label_relation.jsonl`, with a
   reason naming an input **value**: move the proof file here.
-- No proof, and `why_failed` says the cost depends on an input **value**: the row
-  goes to `batches/value-bounded-open/MANIFEST.jsonl` instead.
+- No proof, and `why_failed` says the cost depends on an input **value**: record obstacle
+  `value-to-size`; nothing moves.
 
 Name the campaign that found it.
 
@@ -92,6 +91,6 @@ Name the campaign that found it.
 1. **The label is wrong:** correct the label in the dataset.
 2. **The cap is real and small:** record it and the reasoning.
 3. **A tighter bound without the value exists:** prove it.
-4. **The proof stops verifying:** move it to `batches/value-bounded-open/`.
+4. **The proof stops verifying:** remove it; the row is open again.
 
 Never exempt one row from the rule that an input value is a size.

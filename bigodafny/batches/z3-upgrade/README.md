@@ -26,12 +26,11 @@ by `../output-length/`.
 
 ## Layout
 
-`PROMPT.md`, `traj.jsonl` and `audit.jsonl` (slices a, b, c in order). `unresolved/` holds the two proofs that
-still time out. Superseded proofs are not kept.
+`PROMPT.md`, `traj.jsonl` and `audit.jsonl` (slices a, b, c in order). `unresolved/` holds
+`1972_295`'s proof, which still times out. Superseded proofs are not kept.
 
 ## Still open
 
-The two unresolved proofs left `solutions-proved/` on 2026-10-08 for
-`unresolved/`, unchanged except the include path. They verified under Z3
-4.12.1 and are the starting point for a repair. `1871_156` is filed in
-`../value-bounded-open/`; `1972_295`'s row stays in `solutions/`, unproved.
+`1972_295`'s proof left `solutions-proved/` on 2026-10-08 for `unresolved/`, unchanged except the
+include path. It verified under Z3 4.12.1. The row stays in `solutions/`, unproved. `1871_156` was
+proved again later (`solutions-proved/value-bounded/`).

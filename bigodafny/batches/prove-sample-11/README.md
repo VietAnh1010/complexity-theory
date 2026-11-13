@@ -6,7 +6,7 @@ row, the brief and the `ghost` line of `prove-sample-10`.
 
 **Result: 19 proved, 1 unresolved.** Every row has a `reads` trace.
 
-`excluded.jsonl` holds 1 row, `1972_295`, drawn by an earlier campaign. It still has no proof.
+The sampler excluded 1 row, `1972_295`, drawn by an earlier campaign. It still has no proof.
 
 ## Slices
 

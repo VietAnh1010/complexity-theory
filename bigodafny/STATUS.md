@@ -136,18 +136,16 @@ Source: `data/prove_stats.md`.
   says how): `1099_169`, `1054_212`, `101_43`, `1437_223`, `799_94`, `949_67`, `1231_51`,
   `138_360`, `1054_216`, `619_340`, `1306_197`, `1593_264`, `1913_104`, `1413_222`, `333_197`,
   `397_163`.
-- Label audit `ok`, proof tighter: `1303_8` (proof `O(1)`, label `O(n**2)`), `1467_233` (proof
-  `O(nlogn)`, label `O(n)`).
+- Label audit `ok`, proof disagrees: `1303_8`'s proof is tighter (`O(1)`, label `O(n**2)`);
+  `1467_233`'s is looser (`O(nlogn)`, label `O(n)`), from the Python's `t += str(i)`.
 - `2381_156`: its `O(1)` label and `ok` verdict (r3) predate the `IntToString` charge; its proof
   bounds `2 * Digits(n) + 4`.
-- Label higher than the tightest class (`mismatch`), proof reaches only the label (`confirms`):
+- The audit's class is below the label, but the proof reaches only the label (`confirms`):
   `1180_626`, `2913_309`, `2913_484`.
 - `2831_71` charges `IntToString` 1 step.
 - `1972_295`: its proof times out under Z3 5.1.0 (`batches/z3-upgrade/unresolved/`).
 - `810_131`, `1948_388` sit in `value-bounded/` though marked `looser-translation`; that directory
   takes only `looser-structural`.
-- `batches/value-bounded-open/` rows `1263_2538`, `1332_16`, `1364_161`, `1626_179`, `2358_103`,
-  `2465_212`, `342_86` were filed from agent notes alone.
 - `dataset.py` gives the 6 `unvalidatable` rows `dafny_status: untranslated`, though they are
   translated.
 - `audit.py` does not flag runs over budget: `2128_34`, `1582_118`, `2254_6`, `2704_92`, `2231_77`.

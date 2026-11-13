@@ -100,7 +100,7 @@ failed, and its second and third verified. So the row failed in 1 of 2 runs.
 | `PROMPT.md` | the brief template |
 | `classification.jsonl` | each row's class, reason, relation and review flag |
 | `label_relation.jsonl` | each proved row's bound, relation and reason |
-| `traj_trial.jsonl`, `traj_trial2.jsonl`, `traj_main.jsonl` | records written by `stage.py collect` |
+| `traj_trial.jsonl` … `traj_trial5.jsonl`, `traj_main.jsonl` | records written by `stage.py collect` |
 | `traj.jsonl` | dated lines after the audit began allowing replaced invariants |
 
 ## Run notes

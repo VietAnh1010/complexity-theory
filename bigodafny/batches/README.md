@@ -8,7 +8,6 @@ checked.
 | `labelaudit/` | the label audit | `PROMPT.md` and the verdict files |
 | `prove-sample/`, `prove-sample-2/` … `prove-sample-12/` | bounded proof campaigns | see § Combining campaign numbers |
 | `prove-disputed-1/` … `prove-disputed-5/` | bounded campaigns on `solutions-disputed/` rows, proving the tightest bound | brief, slices, trajectories, relations, `README.md` |
-| `value-bounded-open/` | value-bounded rows with no proof yet | `MANIFEST.jsonl` |
 | `z3-upgrade/` | fixing proofs that time out under Z3 5.1.0 | instructions, trajectory, audit |
 | `output-length/` | re-charging proofs at one step per output character | instructions, trajectory, audit |
 | `prove-retry/` | a retry of the open rows, then every proof re-proved on `annotate`'s charges | brief, slices, trajectories, relations, `README.md` |

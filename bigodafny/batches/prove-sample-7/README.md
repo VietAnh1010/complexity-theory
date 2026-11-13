@@ -121,13 +121,12 @@ The current files are the single source of truth. Superseded data is in the
 
 | file | contents |
 |---|---|
-| `manifest.jsonl`, `excluded.jsonl` | the draw |
-| `slice_{a,c2,ra,rb,rc}.jsonl`, `PROMPT.md` (slices `a`, `c2`), `PROMPT_rerun.md` | slices and briefs of the records kept |
+| `manifest.jsonl` | the draw |
+| `PROMPT.md` (slices `a`, `c2`), `PROMPT_rerun.md` | briefs of the records kept |
 | `traj_{a,c2,ra,rb,rc}.jsonl` | one record per row, 50 in all |
 | `label_relation.jsonl` | reviewed relation for each proved original-run row, and for `1718_1166`, whose proof predates the rerun; rerun records carry their own |
 | `audit.jsonl`, `summary.json` | verifier results joined to records |
 | `old-record.jsonl` | every superseded line, as `{file, superseded_on, why, record}`: the original B and C records, the rerun's staging records and verifier results, and earlier revisions |
-| `old-slice_{b,c}.jsonl` | the original run's slices B and C (brief: `PROMPT.md`) |
 
 `PROMPT_rerun.md` names paths under `rerun/`, where the rerun worked. That
 directory was folded into this one on 2026-09-29.
