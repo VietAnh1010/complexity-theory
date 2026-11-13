@@ -14,6 +14,8 @@ data lines go to `old-record.jsonl` beside the file they came from.
   and Z3 versions) is unchanged; `--all` re-verifies every proof. A proof removed mid-run is skipped.
 - `bigodafny-prove-campaign`: `sample.py --dir` draws from another status directory;
   `PROMPT_disputed.md`, appended to the brief for `solutions-disputed/` rows, asks for the tightest bound.
+- Deleted the archived `experiments/` (with `proofs-blind/`), the `transcripts/` of `output-length`
+  and `z3-upgrade`, and `prove-hard`'s guard logs: they held machine-local paths and nothing read them.
 
 ## 2026-11-12
 
