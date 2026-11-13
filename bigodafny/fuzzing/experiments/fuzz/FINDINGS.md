@@ -397,7 +397,7 @@ Why it happened:
 
 Blind agents settle too:
 
-- `bigodafny/experiments/proofs-blind/`: `1718_1166` predicted O(n*m), proved O((n+m)\*\*2);
+- An earlier blind-proof run: `1718_1166` predicted O(n*m), proved O((n+m)\*\*2);
   `1338_61` predicted O(n*m), proved O(q \* n\*\*2). Headers don't say if the tight bound was tried.
 - This session (the prove brief asked for the tightest class first): no row settled on class.
   `1272_278` and `2913_484` settled on constants; `5_100` and `2586_20` ran out of budget.

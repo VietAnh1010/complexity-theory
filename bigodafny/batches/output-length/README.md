@@ -12,8 +12,8 @@ Dafny 4.11.0 with Z3 5.1.0 (see `../z3-upgrade/`).
 | `JoinInts(xs, sep)` | `\|xs\|` in practice | `SumDigits(xs) + \|xs\|` |
 | an additive `c * \|output\|` term | n/a | never counts against the label |
 
-Integer arithmetic still costs `1`. `COMPLEXITY.md` § "Decisions that often
-cause confusion" is the rule; the prelude adds `Digits`, `SumLen`, `SumDigits`,
+Integer arithmetic still costs `1`. `COMPLEXITY.md` § Rules people often get
+wrong is the rule; the prelude adds `Digits`, `SumLen`, `SumDigits`,
 `IntToStringDigits`, `DigitsMono`, `JoinLen`, `SumLenIntStrings`, `JoinIntsLen`.
 
 ## Layout
@@ -122,7 +122,7 @@ No relation changed. Every new bound is the old one plus an `|output|` term.
 - **46 of 323 proofs carry a `requires` their row does not.** Most add
   `n >= 0` or a lower bound; a few are alpha-renamed (`forall k` vs `forall i`)
   or reworded. `audit.py`'s contract check flags them, but no audit ran it over
-  the whole overlay. The rule (`CLAUDE.md` § Proof restrictions) forbids it.
+  the whole overlay. The rule (`CLAUDE.md` § Proofs) forbids it.
   (A 47th, `794_794`, was a parser bug: `requires` inside a lambda in an
   `ensures` read as a clause. Fixed in `audit.py`.)
 - **`1254_187`'s proof compiled differently from its row**: `var iOld := i`

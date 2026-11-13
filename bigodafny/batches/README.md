@@ -7,12 +7,15 @@ checked.
 |---|---|---|
 | `labelaudit/` | the label audit | `PROMPT.md` and the verdict files |
 | `gate-audit/` | seven rows that, when audited, sat in `solutions/` without a passing gate result | control results (`control.jsonl`) |
-| `prove-sample/`, `prove-sample-2/` … `prove-sample-8/` | bounded proof campaigns | see `CAMPAIGN_CONFIG.md` |
+| `clean-636/` | the plan to make every translated row clean; where the work stopped | `README.md` |
+| `prove-sample/`, `prove-sample-2/` … `prove-sample-12/` | bounded proof campaigns | see `CAMPAIGN_CONFIG.md` |
+| `prove-disputed-1/` … `prove-disputed-5/` | bounded campaigns on `solutions-disputed/` rows, proving the tightest bound | brief, slices, trajectories, relations, attempts, `README.md` |
+| `verify-clean/`, `retranslate/`, `isqrt/` | clean-636 stage B: rows failing `dafny verify`, Dafny that swaps the Python's algorithm, square roots by `ISqrt` | brief, `README.md` |
 | `value-bounded-open/` | value-bounded rows with no proof yet | `MANIFEST.jsonl` |
-| `z3-upgrade/` | fixing proofs that time out under Z3 5.1.0 | instructions, trajectory, audit, attempts, transcripts |
-| `output-length/` | re-charging proofs at one step per output character | instructions, trajectory, audit, attempts, transcripts |
+| `z3-upgrade/` | fixing proofs that time out under Z3 5.1.0 | instructions, trajectory, audit, attempts |
+| `output-length/` | re-charging proofs at one step per output character | instructions, trajectory, audit, attempts |
 | `obstacle-review/` | the code that blocks each open row | dated trajectory lines, `README.md` |
-| `prove-retry/` | a retry of the open rows, then every proof re-proved on `annotate`'s charges | briefs, slices, trajectories, relations, attempts, `README.md` |
+| `prove-retry/` | a retry of the open rows, then every proof re-proved on `annotate`'s charges | brief, slices, trajectories, relations, attempts, `README.md` |
 | `prove-hard/` | a blind rerun of the rows that had failed, to find hard rows | brief, trajectories, classification, attempts, `README.md` |
 | `guess-prove-labeled/`, `guess-prove-blind/` | a pilot on fabricated rows: prove a class given, or a class the agent guessed first | briefs, rows, trajectories, results, attempts, `README.md` |
 

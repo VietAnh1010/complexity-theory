@@ -141,8 +141,8 @@ until then their arrays are a known, recorded exception rather than a second
 convention.
 
 **The gate is unchanged and non-negotiable.** `validate.py` for strict rows,
-`difftest.py` for loose ones, and `bigodafny/CLAUDE.md` § "Translate the
-algorithm, not just the behaviour" still forbids changing the algorithm.
+`difftest.py` for loose ones, and `bigodafny/CLAUDE.md` § Keep the algorithm
+still forbids changing the algorithm.
 Swapping `array` for `seq` is a data-structure change within a complexity class,
 which that section explicitly permits. Restructuring the loop is not. Re-run
 `dafny verify` on every rewritten row: dropping a `modifies` clause can leave an
