@@ -42,12 +42,6 @@ Open items only. When one is done, delete it and add a line to `CHANGELOG.md`.
 
 ## Labels
 
-- [ ] `label_audit.py apply` only finds rows in `solutions/`,
-      `solutions-disputed/` and `solutions-unsure/`. Auditing
-      `solutions-unscreened/` needs it extended.
-- [ ] `label_audit.py siblings` lists 87 candidate pairs over 157 rows. 109 of
-      them are quarantined for `sibling-convergence` in
-      `solutions-unscreened/` and were never label-audited. Review the pairs.
 - [ ] `2381_156`: its `O(1)` label and `ok` verdict (r3) predate the 2026-10-07
       `IntToString` charge. Its proof bounds `2 * Digits(n) + 4`, and arms agents
       proved `Digits(n)**2` bounds over the `Power` helper. Re-audit; if the label
@@ -60,9 +54,8 @@ Open items only. When one is done, delete it and add a line to `CHANGELOG.md`.
       (1,500 s), `2231_77` (420 s).
 - [ ] `2254_6` and `2128_34` count as proved in campaign 1 though over budget.
       Decide whether to count them as unresolved.
-- [ ] `data/constraints.jsonl` covers 5 problems (1501, 577, 827, 1254, 1276).
-      The other 306 count every test; transcribe their limits to find more bogus
-      tests.
+- [ ] `data/constraints.jsonl` covers 9 problems. The other 302 count every test;
+      transcribe their limits to find more bogus tests.
 
 ## Tooling
 

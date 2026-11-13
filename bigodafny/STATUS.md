@@ -2,7 +2,7 @@
 
 Every count about the corpus, in one file (`CLAUDE.md` § Counts).
 
-Last checked against `data/` and the tree: 2026-11-03; § Clean rows, § Directories, § Gates: 2026-11-12.
+Last checked against `data/` and the tree: 2026-11-13.
 
 To refresh: re-run the scripts that write each source (`README.md` § Toolchain),
 then read the numbers off the sources named in each section. Campaign
@@ -21,7 +21,7 @@ Source: `data/stats.json`, `data/dataset.jsonl`.
 | Strict rows tested by `validate.py`                             |                                                                    536 |
 | Strict rows that cannot be tested (`unvalidatable`)             | 6: `1196_100`, `1196_51`, `1578_481`, `1578_724`, `1950_45`, `1950_47` |
 | Loose rows                                                      |                                                                     98 |
-| Problems with stated limits in `data/constraints.jsonl`         |                                         6 (1501, 577, 827, 1254, 1276, 1954) |
+| Problems with stated limits in `data/constraints.jsonl`         | 9 (565, 577, 772, 827, 1254, 1276, 1501, 1861, 1954) |
 | Stored tests skipped as outside those limits (public + private) |                                                        48 per 1501 row |
 
 ## Clean rows
@@ -75,24 +75,24 @@ Source: `data/label_audit.jsonl`.
 
 | Verdict    | Rows | Where they are                                                       |
 | ---------- | ---: | -------------------------------------------------------------------- |
-| `ok`       |  307 | `solutions/` 303, `solutions-ungateable/` 3, `solutions-disputed/` 1 |
-| `mismatch` |  196 | `solutions-disputed/`                                                |
-| `unsure`   |    3 | `solutions-unsure/` 2, `solutions-ungateable/` 1                     |
+| `ok`       |  378 | `solutions/` 374, `solutions-ungateable/` 3, `solutions-disputed/` 1 |
+| `mismatch` |  253 | `solutions-disputed/`                                                |
+| `unsure`   |    4 | `solutions-unsure/` 3, `solutions-ungateable/` 1                     |
 
-`solutions-disputed/` (197 rows):
+`solutions-disputed/` (254 rows):
 
 | Item                                                                     | Count                                                                    |
 | ------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
-| Round, by `auditor` field (an override counts in the round it overrides) | r3: 115, r4: 80, io-rule: 2                                              |
-| Cause                                                                    | `label` 154, `translation` 34, `both` 5, `harness` 3, none 1 (`1950_45`) |
-| Confidence                                                               | high 101, medium 91, low 5                                               |
-| `true_class: other`                                                      | 71                                                                       |
-| With a proof in `solutions-proved/`                                      | 68                                                                       |
+| Round, by `auditor` field (an override counts in the round it overrides) | r3: 85, r4: 72, r5: 95, io-rule: 2                                       |
+| Cause                                                                    | `label` 215, `translation` 20, `both` 15, `harness` 3, none 1 (`1950_45`) |
+| Confidence                                                               | high 125, medium 122, low 7                                              |
+| `true_class: other`                                                      | 89                                                                       |
+| With a proof in `solutions-proved/`                                      | 160                                                                      |
 
-`solutions-unsure/`: 2 rows, each on its own question (`solutions-unsure/README.md`).
+`solutions-unsure/`: 3 rows, each on its own question (`solutions-unsure/README.md`).
 
-`solutions-unscreened/` (source `data/quarantine.jsonl`): 127 of 129 quarantined (`1369_10`, `1369_14` came from `solutions-unverified/`);
-`sibling-convergence` 109, `set-build-quadratic` 22 (4 rows have both).
+`solutions-unscreened/` is empty: label-audit r5 screened its rows. `data/quarantine.jsonl` keeps
+the reasons they were quarantined: `sibling-convergence` 109, `set-build-quadratic` 22 (4 rows have both).
 
 ## Proofs
 
@@ -100,17 +100,16 @@ Source: `data/complexity_proofs.jsonl`, the tree.
 
 | Row is in               | Proofs |
 | ----------------------- | -----: |
-| `solutions/`            |    290 |
-| `solutions-disputed/`   |     68 |
+| `solutions/`            |    372 |
+| `solutions-disputed/`   |    160 |
 | `solutions-unsure/`     |      2 |
-| `solutions-unscreened/` |      1 |
 
 Labels corrected by a proof (`data/label_corrections.jsonl`): 5. `O(n)` to `O(sqrt(n))` 3,
 `O(nlogn)` to `O(n)` 1, `O(n*m)` to `O(n)` 1.
 
-Labels proved, by BigOBench's label: `O(n)` 165 · `O(nlogn)` 76 · `O(n**2)` 53 · `O(1)` 33 ·
-`O(n+m)` 14 · `O(n*m)` 12 · `O(nlogn+mlogm)` 4 · `O(logn)` 2 ·
-`O(n+m)log(n+m)` 1 · `O(n**2+m**2)` 1.
+Proofs, by the row's BigOBench label: `O(n)` 227 · `O(nlogn)` 110 · `O(n**2)` 90 · `O(1)` 44 ·
+`O(n*m)` 31 · `O(n+m)` 16 · `O(nlogn+mlogm)` 5 · `O(n+mlogm)` 5 · `O(logn)` 3 ·
+`O(n**2+m**2)` 2 · `O(n+m)log(n+m)` 1.
 
 ## Proof campaigns
 
