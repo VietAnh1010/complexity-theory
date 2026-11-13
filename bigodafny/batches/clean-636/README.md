@@ -48,7 +48,7 @@ Status is `done`, `open` or `partly`. Update this table with every commit that f
 | B5 | rename a row's own `steps` variable (`1387_34`, `1336_157`) | done `f35b2e7` |
 | B6 | proofs that change their row: 40 `requires` copied to rows | partly `73e65cd`; `2496_30` open (`TODO.md`) |
 | B7 | `1950_45`, `1950_47`: no test gate (`unvalidatable`, 100-digit reals) | open |
-| B8 | `1861_16`: a `requires` fails `precheck.py` | open |
+| B8 | `1861_16`: a `requires` fails `precheck.py` | done: the failing test (`H = 0`) breaks the statement; `constraints.jsonl` has problem 1861 |
 
 ### C. A proved `truth` for every row (14-25 Nov)
 

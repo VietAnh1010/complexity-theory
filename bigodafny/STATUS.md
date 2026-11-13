@@ -37,7 +37,7 @@ has no blocker. A row can carry several.
 | `decreases-star` | uses `decreases *` (`1336_157`) | 1 |
 | `untranslatable` | in `solutions-untranslated/`; outside the target | 4 |
 | `tests` | its gate has no pass; `1950_45`, `1950_47` (`unvalidatable`) | 2 |
-| `precheck` | a `requires` clause fails `precheck.py` on the row (`1861_16`) | 1 |
+| `precheck` | a `requires` clause fails `precheck.py` on the row | 0 |
 | `proof-fails` | its proof does not verify or uses `assume` | 0 |
 | `proof-changes-row` | its proof compiles to other Python or changes `Solve`'s `requires` (`2496_30`; 10 rows whose code changed, `TODO.md`) | 11 |
 
