@@ -13,6 +13,7 @@ repository root is unrelated.
 | write a proof | `COMPLEXITY.md`, `solutions-proved/README.md`, `batches/CAMPAIGN_CONFIG.md` |
 | see counts and results | `STATUS.md`; campaigns: `data/prove_stats.md` |
 | see what changed | `CHANGELOG.md` |
+| see where the work stopped and what is open | `batches/clean-636/README.md`, `TODO.md` |
 
 `summaries/` and old campaign prompts are history, not instructions.
 
@@ -31,7 +32,7 @@ usual sense. These have a meaning specific to this project:
 | gate | a script that decides whether a row passes a check; a failed gate keeps the row out of `solutions/` |
 | verified / proved | verified: `dafny verify` accepts the row (safety). Proved: a copy in `solutions-proved/` has a checked complexity bound |
 | label audit | an AI auditor reads a row and returns a verdict on its label: `ok`, `mismatch` or `unsure`, with the class it thinks is right (`true_class`) |
-| round (r1–r4) | one pass of the label audit under the rules of its day (`batches/README.md`) |
+| round (r1–r5) | one pass of the label audit under the rules of its day (`batches/README.md`) |
 | main agent | the Claude session that runs an audit or campaign and reviews its agents' output |
 | override | a verdict the main agent replaced after review; its `auditor` field starts with `main agent` |
 | file header | a comment block at the top of a row's file recording a review: `LABEL AUDIT`, `TRANSLATION AUDIT`, `GATE INAPPLICABLE`, `VALUE-BOUNDED` |
@@ -92,7 +93,7 @@ rule change, so check it before reusing an old record.
 
 ## Proof campaigns
 
-`batches/prove-sample*`: what each campaign drew (manifest), every attempt
+`batches/prove-sample*`, `batches/prove-disputed-*`: what each campaign drew (manifest), every attempt
 (`traj_*.jsonl`, with an `obstacle` code when unresolved), and each proof's
 relation to its label (`label_relation.jsonl`). Settings changed between
 campaigns; read `batches/CAMPAIGN_CONFIG.md` before combining numbers.

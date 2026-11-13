@@ -10,6 +10,8 @@ data lines go to `old-record.jsonl` beside the file they came from.
 
 ## 2026-11-13
 
+- Agent proof campaigns stopped after `prove-disputed-5`. `DOCS.md` points to
+  `batches/clean-636/README.md` for the open pieces.
 - `proofs.py` keeps a verified proof's record when its `fingerprint` (proof, row, prelude, Dafny
   and Z3 versions) is unchanged; `--all` re-verifies every proof. A proof removed mid-run is skipped.
 - `bigodafny-prove-campaign`: `sample.py --dir` draws from another status directory;
