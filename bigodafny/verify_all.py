@@ -1,13 +1,6 @@
 """Run `dafny verify` on every translation and split the safe from the unproven.
 
-Passing the tests shows a translation works on the inputs BigOBench stored.
-`dafny verify` asks a different question: are the obligations Dafny raises on
-its own discharged for EVERY input? Those exist with no pre/postcondition
-written -- indexing a seq, dividing, and terminating are each a proof
-obligation.
-
-A failure here is not a failing test. It means the translation may fault on an
-input outside the stored set, and nothing in the test gate would notice.
+A failure means the translation may fault on an input outside the stored tests.
 """
 from __future__ import annotations
 import argparse, re, subprocess
@@ -54,9 +47,8 @@ def one(path_str):
         return {"solution_id": p.stem, "path": str(p.relative_to(ROOT)),
                 "verified": False, "kind": "verifier-timeout", "detail": ""}
     ok = r.returncode == 0 and "0 errors" in out
-    # `decreases *` makes Dafny accept a loop without proving it terminates.
-    # The file still verifies; termination specifically does not.
-    # Comments are skipped: an audit header may quote `decreases *`.
+    # `decreases *` verifies without proving termination. Comments are
+    # stripped: an audit header may quote it.
     src = re.sub(r"//[^\n]*", "", p.read_text(encoding="utf-8"))
     unbounded = "decreases *" in src
     errs = [l for l in out.splitlines() if re.search(r"Error:", l)]
@@ -112,8 +104,6 @@ if __name__ == "__main__":
     ap.add_argument("--move", action="store_true")
     ap.add_argument("--workers", type=int, default=WORKERS)
     a = ap.parse_args()
-    # Every status directory that holds translations. A directory left out
-    # drops its rows' safety record silently, which is how it becomes a blind
-    # spot.
+    # Every status directory that holds translations; one left out goes unchecked.
     dirs = [SOLUTIONS, UNSCREENED, DISPUTED, UNSURE, UNGATEABLE, UNVERIFIED]
     run([d for d in dirs if d.exists()], workers=a.workers, move=a.move)

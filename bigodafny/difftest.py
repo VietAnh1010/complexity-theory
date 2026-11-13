@@ -1,16 +1,7 @@
 """Differential test: does the Dafny print what the PYTHON prints?
 
-`validate.py` compares against BigOBench's stored output. That works only for
-the 534 `strict` rows. For the 100 `loose` rows the stored output is one
-accepted answer among several -- Codeforces judged them with a token-based or
-special checker -- so even the original Python fails a byte-diff against it.
-
-Those rows are still translatable, and there is still an exact question to ask:
-does the translation reproduce *its own Python*, input for input? That is the
-right equivalence for a transpilation dataset, and it is decidable even when the
-stored output is not.
-
-Where both gates apply they should agree; `strict` rows can be run under either.
+The gate for `loose` rows, whose stored output is one accepted answer among
+several. `strict` rows can run under either gate; the two should agree.
 """
 from __future__ import annotations
 import argparse, json, subprocess, sys, tempfile
@@ -62,13 +53,8 @@ json.dump(out, sys.stdout)
 '''
 
 
-# Each test carries its own 30s alarm, so a batch of n tests can legitimately
-# spend 30n seconds before any of them is a bug. A fixed wall budget smaller
-# than that is not a safety net: it discards the whole row, including the tests
-# that already finished. `1501_224` lost 91 agreeing comparisons that way -- its
-# Python times out on 31 of its own 122 tests, 31 x 30s exceeded the Dafny
-# side's 900s, and a row that agrees everywhere it can be compared was recorded
-# as `error: TimeoutExpired`. Derive the budget from the work instead.
+# Each test has its own 30 s alarm, so a fixed wall budget below 30n s discards
+# the finished tests of a row whose Python times out on some.
 def batch_budget(n_tests, per_test=30, overhead=60):
     return overhead + per_test * max(1, n_tests)
 
@@ -165,12 +151,8 @@ def run(sids, tiers=("public_tests", "private_tests"), workers=WORKERS):
     tasks = {t["solution_id"]: t for t in read_jsonl(DATA / "tasks.jsonl")}
     sigs = {s["problem_id"]: s for s in read_jsonl(DATA / "signatures.jsonl")}
     log(f"differential-testing {len(sids)} rows against their own Python")
-    # Write each result as it lands. A run over ~100 rows can take hours, and
-    # emitting only at the end means a kill loses the lot -- which is exactly
-    # what the session limit keeps doing to long jobs here.
-    # Resume: rows already in the partial file are not re-run. One slow row
-    # used to block everything behind it, because ex.map yields in order --
-    # as_completed reports each row the moment it lands instead.
+    # Write each result as it lands, so a killed run resumes: rows already in
+    # the partial file are not re-run.
     OUT.mkdir(exist_ok=True)
     partial = OUT / "difftest_partial.jsonl"
     rows, done = [], set()
@@ -193,11 +175,7 @@ def run(sids, tiers=("public_tests", "private_tests"), workers=WORKERS):
             if i % 10 == 0 or i == len(todo):
                 log(f"  {len(done) + i}/{len(sids)}  "
                     f"{sum(1 for x in rows if x['status'] == 'agrees')} agree")
-    # A `--only` run must not replace the record of every other row. This file
-    # is the loose-tier gate's history; before this merge it held whatever the
-    # last partial run happened to produce -- two rows at one point, and five
-    # at another, for a tier of 100. Same defect `label_audit.py evidence --only`
-    # had against the numbered batches.
+    # Merge, so a `--only` run does not replace every other row's record.
     out = DATA / "difftest.jsonl"
     merged = {r["solution_id"]: r for r in read_jsonl(out)} if out.exists() else {}
     merged.update({r["solution_id"]: r for r in rows})

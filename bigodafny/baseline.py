@@ -1,18 +1,11 @@
 """Run each original Python solution against its own stored tests.
 
-This is the ceiling for any translation. A Dafny row cannot be expected to
-match byte-for-byte what the Python it was translated from does not match:
-Codeforces accepted many of these under a token-based or special checker, so
-the stored `output` is one accepted answer, not the only one.
+The result defines the `strict` split: a row is strict when its Python matches
+every stored output byte for byte.
 
-The result defines the `strict` split by measurement instead of by reading the
-problem statement for phrases like "print any of them".
-
-`--round-trip SID...` is the control for a failing `validate.py` row: each input
-first goes through the problem's own `Input.from_str`, as the Dafny's does.
-A test that raises there is `unparseable`; one that parses but no longer passes
-lost information in the dataclass. Either way the harness, not the
-translation, is at fault. Writes out/round_trip.jsonl.
+`--round-trip SID...` first passes each input through the problem's own
+`Input.from_str`, as the Dafny does. A test that fails there blames the
+harness, not the translation. Writes out/round_trip.jsonl.
 """
 from __future__ import annotations
 import argparse, functools, json, subprocess, sys, tempfile

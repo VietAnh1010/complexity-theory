@@ -1,19 +1,11 @@
 """Join tasks + signatures + baseline + validation into the exported dataset.
 
-The `split` is assigned here, from the measured Python baseline rather than
-from anything read out of the problem statement:
+The `split`, from the measured Python baseline:
 
-  strict       -- the original Python reproduces every stored output
-                  byte-for-byte, so a Dafny translation can be held to the same
-                  standard.
-  loose        -- it does not. The stored output is one accepted answer among
-                  several, or the solution errors or times out on its own tests.
-  unvalidatable -- BigOBench's own `Input.from_str` raises on at least one of
-                  the row's stored tests, so the harness cannot feed the Dafny
-                  method at all. No translation of these rows can ever pass, and
-                  a `fail` against them measures the parser, not the code.
-
-Only `strict` is scored by byte-diff.
+  strict        -- the original Python reproduces every stored output byte for
+                   byte; only these rows are scored by byte-diff.
+  loose         -- it does not, or it errors or times out on its own tests.
+  unvalidatable -- the harness cannot feed the Dafny the stored tests.
 """
 from __future__ import annotations
 from collections import Counter
@@ -23,17 +15,8 @@ from common import (DAFNY_VERSION, DATA, UNTRANSLATED, PROVED,
 
 
 def parser_ok(task, sig=None):
-    """Can the harness feed this row at all? Two ways it cannot.
-
-    1. `from_str` raises. Four rows: their parser asserts a trailing newline the
-       stored input does not have.
-    2. `from_str` silently loses information. Two rows declare a `real`
-       argument and carry ~100-significant-digit decimals; Python `float()`
-       truncates them before Dafny is ever called, e.g.
-       4.6329496401734172195e50 -> 4.632949640173417e50. No implementation can
-       pass, so a `fail` there measures the harness, not the code.
-
-    Both measured, not assumed."""
+    """Can the harness feed this row? Not when `from_str` raises, or when it
+    loses a `real` argument's digits to `float()`."""
     ns = {}
     try:
         exec(compile(task["dataclass_code"], "<dc>", "exec"), ns)
@@ -50,8 +33,6 @@ def parser_ok(task, sig=None):
                 parsed = f(t["input"])
             except Exception:
                 return False
-            # Only checked where it can bite: a real-valued argument whose
-            # decimal text does not survive the float round-trip.
             if has_real and repr(parsed) != t["input"]:
                 return False
     return True
@@ -70,11 +51,7 @@ def build():
     vpath = DATA / "validation.jsonl"
     val = ({v["solution_id"]: v for v in read_jsonl(vpath)}
            if vpath.exists() else {})
-    # `validate.py` is the wrong gate for the 100 `loose` rows and never runs on
-    # them, so reading `dafny_status` from its record alone reported every one
-    # of them as `untranslated`. That put 104 translated, passing rows in the
-    # same bucket as the 4 that have no body: stats.json said 108 untranslated
-    # when the true number is 4. `difftest.py` is their gate; read it for them.
+    # `difftest.py` is the gate for loose rows; `validate.py` never runs on them.
     dpath = DATA / "difftest.jsonl"
     diff = ({d["solution_id"]: d for d in read_jsonl(dpath)}
             if dpath.exists() else {})
@@ -124,12 +101,8 @@ def build():
             "python_pass_rate": round(b.get("passed", 0) / n, 4) if n else None,
             "dafny_signature": s.get("dafny"),
             "signature_status": s.get("status", "missing"),
-            # Each split reports the status of ITS OWN gate, chosen by the
-            # split and not by whichever record happens to exist. `agrees` is
-            # a loose row's pass, exactly as `valid` is a strict row's. A
-            # stale `fail` left in validation.jsonl by a sweep that should
-            # never have judged a loose row must not win over difftest's
-            # verdict -- that is how the wrong gate's answer gets published.
+            # Each split reports its own gate's status, never another gate's
+            # stale record. `agrees` is a loose row's pass.
             "dafny_status": (gate_rec.get("status") or "untranslated"),
             "dafny_gate": (gate_name if gate_rec.get("status") else None),
             # Behaviour is validated; the complexity label is not trusted.

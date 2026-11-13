@@ -1,12 +1,7 @@
 """The closed vocabularies of the proof campaigns' records.
 
-One definition, read by audit.py (which enforces it) and prove_stats.py (which
-prints it). The campaign skill and brief repeat the relation table for readers;
-change it here first.
-
-A proved bound is an UPPER bound, so it can put the row in the label's class,
-above it, or below it. Above and below each have a cause, and the cause is what
-the relation names.
+audit.py enforces them and prove_stats.py prints them. The campaign skill and
+brief repeat the relation table; change it here first.
 """
 
 # If several rows give the same `other` reason, that reason becomes a code.
@@ -83,6 +78,4 @@ REVIEWS = {
 LABEL_RELATION_KEYS = ("solution_id", "label", "proved_bound", "relation",
                        "reason", "prover_relation", "prover_reason", "review",
                        "revision")
-# `prover_relation` is one of RELATIONS, or null when the proving subagent gave
-# no relation from this vocabulary (campaign 1's provers wrote only
-# agrees_with_label, and a prover that did not prove the row gives none).
+# `prover_relation` is one of RELATIONS, or null when the prover gave none.

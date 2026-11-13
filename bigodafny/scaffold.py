@@ -1,12 +1,7 @@
 """Emit one .dfy stub per task, and the Python glue that drives it.
 
-The stub is the authoring surface: a signature, the Python it must reproduce,
-and a body that returns "". An unimplemented stub therefore compiles and fails
-its tests, which is the behaviour we want -- "not translated yet" and "wrong"
-are both test failures, never build failures.
-
-Stubs are never overwritten. Once a .dfy has a real body, scaffolding again
-leaves it alone.
+An unimplemented stub compiles and fails its tests. Existing files are never
+overwritten.
 """
 from __future__ import annotations
 import sys
@@ -56,14 +51,8 @@ def scaffold(force=False):
         if not sig or sig["status"] != "ok":
             skipped += 1
             continue
-        # A translated row may have been moved out of solutions/ by the
-        # discrimination step. Checking only SOLUTIONS once recreated 274 stubs
-        # that shadowed real translations living in the other directories.
-        #
-        # This must list EVERY directory of the partition, plus the proof
-        # overlay. DISPUTED was missing, so a run would have shadowed 158 real
-        # translations with fresh stubs -- the same defect as the 274, caught
-        # before it fired. UNGATEABLE was added with the directory.
+        # List every status directory and the proof copies: a missing one
+        # shadows its real translations with fresh stubs.
         name = f"{t['solution_id']}.dfy"
         existing = next((d / t["problem_id"] / name
                          for d in (SOLUTIONS, UNSCREENED, UNVERIFIED, PROVED,

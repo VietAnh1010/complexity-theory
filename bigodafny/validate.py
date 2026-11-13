@@ -1,9 +1,7 @@
 """Compile a .dfy to Python, drive it with BigOBench's own parser, diff stdout.
 
-A row is valid only if it translates AND every executed test matches. The three
-failure modes are recorded separately: `build` (Dafny rejected it), `fail` (it
-ran and printed the wrong thing), `timeout`/`error` (it did not finish or threw).
-Collapsing those into one number would hide which half of the pipeline broke.
+Failures are recorded apart: `build` (Dafny rejected it), `fail` (wrong output),
+`timeout`/`error` (did not finish or threw).
 """
 from __future__ import annotations
 import argparse, json, shutil, subprocess, sys, tempfile
@@ -141,12 +139,8 @@ def run_tests(task, sig, pydir, workdir, tiers, per_test, batch_timeout):
                        per_test=per_test, args=args),
         encoding="utf-8")
 
-    # Every test carries its own `per_test` alarm, so a batch of n tests can
-    # legitimately spend per_test*n seconds before any of them is a bug. A fixed
-    # wall budget below that discards the whole row, including the tests that
-    # already passed -- difftest.py lost 91 agreeing comparisons on `1501_224`
-    # exactly this way. Take whichever of the two budgets is larger; the caller's
-    # `batch_timeout` stays a floor, not a ceiling.
+    # Each test has its own alarm; a budget below per_test*n discards finished
+    # tests. `batch_timeout` is a floor.
     budget = max(batch_timeout, 60 + per_test * max(1, len(tests)))
     try:
         p = subprocess.run([sys.executable, str(workdir / "harness.py")],
@@ -204,16 +198,7 @@ def validate(only=None, per_test=30, batch_timeout=900, solutions_dir=None,
     tasks = {t["solution_id"]: t for t in read_jsonl(DATA / "tasks.jsonl")}
     sigs = {s["problem_id"]: s for s in read_jsonl(DATA / "signatures.jsonl")}
 
-    # This gate judges the `strict` tier and no other. Its whole question is
-    # "does stdout match BigOBench's STORED output", which is the wrong
-    # question for the 100 `loose` rows -- their problems accept several
-    # answers, so even the original Python fails a byte-diff. Running on them
-    # produces `fail` records that measure the checker, not the translation.
-    #
-    # Nothing enforced that. A bare `validate.py` swept all 636 translated rows
-    # and wrote 101 `fail`s, of which 97 were loose rows behaving correctly;
-    # the record it replaced had been built from a hand-filtered list, so the
-    # canonical file was not reproducible from this tool's own CLI. It is now.
+    # This gate judges `strict` rows only; loose rows accept several answers.
     ds = DATA / "dataset.jsonl"
     split = ({r["solution_id"]: r["split"] for r in read_jsonl(ds)}
              if ds.exists() else {})
@@ -249,15 +234,14 @@ def validate(only=None, per_test=30, batch_timeout=900, solutions_dir=None,
     jobs = [(t, dfy, sigs[t["problem_id"]], tiers, per_test, batch_timeout,
              out_prefix) for t, dfy in targets]
     rows = []
-    # Rows are independent; map keeps them in target order.
     with ProcessPoolExecutor(max_workers=workers) as ex:
         for rec in ex.map(check_one, jobs):
             rows.append(rec)
             detail = (f"{rec['tests_passed']}/{rec['tests_total']} tests"
                       if "tests_total" in rec else rec["error"][:80])
             log(f"  {rec['solution_id']:>10}  {rec['status'].upper():<6} {detail}")
-    # Parallel load can push a test past its time limit (577_509, 1738_180
-    # pass alone). Re-check every non-valid row alone; only that result counts.
+    # Parallel load can push a test past its limit. Re-check every non-valid
+    # row alone; only that result counts.
     for i, rec in enumerate(rows):
         if rec["status"] != "valid":
             log(f"  {rec['solution_id']:>10}  {rec['status']} under load; re-checking alone")
@@ -265,11 +249,8 @@ def validate(only=None, per_test=30, batch_timeout=900, solutions_dir=None,
             log(f"  {rec['solution_id']:>10}  alone: {rows[i]['status'].upper()}")
     tally = Counter(r["status"] for r in rows)
 
-    # A partial run must never replace the canonical record: one
-    # `validate.py --only X` once left data/validation.jsonl holding a single
-    # row where 532 had been (difftest.py had the same defect). Any subset --
-    # `--only` or `--solutions-dir` -- is a spot check and always writes a
-    # prefixed file; `--out-prefix` only names it (default `partial_`).
+    # A subset run (`--only`, `--solutions-dir`) writes a prefixed file, never
+    # the canonical record; `--out-prefix` names it (default `partial_`).
     if not out_prefix and (only or solutions_dir):
         out_prefix = "partial_"
     if out_prefix:
@@ -286,11 +267,8 @@ def validate(only=None, per_test=30, batch_timeout=900, solutions_dir=None,
     return rows
 
 
-# --self-test borrows one known-good row and breaks it in the two ways that
-# matter. A gate only ever run on correct input is untested: if a wrong answer
-# came back `build`, or a build error `fail`, the failure counts would mean
-# nothing. The row moves between directories as audits reclassify it, so look
-# wherever it currently lives.
+# --self-test breaks one known-good row two ways and checks each is classified
+# right (`build`, `fail`). The row is looked up wherever it lives.
 GATE_ROW = ("5", "5_100")
 GATE_CASES = (
     ("wrong", "fail", ('output := IntToString(m) + "\\n";',

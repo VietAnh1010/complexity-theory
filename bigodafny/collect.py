@@ -1,8 +1,6 @@
 """Collect the measured state of the corpus into one JSON payload.
 
-Everything an artifact would display is computed here from the records on
-disk, so no number in the artifact is ever typed by hand. Re-run it after any
-sweep; it writes only out/artifact_data.json (git-ignored).
+Writes only out/artifact_data.json (git-ignored). Re-run it after any sweep.
 """
 from __future__ import annotations
 import json, re, statistics, subprocess
@@ -31,18 +29,12 @@ def git(*args, default=""):
 
 
 def callgraph(depth):
-    """Structure of solutions/ as walked by callgraph.py.
-
-    Descriptive only -- no outcome join lives here. The record covers
-    solutions/ and nothing else, and it was current when this was written:
-    354 rows, no dead paths, no truncated search.
-    """
+    """Structure of solutions/ as walked by callgraph.py."""
     if not depth:
         return {"status": "no record"}
     rows = list(depth.values())
     prelude = Counter(f for r in rows for f in (r.get("prelude_calls") or []))
-    # A proof adds ghost helpers, which can lengthen the longest chain. The
-    # gap says how much instrumentation the corpus's proofs actually add.
+    # A proof's ghost helpers can lengthen the longest chain.
     deepened = [r for r in rows
                 if (r.get("longest_chain_with_ghost") or 0) > (r.get("longest_chain") or 0)]
     return {
@@ -96,12 +88,7 @@ def proofs_all(depth, ds, pv_rows):
 
 
 def difficulty(pv_rows):
-    """Does structure predict whether a proof closes?
-
-    Joins both campaigns' outcomes against call depth and recursion. The
-    label is already known to matter -- linear rows close far more often than
-    `O(nlogn)` ones -- so this asks whether depth adds anything beyond it.
-    """
+    """Proof outcomes joined against call depth and recursion."""
     done = [r for r in pv_rows if r["outcome"] in ("proved", "unresolved")]
     if not done:
         return {"status": "not yet run"}
@@ -131,12 +118,8 @@ PY_LINE = re.compile(r"^// ?(.*)$")
 
 
 def python_loc(header):
-    """Lines of the original Python, which each header quotes verbatim.
-
-    The block opens with `// --- Python ---...` and closes with a plain rule
-    line, so the opener has to be matched on its own -- a single `-{20,}`
-    pattern misses it and silently returns zero for every row.
-    """
+    """Lines of the original Python quoted in the header. The opener
+    `// --- Python ---` differs from the closing rule, so it is matched alone."""
     inside, n = False, 0
     for line in header.splitlines():
         if not inside and re.match(r"^//\s*-+\s*Python\s*-+", line):
@@ -262,9 +245,7 @@ def main():
             for d in sorted(HERE.glob("solutions*")) if d.is_dir()}
 
     optout = sorted(s for s, r in ver.items() if r.get("termination_opt_out"))
-    # A row that verifies with `decreases *` has every obligation discharged
-    # EXCEPT termination, which it opted out of. Counting it as verified
-    # without saying so overstates the guarantee.
+    # A row with `decreases *` verifies everything except termination.
     fully = [s for s, r in ver.items()
              if r["verified"] and not r.get("termination_opt_out")]
 
@@ -283,10 +264,6 @@ def main():
         },
 
         "verification": {
-            # The sweep covers solutions-ungateable/ as well, since those rows
-            # are translated and their safety record would otherwise vanish
-            # when they left solutions/. Reported apart, because a safety
-            # result and a behaviour result are different claims.
             "scope": "solutions/ and solutions-ungateable/",
             "total": len(ver),
             "verified": sum(r["verified"] for r in ver.values()),

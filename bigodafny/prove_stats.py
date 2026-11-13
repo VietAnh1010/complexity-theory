@@ -3,26 +3,10 @@
 
     python3 prove_stats.py           # writes data/prove_stats.md, out/prove_stats.json
 
-Answers, over every campaign run so far:
-
-  * how many rows were drawn, proved, unresolved;
-  * WHY the unresolved ones failed, by coded obstacle;
-  * what the proved bounds say about their labels, by relation;
-  * every one of those cut by complexity class, which is the join that
-    matters -- the label is the strongest single predictor of whether a
-    bounded agent closes the row.
-
-Two rules this file follows, because both have already caused a wrong claim
-in this project:
-
-  * a per-campaign cell is small. Report the pooled rate first and give a
-    binomial p against it, so a two-row swing is not read as a trend.
-  * a row drawn although it already had a proof is not new work. Those are
-    excluded from the rate and listed separately.
-
-Reads only. Nothing here re-verifies anything: `verified` comes from
-proofs.py, and the relations come from each batch's hand-normalised
-label_relation.jsonl.
+Drawn, proved and unresolved rows, obstacles and relations, each by label.
+Per-campaign cells get a binomial p against the pooled rate. Rows drawn while
+already proved are left out of the rate. Reads only: `verified` comes from
+proofs.py, relations from each batch's label_relation.jsonl.
 """
 from __future__ import annotations
 
@@ -72,12 +56,8 @@ def load():
                 r["_slice"] = f.stem.split("_")[-1]
                 traj[r["solution_id"]] = r
         rel = {r["solution_id"]: r for r in jsonl(d / "label_relation.jsonl")}
-        # A record revised after the campaign keeps the agent's result beside
-        # the current one, and its superseded lines live in old-record.jsonl.
-        # This file measures the CAMPAIGNS, so it reads the agent's result:
-        # a row proved later by the main agent, outside the budget, is still a row the
-        # bounded agent did not close.
-        # the EARLIEST superseded line is the agent's; later ones are later edits
+        # Measure the agent's result, not later edits: the earliest superseded
+        # line in old-record.jsonl is the agent's.
         old = {}
         for o in jsonl(d / "old-record.jsonl"):
             old.setdefault(o["record"]["solution_id"], {}).setdefault(o["file"], o["record"])
@@ -97,8 +77,7 @@ def load():
                 "current_outcome": "proved" if sid in VERIFIED else ("unresolved" if t else "not attempted"),
                 "current_relation": (rel.get(sid) or {}).get("relation")
                                     if t.get("outcome") == "proved" else None,
-                # drawn although a proof already existed: a sampler bug, not
-                # new work, so not in the denominator
+                # drawn although already proved: not in the denominator
                 "redrawn": bool(m.get("already_proved_when_drawn")),
                 "relation": (rel_then.get("relation") if "revision" not in rel_then
                              else None) if outcome == "proved" else None,
@@ -140,8 +119,7 @@ def payload():
         td = sum(1 for r in new if r["label"] == lab)
         for cell in cells:
             if cell:
-                # None when the pooled rate is 0 or 1 -- a label every draw
-                # closed, or none did. No cell can be surprising against that.
+                # None when the pooled rate is 0 or 1
                 pv = two_sided(cell["proved"], cell["drawn"], tp / td) if td else None
                 cell["p_vs_pooled"] = round(pv, 4) if pv is not None else None
         by_label[lab] = {"pooled_proved": tp, "pooled_drawn": td,
@@ -224,12 +202,8 @@ def repeat_draws(rows):
 
 
 def first_vs_repeat(rows):
-    """Split each campaign's draw into rows never drawn before and rows redrawn.
-
-    A row that FAILS stays in a plain draw's pool, so that draw carries rows
-    already known to be hard. Both rates are reported so the pooled headline
-    can be read for what it is.
-    """
+    """Split each campaign's draw into rows never drawn before and rows redrawn
+    (failed rows stay in the pool, so redraws skew hard)."""
     seen, out = set(), {}
     for b in BATCHES:
         here = [r for r in rows if r["campaign"] == b]
@@ -247,14 +221,8 @@ def first_vs_repeat(rows):
 
 
 def current_state(rows):
-    """Where the drawn rows stand now, as opposed to what the campaigns did.
-
-    Some rows were proved, or their proofs tightened, after their campaign, by
-    hand and outside the budget -- most on 2026-09-23 when the prelude gained a
-    composable sort-cost bound. Their campaign records keep the agent's result
-    as `agent_outcome` and the superseded lines in old-record.jsonl, so every
-    rate above is still what a bounded agent achieved. This is the other view.
-    """
+    """Where the drawn rows stand now, including proofs made by hand after
+    their campaign."""
     latest = {}
     for r in rows:
         if r["redrawn"]:
@@ -262,9 +230,7 @@ def current_state(rows):
         latest[r["solution_id"]] = r   # later campaigns overwrite earlier ones
     distinct = list(latest.values())
     proved = [r for r in distinct if r["current_outcome"] == "proved"]
-    # no bounded agent proved it in any draw, and it is proved now: closed by
-    # hand. Keyed on outcomes, not on a record's shape -- a rerun record carries
-    # no `revision` flag but can still be an agent's miss on a row proved later.
+    # closed by hand: no agent proved it in any draw, and it is proved now
     agent_proved = {r["solution_id"] for r in rows
                     if not r["redrawn"] and r["outcome"] == "proved"}
     closed_after = sorted(r["solution_id"] for r in distinct
@@ -298,15 +264,8 @@ def open_now(rows):
 
 
 def dedup_view(rows):
-    """One record per distinct row, the most positive outcome kept.
-
-    `drawn` counts DRAW RECORDS: a failed row stays in the pool, so later
-    campaigns redraw it, and those repeat draws are disproportionately the hard
-    rows. The raw rate asks what share THAT campaign proved within its budget;
-    this one asks what share of the distinct rows any campaign has drawn
-    carries a proof. It is higher by construction and is never a per-campaign
-    rate.
-    """
+    """One record per distinct row, the most positive outcome kept. Higher than
+    the per-draw rate by construction; never a per-campaign rate."""
     by_row = {}
     for r in rows:
         by_row.setdefault(r["solution_id"], []).append(r)

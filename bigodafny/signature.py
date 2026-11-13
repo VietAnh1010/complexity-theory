@@ -1,11 +1,7 @@
 """dataclass_code -> Dafny method signature.
 
-The Python solutions are stdin scripts with no signature; the `Input` dataclass
-that BigOBench generated for fuzzing is the only typed argument list in the
-data. This module recovers it with `ast` -- never a regex, because an
-annotation is a Python expression and regexes get nested generics wrong.
-
-Deterministic: same input, same output, no model.
+The `Input` dataclass is the only typed argument list in the data. Parsed with
+`ast`, not a regex: regexes get nested generics wrong.
 """
 from __future__ import annotations
 import ast
@@ -87,12 +83,8 @@ def input_fields(dataclass_code):
 
 
 def observed_type(value):
-    """Dafny type of a value actually produced by `from_str`.
-
-    Used only where the annotation is a bare `list` with no element type. The
-    annotation is what an LLM wrote; the value is what the parser really built,
-    so observing beats guessing. Returns None if the value settles nothing (an
-    empty list) or holds something we do not map."""
+    """Dafny type of a value `from_str` built, for a bare `list` annotation.
+    None if the value settles nothing (an empty list) or is unmapped."""
     if isinstance(value, bool):
         return "bool"
     if isinstance(value, int):
@@ -124,8 +116,7 @@ def synthesize(dataclass_code, inputs_example=None):
     if not fields:
         return {"status": "unmappable", "reason": "`class Input` has no annotated fields"}
 
-    # A bare `list` annotation carries no element type. Rather than refuse,
-    # parse the row's own example input and look at what `from_str` built.
+    # A bare `list` has no element type: read it off the parsed example input.
     observed = {}
     if inputs_example:
         try:

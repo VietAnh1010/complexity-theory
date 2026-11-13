@@ -1,17 +1,8 @@
 """Check every `requires` of a row against every stored input.
 
-Adding a precondition is the cheap way to make `dafny verify` pass: narrow the
-contract until the obligation is trivial. That is only honest if the precondition
-is something the problem actually guarantees. If it fails on inputs the harness
-really feeds, the proof covers a domain the data does not visit.
-
-Dafny evaluates the clauses itself. Each copy of the row gains one compiled
-method per clause, `PreCheck<i>(<Solve's parameters>)`, whose body is that
-clause; `dafny translate py` builds it and the methods run on every parsed
-input. Any clause Dafny can compile is checked with Dafny's own semantics, so
-no clause shape needs a translation written for it. A clause Dafny cannot
-compile (an unbounded quantifier, a ghost helper calling another ghost) is
-reported `unchecked` with the compiler's message.
+A precondition is honest only if every real input satisfies it. Each clause
+becomes a compiled method `PreCheck<i>(<Solve's parameters>)` run on every parsed
+input. A clause Dafny cannot compile is reported `unchecked`.
 """
 from __future__ import annotations
 import argparse, json, re, subprocess, sys
@@ -22,28 +13,13 @@ from common import (WORKERS, BUILD, DATA, UNSCREENED, SOLUTIONS, UNVERIFIED,
                     UNGATEABLE, PROVED_VALUE, UNSURE, spec_tests)
 from validate import build_one, conv_expr
 
-# solutions-proved/ was missing here, so the twelve
-# complexity proofs' preconditions were never checked against real inputs --
-# and the proofs are exactly where new preconditions get added, to make a
-# bound provable. Two of the twelve turned out to exclude inputs their own
-# row answers. A gate that skips the files most likely to need it is not a
-# gate.
+# Proofs included: they are where new preconditions get added.
 ROOTS = [SOLUTIONS, UNVERIFIED, UNSCREENED, PROVED, PROVED_VALUE,
          DISPUTED, UNGATEABLE, UNSURE]
 
 
 def find_all(sid, pid):
-    """EVERY copy of the row, not the first.
-
-    A row can exist in two places at once: the plain translation in
-    `solutions/` or `solutions-unscreened/`, and an instrumented copy carrying a
-    complexity proof in `solutions-proved/`.
-    Returning
-    only the first meant the proofs -- the copies most likely to have gained a
-    new `requires`, since that is often what makes a bound provable -- were
-    never the file this checked. 827_148 has two different precondition sets in
-    two directories and only the weaker one was ever seen.
-    """
+    """Every copy of the row (translation and proof), not the first."""
     return [r / pid / f"{sid}.dfy" for r in ROOTS
             if (r / pid / f"{sid}.dfy").exists()]
 
@@ -53,9 +29,7 @@ SOLVE = re.compile(r"\bmethod\s+(?:\{[^}]*\}\s*)*Solve\(")
 
 def solve_header(text):
     """(parameter list, text between `)` and the body's `{`) of Solve.
-
-    The pattern allows attributes: `method {:isolate_assertions} Solve(` did
-    not match a plain `method Solve(` search, so such proofs went unchecked."""
+    Allows attributes, as in `method {:isolate_assertions} Solve(`."""
     m = SOLVE.search(text)
     if not m:
         return None, ""
@@ -214,10 +188,7 @@ def check_file(job):
                 by_tier[k] = by_tier.get(k, 0) + 1
                 offenders.append(inp)
         if rec["violated"]:
-            # A precondition may exclude an input the ORIGINAL Python also
-            # fails on: the row's contract is to reproduce that Python, and
-            # there is no behaviour to reproduce. Excluding an input the
-            # Python handles is the dishonest case.
+            # Excluding an input the original Python also fails on is fine.
             live = sum(1 for inp in offenders
                        if not python_fails(t["solution_code"], inp))
             rec["violated_python_ok"] = live
@@ -226,14 +197,8 @@ def check_file(job):
             if not live:
                 rec["status"] = "violated-python-also-fails"
             elif not real:
-                # Only BigOBench's synthetic `generated_tests` violate it.
-                # Those are scaled inputs and can leave the problem's own
-                # stated constraints -- 827_148's cap is the statement's
-                # own `1 <= si, di <= 1000`, honoured by all 35 real tests
-                # and exceeded (max 1101) by 39 generated ones. A clause
-                # faithful to the statement is not the same defect as one
-                # that excludes a real test, and collapsing them would
-                # either excuse the second or condemn the first.
+                # Only `generated_tests` violate it; those can exceed the
+                # statement's own limits.
                 rec["status"] = "violated-generated-only"
             else:
                 rec["status"] = "violated"
@@ -243,9 +208,8 @@ def check_file(job):
 
 
 def all_sids():
-    """Every row with a copy whose Solve carries a `requires`, and every row
-    the record names: a copy that lost its clauses or its file (1972_295's
-    proof) must have its old lines dropped, not kept."""
+    """Every row with a copy whose Solve carries a `requires`, and every row the
+    record names, so a copy that lost its clauses drops its old lines."""
     rec = DATA / "precondition_check.jsonl"
     out = {r["solution_id"] for r in read_jsonl(rec)} if rec.exists() else set()
     for r in ROOTS:
@@ -266,13 +230,8 @@ def run(sids, workers=WORKERS):
     log(f"checking the requires of {len(jobs)} file(s) over {len(checked)} row(s)")
     with ProcessPoolExecutor(max_workers=workers) as ex:
         rows = [rec for recs in ex.map(check_file, jobs) for rec in recs]
-    # This tool runs on the rows it is given, so the file must accumulate.
-    # Replacing it meant the record held whichever row was checked last: four
-    # clauses of one row, for a corpus with preconditions in dozens. A re-check
-    # of a row replaces ALL that row's clauses and leaves every other row alone
-    # -- including when the re-check finds none: a copy that lost its last
-    # `requires`, or moved, must not keep its old clauses (1077_84 did, until
-    # the main agent removed them).
+    # A re-check replaces all of that row's clauses, even with none, and leaves
+    # every other row alone.
     out = DATA / "precondition_check.jsonl"
     prior = [r for r in read_jsonl(out)] if out.exists() else []
     merged = [r for r in prior if r.get("solution_id") not in checked] + rows

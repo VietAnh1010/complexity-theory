@@ -1,21 +1,12 @@
-"""Static features of a translated row, computed from the Dafny source alone.
-
-Nothing here calls a model. Re-running on the same tree gives the same numbers.
-"""
+"""Static features of a translated row, computed from the Dafny source alone."""
 from __future__ import annotations
 import re
 
 # A loop opens with `while`/`for` at a statement position. The bodies in this
 # corpus always brace their loops, so brace depth is enough to nest them.
 LOOP_RE = re.compile(r"(?:^|[\s{};])(while|for)\b")
-# A conjunct is a *counter* guard when it compares one plain variable against
-# an expression built only from other variables, lengths and constants:
-# `i < |xs|`, `i < 2 * n`, `i < s.Length / 2`. Then the trip count is visible.
-#
-# Anything else is data-dependent -- a flag (`!found`), an element test
-# (`s[i] == s[j]`), a value shrinking by an unknown amount (`mask != 0`) -- and
-# that is where a bound stops being obvious. `827_148` is the canonical case in
-# this project: no polynomial bound at all until the input values are capped.
+# A counter guard compares one variable against variables, lengths and
+# constants (`i < |xs|`, `i < 2 * n`); any other guard is data-dependent.
 SIMPLE_GUARD = re.compile(
     r"^\s*[A-Za-z_]\w*\s*[<>]=?\s*"
     r"(?:[A-Za-z_][\w.]*|\|[A-Za-z_]\w*\||\d+|[-+*/()\s])+$")
@@ -87,15 +78,10 @@ def _loop_nesting(code):
 
 
 def accumulator_read_in_loop(body):
-    """Is a seq accumulator READ by index inside the loop that appends to it?
+    """Is a seq accumulator read by index inside the loop that appends to it?
 
-    That read is what forces the lazy concatenation node to flatten, and it is
-    the only thing that makes `s := s + [x]` in a loop quadratic. A read AFTER
-    the loop costs one flatten, not one per append, so it does not count.
-
-    Ghost text is stripped first: `invariant forall k :: 0 <= k < |arr| ==>
-    arr[k].1 > 0` reads the accumulator in a proof, never at run time, and
-    counting it would restore the very over-flagging this replaced.
+    That read flattens the lazy concatenation each time, making `s := s + [x]`
+    quadratic. Ghost text is stripped first: an invariant's read costs nothing.
     """
     names = set(re.findall(r"(\w+)\s*:=\s*\1\s*\+\s*\[", body))
     if not names:
@@ -106,11 +92,8 @@ def accumulator_read_in_loop(body):
                    if re.search(r"\b%s\s*:=\s*%s\s*\+\s*\[" % (name, name), b)]
         if not holding:
             continue
-        # The INNERMOST enclosing loop is the one whose iteration count
-        # multiplies the flatten. 794_794 appends in an inner loop and reads the
-        # finished sequence in a sibling loop under the same outer loop: that is
-        # one flatten per outer iteration, not one per append, and taking the
-        # outer block would flag it.
+        # The innermost enclosing loop is the one whose count multiplies the
+        # flatten.
         inner = min(holding, key=len)
         live = _strip_ghost(inner)
         # `|name|` is free; `name[...]` is what forces the flatten.
@@ -151,21 +134,10 @@ def _loop_blocks(body):
 
 
 def class_risk(body):
-    """Does the translation contain a construct that can MOVE the class?
+    """Does the Dafny contain a construct that can make it slower than its Python?
 
-    The label was measured on the Python; a blind agent reads the Dafny. Where
-    the two differ in class, an agent that reads its input correctly is scored
-    wrong against the label. That is a property of the corpus, not of the
-    agent, and pooling those rows with the rest understates blind accuracy.
-
-    Both constructs here are measured, not suspected:
-      * `s := s[i := v]` -- a full copy in Dafny, in place in CPython.
-      * `s := s + {x}`   -- an incremental union per insert.
-    Each turns a Python O(n) loop into a Dafny O(n**2) one.
-
-    This is a RISK flag, not a verdict: it says the row could be mis-scored,
-    not that it was. 1039_15 is the established case -- blind proved O(n**2)
-    against an O(nlogn) label and diagnosed the cause unaided.
+    `s := s[i := v]` copies the whole seq, and `s := s + {x}` rebuilds the set:
+    each turns an O(n) Python loop into an O(n**2) Dafny one. A risk flag only.
     """
     seq_update = bool(re.search(r"(\w+)\s*:=\s*\1\s*\[\s*[^\]]+:=", body))
     set_build = bool(re.search(r"(\w+)\s*:=\s*\1\s*\+\s*\{", body))

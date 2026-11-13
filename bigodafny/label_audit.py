@@ -1,30 +1,16 @@
 """Assemble the evidence for a label audit, act on the verdicts, find siblings.
 
-The question is whether a row's BigOBench complexity label describes what its
-Dafny costs, under the stipulated cost model in `COMPLEXITY.md`.
+Does a row's label describe what its Dafny costs under `COMPLEXITY.md`?
 
-  `evidence`  deterministic. Extracts structural facts from each `.dfy` and
-              pairs them with the label and the original Python. No model. Two
-              runs produce byte-identical batches.
-  `check`     rejects a malformed verdict file: a class outside the label
-              vocabulary, a mismatch with no cause, evidence too short for a
-              reviewer to check. It never repairs a verdict. `apply` runs it
-              first and refuses a file that fails.
-  `apply`     takes agent verdicts and moves each row by verdict: `ok` to
-              `solutions/`, `mismatch` to `solutions-disputed/` with the verdict
-              in its header, `unsure` to `solutions-unsure/`.
-  `siblings`  same-problem rows whose Dafny converged although their labels
-              differ: one translation probably copied the other's algorithm.
+  `evidence`  structural facts of each `.dfy`, with the label and the Python.
+  `check`     rejects a malformed verdict file; `apply` runs it first.
+  `apply`     moves each row by verdict: `ok` to `solutions/`, `mismatch` to
+              `solutions-disputed/` (verdict in the header), `unsure` to
+              `solutions-unsure/`.
+  `siblings`  same-problem rows whose Dafny converged although their labels differ.
 
-A mismatch has two causes, and the audit must say which, because the repair
-differs:
-
-  cause=label        the PYTHON is not the labelled class either. BigOBench's
-                     label is wrong; the translation is faithful.
-  cause=translation  the Python matches the label but the Dafny does not: a
-                     replaced algorithm, a slice that is a view in Dafny and a
-                     copy in Python, or a library call reimplemented as a loop.
-                     The label is right; the TRANSLATION is the defect.
+A mismatch names its cause: `label` (the Python is not the labelled class
+either) or `translation` (the Python matches the label, the Dafny does not).
 """
 from __future__ import annotations
 import argparse, difflib, json, re, sys
@@ -48,8 +34,7 @@ def strip_header(text):
     return AUDIT_HEADER.sub("", text, count=1)
 BATCHES = OUT / "labelaudit"
 
-# Prelude functions whose cost is linear in their argument, not constant. An
-# audit that treats these as O(1) will call a linear row constant.
+# Prelude functions whose cost is linear in their argument, not constant.
 LINEAR_PRELUDE = ["SumSeq", "MaxSeq", "MinSeq", "SumFrom", "MaxSeqFrom",
                   "MinSeqFrom", "ParseInt", "ParseInts", "ParseIntFrom",
                   "SplitWs", "SplitWsFrom", "Join", "JoinInts", "Repeat",
@@ -58,7 +43,7 @@ SORTS = ["SortInts", "SortStrings", "Sort", "Merge"]
 
 
 def facts(dfy_text):
-    """Structural facts. Every one is checkable by eye against the file."""
+    """Structural facts, each checkable by eye against the file."""
     body = strip_comments(split_file(dfy_text)[1])
     f = extract(dfy_text)
     risk = class_risk(body)
@@ -84,10 +69,7 @@ def facts(dfy_text):
 
 
 def evidence(limit=None, only=None, batch_size=20, prefix=None, root=SOLUTIONS):
-    # `--only` used to write batch_01.json like a full run does, which silently
-    # overwrote the real batch 1 with whatever handful of rows was being
-    # re-audited. A re-audit is a different thing from a batch and gets a
-    # different name; the numbered batches are only ever written by a full run.
+    # Only a full run writes the numbered batches; `--only` gets its own name.
     if prefix is None:
         prefix = "batch" if not only else "reaudit"
     tasks = {t["solution_id"]: t for t in read_jsonl(DATA / "tasks.jsonl")}
@@ -110,9 +92,7 @@ def evidence(limit=None, only=None, batch_size=20, prefix=None, root=SOLUTIONS):
             "facts": facts(text),
             "dafny": text,
             "python": t.get("solution_code") or "",
-            # A loop bounded by a value is only O(1) if the STATEMENT caps that
-            # value. Without this an auditor falls back on contest convention,
-            # which it flagged as a gap on 696_51, 681_105, 704_614 and 704_351.
+            # A value-bounded loop is O(1) only if the statement caps the value.
             "description": (t.get("description") or "")[:4000],
         })
     if limit:
@@ -194,12 +174,8 @@ def header(v, t, text):
         rule="-" * 68)
 
 
-# The verdict schema. A cheap auditor once returned true_class "1", "n2" and
-# "n+m_variant" and three-word evidence; a summary reads "6 mismatches" either
-# way, so the schema is checked mechanically. "other" keeps a row outside the
-# eleven label classes expressible instead of forcing a wrong class.
-# O(sqrt(n)) is not a BigOBench class; it is the label of a row whose label a
-# proof corrected (data/label_corrections.jsonl).
+# The verdict schema. "other" is a class outside the label vocabulary.
+# O(sqrt(n)) comes from data/label_corrections.jsonl, not BigOBench.
 CLASSES = {"O(1)", "O(logn)", "O(n)", "O(n**2)", "O(n**2+m**2)", "O(n*m)",
            "O(n+m)", "O(n+m)log(n+m)", "O(n+mlogm)", "O(nlogn)",
            "O(nlogn+mlogm)", "O(sqrt(n))", "other"}
@@ -259,11 +235,8 @@ def check(path, batch_path=None):
 
 
 def apply(verdicts_path, dry_run=False):
-    """Put each audited row where its verdict says: ok -> solutions/ (no
-    header), mismatch -> solutions-disputed/, unsure -> solutions-unsure/ (both
-    with the review header), from whichever of those three or
-    solutions-unscreened/ it is in now. A row
-    queued by a translation audit is not a label question: it stays put."""
+    """Move each audited row where its verdict says. A row queued by a
+    translation audit stays put."""
     if check(verdicts_path):
         raise SystemExit("apply: verdict file fails `check`; nothing moved")
     verdicts = [json.loads(l) for l in
@@ -306,11 +279,7 @@ def apply(verdicts_path, dry_run=False):
             log(f"  {sid:>10}  {src.parent.parent.name} -> {dst.parent.parent.name}"
                 f"  ({v['verdict']}, {v.get('true_class')}, cause={v.get('cause')})")
     if not dry_run:
-        # MERGE, never overwrite. This file is the provenance of every verdict,
-        # and apply runs once per wave: a plain write silently replaced round
-        # 1's 140 verdicts with round 2's, a deletion of the audit trail rather
-        # than an update. Keyed on solution_id so a re-audited row updates in
-        # place. The moved rows are its `mismatch` verdicts; no second file.
+        # Merge on solution_id, never overwrite: this file holds every verdict.
         path = DATA / "label_audit.jsonl"
         old = {r["sid"]: r for r in read_jsonl(path)} if path.exists() else {}
         old.update({r["sid"]: r for r in verdicts})
@@ -325,13 +294,8 @@ def apply(verdicts_path, dry_run=False):
 
 
 def siblings(threshold=0.80):
-    """Same-problem rows whose Dafny converged although their labels differ.
-
-    Two solutions of one problem exist because their labels differ. If their
-    Dafny is near-identical while their Python is not, one translation probably
-    copied the other's algorithm: the tests pass and the label is wrong for the
-    code. Candidates for review, written to out/sibling_review.jsonl.
-    """
+    """Same-problem rows whose Dafny converged although their labels differ:
+    one probably copied the other's algorithm. Writes out/sibling_review.jsonl."""
     def norm(text, dafny):
         if dafny and "method Solve(" in text:
             text = text.split("method Solve(", 1)[1]

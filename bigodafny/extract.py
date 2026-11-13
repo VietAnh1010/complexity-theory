@@ -1,7 +1,6 @@
 """Download time_complexity_test_set.jsonl and project it into tasks.jsonl.
 
-One task per (problem_id, solution_id). No model, no network beyond the one
-file, and re-running must produce a byte-identical tasks.jsonl.
+One task per (problem_id, solution_id). Re-running gives a byte-identical file.
 """
 from __future__ import annotations
 import re, subprocess, sys
@@ -9,11 +8,7 @@ import re, subprocess, sys
 from common import (CACHE, DATA, SOURCE_NAME, SOURCE_URL, log,
                     read_jsonl, write_jsonl)
 
-# Descriptions that permit more than one correct output. Byte-diff validation
-# rejects correct translations of these, so they are split out rather than
-# scored. This is a lexical heuristic: it has both false positives (the phrase
-# appears while the output is in fact unique) and false negatives (the problem
-# admits several answers without saying so). Do not treat the split as sound.
+# Descriptions that may permit more than one correct output. A lexical hint only.
 NONDET = re.compile(
     r"if there are (several|multiple|many)"
     r"|print any|output any|any of them|any one of|any such"
@@ -28,7 +23,6 @@ KEEP = ("problem_id", "solution_id", "problem_name", "description",
 
 
 def fetch(force=False):
-    """Cache the upstream file. 82 MB; skipped when already present."""
     CACHE.mkdir(parents=True, exist_ok=True)
     dest = CACHE / SOURCE_NAME
     if dest.exists() and not force:
@@ -53,14 +47,10 @@ def extract():
             log(f"  skipping {r.get('solution_id')}: missing {missing}")
             continue
         t = {k: r[k] for k in KEEP}
-        # Verified upstream over all 640 rows; assert rather than recompute, so
-        # a change in the source surfaces as a failure instead of silent drift.
+        # Assert, so a change in the source fails instead of drifting silently.
         assert t["solution_id"].split("_")[0] == t["problem_id"], t["solution_id"]
         assert t["inputs_example"] == t["tests"]["public_tests"][0]["input"]
-        # Only a hint. The split itself is assigned in dataset.py from the
-        # measured Python baseline -- as a predictor of "the stored output is
-        # not the only accepted answer" this regex scores precision 0.38,
-        # recall 0.45, which is not good enough to gate a dataset on.
+        # Only a hint: dataset.py assigns the split from the Python baseline.
         t["nondet_hint"] = bool(NONDET.search(t["description"]))
         t["n_tests"] = {k: len(v) for k, v in t["tests"].items()}
         tasks.append(t)
@@ -68,9 +58,7 @@ def extract():
     tasks.sort(key=lambda t: (int(t["problem_id"]), t["solution_id"]))
     out = write_jsonl(DATA / "tasks.jsonl", tasks)
 
-    # tasks.jsonl is ~79 MB, almost all of it stored test I/O, and it is
-    # regenerable byte-for-byte from the cached download. It stays out of git;
-    # this index is the committed manifest of what the pool contains.
+    # tasks.jsonl is git-ignored; this index is the committed manifest.
     write_jsonl(DATA / "index.jsonl", [
         {k: t[k] for k in ("problem_id", "solution_id", "problem_name",
                            "time_complexity_inferred", "time_curve_coefficient",

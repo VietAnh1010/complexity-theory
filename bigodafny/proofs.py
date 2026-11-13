@@ -1,12 +1,7 @@
 """Re-verify every complexity proof and record it against BigOBench's label.
 
-A file in solutions-proved/ claims two things: it behaves like its Python
-(tests), and its step count obeys a proved bound (dafny verify). This re-checks
-the second from scratch and tabulates the bound against the label.
-
-A disagreement is a finding, not an error. BigOBench's label is a regression
-over profiling runs; a proved bound holds for every input. Where they conflict,
-the proof is the stronger statement.
+A disagreement with the label is a finding, not an error: the label is fitted
+from profiling, while a proved bound holds for every input.
 """
 from __future__ import annotations
 import hashlib, re, subprocess, sys
@@ -24,24 +19,8 @@ DAFNY = "dafny"   # on PATH; dafny finds z3 on PATH itself
 
 
 def bound_of(text):
-    """The bound `Solve` promises, not whichever `ensures` comes first.
-
-    Three defects this replaces, all found on 2026-09-21/22 and none of them
-    affecting a verdict -- `verified` comes from Dafny, never from here -- but
-    all of them publishing a wrong bound:
-
-      * the first `ensures steps <=` in the file is a HELPER's when one is
-        declared before Solve. 7 of 151 proofs recorded a helper's bound;
-        2496_30 published `6100` for a row whose Solve is O(n**2), and
-        2803_133 published Fact's bound rather than Solve's.
-      * a wrapped `ensures` was cut at the first newline. 1243_0 published
-        only its first term until the source was reflowed onto one line.
-      * a two-clause `ensures` (`c >= 1 ==> steps <= ...` guarded, plus the
-        `c < 1` case) matched neither pattern and recorded null. 1738_24,
-        2254_6 and 457_27 had no bound on file although all three verify.
-
-    Returns the clauses joined by " AND " when Solve states more than one.
-    """
+    """The bound `Solve` promises, not a helper's. Handles wrapped and guarded
+    clauses; joins several with " AND "."""
     # skip attributes: `method {:isolate_assertions} Solve` otherwise misses
     # and the whole file becomes the scope, pulling body code into the bound
     m = re.search(r"\bmethod\s+(?:\{:[^}]*\}\s*)*Solve\b.*?(?=\n\{)", text, re.S)
@@ -63,20 +42,14 @@ def bound_of(text):
         hit = re.search(r"ensures\s+(.*?steps\s*<=\s*.+)$", joined)
         if hit:
             clause_text = hit.group(1).strip()
-            # keep the old flat format for an unguarded clause, so existing
-            # records and anything reading them do not shift under this fix
+            # an unguarded clause keeps the flat format existing records use
             out.append(re.sub(r"^steps\s*<=\s*", "", clause_text))
     return " AND ".join(out) if out else None
 
 
 def scan_assumes():
-    """`assume` anywhere in the corpus, not just in the proofs.
-
-    `assume {:axiom} 0 <= idx < |arr|` discharges an index obligation silently:
-    the file verifies, and nothing in the summary says why. Two rows in
-    solutions/ carried one for several waves because the audits only ever
-    grepped solutions-unverified/.
-    """
+    """`assume` anywhere in the corpus, not just in the proofs: it discharges an
+    obligation silently."""
     hits = []
     for d in (SOLUTIONS, UNVERIFIED, UNSCREENED, PROVED, DISPUTED, UNGATEABLE, UNSURE):
         if not d.exists():
@@ -97,8 +70,7 @@ def changes_row(r):
 
 def run(workers=WORKERS):
     ds = {r["solution_id"]: r for r in read_jsonl(DATA / "dataset.jsonl")}
-    # value-bounded/ is nested inside solutions-proved/, so one rglob reaches
-    # both; listing the two roots separately would double-count.
+    # one rglob also reaches value-bounded/
     files = sorted(PROVED.rglob("*.dfy")) if PROVED.exists() else []
     Z3 = z3_version()
     # A proof's verdict depends only on these inputs; an unchanged, verified
@@ -124,7 +96,6 @@ def run(workers=WORKERS):
                            capture_output=True, text=True, timeout=600)
         out = (r.stdout + r.stderr)
         ok = r.returncode == 0 and "0 errors" in out
-        # A proof that leans on `assume` proves nothing. Count them.
         assumes = len(re.findall(r"\bassume\b", text))
         row = {
             "solution_id": sid,
@@ -132,9 +103,8 @@ def run(workers=WORKERS):
             "proved_bound": bound_of(text),
             "verified": ok,
             "assume_count": assumes,
-            # A proof must leave its row's program and its inputs unchanged.
-            # Only Solve takes the input; a helper's new `requires` is proved
-            # at every call, so it narrows nothing.
+            # Only Solve's `requires` can narrow the inputs; a helper's is
+            # proved at every call.
             "same_python": audit.identity(str(ROOT), sid, {}, str(p)),
             "requires_changed": [m for m in audit.contract_changes(
                 str(ROOT), sid, {}, str(p)) if m == "Solve"],
@@ -147,12 +117,11 @@ def run(workers=WORKERS):
             f"label={row['label']}  bound={row['proved_bound']}"
             + ("  ASSUMES!" if assumes else ""))
         return row
-    # One dafny process per proof, independent; map keeps file order.
     with ThreadPoolExecutor(max_workers=workers) as ex:
         rows = list(ex.map(check, files))
     files, rows = [f for f, r in zip(files, rows) if r], [r for r in rows if r]
-    # Parallel load can push a proof past Z3's time limit (1582_118 verifies in
-    # 19 s alone). Re-check each failure alone; only that verdict is recorded.
+    # Parallel load can push a proof past Z3's time limit. Re-check each failure
+    # alone; only that verdict is recorded.
     for i, r in enumerate(rows):
         if not r["verified"]:
             log(f"  {r['solution_id']:>10}  failed under load; re-checking alone")

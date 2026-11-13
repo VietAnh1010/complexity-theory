@@ -1,33 +1,11 @@
 """Call graph of a row's Dafny, and the longest acyclic chain from `Solve`.
 
-How deep a row's call structure runs is a property of the translation, not of
-the problem, and it is the kind of thing that only becomes visible in aggregate:
-a corpus where every row is one flat `Solve` is a different artifact from one
-where half the rows build three levels of helpers.
-
-Scope. Only `solutions/` -- the clean rows. `solutions-disputed/` holds rows whose
-labels are disputed and whose bodies may be rewritten, so measuring their shape
-now would measure something about to change.
-
-What counts as an edge. A call from one declaration in the file to another
-declaration **in the same file**, plus calls into `prelude.dfy`, which are
-resolved against the prelude's own graph so a row that calls `SortInts` inherits
-the depth underneath it. Everything else -- Dafny builtins, `|s|`, sequence
-operations -- is a leaf and contributes no depth.
-
-Depth is measured as the longest simple path from `Solve`, so a cycle cannot
-inflate it. Recursion is real and common here (it is how most of these rows
-express iteration over a sequence), so cycles are reported separately rather
-than silently collapsed: `longest_chain` is the acyclic answer the task asks
-for, and `recursive` says whether that number is the whole story.
-
-Two numbers, deliberately separate:
+Only `solutions/`. An edge is a call to another declaration in the same file or
+in `prelude.dfy` (resolved through the prelude's own graph); builtins are leaves.
 
   longest_chain   the longest simple path, in edges, from Solve
-  reachable       how many declarations Solve can reach at all
-
-A row can be wide and shallow (many helpers, all called directly from Solve) or
-narrow and deep. One number would hide which.
+  reachable       how many declarations Solve can reach
+  recursive       whether a cycle is reachable, which longest_chain ignores
 """
 from __future__ import annotations
 import argparse, json, re, sys
@@ -36,9 +14,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import OUT, ROOT, SOLUTIONS, log, write_jsonl      # noqa: E402
 
-# A declaration header. Dafny lets `function`, `method`, `predicate` and `lemma`
-# carry modifiers (`ghost`, `opaque`, `least`, `twostate`) and attributes
-# (`{:opaque}`), so the name is taken after all of them.
+# A declaration header; the name comes after any modifiers and attributes.
 DECL = re.compile(
     r"^\s*(?:ghost\s+|opaque\s+|least\s+|greatest\s+|twostate\s+|static\s+)*"
     r"(function|method|predicate|lemma|constructor)\b"
@@ -47,10 +23,7 @@ DECL = re.compile(
     r"\s+([A-Za-z_][A-Za-z0-9_']*)",
     re.M)
 
-# Anything that looks like `Name(`. Over-matches -- it will catch `if (`, a type
-# name, a local variable used as a function value -- so every hit is kept only
-# when it resolves to a declaration we know about. That makes false positives
-# harmless and keeps the matcher simple.
+# Over-matches; a hit counts only when it names a known declaration.
 CALL = re.compile(r"\b([A-Za-z_][A-Za-z0-9_']*)\s*\(")
 
 # Dafny keywords that are followed by `(` and are not calls.
@@ -69,27 +42,16 @@ def strip_comments(text):
 
 
 def declarations(text):
-    """Map each declaration name to the source span of its body.
-
-    Spans run from one declaration header to the next. That is coarser than a
-    brace-matched body -- a trailing `}` and any blank lines belong to the
-    preceding span -- but call extraction only cares which names appear between
-    two headers, and brace matching would have to understand string literals,
-    character literals and set-display braces to do better.
-    """
+    """Map each declaration name to its span: from its header to the next one."""
     hits = [(m.start(), m.group(2), m.start(2), m.group(0), m.group(1))
             for m in DECL.finditer(text)]
     spans, kinds = {}, {}
     for i, (pos, name, name_at, header, kw) in enumerate(hits):
         end = hits[i + 1][0] if i + 1 < len(hits) else len(text)
-        # A lemma is always ghost; `function`/`predicate` are ghost only when
-        # declared so. Ghost declarations are erased by `dafny translate`, so a
-        # chain through them is proof structure, not anything that runs.
+        # A lemma is always ghost; `function`/`predicate` only when declared so.
         kinds[name] = ("ghost" if kw == "lemma" or "ghost" in header
                        else "exec")
-        # A name declared twice in one file (overloads are illegal in Dafny, but
-        # a row can redeclare a prelude helper locally) keeps its first span and
-        # extends to cover the second, so no calls are lost.
+        # A name declared twice keeps both spans' calls.
         if name in spans:
             spans[name] = (spans[name][0], end, spans[name][2] | {name_at})
         else:
@@ -110,11 +72,7 @@ def graph_of(text, known=None):
             callee = m.group(1)
             if callee in KEYWORDS:
                 continue
-            # The declaration's own header contains its name followed by `(`.
-            # Skip exactly that occurrence, by absolute position -- an earlier
-            # version skipped any self-call in the first 200 characters, which
-            # silently erased the recursion in every short recursive function
-            # (`Gcd` among them) and reported those rows as acyclic.
+            # Skip only the header's own `Name(`, so a self-call still counts.
             if start + m.start() in header_offsets:
                 continue
             if callee in universe:
@@ -124,12 +82,8 @@ def graph_of(text, known=None):
 
 
 def longest_simple_path(g, start):
-    """Longest path from `start` that repeats no node, in edges.
-
-    Exponential in the worst case; these graphs have at most a few dozen nodes
-    and are near-trees, so it runs instantly. `limit` guards the pathological
-    case rather than trusting that.
-    """
+    """Longest path from `start` that repeats no node, in edges. Exponential in
+    the worst case; `limit` caps the search."""
     best = [0]
     best_path = [[start]]
     steps = [0]
@@ -205,10 +159,7 @@ def analyse(path, pre_pair):
     kinds = dict(pre_kinds)
     kinds.update(own_kinds)
 
-    # The executable graph: ghost declarations dropped entirely, so a chain
-    # cannot pass through a lemma. Without this the deepest row in the corpus
-    # is 1386_19 at 5, whose whole chain is the prelude's sortedness proof --
-    # a number about verification, not about what the program does.
+    # The executable graph: ghost declarations dropped.
     gx = {n: [m for m in cs if kinds.get(m, "exec") == "exec"]
           for n, cs in g.items() if kinds.get(n, "exec") == "exec"}
 
@@ -227,11 +178,9 @@ def analyse(path, pre_pair):
         "problem_id": path.parent.name,
         "path": str(path.relative_to(ROOT)),
         "status": "ok",
-        # The headline number: longest executable chain, ghost code excluded.
-        "longest_chain": xdepth,             # edges from Solve
+        "longest_chain": xdepth,
         "longest_chain_path": xchain,
         "reachable": len(xreach),
-        # The same over the full graph, lemmas included, for comparison.
         "longest_chain_with_ghost": depth,
         "longest_chain_with_ghost_path": chain,
         "reachable_with_ghost": len(reach),
