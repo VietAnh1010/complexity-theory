@@ -55,6 +55,9 @@ reason.
 | `2892_914` | `O(n)` | prove-disputed-4 |
 | `681_52` | `O(1)` | prove-disputed-4 |
 | `1234_71` | `O(n)` | prove-disputed-4 |
+| `1263_1960` | `O(nlogn)` | prove-disputed-5 |
+| `1234_634` | `O(nlogn)` | prove-disputed-5 |
+| `2892_1216` | `O(n**2)` | prove-disputed-5 |
 | `1364_163` | `O(1)` | prove-disputed-1 |
 | `281_250` | `O(n)` | prove-disputed-1 |
 
