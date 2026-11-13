@@ -12,54 +12,9 @@ label is `O(1)`. Dafny has no float `sqrt`, so the translation searches
 BigOBench timed its labels, which treats a capped value as constant;
 `COMPLEXITY.md` counts the value as a size (`relation: looser-structural`). The two disagree here by design.
 
-These are copies like the rest of `solutions-proved/`. The rows themselves
-are all in `solutions-disputed/`. `MANIFEST.jsonl` gives each row's bound, path and
-reason.
-
-| row | label | found by |
-|---|---|---|
-| `1043_358` | `O(n)` | prove-sample-7 |
-| `1386_19` | `O(nlogn)` | prove-sample-2, prove-sample-5 |
-| `1386_38` | `O(n)` | prove-sample-2 |
-| `1484_26` | `O(n)` | prove-sample |
-| `1580_12` | `O(n+m)` | prove-sample-6 |
-| `1678_68` | `O(1)` | prove-sample-7 rerun |
-| `1820_180` | `O(n)` | prove-sample-4 |
-| `1867_16` | `O(n)` | prove-sample-3 |
-| `1871_291` | `O(n)` | prove-sample |
-| `1915_158` | `O(n+m)` | prove-sample |
-| `1948_388` | `O(1)` | prove-sample-4 (failed), prove-sample-6 (proved) |
-| `2128_34` | `O(n**2)` | prove-sample |
-| `2254_6` | `O(n)` | prove-sample |
-| `2358_421` | `O(n)` | prove-sample-4 |
-| `2423_48` | `O(nlogn)` | prove-sample-3, prove-sample-4 (failed both; proved by hand) |
-| `2607_90` | `O(n)` | prove-sample |
-| `305_76` | `O(nlogn+mlogm)` | prove-sample-3 |
-| `704_351` | `O(1)` | prove-sample-3 |
-| `794_794` | `O(n)` | prove-sample-7 |
-| `810_131` | `O(n)` | prove-sample |
-| `2942_55` | `O(n)` | main agent, re-translation |
-| `305_284` | `O(n+m)` | main agent, re-translation |
-| `281_12` | `O(n**2)` | prove-retry |
-| `342_86` | `O(n)` | prove-retry |
-| `514_90` | `O(n**2)` | prove-retry |
-| `1263_2538` | `O(n)` | prove-retry |
-| `1626_179` | `O(nlogn)` | prove-retry |
-| `1861_16` | `O(n)` | prove-retry |
-| `1871_156` | `O(nlogn)` | prove-retry |
-| `310_121` | `O(logn)` | prove-disputed-1 |
-| `342_149` | `O(n**2)` | prove-disputed-2 |
-| `2607_25` | `O(n**2)` | prove-disputed-3 |
-| `788_22` | `O(n)` | prove-disputed-3 |
-| `1015_129` | `O(1)` | prove-disputed-4 |
-| `2892_914` | `O(n)` | prove-disputed-4 |
-| `681_52` | `O(1)` | prove-disputed-4 |
-| `1234_71` | `O(n)` | prove-disputed-4 |
-| `1263_1960` | `O(nlogn)` | prove-disputed-5 |
-| `1234_634` | `O(nlogn)` | prove-disputed-5 |
-| `2892_1216` | `O(n**2)` | prove-disputed-5 |
-| `1364_163` | `O(1)` | prove-disputed-1 |
-| `281_250` | `O(n)` | prove-disputed-1 |
+These are copies like the rest of `solutions-proved/`. The rows themselves stay in
+their status directories. `MANIFEST.jsonl` gives each row's label, bound, path, the campaign
+that found it, and the reason.
 
 ## Causes
 

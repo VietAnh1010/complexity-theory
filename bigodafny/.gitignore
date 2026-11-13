@@ -1,7 +1,7 @@
 /.build/
 /.venv/
 /out/
-# Agent runs; the published demo page holds what is shown from them.
+# Agent runs.
 /demo/
 # 79M. `python3 extract.py` builds it from the BigOBench download in .cache/.
 /data/tasks.jsonl
