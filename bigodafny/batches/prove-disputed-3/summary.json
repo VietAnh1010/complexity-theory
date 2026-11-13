@@ -1,0 +1,71 @@
+{
+  "batch": "batches/prove-disputed-3",
+  "by_label": {
+    "O(1)": {
+      "campaign_proved": 1,
+      "drawn": 1,
+      "proved": 1
+    },
+    "O(n)": {
+      "campaign_proved": 4,
+      "drawn": 4,
+      "proved": 4
+    },
+    "O(n**2)": {
+      "campaign_proved": 5,
+      "drawn": 5,
+      "proved": 5
+    },
+    "O(n*m)": {
+      "campaign_proved": 4,
+      "drawn": 4,
+      "proved": 4
+    },
+    "O(n+m)": {
+      "campaign_proved": 0,
+      "drawn": 1,
+      "proved": 0
+    },
+    "O(nlogn)": {
+      "campaign_proved": 5,
+      "drawn": 5,
+      "proved": 5
+    }
+  },
+  "by_relation": {
+    "confirms": 3,
+    "looser-slack": 1,
+    "looser-structural": 4,
+    "looser-translation": 3,
+    "tighter-label": 7,
+    "tighter-translation": 1
+  },
+  "campaign": {
+    "proved": 19,
+    "revised_after": [],
+    "unresolved": 1
+  },
+  "drawn": 20,
+  "emitted_python": {
+    "checked": 19,
+    "differs": [],
+    "error": [],
+    "identical": 19
+  },
+  "obstacles": {
+    "z3-nonlinear": 1
+  },
+  "problems": [],
+  "proved": 19,
+  "reads_coverage": 1.0,
+  "reads_missing": [],
+  "requires_changed": [],
+  "rerun": {
+    "existing_proof_not_used": [],
+    "not_promoted": [],
+    "proved": 0,
+    "rows": 0,
+    "unresolved": 0
+  },
+  "unresolved": 1
+}
