@@ -83,14 +83,11 @@ all 18 rows never drawn before.
 
 ## The `--only` trap
 
-A tool run on a subset of rows can replace a shared file with just that
-subset. Four did:
+A tool run on a subset of rows must not replace a shared file with just that subset. Where each
+subset run writes:
 
-| Tool | What it overwrote | Fix |
-|---|---|---|
-| `label_audit.py evidence --only` | a numbered `batch_NN.json` | writes `reaudit_NN.json` unless `--prefix` says otherwise |
-| `difftest.py --only` | `data/difftest.jsonl` — it held 5 rows for a tier of 100 | merges by `solution_id` |
-| `validate.py --only` | `data/validation.jsonl`, replacing its 532 rows | any `--only` or `--solutions-dir` run writes `out/<prefix>validation.jsonl` (default `partial_`) |
-| `precheck.py SID...` | `data/precondition_check.jsonl` — it held one row's clauses | merges, replacing only the rows re-checked |
+- `validate.py --only` or `--solutions-dir`: `out/<prefix>validation.jsonl` (default `partial_`).
+- `difftest.py --only`, `precheck.py SID...`: merged by `solution_id` into their `data/` file.
+- `label_audit.py evidence --only`: `reaudit_NN.json`, unless `--prefix` says otherwise.
 
-Assume any new subset tool has this bug until checked.
+Assume a new subset tool replaces shared files until checked.

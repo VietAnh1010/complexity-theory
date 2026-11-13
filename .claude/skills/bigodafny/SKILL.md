@@ -27,7 +27,6 @@ for d in solutions solutions-unscreened solutions-disputed solutions-unsure \
          solutions-ungateable solutions-unverified solutions-untranslated solutions-proved; do
   printf "%-24s %s\n" "$d" "$(find $d -name '*.dfy' 2>/dev/null | wc -l)"
 done
-grep -rl 'TODO: translate' solutions --include='*.dfy' | wc -l   # stubs
 ```
 
 The directory a row sits in *is* its classification. Never infer status from

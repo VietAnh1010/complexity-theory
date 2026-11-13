@@ -203,38 +203,15 @@ as the charging convention.
 runs. Where a proof and the label disagree, **the proof is the stronger
 statement. Record the disagreement; never adjust the proof to match the label.**
 
-## Results so far
+## Lessons
 
-Proofs live in `solutions-proved/`, one file each; counts are in `STATUS.md`
-(`data/complexity_proofs.jsonl`). Behavioural equivalence is established by **emitted-Python identity**,
-not by re-running tests — see the gate note below.
+Proofs live in `solutions-proved/`, one file each; counts are in `STATUS.md`. Behavioural
+equivalence is established by **emitted-Python identity**, not by re-running tests (see the gate
+note below).
 
-**`O(n*m)`: read the loop body, not the input shape.** Nine examined, seven
-wrong, two right, and the split is mechanical. `3046_65` and `3091_384` walk
-every token of every row, so a wider row costs more and the second dimension is
-real. The six wrong ones touch a fixed number of positions per row (`row[0]`,
-`row[1]`, up to `row[4]`) and never scan one — a row of width 1000 costs what a
-row of width 2 costs, so there is no `m`.
-`1138_83` fails a third way: its `m` is a scalar modulus, not a size.
-
-**`685_583` was recorded here as a disproved label. It is not one** -- its
-Python sorts both lists, so O(nlogn+mlogm) is correct and the DAFNY dropped the
-sort. The proved bound was sound; the conclusion drawn from it was not, because
-it was read off the Dafny without opening the Python.
-
-**A sibling disagreement means read both Pythons, not that a label is wrong.**
-`685_777` computes the same answer without sorting and is correctly O(n+m).
-Inferring from that that one of the two labels must be wrong is backwards: two
-rows of one problem are kept because they differ, and here they differ by
-sorting. Same trap in reverse on `396_361`, where an auditor called a genuine
-label error a translation error -- the Python's `max(dimensions[i])` runs over a
-rectangle's two numbers, so it is O(1) per row and the O(n*m) label really is
-wrong.
-
-**`1855_50` is an O(n**2) label on straight-line code** — no loop, no recursion
-over a collection. First label proved wrong outside the O(n*m) family. The
-O(n*m) cases name a dimension that does not vary; this one names a growth rate
-nothing in the code has.
+**Read the Python before concluding a label is wrong.** A proved bound describes the Dafny; if the
+Dafny dropped a step the Python takes (a sort), the bound says nothing about the label. Siblings
+differ on purpose, so a sibling with a lower class does not make a label wrong.
 
 **Match the log's rounding to the code's rounding.** `945_255` halves by
 rounding down and so wants a FLOOR log; merge sort splits on `ceil(k/2)` and

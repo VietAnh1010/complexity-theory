@@ -1,6 +1,6 @@
 ---
 name: bigodafny-translate
-description: Spawn agents to translate BigOBench Python solutions into Dafny in bigodafny/. Use when rows still carry a "TODO: translate" stub, or when asked to translate, port, or finish porting examples to Dafny. Produces the agent prompt and the audit procedure.
+description: Spawn agents to translate BigOBench Python solutions into Dafny in bigodafny/. Use when a row's Dafny does other work than its Python (STATUS.md § Known issues), or when asked to translate, re-translate or port examples to Dafny. Produces the agent prompt and the audit procedure.
 ---
 
 # Translating rows to Dafny
@@ -9,14 +9,10 @@ Read the `bigodafny` skill first for directory meanings and gates.
 
 ## Pick the work
 
-```bash
-cd bigodafny
-grep -rl 'TODO: translate' solutions --include='*.dfy' | sed 's|.*/||; s|\.dfy||' | sort
-python3 -c "
-import json
-ds={r['solution_id']:r for r in (json.loads(l) for l in open('data/dataset.jsonl'))}
-# split decides the gate: strict -> validate.py, loose -> difftest.py"
-```
+Every translatable row has a body. The work is re-translating rows whose Dafny does other work
+than its Python: `STATUS.md` § Known issues lists them, and each `prove-disputed-*/README.md` says
+how they differ. A row's `split` in `data/dataset.jsonl` decides its gate: `strict` ->
+`validate.py`, `loose` -> `difftest.py`. Rows stay where they are (often `solutions-disputed/`).
 
 Manifests of ~20 ids under `batches/<name>/`, 4 agents at a time.
 
@@ -32,7 +28,7 @@ Give each agent: its manifest path, a unique validation prefix, and this body.
     CONTRACT
     method Solve(<args>) returns (output: string) returns the ENTIRE stdout the
     Python would print. Arguments arrive already parsed -- do NOT parse stdin in
-    Dafny. Replace ONLY the stub body; keep header, include, import and
+    Dafny. Rewrite ONLY the method bodies and helpers; keep header, include, import and
     signature verbatim.
 
     GATE
@@ -52,7 +48,7 @@ Give each agent: its manifest path, a unique validation prefix, and this body.
     running an O(n) DP.
 
     ALSO MAKE IT VERIFY (~3 extra calls per row)
-        dafny verify solutions/<PID>/<SID>.dfy \
+        dafny verify <the row's path> \
             --verification-time-limit 30
     - while i < |a| invariant 0 <= i <= |a| decreases |a| - i
     - `invariant i <= n` with an unconstrained int n FAILS on entry; drop the
@@ -99,7 +95,7 @@ Give each agent: its manifest path, a unique validation prefix, and this body.
     SURVIVE INTERRUPTION -- the session limit kills agents mid-batch.
     Write EACH translation DIRECTLY to its .dfy, never a temp name. Validate in
     groups of ~5 as you go; unvalidated work is discarded. ~8 tool calls per row,
-    then restore `  output := ""; // TODO: translate the Python above`.
+    then restore the row with `git checkout -- <path>`.
 
     HARD RULES
     NEVER git add/commit/push. NEVER edit prelude.dfy, any *.py, or anything
@@ -116,11 +112,13 @@ Never trust the agent's count.
 python3 validate.py --only $(cat batches/<b>.txt | tr '\n' ' ') --out-prefix audit_
 python3 difftest.py --only <loose ids>
 for sid in $(cat batches/<b>.txt); do pid="${sid%%_*}"
-  dafny verify solutions/$pid/$sid.dfy \
+  f=$(ls solutions{,-*}/$pid/$sid.dfy | grep -v solutions-proved)
+  dafny verify "$f" \
     --verification-time-limit 30 | grep -q "0 errors" || echo "unverified: $sid"; done
 python3 precheck.py $(cat batches/<b>.txt | tr '\n' ' ')
-grep -rl assume solutions --include='*.dfy' | wc -l     # must stay 0
+grep -rl assume solutions* --include='*.dfy' | wc -l    # must stay 0
 ```
 
-A row that fails is reverted to its stub, not committed. Then re-discriminate
-(see the `bigodafny` skill) and commit.
+A row that fails is reverted (`git checkout -- <path>`), not committed. A changed row with a proof in
+`solutions-proved/` needs a new proof: `proofs.py` flags the old one (`same_python: differs`).
+Then commit.

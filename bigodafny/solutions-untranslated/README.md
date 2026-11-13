@@ -1,7 +1,6 @@
 # `solutions-untranslated/`: will not be translated
 
-Rows set aside on purpose. Each file states its blocker and has no stub, so
-`scaffold.py` never recreates one. They stay so every row has a file.
+Rows set aside on purpose. Each file states its blocker. They stay so every row has a file.
 
 | Rows | Blocker |
 |---|---|

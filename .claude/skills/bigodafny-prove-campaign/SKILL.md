@@ -177,10 +177,8 @@ the refreshed `data/`. Push to the session's designated branch.
 - **Keep every proof attempt. Never delete one.** After every `dafny verify`
   the agent copies the file to `batches/<name>/attempts/<pid>/<sid>.<n>.dfy`
   and names it in the attempt's `"file"` field. Failed attempts are the only
-  record of what was tried and where it broke; campaigns 1–8 deleted them, and
-  every failed row from those campaigns has a description of its attempts but
-  not the Dafny. `audit.py` fails a campaign whose brief requires this if an
-  unresolved row has no saved attempt.
+  record of what was tried and where it broke. `audit.py` fails a campaign whose
+  brief requires this if an unresolved row has no saved attempt.
 - **After promotion, prune only the duplicate.** Once the audit has passed and
   a proof is promoted, delete the attempt identical to it (ignoring the
   `include` line); the promoted proof is that copy. Keep every attempt that
@@ -195,13 +193,9 @@ the refreshed `data/`. Push to the session's designated branch.
   obstacle. Add the limit to the row, re-run its gates and `precheck.py`, then
   prove it.
 - **Never read a trend off one campaign's per-label table.** A class holds 8
-  to 25 rows, so two rows move the rate ten points. After campaign 3 this
-  project reported a crossover — `O(nlogn)` overtaking `O(n)` — and campaign 4
-  did not reproduce it. Pooled over four campaigns `O(n)` is 86% and
-  `O(nlogn)` 66%, the ordering campaign 1 found. Read
-  the pooled column of `data/prove_stats.md` (`by_label` in `out/prove_stats.json`), and
-  treat a single cell's `p_vs_pooled` as noise unless the next campaign
-  reproduces it.
+  to 25 rows, so two rows move the rate ten points. Read the pooled column of
+  `data/prove_stats.md` (`by_label` in `out/prove_stats.json`), and treat a single
+  cell's `p_vs_pooled` as noise unless the next campaign reproduces it.
 - **Obstacles generalise where rates do not.** `value-to-size` was named
   independently by campaign 4's agents, none of which had seen campaign 3. A
   recurring named obstacle is a stronger finding than a moving rate.
@@ -243,7 +237,6 @@ the refreshed `data/`. Push to the session's designated branch.
   and measures nothing — into `batches/<name>/attempts/<pid>/<sid>.orphan.dfy`.
   Do not delete them: they are attempts, and attempts are kept. They stay out
   of the rate, because nothing records the budget they were made under.
-  (Campaign 7's slice A lost 14 such files to deletion before this rule.)
 - **Revising a row after its campaign: a new dated line** (`bigodafny/CLAUDE.md`),
   with `on` and `by`. It goes in a `traj.jsonl`,
   never a `traj_*.jsonl`, which `audit.py` and `prove_stats.py` read as the
@@ -279,5 +272,7 @@ the refreshed `data/`. Push to the session's designated branch.
 |---|---|
 | `scripts/sample.py` | draws the sample, writes manifest and slices |
 | `scripts/audit.py` | joins verifier output to trajectories, fails on disagreement or changed code |
+| `scripts/stage.py` | stages rows for blind `prove-blind` agents outside the repository, then collects and audits their attempts |
+| `scripts/prove_guard.py` | the `prove-blind` agent's hook: keeps it in its stage directory and enforces the budget |
 | `PROMPT.md` | the agent brief, with `{{BATCH}}` / `{{SLICE}}` placeholders |
 | `PROMPT_disputed.md` | appended to the brief for rows drawn from `solutions-disputed/` |

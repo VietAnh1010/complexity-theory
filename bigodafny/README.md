@@ -61,7 +61,6 @@ uv venv && uv pip install -r requirements.txt && source .venv/bin/activate
 # build, in order (once, or when BigOBench changes)
 python3 extract.py          # download BigOBench -> data/tasks.jsonl (git-ignored)
 python3 signature.py        # dataclass -> Dafny Solve signatures -> data/signatures.jsonl
-python3 scaffold.py         # .dfy stubs for untranslated rows; never overwrites a real body
 python3 baseline.py         # original Python vs its own tests -> data/baseline.jsonl (--workers N)
 python3 dataset.py          # join everything -> data/dataset.jsonl, data/stats.json
 # gates: each answers one question (DOCS.md, "The gates")
