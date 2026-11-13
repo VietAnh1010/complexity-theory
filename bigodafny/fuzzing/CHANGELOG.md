@@ -7,6 +7,7 @@ newest first.
 
 - `TODO.md` is gone; known issues are in `docs/08-annotate.md`, `docs/09-outputs-debugging.md`
   and `experiments/fuzz/README.md`.
+- Docs trimmed of stale run counts; `experiments/arms/collect.py` drops an unused import.
 
 ## 2026-11-12
 

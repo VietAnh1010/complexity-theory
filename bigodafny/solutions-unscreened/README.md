@@ -11,7 +11,7 @@ gives each row's reasons:
 - `sibling-convergence`: the row converged with a sibling that has a different
   label. `label_audit.py siblings` finds such pairs.
 - `set-build-quadratic`: the row builds a `set` in a loop, which Dafny's Python
-  output copies on every insert. This reason no longer applies:
+  output copies on every insert. This reason does not apply:
   `COMPLEXITY.md` charges set insertion 1.
 
 A row from `solutions-unverified/` with no label verdict also lands here once it

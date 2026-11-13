@@ -51,7 +51,7 @@ A proof in `solutions-proved/` can be a class looser than its code: it holds, bu
 `steps` grows slower than the bound. This finds such proofs from stored tests only.
 
 1. Run every verified proof on its stored tests; each writes `out/trace/<SID>.jsonl`
-   with `steps` and `bound` per test (about 9 minutes for 321 proofs, 4 at a time):
+   with `steps` and `bound` per test (4 at a time):
    ```bash
    python3 -c "import json; [print(json.loads(l)['solution_id']) for l in open('../data/complexity_proofs.jsonl')]" \
      | xargs -P 4 -I{} python3 steptrace.py {} > /dev/null

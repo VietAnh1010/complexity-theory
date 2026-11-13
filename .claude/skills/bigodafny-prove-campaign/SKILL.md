@@ -52,7 +52,7 @@ a gate may not be relaxed by the work it judges.
 
 **Watch the repeat rate, and switch to `--exclude-drawn` when it climbs.** A
 row that fails stays in the pool, so each campaign's draw contains more rows
-already known to be hard: 8%, 12%, 20%, 28% across campaigns 3 to 6. Past
+already known to be hard (`data/prove_stats.md` gives the repeat rate). Past
 about a quarter the campaign has stopped measuring "can a bounded agent prove
 a random row" and started measuring "can a second agent close what the first
 could not" — a fair question, but a different one, and the rate falls for

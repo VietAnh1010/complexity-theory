@@ -7,11 +7,11 @@ Verdicts: `data/label_audit.jsonl` (from `batches/labelaudit/verdicts_r4.jsonl` 
 
 ## Why
 
-- `1484_82`: is a phone number's fixed width a second size?
-- `2231_77`: `O(n)` only if the 26-letter alphabet is constant, which no
-  `requires` says.
-- `2680_65`: the card game runs until a deck state repeats; nothing in the code bounds the
-  number of rounds by a polynomial in n.
+| row | label | candidate | open question |
+|---|---|---|---|
+| `1484_82` | O(nlogn) | O(nlogn) | is a phone number's fixed width a second size? |
+| `2231_77` | O(n) | O(n) | `O(n)` only if the 26-letter alphabet is constant, which no `requires` says |
+| `2680_65` | O(n**2+m**2) | other | the game runs until a deck state repeats; nothing bounds the rounds by a polynomial in n |
 
 ## Leaving
 
@@ -24,9 +24,3 @@ A reviewer decides:
 Write the decision as a verdict file and run `label_audit.py apply` on it.
 It moves the row, updates `data/label_audit.jsonl`, and archives the replaced
 verdict in `data/old-record.jsonl`.
-
-| row | label | candidate | open question |
-|---|---|---|---|
-| `1484_82` | O(nlogn) | O(nlogn) | fixed string width |
-| `2231_77` | O(n) | O(n) | alphabet size |
-| `2680_65` | O(n**2+m**2) | other | number of rounds |
