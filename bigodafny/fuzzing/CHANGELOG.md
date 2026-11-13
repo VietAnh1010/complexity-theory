@@ -7,6 +7,8 @@ per change. Earlier changes are in `git log -- bigodafny/fuzzing`. Findings go i
 ## 2026-11-12
 
 - `DafnySteps/CostModel.cs`: a prelude `ISqrt(x)` call costs `ISqrtSteps(x)` (`bigodafny/COMPLEXITY.md`).
+- `experiments/arms/manifest.jsonl`: batch 4 split into `4a` (5 rows: the first row of each
+  stratum plus the second `nlogn` row) and `4b` (the other 10), so a short run reaches 50 rows.
 
 ## 2026-11-11
 

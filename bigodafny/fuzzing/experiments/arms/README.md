@@ -53,7 +53,8 @@ Rules for every arm:
   and `1972_295` because of a row bug (`batches/prove-hard/README.md`). `annotate` rejected no row.
 - Batch `trial` holds the first row of each stratum and is for testing the harness. `report.py`
   ignores it, and `collect.py` overwrites its earlier run. The other rows form batches 1 to 4, 15
-  rows each, spread evenly over the strata.
+  rows each, spread evenly over the strata. Batch 4 is split into `4a`, the first row of each
+  stratum plus the second `nlogn` row (5 rows), and `4b`, the other 10.
 
 ## Run
 
