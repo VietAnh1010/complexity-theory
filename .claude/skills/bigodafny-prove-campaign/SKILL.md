@@ -143,7 +143,7 @@ Keep each agent's original claim in the payload as `agent_said_*` so the
 normalisation stays auditable. The judgement belongs in the data file with its
 reason written out, never inside a script.
 
-### 6. Collect for the artifact
+### 6. Collect the statistics
 
 Add the batch to `BATCHES` in `bigodafny/prove_stats.py` and run it; it writes
 `data/prove_stats.md`, and `collect.py` folds the same figures into
