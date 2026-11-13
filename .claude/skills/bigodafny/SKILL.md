@@ -40,7 +40,7 @@ memory or from an earlier message.
 | directory | meaning |
 |---|---|
 | `solutions/` | valid, `dafny verify` clean, label screened and unsuspected |
-| `solutions-unscreened/` | valid; the label was never screened (sibling reuse or `set<T>`) |
+| `solutions-unscreened/` | valid; the label was never screened |
 | `solutions-disputed/` | valid; the audit says the label does not match the code |
 | `solutions-unsure/` | valid and verified; the label audit could not decide |
 | `solutions-ungateable/` | the gate cannot reach a verdict; the stored test data fails first |
@@ -86,15 +86,13 @@ edit through helper signatures.
 
 **Before an unproven obligation, ask whether the TRANSLATION is wrong.** Python
 wraps a negative subscript; Dafny faults. Three rows read a negative index on
-real inputs — they were wrong there, not merely unproven, and two waves had
-recorded that as "the data is out of spec". `Prelude.PyIndex` is the fix.
+real inputs — they were wrong there, not merely unproven. `Prelude.PyIndex` is the fix.
 
 `precheck.py` prints five counters. `ok` and `VIOLATED` are verdicts;
 `unchecked` (Dafny could not compile the clause) and `no-data` (compiled, then
 raised on every input) both mean **not checked**. `py-fails` means the clause only
-excludes inputs the row's own Python also crashes on, which is a pass. Treating
-`unchecked`/`no-data` as passes is how a gate stops gating — it happened, and
-hid four real violations.
+excludes inputs the row's own Python also crashes on, which is a pass. Never treat
+`unchecked`/`no-data` as passes.
 
 `validate.py` is the **wrong** gate for `loose` rows: their problems accept
 several correct answers, so the stored output is one of them and even the
@@ -102,22 +100,14 @@ original Python fails a byte-diff against it. Use `difftest.py` there.
 
 ## Non-negotiables
 
-- **Audit every agent batch yourself.** Re-verify and re-validate from scratch.
-  This has caught a 19/20 reported that was 18/20, a batch reported as 0/20 that
-  had 20 drafts stranded in `.new` files, and an agent editing the gate.
-- **Never accept `assume`, including `assume {:axiom}`.** It silences an
-  obligation rather than discharging it, and the file still reports 0 errors.
-  Run `python3 proofs.py` — it scans the whole corpus and exits non-zero on any
-  hit. Four hid for waves because audits grepped only one directory.
+- **Audit every agent batch yourself.** Re-verify and re-validate from scratch; agents
+  misreport counts and strand drafts in temp files.
+- **Never accept `assume`, including `assume {:axiom}`.** The file still reports 0 errors.
+  `python3 proofs.py` scans the whole corpus and exits non-zero on any hit.
 - **Check every added `requires`** with `precheck.py`. A precondition narrows the
   contract until the obligation is trivial; that is the cheap way to fake a proof.
-- **Never let an agent edit a gate it is judged by.** One cut difftest's
-  reference-Python budget from 30s to 10s inside an otherwise-real fix; slow rows
-  would have dropped out of the comparison, passing more rows by checking fewer.
-- **A subset run never replaces a shared record.** `validate.py --only` or
-  `--solutions-dir` always writes `out/<prefix>validation.jsonl` (default
-  `partial_`); only a full run writes `data/validation.jsonl`. Once, an
-  unguarded `--only` left that file holding 4 rows instead of 529.
+- **Never let an agent edit a gate it is judged by.**
+- **A subset run never replaces a shared record** (`batches/README.md` § The `--only` trap).
 - **A row's file is its status.** Move it; do not annotate and leave it.
 
 ## Running work
@@ -126,55 +116,32 @@ Batches of ~20 rows, 4 agents at a time. Larger batches do not finish before the
 session limit. Agents must write directly to the `.dfy` (never a temp name) and
 validate in small groups as they go, so a kill costs a group not a batch.
 
-Sub-skills: `bigodafny-translate`, `bigodafny-verify`, `bigodafny-prove`.
+Sub-skills: `bigodafny-translate`, `bigodafny-verify`, `bigodafny-prove`,
+`bigodafny-prove-campaign`.
 
 ## Findings that change how you work
 
 - Not every original Python solution matches its own stored output; those
-  that do are the `strict` split and the ceiling for byte-diff
-  (`bigodafny/STATUS.md`).
-- Three defects give **correct output, wrong complexity, green tests**, and no
+  that do are the `strict` split.
+- Two defects give **correct output, wrong complexity, green tests**, and no
   gate but reading the diff catches them: doubly-recursive min/max
-  (`T(n)=2T(n-1)`), sibling reuse, and `set<T>` built in a loop (measured
-  O(n²) in Dafny's Python backend).
-- Two O(n·m) labels were **proved wrong** — the `m` named nothing that varies.
+  (`T(n)=2T(n-1)`) and sibling reuse.
 - BigOBench's tests can violate their own problems' stated limits (1501's
   private tests reach 10¹² against `k ≤ 10000`). Such tests are bogus: quote
   the limit into `data/constraints.jsonl` and the gates skip them.
 - BigOBench's dataclass disagrees with what the Python reads
   (4 known cases). Read `.build/<prefix>_<SID>/dataclass.py` before assuming
   your logic is at fault.
-- Asking for verification **while translating** gets 97.5%; retrofitting later
-  also reached 97.5%, but only after the rows were written.
-- **A gate with a bug is worse than no gate**, because it reports success.
-  `precheck.py` had four, all in its hand-written Dafny-to-Python translation:
-  29 of 444 clauses passed without ever being evaluated, and six genuinely bad
-  preconditions were invisible. It now has Dafny compile each clause instead.
-- `Sort` now carries permutation lemmas (`SortKeepsElems` and friends). Before
-  that, every fact about a sequence's contents was lost across a sort and rows
-  hand-wrote the same lemma over and over.
 - **`validate.py` and `difftest.py` test the row, never its proof copy.** To
   test a proof copy, use `validate.py --solutions-dir solutions-proved`; for a
-  `loose` row compare the emitted Python instead — identical compiled bytes
-  beats a test sample.
+  `loose` row compare the emitted Python instead.
 - **`dafny verify` skips included files.** A proof reports 0 errors while a
-  prelude lemma it calls does not verify; three Gcd lemmas sat that way after
-  the Z3 5.1.0 upgrade. `proofs.py` verifies the prelude; after editing the
-  prelude, run `dafny verify prelude.dfy` yourself.
-- **The cost model is stipulated, not measured.** `s[i := v]`, `m[k := v]`,
-  `s + [x]`, `s[a..b]` and set insertion are all charged `1`, regardless of
-  what the Python backend does with them. `bigodafny/COMPLEXITY.md` § The model is the
-  authority. A Dafny collection that copies where CPython assigns in place is
-  not a defect. A record that charges `|s|` for a seq update is older than the
-  model.
+  prelude lemma it calls does not verify. After editing the prelude, run
+  `dafny verify prelude.dfy` (`proofs.py` does).
+- **The cost model is stipulated, not measured** (`bigodafny/COMPLEXITY.md` § The model). A Dafny
+  collection that copies where CPython assigns in place is not a defect.
 - **Output costs one step per character.** `IntToString(x)` costs `Digits(x)`;
-  an additive `|output|` term never counts against a label. `SumLen`,
-  `Digits` and `SumDigits` are in the prelude.
-- **`Join` is linear**, charged `SumLen(parts) + \|parts\|`. Timing ratios
-  near 2.2 per doubling look superlinear, but a known-linear control in the
-  same harness shows a *higher* ratio: the excess is constant overhead.
-  **Always measure against a control**, never against a ratio of 2.0.
+  an additive `|output|` term never counts against a label.
 - **BigOBench's `O(n*m)` is wrong when the loop body does not scan a row.**
-  Nine examined, seven wrong. The wrong ones read `row[0]`, `row[1]`, up to
-  `row[4]` and never walk a row, so width does not enter the cost. `1855_50` shows the failure is not confined to that label: it
-  is marked `O(n**2)` and is straight-line code.
+  Nine examined, seven wrong: they read `row[0]` … `row[4]` and never walk a row.
+  `1855_50` is marked `O(n**2)` and is straight-line code.

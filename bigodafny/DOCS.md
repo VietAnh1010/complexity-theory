@@ -8,10 +8,9 @@ repository root is unrelated.
 | To… | Read |
 |---|---|
 | understand the dataset and its directories | `README.md` |
-| see why collection costs are fixed by rule | `COST_AXIOMS.md` |
 | change a translation or move a row | `CLAUDE.md`, then each affected directory's `README.md` |
 | review a label | `COMPLEXITY.md`, `solutions-disputed/README.md`, `batches/labelaudit/PROMPT.md` |
-| write a proof | `COMPLEXITY.md`, `solutions-proved/README.md`, `batches/CAMPAIGN_CONFIG.md` |
+| write a proof | `COMPLEXITY.md`, `solutions-proved/README.md` |
 | see counts and results | `STATUS.md`; campaigns: `data/prove_stats.md` |
 | see what changed | `CHANGELOG.md` |
 | see known issues | `STATUS.md` § Known issues |
@@ -97,4 +96,4 @@ rule change, so check it before reusing an old record.
 `batches/prove-sample*`, `batches/prove-disputed-*`: what each campaign drew (manifest), every attempt
 (`traj_*.jsonl`, with an `obstacle` code when unresolved), and each proof's
 relation to its label (`label_relation.jsonl`). Settings changed between
-campaigns; read `batches/CAMPAIGN_CONFIG.md` before combining numbers.
+campaigns; read `batches/README.md` § Combining campaign numbers before combining them.

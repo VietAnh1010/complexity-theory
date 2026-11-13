@@ -21,11 +21,6 @@ some input the tests do not contain. Python raised `IndexError` where Dafny's
 compiled code has undefined behaviour, so the original was never under this
 obligation.
 
-Baseline over the whole corpus: **143 of 452 verified (32%)** with nothing added.
-Failures were 240 index-out-of-range, 25 precondition (mostly `FloorDiv`'s
-`b != 0`), 14 termination, 11 division by zero. Two retrofit waves each took a
-batch to ~97.5%.
-
 ## Pick the work
 
 ```bash
@@ -79,12 +74,16 @@ find solutions-unverified -name '*.dfy' | sed 's|.*/||; s|\.dfy||' | sort \
     9. `Prelude.MaxSeq`/`MinSeq` require `|s| > 0` and have NO membership
        postcondition. If you need `MaxSeq(s) in s`, prove it locally by
        induction on `MaxSeqFrom`.
+    10. A verifier time-out: add `{:isolate_assertions}` to the method, or split
+        a long method's facts into small lemmas.
+    11. Python wraps a negative subscript; Dafny faults. If the Python reads
+        `a[-1]`-style indexes, the fix is `Prelude.PyIndex`, not a `requires`.
 
     # Rules, in priority order
     - **NEVER use `assume`, in any form.** `assume {:axiom} 0 <= idx < |a|`
-      verifies silently and discharges nothing. Four sat undetected for waves
-      because the audit only grepped solutions-unverified/. A row left
-      unverified is strictly better.
+      verifies silently and discharges nothing. A row left unverified is
+      strictly better.
+    - **NEVER use `decreases *`.** Write a real `decreases` clause.
     - **Prefer an invariant to a precondition.** An invariant proves the code
       safe; a precondition narrows the contract until it is.
     - Any `requires` you add must be something the PROBLEM guarantees -- read
@@ -93,8 +92,6 @@ find solutions-unverified -name '*.dfy' | sed 's|.*/||; s|\.dfy||' | sort \
       fail.
     - No `var` binding inside a `requires`: state it over the parameters.
     - Do not change the algorithm, the signature, or any computed value.
-    - `decreases *` only where termination genuinely is not structural. It makes
-      Dafny accept a loop without proving termination -- last resort, not first.
 
     # Loop
     1. Verify, read the error, add the invariant, re-verify.
@@ -116,7 +113,6 @@ find solutions-unverified -name '*.dfy' | sed 's|.*/||; s|\.dfy||' | sort \
     # Report (concise)
     - how many of 20 now verify
     - how many needed an added `requires`, and what each says
-    - how many needed `decreases *`
     - rows you could not fix, one line each
 
 ## Audit before committing
@@ -134,7 +130,7 @@ for sid in $(cat $B); do pid="${sid%%_*}"; f=$(ls solutions*/$pid/$sid.dfy)
 
 # 2. no hollow proofs
 grep -rn 'assume' solutions-unverified --include='*.dfy'      # must be empty
-grep -rn 'decreases \*' solutions-unverified --include='*.dfy'  # must be justified
+grep -rn 'decreases \*' solutions-unverified --include='*.dfy'  # must be empty
 
 # 3. every added requires holds on real inputs
 python3 precheck.py $(cat $B | tr '\n' ' ')
@@ -154,58 +150,34 @@ precheck measures this: it runs the row's own `solution_code` on every violating
 input and reports `py-fails` separately from `VIOLATED`.
 
 So an `exists` precondition is fine when the Python raises without it —
-`p.index(k)` raising ValueError, `m // 0` raising ZeroDivisionError. I banned
-existentials for two waves on a proxy rule and rejected a correct clause twice
-because of it.
+`p.index(k)` raising ValueError, `m // 0` raising ZeroDivisionError.
 
 **Read its five counters, not just VIOLATED.** `unchecked` means the shape did
 not translate; `no-data` means it translated and then raised on every input.
 Both are "not checked", and neither is a pass. `py-fails` is a pass, with the
 exemption above.
 
-`unchecked` is not merely a gap — it hides real failures. `OnlyBrackets(s)` came
-back `unchecked`, and once precheck could evaluate it, it failed on 6 inputs and
-both bracket proofs had to be rewritten around a weaker fact.
-
 **A precondition is how a verification pass fakes itself.** Narrow the contract
 far enough and the obligation is trivial. That is why step 3 is not optional and
 why the agent is told the parent will run it.
 
-Then move what verifies:
-
-```bash
-for sid in $(...verified...); do pid="${sid%%_*}"
-  mkdir -p solutions/$pid && git mv solutions-unverified/$pid/$sid.dfy solutions/$pid/; done
-python3 dataset.py && git add -A && git commit
-```
-
-Only rows from `solutions-unverified/` move to `solutions/`. A row in
-`solutions-unscreened/` stays there and records `safety_verified` in
-`dataset.jsonl` instead — a suspect complexity label is the more serious defect.
+Then move each verified row with `git mv`: to `solutions/` if `data/label_audit.jsonl` gives it
+`ok`, else to `solutions-unscreened/` (`solutions-unverified/README.md`). Run `python3 dataset.py`
+and commit.
 
 ## Known-hard
 
-`888_179` and `888_6` sweep two pointers over an array doubled to length `2n`;
-safety depends on `x <= sum(d)` propagating through a sliding window. That is a
-prefix-sum argument, not a loop invariant. Left unverified deliberately.
+`1336_157`: `ProbeInsert` simulates CPython set probing; termination needs a proof that probing
+visits every slot, so it keeps `decreases *` and stays in `solutions-unverified/`.
 
-## What this pass found that tests did not
+## Traps
 
-- `459_199` had `decreases if n+m>=0 then n+m else 0`, which does not decrease on
-  the terminal branch. It had passed every test since wave 4.
-- Two sort rows indexed `l[i+1]` with no length fact.
-- `1944_50`, hand-written carefully to prove the pipeline end-to-end and passing
-  101 tests, fails a postcondition.
 - **`grep -q "0 errors"` also matches "10 errors".** Match
   `verifier finished with \d+ verified, 0 errors`.
 - **A timed-out lemma proves nothing** — but a lemma that *calls* it still
   reports verified. Check for `time out` in the output, not just `Error`.
 - `dafny verify` caps output at 5 errors; use `--error-limit 0` while diagnosing.
-- `577_509`'s precondition is the problem's stated constraint verbatim
-  (`1 <= n <= 10^9`); three generated tests feed `n = 1000001000`. An earlier
-  wave kept it on that basis and a later one dropped it: **the rule is that a
-  precondition must hold on every stored input**, because the row ships with
-  every tier. Apply it uniformly rather than arguing the data is wrong.
-- Three rows have now tried `requires exists k :: <the answer exists>`.
-  `1332_41`'s failed on a *private* test, which validate.py does gate on. Treat
-  any existential precondition as suspect until precheck clears it.
+- A stored test outside a limit the problem statement sets is bogus: quote the limit into
+  `data/constraints.jsonl` and the gates skip it. Never infer a limit from where the code fails.
+- Treat any existential precondition (`requires exists k :: ...`) as suspect until `precheck.py`
+  clears it.

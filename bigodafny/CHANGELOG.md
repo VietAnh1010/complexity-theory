@@ -10,10 +10,9 @@ A campaign's own run record stays in `batches/<campaign>/README.md`. Superseded 
 
 ## 2026-11-13
 
-- Agent proof campaigns stopped after `prove-disputed-5`. `TODO.md` is gone; known defects are in
-  `STATUS.md` § Known issues.
+- Agent proof campaigns stopped after `prove-disputed-5`; known defects are in `STATUS.md`
+  § Known issues.
 - The translate skill states how to keep the Python's algorithm (sort, map, heap, bisect, `ISqrt`).
-- This changelog keeps only rule, cost-model and gate changes.
 - `proofs.py` keeps a verified proof's record when its `fingerprint` (proof, row, prelude, Dafny
   and Z3 versions) is unchanged; `--all` re-verifies every proof.
 - `bigodafny-prove-campaign`: `sample.py --dir` draws from another status directory;
@@ -143,7 +142,7 @@ A campaign's own run record stays in `batches/<campaign>/README.md`. Superseded 
 
 ## 2026-09-16
 
-- Collection costs stipulated, not measured (`COST_AXIOMS.md`):
+- Collection costs stipulated, not measured:
   `s[i := v]`, `m[k := v]`, `s + [x]`, `s[a..b]` and set insertion cost 1.
   Records older than this charge the backend's copies.
 - First label audit and first proof campaign (`prove-sample`).

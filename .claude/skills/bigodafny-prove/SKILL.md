@@ -239,15 +239,12 @@ nothing in the code has.
 **Match the log's rounding to the code's rounding.** `945_255` halves by
 rounding down and so wants a FLOOR log; merge sort splits on `ceil(k/2)` and
 wants a ceiling one. With the matching log the key step holds by definition and
-no lemma is needed. The old rule "use a ceiling log" was the special case.
-`187_193` got the tight n log n bound on the first pass by reusing the
-recursion-tree argument — the machinery is now cheap.
+no lemma is needed.
 
 `827_148` has no polynomial bound at all until values are capped: its inner
 catch-up loop is data-dependent. The proof takes the problem's stated
-`1 <= d_i <= 1000` as a precondition and folds the cap into the constant. The
-label assumes the same thing silently. That proof is an exception to the rule below: a
-precondition like this now goes into the row first, not into the proof.
+`1 <= d_i <= 1000` as a precondition, in the row and so in the proof, and folds the cap into
+the constant. The label assumes the same thing silently.
 
 **A proof never adds or changes a `requires` on the row's own methods and
 functions.** The proof and its row must have the same contract. A needed

@@ -45,7 +45,7 @@ the first such report found four of seven rows passing every test that could
 be run, their `fail` produced by the problem's own dataclass
 (`data/gate_ungateable.jsonl`).
 
-A row whose gate cannot reach a verdict at all now lives in
+A row whose gate cannot reach a verdict at all lives in
 `solutions-ungateable/`, outside the pool by construction, with the evidence in
 `data/gate_ungateable.jsonl`. **Never make a row eligible by editing a gate** —
 a gate may not be relaxed by the work it judges.
@@ -232,8 +232,7 @@ the refreshed `data/`. Push to the session's designated branch.
   writing; say that is why it is uncommitted.
 - **Read `git status` for DELETIONS, every time.** An agent cleaning up after
   its own failed row can take a sibling's proof with it — same problem
-  directory, different solution, different label. It happened twice in
-  `prove-sample-5`. `audit.py` now fails on a deletion whose row is not in the
+  directory, different solution, different label. `audit.py` fails on a deletion whose row is not in the
   batch, but only after `proofs.py` has run; a missing tracked file shows up in
   `git status` immediately.
 - **Tell the agents to append each row's line as it finishes.** A run that
