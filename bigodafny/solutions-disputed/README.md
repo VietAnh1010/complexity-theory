@@ -39,10 +39,8 @@ the evidence names it.
 `cause: translation` covers both directions. When the audited class is
 **better** than the label, the translation swapped in a faster algorithm
 (`CLAUDE.md` § Keep the algorithm). The tests miss it, since the output is
-right. Example: `1368_67`'s Python sorts and compares; its Dafny does one
-scan. Such rows: `1336_340`, `1366_102`, `1368_67`, `1470_325`,
-`1470_470`, `1981_62`, `2087_50`, `2394_182`, `2680_221`, `641_25`, `647_11`,
-`669_107`, `894_85`.
+right. `STATUS.md` § Known issues lists the rows whose Dafny still does other work than its
+Python.
 
 - **Too fast:** restore the Python's algorithm; keep the label.
 - **Too slow:** change the data structure; keep the algorithm.
@@ -54,8 +52,8 @@ scan. Such rows: `1336_340`, `1366_102`, `1368_67`, `1470_325`,
   the code reads fixed positions (`171_82`, `89_463`, `525_273`, `396_361`).
 - **A constant loop bound:** `531_3456`, `531_3499` (`while i < 5`), `514_39`
   (31). Labelled `O(n)` or worse; really O(1).
-- **A step dropped or added:** `685_583`'s Dafny scans where its Python sorts;
-  `348_21` imitates a `set` with a linear scan.
+- **A step dropped or added:** the Dafny scans where its Python sorts, or imitates a `set` with a
+  linear scan (`STATUS.md` § Known issues).
 - **A value the label leaves out:** `2607_90` loops over `hi - lo`. Fix the
   label, not the code.
 - **A size the label doesn't name:** `O(n)` over several strings, or `O(n**2)`

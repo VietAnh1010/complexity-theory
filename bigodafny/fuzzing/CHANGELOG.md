@@ -5,7 +5,6 @@ newest first.
 
 ## 2026-11-13
 
-- This changelog keeps only changes that records depend on.
 - `TODO.md` is gone; known issues are in `docs/08-annotate.md`, `docs/09-outputs-debugging.md`
   and `experiments/fuzz/README.md`.
 
