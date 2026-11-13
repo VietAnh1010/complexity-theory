@@ -14,7 +14,7 @@ repository root is unrelated.
 | write a proof | `COMPLEXITY.md`, `solutions-proved/README.md`, `batches/CAMPAIGN_CONFIG.md` |
 | see counts and results | `STATUS.md`; campaigns: `data/prove_stats.md` |
 | see what changed | `CHANGELOG.md` |
-| see where the work stopped and what is open | `batches/clean-636/README.md`, `TODO.md` |
+| see known issues | `STATUS.md` § Known issues |
 
 Old campaign prompts are history, not instructions.
 

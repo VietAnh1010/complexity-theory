@@ -78,8 +78,6 @@ any other doc; point to `STATUS.md`. When the corpus changes, update
 `STATUS.md` from the data. Facts about one named row, fixed constants, and
 history in `batches/` and `CHANGELOG.md` may keep their numbers.
 
-`TODO.md` is a scratch list. Nothing in it flows into another doc.
-
 ## No one-off scripts
 
 Delete a script written for one migration, campaign or repair before

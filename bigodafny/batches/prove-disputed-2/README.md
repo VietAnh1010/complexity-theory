@@ -1,17 +1,16 @@
 # `prove-disputed-2`
 
-Batch 6 of piece C4 in `batches/clean-636/README.md`, the second drawn from
-`solutions-disputed/`: 20 of its 166 unproved, gate-passing rows
-(`sample.py --dir solutions-disputed`, seed `20261113`, no `--exclude-drawn`). The seed repeats
-`prove-disputed-1`'s; the pool had lost that batch's 20 proved rows, so the draw differs. Three
-Sonnet agents, 3 attempts and 5 minutes per row. Each brief is `PROMPT.md` followed by
-`PROMPT_disputed.md`: prove the tightest upper bound you can.
+Campaign 6 of 9 to prove every unproved row, the second drawn from `solutions-disputed/`: 20 of its
+166 unproved, gate-passing rows (`sample.py --dir solutions-disputed`, seed `20261113`, no
+`--exclude-drawn`). The seed repeats `prove-disputed-1`'s; the pool had lost that batch's 20 proved
+rows, so the draw differs. Three Sonnet agents, 3 attempts and 5 minutes per row. Each brief is
+`PROMPT.md` followed by `PROMPT_disputed.md`: prove the tightest upper bound you can.
 
 This is not a measurement of label-proving and stays out of `prove_stats.py`.
 
 **Result: 20 proved, 0 unresolved.**
 
-`excluded.jsonl` holds `1950_45` and `1950_47`: no test gate (B7).
+`excluded.jsonl` holds `1950_45` and `1950_47`: no test gate (`unvalidatable`).
 
 ## Relations to the stated label
 

@@ -43,6 +43,7 @@ add its name to `Annotate.Rules` and `Annotate.RuleFor`.
 - After a call to another method in the file: that method's `steps`.
 - Before `var x :| x in S`: 1, one step of iterating the set `S`. A ghost `:|` costs nothing;
   any other compiled `:|` stops `annotate`.
+- `if case` (`AlternativeStmt`), `match` statements and `:-` calls have no rule and stop `annotate`.
 
 ## Costs without rules (`CostModel.Of`)
 

@@ -7,7 +7,7 @@
 //                     while this problem's rows always hold 3 columns, so every
 //                     test with n != 3 is rejected before either implementation
 //                     is run
-//   control         : batches/gate-audit/control.py, 2026-09-21 -- the original
+//   control         : control.py (now baseline.py --round-trip), 2026-09-21 -- the original
 //                     Python through the same dataclass round-trip also passes
 //                     1 and cannot run the other 7
 //   record          : data/gate_ungateable.jsonl

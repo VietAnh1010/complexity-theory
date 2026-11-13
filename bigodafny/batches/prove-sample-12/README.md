@@ -1,9 +1,9 @@
 # `prove-sample-12`
 
-Batch 4 of piece C4 in `batches/clean-636/README.md`. Takes all 20 never-drawn, unproved rows
-left in `solutions/` (`--exclude-drawn`, seed `20261113`), so it is a census of the remainder,
-not a sample. Three Sonnet agents, 3 attempts and 5 minutes per row, the brief and the `ghost`
-line of `prove-sample-10`.
+Campaign 4 of 9 to prove every unproved row. Takes all 20 never-drawn, unproved rows left in
+`solutions/` (`--exclude-drawn`, seed `20261113`), so it is a census of the remainder, not a sample.
+Three Sonnet agents, 3 attempts and 5 minutes per row, the brief and the `ghost` line of
+`prove-sample-10`.
 
 **Result: 20 proved, 0 unresolved.** Every row has a `reads` trace. Every row closed within its
 time budget.
@@ -38,7 +38,7 @@ Use the pooled figures in `data/prove_stats.md`, not this campaign alone.
 | `1467_233` | `O(n)` | `O(N log N)` | `looser-structural` | the Python builds `str(i)` for every `i < N + 100`; the digits sum to `Theta(N log N)`, and only `t[N]` reaches the output |
 
 The main agent re-read the Python: `t += str(i)` builds the whole string, so the cost is the Python's,
-not the translation's. `1467_233` passed label audit r5 as `ok`; its `truth` is settled in C3/C6.
+not the translation's. `1467_233` passed label audit r5 as `ok`; its `truth` is not settled.
 
 ## Fixed by the main agent before promotion
 

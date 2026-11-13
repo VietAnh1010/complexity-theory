@@ -10,8 +10,9 @@ A campaign's own run record stays in `batches/<campaign>/README.md`. Superseded 
 
 ## 2026-11-13
 
-- Agent proof campaigns stopped after `prove-disputed-5`; `batches/clean-636/README.md` lists the
-  open pieces.
+- Agent proof campaigns stopped after `prove-disputed-5`. `TODO.md` is gone; known defects are in
+  `STATUS.md` § Known issues.
+- The translate skill states how to keep the Python's algorithm (sort, map, heap, bisect, `ISqrt`).
 - This changelog keeps only rule, cost-model and gate changes.
 - `proofs.py` keeps a verified proof's record when its `fingerprint` (proof, row, prelude, Dafny
   and Z3 versions) is unchanged; `--all` re-verifies every proof.

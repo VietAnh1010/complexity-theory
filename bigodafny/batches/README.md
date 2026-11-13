@@ -6,15 +6,11 @@ checked.
 | Directory | Run | Contents |
 |---|---|---|
 | `labelaudit/` | the label audit | `PROMPT.md` and the verdict files |
-| `gate-audit/` | seven rows that, when audited, sat in `solutions/` without a passing gate result | control results (`control.jsonl`) |
-| `clean-636/` | the plan to make every translated row clean; where the work stopped | `README.md` |
 | `prove-sample/`, `prove-sample-2/` … `prove-sample-12/` | bounded proof campaigns | see `CAMPAIGN_CONFIG.md` |
 | `prove-disputed-1/` … `prove-disputed-5/` | bounded campaigns on `solutions-disputed/` rows, proving the tightest bound | brief, slices, trajectories, relations, attempts, `README.md` |
-| `verify-clean/`, `retranslate/`, `isqrt/` | clean-636 stage B: rows failing `dafny verify`, Dafny that swaps the Python's algorithm, square roots by `ISqrt` | brief, `README.md` |
 | `value-bounded-open/` | value-bounded rows with no proof yet | `MANIFEST.jsonl` |
 | `z3-upgrade/` | fixing proofs that time out under Z3 5.1.0 | instructions, trajectory, audit, attempts |
 | `output-length/` | re-charging proofs at one step per output character | instructions, trajectory, audit, attempts |
-| `obstacle-review/` | the code that blocks each open row | dated trajectory lines, `README.md` |
 | `prove-retry/` | a retry of the open rows, then every proof re-proved on `annotate`'s charges | brief, slices, trajectories, relations, attempts, `README.md` |
 | `prove-hard/` | a blind rerun of the rows that had failed, to find hard rows | brief, trajectories, classification, attempts, `README.md` |
 
@@ -41,7 +37,7 @@ checked.
 | r2 | same file | 09-15 | r1's rules; the auditor also sees the problem statement. Redid batches 01–06; their r1 verdicts are not kept |
 | r3 | `verdicts_r3.jsonl` | 10-01 | input values are sizes; `IntToString` costs 1; `Gcd` costs Euclid's depth |
 | r4 | `verdicts_r4.jsonl` | 10-01 | r3's rules plus the naming rule (`COMPLEXITY.md`) |
-| r5 | `verdicts_r5.jsonl` | 11-12 | r4's rules plus `ISqrt` costs `ISqrtSteps`; the unscreened rows and 38 disputed rows whose code changed in B4 |
+| r5 | `verdicts_r5.jsonl` | 11-12 | r4's rules plus `ISqrt` costs `ISqrtSteps`; the unscreened rows and 38 disputed rows whose code was re-translated to follow the Python |
 
 ## The `--only` trap
 

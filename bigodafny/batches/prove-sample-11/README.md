@@ -1,8 +1,8 @@
 # `prove-sample-11`
 
-Batch 3 of piece C4 in `batches/clean-636/README.md`. Draws 20 of the 40 never-drawn, unproved
-rows left in `solutions/` (`--exclude-drawn`, seed `20261113`). Three Sonnet agents, 3 attempts
-and 5 minutes per row, the brief and the `ghost` line of `prove-sample-10`.
+Campaign 3 of 9 to prove every unproved row. Draws 20 of the 40 never-drawn, unproved rows left in
+`solutions/` (`--exclude-drawn`, seed `20261113`). Three Sonnet agents, 3 attempts and 5 minutes per
+row, the brief and the `ghost` line of `prove-sample-10`.
 
 **Result: 19 proved, 1 unresolved.** Every row has a `reads` trace.
 
@@ -37,7 +37,7 @@ Use the pooled figures in `data/prove_stats.md`, not this campaign alone.
 The agent also notes that the row's recursive `"9" + rec` string builders cost `|t|` per call,
 so even a closed proof would be quadratic against the `O(nlogn)` label. The agent wrote no
 `obstacle`; the main agent filled in `math-too-hard` from its `why_failed`. The row took 600
-seconds against the 5-minute limit and stays unresolved. It goes to C5.
+seconds against the 5-minute limit and stays unresolved.
 
 ## Relations
 

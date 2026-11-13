@@ -69,6 +69,21 @@ Give each agent: its manifest path, a unique validation prefix, and this body.
         MaxSeq MinSeq SumSeq Gcd ISqrt AbsInt Repeat ReplaceAll
         ParseInt ParseIntFrom ParseInts BitOr BitAnd BitXor
 
+    KEEP THE PYTHON'S ALGORITHM (the label belongs to it)
+    - sorted/.sort -> Sort/SortInts/SortStrings, even when the output could be
+      had without sorting
+    - dict/Counter/defaultdict -> map; set -> set
+    - heapq -> a binary heap on a seq<int> with sift-up/sift-down, written once
+      per file
+    - bisect -> a binary search loop
+    - sum(x[i:]) inside a loop -> sum that slice each time (SumSeq(x[i..]))
+    - a square root -> ONE ISqrt call where the Python takes it:
+        math.isqrt(x), int(math.sqrt(x)), int(x ** 0.5) -> ISqrt(x)
+        math.ceil(math.sqrt(x)) -> var r := ISqrt(x); if r * r < x { r := r + 1; }
+        perfect-square test -> var r := ISqrt(x); r * r == x
+        range(..., int(sqrt(n)) + 1) -> compute ISqrt(n) once, loop to it
+      never a search loop of your own; keep a Python loop `while i * i <= n`
+
     TRAPS
     - Sort over tuples needs explicit lambda parameter types
     - `if MaxOf(xs[1..]) > xs[0] then MaxOf(xs[1..]) else xs[0]` recurses twice

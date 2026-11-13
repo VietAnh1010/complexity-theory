@@ -1,7 +1,8 @@
 # `prove-retry`
 
-A retry of the 39 open rows that `obstacle-review/` sorted. It is not a sample: rows were chosen
-because they were open. Three Sonnet agents worked the slices.
+A retry of the 39 open rows, after the main agent coded each one's obstacle (2026-11-02; those
+lines sit in each source batch's `traj.jsonl`). It is not a sample: rows were chosen because they
+were open. Three Sonnet agents worked the slices.
 
 **Result: 33 proved, 6 unresolved.** The 33 proofs were then all re-proved on `annotate`'s charges,
 because agents' hand-written charges proved too low. `traj_*.jsonl` keeps what the agents reported;

@@ -40,9 +40,10 @@ is sorted before sampling, so seed plus corpus state reproduces the draw.
 
 `excluded.jsonl` is not noise. A row sitting in `solutions/` whose latest
 recorded gate result is negative or missing is a real inconsistency — report
-the count, do not silently drop it. `batches/gate-audit/` is what came of the
-first such report: four of seven rows turned out to pass every test that could
-be run, and their `fail` was produced by the problem's own dataclass.
+the count, do not silently drop it. Check it with `baseline.py --round-trip`:
+the first such report found four of seven rows passing every test that could
+be run, their `fail` produced by the problem's own dataclass
+(`data/gate_ungateable.jsonl`).
 
 A row whose gate cannot reach a verdict at all now lives in
 `solutions-ungateable/`, outside the pool by construction, with the evidence in

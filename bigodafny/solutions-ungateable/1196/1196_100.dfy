@@ -6,7 +6,7 @@
 //   cause           : 2 stored tests declare n = 4 and supply 3 text lines, so
 //                     `assert len(text_list) == n` fails before either the
 //                     Python or the Dafny is run
-//   control         : batches/gate-audit/control.py, 2026-09-21 -- the original
+//   control         : control.py (now baseline.py --round-trip), 2026-09-21 -- the original
 //                     Python through the same dataclass round-trip also passes
 //                     10 and cannot run the other 2
 //   record          : data/gate_ungateable.jsonl

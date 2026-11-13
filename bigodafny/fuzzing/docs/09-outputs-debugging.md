@@ -27,4 +27,5 @@ UPDATE_GOLDEN=1 dotnet test DafnySteps.Tests    # save new outputs as expected; 
 | `steptrace.py` cannot compile the row | read the Dafny error; a ghost error names a variable `deghost` missed |
 | `bound_ok: false` on a guessed bound | the guess is too low; raise it |
 | `bound_ok: false` on a verified proof | run `deghost` on the proof and look for a statement that now counts differently |
+| Every `fuzz` input times out | compiled contracts run ghost functions; one that recurses twice per level is exponential |
 | Every result is `requires` | the inputs break the proof's `requires`; check them with `precheck.py` |

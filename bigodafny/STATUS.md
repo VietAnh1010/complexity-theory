@@ -39,7 +39,7 @@ has no blocker. A row can carry several.
 | `tests` | its gate has no pass; `1950_45`, `1950_47` (`unvalidatable`) | 2 |
 | `precheck` | a `requires` clause fails `precheck.py` on the row | 0 |
 | `proof-fails` | its proof does not verify or uses `assume` | 0 |
-| `proof-changes-row` | its proof compiles to other Python or changes `Solve`'s `requires` (`2496_30`; 10 rows whose code changed, `TODO.md`) | 11 |
+| `proof-changes-row` | its proof compiles to other Python or changes `Solve`'s `requires` (§ Known issues) | 11 |
 
 Clean: 368 of 636 translated rows. `annotate` accepts every translated row.
 
@@ -119,3 +119,38 @@ Source: `data/prove_stats.md`.
 - `prove-disputed-1`..`5` proved 94 of 99 distinct disputed rows (open: `1276_62`, failed twice; `531_3456`, `2065_128`, `960_36`, `2854_107`); not label-proving draws, not counted.
 - 407 of the 409 distinct rows drawn carry a proof today.
 - The other 2 are open, coded by obstacle (`data/prove_stats.md` § Open rows now).
+
+## Known issues
+
+- `1336_157` fails `dafny verify`: `ProbeInsert` simulates CPython set probing and keeps
+  `decreases *`.
+- `1950_45`, `1950_47` have no test gate: the problem's `Input.from_str` reads the 100-digit
+  coefficient as a float. Of the 23 tests that survive, they pass 7 and 19: both cut the fraction
+  at 12 digits, where the Python uses `Decimal`.
+- Proofs written for code since changed: `647_11`, `685_583` (re-translated to the Python's
+  algorithm); `342_86`, `704_351`, `810_131`, `1944_50`, `1948_388`, `2358_103`, `2358_421`,
+  `2819_926` (square roots now by `ISqrt`).
+- `2496_30`'s proof adds loop caps (`padIter < 9`, `trimIter < 20`, `expIter < 2`) the row lacks;
+  without them `FormatG9`'s trim loop is unbounded for values outside 10^-1000..10^1000.
+- Dafny does other work than its Python (`solutions-disputed/`; each `prove-disputed-*/README.md`
+  says how): `1099_169`, `1054_212`, `101_43`, `1437_223`, `799_94`, `949_67`, `1231_51`,
+  `138_360`, `1054_216`, `619_340`, `1306_197`, `1593_264`, `1913_104`, `1413_222`, `333_197`,
+  `397_163`.
+- Label audit `ok`, proof tighter: `1303_8` (proof `O(1)`, label `O(n**2)`), `1467_233` (proof
+  `O(nlogn)`, label `O(n)`).
+- `2381_156`: its `O(1)` label and `ok` verdict (r3) predate the `IntToString` charge; its proof
+  bounds `2 * Digits(n) + 4`.
+- Label higher than the tightest class (`mismatch`), proof reaches only the label (`confirms`):
+  `1180_626`, `2913_309`, `2913_484`.
+- `2831_71` charges `IntToString` 1 step.
+- `1972_295`: its proof times out under Z3 5.1.0 (`batches/z3-upgrade/unresolved/`).
+- `810_131`, `1948_388` sit in `value-bounded/` though marked `looser-translation`; that directory
+  takes only `looser-structural`.
+- `batches/value-bounded-open/` rows `1263_2538`, `1332_16`, `1364_161`, `1626_179`, `2358_103`,
+  `2465_212`, `342_86` were filed from agent notes alone.
+- `dataset.py` gives the 6 `unvalidatable` rows `dafny_status: untranslated`, though they are
+  translated.
+- `audit.py` does not flag runs over budget: `2128_34`, `1582_118`, `2254_6`, `2704_92`, `2231_77`.
+  `2254_6` and `2128_34` count as proved in campaign 1.
+- `proofs.py` runs 8 `dafny verify` at once (`common.WORKERS`) and can run out of memory;
+  `proofs.run(workers=2)` finishes.

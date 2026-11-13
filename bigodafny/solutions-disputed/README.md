@@ -72,4 +72,5 @@ label verdict (`ok` and `mismatch`). Their file header is a
 - The other 23 can pass. `1950_45` passes 7 of them, `1950_47` passes 19: both
   cut the fraction at 12 digits, where the Python uses `Decimal`.
 - Once a row passes all 23, its only failures are the test data's fault, so it
-  moves to `solutions-ungateable/` (`batches/gate-audit/` has the evidence).
+  moves to `solutions-ungateable/` with a `data/gate_ungateable.jsonl` record
+  (`baseline.py --round-trip` gives the evidence).

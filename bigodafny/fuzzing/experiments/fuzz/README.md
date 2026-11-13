@@ -91,3 +91,14 @@ a class equal to the label.
 
 Nothing checks what `gen.py` does: `BRIEF.md` only tells the agent to make it build input
 text and nothing else.
+
+## Known issues
+
+- `blind.py grade` assigns `guard.log` lines to rows by path, so a denial with no path voids nothing.
+- The `blind-guess` hook runs the main checkout's `guard.py`, even for a session in a worktree.
+- `guard-path` is one file, so two sessions cannot run batches at once.
+- `guard.py` fails open: when `guard-path` names a deleted directory, the hook exits 1 and the call
+  runs.
+- A harmless call in the agent's own row (`cat row.dfy`) is denied and voids the row.
+- A row directory is named by its host, so a fabricated row looks like a real one, and two arms of
+  one row cannot share a batch.

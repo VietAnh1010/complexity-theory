@@ -11,7 +11,7 @@
 //                     passes 7; the Python through the same round-trip
 //                     passes 23.
 //   cause           : translation
-//   control         : batches/gate-audit/control.py, 2026-09-21
+//   control         : control.py (now baseline.py --round-trip), 2026-09-21
 //   note            : filed here as the review queue, not as a label dispute.
 //                     What is disputed is the code. Moving it out needs
 //                     23/23 on the runnable tests; the other 19 fail in the

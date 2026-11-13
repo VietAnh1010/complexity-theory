@@ -1,10 +1,10 @@
 # `prove-sample-10`
 
-Batch 2 of piece C4 in `batches/clean-636/README.md`. Draws 20 of the 60 never-drawn, unproved
-rows left in `solutions/` after `prove-sample-9` (`--exclude-drawn`, seed `20261113`). Three
-Sonnet agents, 3 attempts and 5 minutes per row, the default brief. The agent prompt adds one
-line: every variable added for the proof must be `ghost`, because two `prove-sample-9` proofs
-compiled to different Python by declaring a proof-only temporary without it.
+Campaign 2 of 9 to prove every unproved row. Draws 20 of the 60 never-drawn, unproved rows left in
+`solutions/` after `prove-sample-9` (`--exclude-drawn`, seed `20261113`). Three Sonnet agents, 3
+attempts and 5 minutes per row, the default brief. The agent prompt adds one line: every variable
+added for the proof must be `ghost`, because two `prove-sample-9` proofs compiled to different
+Python by declaring a proof-only temporary without it.
 
 **Result: 20 proved, 0 unresolved.** Every row has a `reads` trace. `audit.py` reports no
 disagreement between the trajectories and the verifier. Every row closed within its time budget.
@@ -40,8 +40,8 @@ Use the pooled figures in `data/prove_stats.md`, not this campaign alone.
 | `294_131` | `O(n)` | quadratic | `looser-slack` | as `294_56` in `prove-sample-9`: the statement's 26-letter alphabet bounds the loop over `set(s)`; the row lacks that `requires` |
 | `966_134` | `O(n)` | linear in input length | `confirms` | the agent wrote `looser-structural` for `ParseInt`'s per-character cost; that cost is linear in the input's length, so the bound is in `O(n)` |
 
-`1303_8` passed label audit r5 as `ok`, but its proof puts it in `O(1)`. Its `truth` is settled in
-C3/C6. `294_131` goes to C5 with `294_56`.
+`1303_8` passed label audit r5 as `ok`, but its proof puts it in `O(1)`. Its `truth` is not
+settled. `294_131` needs a hand proof, as `294_56` does.
 
 ## Effort
 

@@ -1,10 +1,9 @@
 # `prove-sample-9`
 
-Batch 1 of piece C4 in `batches/clean-636/README.md`: prove every row that has no proof. Label
-audit r5 (`batches/labelaudit/verdicts_r5.jsonl`) moved 71 rows into `solutions/`, so the
-never-drawn pool held 80 rows again. This campaign draws 20 of them (`--exclude-drawn`, seed
-`20261113`). The other 60 go to later batches. Three Sonnet agents, 3 attempts and 5 minutes per
-row, the default brief.
+Campaign 1 of 9 to prove every unproved row. Label audit r5 (`batches/labelaudit/verdicts_r5.jsonl`)
+moved 71 rows into `solutions/`, so the never-drawn pool held 80 rows again. This campaign draws 20
+of them (`--exclude-drawn`, seed `20261113`). The other 60 go to later batches. Three Sonnet agents,
+3 attempts and 5 minutes per row, the default brief.
 
 **Result: 20 proved, 0 unresolved.** Every row has a `reads` trace. `audit.py` reports no
 disagreement between the trajectories and the verifier.
@@ -42,7 +41,7 @@ Use the pooled figures in `data/prove_stats.md`, not this campaign alone.
 
 The agent wrote `looser-structural` for `294_56`; `label_relation.jsonl` keeps that as
 `prover_relation`. The row needs the lowercase `requires` (its statement's limit) and a proof
-that bounds the distinct letters by 26. That is a C5 job. `294_56` also took 420 seconds against
+that bounds the distinct letters by 26. That needs a hand proof. `294_56` also took 420 seconds against
 the 5-minute limit; 19 rows closed within budget.
 
 `2089_8` and `482_543` loop over input values; their labels count those values as sizes, so both
