@@ -1,0 +1,61 @@
+// 24_A. Ring road  (problem 348, solution 348_21)
+// time complexity: O(n)
+// python exact-diff baseline: exact
+//
+// Reproduce the Python program's entire stdout in `output`.
+//
+// --- Python ---------------------------------------------------------
+// source=set()
+// dest=set()
+// c1=0
+// c2=0
+// for i in range(int(input())):
+//     s,d,w=map(int,input().split())
+//     if s in source or d in dest:
+//         c1=c1+w
+//         s,d=d,s
+//     else:
+//         c2=c2+w
+//     source.add(s)
+//     dest.add(d)
+// print(min(c1,c2))
+// --------------------------------------------------------------------
+
+include "../../prelude.dfy"
+import opened Prelude
+
+method Solve(n: int, v_list: seq<seq<int>>) returns (output: string, ghost steps: nat)
+  ensures steps <= 12 * |v_list| + 3 + |output|
+  requires forall k :: 0 <= k < |v_list| ==> |v_list[k]| >= 3
+{
+  steps := 1;
+  var source: set<int> := {};
+  var dest: set<int> := {};
+  var c1 := 0;
+  var c2 := 0;
+  var idx := 0;
+  while idx < |v_list|
+    invariant 0 <= idx <= |v_list|
+    invariant steps <= 12 * idx + 1
+    decreases |v_list| - idx
+  {
+    steps := steps + 12;
+    var s := v_list[idx][0];
+    var d := v_list[idx][1];
+    var w := v_list[idx][2];
+    if s in source || d in dest {
+      c1 := c1 + w;
+      var tmp := s;
+      s := d;
+      d := tmp;
+    } else {
+      c2 := c2 + w;
+    }
+    source := source + {s};
+    dest := dest + {d};
+    idx := idx + 1;
+  }
+  output := IntToString(if c1 < c2 then c1 else c2);
+  IntToStringDigits(if c1 < c2 then c1 else c2);
+  steps := steps + Digits(if c1 < c2 then c1 else c2) + 2;
+}

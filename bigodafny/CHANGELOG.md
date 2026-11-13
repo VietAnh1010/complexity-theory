@@ -11,7 +11,9 @@ data lines go to `old-record.jsonl` beside the file they came from.
 ## 2026-11-13
 
 - `proofs.py` keeps a verified proof's record when its `fingerprint` (proof, row, prelude, Dafny
-  and Z3 versions) is unchanged; `--all` re-verifies every proof.
+  and Z3 versions) is unchanged; `--all` re-verifies every proof. A proof removed mid-run is skipped.
+- `bigodafny-prove-campaign`: `sample.py --dir` draws from another status directory;
+  `PROMPT_disputed.md`, appended to the brief for `solutions-disputed/` rows, asks for the tightest bound.
 
 ## 2026-11-12
 

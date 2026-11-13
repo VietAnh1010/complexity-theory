@@ -1,0 +1,50 @@
+{
+  "batch": "batches/prove-sample-12",
+  "by_label": {
+    "O(n)": {
+      "campaign_proved": 13,
+      "drawn": 13,
+      "proved": 13
+    },
+    "O(n**2)": {
+      "campaign_proved": 4,
+      "drawn": 4,
+      "proved": 4
+    },
+    "O(nlogn)": {
+      "campaign_proved": 3,
+      "drawn": 3,
+      "proved": 3
+    }
+  },
+  "by_relation": {
+    "confirms": 19,
+    "looser-structural": 1
+  },
+  "campaign": {
+    "proved": 20,
+    "revised_after": [],
+    "unresolved": 0
+  },
+  "drawn": 20,
+  "emitted_python": {
+    "checked": 20,
+    "differs": [],
+    "error": [],
+    "identical": 20
+  },
+  "obstacles": {},
+  "problems": [],
+  "proved": 20,
+  "reads_coverage": 1.0,
+  "reads_missing": [],
+  "requires_changed": [],
+  "rerun": {
+    "existing_proof_not_used": [],
+    "not_promoted": [],
+    "proved": 0,
+    "rows": 0,
+    "unresolved": 0
+  },
+  "unresolved": 0
+}

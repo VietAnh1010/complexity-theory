@@ -47,6 +47,9 @@ reason.
 | `1626_179` | `O(nlogn)` | prove-retry |
 | `1861_16` | `O(n)` | prove-retry |
 | `1871_156` | `O(nlogn)` | prove-retry |
+| `310_121` | `O(logn)` | prove-disputed-1 |
+| `1364_163` | `O(1)` | prove-disputed-1 |
+| `281_250` | `O(n)` | prove-disputed-1 |
 
 ## Causes
 

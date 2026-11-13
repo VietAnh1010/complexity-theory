@@ -33,7 +33,7 @@ has no blocker. A row can carry several.
 | --- | --- | ---: |
 | `truth-unsettled` | label verdict is not `ok` (disputed, unsure, or never audited) | 258 |
 | `unverified` | fails `verify_all.py` (`1336_157`) | 1 |
-| `no-proof` | no proof in `solutions-proved/` | 275 |
+| `no-proof` | no proof in `solutions-proved/` | 176 |
 | `decreases-star` | uses `decreases *` (`1336_157`) | 1 |
 | `untranslatable` | in `solutions-untranslated/`; outside the target | 4 |
 | `tests` | its gate has no pass; `1950_45`, `1950_47` (`unvalidatable`) | 2 |
@@ -41,7 +41,7 @@ has no blocker. A row can carry several.
 | `proof-fails` | its proof does not verify or uses `assume` | 0 |
 | `proof-changes-row` | its proof compiles to other Python or changes `Solve`'s `requires` (`2496_30`; 10 rows whose code changed, `TODO.md`) | 11 |
 
-Clean: 289 of 636 translated rows. `annotate` accepts every translated row.
+Clean: 368 of 636 translated rows. `annotate` accepts every translated row.
 
 ## Directories
 
@@ -56,7 +56,7 @@ Source: the tree.
 | `solutions-ungateable/`      |                                    4 |
 | `solutions-unverified/`      |                                    1 |
 | `solutions-untranslated/`    |                                    4 |
-| `solutions-proved/` (copies) | 361, of which 29 in `value-bounded/` |
+| `solutions-proved/` (copies) | 460, of which 32 in `value-bounded/` |
 
 ## Gates
 
@@ -65,7 +65,7 @@ Source: the tree.
 | `validate.py`         | `data/validation.jsonl`        | 536 rows: all `valid`                                                                                        |
 | `difftest.py --loose` | `data/difftest.jsonl`          | 98 loose rows: 94 `agrees`, 4 `untranslated`                                                                 |
 | `verify_all.py`       | `data/verification.jsonl`      | 636 rows, every status directory: 635 verify; `1336_157` fails and uses `decreases *` |
-| `proofs.py`           | `data/complexity_proofs.jsonl` | 361 proofs: all verify, 0 `assume`; 11 change their row (`2496_30`, and 10 written for code since changed)                                                                           |
+| `proofs.py`           | `data/complexity_proofs.jsonl` | 460 proofs: all verify, 0 `assume`; 11 change their row (`2496_30`, and 10 written for code since changed)                                                                           |
 
 Rows in `solutions/` using `decreases *`: 0.
 
@@ -116,6 +116,7 @@ Labels proved, by BigOBench's label: `O(n)` 165 · `O(nlogn)` 76 · `O(n**2)` 53
 
 Source: `data/prove_stats.md`.
 
-- 314 of 405 draws proved (78%), over 9 campaigns; `prove-retry` drew only open rows.
-- 328 of the 329 distinct rows drawn carry a proof today.
-- The other 1 is open, coded by obstacle (`data/prove_stats.md` § Open rows now).
+- 373 of 465 draws proved (80%), over 12 campaigns; `prove-retry` drew only open rows.
+- `prove-disputed-1` proved 20 of 20 disputed rows; it is not a label-proving draw and is not counted.
+- 387 of the 389 distinct rows drawn carry a proof today.
+- The other 2 are open, coded by obstacle (`data/prove_stats.md` § Open rows now).

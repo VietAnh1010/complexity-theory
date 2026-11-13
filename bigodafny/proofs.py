@@ -113,6 +113,8 @@ def run(workers=WORKERS):
         return h.hexdigest()[:16]
     def check(p):
         sid = p.stem
+        if not p.exists():      # removed mid-run, e.g. by a campaign agent
+            return None
         fp = fingerprint(p)
         prev = old.get(sid)
         if prev and prev.get("fingerprint") == fp and prev["verified"]:
@@ -148,6 +150,7 @@ def run(workers=WORKERS):
     # One dafny process per proof, independent; map keeps file order.
     with ThreadPoolExecutor(max_workers=workers) as ex:
         rows = list(ex.map(check, files))
+    files, rows = [f for f, r in zip(files, rows) if r], [r for r in rows if r]
     # Parallel load can push a proof past Z3's time limit (1582_118 verifies in
     # 19 s alone). Re-check each failure alone; only that verdict is recorded.
     for i, r in enumerate(rows):
