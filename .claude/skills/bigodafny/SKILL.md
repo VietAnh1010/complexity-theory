@@ -54,7 +54,6 @@ also live above, so a row can exist twice with different preconditions.
 |---|---|
 | `solutions-proved/` | complexity **proved** via ghost step counter |
 | `solutions-proved/value-bounded/` | proved, but the bound names an input VALUE; queued for review |
-| `experiments/proofs-blind/` | blind-arm experiment attempts; label withheld from the author. NOT dataset rows |
 
 Older notes use other directory names; `bigodafny/CHANGELOG.md` § Undated maps
 them to these.
